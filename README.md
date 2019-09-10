@@ -12,7 +12,7 @@ Distinct applications may have their own `README` files for guidance on getting 
 
 - `/.azure/pipelines` - Azure Pipelines configurations for conditionally building the different applications and libraries in the repo
 - `/src` - actual source code
-    - `/Directory` - the new Directory app (sometimes called "Core", contains core functionality such as identity services)
+    - `/Directory` - the new Directory app (sometimes called "Core"; contains core functionality such as identity services)
 
 # Contribute
 
