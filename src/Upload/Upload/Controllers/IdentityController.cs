@@ -12,6 +12,6 @@ namespace Upload.Controllers
     {
         [HttpGet]
         public IActionResult Get()
-            => new JsonResult(User.Claims.Select(x => new { x.Type, x.Value }));
+            => new JsonResult(User.Claims.Select(x => $"{x.Type}, {x.Value}"));
     }
 }
