@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common.Constants;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 
@@ -16,7 +17,7 @@ namespace Directory.IdentityServer
             => new ApiResource[]
             {
                 new ApiResource(ApiResourceKeys.RefData, "UKCRC TDCC Reference Data API"),
-                new ApiResource(ApiResourceKeys.Submission, "UKCRC TDCC Submission API")
+                new ApiResource(ApiResourceKeys.Upload, "UKCRC TDCC Upload API")
             };
 
         public static IEnumerable<Client> GetClients(IConfiguration config)
@@ -29,13 +30,13 @@ namespace Directory.IdentityServer
                 // Submission API itself as Client
                 new Client
                 {
-                    ClientId = "submission-app",
+                    ClientId = TrustedClientIds.Upload,
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
 
                     ClientSecrets =
                     {
-                        new Secret(config["ClientSecrets:submission-app"].Sha256())
+                        new Secret(config[$"ClientSecrets:{TrustedClientIds.Upload}"].Sha256())
                     },
 
                     AllowedScopes = { ApiResourceKeys.RefData }
