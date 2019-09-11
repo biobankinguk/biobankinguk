@@ -1,5 +1,7 @@
 ﻿using ClacksMiddleware.Extensions;
+using Common.Constants;
 using Directory.IdentityServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,9 +28,17 @@ namespace Directory
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
                 .AddInMemoryClients(Config.GetClients(_config))
-                .AddDeveloperSigningCredential();
+                .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
-            // TODO: Configure signing?
+            services.AddControllers();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+                {
+                    opts.Authority = _config["JwtBearer:Authority"];
+                    opts.Audience = ApiResourceKeys.RefData;
+                });
+                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,13 +53,13 @@ namespace Directory
 
             app.UseHttpsRedirection();
 
-            app.UseIdentityServer(); // TODO: This might move in dotnet 3.0 RTM due to new routing
-
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-                endpoints.MapFallback(async context =>
-                    await context.Response.WriteAsync("Hello Endpoints!")));
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization());
         }
     }
 }

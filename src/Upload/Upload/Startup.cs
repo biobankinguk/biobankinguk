@@ -28,7 +28,7 @@ namespace Upload
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
                 opts =>
                 {
-                    opts.Authority = _config["Identity:ServerUrl"];
+                    opts.Authority = _config["JwtBearer:Authority"];
                     opts.Audience = ApiResourceKeys.Upload;
                 });
 

@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="IdentityServer4" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0-preview9.19424.4" />
   </ItemGroup>
 
   <ItemGroup>
