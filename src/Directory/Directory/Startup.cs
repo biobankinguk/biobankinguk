@@ -1,4 +1,5 @@
-﻿using Directory.IdentityServer;
+﻿using ClacksMiddleware.Extensions;
+using Directory.IdentityServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,10 +34,14 @@ namespace Directory
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.GnuTerryPratchett();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseHttpsRedirection();
 
             app.UseIdentityServer(); // TODO: This might move in dotnet 3.0 RTM due to new routing
 
