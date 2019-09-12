@@ -10,9 +10,15 @@ Distinct applications may have their own `README` files for guidance on getting 
 
 # Guide to Repository Structure
 
-- `/.azure/pipelines` - Azure Pipelines configurations for conditionally building the different applications and libraries in the repo
-- `/src` - actual source code
-    - `/Directory` - the new Directory app (sometimes called "Core"; contains core functionality such as identity services)
+The `src/` folder contains roughly project or app categorised folders, which also have Visual Studio Solutions in. Each Solution contains all the relevant projects including dev dependencies, so it's generally a good idea to use the solution of the project or app area you are doing work on.
+
+## Directory structure:
+
+- `.azure/pipelines/` - Azure Pipelines configurations for conditionally building the different applications and libraries in the repo
+- `src/` - actual source code
+    - `Common/` - class libraries containing code shared between some or all of the other apps
+    - `Directory/` - the new Directory app (sometimes called "Core"; contains core functionality such as identity services)
+    - `Upload/` - the new Upload API (the Submission API and its process dependencies such as WebJobs)
 
 # Contribute
 
