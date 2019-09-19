@@ -3,7 +3,7 @@
     /// <summary>
     /// Base class holding common properties for Reference Data entities.
     /// </summary>
-    public class BaseReferenceDatum
+    public abstract class BaseReferenceDatum
     {
         public int Id { get; set; }
 
@@ -13,7 +13,7 @@
     /// <summary>
     /// Base class for Reference Data which has a sort order.
     /// </summary>
-    public class SortedBaseReferenceDatum : BaseReferenceDatum
+    public abstract class SortedBaseReferenceDatum : BaseReferenceDatum
     {
         public int SortOrder { get; set; }
     }
