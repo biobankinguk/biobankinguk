@@ -1,9 +1,9 @@
 ﻿namespace Common.ReferenceData
 {
     /// <summary>
-    /// Access condition to samples within a given collection.
+    /// Reference Data. Access condition to samples within a given collection.
     /// </summary>
-    class AccessConditions : SortedBaseReferenceDatum
+    public class AccessConditions : SortedBaseReferenceDatum
     {
     }
 }

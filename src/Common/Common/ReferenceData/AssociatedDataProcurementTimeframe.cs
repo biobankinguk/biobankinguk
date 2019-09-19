@@ -1,7 +1,7 @@
 ﻿namespace Common.ReferenceData
 {
     /// <summary>
-    /// Descriptive values of time frames for data procurement.
+    /// Reference Data. Descriptive values of time frames for data procurement.
     /// </summary>
     class AssociatedDataProcurementTimeframe : SortedBaseReferenceDatum
     {

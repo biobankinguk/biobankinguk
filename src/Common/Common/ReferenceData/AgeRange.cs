@@ -1,9 +1,9 @@
 ﻿namespace Common.ReferenceData
 {
     /// <summary>
-    /// Descriptive values to specified age ranges.
+    /// Reference Data. Descriptive values to specified age ranges.
     /// </summary>
-    class AgeRange : SortedBaseReferenceDatum
+    public class AgeRange : SortedBaseReferenceDatum
     {
     }
 }
