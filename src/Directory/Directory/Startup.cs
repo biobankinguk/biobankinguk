@@ -1,10 +1,12 @@
 ﻿using ClacksMiddleware.Extensions;
+using Common;
 using Common.Constants;
 using Directory.IdentityServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,7 +40,12 @@ namespace Directory
                     opts.Authority = _config["JwtBearer:Authority"];
                     opts.Audience = ApiResourceKeys.RefData;
                 });
-                
+
+            // Entity Framework
+            services.AddDbContext<DirectoryContext>(opts => opts
+                .UseLazyLoadingProxies()
+                .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
