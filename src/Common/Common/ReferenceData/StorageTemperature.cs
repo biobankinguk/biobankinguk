@@ -3,7 +3,7 @@
     /// <summary>
     /// Reference Data. Temperature ranges for a given MaterialDetail.
     /// </summary>
-    public class StorageTemperature
+    public class StorageTemperature : SortedBaseReferenceDatum
     {
     }
 }
