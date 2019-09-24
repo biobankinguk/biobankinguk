@@ -1,17 +1,15 @@
 ﻿using Common.ReferenceData;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common
 {
     public class DirectoryContext : DbContext
     {
-        private readonly IWebHostEnvironment _env;
-        public DirectoryContext(DbContextOptions<DirectoryContext> options,
-            IWebHostEnvironment env)
+
+        public DirectoryContext(DbContextOptions<DirectoryContext> options)
             : base(options)
         {
-            _env = env;
+
         }
 
         public DbSet<AccessCondition> AccessConditions { get; set; }
