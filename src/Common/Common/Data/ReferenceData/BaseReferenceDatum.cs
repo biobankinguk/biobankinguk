@@ -1,4 +1,4 @@
-﻿namespace Common.ReferenceData
+﻿namespace Common.Data.ReferenceData
 {
     /// <summary>
     /// Base class holding common properties for Reference Data entities.

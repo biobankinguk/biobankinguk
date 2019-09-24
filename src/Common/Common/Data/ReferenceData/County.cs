@@ -1,4 +1,4 @@
-﻿namespace Common.ReferenceData
+﻿namespace Common.Data.ReferenceData
 {
     /// <summary>
     /// Reference data. Geographic region within a country.

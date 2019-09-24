@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Common.Migrations
+namespace Common.Data.Migrations
 {
     public partial class RefData : Migration
     {

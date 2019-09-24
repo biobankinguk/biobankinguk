@@ -1,4 +1,4 @@
-﻿namespace Common.ReferenceData
+﻿namespace Common.Data.ReferenceData
 {
     /// <summary>
     /// Represents a term from a given ontology list (currently only Snomed).

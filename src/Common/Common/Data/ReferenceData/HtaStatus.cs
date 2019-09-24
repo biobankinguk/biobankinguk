@@ -1,4 +1,4 @@
-﻿namespace Common.ReferenceData
+﻿namespace Common.Data.ReferenceData
 {
     /// <summary>
     /// Reference Data. When a given collection was started/finished in relation to the Human Tissue Act.

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Common.Migrations
+namespace Common.Data.Migrations
 {
     [DbContext(typeof(DirectoryContext))]
     partial class DirectoryContextModelSnapshot : ModelSnapshot

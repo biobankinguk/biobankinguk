@@ -1,4 +1,4 @@
-﻿namespace Common.ReferenceData
+﻿namespace Common.Data.ReferenceData
 {
     /// <summary>
     /// Reference Data. Funding body for a given organisation.

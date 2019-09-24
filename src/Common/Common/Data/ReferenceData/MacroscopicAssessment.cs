@@ -1,4 +1,4 @@
-﻿namespace Common.ReferenceData
+﻿namespace Common.Data.ReferenceData
 {
     /// <summary>
     /// Reference data. Assessment of tissue at macroscopic level. Not applicable to non-tissue types.

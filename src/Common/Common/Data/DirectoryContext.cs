@@ -1,7 +1,7 @@
-﻿using Common.ReferenceData;
+﻿using Common.Data.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 
-namespace Common
+namespace Common.Data
 {
     public class DirectoryContext : DbContext
     {
