@@ -3,7 +3,7 @@
     /// <summary>
     /// Reference data. Consent Restriction for a given Collection.
     /// </summary>
-    class ConsentRestriction : SortedBaseReferenceDatum
+    public class ConsentRestriction : SortedBaseReferenceDatum
     {
     }
 }
