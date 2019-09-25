@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Directory.Services
 {
-    /// <summary>
-    /// Service class for getting Reference Data Entities from the DB
-    /// </summary>
+    /// <inheritdoc />
     public class ReferenceDataReadService : IReferenceDataReadService
     {
         private readonly DirectoryContext _context;

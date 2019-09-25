@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace Directory.Contracts
 {
+    /// <summary>
+    /// Service class for getting Reference Data Entities from the DB
+    /// </summary>
     public interface IReferenceDataReadService
     {
         /// <summary>
