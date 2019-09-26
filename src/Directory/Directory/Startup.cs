@@ -32,6 +32,7 @@ namespace Directory
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             services.AddControllers();
+            services.AddRazorPages();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
@@ -65,7 +66,11 @@ namespace Directory
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapControllers().RequireAuthorization();
+            });
         }
     }
 }
