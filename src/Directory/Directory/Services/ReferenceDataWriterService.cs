@@ -18,7 +18,7 @@ namespace Directory.Services
         #region Helper Methods
 
         /// <summary>
-        /// Generic create Ref Data helper method.
+        /// Generic create Ref Data helper method. To be used by all ref data which implements BaseReferenceDatum only.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="refData"></param>
@@ -31,7 +31,7 @@ namespace Directory.Services
         }
 
         /// <summary>
-        /// Generic update ref Data helper method
+        /// Generic update ref Data helper method. To be used by all ref data which implements BaseReferenceDatum only.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="refData"></param>
@@ -44,7 +44,7 @@ namespace Directory.Services
         }
 
         /// <summary>
-        /// Generic delete ref data helper method
+        /// Generic delete ref data helper method. To be used by all ref data which implements BaseReferenceDatum only.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="id"></param>
@@ -54,6 +54,8 @@ namespace Directory.Services
             _context.Remove(new T { Id = id });
             await _context.SaveChangesAsync();
         }
+
+        #endregion
 
         #region AccessCondition
 
@@ -80,6 +82,9 @@ namespace Directory.Services
             => DeleteRefData<AgeRange>(id);
 
         #endregion
+
+        #region AnnualStatistic
+
         public Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatistic annualStatistic)
             => CreateRefData(annualStatistic);
 
@@ -89,297 +94,265 @@ namespace Directory.Services
         public Task DeleteAnnualStatistic(int id)
             => DeleteRefData<AnnualStatistic>(id);
 
+        #endregion
+
+        #region AssociatedDataProcurementTimeframe
+
         public Task<AssociatedDataProcurementTimeframe> CreateAssociatedDataProcurementTimeframe(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(associatedDataProcurementTimeframe);
 
         public Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeframe(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(associatedDataProcurementTimeframe);
 
         public Task DeleteAssociatedDataProcurementTimeframe(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<AssociatedDataProcurementTimeframe>(id);
+
+        #endregion
+
+        #region AssociatedDataType
 
         public Task<AssociatedDataType> CreateAssociatedDataType(AssociatedDataType associatedDataType)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(associatedDataType);
 
         public Task<AssociatedDataType> UpdateAssociatedDataType(AssociatedDataType associatedDataType)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(associatedDataType);
 
         public Task DeleteAssociatedDataType(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<AssociatedDataType>(id);
+
+        #endregion
+
+        #region CollectionPercentage
 
         public Task<CollectionPercentage> CreateCollectionPercentage(CollectionPercentage collectionPercentage)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(collectionPercentage);
 
         public Task<CollectionPercentage> UpdateCollectionPercentage(CollectionPercentage collectionPercentage)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(collectionPercentage);
 
         public Task DeleteCollectionPercentage(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<CollectionPercentage>(id);
+
+        #endregion
+
+        #region CollectionPoint
 
         public Task<CollectionPoint> CreateCollectionPoint(CollectionPoint collectionPoint)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(collectionPoint);
 
         public Task<CollectionPoint> UpdateCollectionPoint(CollectionPoint collectionPoint)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(collectionPoint);
 
         public Task DeleteCollectionPoint(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<CollectionPoint>(id);
+
+        #endregion
+
+        #region CollectionStatus
 
         public Task<CollectionStatus> CreateCollectionStatus(CollectionStatus collectionStatus)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(collectionStatus);
 
         public Task<CollectionStatus> UpdateCollectionStatus(CollectionStatus collectionStatus)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(collectionStatus);
 
         public Task DeleteCollectionStatus(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<CollectionStatus>(id);
+
+        #endregion
+
+        #region CollectionType
 
         public Task<CollectionType> CreateCollectionType(CollectionType collectionType)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(collectionType);
 
         public Task<CollectionType> UpdateCollectionType(CollectionType collectionType)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(collectionType);
 
         public Task DeleteCollectionType(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<CollectionType>(id);
+
+        #endregion
+
+        #region ConsentRestriction
 
         public Task<ConsentRestriction> CreateConsentRestriction(ConsentRestriction consentRestriction)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(consentRestriction);
 
         public Task<ConsentRestriction> UpdateConsentRestriction(ConsentRestriction consentRestriction)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(consentRestriction);
 
         public Task DeleteConsentRestriction(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<ConsentRestriction>(id);
+
+        #endregion
+
+        #region Country
 
         public Task<Country> CreateCountry(Country country)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(country);
 
         public Task<Country> UpdateCountry(Country country)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(country);
 
         public Task DeleteCountry(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<Country>(id);
+
+        #endregion
+
+        #region County
 
         public Task<County> CreateCounty(County county)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(county);
 
         public Task<County> UpdateCounty(County county)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(county);
 
         public Task DeleteCounty(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<County>(id);
+
+        #endregion
+
+        #region DonorCount
 
         public Task<DonorCount> CreateDonorCount(DonorCount donorCount)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(donorCount);
 
         public Task<DonorCount> UpdateDonorCount(DonorCount donorCount)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(donorCount);
 
         public Task DeleteDonorCount(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<DonorCount>(id);
+
+        #endregion
+
+        #region Funder
 
         public Task<Funder> CreateFunder(Funder funder)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(funder);
 
         public Task<Funder> UpdateFunder(Funder funder)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(funder);
 
         public Task DeleteFunder(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<Funder>(id);
+
+        #endregion
+
+        #region HtaStatus
 
         public Task<HtaStatus> CreateHtaStatus(HtaStatus htaStatus)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(htaStatus);
 
         public Task<HtaStatus> UpdateHtaStatus(HtaStatus htaStatus)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(htaStatus);
 
         public Task DeleteHtaStatus(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<HtaStatus>(id);
+
+        #endregion
+
+        #region MacroscopicAssessment
 
         public Task<MacroscopicAssessment> CreateMacroscopicAssessment(MacroscopicAssessment macroscopicAssessment)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(macroscopicAssessment);
 
         public Task<MacroscopicAssessment> UpdateMacroscopicAssessment(MacroscopicAssessment macroscopicAssessment)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(macroscopicAssessment);
 
         public Task DeleteMacroscopicAssessment(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+            => DeleteRefData<MacroscopicAssessment>(id);
+
+        #endregion
+
+        #region MaterialType
 
         public Task<MaterialType> CreateMaterialType(MaterialType materialType)
-        {
-            throw new System.NotImplementedException();
-        }
+            => CreateRefData(materialType);
 
         public Task<MaterialType> UpdateMaterialType(MaterialType materialType)
-        {
-            throw new System.NotImplementedException();
-        }
+            => UpdateRefData(materialType);
 
         public Task DeleteMaterialType(int id)
+            => DeleteRefData<MaterialType>(id);
+
+        #endregion
+
+        #region OntologyTerm
+
+        public async Task<OntologyTerm> CreateOntologyTerm(OntologyTerm ontologyTerm)
         {
-            throw new System.NotImplementedException();
+            await _context.AddAsync(ontologyTerm);
+            await _context.SaveChangesAsync();
+            return ontologyTerm;
         }
 
-        public Task<OntologyTerm> CreateOntologyTerm(OntologyTerm ontologyTerm)
+        public async Task<OntologyTerm> UpdateOntologyTerm(OntologyTerm ontologyTerm)
         {
-            throw new System.NotImplementedException();
+            _context.Update(ontologyTerm);
+            await _context.SaveChangesAsync();
+            return ontologyTerm;
         }
 
-        public Task<OntologyTerm> UpdateOntologyTerm(OntologyTerm ontologyTerm)
+        public async Task DeleteOntologyTerm(string id)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task DeleteOntologyTerm(string id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<ServiceOffering> CreateServiceOffering(ServiceOffering serviceOffering)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<ServiceOffering> UpdateServiceOffering(ServiceOffering serviceOffering)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task DeleteServiceOffering(int id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<Sex> CreateSex(Sex sex)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<Sex> UpdateSex(Sex sex)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task DeleteSex(int id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<SopStatus> CreateSopStatus(SopStatus sopStatus)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<SopStatus> UpdateSopStatus(SopStatus sopStatus)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task DeleteSopStatus(int id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<StorageTemperature> CreateStorageTemperature(StorageTemperature storageTemperature)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<StorageTemperature> UpdateStorageTemperature(StorageTemperature storageTemperature)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task DeleteStorageTemperature(int id)
-        {
-            throw new System.NotImplementedException();
+            _context.Remove(new OntologyTerm { Id = id });
+            await _context.SaveChangesAsync();
         }
 
         #endregion
 
-        #region AccessConditions
+        #region ServiceOffering
 
+        public Task<ServiceOffering> CreateServiceOffering(ServiceOffering serviceOffering)
+            => CreateRefData(serviceOffering);
 
+        public Task<ServiceOffering> UpdateServiceOffering(ServiceOffering serviceOffering)
+            => UpdateRefData(serviceOffering);
+
+        public Task DeleteServiceOffering(int id)
+            => DeleteRefData<ServiceOffering>(id);
+
+        #endregion
+
+        #region Sex
+
+        public Task<Sex> CreateSex(Sex sex)
+            => CreateRefData(sex);
+
+        public Task<Sex> UpdateSex(Sex sex)
+            => UpdateRefData(sex);
+
+        public Task DeleteSex(int id)
+            => DeleteRefData<Sex>(id);
+
+        #endregion
+
+        #region SopStatus
+
+        public Task<SopStatus> CreateSopStatus(SopStatus sopStatus)
+            => CreateRefData(sopStatus);
+
+        public Task<SopStatus> UpdateSopStatus(SopStatus sopStatus)
+            => UpdateRefData(sopStatus);
+
+        public Task DeleteSopStatus(int id)
+            => DeleteRefData<SopStatus>(id);
+
+        #endregion
+
+        #region StorageTemperature
+
+        public Task<StorageTemperature> CreateStorageTemperature(StorageTemperature storageTemperature)
+            => CreateRefData(storageTemperature);
+
+        public Task<StorageTemperature> UpdateStorageTemperature(StorageTemperature storageTemperature)
+            => UpdateRefData(storageTemperature);
+
+        public Task DeleteStorageTemperature(int id)
+            => DeleteRefData<StorageTemperature>(id);
 
         #endregion
     }
 }
+
