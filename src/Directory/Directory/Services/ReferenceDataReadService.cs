@@ -151,6 +151,7 @@ namespace Directory.Services
 
         #region County
 
+        //TODO replace with mapping to DTO
         /// <inheritdoc />
         public async Task<ICollection<County>> ListCounties()
             => await _context.Counties.ToListAsync();
