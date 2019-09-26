@@ -49,6 +49,7 @@ namespace Directory
 
             //service layer
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
+            services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
