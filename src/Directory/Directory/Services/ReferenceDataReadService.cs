@@ -23,7 +23,7 @@ namespace Directory.Services
             => await _context.AccessConditions.ToListAsync();
    
         public async Task<AccessCondition> GetAccessCondition(int id)
-            => await _context.AccessConditions.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.AccessConditions.FindAsync(id);
 
         #endregion
 
@@ -33,7 +33,7 @@ namespace Directory.Services
             => await _context.AgeRanges.ToListAsync();
       
         public async Task<AgeRange> GetAgeRange(int id)
-            => await _context.AgeRanges.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.AgeRanges.FindAsync(id);
 
         #endregion
 
@@ -43,7 +43,7 @@ namespace Directory.Services
             => await _context.AnnualStatistics.ToListAsync();
       
         public async Task<AnnualStatistic> GetAnnualStatistic(int id)
-            => await _context.AnnualStatistics.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.AnnualStatistics.FindAsync(id);
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace Directory.Services
             => await _context.AssociatedDataProcurementTimeframes.ToListAsync();
      
         public async Task<AssociatedDataProcurementTimeframe> GetAssociatedDataProcurementTimeframe(int id)
-            => await _context.AssociatedDataProcurementTimeframes.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.AssociatedDataProcurementTimeframes.FindAsync(id);
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace Directory.Services
             => await _context.AssociatedDataTypes.ToListAsync();
      
         public async Task<AssociatedDataType> GetAssociatedDataType(int id)
-            => await _context.AssociatedDataTypes.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.AssociatedDataTypes.FindAsync(id);
 
         #endregion
 
@@ -73,7 +73,7 @@ namespace Directory.Services
             => await _context.CollectionPercentages.ToListAsync();
     
         public async Task<CollectionPercentage> GetCollectionPercentage(int id)
-            => await _context.CollectionPercentages.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.CollectionPercentages.FindAsync(id);
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace Directory.Services
             => await _context.CollectionPoints.ToListAsync();
      
         public async Task<CollectionPoint> GetCollectionPoint(int id)
-            => await _context.CollectionPoints.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.CollectionPoints.FindAsync(id);
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace Directory.Services
             => await _context.CollectionStatuses.ToListAsync();
      
         public async Task<CollectionStatus> GetCollectionStatus(int id)
-            => await _context.CollectionStatuses.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.CollectionStatuses.FindAsync(id);
 
         #endregion
 
@@ -103,7 +103,7 @@ namespace Directory.Services
             => await _context.CollectionTypes.ToListAsync();
       
         public async Task<CollectionType> GetCollectionType(int id)
-        => await _context.CollectionTypes.FirstOrDefaultAsync(x => x.Id == id);
+        => await _context.CollectionTypes.FindAsync(id);
 
         #endregion
 
@@ -113,7 +113,7 @@ namespace Directory.Services
             => await _context.ConsentRestrictions.ToListAsync();
      
         public async Task<ConsentRestriction> GetConsentRestriction(int id)
-            => await _context.ConsentRestrictions.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.ConsentRestrictions.FindAsync(id);
 
         #endregion
 
@@ -123,7 +123,7 @@ namespace Directory.Services
             => await _context.Countries.ToListAsync();
         
         public async Task<Country> GetCountry(int id)
-            => await _context.Countries.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.Countries.FindAsync(id);
 
         #endregion
 
@@ -134,7 +134,7 @@ namespace Directory.Services
             => await _context.Counties.ToListAsync();
      
         public async Task<County> GetCounty(int id)
-            => await _context.Counties.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.Counties.FindAsync(id);
 
         #endregion
 
@@ -144,7 +144,7 @@ namespace Directory.Services
             => await _context.DonorCounts.ToListAsync();
        
         public async Task<DonorCount> GetDonorCount(int id)
-            => await _context.DonorCounts.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.DonorCounts.FindAsync(id);
 
         #endregion
 
@@ -154,7 +154,7 @@ namespace Directory.Services
             => await _context.Funders.ToListAsync();
       
         public async Task<Funder> GetFunder(int id)
-            => await _context.Funders.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.Funders.FindAsync(id);
 
         #endregion
 
@@ -164,7 +164,7 @@ namespace Directory.Services
             => await _context.HtaStatuses.ToListAsync();
      
         public async Task<HtaStatus> GetHtaStatus(int id)
-            => await _context.HtaStatuses.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.HtaStatuses.FindAsync(id);
 
         #endregion
 
@@ -174,7 +174,7 @@ namespace Directory.Services
             => await _context.MacroscopicAssessments.ToListAsync();
        
         public async Task<MacroscopicAssessment> GetMacroscopicAssessment(int id)
-            => await _context.MacroscopicAssessments.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.MacroscopicAssessments.FindAsync(id);
 
         #endregion
 
@@ -184,7 +184,7 @@ namespace Directory.Services
             => await _context.MaterialTypes.ToListAsync();
        
         public async Task<MaterialType> GetMaterialType(int id)
-            => await _context.MaterialTypes.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.MaterialTypes.FindAsync(id);
 
         #endregion
 
@@ -194,7 +194,7 @@ namespace Directory.Services
             => await _context.OntologyTerms.ToListAsync();
         
         public async Task<OntologyTerm> GetOntologyTerm(string id)
-            => await _context.OntologyTerms.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.OntologyTerms.FindAsync(id);
 
         #endregion
 
@@ -204,7 +204,7 @@ namespace Directory.Services
             => await _context.ServiceOfferings.ToListAsync();
      
         public async Task<ServiceOffering> GetServiceOffering(int id)
-            => await _context.ServiceOfferings.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.ServiceOfferings.FindAsync(id);
 
         #endregion
 
@@ -214,7 +214,7 @@ namespace Directory.Services
             => await _context.Sexes.ToListAsync();
       
         public async Task<Sex> GetSex(int id)
-            => await _context.Sexes.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.Sexes.FindAsync(id);
 
         #endregion
 
@@ -224,7 +224,7 @@ namespace Directory.Services
             => await _context.SopStatuses.ToListAsync();
     
         public async Task<SopStatus> GetSopStatus(int id)
-            => await _context.SopStatuses.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.SopStatuses.FindAsync(id);
 
         #endregion
 
@@ -234,7 +234,7 @@ namespace Directory.Services
             => await _context.StorageTemperatures.ToListAsync();
       
         public async Task<StorageTemperature> GetStorageTemperature(int id)
-            => await _context.StorageTemperatures.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.StorageTemperatures.FindAsync(id);
 
         #endregion
 
