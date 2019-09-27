@@ -1,2 +1,1 @@
-﻿import "jquery-validation";
-import "jquery-validation-unobtrusive";
+﻿import "jquery-validation-unobtrusive";
