@@ -5,11 +5,9 @@ import "./globals";
 
 // Third party libs that warrant top level imports
 import "jquery";
-//import "bootstrap";
 import "jquery-validation";
 import "jquery-validation-unobtrusive";
 
 // Third party initialisation
 
 // Add project script imports below
-//import "./icons";

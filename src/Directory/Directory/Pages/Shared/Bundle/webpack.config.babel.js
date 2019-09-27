@@ -17,13 +17,6 @@ export default {
                 exclude: /node_modules/,
                 use: ["babel-loader"]
             },
-            //{
-            //    test: /\.(png|jpg)$/,
-            //    loader: "url-loader",
-            //    options: {
-            //        limit: 100
-            //    }
-            //},
             {
                 test: /\.scss/,
                 use: [
