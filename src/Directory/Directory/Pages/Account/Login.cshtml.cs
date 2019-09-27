@@ -19,7 +19,7 @@ namespace Directory.Pages.Account
 
         public bool Success;
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             if (!ModelState.IsValid) return Page();
 

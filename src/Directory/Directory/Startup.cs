@@ -29,6 +29,7 @@ namespace Directory
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
                 .AddInMemoryClients(Config.GetClients(_config))
+                .AddTestUsers(Config.GetUsers())
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             services.AddControllers();
