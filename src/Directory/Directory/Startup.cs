@@ -32,7 +32,8 @@ namespace Directory
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             services.AddControllers();
-            services.AddRazorPages();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>

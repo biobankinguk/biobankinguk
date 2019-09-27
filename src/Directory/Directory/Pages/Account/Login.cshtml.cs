@@ -1,12 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Directory.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        public void OnGet()
-        {
+        [BindProperty]
+        [Required]
+        public string Username { get; set; }
 
+        [BindProperty]
+        [Required]
+        public string Password { get; set; }
+
+        public bool Success;
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid) return Page();
+
+            Success = true;
+
+            return Page();
         }
     }
 }
