@@ -9,10 +9,12 @@ namespace Directory.Pages.Account
     {
         [BindProperty]
         [Required]
+        [DataType(DataType.EmailAddress)]
         public string Username { get; set; }
 
         [BindProperty]
         [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         public bool Success;
