@@ -1,7 +1,9 @@
 ﻿using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
+using Directory.Contracts;
 using Directory.IdentityServer;
+using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +50,9 @@ namespace Directory
                 .UseLazyLoadingProxies()
                 .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
+            //service layer
+            services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
+            services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
