@@ -31,9 +31,12 @@ namespace Directory
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
                 .AddInMemoryClients(Config.GetClients(_config))
+                .AddTestUsers(Config.GetUsers())
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             services.AddControllers();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
@@ -64,13 +67,19 @@ namespace Directory
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapControllers().RequireAuthorization();
+            });
         }
     }
 }

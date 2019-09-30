@@ -1,0 +1,43 @@
+﻿// UKCRC brand colours
+// Primary
+$brand-bright-orange: #ff9900;
+$brand-golden-yellow: #ffcc00;
+$brand-charcoal-grey: #666;
+$brand-bright-orange-pale: #fbcd8c;
+$brand-golden-yellow-pale: #ffed97;
+$brand-charcoal-grey-pale: #c4c5c7;
+// Secondary
+$brand-bright-blue: #66ccff;
+$brand-bright-blue-pale: #c1e6f0;
+$brand-purple: #9966cc;
+$brand-purple-pale: #ddcee2;
+$brand-beige: #cc9966;
+$brand-beige-pale: #e9dfbe;
+$brand-green: #99cc66;
+$brand-green-pale: #dfebc2;
+$brand-lavender: #9999cc;
+$brand-lavender-pale: #c6d1e8;
+
+// mappings for Bootstrap theme colors
+$brand-primary: #0066bf; // Darker than brand blue, based on the old directory's primary
+$brand-primary-alt: $brand-bright-orange;
+$brand-secondary: $brand-bright-blue;
+$brand-success: $brand-green;
+$brand-danger: $brand-bright-orange-pale;
+$brand-warning: $brand-golden-yellow-pale;
+$brand-info: $brand-bright-blue-pale;
+$brand-light: $brand-charcoal-grey-pale;
+$brand-dark: $brand-charcoal-grey;
+
+// literal helpers
+$color-white: #fff;
+$color-black: #111; // Alan says to never use true black
+$color-red: #f00;
+$color-green: #0f0;
+$color-blue: #00f;
+
+// Site specific colours below
+$color-default-background: #e9ecef; // matches bootstrap's grey-200
+$color-orange-full: #dd8500;
+$color-orange-mid: #ecae51;
+$color-orange-pale: #fbd8a2;

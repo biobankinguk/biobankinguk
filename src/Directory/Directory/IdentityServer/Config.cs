@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common.Constants;
 using IdentityServer4.Models;
+using IdentityServer4.Test;
 using Microsoft.Extensions.Configuration;
 
 namespace Directory.IdentityServer
@@ -11,6 +12,13 @@ namespace Directory.IdentityServer
             => new IdentityResource[]
             {
                 new IdentityResources.OpenId()
+            };
+
+        public static List<TestUser> GetUsers()
+            => new List<TestUser>
+            {
+                new TestUser { SubjectId = "1", Username = "jon@jon.jon", Password="test"},
+                new TestUser { SubjectId = "2", Username = "bob@bob.bob", Password="test"}
             };
 
         public static IEnumerable<ApiResource> GetApis()
