@@ -1,6 +1,9 @@
-﻿using Common.Data;
+﻿using AutoMapper;
+using Common.Data;
 using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Directory.Services
@@ -9,10 +12,12 @@ namespace Directory.Services
     public class ReferenceDataWriterService : IReferenceDataWriterService
     {
         private readonly DirectoryContext _context;
+        private readonly IMapper _mapper;
 
-        public ReferenceDataWriterService(DirectoryContext context)
+        public ReferenceDataWriterService(DirectoryContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         #region Helper Methods
@@ -38,6 +43,7 @@ namespace Directory.Services
         /// <returns></returns>
         private async Task<T> UpdateRefData<T>(T refData) where T : BaseReferenceDatum
         {
+            _context.Entry(refData).State = EntityState.Modified;
             _context.Update(refData);
             await _context.SaveChangesAsync();
             return refData;
@@ -59,60 +65,77 @@ namespace Directory.Services
 
         #region AccessCondition
 
-        public Task<AccessCondition> CreateAccessCondition(AccessCondition accessCondition)
-            => CreateRefData(accessCondition);
+        public async Task<AccessCondition> CreateAccessCondition(SortedRefDataBaseDto accessCondition)
+            => await CreateRefData(_mapper.Map<AccessCondition>(accessCondition));      
 
-        public Task<AccessCondition> UpdateAccessCondition(AccessCondition accessCondition)
-            => UpdateRefData(accessCondition);
+        public async Task<AccessCondition> UpdateAccessCondition(int id, SortedRefDataBaseDto accessCondition)
+        {
+            var entity = _mapper.Map<AccessCondition>(accessCondition);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
+            
 
-        public Task DeleteAccessCondition(int id)
-            => DeleteRefData<AccessCondition>(id);
+        public async Task DeleteAccessCondition(int id)
+            => await DeleteRefData<AccessCondition>(id);
 
         #endregion AccessCondition
 
         #region AgeRange
 
-        public Task<AgeRange> CreateAgeRange(AgeRange ageRange)
-            => CreateRefData(ageRange);
+        public async Task<AgeRange> CreateAgeRange(SortedRefDataBaseDto ageRange)
+            => await CreateRefData(_mapper.Map<AgeRange>(ageRange));
 
-        public Task<AgeRange> UpdateAgeRange(AgeRange ageRange)
-            => UpdateRefData(ageRange);
+        public async Task<AgeRange> UpdateAgeRange(int id, AgeRange ageRange)
+        {
+            var entity = _mapper.Map<AgeRange>(ageRange);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteAgeRange(int id)
-            => DeleteRefData<AgeRange>(id);
+        public async Task DeleteAgeRange(int id)
+            => await DeleteRefData<AgeRange>(id);
 
         #endregion
 
         #region AnnualStatistic
 
-        public Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatistic annualStatistic)
-            => CreateRefData(annualStatistic);
+        public async Task<AnnualStatistic> CreateAnnualStatistic(RefDataBaseDto annualStatistic)
+            => await CreateRefData(_mapper.Map<AnnualStatistic>(annualStatistic));
 
-        public Task<AnnualStatistic> UpdateAnnualStatistic(AnnualStatistic annualStatistic)
-            => UpdateRefData(annualStatistic);
+        public async Task<AnnualStatistic> UpdateAnnualStatistic(int id, RefDataBaseDto annualStatistic)
+        {
+            var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteAnnualStatistic(int id)
-            => DeleteRefData<AnnualStatistic>(id);
+        public async Task DeleteAnnualStatistic(int id)
+            => await DeleteRefData<AnnualStatistic>(id);
 
         #endregion
 
         #region AssociatedDataProcurementTimeframe
 
-        public Task<AssociatedDataProcurementTimeframe> CreateAssociatedDataProcurementTimeframe(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
-            => CreateRefData(associatedDataProcurementTimeframe);
+        public async Task<AssociatedDataProcurementTimeframe> CreateAssociatedDataProcurementTimeframe(SortedRefDataBaseDto associatedDataProcurementTimeframe)
+            => await CreateRefData(_mapper.Map<AssociatedDataProcurementTimeframe>(associatedDataProcurementTimeframe));
 
-        public Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeframe(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
-            => UpdateRefData(associatedDataProcurementTimeframe);
+        public async Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeframe(int id, AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
+        {
+            var entity = _mapper.Map<AssociatedDataProcurementTimeframe>(associatedDataProcurementTimeframe);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteAssociatedDataProcurementTimeframe(int id)
-            => DeleteRefData<AssociatedDataProcurementTimeframe>(id);
+            public async Task DeleteAssociatedDataProcurementTimeframe(int id)
+            => await DeleteRefData<AssociatedDataProcurementTimeframe>(id);
 
         #endregion
 
         #region AssociatedDataType
 
-        public Task<AssociatedDataType> CreateAssociatedDataType(AssociatedDataType associatedDataType)
-            => CreateRefData(associatedDataType);
+        public Task<AssociatedDataType> CreateAssociatedDataType(RefDataBaseDto associatedDataType)
+            => CreateRefData(_mapper.Map<AssociatedDataType>(associatedDataType));
 
         public Task<AssociatedDataType> UpdateAssociatedDataType(AssociatedDataType associatedDataType)
             => UpdateRefData(associatedDataType);
@@ -124,8 +147,8 @@ namespace Directory.Services
 
         #region CollectionPercentage
 
-        public Task<CollectionPercentage> CreateCollectionPercentage(CollectionPercentage collectionPercentage)
-            => CreateRefData(collectionPercentage);
+        public Task<CollectionPercentage> CreateCollectionPercentage(SortedRefDataBaseDto collectionPercentage)
+            => CreateRefData(_mapper.Map<CollectionPercentage>(collectionPercentage));
 
         public Task<CollectionPercentage> UpdateCollectionPercentage(CollectionPercentage collectionPercentage)
             => UpdateRefData(collectionPercentage);
@@ -137,8 +160,8 @@ namespace Directory.Services
 
         #region CollectionPoint
 
-        public Task<CollectionPoint> CreateCollectionPoint(CollectionPoint collectionPoint)
-            => CreateRefData(collectionPoint);
+        public Task<CollectionPoint> CreateCollectionPoint(SortedRefDataBaseDto collectionPoint)
+            => CreateRefData(_mapper.Map<CollectionPoint>(collectionPoint));
 
         public Task<CollectionPoint> UpdateCollectionPoint(CollectionPoint collectionPoint)
             => UpdateRefData(collectionPoint);
@@ -150,8 +173,8 @@ namespace Directory.Services
 
         #region CollectionStatus
 
-        public Task<CollectionStatus> CreateCollectionStatus(CollectionStatus collectionStatus)
-            => CreateRefData(collectionStatus);
+        public Task<CollectionStatus> CreateCollectionStatus(SortedRefDataBaseDto collectionStatus)
+            => CreateRefData(_mapper.Map<CollectionStatus>(collectionStatus));
 
         public Task<CollectionStatus> UpdateCollectionStatus(CollectionStatus collectionStatus)
             => UpdateRefData(collectionStatus);
@@ -163,8 +186,8 @@ namespace Directory.Services
 
         #region CollectionType
 
-        public Task<CollectionType> CreateCollectionType(CollectionType collectionType)
-            => CreateRefData(collectionType);
+        public Task<CollectionType> CreateCollectionType(SortedRefDataBaseDto collectionType)
+            => CreateRefData(_mapper.Map<CollectionType>(collectionType));
 
         public Task<CollectionType> UpdateCollectionType(CollectionType collectionType)
             => UpdateRefData(collectionType);
@@ -176,8 +199,8 @@ namespace Directory.Services
 
         #region ConsentRestriction
 
-        public Task<ConsentRestriction> CreateConsentRestriction(ConsentRestriction consentRestriction)
-            => CreateRefData(consentRestriction);
+        public Task<ConsentRestriction> CreateConsentRestriction(SortedRefDataBaseDto consentRestriction)
+            => CreateRefData(_mapper.Map<ConsentRestriction>(consentRestriction));
 
         public Task<ConsentRestriction> UpdateConsentRestriction(ConsentRestriction consentRestriction)
             => UpdateRefData(consentRestriction);
@@ -189,8 +212,8 @@ namespace Directory.Services
 
         #region Country
 
-        public Task<Country> CreateCountry(Country country)
-            => CreateRefData(country);
+        public Task<Country> CreateCountry(RefDataBaseDto country)
+            => CreateRefData(_mapper.Map<Country>(country));
 
         public Task<Country> UpdateCountry(Country country)
             => UpdateRefData(country);
@@ -202,8 +225,8 @@ namespace Directory.Services
 
         #region County
 
-        public Task<County> CreateCounty(County county)
-            => CreateRefData(county);
+        public Task<County> CreateCounty(RefDataBaseDto county)
+            => CreateRefData(_mapper.Map<County>(county));
 
         public Task<County> UpdateCounty(County county)
             => UpdateRefData(county);
@@ -215,8 +238,8 @@ namespace Directory.Services
 
         #region DonorCount
 
-        public Task<DonorCount> CreateDonorCount(DonorCount donorCount)
-            => CreateRefData(donorCount);
+        public Task<DonorCount> CreateDonorCount(SortedRefDataBaseDto donorCount)
+            => CreateRefData(_mapper.Map<DonorCount>(donorCount));
 
         public Task<DonorCount> UpdateDonorCount(DonorCount donorCount)
             => UpdateRefData(donorCount);
@@ -228,8 +251,8 @@ namespace Directory.Services
 
         #region Funder
 
-        public Task<Funder> CreateFunder(Funder funder)
-            => CreateRefData(funder);
+        public Task<Funder> CreateFunder(RefDataBaseDto funder)
+            => CreateRefData(_mapper.Map<Funder>(funder));
 
         public Task<Funder> UpdateFunder(Funder funder)
             => UpdateRefData(funder);
@@ -241,8 +264,8 @@ namespace Directory.Services
 
         #region HtaStatus
 
-        public Task<HtaStatus> CreateHtaStatus(HtaStatus htaStatus)
-            => CreateRefData(htaStatus);
+        public Task<HtaStatus> CreateHtaStatus(SortedRefDataBaseDto htaStatus)
+            => CreateRefData(_mapper.Map<HtaStatus>(htaStatus));
 
         public Task<HtaStatus> UpdateHtaStatus(HtaStatus htaStatus)
             => UpdateRefData(htaStatus);
@@ -254,8 +277,8 @@ namespace Directory.Services
 
         #region MacroscopicAssessment
 
-        public Task<MacroscopicAssessment> CreateMacroscopicAssessment(MacroscopicAssessment macroscopicAssessment)
-            => CreateRefData(macroscopicAssessment);
+        public Task<MacroscopicAssessment> CreateMacroscopicAssessment(RefDataBaseDto macroscopicAssessment)
+            => CreateRefData(_mapper.Map<MacroscopicAssessment>(macroscopicAssessment));
 
         public Task<MacroscopicAssessment> UpdateMacroscopicAssessment(MacroscopicAssessment macroscopicAssessment)
             => UpdateRefData(macroscopicAssessment);
@@ -267,8 +290,8 @@ namespace Directory.Services
 
         #region MaterialType
 
-        public Task<MaterialType> CreateMaterialType(MaterialType materialType)
-            => CreateRefData(materialType);
+        public Task<MaterialType> CreateMaterialType(SortedRefDataBaseDto materialType)
+            => CreateRefData(_mapper.Map<MaterialType>(materialType));
 
         public Task<MaterialType> UpdateMaterialType(MaterialType materialType)
             => UpdateRefData(materialType);
@@ -304,8 +327,8 @@ namespace Directory.Services
 
         #region ServiceOffering
 
-        public Task<ServiceOffering> CreateServiceOffering(ServiceOffering serviceOffering)
-            => CreateRefData(serviceOffering);
+        public Task<ServiceOffering> CreateServiceOffering(SortedRefDataBaseDto serviceOffering)
+            => CreateRefData(_mapper.Map<ServiceOffering>(serviceOffering));
 
         public Task<ServiceOffering> UpdateServiceOffering(ServiceOffering serviceOffering)
             => UpdateRefData(serviceOffering);
@@ -317,8 +340,8 @@ namespace Directory.Services
 
         #region Sex
 
-        public Task<Sex> CreateSex(Sex sex)
-            => CreateRefData(sex);
+        public Task<Sex> CreateSex(SortedRefDataBaseDto sex)
+            => CreateRefData(_mapper.Map<Sex>(sex));
 
         public Task<Sex> UpdateSex(Sex sex)
             => UpdateRefData(sex);
@@ -330,8 +353,8 @@ namespace Directory.Services
 
         #region SopStatus
 
-        public Task<SopStatus> CreateSopStatus(SopStatus sopStatus)
-            => CreateRefData(sopStatus);
+        public Task<SopStatus> CreateSopStatus(SortedRefDataBaseDto sopStatus)
+            => CreateRefData(_mapper.Map<SopStatus>(sopStatus));
 
         public Task<SopStatus> UpdateSopStatus(SopStatus sopStatus)
             => UpdateRefData(sopStatus);
@@ -343,8 +366,8 @@ namespace Directory.Services
 
         #region StorageTemperature
 
-        public Task<StorageTemperature> CreateStorageTemperature(StorageTemperature storageTemperature)
-            => CreateRefData(storageTemperature);
+        public Task<StorageTemperature> CreateStorageTemperature(SortedRefDataBaseDto storageTemperature)
+            => CreateRefData(_mapper.Map<StorageTemperature>(storageTemperature));
 
         public Task<StorageTemperature> UpdateStorageTemperature(StorageTemperature storageTemperature)
             => UpdateRefData(storageTemperature);

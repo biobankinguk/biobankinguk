@@ -1,4 +1,5 @@
-﻿using ClacksMiddleware.Extensions;
+﻿using AutoMapper;
+using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
 using Directory.Contracts;
@@ -50,6 +51,9 @@ namespace Directory
             //service layer
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
+
+            //Other third party
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
