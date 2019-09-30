@@ -2,6 +2,7 @@
 using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
+using Common.MappingProfiles;
 using Directory.Contracts;
 using Directory.IdentityServer;
 using Directory.Services;
@@ -53,7 +54,7 @@ namespace Directory
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
 
             //Other third party
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(RefDataBaseDtoProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

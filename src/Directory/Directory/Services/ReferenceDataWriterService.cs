@@ -4,6 +4,7 @@ using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace Directory.Services
@@ -86,7 +87,7 @@ namespace Directory.Services
         public async Task<AgeRange> CreateAgeRange(SortedRefDataBaseDto ageRange)
             => await CreateRefData(_mapper.Map<AgeRange>(ageRange));
 
-        public async Task<AgeRange> UpdateAgeRange(int id, AgeRange ageRange)
+        public async Task<AgeRange> UpdateAgeRange(int id, SortedRefDataBaseDto ageRange)
         {
             var entity = _mapper.Map<AgeRange>(ageRange);
             entity.Id = id;
@@ -120,7 +121,7 @@ namespace Directory.Services
         public async Task<AssociatedDataProcurementTimeframe> CreateAssociatedDataProcurementTimeframe(SortedRefDataBaseDto associatedDataProcurementTimeframe)
             => await CreateRefData(_mapper.Map<AssociatedDataProcurementTimeframe>(associatedDataProcurementTimeframe));
 
-        public async Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeframe(int id, AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
+        public async Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeframe(int id, SortedRefDataBaseDto associatedDataProcurementTimeframe)
         {
             var entity = _mapper.Map<AssociatedDataProcurementTimeframe>(associatedDataProcurementTimeframe);
             entity.Id = id;
@@ -134,170 +135,222 @@ namespace Directory.Services
 
         #region AssociatedDataType
 
-        public Task<AssociatedDataType> CreateAssociatedDataType(RefDataBaseDto associatedDataType)
-            => CreateRefData(_mapper.Map<AssociatedDataType>(associatedDataType));
+        public async Task<AssociatedDataType> CreateAssociatedDataType(RefDataBaseDto associatedDataType)
+            => await CreateRefData(_mapper.Map<AssociatedDataType>(associatedDataType));
 
-        public Task<AssociatedDataType> UpdateAssociatedDataType(AssociatedDataType associatedDataType)
-            => UpdateRefData(associatedDataType);
+        public async Task<AssociatedDataType> UpdateAssociatedDataType(int id, RefDataBaseDto associatedDataType)
+        {
+            var entity = _mapper.Map<AssociatedDataType>(associatedDataType);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteAssociatedDataType(int id)
-            => DeleteRefData<AssociatedDataType>(id);
+            public async Task DeleteAssociatedDataType(int id)
+            => await DeleteRefData<AssociatedDataType>(id);
 
         #endregion
 
         #region CollectionPercentage
 
-        public Task<CollectionPercentage> CreateCollectionPercentage(SortedRefDataBaseDto collectionPercentage)
-            => CreateRefData(_mapper.Map<CollectionPercentage>(collectionPercentage));
+        public async Task<CollectionPercentage> CreateCollectionPercentage(SortedRefDataBaseDto collectionPercentage)
+            => await CreateRefData(_mapper.Map<CollectionPercentage>(collectionPercentage));
 
-        public Task<CollectionPercentage> UpdateCollectionPercentage(CollectionPercentage collectionPercentage)
-            => UpdateRefData(collectionPercentage);
+        public async Task<CollectionPercentage> UpdateCollectionPercentage(int id, SortedRefDataBaseDto collectionPercentage)
+        {
+            var entity = _mapper.Map<CollectionPercentage>(collectionPercentage);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteCollectionPercentage(int id)
-            => DeleteRefData<CollectionPercentage>(id);
+        public async Task DeleteCollectionPercentage(int id)
+            => await DeleteRefData<CollectionPercentage>(id);
 
         #endregion
 
         #region CollectionPoint
 
-        public Task<CollectionPoint> CreateCollectionPoint(SortedRefDataBaseDto collectionPoint)
-            => CreateRefData(_mapper.Map<CollectionPoint>(collectionPoint));
+        public async Task<CollectionPoint> CreateCollectionPoint(SortedRefDataBaseDto collectionPoint)
+            => await CreateRefData(_mapper.Map<CollectionPoint>(collectionPoint));
 
-        public Task<CollectionPoint> UpdateCollectionPoint(CollectionPoint collectionPoint)
-            => UpdateRefData(collectionPoint);
+        public async Task<CollectionPoint> UpdateCollectionPoint(int id, SortedRefDataBaseDto collectionPoint)
+        {
+            var entity = _mapper.Map<CollectionPoint>(collectionPoint);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteCollectionPoint(int id)
-            => DeleteRefData<CollectionPoint>(id);
+        public async Task DeleteCollectionPoint(int id)
+            => await DeleteRefData<CollectionPoint>(id);
 
         #endregion
 
         #region CollectionStatus
 
-        public Task<CollectionStatus> CreateCollectionStatus(SortedRefDataBaseDto collectionStatus)
-            => CreateRefData(_mapper.Map<CollectionStatus>(collectionStatus));
+        public async Task<CollectionStatus> CreateCollectionStatus(SortedRefDataBaseDto collectionStatus)
+            => await CreateRefData(_mapper.Map<CollectionStatus>(collectionStatus));
 
-        public Task<CollectionStatus> UpdateCollectionStatus(CollectionStatus collectionStatus)
-            => UpdateRefData(collectionStatus);
+        public async Task<CollectionStatus> UpdateCollectionStatus(int id, SortedRefDataBaseDto collectionStatus)
+        {
+            var entity = _mapper.Map<CollectionStatus>(collectionStatus);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteCollectionStatus(int id)
-            => DeleteRefData<CollectionStatus>(id);
+        public async  Task DeleteCollectionStatus(int id)
+            => await DeleteRefData<CollectionStatus>(id);
 
         #endregion
 
         #region CollectionType
 
-        public Task<CollectionType> CreateCollectionType(SortedRefDataBaseDto collectionType)
-            => CreateRefData(_mapper.Map<CollectionType>(collectionType));
+        public async Task<CollectionType> CreateCollectionType(SortedRefDataBaseDto collectionType)
+            => await CreateRefData(_mapper.Map<CollectionType>(collectionType));
 
-        public Task<CollectionType> UpdateCollectionType(CollectionType collectionType)
-            => UpdateRefData(collectionType);
+        public async Task<CollectionType> UpdateCollectionType(int id, SortedRefDataBaseDto collectionType)
+        {
+            var entity = _mapper.Map<CollectionType>(collectionType);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteCollectionType(int id)
-            => DeleteRefData<CollectionType>(id);
+        public async Task DeleteCollectionType(int id)
+            => await DeleteRefData<CollectionType>(id);
 
         #endregion
 
         #region ConsentRestriction
 
-        public Task<ConsentRestriction> CreateConsentRestriction(SortedRefDataBaseDto consentRestriction)
-            => CreateRefData(_mapper.Map<ConsentRestriction>(consentRestriction));
+        public async Task<ConsentRestriction> CreateConsentRestriction(SortedRefDataBaseDto consentRestriction)
+            => await CreateRefData(_mapper.Map<ConsentRestriction>(consentRestriction));
 
-        public Task<ConsentRestriction> UpdateConsentRestriction(ConsentRestriction consentRestriction)
-            => UpdateRefData(consentRestriction);
+        public async Task<ConsentRestriction> UpdateConsentRestriction(int id, SortedRefDataBaseDto consentRestriction)
+        {
+            var entity = _mapper.Map<ConsentRestriction>(consentRestriction);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteConsentRestriction(int id)
-            => DeleteRefData<ConsentRestriction>(id);
+        public async Task DeleteConsentRestriction(int id)
+            => await DeleteRefData<ConsentRestriction>(id);
 
         #endregion
 
         #region Country
 
-        public Task<Country> CreateCountry(RefDataBaseDto country)
-            => CreateRefData(_mapper.Map<Country>(country));
+        public async Task<Country> CreateCountry(RefDataBaseDto country)
+            => await CreateRefData(_mapper.Map<Country>(country));
 
-        public Task<Country> UpdateCountry(Country country)
-            => UpdateRefData(country);
+        public async Task<Country> UpdateCountry(int id, RefDataBaseDto country)
+        {
+            var entity = _mapper.Map<Country>(country);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteCountry(int id)
-            => DeleteRefData<Country>(id);
+        public async Task DeleteCountry(int id)
+            => await DeleteRefData<Country>(id);
 
         #endregion
 
         #region County
 
-        public Task<County> CreateCounty(RefDataBaseDto county)
-            => CreateRefData(_mapper.Map<County>(county));
+        public async Task<County> CreateCounty(RefDataBaseDto county)
+            => await CreateRefData(_mapper.Map<County>(county));
 
-        public Task<County> UpdateCounty(County county)
-            => UpdateRefData(county);
+        public async Task<County> UpdateCounty(int id, RefDataBaseDto county)
+        {
+            var entity = _mapper.Map<County>(county);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteCounty(int id)
-            => DeleteRefData<County>(id);
+        public async Task DeleteCounty(int id)
+            => await DeleteRefData<County>(id);
 
         #endregion
 
         #region DonorCount
 
-        public Task<DonorCount> CreateDonorCount(SortedRefDataBaseDto donorCount)
-            => CreateRefData(_mapper.Map<DonorCount>(donorCount));
+        public async Task<DonorCount> CreateDonorCount(SortedRefDataBaseDto donorCount)
+            => await CreateRefData(_mapper.Map<DonorCount>(donorCount));
 
-        public Task<DonorCount> UpdateDonorCount(DonorCount donorCount)
-            => UpdateRefData(donorCount);
+        public async Task<DonorCount> UpdateDonorCount(int id, SortedRefDataBaseDto donorCount)
+        {
+            var entity = _mapper.Map<DonorCount>(donorCount);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteDonorCount(int id)
-            => DeleteRefData<DonorCount>(id);
+        public async Task DeleteDonorCount(int id)
+            => await DeleteRefData<DonorCount>(id);
 
         #endregion
 
         #region Funder
 
-        public Task<Funder> CreateFunder(RefDataBaseDto funder)
-            => CreateRefData(_mapper.Map<Funder>(funder));
+        public async Task<Funder> CreateFunder(RefDataBaseDto funder)
+            => await CreateRefData(_mapper.Map<Funder>(funder));
 
-        public Task<Funder> UpdateFunder(Funder funder)
-            => UpdateRefData(funder);
+        public async Task<Funder> UpdateFunder(int id, RefDataBaseDto funder)
+        {
+            var entity = _mapper.Map<Funder>(funder);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteFunder(int id)
-            => DeleteRefData<Funder>(id);
+        public async Task DeleteFunder(int id)
+            => await DeleteRefData<Funder>(id);
 
         #endregion
 
         #region HtaStatus
 
-        public Task<HtaStatus> CreateHtaStatus(SortedRefDataBaseDto htaStatus)
-            => CreateRefData(_mapper.Map<HtaStatus>(htaStatus));
+        public async Task<HtaStatus> CreateHtaStatus(SortedRefDataBaseDto htaStatus)
+            => await CreateRefData(_mapper.Map<HtaStatus>(htaStatus));
 
-        public Task<HtaStatus> UpdateHtaStatus(HtaStatus htaStatus)
-            => UpdateRefData(htaStatus);
+        public async Task<HtaStatus> UpdateHtaStatus(int id, SortedRefDataBaseDto htaStatus)
+        {
+            var entity = _mapper.Map<HtaStatus>(htaStatus);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteHtaStatus(int id)
-            => DeleteRefData<HtaStatus>(id);
+        public async Task DeleteHtaStatus(int id)
+            => await DeleteRefData<HtaStatus>(id);
 
         #endregion
 
         #region MacroscopicAssessment
 
-        public Task<MacroscopicAssessment> CreateMacroscopicAssessment(RefDataBaseDto macroscopicAssessment)
-            => CreateRefData(_mapper.Map<MacroscopicAssessment>(macroscopicAssessment));
+        public async Task<MacroscopicAssessment> CreateMacroscopicAssessment(RefDataBaseDto macroscopicAssessment)
+            => await CreateRefData(_mapper.Map<MacroscopicAssessment>(macroscopicAssessment));
 
-        public Task<MacroscopicAssessment> UpdateMacroscopicAssessment(MacroscopicAssessment macroscopicAssessment)
-            => UpdateRefData(macroscopicAssessment);
+        public async Task<MacroscopicAssessment> UpdateMacroscopicAssessment(int id, RefDataBaseDto macroscopicAssessment)
+        {
+            var entity = _mapper.Map<MacroscopicAssessment>(macroscopicAssessment);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteMacroscopicAssessment(int id)
-            => DeleteRefData<MacroscopicAssessment>(id);
+        public async Task DeleteMacroscopicAssessment(int id)
+            => await DeleteRefData<MacroscopicAssessment>(id);
 
         #endregion
 
         #region MaterialType
 
-        public Task<MaterialType> CreateMaterialType(SortedRefDataBaseDto materialType)
-            => CreateRefData(_mapper.Map<MaterialType>(materialType));
+        public async Task<MaterialType> CreateMaterialType(SortedRefDataBaseDto materialType)
+            => await CreateRefData(_mapper.Map<MaterialType>(materialType));
 
-        public Task<MaterialType> UpdateMaterialType(MaterialType materialType)
-            => UpdateRefData(materialType);
+        public async Task<MaterialType> UpdateMaterialType(int id, SortedRefDataBaseDto materialType)
+        {
+            var entity = _mapper.Map<MaterialType>(materialType);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteMaterialType(int id)
-            => DeleteRefData<MaterialType>(id);
+        public async Task DeleteMaterialType(int id)
+            => await DeleteRefData<MaterialType>(id);
 
         #endregion
 
@@ -327,53 +380,81 @@ namespace Directory.Services
 
         #region ServiceOffering
 
-        public Task<ServiceOffering> CreateServiceOffering(SortedRefDataBaseDto serviceOffering)
-            => CreateRefData(_mapper.Map<ServiceOffering>(serviceOffering));
+        public async Task<ServiceOffering> CreateServiceOffering(SortedRefDataBaseDto serviceOffering)
+            => await CreateRefData(_mapper.Map<ServiceOffering>(serviceOffering));
 
-        public Task<ServiceOffering> UpdateServiceOffering(ServiceOffering serviceOffering)
-            => UpdateRefData(serviceOffering);
+        public async Task<ServiceOffering> UpdateServiceOffering(int id, SortedRefDataBaseDto serviceOffering)
+        {
+            var entity = _mapper.Map<ServiceOffering>(serviceOffering);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteServiceOffering(int id)
-            => DeleteRefData<ServiceOffering>(id);
+        public async Task DeleteServiceOffering(int id)
+            => await DeleteRefData<ServiceOffering>(id);
 
         #endregion
 
         #region Sex
 
-        public Task<Sex> CreateSex(SortedRefDataBaseDto sex)
-            => CreateRefData(_mapper.Map<Sex>(sex));
+        public async Task<Sex> CreateSex(SortedRefDataBaseDto sex)
+            => await CreateRefData(_mapper.Map<Sex>(sex));
 
-        public Task<Sex> UpdateSex(Sex sex)
-            => UpdateRefData(sex);
+        public async Task<Sex> UpdateSex(int id, SortedRefDataBaseDto sex)
+        {
+            var entity = _mapper.Map<Sex>(sex);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteSex(int id)
-            => DeleteRefData<Sex>(id);
+        public async Task DeleteSex(int id)
+            => await DeleteRefData<Sex>(id);
 
         #endregion
 
         #region SopStatus
 
-        public Task<SopStatus> CreateSopStatus(SortedRefDataBaseDto sopStatus)
-            => CreateRefData(_mapper.Map<SopStatus>(sopStatus));
+        public async Task<SopStatus> CreateSopStatus(SortedRefDataBaseDto sopStatus)
+        {
+            try
+            {
+                return await CreateRefData(_mapper.Map<SopStatus>(sopStatus));
+            }
+            catch(Exception e)
+            {
+                throw e;
 
-        public Task<SopStatus> UpdateSopStatus(SopStatus sopStatus)
-            => UpdateRefData(sopStatus);
+            }
+            return null;
+         }
 
-        public Task DeleteSopStatus(int id)
-            => DeleteRefData<SopStatus>(id);
+        public async Task<SopStatus> UpdateSopStatus(int id, SortedRefDataBaseDto sopStatus)
+        {
+            var entity = _mapper.Map<SopStatus>(sopStatus);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
+
+
+        public async Task DeleteSopStatus(int id)
+            => await DeleteRefData<SopStatus>(id);
 
         #endregion
 
         #region StorageTemperature
 
-        public Task<StorageTemperature> CreateStorageTemperature(SortedRefDataBaseDto storageTemperature)
-            => CreateRefData(_mapper.Map<StorageTemperature>(storageTemperature));
+        public async Task<StorageTemperature> CreateStorageTemperature(SortedRefDataBaseDto storageTemperature)
+            => await CreateRefData(_mapper.Map<StorageTemperature>(storageTemperature));
 
-        public Task<StorageTemperature> UpdateStorageTemperature(StorageTemperature storageTemperature)
-            => UpdateRefData(storageTemperature);
+        public async Task<StorageTemperature> UpdateStorageTemperature(int id, SortedRefDataBaseDto storageTemperature)
+        {
+            var entity = _mapper.Map<StorageTemperature>(storageTemperature);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
 
-        public Task DeleteStorageTemperature(int id)
-            => DeleteRefData<StorageTemperature>(id);
+        public async Task DeleteStorageTemperature(int id)
+            => await DeleteRefData<StorageTemperature>(id);
 
         #endregion
     }

@@ -40,16 +40,14 @@ namespace Directory.Controllers
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sopStatus)
         {
             var createdSopStatus = await _writeService.CreateSopStatus(sopStatus);
-            return CreatedAtRoute($"api/sopStatus/{createdSopStatus.Id}", createdSopStatus);
+            return CreatedAtAction("Get", new { id = createdSopStatus.Id }, createdSopStatus);
         }
-
+         
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, SortedRefDataBaseDto sopStatus)
         {
-            if (id != sopStatus.Id)
-            {
+            if (_readService.GetSopStatus(id) == null)
                 return BadRequest();
-            }
 
             await _writeService.UpdateSopStatus(id, sopStatus);
 
