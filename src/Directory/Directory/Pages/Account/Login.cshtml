@@ -6,14 +6,12 @@
 
 <h2>@ViewBag.Title</h2>
 
-@if(@Model.Success)
-{
-    <div class="alert alert-success">Success!</div>
-}
-
 <div class="row justify-content-center mt-4">
     <form method="post"
           class="col-6" novalidate>
+
+        <div asp-validation-summary="ModelOnly"
+             class="offset-sm-2 alert alert-danger"></div>
 
         <div class="form-group row">
             <label asp-for="Username"
@@ -38,12 +36,16 @@
 
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-4">
-                <button type="submit" class="btn btn-primary form-control">Login</button>
+                <button type="submit" class="btn btn-primary form-control" name="button" value="login">Login</button>
+            </div>
+            <div class="ml-auto col-sm-4">
+                <button class="btn btn-light form-control" name="button" value="cancel">Cancel</button>
             </div>
         </div>
 
         <div class="form-group row">
-                <a class="offset-sm-2 col-sm-4" href="#">Forgot password?</a>
+            <a class="offset-sm-2 col-sm-4" href="#">Forgot password?</a>
         </div>
+
     </form>
 </div>

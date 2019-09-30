@@ -1,9 +1,11 @@
 ﻿using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
+using Directory.Auth;
 using Directory.Contracts;
 using Directory.IdentityServer;
 using Directory.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +29,7 @@ namespace Directory
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Identity Server
             services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
@@ -34,15 +37,22 @@ namespace Directory
                 .AddTestUsers(Config.GetUsers())
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
+            // MVC
             services.AddControllers();
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            // Auth
+            services.AddAuthentication() // DO NOT set a default; IdentityServer does that
+                // Also add Bearer Auth for our API
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
                 {
                     opts.Authority = _config["JwtBearer:Authority"];
                     opts.Audience = ApiResourceKeys.RefData;
+                });
+            services.AddAuthorization(opts =>
+                {
+                    opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken);
                 });
 
             // Entity Framework
@@ -50,7 +60,7 @@ namespace Directory
                 .UseLazyLoadingProxies()
                 .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
-            //service layer
+            // Services
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
         }
@@ -78,7 +88,7 @@ namespace Directory
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapControllers().RequireAuthorization();
+                endpoints.MapControllers().RequireAuthorization(nameof(AuthPolicies.BearerToken));
             });
         }
     }
