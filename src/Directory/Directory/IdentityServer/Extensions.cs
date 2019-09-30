@@ -12,13 +12,10 @@ namespace Directory.IdentityServer
         /// <param name="client_id">The client identifier.</param>
         public static async Task<bool> IsPkceClientAsync(this IClientStore store, string client_id)
         {
-            if (!string.IsNullOrWhiteSpace(client_id))
-            {
-                var client = await store.FindEnabledClientByIdAsync(client_id);
-                return client?.RequirePkce == true;
-            }
+            if (string.IsNullOrWhiteSpace(client_id)) return false;
 
-            return false;
+            return (await store.FindEnabledClientByIdAsync(client_id))?
+                .RequirePkce ?? false;
         }
     }
 }
