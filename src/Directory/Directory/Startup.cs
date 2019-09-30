@@ -4,6 +4,7 @@ using Common.Data;
 using Directory.Contracts;
 using Directory.IdentityServer;
 using Directory.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,12 +39,13 @@ namespace Directory
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
-                {
-                    opts.Authority = _config["JwtBearer:Authority"];
-                    opts.Audience = ApiResourceKeys.RefData;
-                });
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+            //    {
+            //        opts.Authority = _config["JwtBearer:Authority"];
+            //        opts.Audience = ApiResourceKeys.RefData;
+            //    })
+            //    .AddCookie();
 
             // Entity Framework
             services.AddDbContext<DirectoryContext>(opts => opts
