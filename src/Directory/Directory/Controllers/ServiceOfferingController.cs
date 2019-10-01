@@ -20,6 +20,7 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListServiceOfferings());
 
@@ -33,7 +34,6 @@ namespace Directory.Controllers
 
             return Ok(serviceOffering);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto serviceOffering)

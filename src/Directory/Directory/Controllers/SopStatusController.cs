@@ -20,6 +20,7 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
             => Ok(await _readService.ListSopStatuses());
         
