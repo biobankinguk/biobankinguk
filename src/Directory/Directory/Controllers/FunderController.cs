@@ -43,7 +43,7 @@ namespace Directory.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, RefDataBaseDto funder)
+        public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto funder)
         {
             if (_readService.GetFunder(id) == null)
                 return BadRequest();

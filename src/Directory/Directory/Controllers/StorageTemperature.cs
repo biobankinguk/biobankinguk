@@ -43,7 +43,7 @@ namespace Directory.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, SortedRefDataBaseDto storageTemperature)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto storageTemperature)
         {
             if (_readService.GetStorageTemperature(id) == null)
                 return BadRequest();

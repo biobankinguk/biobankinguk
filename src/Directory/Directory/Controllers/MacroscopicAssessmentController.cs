@@ -44,7 +44,7 @@ namespace Directory.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, RefDataBaseDto macroscopicAssessment)
+        public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto macroscopicAssessment)
         {
             if (_readService.GetMacroscopicAssessment(id) == null)
                 return BadRequest();

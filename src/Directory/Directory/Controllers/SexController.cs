@@ -43,7 +43,7 @@ namespace Directory.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, SortedRefDataBaseDto sex)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto sex)
         {
             if (_readService.GetSex(id) == null)
                 return BadRequest();

@@ -43,7 +43,7 @@ namespace Directory.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, SortedRefDataBaseDto country)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto country)
         {
             if (_readService.GetCountry(id) == null)
                 return BadRequest();

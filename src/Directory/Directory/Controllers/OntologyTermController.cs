@@ -1,4 +1,4 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +9,12 @@ namespace Directory.Controllers
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class ConsentRestrictionController : Controller
+    public class OntologyTermController : Controller
     {
         private readonly IReferenceDataReadService _readService;
         private readonly IReferenceDataWriterService _writeService;
 
-        public ConsentRestrictionController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
+        public OntologyTermController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
         {
             _readService = readService;
             _writeService = writeService;
@@ -22,13 +22,13 @@ namespace Directory.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index()
-           => Ok(await _readService.ListConsentRestrictions());
+           => Ok(await _readService.ListOntologyTerms());
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
-            var consentRestriction = await _readService.GetConsentRestriction(id);
+            var consentRestriction = await _readService.GetOntologyTerm(id);
             if (consentRestriction == null)
                 return NotFound();
 
@@ -36,19 +36,19 @@ namespace Directory.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto consentRestriction)
+        public async Task<IActionResult> Post([FromBody] OntologyTerm ontologyTerm)
         {
-            var createdConsentRestriction = await _writeService.CreateConsentRestriction(consentRestriction);
-            return CreatedAtAction("Get", new { id = createdConsentRestriction.Id }, createdConsentRestriction);
+            var createdOntologyTerm = await _writeService.CreateOntologyTerm(ontologyTerm);
+            return CreatedAtAction("Get", new { id = createdOntologyTerm.Id }, createdOntologyTerm);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto consentRestriction)
+        public async Task<IActionResult> Put(string id, [FromBody] OntologyTerm ontologyTerm)
         {
-            if (_readService.GetConsentRestriction(id) == null)
+            if (_readService.GetOntologyTerm(id) == null)
                 return BadRequest();
 
-            await _writeService.UpdateConsentRestriction(id, consentRestriction);
+            await _writeService.UpdateOntologyTerm(id, ontologyTerm);
 
             return NoContent();
         }

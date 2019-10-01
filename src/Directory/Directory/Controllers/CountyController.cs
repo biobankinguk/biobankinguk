@@ -43,7 +43,7 @@ namespace Directory.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, RefDataBaseDto county)
+        public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto county)
         {
             if (_readService.GetCounty(id) == null)
                 return BadRequest();

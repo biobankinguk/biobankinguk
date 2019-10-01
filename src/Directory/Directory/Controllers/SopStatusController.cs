@@ -44,7 +44,7 @@ namespace Directory.Controllers
         }
          
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, SortedRefDataBaseDto sopStatus)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto sopStatus)
         {
             if (_readService.GetSopStatus(id) == null)
                 return BadRequest();

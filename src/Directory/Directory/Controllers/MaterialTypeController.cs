@@ -43,7 +43,7 @@ namespace Directory.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, SortedRefDataBaseDto materialType)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
         {
             if (_readService.GetMaterialType(id) == null)
                 return BadRequest();

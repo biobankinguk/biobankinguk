@@ -363,7 +363,7 @@ namespace Directory.Services
             return ontologyTerm;
         }
 
-        public async Task<OntologyTerm> UpdateOntologyTerm(OntologyTerm ontologyTerm)
+        public async Task<OntologyTerm> UpdateOntologyTerm(string id, OntologyTerm ontologyTerm)
         {
             _context.Update(ontologyTerm);
             await _context.SaveChangesAsync();
