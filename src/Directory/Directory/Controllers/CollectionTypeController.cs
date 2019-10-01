@@ -9,12 +9,12 @@ namespace Directory.Controllers
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class CollectionStatusController : Controller
+    public class CollectionTypeController : Controller
     {
         private readonly IReferenceDataReadService _readService;
         private readonly IReferenceDataWriterService _writeService;
 
-        public CollectionStatusController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
+        public CollectionTypeController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
         {
             _readService = readService;
             _writeService = writeService;
@@ -22,33 +22,33 @@ namespace Directory.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index()
-           => Ok(await _readService.ListCollectionStatuses());
+           => Ok(await _readService.ListCollectionTypes());
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var collectionStatus = await _readService.GetCollectionStatus(id);
-            if (collectionStatus == null)
+            var collectionType = await _readService.GetCollectionType(id);
+            if (collectionType == null)
                 return NotFound();
 
-            return Ok(collectionStatus);
+            return Ok(collectionType);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionStatus)
+        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionType)
         {
-            var createdCollectionStatus = await _writeService.CreateCollectionStatus(collectionStatus);
-            return CreatedAtAction("Get", new { id = createdCollectionStatus.Id }, createdCollectionStatus);
+            var createdCollectionType = await _writeService.CreateCollectionType(collectionType);
+            return CreatedAtAction("Get", new { id = createdCollectionType.Id }, createdCollectionType);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionStatus)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionType)
         {
-            if (_readService.GetCollectionStatus(id) == null)
+            if (_readService.GetCollectionType(id) == null)
                 return BadRequest();
 
-            await _writeService.UpdateCollectionStatus(id, collectionStatus);
+            await _writeService.UpdateCollectionType(id, collectionType);
 
             return NoContent();
         }
@@ -56,10 +56,10 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetCollectionStatus(id) == null)
+            if (await _readService.GetCollectionType(id) == null)
                 return NotFound();
 
-            await _writeService.DeleteCollectionStatus(id);
+            await _writeService.DeleteCollectionType(id);
 
             return NoContent();
         }
