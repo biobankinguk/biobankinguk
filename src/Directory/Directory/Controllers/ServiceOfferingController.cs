@@ -9,46 +9,46 @@ namespace Directory.Controllers
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class SopStatusController : Controller
+    public class ServiceOfferingController : Controller
     {
         private readonly IReferenceDataReadService _readService;
         private readonly IReferenceDataWriterService _writeService;
 
-        public SopStatusController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
+        public ServiceOfferingController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
         {
             _readService = readService;
             _writeService = writeService;
         }
 
         public async Task<IActionResult> Index()
-            => Ok(await _readService.ListSopStatuses());
-        
+           => Ok(await _readService.ListServiceOfferings());
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var sopStatus = await _readService.GetSopStatus(id);
-            if (sopStatus == null)
+            var serviceOffering = await _readService.GetServiceOffering(id);
+            if (serviceOffering == null)
                 return NotFound();
 
-            return Ok(sopStatus);
+            return Ok(serviceOffering);
         }
-            
+
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sopStatus)
+        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto serviceOffering)
         {
-            var createdSopStatus = await _writeService.CreateSopStatus(sopStatus);
-            return CreatedAtAction("Get", new { id = createdSopStatus.Id }, createdSopStatus);
+            var createdServiceOffering = await _writeService.CreateServiceOffering(serviceOffering);
+            return CreatedAtAction("Get", new { id = createdServiceOffering.Id }, createdServiceOffering);
         }
-         
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, SortedRefDataBaseDto sopStatus)
+        public async Task<IActionResult> Put(int id, SortedRefDataBaseDto serviceOffering)
         {
-            if (_readService.GetSopStatus(id) == null)
+            if (_readService.GetServiceOffering(id) == null)
                 return BadRequest();
 
-            await _writeService.UpdateSopStatus(id, sopStatus);
+            await _writeService.UpdateServiceOffering(id, serviceOffering);
 
             return NoContent();
         }
@@ -56,10 +56,10 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetSopStatus(id) == null)
+            if (await _readService.GetServiceOffering(id) == null)
                 return NotFound();
 
-            await _writeService.DeleteSopStatus(id);
+            await _writeService.DeleteServiceOffering(id);
 
             return NoContent();
         }
