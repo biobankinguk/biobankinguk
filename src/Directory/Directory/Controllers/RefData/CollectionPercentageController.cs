@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var collectionPercentage = await _readService.GetCollectionPercentage(id);
-            if (collectionPercentage == null)
+            if (collectionPercentage is null)
                 return NotFound();
 
             return Ok(collectionPercentage);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPercentage)
         {
-            if (_readService.GetCollectionPercentage(id) == null)
+            if (_readService.GetCollectionPercentage(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateCollectionPercentage(id, collectionPercentage);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetCollectionPercentage(id) == null)
+            if (await _readService.GetCollectionPercentage(id) is null)
                 return NotFound();
 
             await _writeService.DeleteCollectionPercentage(id);

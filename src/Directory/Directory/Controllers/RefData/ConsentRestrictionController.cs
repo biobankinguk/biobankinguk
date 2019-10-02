@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var consentRestriction = await _readService.GetConsentRestriction(id);
-            if (consentRestriction == null)
+            if (consentRestriction is null)
                 return NotFound();
 
             return Ok(consentRestriction);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto consentRestriction)
         {
-            if (_readService.GetConsentRestriction(id) == null)
+            if (_readService.GetConsentRestriction(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateConsentRestriction(id, consentRestriction);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetConsentRestriction(id) == null)
+            if (await _readService.GetConsentRestriction(id) is null)
                 return NotFound();
 
             await _writeService.DeleteConsentRestriction(id);

@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var serviceOffering = await _readService.GetServiceOffering(id);
-            if (serviceOffering == null)
+            if (serviceOffering is null)
                 return NotFound();
 
             return Ok(serviceOffering);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto serviceOffering)
         {
-            if (_readService.GetServiceOffering(id) == null)
+            if (_readService.GetServiceOffering(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateServiceOffering(id, serviceOffering);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetServiceOffering(id) == null)
+            if (await _readService.GetServiceOffering(id) is null)
                 return NotFound();
 
             await _writeService.DeleteServiceOffering(id);

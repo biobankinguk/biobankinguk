@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var materialType = await _readService.GetMaterialType(id);
-            if (materialType == null)
+            if (materialType is null)
                 return NotFound();
 
             return Ok(materialType);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
         {
-            if (_readService.GetMaterialType(id) == null)
+            if (_readService.GetMaterialType(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateMaterialType(id, materialType);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetMaterialType(id) == null)
+            if (await _readService.GetMaterialType(id) is null)
                 return NotFound();
 
             await _writeService.DeleteMaterialType(id);

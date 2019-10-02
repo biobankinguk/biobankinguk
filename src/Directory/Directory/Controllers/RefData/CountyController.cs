@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var county = await _readService.GetCounty(id);
-            if (county == null)
+            if (county is null)
                 return NotFound();
 
             return Ok(county);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto county)
         {
-            if (_readService.GetCounty(id) == null)
+            if (_readService.GetCounty(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateCounty(id, county);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetCounty(id) == null)
+            if (await _readService.GetCounty(id) is null)
                 return NotFound();
 
             await _writeService.DeleteCounty(id);

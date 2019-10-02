@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(string id)
         {
             var consentRestriction = await _readService.GetOntologyTerm(id);
-            if (consentRestriction == null)
+            if (consentRestriction is null)
                 return NotFound();
 
             return Ok(consentRestriction);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] OntologyTerm ontologyTerm)
         {
-            if (_readService.GetOntologyTerm(id) == null)
+            if (_readService.GetOntologyTerm(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateOntologyTerm(id, ontologyTerm);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetConsentRestriction(id) == null)
+            if (await _readService.GetConsentRestriction(id) is null)
                 return NotFound();
 
             await _writeService.DeleteConsentRestriction(id);

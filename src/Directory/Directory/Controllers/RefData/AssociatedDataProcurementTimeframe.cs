@@ -29,7 +29,7 @@ namespace Directory.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var collectionPoint = await _readService.GetAssociatedDataProcurementTimeframe(id);
-            if (collectionPoint == null)
+            if (collectionPoint is null)
                 return NotFound();
 
             return Ok(collectionPoint);
@@ -45,7 +45,7 @@ namespace Directory.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
-            if (_readService.GetAssociatedDataProcurementTimeframe(id) == null)
+            if (_readService.GetAssociatedDataProcurementTimeframe(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateAssociatedDataProcurementTimeframe(id, collectionPoint);
@@ -56,7 +56,7 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetAssociatedDataProcurementTimeframe(id) == null)
+            if (await _readService.GetAssociatedDataProcurementTimeframe(id) is null)
                 return NotFound();
 
             await _writeService.DeleteAssociatedDataProcurementTimeframe(id);

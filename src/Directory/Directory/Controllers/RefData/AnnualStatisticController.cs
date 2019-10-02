@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var collectionPoint = await _readService.GetAnnualStatistic(id);
-            if (collectionPoint == null)
+            if (collectionPoint is null)
                 return NotFound();
 
             return Ok(collectionPoint);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
-            if (_readService.GetAnnualStatistic(id) == null)
+            if (_readService.GetAnnualStatistic(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateAnnualStatistic(id, collectionPoint);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetAnnualStatistic(id) == null)
+            if (await _readService.GetAnnualStatistic(id) is null)
                 return NotFound();
 
             await _writeService.DeleteAnnualStatistic(id);

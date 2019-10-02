@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var storageTemperature = await _readService.GetStorageTemperature(id);
-            if (storageTemperature == null)
+            if (storageTemperature is null)
                 return NotFound();
 
             return Ok(storageTemperature);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto storageTemperature)
         {
-            if (_readService.GetStorageTemperature(id) == null)
+            if (_readService.GetStorageTemperature(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateStorageTemperature(id, storageTemperature);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetStorageTemperature(id) == null)
+            if (await _readService.GetStorageTemperature(id) is null)
                 return NotFound();
 
             await _writeService.DeleteStorageTemperature(id);

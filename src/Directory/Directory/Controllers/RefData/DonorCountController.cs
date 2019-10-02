@@ -29,7 +29,7 @@ namespace Directory.Controllers.RefData
         public async Task<IActionResult> Get(int id)
         {
             var donorCount = await _readService.GetDonorCount(id);
-            if (donorCount == null)
+            if (donorCount is null)
                 return NotFound();
 
             return Ok(donorCount);
@@ -45,7 +45,7 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
         {
-            if (_readService.GetDonorCount(id) == null)
+            if (_readService.GetDonorCount(id) is null)
                 return BadRequest();
 
             await _writeService.UpdateDonorCount(id, donorCount);
@@ -56,7 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetDonorCount(id) == null)
+            if (await _readService.GetDonorCount(id) is null)
                 return NotFound();
 
             await _writeService.DeleteDonorCount(id);
