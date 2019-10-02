@@ -59,7 +59,7 @@ namespace Directory.Services
 
         #region AssociatedDataTypes
     
-        public async Task<ICollection<AssociatedDataType>> ListAssociatedDateTypes()
+        public async Task<ICollection<AssociatedDataType>> ListAssociatedDataTypes()
             => await _context.AssociatedDataTypes.ToListAsync();
      
         public async Task<AssociatedDataType> GetAssociatedDataType(int id)
