@@ -8,9 +8,6 @@
         public string Value { get; set; }
     }
 
-    /// <summary>
-    /// Base DTO which adds sort order when its applicable.
-    /// </summary>
     public class SortedRefDataBaseDto : RefDataBaseDto
     {
         public int SortOrder { get; set; }
