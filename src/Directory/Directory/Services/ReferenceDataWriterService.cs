@@ -44,7 +44,6 @@ namespace Directory.Services
         /// <returns></returns>
         private async Task<T> UpdateRefData<T>(T refData) where T : BaseReferenceDatum
         {
-            _context.Entry(refData).State = EntityState.Modified;
             _context.Update(refData);
             await _context.SaveChangesAsync();
             return refData;
