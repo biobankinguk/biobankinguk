@@ -6,6 +6,7 @@ using Common.MappingProfiles;
 using Directory.Contracts;
 using Directory.IdentityServer;
 using Directory.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,19 +30,30 @@ namespace Directory
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Identity Server
             services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApis())
                 .AddInMemoryClients(Config.GetClients(_config))
+                .AddTestUsers(Config.GetUsers())
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
+            // MVC
             services.AddControllers();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            // Auth
+            services.AddAuthentication() // DO NOT set a default; IdentityServer does that
+                // Also add Bearer Auth for our API
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
                 {
                     opts.Authority = _config["JwtBearer:Authority"];
                     opts.Audience = ApiResourceKeys.RefData;
+                });
+            services.AddAuthorization(opts =>
+                {
+                    opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken);
                 });
 
             // Entity Framework

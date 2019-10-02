@@ -1,0 +1,10 @@
+﻿@model Directory.Pages.Components.Redirect.RedirectViewModel
+@{
+    Layout = "_Layout";
+}
+
+<h1>You are now being returned to the application.</h1>
+<p>Once complete, you may close this tab</p>
+
+<meta http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
+<script>__UKCRC_TDCC__.Redirect()</script>

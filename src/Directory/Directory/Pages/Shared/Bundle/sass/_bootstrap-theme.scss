@@ -1,0 +1,16 @@
+﻿@import "colors";
+
+// Bootstrap's $theme-colors map for modifying the theme
+// - if you want the default theme back, don't import this file! ;)
+// - if you want to change the colours, do :)
+$theme-colors: ( "primary": $brand-primary, "primary-alt": $brand-primary-alt, "secondary": $brand-secondary, "success": $brand-success, "danger": $brand-danger, "warning": $brand-warning, "info": $brand-info, "light": $brand-light, "dark": $brand-dark );
+
+$body-bg: $color-default-background;
+$body-color: $color-black;
+
+// BS4 alerts are a bit anaemic by default, so we fix them
+$alert-bg-level: -5;
+$alert-border-level: 1;
+
+// background colour for active tab in directory admin
+$nav-tabs-link-active-bg: $color-white;
