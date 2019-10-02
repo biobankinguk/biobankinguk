@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Directory.Controllers
+namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class SexController : Controller
+    public class MaterialTypeController : Controller
     {
         private readonly IReferenceDataReadService _readService;
         private readonly IReferenceDataWriterService _writeService;
 
-        public SexController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
+        public MaterialTypeController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
         {
             _readService = readService;
             _writeService = writeService;
@@ -22,33 +22,33 @@ namespace Directory.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index()
-           => Ok(await _readService.ListSexes());
+           => Ok(await _readService.ListMaterialTypes());
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var sex = await _readService.GetSex(id);
-            if (sex == null)
+            var materialType = await _readService.GetMaterialType(id);
+            if (materialType == null)
                 return NotFound();
 
-            return Ok(sex);
+            return Ok(materialType);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sex)
+        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto materialType)
         {
-            var createdSex = await _writeService.CreateSex(sex);
-            return CreatedAtAction("Get", new { id = createdSex.Id }, createdSex);
+            var createdMaterialType = await _writeService.CreateMaterialType(materialType);
+            return CreatedAtAction("Get", new { id = createdMaterialType.Id }, createdMaterialType);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto sex)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
         {
-            if (_readService.GetSex(id) == null)
+            if (_readService.GetMaterialType(id) == null)
                 return BadRequest();
 
-            await _writeService.UpdateSex(id, sex);
+            await _writeService.UpdateMaterialType(id, materialType);
 
             return NoContent();
         }
@@ -56,10 +56,10 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetSex(id) == null)
+            if (await _readService.GetMaterialType(id) == null)
                 return NotFound();
 
-            await _writeService.DeleteSex(id);
+            await _writeService.DeleteMaterialType(id);
 
             return NoContent();
         }

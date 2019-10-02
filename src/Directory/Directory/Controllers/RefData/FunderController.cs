@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Directory.Controllers
+namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class MaterialTypeController : Controller
+    public class FunderController : Controller
     {
         private readonly IReferenceDataReadService _readService;
         private readonly IReferenceDataWriterService _writeService;
 
-        public MaterialTypeController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
+        public FunderController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
         {
             _readService = readService;
             _writeService = writeService;
@@ -22,33 +22,33 @@ namespace Directory.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index()
-           => Ok(await _readService.ListMaterialTypes());
+           => Ok(await _readService.ListFunders());
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var materialType = await _readService.GetMaterialType(id);
-            if (materialType == null)
+            var funder = await _readService.GetFunder(id);
+            if (funder == null)
                 return NotFound();
 
-            return Ok(materialType);
+            return Ok(funder);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto materialType)
+        public async Task<IActionResult> Post([FromBody] RefDataBaseDto funder)
         {
-            var createdMaterialType = await _writeService.CreateMaterialType(materialType);
-            return CreatedAtAction("Get", new { id = createdMaterialType.Id }, createdMaterialType);
+            var createdFunder = await _writeService.CreateFunder(funder);
+            return CreatedAtAction("Get", new { id = createdFunder.Id }, createdFunder);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
+        public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto funder)
         {
-            if (_readService.GetMaterialType(id) == null)
+            if (_readService.GetFunder(id) == null)
                 return BadRequest();
 
-            await _writeService.UpdateMaterialType(id, materialType);
+            await _writeService.UpdateFunder(id, funder);
 
             return NoContent();
         }
@@ -56,10 +56,10 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetMaterialType(id) == null)
+            if (await _readService.GetFunder(id) == null)
                 return NotFound();
 
-            await _writeService.DeleteMaterialType(id);
+            await _writeService.DeleteFunder(id);
 
             return NoContent();
         }

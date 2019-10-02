@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Directory.Controllers
+namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class DonorCountController : Controller
+    public class SopStatusController : Controller
     {
         private readonly IReferenceDataReadService _readService;
         private readonly IReferenceDataWriterService _writeService;
 
-        public DonorCountController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
+        public SopStatusController(IReferenceDataReadService readService, IReferenceDataWriterService writeService)
         {
             _readService = readService;
             _writeService = writeService;
@@ -22,33 +22,34 @@ namespace Directory.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index()
-           => Ok(await _readService.ListDonorCounts());
-
+            => Ok(await _readService.ListSopStatuses());
+        
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var donorCount = await _readService.GetDonorCount(id);
-            if (donorCount == null)
+            var sopStatus = await _readService.GetSopStatus(id);
+            if (sopStatus == null)
                 return NotFound();
 
-            return Ok(donorCount);
+            return Ok(sopStatus);
         }
+            
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto donorCount)
+        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sopStatus)
         {
-            var createdDonorCount = await _writeService.CreateDonorCount(donorCount);
-            return CreatedAtAction("Get", new { id = createdDonorCount.Id }, createdDonorCount);
+            var createdSopStatus = await _writeService.CreateSopStatus(sopStatus);
+            return CreatedAtAction("Get", new { id = createdSopStatus.Id }, createdSopStatus);
         }
-
+         
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto sopStatus)
         {
-            if (_readService.GetDonorCount(id) == null)
+            if (_readService.GetSopStatus(id) == null)
                 return BadRequest();
 
-            await _writeService.UpdateDonorCount(id, donorCount);
+            await _writeService.UpdateSopStatus(id, sopStatus);
 
             return NoContent();
         }
@@ -56,10 +57,10 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetDonorCount(id) == null)
+            if (await _readService.GetSopStatus(id) == null)
                 return NotFound();
 
-            await _writeService.DeleteDonorCount(id);
+            await _writeService.DeleteSopStatus(id);
 
             return NoContent();
         }
