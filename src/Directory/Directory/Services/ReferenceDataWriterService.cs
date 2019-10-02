@@ -416,17 +416,8 @@ namespace Directory.Services
 
         public async Task<SopStatus> CreateSopStatus(SortedRefDataBaseDto sopStatus)
         {
-            try
-            {
-                return await CreateRefData(_mapper.Map<SopStatus>(sopStatus));
-            }
-            catch(Exception e)
-            {
-                throw e;
-
-            }
-            return null;
-         }
+              return await CreateRefData(_mapper.Map<SopStatus>(sopStatus));
+        }
 
         public async Task<SopStatus> UpdateSopStatus(int id, SortedRefDataBaseDto sopStatus)
         {
