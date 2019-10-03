@@ -81,13 +81,19 @@ namespace Directory
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapControllers().RequireAuthorization(nameof(AuthPolicies.BearerToken));
+            });
         }
     }
 }
