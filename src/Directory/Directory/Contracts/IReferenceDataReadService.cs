@@ -17,7 +17,7 @@ namespace Directory.Contracts
         Task<AnnualStatistic> GetAnnualStatistic(int id);
         Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes();
         Task<AssociatedDataProcurementTimeframe> GetAssociatedDataProcurementTimeframe(int id);
-        Task<ICollection<AssociatedDataType>> ListAssociatedDateTypes();
+        Task<ICollection<AssociatedDataType>> ListAssociatedDataTypes();
         Task<AssociatedDataType> GetAssociatedDataType(int id);
         Task<ICollection<CollectionPercentage>> ListCollectionPercentages();
         Task<CollectionPercentage> GetCollectionPercentage(int id);
