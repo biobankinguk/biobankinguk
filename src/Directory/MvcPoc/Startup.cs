@@ -31,8 +31,8 @@ namespace MvcPoc
             .AddCookie("Cookies")
             .AddOpenIdConnect("oidc", opts =>
             {
-                opts.Authority = "http://localhost:5000";
-                opts.RequireHttpsMetadata = false; // true?
+                opts.Authority = "https://localhost:5001";
+                opts.RequireHttpsMetadata = true; // true?
 
                 opts.ClientId = "mvc-poc";
                 opts.SaveTokens = true;

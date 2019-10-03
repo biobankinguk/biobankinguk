@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Common.Constants;
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,8 @@ namespace Directory.IdentityServer
         public static IEnumerable<IdentityResource> GetIdentityResources()
             => new IdentityResource[]
             {
-                new IdentityResources.OpenId()
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile()
             };
 
         public static List<TestUser> GetUsers()
@@ -39,7 +41,6 @@ namespace Directory.IdentityServer
                 new Client
                 {
                     ClientId = TrustedClientIds.Upload,
-
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
 
                     ClientSecrets =
@@ -48,6 +49,24 @@ namespace Directory.IdentityServer
                     },
 
                     AllowedScopes = { ApiResourceKeys.RefData }
+                },
+
+                // MVC PoC client // TODO: Remove when ready
+                new Client
+                {
+                    ClientId = "mvc-poc",
+                    ClientName = "MVC Proof of Concept",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequireConsent = false,
+
+                    RedirectUris = { "https://localhost:5201/signin-oidc" },
+                    PostLogoutRedirectUris = { "https://localhost:5201/signout-callback-oidc" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
+                    }
                 },
 
                 // Framework Directory
