@@ -70,6 +70,7 @@ namespace Directory
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Biobanks Directory API", Version = "v1" });
+                c.EnableAnnotations();
             });
 
             //Other third party
