@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace Directory
 {
@@ -65,6 +66,12 @@ namespace Directory
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
 
+            //Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Biobanks Directory API", Version = "v1" });
+            });
+
             //Other third party
             services.AddAutoMapper(typeof(RefDataBaseDtoProfile));
         }
@@ -93,6 +100,12 @@ namespace Directory
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers().RequireAuthorization(nameof(AuthPolicies.BearerToken));
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Biobanks API v1");
             });
         }
     }
