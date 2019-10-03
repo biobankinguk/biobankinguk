@@ -1,7 +1,9 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +22,14 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation(Description = "List of all Annual Statistic")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAnnualStatistics());
 
-
+        [SwaggerOperation(Description = "Get a single Annual Statistic by ID")]
+        [SwaggerResponse(200, "The Annual Statistic with the requested ID.", typeof(AnnualStatistic))]
+        [SwaggerResponse(404, "No Annual Statistic was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +40,9 @@ namespace Directory.Controllers.RefData
             return Ok(collectionPoint);
         }
 
+        [SwaggerOperation(Description = "Creates a new Annual Statistic")]
+        [SwaggerResponse(201, "The Annual Statistic was created", typeof(AnnualStatistic))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
         {
@@ -42,6 +50,9 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdAnnualStatistic.Id }, createdAnnualStatistic);
         }
 
+        [SwaggerOperation(Description = "Updates an existing Annual Statistic")]
+        [SwaggerResponse(204, "The Annual Statistic was updated successfully.")]
+        [SwaggerResponse(400, "No Annual Statistic was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
@@ -53,6 +64,8 @@ namespace Directory.Controllers.RefData
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Annual Statistic by ID.")]
+        [SwaggerResponse(204, "The Annual Statistic was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
