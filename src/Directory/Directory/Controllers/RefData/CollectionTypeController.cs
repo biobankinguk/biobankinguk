@@ -1,7 +1,9 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +22,14 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation(Description = "List of all Collection Types")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionTypes());
 
-
+        [SwaggerOperation(Description = "Get a single Collection Type by ID")]
+        [SwaggerResponse(200, "The Collection Type with the requested ID.", typeof(CollectionType))]
+        [SwaggerResponse(404, "No Collection Type was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +40,9 @@ namespace Directory.Controllers.RefData
             return Ok(collectionType);
         }
 
+        [SwaggerOperation(Description = "Creates a new Collection Type")]
+        [SwaggerResponse(201, "The Collection Type was created", typeof(CollectionType))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionType)
         {
@@ -42,6 +50,9 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdCollectionType.Id }, createdCollectionType);
         }
 
+        [SwaggerOperation(Description = "Updates an existing Collection Type")]
+        [SwaggerResponse(204, "The Collection Type was updated successfully.")]
+        [SwaggerResponse(400, "No Collection Type was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionType)
         {
@@ -53,6 +64,8 @@ namespace Directory.Controllers.RefData
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Collection Type by ID.")]
+        [SwaggerResponse(204, "The Collection Type was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
