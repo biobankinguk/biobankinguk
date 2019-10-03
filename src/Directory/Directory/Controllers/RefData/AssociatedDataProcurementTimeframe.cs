@@ -22,12 +22,12 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Associated Data Procurement Timeframe")]
+        [SwaggerOperation("List of all Associated Data Procurement Timeframe")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAssociatedDataProcurementTimeframes());
 
-        [SwaggerOperation(Description = "Get a single Associated Data Procurement Timeframe by ID")]
+        [SwaggerOperation("Get a single Associated Data Procurement Timeframe by ID")]
         [SwaggerResponse(200, "The Associated Data Procurement Timeframe with the requested ID.", typeof(AssociatedDataProcurementTimeframe))]
         [SwaggerResponse(404, "No Associated Data Procurement Timeframe was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers
             return Ok(collectionPoint);
         }
 
-        [SwaggerOperation(Description = "Creates a new Associated Data Procurement Timeframe")]
+        [SwaggerOperation("Creates a new Associated Data Procurement Timeframe")]
         [SwaggerResponse(201, "The Associated Data Procurement Timeframe was created", typeof(AssociatedDataProcurementTimeframe))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers
             return CreatedAtAction("Get", new { id = createdAssociatedDataProcurementTimeframe.Id }, createdAssociatedDataProcurementTimeframe);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Associated Data Procurement Timeframe")]
+        [SwaggerOperation("Updates an existing Associated Data Procurement Timeframe")]
         [SwaggerResponse(204, "The Associated Data Procurement Timeframe was updated successfully.")]
         [SwaggerResponse(400, "No Associated Data Procurement Timeframe was found with the provided ID.")]
         [HttpPut("{id}")]

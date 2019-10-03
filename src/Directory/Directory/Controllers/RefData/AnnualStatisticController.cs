@@ -22,12 +22,12 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Annual Statistic")]
+        [SwaggerOperation("List of all Annual Statistics")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAnnualStatistics());
 
-        [SwaggerOperation(Description = "Get a single Annual Statistic by ID")]
+        [SwaggerOperation("Get a single Annual Statistic by ID")]
         [SwaggerResponse(200, "The Annual Statistic with the requested ID.", typeof(AnnualStatistic))]
         [SwaggerResponse(404, "No Annual Statistic was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers.RefData
             return Ok(collectionPoint);
         }
 
-        [SwaggerOperation(Description = "Creates a new Annual Statistic")]
+        [SwaggerOperation("Creates a new Annual Statistic")]
         [SwaggerResponse(201, "The Annual Statistic was created", typeof(AnnualStatistic))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdAnnualStatistic.Id }, createdAnnualStatistic);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Annual Statistic")]
+        [SwaggerOperation("Updates an existing Annual Statistic")]
         [SwaggerResponse(204, "The Annual Statistic was updated successfully.")]
         [SwaggerResponse(400, "No Annual Statistic was found with the provided ID.")]
         [HttpPut("{id}")]

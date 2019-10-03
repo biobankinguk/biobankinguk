@@ -22,12 +22,12 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Collection Percentages")]
+        [SwaggerOperation("List of all Collection Percentages")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionPercentages());
 
-        [SwaggerOperation(Description = "Get a single Collection Percentage by ID")]
+        [SwaggerOperation("Get a single Collection Percentage by ID")]
         [SwaggerResponse(200, "The Collection Percentage with the requested ID.", typeof(CollectionPercentage))]
         [SwaggerResponse(404, "No Collection Percentage was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers.RefData
             return Ok(collectionPercentage);
         }
 
-        [SwaggerOperation(Description = "Creates a new a Collection Percentage")]
+        [SwaggerOperation("Creates a new a Collection Percentage")]
         [SwaggerResponse(201, "The Collection Percentage was created", typeof(CollectionPercentage))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdCollectionPercentage.Id }, createdCollectionPercentage);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Collection Percentage")]
+        [SwaggerOperation("Updates an existing Collection Percentage")]
         [SwaggerResponse(204, "The Collection Percentage was updated successfully.")]
         [SwaggerResponse(400, "No Collection Percentage was found with the provided ID.")]
         [HttpPut("{id}")]

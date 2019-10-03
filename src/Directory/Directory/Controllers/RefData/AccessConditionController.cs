@@ -22,12 +22,12 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Access Conditions")]
+        [SwaggerOperation("List of all Access Conditions")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAccessConditions());
 
-        [SwaggerOperation(Description = "Get a single Access Condition by ID")]
+        [SwaggerOperation("Get a single Access Condition by ID")]
         [SwaggerResponse(200, "The Access Condition with the requested ID.", typeof(AccessCondition))]
         [SwaggerResponse(404, "No Access Condition was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers
             return Ok(collectionPoint);
         }
 
-        [SwaggerOperation(Description ="Creates a new Access Condition")]
+        [SwaggerOperation("Creates a new Access Condition")]
         [SwaggerResponse(201, "The Access Condition was created", typeof(AccessCondition))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers
             return CreatedAtAction("Get", new { id = createdAccessCondition.Id }, createdAccessCondition);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Access Condition")]
+        [SwaggerOperation("Updates an existing Access Condition")]
         [SwaggerResponse(204, "The Access Condition was updated successfully.")]
         [SwaggerResponse(400, "No Access Condition was found with the provided ID.")]
         [HttpPut("{id}")]

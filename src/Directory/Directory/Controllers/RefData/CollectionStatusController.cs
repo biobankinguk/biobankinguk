@@ -22,12 +22,12 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Collection Statuses")]
+        [SwaggerOperation("List of all Collection Statuses")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionStatuses());
 
-        [SwaggerOperation(Description = "Get a single Collection Status by ID")]
+        [SwaggerOperation("Get a single Collection Status by ID")]
         [SwaggerResponse(200, "The Collection Status with the requested ID.", typeof(CollectionStatus))]
         [SwaggerResponse(404, "No Collection Status was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers.RefData
             return Ok(collectionStatus);
         }
 
-        [SwaggerOperation(Description = "Creates a new Collection Status")]
+        [SwaggerOperation("Creates a new Collection Status")]
         [SwaggerResponse(201, "The Collection Status was created", typeof(CollectionStatus))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdCollectionStatus.Id }, createdCollectionStatus);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Collection Status")]
+        [SwaggerOperation("Updates an existing Collection Status")]
         [SwaggerResponse(204, "The Collection Status was updated successfully.")]
         [SwaggerResponse(400, "No Collection Status was found with the provided ID.")]
         [HttpPut("{id}")]

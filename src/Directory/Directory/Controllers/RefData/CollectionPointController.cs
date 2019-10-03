@@ -22,12 +22,12 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Collection Points")]
+        [SwaggerOperation("List of all Collection Points")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionPoints());
 
-        [SwaggerOperation(Description = "Get a single Collection Point by ID")]
+        [SwaggerOperation("Get a single Collection Point by ID")]
         [SwaggerResponse(200, "The Collection Point with the requested ID.", typeof(CollectionPoint))]
         [SwaggerResponse(404, "No Collection Point was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers.RefData
             return Ok(collectionPoint);
         }
 
-        [SwaggerOperation(Description = "Creates a new Collection Point")]
+        [SwaggerOperation("Creates a new Collection Point")]
         [SwaggerResponse(201, "The Collection Point was created", typeof(CollectionPoint))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdCollectionPoint.Id }, createdCollectionPoint);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Collection Point")]
+        [SwaggerOperation("Updates an existing Collection Point")]
         [SwaggerResponse(204, "The Collection Point was updated successfully.")]
         [SwaggerResponse(400, "No Collection Point was found with the provided ID.")]
         [HttpPut("{id}")]

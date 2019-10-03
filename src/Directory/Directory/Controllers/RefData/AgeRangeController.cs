@@ -22,12 +22,12 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Age Ranges")]
+        [SwaggerOperation("List of all Age Ranges")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAgeRanges());
 
-        [SwaggerOperation(Description = "Get a single Age Range by ID")]
+        [SwaggerOperation("Get a single Age Range by ID")]
         [SwaggerResponse(200, "The Age Range with the requested ID.", typeof(AgeRange))]
         [SwaggerResponse(404, "No Age Range was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers
             return Ok(collectionPoint);
         }
 
-        [SwaggerOperation(Description = "Creates a new Age Range")]
+        [SwaggerOperation("Creates a new Age Range")]
         [SwaggerResponse(201, "The Age Range was created", typeof(AgeRange))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers
             return CreatedAtAction("Get", new { id = createdAgeRange.Id }, createdAgeRange);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Age Range")]
+        [SwaggerOperation("Updates an existing Age Range")]
         [SwaggerResponse(204, "The Age Range was updated successfully.")]
         [SwaggerResponse(400, "No Age Range was found with the provided ID.")]
         [HttpPut("{id}")]

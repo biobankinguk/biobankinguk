@@ -22,12 +22,12 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
-        [SwaggerOperation(Description = "List of all Associated Data Type")]
+        [SwaggerOperation("List of all Associated Data Type")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAssociatedDataTypes());
 
-        [SwaggerOperation(Description = "Get a single Associated Data Type by ID")]
+        [SwaggerOperation("Get a single Associated Data Type by ID")]
         [SwaggerResponse(200, "The Associated Data Type with the requested ID.", typeof(AssociatedDataType))]
         [SwaggerResponse(404, "No Associated Data Type was found with the provided ID.")]
         [HttpGet("{id}")]
@@ -40,7 +40,7 @@ namespace Directory.Controllers.RefData
             return Ok(collectionPoint);
         }
 
-        [SwaggerOperation(Description = "Creates a new Associated Data Type")]
+        [SwaggerOperation("Creates a new Associated Data Type")]
         [SwaggerResponse(201, "The Associated Data Type was created", typeof(AssociatedDataType))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdAssociatedDataType.Id }, createdAssociatedDataType);
         }
 
-        [SwaggerOperation(Description = "Updates an existing Associated Data Type")]
+        [SwaggerOperation("Updates an existing Associated Data Type")]
         [SwaggerResponse(204, "The Associated Data Type was updated successfully.")]
         [SwaggerResponse(400, "No Associated Data Type was found with the provided ID.")]
         [HttpPut("{id}")]
