@@ -7,4 +7,16 @@
 <p>Once complete, you may close this tab</p>
 
 <meta http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
-<script>__UKCRC_TDCC__.Redirect()</script>
+
+@section Scripts {
+    <script>
+        const ready = () => {
+            if (document.readyState == "complete") {
+                __UKCRC_TDCC__.MetaRedirect();
+                return true;
+            } else return false;
+        };
+
+        if (!ready()) document.onreadystatechange = ready;
+    </script>
+}
