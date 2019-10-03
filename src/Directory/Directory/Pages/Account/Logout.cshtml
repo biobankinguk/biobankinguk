@@ -1,0 +1,22 @@
+﻿@page
+@model Directory.Pages.Account.LogoutModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row justify-content-center mt-4">
+
+        <div class="col-sm-6">
+            <p>Would you like to logout of the UKCRC Tissue Directory?</p>
+            <form method="post">
+                <input type="hidden" name="logoutId" value="@Model.LogoutId" />
+
+                <div class="form-group">
+                    <button class="btn btn-primary">Yes</button>
+                </div>
+            </form>
+        </div>
+    </div>

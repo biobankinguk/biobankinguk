@@ -6,5 +6,6 @@ window.__UKCRC_TDCC__ = {};
 
 import "jquery-validation-unobtrusive";
 
-import Redirect from "./meta-redirect";
-window.__UKCRC_TDCC__.Redirect = Redirect;
+import { metaRedirect, redirect } from "./redirect";
+window.__UKCRC_TDCC__.MetaRedirect = metaRedirect;
+window.__UKCRC_TDCC__.Redirect = redirect;
