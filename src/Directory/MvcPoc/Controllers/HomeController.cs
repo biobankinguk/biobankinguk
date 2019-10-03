@@ -18,7 +18,7 @@ namespace MvcPoc.Controllers
             _logger = logger;
         }
 
-        public string Index() => "go to `/Home/Identity` to test authorising against a protected route using the IdP";
+        public string Index() => "go to `/Home/Identity` to test authorising against a protected route using the IdP, or `/Home/Logout` to Sign Out.";
 
 
         [Authorize]
@@ -29,6 +29,15 @@ namespace MvcPoc.Controllers
                 Properties = (await HttpContext.AuthenticateAsync())
                     .Properties.Items.Select(p => new { p.Key, p.Value })
             });
+
+        [Authorize]
+        public IActionResult Login() =>
+            // this is kind of optional as going any protected route triggers a login
+            // but if you wanted a Login link, this route would work
+            // because it has an AuthorizeAttribute
+            Redirect("~/");
+
+        public IActionResult Logout() => SignOut("Cookies", "oidc");
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
