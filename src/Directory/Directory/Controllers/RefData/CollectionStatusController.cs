@@ -56,11 +56,7 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetCollectionStatus(id) is null)
-                return NotFound();
-
             await _writeService.DeleteCollectionStatus(id);
-
             return NoContent();
         }
     }

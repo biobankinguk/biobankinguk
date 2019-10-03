@@ -56,11 +56,7 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetAccessCondition(id) is null)
-                return NotFound();
-
             await _writeService.DeleteAccessCondition(id);
-
             return NoContent();
         }
     }

@@ -56,11 +56,7 @@ namespace Directory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (await _readService.GetAgeRange(id) is null)
-                return NotFound();
-
             await _writeService.DeleteAgeRange(id);
-
             return NoContent();
         }
     }
