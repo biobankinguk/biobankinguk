@@ -1,4 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
+using Common.Constants;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,11 +33,21 @@ namespace MvcPoc
             .AddCookie("Cookies")
             .AddOpenIdConnect("oidc", opts =>
             {
+                opts.SignInScheme = "Cookies";
+
                 opts.Authority = "https://localhost:5001";
-                opts.RequireHttpsMetadata = true; // true?
+                opts.RequireHttpsMetadata = true;
 
                 opts.ClientId = "mvc-poc";
+                opts.ClientSecret = Configuration[$"ClientSecrets:{TrustedClientIds.Upload}"];
+                opts.ResponseType = "code id_token";
+
                 opts.SaveTokens = true;
+                opts.GetClaimsFromUserInfoEndpoint = true;
+
+                opts.Scope.Add(ApiResourceKeys.RefData);
+                opts.Scope.Add("offline_access");
+                //opts.ClaimActions.MapJsonKey("website", "website"); // TODO: actually we don't have this claim...
             });
         }
 

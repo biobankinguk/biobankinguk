@@ -56,8 +56,14 @@ namespace Directory.IdentityServer
                 {
                     ClientId = "mvc-poc",
                     ClientName = "MVC Proof of Concept",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedGrantTypes = GrantTypes.Hybrid,
                     RequireConsent = false,
+
+                    ClientSecrets =
+                    {
+                        // Don't reuse secrets for realsies!
+                        new Secret(config[$"ClientSecrets:{TrustedClientIds.Upload}"].Sha256())
+                    },
 
                     RedirectUris = { "https://localhost:5201/signin-oidc" },
                     PostLogoutRedirectUris = { "https://localhost:5201/signout-callback-oidc" },
@@ -65,8 +71,10 @@ namespace Directory.IdentityServer
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
-                    }
+                        IdentityServerConstants.StandardScopes.Profile,
+                        ApiResourceKeys.RefData
+                    },
+                    AllowOfflineAccess = true
                 },
 
                 // Framework Directory

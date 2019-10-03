@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -18,8 +21,7 @@ namespace MvcPoc.Controllers
             _logger = logger;
         }
 
-        public string Index() => "go to `/Home/Identity` to test authorising against a protected route using the IdP, or `/Home/Logout` to Sign Out.";
-
+        public string Index() => "`/Home/Identity` to test interactive login; `/Home/Logout` to Sign Out. `/Home/CallApi` to test token api access";
 
         [Authorize]
         public async Task<IActionResult> Identity()
@@ -29,6 +31,16 @@ namespace MvcPoc.Controllers
                 Properties = (await HttpContext.AuthenticateAsync())
                     .Properties.Items.Select(p => new { p.Key, p.Value })
             });
+
+        [Authorize]
+        public async Task<IActionResult> CallApi()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            return Ok(await client.GetStringAsync("https://localhost:5001/identity"));
+        }
 
         [Authorize]
         public IActionResult Login() =>
