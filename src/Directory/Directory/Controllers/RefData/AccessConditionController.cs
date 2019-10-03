@@ -21,6 +21,7 @@ namespace Directory.Controllers
             _readService = readService;
             _writeService = writeService;
         }
+
         [SwaggerOperation(Description = "List of all Access Conditions")]
         [HttpGet]
         public async Task<IActionResult> Index()
