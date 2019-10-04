@@ -2,6 +2,7 @@
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +21,14 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Ontology Terms")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListOntologyTerms());
 
-
+        [SwaggerOperation("Get a single Ontology Term by ID")]
+        [SwaggerResponse(200, "The Ontology Term with the requested ID.", typeof(MaterialType))]
+        [SwaggerResponse(404, "No Ontology Term was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
@@ -35,6 +39,9 @@ namespace Directory.Controllers.RefData
             return Ok(consentRestriction);
         }
 
+        [SwaggerOperation("Creates a new Ontology Term")]
+        [SwaggerResponse(201, "The Ontology Term was created", typeof(OntologyTerm))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] OntologyTerm ontologyTerm)
         {
@@ -42,6 +49,9 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdOntologyTerm.Id }, createdOntologyTerm);
         }
 
+        [SwaggerOperation("Updates an existing Ontology Term")]
+        [SwaggerResponse(204, "The Ontology Term was updated successfully.")]
+        [SwaggerResponse(400, "No Ontology Term was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] OntologyTerm ontologyTerm)
         {
@@ -53,6 +63,8 @@ namespace Directory.Controllers.RefData
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Ontology Term by ID.")]
+        [SwaggerResponse(204, "The Ontology Term was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
