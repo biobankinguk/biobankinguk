@@ -1,7 +1,9 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers
@@ -20,11 +22,14 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all HtaStatuses")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListHtaStatuses());
 
-
+        [SwaggerOperation("Get a single HtaStatus by ID")]
+        [SwaggerResponse(200, "The HtaStatus with the requested ID.", typeof(HtaStatus))]
+        [SwaggerResponse(404, "No HtaStatus was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +40,9 @@ namespace Directory.Controllers
             return Ok(collectionPoint);
         }
 
+        [SwaggerOperation("Creates a new Hta Status")]
+        [SwaggerResponse(201, "The HtaStatus was created", typeof(HtaStatus))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
         {
@@ -42,6 +50,9 @@ namespace Directory.Controllers
             return CreatedAtAction("Get", new { id = createdHtaStatus.Id }, createdHtaStatus);
         }
 
+        [SwaggerOperation("Updates an existing HtaStatus")]
+        [SwaggerResponse(204, "The HtaStatus was updated successfully.")]
+        [SwaggerResponse(400, "No HtaStatus was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
@@ -53,6 +64,8 @@ namespace Directory.Controllers
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single HtaStatus by ID.")]
+        [SwaggerResponse(204, "The HtaStatus was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
