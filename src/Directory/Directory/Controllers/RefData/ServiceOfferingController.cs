@@ -1,7 +1,9 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +22,14 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Service Offerings")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListServiceOfferings());
 
-
+        [SwaggerOperation("Get a single Service Offering by ID")]
+        [SwaggerResponse(200, "The Service Offering with the requested ID.", typeof(ServiceOffering))]
+        [SwaggerResponse(404, "No Service Offering was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +40,9 @@ namespace Directory.Controllers.RefData
             return Ok(serviceOffering);
         }
 
+        [SwaggerOperation("Creates a new Service Offering")]
+        [SwaggerResponse(201, "The Service Offering was created", typeof(ServiceOffering))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto serviceOffering)
         {
@@ -42,6 +50,9 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdServiceOffering.Id }, createdServiceOffering);
         }
 
+        [SwaggerOperation("Updates an existing Service Offering")]
+        [SwaggerResponse(204, "The Service Offering was updated successfully.")]
+        [SwaggerResponse(400, "No Service Offering was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto serviceOffering)
         {
@@ -53,6 +64,7 @@ namespace Directory.Controllers.RefData
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Service Offering by ID.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
