@@ -1,7 +1,9 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +22,14 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all County")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCounties());
 
-
+        [SwaggerOperation("Get a single County by ID")]
+        [SwaggerResponse(200, "The County with the requested ID.", typeof(County))]
+        [SwaggerResponse(404, "No County was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +40,9 @@ namespace Directory.Controllers.RefData
             return Ok(county);
         }
 
+        [SwaggerOperation("Creates a new County")]
+        [SwaggerResponse(201, "The County was created", typeof(Country))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto county)
         {
@@ -42,6 +50,9 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdCounty.Id }, createdCounty);
         }
 
+        [SwaggerOperation("Updates an existing County")]
+        [SwaggerResponse(204, "The County was updated successfully.")]
+        [SwaggerResponse(400, "No County was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto county)
         {
@@ -53,6 +64,8 @@ namespace Directory.Controllers.RefData
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single County by ID.")]
+        [SwaggerResponse(204, "The County was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
