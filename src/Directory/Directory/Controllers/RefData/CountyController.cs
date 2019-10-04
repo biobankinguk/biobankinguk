@@ -22,7 +22,7 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
-        [SwaggerOperation("List of all County")]
+        [SwaggerOperation("List of all Counties")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCounties());
