@@ -1,7 +1,9 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +22,14 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Consent Restrictions")]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListConsentRestrictions());
 
-
+        [SwaggerOperation("Get a single Consent Restriction by ID")]
+        [SwaggerResponse(200, "The Consent Restriction with the requested ID.", typeof(ConsentRestriction))]
+        [SwaggerResponse(404, "No Consent Restriction was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +40,9 @@ namespace Directory.Controllers.RefData
             return Ok(consentRestriction);
         }
 
+        [SwaggerOperation("Creates a new Consent Restriction")]
+        [SwaggerResponse(201, "The Consent Restriction was created", typeof(ConsentRestriction))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto consentRestriction)
         {
@@ -42,6 +50,9 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdConsentRestriction.Id }, createdConsentRestriction);
         }
 
+        [SwaggerOperation("Updates an existing Consent Restriction")]
+        [SwaggerResponse(204, "The Consent Restriction was updated successfully.")]
+        [SwaggerResponse(400, "No Consent Restriction was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto consentRestriction)
         {
@@ -53,6 +64,8 @@ namespace Directory.Controllers.RefData
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Consent Restriction by ID.")]
+        [SwaggerResponse(204, "The Consent Restriction was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
