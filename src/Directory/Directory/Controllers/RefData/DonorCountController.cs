@@ -65,7 +65,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Delete a single Donor Count by ID.")]
-        [SwaggerResponse(204, "The County was succesfully deleted.")]
+        [SwaggerResponse(204, "The Funder was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
