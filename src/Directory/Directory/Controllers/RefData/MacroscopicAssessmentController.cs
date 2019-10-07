@@ -1,8 +1,10 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -21,11 +23,15 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Macroscopic Assessments")]
+        [SwaggerResponse(200, "All Macroscopic Assessments", typeof(List<MacroscopicAssessment>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListMacroscopicAssessments());
 
-
+        [SwaggerOperation("Get a single Macroscopic Assessment by ID")]
+        [SwaggerResponse(200, "The Macroscopic Assessment with the requested ID.", typeof(MacroscopicAssessment))]
+        [SwaggerResponse(404, "No Macroscopic Assessment was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -36,6 +42,9 @@ namespace Directory.Controllers.RefData
             return Ok(macroscopicAssessment);
         }
 
+        [SwaggerOperation("Creates a new Macroscopic Assessment")]
+        [SwaggerResponse(201, "The Macroscopic Assessment was created", typeof(MacroscopicAssessment))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto macroscopicAssessment)
         {
@@ -43,17 +52,22 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdMacroscopicAssessment.Id }, createdMacroscopicAssessment);
         }
 
+        [SwaggerOperation("Updates an existing Macroscopic Assessment")]
+        [SwaggerResponse(204, "The Macroscopic Assessment was updated successfully.")]
+        [SwaggerResponse(404, "No Macroscopic Assessment was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto macroscopicAssessment)
         {
             if (_readService.GetMacroscopicAssessment(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateMacroscopicAssessment(id, macroscopicAssessment);
 
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Macroscopic Assessment by ID.")]
+        [SwaggerResponse(204, "The Macroscopic Assessment was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

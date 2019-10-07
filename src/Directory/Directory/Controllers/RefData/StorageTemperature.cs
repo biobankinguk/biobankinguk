@@ -1,7 +1,10 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +23,15 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Storage Temperatures")]
+        [SwaggerResponse(200, "All Storage Temperatures", typeof(List<StorageTemperature>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListStorageTemperatures());
 
-
+        [SwaggerOperation("Get a single Storage Temperature by ID")]
+        [SwaggerResponse(200, "The Storage Temperature with the requested ID.", typeof(StorageTemperature))]
+        [SwaggerResponse(404, "No Storage Temperature was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +42,9 @@ namespace Directory.Controllers.RefData
             return Ok(storageTemperature);
         }
 
+        [SwaggerOperation("Creates a new Storage Temperature")]
+        [SwaggerResponse(201, "The Storage Temperature was created", typeof(StorageTemperature))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto storageTemperature)
         {
@@ -42,17 +52,21 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdStorageTemperature.Id }, createdStorageTemperature);
         }
 
+        [SwaggerOperation("Updates an existing Storage Temperature")]
+        [SwaggerResponse(204, "The Storage Temperature was updated successfully.")]
+        [SwaggerResponse(404, "No Storage Temperature was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto storageTemperature)
         {
             if (_readService.GetStorageTemperature(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateStorageTemperature(id, storageTemperature);
 
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Storage Temperature by ID.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
