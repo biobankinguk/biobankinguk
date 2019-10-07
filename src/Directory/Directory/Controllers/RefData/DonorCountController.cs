@@ -1,7 +1,10 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +23,15 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Donor Counts")]
+        [SwaggerResponse(200, "All Donor Counts", typeof(List<DonorCount>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListDonorCounts());
 
-
+        [SwaggerOperation("Get a single Donor Count by ID")]
+        [SwaggerResponse(200, "The Donor Count with the requested ID.", typeof(DonorCount))]
+        [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +42,9 @@ namespace Directory.Controllers.RefData
             return Ok(donorCount);
         }
 
+        [SwaggerOperation("Creates a new Donor Count")]
+        [SwaggerResponse(201, "The Donor Count was created", typeof(DonorCount))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto donorCount)
         {
@@ -42,17 +52,22 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdDonorCount.Id }, createdDonorCount);
         }
 
+        [SwaggerOperation("Updates an existing Donor Count")]
+        [SwaggerResponse(204, "The Donor Count was updated successfully.")]
+        [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
         {
             if (_readService.GetDonorCount(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateDonorCount(id, donorCount);
 
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Donor Count by ID.")]
+        [SwaggerResponse(204, "The Funder was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

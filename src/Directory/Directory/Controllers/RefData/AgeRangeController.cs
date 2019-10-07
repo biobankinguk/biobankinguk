@@ -1,7 +1,10 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers
@@ -20,11 +23,15 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Age Ranges")]
+        [SwaggerResponse(200, "All Age Ranges", typeof(List<AgeRange>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAgeRanges());
 
-
+        [SwaggerOperation("Get a single Age Range by ID")]
+        [SwaggerResponse(200, "The Age Range with the requested ID.", typeof(AgeRange))]
+        [SwaggerResponse(404, "No Age Range was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +42,9 @@ namespace Directory.Controllers
             return Ok(collectionPoint);
         }
 
+        [SwaggerOperation("Creates a new Age Range")]
+        [SwaggerResponse(201, "The Age Range was created", typeof(AgeRange))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
         {
@@ -42,17 +52,22 @@ namespace Directory.Controllers
             return CreatedAtAction("Get", new { id = createdAgeRange.Id }, createdAgeRange);
         }
 
+        [SwaggerOperation("Updates an existing Age Range")]
+        [SwaggerResponse(204, "The Age Range was updated successfully.")]
+        [SwaggerResponse(404, "No Age Range was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
             if (_readService.GetAgeRange(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateAgeRange(id, collectionPoint);
 
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Age Range by ID.")]
+        [SwaggerResponse(204, "The Age Range was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

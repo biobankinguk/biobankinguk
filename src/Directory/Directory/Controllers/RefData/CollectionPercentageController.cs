@@ -1,7 +1,10 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -20,11 +23,15 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
+        [SwaggerOperation("List of all Collection Percentages")]
+        [SwaggerResponse(200, "All Collection Percentages", typeof(List<CollectionPercentage>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionPercentages());
 
-
+        [SwaggerOperation("Get a single Collection Percentage by ID")]
+        [SwaggerResponse(200, "The Collection Percentage with the requested ID.", typeof(CollectionPercentage))]
+        [SwaggerResponse(404, "No Collection Percentage was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +42,9 @@ namespace Directory.Controllers.RefData
             return Ok(collectionPercentage);
         }
 
+        [SwaggerOperation("Creates a new a Collection Percentage")]
+        [SwaggerResponse(201, "The Collection Percentage was created", typeof(CollectionPercentage))]
+        [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPercentage)
         {
@@ -42,17 +52,22 @@ namespace Directory.Controllers.RefData
             return CreatedAtAction("Get", new { id = createdCollectionPercentage.Id }, createdCollectionPercentage);
         }
 
+        [SwaggerOperation("Updates an existing Collection Percentage")]
+        [SwaggerResponse(204, "The Collection Percentage was updated successfully.")]
+        [SwaggerResponse(404, "No Collection Percentage was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPercentage)
         {
             if (_readService.GetCollectionPercentage(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateCollectionPercentage(id, collectionPercentage);
 
             return NoContent();
         }
 
+        [SwaggerOperation("Delete a single Collection Percentage by ID.")]
+        [SwaggerResponse(204, "The Collection Percentage was succesfully deleted.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
