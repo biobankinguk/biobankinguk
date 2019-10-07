@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Counties")]
+        [SwaggerResponse(200, "All Counties", typeof(List<County>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCounties());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing County")]
         [SwaggerResponse(204, "The County was updated successfully.")]
-        [SwaggerResponse(400, "No County was found with the provided ID.")]
+        [SwaggerResponse(404, "No County was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto county)
         {
             if (_readService.GetCounty(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateCounty(id, county);
 

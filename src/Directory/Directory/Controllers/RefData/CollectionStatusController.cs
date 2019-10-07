@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Collection Statuses")]
+        [SwaggerResponse(200, "All Collection Statuses", typeof(List<CollectionStatus>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionStatuses());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Collection Status")]
         [SwaggerResponse(204, "The Collection Status was updated successfully.")]
-        [SwaggerResponse(400, "No Collection Status was found with the provided ID.")]
+        [SwaggerResponse(404, "No Collection Status was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionStatus)
         {
             if (_readService.GetCollectionStatus(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateCollectionStatus(id, collectionStatus);
 

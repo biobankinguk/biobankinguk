@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers
@@ -23,6 +24,7 @@ namespace Directory.Controllers
         }
 
         [SwaggerOperation("List of all Access Conditions")]
+        [SwaggerResponse(200, "All Access Conditions", typeof(List<AccessCondition>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAccessConditions());
@@ -52,12 +54,12 @@ namespace Directory.Controllers
 
         [SwaggerOperation("Updates an existing Access Condition")]
         [SwaggerResponse(204, "The Access Condition was updated successfully.")]
-        [SwaggerResponse(400, "No Access Condition was found with the provided ID.")]
+        [SwaggerResponse(404, "No Access Condition was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
             if (_readService.GetAccessCondition(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateAccessCondition(id, collectionPoint);
 

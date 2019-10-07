@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Service Offerings")]
+        [SwaggerResponse(200, "All Service Offerings", typeof(List<ServiceOffering>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListServiceOfferings());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Service Offering")]
         [SwaggerResponse(204, "The Service Offering was updated successfully.")]
-        [SwaggerResponse(400, "No Service Offering was found with the provided ID.")]
+        [SwaggerResponse(404, "No Service Offering was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto serviceOffering)
         {
             if (_readService.GetServiceOffering(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateServiceOffering(id, serviceOffering);
 

@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers
@@ -23,6 +24,7 @@ namespace Directory.Controllers
         }
 
         [SwaggerOperation("List of all Age Ranges")]
+        [SwaggerResponse(200, "All Age Ranges", typeof(List<AgeRange>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAgeRanges());
@@ -52,12 +54,12 @@ namespace Directory.Controllers
 
         [SwaggerOperation("Updates an existing Age Range")]
         [SwaggerResponse(204, "The Age Range was updated successfully.")]
-        [SwaggerResponse(400, "No Age Range was found with the provided ID.")]
+        [SwaggerResponse(404, "No Age Range was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
             if (_readService.GetAgeRange(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateAgeRange(id, collectionPoint);
 

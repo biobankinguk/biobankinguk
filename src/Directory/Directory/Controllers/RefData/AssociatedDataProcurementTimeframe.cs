@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers
@@ -22,7 +23,8 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
-        [SwaggerOperation("List of all Associated Data Procurement Timeframe")]
+        [SwaggerOperation("List of all Associated Data Procurement Timeframes")]
+        [SwaggerResponse(200, "All Data Procurement Timeframes", typeof(List<AssociatedDataProcurementTimeframe>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAssociatedDataProcurementTimeframes());
@@ -52,12 +54,12 @@ namespace Directory.Controllers
 
         [SwaggerOperation("Updates an existing Associated Data Procurement Timeframe")]
         [SwaggerResponse(204, "The Associated Data Procurement Timeframe was updated successfully.")]
-        [SwaggerResponse(400, "No Associated Data Procurement Timeframe was found with the provided ID.")]
+        [SwaggerResponse(404, "No Associated Data Procurement Timeframe was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
             if (_readService.GetAssociatedDataProcurementTimeframe(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateAssociatedDataProcurementTimeframe(id, collectionPoint);
 

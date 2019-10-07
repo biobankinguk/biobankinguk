@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Material Types")]
+        [SwaggerResponse(200, "All Material Types", typeof(List<MaterialType>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListMaterialTypes());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Material Type")]
         [SwaggerResponse(204, "The Material Type was updated successfully.")]
-        [SwaggerResponse(400, "No Material Type was found with the provided ID.")]
+        [SwaggerResponse(404, "No Material Type was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
         {
             if (_readService.GetMaterialType(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateMaterialType(id, materialType);
 

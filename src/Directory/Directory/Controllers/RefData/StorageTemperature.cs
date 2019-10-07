@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Storage Temperatures")]
+        [SwaggerResponse(200, "All Storage Temperatures", typeof(List<StorageTemperature>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListStorageTemperatures());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Storage Temperature")]
         [SwaggerResponse(204, "The Storage Temperature was updated successfully.")]
-        [SwaggerResponse(400, "No Storage Temperature was found with the provided ID.")]
+        [SwaggerResponse(404, "No Storage Temperature was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto storageTemperature)
         {
             if (_readService.GetStorageTemperature(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateStorageTemperature(id, storageTemperature);
 

@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers
@@ -22,7 +23,8 @@ namespace Directory.Controllers
             _writeService = writeService;
         }
 
-        [SwaggerOperation("List of all HtaStatuses")]
+        [SwaggerOperation("List of all HTA Statuses")]
+        [SwaggerResponse(200, "All HTA Statuses", typeof(List<HtaStatus>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListHtaStatuses());
@@ -52,12 +54,12 @@ namespace Directory.Controllers
 
         [SwaggerOperation("Updates an existing HtaStatus")]
         [SwaggerResponse(204, "The HtaStatus was updated successfully.")]
-        [SwaggerResponse(400, "No HtaStatus was found with the provided ID.")]
+        [SwaggerResponse(404, "No HtaStatus was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
             if (_readService.GetHtaStatus(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateHtaStatus(id, collectionPoint);
 

@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Sexes")]
+        [SwaggerResponse(200, "All Sexes", typeof(List<Sex>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListSexes());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Sex")]
         [SwaggerResponse(204, "The Sex was updated successfully.")]
-        [SwaggerResponse(400, "No Sex was found with the provided ID.")]
+        [SwaggerResponse(404, "No Sex was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto sex)
         {
             if (_readService.GetSex(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateSex(id, sex);
 

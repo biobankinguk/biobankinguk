@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Funders")]
+        [SwaggerResponse(200, "All Funders", typeof(List<Funder>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListFunders());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Funder")]
         [SwaggerResponse(204, "The Funder was updated successfully.")]
-        [SwaggerResponse(400, "No Funder was found with the provided ID.")]
+        [SwaggerResponse(404, "No Funder was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto funder)
         {
             if (_readService.GetFunder(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateFunder(id, funder);
 

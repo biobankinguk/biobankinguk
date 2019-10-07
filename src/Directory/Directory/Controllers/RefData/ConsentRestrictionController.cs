@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Consent Restrictions")]
+        [SwaggerResponse(200, "All Consent Restrictions", typeof(List<ConsentRestriction>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListConsentRestrictions());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Consent Restriction")]
         [SwaggerResponse(204, "The Consent Restriction was updated successfully.")]
-        [SwaggerResponse(400, "No Consent Restriction was found with the provided ID.")]
+        [SwaggerResponse(404, "No Consent Restriction was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto consentRestriction)
         {
             if (_readService.GetConsentRestriction(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateConsentRestriction(id, consentRestriction);
 

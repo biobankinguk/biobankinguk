@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -22,7 +23,8 @@ namespace Directory.Controllers.RefData
             _writeService = writeService;
         }
 
-        [SwaggerOperation("List of all Country")]
+        [SwaggerOperation("List of all Countries")]
+        [SwaggerResponse(200, "All Countries", typeof(List<Country>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCountries());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Country")]
         [SwaggerResponse(204, "The Country was updated successfully.")]
-        [SwaggerResponse(400, "No Country was found with the provided ID.")]
+        [SwaggerResponse(404, "No Country was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto country)
         {
             if (_readService.GetCountry(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateCountry(id, country);
 

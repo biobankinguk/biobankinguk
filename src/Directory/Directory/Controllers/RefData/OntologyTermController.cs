@@ -3,6 +3,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -22,6 +23,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Ontology Terms")]
+        [SwaggerResponse(200, "All Ontology Terms", typeof(List<OntologyTerm>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListOntologyTerms());
@@ -51,12 +53,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Ontology Term")]
         [SwaggerResponse(204, "The Ontology Term was updated successfully.")]
-        [SwaggerResponse(400, "No Ontology Term was found with the provided ID.")]
+        [SwaggerResponse(404, "No Ontology Term was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] OntologyTerm ontologyTerm)
         {
             if (_readService.GetOntologyTerm(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateOntologyTerm(id, ontologyTerm);
 

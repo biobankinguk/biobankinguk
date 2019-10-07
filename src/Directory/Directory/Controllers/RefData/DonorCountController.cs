@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Donor Counts")]
+        [SwaggerResponse(200, "All Donor Counts", typeof(List<DonorCount>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListDonorCounts());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Donor Count")]
         [SwaggerResponse(204, "The Donor Count was updated successfully.")]
-        [SwaggerResponse(400, "No Donor Count was found with the provided ID.")]
+        [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
         {
             if (_readService.GetDonorCount(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateDonorCount(id, donorCount);
 

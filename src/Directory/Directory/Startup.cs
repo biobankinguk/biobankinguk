@@ -69,7 +69,7 @@ namespace Directory
             //Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Biobanks Directory API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "UKCRC Tissue Directory API", Version = "v1" });
                 c.EnableAnnotations();
             });
 
@@ -106,7 +106,7 @@ namespace Directory
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Biobanks API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "UKCRC Tissue Directory API");
             });
         }
     }

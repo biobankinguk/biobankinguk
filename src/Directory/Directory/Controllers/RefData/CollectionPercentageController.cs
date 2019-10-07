@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Collection Percentages")]
+        [SwaggerResponse(200, "All Collection Percentages", typeof(List<CollectionPercentage>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionPercentages());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Collection Percentage")]
         [SwaggerResponse(204, "The Collection Percentage was updated successfully.")]
-        [SwaggerResponse(400, "No Collection Percentage was found with the provided ID.")]
+        [SwaggerResponse(404, "No Collection Percentage was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPercentage)
         {
             if (_readService.GetCollectionPercentage(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateCollectionPercentage(id, collectionPercentage);
 

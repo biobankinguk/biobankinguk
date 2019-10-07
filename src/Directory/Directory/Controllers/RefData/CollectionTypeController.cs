@@ -4,6 +4,7 @@ using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Directory.Controllers.RefData
@@ -23,6 +24,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Collection Types")]
+        [SwaggerResponse(200, "All Collection Types", typeof(List<CollectionType>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListCollectionTypes());
@@ -52,12 +54,12 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Updates an existing Collection Type")]
         [SwaggerResponse(204, "The Collection Type was updated successfully.")]
-        [SwaggerResponse(400, "No Collection Type was found with the provided ID.")]
+        [SwaggerResponse(404, "No Collection Type was found with the provided ID.")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionType)
         {
             if (_readService.GetCollectionType(id) is null)
-                return BadRequest();
+                return NotFound();
 
             await _writeService.UpdateCollectionType(id, collectionType);
 
