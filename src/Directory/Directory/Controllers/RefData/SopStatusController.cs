@@ -41,7 +41,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Creates a new Material Type")]
-        [SwaggerResponse(201, "The Material Type was created", typeof(MaterialType))]
+        [SwaggerResponse(201, "The Material Type was created", typeof(SopStatus))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sopStatus)

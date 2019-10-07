@@ -41,7 +41,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Creates a new Macroscopic Assessment")]
-        [SwaggerResponse(201, "The Macroscopic Assessment was created", typeof(HtaStatus))]
+        [SwaggerResponse(201, "The Macroscopic Assessment was created", typeof(MacroscopicAssessment))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto macroscopicAssessment)

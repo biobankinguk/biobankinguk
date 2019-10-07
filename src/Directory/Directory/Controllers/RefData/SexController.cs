@@ -41,7 +41,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Creates a new Sex")]
-        [SwaggerResponse(201, "The Sex was created", typeof(ServiceOffering))]
+        [SwaggerResponse(201, "The Sex was created", typeof(Sex))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sex)

@@ -28,7 +28,7 @@ namespace Directory.Controllers.RefData
            => Ok(await _readService.ListDonorCounts());
 
         [SwaggerOperation("Get a single Donor Count by ID")]
-        [SwaggerResponse(200, "The Donor Count with the requested ID.", typeof(County))]
+        [SwaggerResponse(200, "The Donor Count with the requested ID.", typeof(DonorCount))]
         [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)

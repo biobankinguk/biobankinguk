@@ -27,7 +27,7 @@ namespace Directory.Controllers.RefData
            => Ok(await _readService.ListOntologyTerms());
 
         [SwaggerOperation("Get a single Ontology Term by ID")]
-        [SwaggerResponse(200, "The Ontology Term with the requested ID.", typeof(MaterialType))]
+        [SwaggerResponse(200, "The Ontology Term with the requested ID.", typeof(OntologyTerm))]
         [SwaggerResponse(404, "No Ontology Term was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)

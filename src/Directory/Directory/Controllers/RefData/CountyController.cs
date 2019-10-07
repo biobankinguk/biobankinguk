@@ -41,7 +41,7 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Creates a new County")]
-        [SwaggerResponse(201, "The County was created", typeof(Country))]
+        [SwaggerResponse(201, "The County was created", typeof(County))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto county)
