@@ -10,6 +10,7 @@ using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,6 +44,11 @@ namespace Directory
             services.AddControllers();
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
+            // ClientApp
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
 
             // Auth
             services.AddAuthentication() // DO NOT set a default; IdentityServer does that
@@ -62,18 +68,18 @@ namespace Directory
                 .UseLazyLoadingProxies()
                 .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
-            //service layer
+            // Service layer
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
 
-            //Swagger
+            // Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UKCRC Tissue Directory API", Version = "v1" });
                 c.EnableAnnotations();
             });
 
-            //Other third party
+            // Other third party
             services.AddAutoMapper(typeof(RefDataBaseDtoProfile));
         }
 
@@ -88,8 +94,8 @@ namespace Directory
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
@@ -104,9 +110,16 @@ namespace Directory
             });
 
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUI(c => c.SwaggerEndpoint(
+                "/swagger/v1/swagger.json",
+                "UKCRC Tissue Directory API"));
+
+            app.UseSpa(spa =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "UKCRC Tissue Directory API");
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                    spa.UseReactDevelopmentServer(npmScript: "start");
             });
         }
     }
