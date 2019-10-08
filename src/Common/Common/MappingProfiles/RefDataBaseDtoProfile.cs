@@ -24,7 +24,8 @@ namespace Common.MappingProfiles
             CreateMap<RefDataBaseDto, Funder>();
             CreateMap<SortedRefDataBaseDto, HtaStatus>();
             CreateMap<RefDataBaseDto, MacroscopicAssessment>();
-            CreateMap<SortedRefDataBaseDto, MaterialType>();
+            CreateMap<SortedRefDataBaseDto, MaterialType>();//TODO expand this out with new DTO structure
+            CreateMap<RefDataBaseDto, MaterialTypeGroup>();
             // CreateMap<OntologyTermDto, OntologyTerm>(); //TODO expand this out with an Ontology Term DTO, but also note this will be ultimately redundant with the move to OMOP
             CreateMap<SortedRefDataBaseDto, ServiceOffering>();
             CreateMap<SortedRefDataBaseDto, Sex>();
