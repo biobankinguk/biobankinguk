@@ -1,0 +1,19 @@
+{
+  "data": [
+    {
+      "value": "Fluid Sample"
+    },
+    {
+      "value": "Tissue Sample"
+    },
+    {
+      "value": "Extracted Sample"
+    },
+    {
+      "value": "Extracted Sample:Blood"
+    },
+    {
+      "value": "Extracted Sample:NonBlood"
+    }
+  ]
+    }
