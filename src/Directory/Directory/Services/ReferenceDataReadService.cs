@@ -188,6 +188,16 @@ namespace Directory.Services
 
         #endregion
 
+        #region MaterialTypeGroup
+
+        public async Task<ICollection<MaterialTypeGroup>> ListMaterialTypeGroups()
+            => await _context.MaterialTypeGroups.ToListAsync();
+
+        public async Task<MaterialTypeGroup> GetMaterialTypeGroup(int id)
+            => await _context.MaterialTypeGroups.FindAsync(id);
+
+        #endregion
+
         #region OntologyTerm
 
         public async Task<ICollection<OntologyTerm>> ListOntologyTerms()
@@ -238,7 +248,7 @@ namespace Directory.Services
 
         #endregion
 
-        
+
 
     }
 }

@@ -353,6 +353,23 @@ namespace Directory.Services
 
         #endregion
 
+        #region MaterialTypeGroup
+
+        public async Task<MaterialTypeGroup> CreateMaterialTypeGroup(RefDataBaseDto materialTypeGroup)
+            => await CreateRefData(_mapper.Map<MaterialTypeGroup>(materialTypeGroup));
+
+        public async Task<MaterialTypeGroup> UpdateMaterialTypeGroup(int id, RefDataBaseDto materialTypeGroup)
+        {
+            var entity = _mapper.Map<MaterialTypeGroup>(materialTypeGroup);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
+
+        public async Task DeleteMaterialTypeGroup(int id)
+            => await DeleteRefData<MaterialTypeGroup>(id);
+
+        #endregion
+
         #region OntologyTerm
 
         public async Task<OntologyTerm> CreateOntologyTerm(OntologyTerm ontologyTerm)
@@ -447,6 +464,9 @@ namespace Directory.Services
             => await DeleteRefData<StorageTemperature>(id);
 
         #endregion
+
+
+
     }
 }
 

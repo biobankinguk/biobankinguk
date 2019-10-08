@@ -60,6 +60,9 @@ namespace Directory.Contracts
         Task<MaterialType> CreateMaterialType(SortedRefDataBaseDto materialType);
         Task<MaterialType> UpdateMaterialType(int id, SortedRefDataBaseDto materialType);
         Task DeleteMaterialType(int id);
+        Task<MaterialTypeGroup> CreateMaterialTypeGroup(RefDataBaseDto materialTypeGroup);
+        Task<MaterialTypeGroup> UpdateMaterialTypeGroup(int id, RefDataBaseDto materialTypeGroup);
+        Task DeleteMaterialTypeGroup(int id);
         Task<OntologyTerm> CreateOntologyTerm(OntologyTerm ontologyTerm);
         Task<OntologyTerm> UpdateOntologyTerm(string id, OntologyTerm ontologyTerm);
         Task DeleteOntologyTerm(string id);
