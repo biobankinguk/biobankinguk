@@ -1,9 +1,22 @@
-import { UserManager } from "oidc-client";
-import { ClientConfig, Results } from "../constants/oidc";
+import { UserManager, WebStorageStateStore } from "oidc-client";
+import { getBaseUrl } from "../services/DomDataService";
+import { ApplicationName, Paths, Results } from "../constants/oidc";
 
 const args = returnUrl => ({
   useReplaceToNavigate: true,
   data: { returnUrl }
+});
+
+export const getClientConfig = () => ({
+  authority: process.env.REACT_APP_JWT_AUTHORITY,
+  client_id: "directory-webapp",
+  redirect_uri: `${getBaseUrl()}${Paths.LoginCallback}`,
+  response_type: "code",
+  scope: "openid profile refdata",
+  post_logout_redirect_uri: `${getBaseUrl()}${Paths.LogoutCallback}`,
+  automaticSilentRenew: true,
+  includeIdTokenInSilentRenew: true,
+  userStore: new WebStorageStateStore({ prefix: ApplicationName })
 });
 
 /**
@@ -19,7 +32,7 @@ export class AuthorizeService {
   _isAuthenticated = false;
 
   constructor() {
-    this.userManager = new UserManager(ClientConfig);
+    this.userManager = new UserManager(getClientConfig());
     this.userManager.removeUser().then(() => this.updateState(undefined));
   }
 

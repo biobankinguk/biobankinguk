@@ -13,10 +13,13 @@ const Greeter = () => {
 
 const App = () => (
   <Switch>
+    <Route exact path="/">
+      Hello World
+    </Route>
     <AuthorizeRoute path="/protected" component={Protected} />
     <Route path={AuthPaths.Prefix} component={AuthRoutes} />
     <Route path="/Hello/:name" component={Greeter} />
-    <Route exact path="/">Hello World</Route>
+    <Route path="*">404: Not Found</Route> {/* TODO: sexy */}
   </Switch>
 );
 

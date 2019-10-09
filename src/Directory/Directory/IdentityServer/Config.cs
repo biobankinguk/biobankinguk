@@ -33,19 +33,40 @@ namespace Directory.IdentityServer
         public static IEnumerable<Client> GetClients(IConfiguration config)
             => new Client[]
             {
-                // TODO: Clients will need to be dynamically stored later
+                // TODO: Some Clients will need to be dynamically stored later
                 // as theoretically all installs of vendor apps should
                 // register as clients
+
+                // Client-side WebApp for the (new) Directory
+                new Client
+                {
+                    ClientId = TrustedClientIds.DirectoryWebApp,
+                    ClientName = "UKCRC Tissue Directory",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireConsent = false,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+
+                    RedirectUris = { "https://localhost:5001/auth/signin-oidc" },
+                    PostLogoutRedirectUris = { "https://localhost:5001/auth/signout-callback-oidc" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        ApiResourceKeys.RefData
+                    }
+                },
 
                 // Submission API itself as Client
                 new Client
                 {
-                    ClientId = TrustedClientIds.Upload,
+                    ClientId = TrustedClientIds.UploadApi,
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
 
                     ClientSecrets =
                     {
-                        new Secret(config[$"ClientSecrets:{TrustedClientIds.Upload}"].Sha256())
+                        new Secret(config[$"ClientSecrets:{TrustedClientIds.UploadApi}"].Sha256())
                     },
 
                     AllowedScopes = { ApiResourceKeys.RefData }
@@ -62,7 +83,7 @@ namespace Directory.IdentityServer
                     ClientSecrets =
                     {
                         // Don't reuse secrets for realsies!
-                        new Secret(config[$"ClientSecrets:{TrustedClientIds.Upload}"].Sha256())
+                        new Secret(config[$"ClientSecrets:{TrustedClientIds.UploadApi}"].Sha256())
                     },
 
                     RedirectUris = { "https://localhost:5201/signin-oidc" },
@@ -80,8 +101,6 @@ namespace Directory.IdentityServer
                 // Framework Directory
                 
                 // Submission Aggregator
-
-                // (Frontend SPA for this app?)
 
                 // Any other first party services?
 
