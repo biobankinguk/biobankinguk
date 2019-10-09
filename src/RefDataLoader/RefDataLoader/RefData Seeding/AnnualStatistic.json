@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "value": "Internal",
+      "group": "Access Requests Received"
+    },
+    {
+      "value": "External",
+      "group": "Access Requests Received"
+    },
+    {
+      "value": "Commercial",
+      "group": "Access Requests Received"
+    },
+    {
+      "value": "Internal",
+      "group": "Access Requests Approved"
+    },
+    {
+      "value": "External",
+      "group": "Access Requests Approved"
+    },
+    {
+      "value": "Commercial",
+      "group": "Access Requests Approved"
+    }
+  ]
+}

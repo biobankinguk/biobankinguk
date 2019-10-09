@@ -5,5 +5,7 @@
     /// </summary>
     public class StorageTemperature : SortedBaseReferenceDatum
     {
+        public string? Minimum { get; set; }
+        public string? Maximum { get; set; }
     }
 }
