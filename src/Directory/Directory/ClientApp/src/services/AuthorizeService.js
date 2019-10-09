@@ -1,5 +1,5 @@
 import { UserManager } from "oidc-client";
-import { ClientConfig, AuthenticationResultStatus } from "../constants/oidc";
+import { ClientConfig, Results } from "../constants/oidc";
 
 const args = returnUrl => ({
   useReplaceToNavigate: true,
@@ -74,7 +74,7 @@ export class AuthorizeService {
       const silentUser = await this.userManager.signinSilent(args());
       this.updateState(silentUser);
       return {
-        status: AuthenticationResultStatus.Success,
+        status: Results.Success,
         state: { returnUrl }
       };
     } catch (silentError) {
@@ -84,10 +84,10 @@ export class AuthorizeService {
       // Silent sign in failed; redirect to the IdP for traditional sign in flow
       try {
         await this.userManager.signinRedirect(args(returnUrl));
-        return { status: AuthenticationResultStatus.Redirect };
+        return { status: Results.Redirect };
       } catch (signInError) {
         console.log("Sign In Error: ", signInError);
-        return { status: AuthenticationResultStatus.Fail, signInError };
+        return { status: Results.Fail, signInError };
       }
     }
   };
@@ -100,14 +100,14 @@ export class AuthorizeService {
       const user = await this.userManager.signinCallback(url);
       this.updateState(user);
       return {
-        status: AuthenticationResultStatus.Success,
+        status: Results.Success,
         state: user && user.state
       };
     } catch (error) {
       const generalError = "There was an error signing in";
       console.log(generalError, ": ", error);
       return {
-        status: AuthenticationResultStatus.Fail,
+        status: Results.Fail,
         message: `${generalError}.`
       };
     }
@@ -120,10 +120,10 @@ export class AuthorizeService {
     // PopUp SignOut is an option here, but we don't do it.
     try {
       await this.userManager.signoutRedirect(args(returnUrl));
-      return { status: AuthenticationResultStatus.Redirect };
+      return { status: Results.Redirect };
     } catch (signOutError) {
       console.log("Sign Out Error: ", signOutError);
-      return { status: AuthenticationResultStatus.Fail, signOutError };
+      return { status: Results.Fail, signOutError };
     }
   };
 
@@ -135,12 +135,12 @@ export class AuthorizeService {
       const response = await this.userManager.signoutCallback(url);
       this.updateState(null);
       return {
-        status: AuthenticationResultStatus.Success,
+        status: Results.Success,
         state: response && response.data
       };
     } catch (error) {
       console.log("There was an error signing out:", error);
-      return { status: AuthenticationResultStatus.Fail, error };
+      return { status: Results.Fail, error };
     }
   };
 

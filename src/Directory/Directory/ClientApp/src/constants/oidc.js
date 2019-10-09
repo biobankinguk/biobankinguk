@@ -15,8 +15,25 @@ export const ClientConfig = {
   userStore: new WebStorageStateStore({ prefix: ApplicationName })
 };
 
-export const AuthenticationResultStatus = {
-    Redirect: 'redirect',
-    Success: 'success',
-    Fail: 'fail'
+export const Results = {
+  Redirect: "redirect",
+  Success: "success",
+  Fail: "fail"
+};
+
+export const QueryParams = {
+  ReturnUrl: "returnUrl",
+  Message: "message"
+};
+
+export const Actions = {
+  Login: "login"
+};
+
+const local = "/auth";
+const idp = "/Account";
+export const Paths = {
+  Prefix: local,
+  Login: `${local}/${Actions.Login}`,
+  IdpRegister: `${idp}/Register`
 };
