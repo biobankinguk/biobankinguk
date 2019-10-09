@@ -2,58 +2,42 @@
   "data": [
     {
       "value": "Neonate (0 - 1 month)",
-      "sortOrder": 2,
-      "MinMonth": "0",
-      "MaxMonth":  "0"
+      "sortOrder": 2
     },
 
     {
       "value": "Infant (1 month - 2 years)",
-      "sortOrder": 3,
-      "MinMonth": "1",
-      "MaxMonth": "23"
+      "sortOrder": 3
     },
 
     {
       "value": "Young child (2 - 6 years)",
-      "sortOrder": 4,
-      "MinMonth": "24",
-      "MaxMonth": "71"
+      "sortOrder": 4
     },
 
     {
       "value": "Child (6 - 12 years)",
-      "sortOrder": 5,
-      "MinMonth": "72",
-      "MaxMonth": "143"
+      "sortOrder": 5
     },
 
     {
       "value": "Adolescent (12 - 18 years)",
-      "sortOrder": 6,
-      "MinMonth": "144",
-      "MaxMonth": "215"
+      "sortOrder": 6
     },
 
     {
       "value": "Young adult (18 - 40 years)",
-      "sortOrder": 7,
-      "MinMonth": "216",
-      "MaxMonth": "479"
+      "sortOrder": 7
     },
 
     {
       "value": "Adult (> 40 years)",
-      "sortOrder": 8,
-      "MinMonth": "480",
-      "MaxMonth": "1800"
+      "sortOrder": 8
     },
 
     {
       "value": "Fetus (0 - -9 months)",
-      "sortOrder": 1,
-      "MinMonth": "-9",
-      "MaxMonth": "-1"
+      "sortOrder": 1
     },
 
     {

@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "value": "Immediate",
+      "sortOrder": 1
+    },
+
+    {
+      "value": "0 - 3 months",
+      "sortOrder": 2
+    },
+
+    {
+      "value": "3 - 6 months",
+      "sortOrder": 3
+    },
+
+    {
+      "value": "> 6 months",
+      "sortOrder": 4
+    }
+  ]
+}
