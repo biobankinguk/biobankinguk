@@ -4,7 +4,7 @@ import { getBaseUrl } from "../services/DomDataService";
 export const ApplicationName = "UKCRC Tissue Directory";
 
 export const ClientConfig = {
-  authority: process.env.REACT_APP_JWT_AUTHORITY,
+  authority: process.env.REACT_APP_JWT_AUTHORITY || "https://localhost:5001",
   client_id: "directory-webapp",
   redirect_uri: `${getBaseUrl()}/callback`,
   response_type: "code",
