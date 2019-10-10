@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "value": "Affected",
+      "sortOrder": 1
+    },
+    {
+      "value": "Non-affected",
+      "sortOrder": 2
+    },
+    {
+      "value": "Not applicable",
+      "sortOrder": 3
+    }
+  ]
+}

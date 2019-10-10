@@ -1,0 +1,54 @@
+{
+  "data": [
+    {
+      "value": "Case-control",
+      "sortOrder": 3
+    },
+
+    {
+      "value": "Cohort",
+      "sortOrder": 4
+    },
+
+    {
+      "value": "Cross-sectional",
+      "sortOrder": 5
+    },
+
+    {
+      "value": "Longitudinal",
+      "sortOrder": 6
+    },
+
+    {
+      "value": "Twin-study",
+      "sortOrder": 9
+    },
+
+    {
+      "value": "Quality control",
+      "sortOrder": 8
+    },
+
+    {
+      "value": "Population-based",
+      "sortOrder": 7
+    },
+
+    {
+      "value": "Disease specific",
+      "sortOrder": 1
+    },
+
+    {
+      "value": "Birth cohort",
+      "sortOrder": 2
+    },
+
+    {
+      "id": 10,
+      "value": "Clinical Trial",
+      "sortOrder": 10
+    }
+  ]
+}

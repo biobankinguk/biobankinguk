@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "value": "Pre-diagnosis",
+      "sortOrder": 1
+    },
+
+    {
+      "value": "During diagnosis",
+      "sortOrder": 3
+    },
+
+    {
+      "value": "Post-diagnosis",
+      "sortOrder": 2
+    },
+
+    {
+      "value": "Multiple points in patient pathway",
+      "sortOrder": 4
+    }
+  ]
+}

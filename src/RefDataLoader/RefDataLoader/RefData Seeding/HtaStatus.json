@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "sortOrder": 2,
+      "value": "Begun before the Human Tissue Acts"
+    },
+
+    {
+      "sortOrder": 3,
+      "value": "Begun after the Human Tissue Acts"
+    },
+
+    {
+      "sortOrder": 4,
+      "value": "Not applicable"
+    },
+
+    {
+      "sortOrder": 1,
+      "value": "Finished before the Human Tissue Acts"
+    }
+  ]
+}
