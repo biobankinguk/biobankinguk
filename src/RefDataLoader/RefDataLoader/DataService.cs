@@ -27,8 +27,9 @@ namespace RefDataLoader
 
         public void SeedData()
         {
+            PrepareHttpClient();
             // Read Data into DTOs for each refData type
-
+            PrepData("AccessCondition.json");
 
             // POST in the correct order (e.g. groups first) to the API
 
@@ -37,11 +38,11 @@ namespace RefDataLoader
 
 
 
-        private static void PrepareHttpClient()
+        private void PrepareHttpClient()
         {
             Client = new HttpClient
             {
-                BaseAddress = new Uri(Config["baseuri"])
+                BaseAddress = new Uri(_config.Baseuri)
             };
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Accept.Add(
@@ -61,40 +62,27 @@ namespace RefDataLoader
 
                 Console.WriteLine(
                     $"MaterialTypeGroup {materialTypeGroup}" +
-                    $" ({i} / {_totalRecords}):" +
+                    $" ({i} / {data.Count}):" +
                     $" Post {(result ? "successful" : "failed")}");
             }
 
             timer.Stop();
             Console.WriteLine($"MaterialTypeGroup Posts took: {timer.Elapsed}");
-            Console.WriteLine($"Running time so far: {Timer.Elapsed}");
+            Console.WriteLine($"Running time so far: {timer.Elapsed}");
         }
 
         private List<RefDataBaseDto> PrepData(string datafile)
         {
             var timer = Stopwatch.StartNew();
 
+            var o = JsonConvert.DeserializeObject<List<RefDataBaseDto>>(datafile);
+
             //abuse config builders to load the data ;)
             var data = new ConfigurationBuilder()
                 .AddJsonFile(datafile, optional: false)
                 .Build();
 
-            var values = data.GetSection("MaterialTypeGroup")
-                .GetChildren()
-                .AsEnumerable()
-                .Select(x => x.Value)
-                .ToList();
-
-            _totalRecords = values.Count;
-
-            var result = values.ToList();
-
-            timer.Stop();
-            Console.WriteLine($"MaterialTypeGroup data prepared: {_totalRecords} record(s).");
-            Console.WriteLine($"Preparation took: {timer.Elapsed}");
-            Console.WriteLine($"Running time so far: {Program.Timer.Elapsed}");
-
-            return result;
+            return o;
         }
 
         private static async Task<bool> SendJsonAsync(string endpoint, string data)

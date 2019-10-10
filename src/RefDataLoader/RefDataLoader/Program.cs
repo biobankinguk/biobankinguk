@@ -35,7 +35,8 @@ namespace RefDataLoader
 
             //Settings
             services.Configure<ApiSettings>(
-               Configuration.GetSection("IntegrationSettings"));
+               Configuration.GetSection("ApiSettings"));
+            services.AddTransient<IDataService, DataService>();
 
 
             return services.BuildServiceProvider();
