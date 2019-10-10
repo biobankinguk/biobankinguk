@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAsync } from "react-async";
 import { Route, Redirect } from "react-router-dom";
-import authorizeService from "../../services/AuthorizeService";
+import authorizeService from "../../services/authorize-service";
 import { Paths, QueryParams } from "../../constants/oidc";
 
 const AuthorizeRoute = ({ component: Component, ...rest }) => {
-  const [authenticated, setAuthenticated] = useState(false);
-  const { isPending, reload } = useAsync({
-    promiseFn: authorizeService.isAuthenticated,
-    onResolve: data => {
-      console.log(data);
-      setAuthenticated(data);
-    }
-  });
+  const { data, isPending, isRejected, reload } = useAsync(
+    authorizeService.isAuthenticated
+  );
 
   useEffect(() => {
     const subId = authorizeService.subscribe(() => {
@@ -31,7 +26,7 @@ const AuthorizeRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={p => {
-        if (authenticated) return <Component {...p} />;
+        if (data) return <Component {...p} />;
         return <Redirect to={redirectUrl} />;
       }}
     />

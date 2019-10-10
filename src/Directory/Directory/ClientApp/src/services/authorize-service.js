@@ -1,5 +1,5 @@
 import { UserManager, WebStorageStateStore } from "oidc-client";
-import { getBaseUrl } from "../services/DomDataService";
+import { getBaseUrl } from "./dom-service";
 import { ApplicationName, Paths, Results } from "../constants/oidc";
 
 const args = returnUrl => ({
@@ -7,16 +7,19 @@ const args = returnUrl => ({
   data: { returnUrl }
 });
 
-export const getClientConfig = () => ({
+const getClientConfig = () => ({
   authority: process.env.REACT_APP_JWT_AUTHORITY,
   client_id: "directory-webapp",
   redirect_uri: `${getBaseUrl()}${Paths.LoginCallback}`,
   response_type: "code",
+  response_mode: "query",
   scope: "openid profile refdata",
   post_logout_redirect_uri: `${getBaseUrl()}${Paths.LogoutCallback}`,
   automaticSilentRenew: true,
   includeIdTokenInSilentRenew: true,
-  userStore: new WebStorageStateStore({ prefix: ApplicationName })
+  userStore: new WebStorageStateStore({
+    prefix: ApplicationName
+  })
 });
 
 /**
@@ -29,11 +32,15 @@ export class AuthorizeService {
   _callbacks = [];
   _nextSubscriptionId = 0;
   _user = null;
-  _isAuthenticated = false;
 
   constructor() {
-    this.userManager = new UserManager(getClientConfig());
-    this.userManager.removeUser().then(() => this.updateState(undefined));
+    if (this.userManager === undefined) {
+      this.userManager = new UserManager(getClientConfig());
+      this.userManager.events.addUserSignedOut(async () => {
+        await this.userManager.removeUser();
+        this.updateState(undefined);
+      });
+    }
   }
 
   /**
@@ -49,7 +56,6 @@ export class AuthorizeService {
    */
   updateState = user => {
     this._user = user;
-    this._isAuthenticated = !!this.user;
     this.notifySubscribers();
   };
 
@@ -79,7 +85,7 @@ export class AuthorizeService {
   /**
    * Sign in via OIDC
    */
-  signIn = async returnUrl => {
+  signIn = async ({ returnUrl }) => {
     try {
       // We try to see if we can authenticate the user silently.
       // This happens when the user is already logged in on the IdP
@@ -108,7 +114,7 @@ export class AuthorizeService {
   /**
    * Complete an OIDC SignIn
    */
-  completeSignIn = async url => {
+  completeSignIn = async ({ url }) => {
     try {
       const user = await this.userManager.signinCallback(url);
       this.updateState(user);
