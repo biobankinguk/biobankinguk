@@ -2,17 +2,27 @@ import React from "react";
 import { Results } from "../../constants/oidc";
 import { useAsync, IfPending, IfFulfilled, IfRejected } from "react-async";
 import authorizeService from "../../services/authorize-service";
-import LoginFailure from "./LoginFailure";
+import GeneralError from "../GeneralError";
 import { getReturnUrl } from "../../services/dom-service";
 
-const LoginCallback = () => {
+export const CallbackTypes = {
+  Login: "Login",
+  Logout: "Logout"
+};
+
+const AuthCallback = ({ callbackType }) => {
   const url = window.location.href;
-  const state = useAsync(authorizeService.completeSignIn, { url });
+  const state = useAsync(
+    callbackType === CallbackTypes.Login
+      ? authorizeService.completeSignIn
+      : authorizeService.completeSignOut,
+    { url }
+  );
 
   return (
     <>
       <IfPending state={state}>
-        <div>Completing Login...</div>
+        <div>Completing {callbackType}...</div> {/* TODO: sexy */}
       </IfPending>
       <IfFulfilled state={state}>
         {({ status, state, message }) => {
@@ -23,7 +33,7 @@ const LoginCallback = () => {
               window.location.replace(getReturnUrl(state));
               break;
             case Results.Fail:
-              return <LoginFailure message={message} />;
+              return <GeneralError message={message} />;
             default:
               throw new Error(`Invalid Auth Result: ${status}`);
           }
@@ -31,10 +41,15 @@ const LoginCallback = () => {
         }}
       </IfFulfilled>
       <IfRejected state={state}>
-        {error => <LoginFailure message="An error occurred" error={error} />}
+        {error => (
+          <GeneralError
+            message="An authorization error occurred"
+            error={error}
+          />
+        )}
       </IfRejected>
     </>
   );
 };
 
-export default LoginCallback;
+export default AuthCallback;

@@ -5,7 +5,7 @@ import authorizeService from "../../services/authorize-service";
 import { Paths, QueryParams } from "../../constants/oidc";
 
 const AuthorizeRoute = ({ component: Component, ...rest }) => {
-  const { data, isPending, isRejected, reload } = useAsync(
+  const { data, isPending, reload } = useAsync(
     authorizeService.isAuthenticated
   );
 

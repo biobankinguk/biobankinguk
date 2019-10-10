@@ -135,7 +135,7 @@ export class AuthorizeService {
   /**
    * SignOut via OIDC
    */
-  signOut = async returnUrl => {
+  signOut = async ({ returnUrl }) => {
     // PopUp SignOut is an option here, but we don't do it.
     try {
       await this.userManager.signoutRedirect(args(returnUrl));
@@ -149,7 +149,7 @@ export class AuthorizeService {
   /**
    * Complete an OIDC SignOut
    */
-  completeSignOut = async url => {
+  completeSignOut = async ({ url }) => {
     try {
       const response = await this.userManager.signoutCallback(url);
       this.updateState(null);

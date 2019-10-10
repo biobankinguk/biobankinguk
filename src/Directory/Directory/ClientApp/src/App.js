@@ -1,11 +1,16 @@
 import React from "react";
-import { Route, Switch, useParams } from "react-router-dom";
+import { Route, Switch, Link, useParams } from "react-router-dom";
 import AuthorizeRoute from "./components/auth/AuthorizeRoute";
 import { Paths as AuthPaths } from "./constants/oidc";
 import AuthRoutes from "./components/auth/AuthRoutes";
 
 // TODO: PoC only, remove
-const Protected = () => <div>Hello protected route.</div>;
+const Protected = () => (
+  <>
+    <div>Hello protected route.</div>
+    <Link to={AuthPaths.Logout}>Logout</Link>
+  </>
+);
 const Greeter = () => {
   const { name } = useParams();
   return <div>Hello {name}</div>;
