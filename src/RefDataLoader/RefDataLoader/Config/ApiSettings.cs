@@ -6,7 +6,7 @@ namespace Config
     /// </summary>
     public class ApiSettings
     {
-        public string url { get; set; }
+        public string Baseuri { get; set; }
         public string AccessCondition { get; set; }
     }
 }

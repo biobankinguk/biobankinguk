@@ -1,5 +1,14 @@
-﻿using System;
+﻿using Common.DTO;
+using Config;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,10 +17,84 @@ namespace RefDataLoader
     public class DataService : IDataService
     {
         public static HttpClient Client;
+        private readonly ApiSettings _config;
+
+        public DataService(IOptions<ApiSettings> options)
+        {
+            _config = options.Value;
+        }
+
 
         public void SeedData()
         {
+            // Read Data into DTOs for each refData type
 
+
+            // POST in the correct order (e.g. groups first) to the API
+
+
+        }
+
+
+
+        private static void PrepareHttpClient()
+        {
+            Client = new HttpClient
+            {
+                BaseAddress = new Uri(Config["baseuri"])
+            };
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
+        private async Task SubmitData(IList<string> data)
+        {
+            //We post ontologies individually.
+
+            var timer = Stopwatch.StartNew();
+            for (var i = 0; i < data.Count; i++)
+            {
+                var materialTypeGroup = data[i];
+
+                var result = await SendJsonAsync("MaterialTypeGroup", JsonConvert.SerializeObject(materialTypeGroup));
+
+                Console.WriteLine(
+                    $"MaterialTypeGroup {materialTypeGroup}" +
+                    $" ({i} / {_totalRecords}):" +
+                    $" Post {(result ? "successful" : "failed")}");
+            }
+
+            timer.Stop();
+            Console.WriteLine($"MaterialTypeGroup Posts took: {timer.Elapsed}");
+            Console.WriteLine($"Running time so far: {Timer.Elapsed}");
+        }
+
+        private List<RefDataBaseDto> PrepData(string datafile)
+        {
+            var timer = Stopwatch.StartNew();
+
+            //abuse config builders to load the data ;)
+            var data = new ConfigurationBuilder()
+                .AddJsonFile(datafile, optional: false)
+                .Build();
+
+            var values = data.GetSection("MaterialTypeGroup")
+                .GetChildren()
+                .AsEnumerable()
+                .Select(x => x.Value)
+                .ToList();
+
+            _totalRecords = values.Count;
+
+            var result = values.ToList();
+
+            timer.Stop();
+            Console.WriteLine($"MaterialTypeGroup data prepared: {_totalRecords} record(s).");
+            Console.WriteLine($"Preparation took: {timer.Elapsed}");
+            Console.WriteLine($"Running time so far: {Program.Timer.Elapsed}");
+
+            return result;
         }
 
         private static async Task<bool> SendJsonAsync(string endpoint, string data)
