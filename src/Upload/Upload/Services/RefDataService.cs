@@ -33,8 +33,8 @@ namespace Upload.Services
             var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = disco.TokenEndpoint,
-                ClientId = TrustedClientIds.Upload,
-                ClientSecret = _config[$"ClientSecrets:{TrustedClientIds.Upload}"],
+                ClientId = TrustedClientIds.UploadApi,
+                ClientSecret = _config[$"ClientSecrets:{TrustedClientIds.UploadApi}"],
 
                 Scope = ApiResourceKeys.RefData
             });
