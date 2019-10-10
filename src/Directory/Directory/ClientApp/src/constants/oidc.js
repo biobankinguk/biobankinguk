@@ -7,14 +7,8 @@ export const Results = {
 };
 
 export const QueryParams = {
-  ReturnUrl: "returnUrl",
-  Message: "message"
+  ReturnUrl: "returnUrl"
 };
-
-// export const Actions = {
-//   Login: "login",
-//   LoginCallback: "signin-oidc"
-// };
 
 const local = "/auth";
 const idp = "/Account";
