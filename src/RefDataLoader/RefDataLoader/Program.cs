@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace RefDataLoader
 {
@@ -11,11 +12,11 @@ namespace RefDataLoader
         public static IConfiguration Configuration;
 
         //todo figure out how to use fancy core 3.0 stuff to tidy this up
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var dataService = BuildDi()
                .GetService(typeof(IDataService)) as DataService;
-            dataService.SeedData();
+            await dataService.SeedData();
         }
 
         private static IServiceProvider BuildDi()

@@ -25,7 +25,7 @@ namespace RefDataLoader
         }
 
 
-        public void SeedData()
+        public async Task SeedData()
         {
             PrepareHttpClient();
 
@@ -37,14 +37,13 @@ namespace RefDataLoader
                 {
                     var refData = PrepData($@"RefDataSeeding/{s.Key}.json");
 
+                    await SubmitData(refData, s);
                 }
 
             }
 
             //TODO implement non standard RefData (to be done with relevant PBI due to DTO refactoring)
             //now handle the non standard objects/ones which have dependencies on groups
-
-            // POST in the correct order (e.g. groups first) to the API
 
 
         }
@@ -62,25 +61,25 @@ namespace RefDataLoader
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        private async Task SubmitData(IList<string> data, string endPoint)
+        private async Task SubmitData(IList<SortedRefDataBaseDto> data, KeyValuePair<string, string> refDataInfo)
         {
             //We post ontologies individually.
 
             var timer = Stopwatch.StartNew();
-            for (var i = 0; i < data.Count; i++)
+            var count = 1;
+            foreach (var refData in data)
             {
-                var materialTypeGroup = data[i];
-
-                var result = await SendJsonAsync(endPoint, JsonConvert.SerializeObject(materialTypeGroup));
+                var result = await SendJsonAsync(refDataInfo.Value, JsonConvert.SerializeObject(refData));
 
                 Console.WriteLine(
-                    $"MaterialTypeGroup {materialTypeGroup}" +
-                    $" ({i} / {data.Count}):" +
+                    $"Ref Data POST: {refDataInfo.Key}" +
+                    $" ({count} / {data.Count}):" +
                     $" Post {(result ? "successful" : "failed")}");
+                count++;
             }
 
             timer.Stop();
-            Console.WriteLine($"MaterialTypeGroup Posts took: {timer.Elapsed}");
+            Console.WriteLine($"Ref Data ({refDataInfo.Key}) Posts took: {timer.Elapsed}");
             Console.WriteLine($"Running time so far: {timer.Elapsed}");
         }
 
@@ -94,16 +93,24 @@ namespace RefDataLoader
 
         private static async Task<bool> SendJsonAsync(string endpoint, string data)
         {
-            var r = await Client.SendAsync(
-                new HttpRequestMessage
-                {
-                    Method = HttpMethod.Post,
+            try
+            {
+                var r = await Client.SendAsync(
+                    new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Post,
                     //Headers = { Authorization = new AuthenticationHeaderValue("Bearer", Config["BearerToken"]) }, //todo replace with token given by provider
                     RequestUri = new Uri(Client.BaseAddress, endpoint),
-                    Content = new StringContent(data, Encoding.UTF8, "application/json")
-                });
+                        Content = new StringContent(data, Encoding.UTF8, "application/json")
+                    });
 
-            return r.IsSuccessStatusCode;
+                return r.IsSuccessStatusCode;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("POST failed: " + e.Message); ;
+                return false;
+            }
         }
 
         private static async Task<string> GetJsonAsync(string endpoint)
@@ -121,6 +128,6 @@ namespace RefDataLoader
 
     public interface IDataService
     {
-        void SeedData();
+        Task SeedData();
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class AgeRangeController : Controller
     {
