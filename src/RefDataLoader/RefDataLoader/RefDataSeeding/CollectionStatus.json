@@ -1,5 +1,4 @@
-{
-  "data": [
+[
     {
       "value": "Not-started",
       "sortOrder": 1
@@ -15,4 +14,3 @@
       "sortOrder": 3
     }
   ]
-}

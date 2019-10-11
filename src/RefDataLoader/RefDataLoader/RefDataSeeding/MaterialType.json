@@ -1,5 +1,4 @@
-{
-  "MaterialType": [
+[
     {
       "Value": "(Breast) Milk",
       "MaterialTypeGroupNames": [
@@ -296,4 +295,3 @@
       ]
     }
   ]
-}

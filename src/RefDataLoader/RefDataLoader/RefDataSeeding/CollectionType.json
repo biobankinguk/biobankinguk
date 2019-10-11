@@ -1,5 +1,4 @@
-{
-  "data": [
+[
     {
       "value": "Case-control",
       "sortOrder": 3
@@ -50,5 +49,4 @@
       "value": "Clinical Trial",
       "sortOrder": 10
     }
-  ]
-}
+ ]

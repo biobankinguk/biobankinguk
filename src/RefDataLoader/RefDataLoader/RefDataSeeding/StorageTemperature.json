@@ -1,6 +1,5 @@
  // SAVE THIS FILE WITH UTF ENCODING!
-  {
-    "data": [
+[
       {
         "value": "Room temperature"
       },
@@ -20,4 +19,3 @@
         "value": "Liquid nitrogen"
       }
     ]
-  }

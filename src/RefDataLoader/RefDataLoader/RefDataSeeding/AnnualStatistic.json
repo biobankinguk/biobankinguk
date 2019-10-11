@@ -1,5 +1,4 @@
-{
-  "data": [
+ [
     {
       "value": "Internal",
       "group": "Access Requests Received"
@@ -25,4 +24,3 @@
       "group": "Access Requests Approved"
     }
   ]
-}

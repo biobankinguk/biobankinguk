@@ -1,5 +1,4 @@
-{
-  "data": [
+[
     {
       "value": "Biomarker datasets"
     },
@@ -55,4 +54,3 @@
       "value": "Donor Ethnicity"
     }
   ]
-}

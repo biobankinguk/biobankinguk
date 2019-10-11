@@ -1,5 +1,4 @@
-{
-  "data": [
+[
     {
       "value": "Pre-diagnosis",
       "sortOrder": 1
@@ -20,4 +19,3 @@
       "sortOrder": 4
     }
   ]
-}
