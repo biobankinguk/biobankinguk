@@ -1,11 +1,11 @@
 ﻿using Common.DTO;
 using Config;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -28,8 +28,21 @@ namespace RefDataLoader
         public void SeedData()
         {
             PrepareHttpClient();
-            // Read Data into DTOs for each refData type
-            PrepData("AccessCondition.json");
+
+            foreach(var s in _config.RefDataEndpoints)
+            {
+                var containsIrregularRefData = new List<string> { "AnnualStatistic", "County", "DonorCount", "MaterialType" }.Contains(s.Key, StringComparer.OrdinalIgnoreCase);
+
+                if (!containsIrregularRefData)
+                {
+                    var refData = PrepData($@"RefDataSeeding/{s.Key}.json");
+
+                }
+
+            }
+
+            //TODO implement non standard RefData (to be done with relevant PBI due to DTO refactoring)
+            //now handle the non standard objects/ones which have dependencies on groups
 
             // POST in the correct order (e.g. groups first) to the API
 
@@ -49,7 +62,7 @@ namespace RefDataLoader
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        private async Task SubmitData(IList<string> data)
+        private async Task SubmitData(IList<string> data, string endPoint)
         {
             //We post ontologies individually.
 
@@ -58,7 +71,7 @@ namespace RefDataLoader
             {
                 var materialTypeGroup = data[i];
 
-                var result = await SendJsonAsync("MaterialTypeGroup", JsonConvert.SerializeObject(materialTypeGroup));
+                var result = await SendJsonAsync(endPoint, JsonConvert.SerializeObject(materialTypeGroup));
 
                 Console.WriteLine(
                     $"MaterialTypeGroup {materialTypeGroup}" +
@@ -71,18 +84,12 @@ namespace RefDataLoader
             Console.WriteLine($"Running time so far: {timer.Elapsed}");
         }
 
-        private List<RefDataBaseDto> PrepData(string datafile)
+        private List<SortedRefDataBaseDto> PrepData(string datafile)
         {
-            var timer = Stopwatch.StartNew();
-
-            var o = JsonConvert.DeserializeObject<List<RefDataBaseDto>>(datafile);
-
-            //abuse config builders to load the data ;)
-            var data = new ConfigurationBuilder()
-                .AddJsonFile(datafile, optional: false)
-                .Build();
-
-            return o;
+            using StreamReader r = new StreamReader(datafile);
+            string json = r.ReadToEnd();
+            List<SortedRefDataBaseDto> items = JsonConvert.DeserializeObject<List<SortedRefDataBaseDto>>(json);
+            return items;
         }
 
         private static async Task<bool> SendJsonAsync(string endpoint, string data)

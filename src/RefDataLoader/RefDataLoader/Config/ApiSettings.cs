@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Config
 {
     /// <summary>
@@ -7,6 +9,7 @@ namespace Config
     public class ApiSettings
     {
         public string Baseuri { get; set; }
-        public string AccessCondition { get; set; }
+
+        public Dictionary<string, string> RefDataEndpoints { get; set; }
     }
 }
