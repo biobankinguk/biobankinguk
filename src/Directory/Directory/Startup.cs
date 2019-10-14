@@ -36,10 +36,14 @@ namespace Directory
 
             // Identity Server
             services.AddIdentityServer()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients(_config))
+                //.AddInMemoryIdentityResources(Config.GetIdentityResources())
+                //.AddInMemoryApiResources(Config.GetApis())
+                //.AddInMemoryClients(Config.GetClients(_config))
                 .AddTestUsers(Config.GetUsers())
+                .AddConfigurationStore<DirectoryContext>(opts =>
+                    opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
+                .AddOperationalStore<DirectoryContext>(opts =>
+                    opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             // MVC
