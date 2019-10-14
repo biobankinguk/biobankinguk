@@ -1,9 +1,12 @@
-﻿using Common.Data.ReferenceData;
+﻿using System.Threading.Tasks;
+using Common.Data.ReferenceData;
+using IdentityServer4.EntityFramework.Entities;
+using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Data
 {
-    public class DirectoryContext : DbContext
+    public class DirectoryContext : DbContext, IConfigurationDbContext, IPersistedGrantDbContext
     {
 
         public DirectoryContext(DbContextOptions<DirectoryContext> options)
@@ -34,5 +37,25 @@ namespace Common.Data
         public DbSet<Sex> Sexes { get; set; }
         public DbSet<SopStatus> SopStatuses { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+
+        #region IdentityServer4
+
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<IdentityResource> IdentityResources { get; set; }
+        public DbSet<ApiResource> ApiResources { get; set; }
+        public DbSet<PersistedGrant> PersistedGrants { get; set; }
+        public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
+
+        public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
+
+        #endregion
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<DeviceFlowCodes>().HasNoKey();
+            builder.Entity<PersistedGrant>().HasNoKey();
+        }
     }
 }

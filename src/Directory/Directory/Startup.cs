@@ -32,6 +32,8 @@ namespace Directory
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var defaultDb = _config.GetConnectionString("DefaultConnection");
+
             // Identity Server
             services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
@@ -59,14 +61,12 @@ namespace Directory
                     opts.Audience = ApiResourceKeys.RefData;
                 });
             services.AddAuthorization(opts =>
-                {
-                    opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken);
-                });
+                opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken));
 
             // Entity Framework
             services.AddDbContext<DirectoryContext>(opts => opts
                 .UseLazyLoadingProxies()
-                .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+                .UseSqlServer(defaultDb));
 
             // Service layer
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
