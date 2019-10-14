@@ -11,7 +11,7 @@ namespace Directory.Contracts
     {
         Task<AccessCondition> CreateAccessCondition(SortedRefDataBaseDto accessCondition);
         Task<AccessCondition> UpdateAccessCondition(int id, SortedRefDataBaseDto accessCondition);
-        Task DeleteAccessCondition(int id);
+        Task<bool> DeleteAccessCondition(int id);
         Task<AgeRange> CreateAgeRange(SortedRefDataBaseDto ageRange);
         Task<AgeRange> UpdateAgeRange(int id, SortedRefDataBaseDto ageRange);
         Task DeleteAgeRange(int id);

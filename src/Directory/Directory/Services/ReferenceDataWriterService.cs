@@ -55,10 +55,27 @@ namespace Directory.Services
         /// <typeparam name="T"></typeparam>
         /// <param name="id"></param>
         /// <returns></returns>
-        private async Task DeleteRefData<T>(int id) where T : BaseReferenceDatum, new() 
+        private async Task<bool> DeleteRefData<T>(int id) where T : BaseReferenceDatum, new() 
         {
-            _context.Remove(new T { Id = id });
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Remove(new T { Id = id });
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch(DbUpdateConcurrencyException e)
+            {
+                //we need to figure out if this exception was thrown because of the id not existing, or due to another error
+                if (await _context.Set<T>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id) != null)
+                {
+                    //we found some entries, so it must be another error - let this bubble up
+                    throw e;
+                }
+                else
+                    return false;          
+            }
         }
 
         #endregion
@@ -76,7 +93,7 @@ namespace Directory.Services
         }
             
 
-        public async Task DeleteAccessCondition(int id)
+        public async Task<bool> DeleteAccessCondition(int id)
             => await DeleteRefData<AccessCondition>(id);
 
         #endregion AccessCondition
