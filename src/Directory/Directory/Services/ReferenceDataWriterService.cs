@@ -110,7 +110,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteAgeRange(int id)
+        public async Task<bool> DeleteAgeRange(int id)
             => await DeleteRefData<AgeRange>(id);
 
         #endregion
@@ -127,7 +127,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteAnnualStatistic(int id)
+        public async Task<bool> DeleteAnnualStatistic(int id)
             => await DeleteRefData<AnnualStatistic>(id);
 
         #endregion
@@ -144,7 +144,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-            public async Task DeleteAssociatedDataProcurementTimeframe(int id)
+            public async Task<bool> DeleteAssociatedDataProcurementTimeframe(int id)
             => await DeleteRefData<AssociatedDataProcurementTimeframe>(id);
 
         #endregion
@@ -161,7 +161,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-            public async Task DeleteAssociatedDataType(int id)
+            public async Task<bool> DeleteAssociatedDataType(int id)
             => await DeleteRefData<AssociatedDataType>(id);
 
         #endregion
@@ -178,7 +178,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteCollectionPercentage(int id)
+        public async Task<bool> DeleteCollectionPercentage(int id)
             => await DeleteRefData<CollectionPercentage>(id);
 
         #endregion
@@ -195,7 +195,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteCollectionPoint(int id)
+        public async Task<bool> DeleteCollectionPoint(int id)
             => await DeleteRefData<CollectionPoint>(id);
 
         #endregion
@@ -212,7 +212,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async  Task DeleteCollectionStatus(int id)
+        public async  Task<bool> DeleteCollectionStatus(int id)
             => await DeleteRefData<CollectionStatus>(id);
 
         #endregion
@@ -229,7 +229,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteCollectionType(int id)
+        public async Task<bool> DeleteCollectionType(int id)
             => await DeleteRefData<CollectionType>(id);
 
         #endregion
@@ -246,7 +246,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteConsentRestriction(int id)
+        public async Task<bool> DeleteConsentRestriction(int id)
             => await DeleteRefData<ConsentRestriction>(id);
 
         #endregion
@@ -263,7 +263,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteCountry(int id)
+        public async Task<bool> DeleteCountry(int id)
             => await DeleteRefData<Country>(id);
 
         #endregion
@@ -280,7 +280,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteCounty(int id)
+        public async Task<bool> DeleteCounty(int id)
             => await DeleteRefData<County>(id);
 
         #endregion
@@ -297,7 +297,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteDonorCount(int id)
+        public async Task<bool> DeleteDonorCount(int id)
             => await DeleteRefData<DonorCount>(id);
 
         #endregion
@@ -314,7 +314,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteFunder(int id)
+        public async Task<bool> DeleteFunder(int id)
             => await DeleteRefData<Funder>(id);
 
         #endregion
@@ -331,7 +331,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteHtaStatus(int id)
+        public async Task<bool> DeleteHtaStatus(int id)
             => await DeleteRefData<HtaStatus>(id);
 
         #endregion
@@ -348,7 +348,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteMacroscopicAssessment(int id)
+        public async Task<bool> DeleteMacroscopicAssessment(int id)
             => await DeleteRefData<MacroscopicAssessment>(id);
 
         #endregion
@@ -365,7 +365,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteMaterialType(int id)
+        public async Task<bool> DeleteMaterialType(int id)
             => await DeleteRefData<MaterialType>(id);
 
         #endregion
@@ -382,7 +382,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteMaterialTypeGroup(int id)
+        public async Task<bool> DeleteMaterialTypeGroup(int id)
             => await DeleteRefData<MaterialTypeGroup>(id);
 
         #endregion
@@ -403,10 +403,11 @@ namespace Directory.Services
             return ontologyTerm;
         }
 
-        public async Task DeleteOntologyTerm(string id)
+        public async Task<bool> DeleteOntologyTerm(string id)
         {
             _context.Remove(new OntologyTerm { Id = id });
             await _context.SaveChangesAsync();
+            return true;
         }
 
         #endregion
@@ -423,7 +424,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteServiceOffering(int id)
+        public async Task<bool> DeleteServiceOffering(int id)
             => await DeleteRefData<ServiceOffering>(id);
 
         #endregion
@@ -440,7 +441,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteSex(int id)
+        public async Task<bool> DeleteSex(int id)
             => await DeleteRefData<Sex>(id);
 
         #endregion
@@ -460,7 +461,7 @@ namespace Directory.Services
         }
 
 
-        public async Task DeleteSopStatus(int id)
+        public async Task<bool> DeleteSopStatus(int id)
             => await DeleteRefData<SopStatus>(id);
 
         #endregion
@@ -477,7 +478,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async Task DeleteStorageTemperature(int id)
+        public async Task<bool> DeleteStorageTemperature(int id)
             => await DeleteRefData<StorageTemperature>(id);
 
         #endregion
