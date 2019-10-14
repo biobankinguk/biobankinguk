@@ -38,7 +38,7 @@
     <None Update="RefDataSeeding\AssociatedDataProcurementTimeframe.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="RefDataSeeding\AssociatedDataTypes.json">
+    <None Update="RefDataSeeding\AssociatedDataType.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="RefDataSeeding\CollectionPercentage.json">

@@ -31,6 +31,7 @@ namespace RefDataLoader
 
             foreach(var s in _config.RefDataEndpoints)
             {
+                //we don't want the irregular ref data yet (to be handled below)
                 var containsIrregularRefData = new List<string> { "AnnualStatistic", "County", "DonorCount", "MaterialType" }.Contains(s.Key, StringComparer.OrdinalIgnoreCase);
 
                 if (!containsIrregularRefData)
@@ -43,9 +44,12 @@ namespace RefDataLoader
             }
 
             //TODO implement non standard RefData (to be done with relevant PBI due to DTO refactoring)
-            //now handle the non standard objects/ones which have dependencies on groups
+            //donor count
 
-
+            //TODO now handle the non standard objects/ones which have dependencies on groups
+            //annualStatistic
+            //county
+            //material type
         }
 
 
