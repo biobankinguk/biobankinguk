@@ -72,13 +72,48 @@ namespace Directory.IdentityServer
                     AllowedScopes = { ApiResourceKeys.RefData }
                 },
 
-                // MVC PoC client // TODO: Remove when ready
+                // MVC PoC clients // TODO: Remove when ready
                 new Client
                 {
-                    ClientId = "mvc-poc",
-                    ClientName = "MVC Proof of Concept",
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    // This is a Hybrid Flow version of the client, which should be used if PKCE isn't supported
+                    // We may not know until we try if ASP.NET 4.x (The Framework Directory) supprts it...
+                    // Bear in mind MVC is a server-side app and can therefore use Client Credentials
+                    // for client-level API access tokens if it wants.
+                    // though if a user is logged in, their access token may be easer, if appropriate.
+                    ClientId = "mvc-poc-hybrid",
+                    ClientName = "MVC Proof of Concept (Hybrid flow)",
+                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
                     RequireConsent = false,
+
+                    ClientSecrets =
+                    {
+                        // Don't reuse secrets for realsies!
+                        new Secret(config[$"ClientSecrets:{TrustedClientIds.UploadApi}"].Sha256())
+                    },
+
+                    RedirectUris = { "https://localhost:5201/signin-oidc" },
+                    PostLogoutRedirectUris = { "https://localhost:5201/signout-callback-oidc" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        ApiResourceKeys.RefData
+                    },
+                    AllowOfflineAccess = true
+                },
+                new Client
+                {
+                    // This is a PKCE Flow version of the client, which should be used if PKCE is supported
+                    // We may not know until we try if ASP.NET 4.x (The Framework Directory) supprts it...
+                    // Bear in mind MVC is a server-side app and can therefore use Client Credentials
+                    // for client-level API access tokens if it wants.
+                    // though if a user is logged in, their access token may be easer, if appropriate.
+                    ClientId = "mvc-poc-pkce",
+                    ClientName = "MVC Proof of Concept (PKCE flow)",
+                    AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
+                    RequireConsent = false,
+                    RequirePkce = true,
 
                     ClientSecrets =
                     {
