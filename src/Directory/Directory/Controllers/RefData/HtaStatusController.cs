@@ -68,11 +68,14 @@ namespace Directory.Controllers
 
         [SwaggerOperation("Delete a single HtaStatus by ID.")]
         [SwaggerResponse(204, "The HtaStatus was succesfully deleted.")]
+        [SwaggerResponse(404, "No HtaStatus was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteHtaStatus(id);
-            return NoContent();
+            if (await _writeService.DeleteHtaStatus(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

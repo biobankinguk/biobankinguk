@@ -68,11 +68,14 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Annual Statistic by ID.")]
         [SwaggerResponse(204, "The Annual Statistic was succesfully deleted.")]
+        [SwaggerResponse(404, "No Annual Statistic was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteAnnualStatistic(id);
-            return NoContent();
+            if(await _writeService.DeleteAnnualStatistic(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

@@ -68,11 +68,14 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Collection Type by ID.")]
         [SwaggerResponse(204, "The Collection Type was succesfully deleted.")]
+        [SwaggerResponse(404, "No Collection Type was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteCollectionType(id);
-            return NoContent();
+            if (await _writeService.DeleteCollectionType(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

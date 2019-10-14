@@ -68,11 +68,14 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Material Type Group by ID.")]
         [SwaggerResponse(204, "The Material Type Group was succesfully deleted.")]
+        [SwaggerResponse(404, "No Material Type Group was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteMaterialTypeGroup(id);
-            return NoContent();
+            if (await _writeService.DeleteMaterialTypeGroup(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

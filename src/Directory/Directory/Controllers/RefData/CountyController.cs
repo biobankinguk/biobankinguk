@@ -68,11 +68,14 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single County by ID.")]
         [SwaggerResponse(204, "The County was succesfully deleted.")]
+        [SwaggerResponse(404, "No County was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteCounty(id);
-            return NoContent();
+            if (await _writeService.DeleteCounty(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

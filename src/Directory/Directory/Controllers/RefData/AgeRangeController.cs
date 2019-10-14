@@ -68,11 +68,14 @@ namespace Directory.Controllers
 
         [SwaggerOperation("Delete a single Age Range by ID.")]
         [SwaggerResponse(204, "The Age Range was succesfully deleted.")]
+        [SwaggerResponse(404, "No Age Range was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteAgeRange(id);
-            return NoContent();
+            if(await _writeService.DeleteAgeRange(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

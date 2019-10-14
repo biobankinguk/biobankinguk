@@ -68,11 +68,14 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Country by ID.")]
         [SwaggerResponse(204, "The Country was succesfully deleted.")]
+        [SwaggerResponse(404, "No Country was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteCountry(id);
-            return NoContent();
+            if (await _writeService.DeleteCountry(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

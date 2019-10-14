@@ -67,11 +67,15 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Delete a single Storage Temperature by ID.")]
+        [SwaggerResponse(204, "The Storage Temperature was deleted successfully.")]
+        [SwaggerResponse(404, "No Storage Temperature was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteStorageTemperature(id);
-            return NoContent();
+            if (await _writeService.DeleteStorageTemperature(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }

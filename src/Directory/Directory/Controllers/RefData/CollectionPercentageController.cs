@@ -68,11 +68,14 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Collection Percentage by ID.")]
         [SwaggerResponse(204, "The Collection Percentage was succesfully deleted.")]
+        [SwaggerResponse(404, "No Collection Percentage was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _writeService.DeleteCollectionPercentage(id);
-            return NoContent();
+            if (await _writeService.DeleteCollectionPercentage(id))
+                return NoContent();
+            else
+                return NotFound();
         }
     }
 }
