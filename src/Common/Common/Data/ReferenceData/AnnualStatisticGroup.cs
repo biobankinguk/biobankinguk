@@ -3,7 +3,7 @@
 namespace Common.Data.ReferenceData
 {
     /// <summary>
-    /// Ref Data. A group which contains a collection of 
+    /// Ref Data. A group which contains many Annual Statistic entities.
     /// </summary>
     public class AnnualStatisticGroup : SortedBaseReferenceDatum
     {

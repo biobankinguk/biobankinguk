@@ -8,7 +8,7 @@ namespace Config
     /// </summary>
     public class ApiSettings
     {
-        public string Baseuri { get; set; }
+        public string BaseUri { get; set; }
 
         public Dictionary<string, string> RefDataEndpoints { get; set; }
     }

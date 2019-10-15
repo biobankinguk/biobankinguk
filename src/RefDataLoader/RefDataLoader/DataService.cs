@@ -58,7 +58,7 @@ namespace RefDataLoader
         {
             Client = new HttpClient
             {
-                BaseAddress = new Uri(_config.Baseuri)
+                BaseAddress = new Uri(_config.BaseUri)
             };
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Accept.Add(
