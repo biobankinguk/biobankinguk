@@ -78,6 +78,5 @@ namespace Directory.Controllers.RefData
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
             => await _writeService.DeleteMaterialTypeGroup(id) ? (IActionResult)NoContent() : NotFound();
-        }
     }
 }
