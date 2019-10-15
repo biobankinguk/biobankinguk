@@ -5,5 +5,8 @@
     /// </summary>
     public class AccessCondition : SortedBaseReferenceDatum
     {
+        public AccessCondition(string value) : base(value)
+        {
+        }
     }
 }

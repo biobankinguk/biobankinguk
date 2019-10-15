@@ -5,6 +5,11 @@
     /// </summary>
     public abstract class BaseReferenceDatum
     {
+        public BaseReferenceDatum(string value)
+        {
+            Value = value;
+        }
+
         public int Id { get; set; }
 
         public string Value { get; set; }
@@ -15,6 +20,10 @@
     /// </summary>
     public abstract class SortedBaseReferenceDatum : BaseReferenceDatum
     {
+        public SortedBaseReferenceDatum(string value) : base(value)
+        {
+        }
+
         public int SortOrder { get; set; }
     }
 }

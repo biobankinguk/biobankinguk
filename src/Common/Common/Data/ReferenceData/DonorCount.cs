@@ -5,5 +5,8 @@
     /// </summary>
     public class DonorCount : SortedBaseReferenceDatum
     {
+        public DonorCount(string value) : base(value)
+        {
+        }
     }
 }

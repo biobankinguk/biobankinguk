@@ -5,6 +5,10 @@
     /// </summary>
     public class County : BaseReferenceDatum
     {
-        public virtual Country Country { get; set; }
+        public County(string value) : base(value)
+        {
+        }
+
+        public virtual Country Country { get; set; } = null!;
     }
 }

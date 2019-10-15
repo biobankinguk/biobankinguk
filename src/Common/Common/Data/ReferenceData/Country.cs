@@ -5,5 +5,8 @@
     /// </summary>
     public class Country : BaseReferenceDatum
     {
+        public Country(string value) : base(value)
+        {
+        }
     }
 }

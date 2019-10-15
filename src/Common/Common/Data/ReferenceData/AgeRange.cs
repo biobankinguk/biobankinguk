@@ -7,5 +7,8 @@ namespace Common.Data.ReferenceData
     /// </summary>
     public class AgeRange : SortedBaseReferenceDatum
     {
+        public AgeRange(string value) : base(value)
+        {
+        }
     }
 }

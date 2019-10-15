@@ -5,5 +5,8 @@
     /// </summary>
     public class SopStatus : SortedBaseReferenceDatum
     {
+        public SopStatus(string value) : base(value)
+        {
+        }
     }
 }

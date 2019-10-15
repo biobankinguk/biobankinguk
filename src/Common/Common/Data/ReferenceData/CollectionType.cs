@@ -5,5 +5,8 @@
     /// </summary>
     public class CollectionType : SortedBaseReferenceDatum
     {
+        public CollectionType(string value) : base(value)
+        {
+        }
     }
 }

@@ -5,7 +5,7 @@
     /// </summary>
     public class RefDataBaseDto
     {
-        public string Value { get; set; }
+        public string Value { get; set; } = null!;
     }
 
     public class SortedRefDataBaseDto : RefDataBaseDto

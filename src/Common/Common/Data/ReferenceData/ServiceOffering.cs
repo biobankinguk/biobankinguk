@@ -5,5 +5,8 @@
     /// </summary>
     public class ServiceOffering : SortedBaseReferenceDatum
     {
+        public ServiceOffering(string value) : base(value)
+        {
+        }
     }
 }

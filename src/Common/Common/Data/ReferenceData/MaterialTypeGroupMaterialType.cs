@@ -6,8 +6,8 @@
     public class MaterialTypeGroupMaterialType
     {
         public int MaterialTypeId { get; set; }
-        public virtual MaterialType MaterialType { get; set; }
+        public virtual MaterialType MaterialType { get; set; } = null!;
         public int MaterialTypeGroupId { get; set; }
-        public virtual MaterialTypeGroup MaterialTypeGroup { get; set; }
+        public virtual MaterialTypeGroup MaterialTypeGroup { get; set; } = null!;
     }
 }

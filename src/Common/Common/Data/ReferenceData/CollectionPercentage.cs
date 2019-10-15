@@ -5,5 +5,8 @@
     /// </summary>
     public class CollectionPercentage : SortedBaseReferenceDatum
     {
+        public CollectionPercentage(string value) : base(value)
+        {
+        }
     }
 }

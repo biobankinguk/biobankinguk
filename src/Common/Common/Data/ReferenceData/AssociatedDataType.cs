@@ -5,5 +5,8 @@
     /// </summary>
     public class AssociatedDataType : BaseReferenceDatum
     {
+        public AssociatedDataType(string value) : base(value)
+        {
+        }
     }
 }

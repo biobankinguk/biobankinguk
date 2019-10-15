@@ -12,7 +12,7 @@ namespace RefDataLoader
         public static IConfiguration Configuration;
 
         //todo figure out how to use fancy core 3.0 stuff to tidy this up
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             var dataService = BuildDi()
                .GetService(typeof(IDataService)) as DataService;

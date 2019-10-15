@@ -5,5 +5,8 @@
     /// </summary>
     public class MacroscopicAssessment : BaseReferenceDatum
     {
+        public MacroscopicAssessment(string value) : base(value)
+        {
+        }
     }
 }

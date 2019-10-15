@@ -5,5 +5,8 @@
     /// </summary>
     public class AssociatedDataProcurementTimeframe : SortedBaseReferenceDatum
     {
+        public AssociatedDataProcurementTimeframe(string value) : base(value)
+        {
+        }
     }
 }
