@@ -1,0 +1,56 @@
+[
+    {
+      "sortOrder": 1,
+      "value": "Ability to recontact"
+    },
+
+    {
+      "sortOrder": 2,
+      "value": "Access to the full pathology archive"
+    },
+
+    {
+      "sortOrder": 3,
+      "value": "Cell culture"
+    },
+
+    {
+      "sortOrder": 4,
+      "value": "Data analytics"
+    },
+
+    {
+      "sortOrder": 5,
+      "value": "Digital imaging"
+    },
+
+    {
+      "sortOrder": 6,
+      "value": "Human functional tissue assays"
+    },
+
+    {
+      "sortOrder": 7,
+      "value": "Immunohistochemistry - scoring"
+    },
+
+    {
+      "sortOrder": 8,
+      "value": "Immunohistochemistry - staining"
+    },
+
+    {
+      "sortOrder": 9,
+      "value": "IPSC reprogramming services"
+    },
+
+    {
+      "sortOrder": 10,
+      "value": "Tissue micro array creation"
+    },
+
+    {
+      "sortOrder": 11,
+      "value": "Nucleic acid extraction"
+    }
+  ]

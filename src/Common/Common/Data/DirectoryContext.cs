@@ -29,10 +29,19 @@ namespace Common.Data
         public DbSet<HtaStatus> HtaStatuses { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
         public DbSet<MaterialType> MaterialTypes { get; set; }
+        public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
         public DbSet<Sex> Sexes { get; set; }
         public DbSet<SopStatus> SopStatuses { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MaterialTypeGroupMaterialType>().HasKey(m => new { m.MaterialTypeId, m.MaterialTypeGroupId });
+            modelBuilder.Entity<MaterialTypeGroupMaterialType>().HasOne(m => m.MaterialType).WithMany(mt => mt.MaterialTypeGroupMaterialTypes).HasForeignKey(m => m.MaterialTypeId);
+            modelBuilder.Entity<MaterialTypeGroupMaterialType>().HasOne(m => m.MaterialTypeGroup).WithMany(mtg => mtg.MaterialTypeGroupMaterialTypes).HasForeignKey(m => m.MaterialTypeGroupId);
+        }
     }
 }

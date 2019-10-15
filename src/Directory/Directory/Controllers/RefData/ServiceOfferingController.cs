@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class ServiceOfferingController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto serviceOffering)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdServiceOffering = await _writeService.CreateServiceOffering(serviceOffering);
             return CreatedAtAction("Get", new { id = createdServiceOffering.Id }, createdServiceOffering);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto serviceOffering)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetServiceOffering(id) is null)
                 return NotFound();
 
@@ -67,11 +73,10 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Delete a single Service Offering by ID.")]
+        [SwaggerResponse(204, "The Service Offering was succesfully deleted.")]
+        [SwaggerResponse(404, "No Service Offering was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteServiceOffering(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) 
+            => await _writeService.DeleteServiceOffering(id) ? NoContent() : (IActionResult)NotFound();
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class StorageTemperatureController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto storageTemperature)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdStorageTemperature = await _writeService.CreateStorageTemperature(storageTemperature);
             return CreatedAtAction("Get", new { id = createdStorageTemperature.Id }, createdStorageTemperature);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto storageTemperature)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetStorageTemperature(id) is null)
                 return NotFound();
 
@@ -67,11 +73,10 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Delete a single Storage Temperature by ID.")]
+        [SwaggerResponse(204, "The Storage Temperature was deleted successfully.")]
+        [SwaggerResponse(404, "No Storage Temperature was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteStorageTemperature(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) 
+            => await _writeService.DeleteStorageTemperature(id) ? NoContent() : (IActionResult)NotFound();
     }
 }

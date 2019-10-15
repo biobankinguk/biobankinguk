@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class CollectionPercentageController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPercentage)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCollectionPercentage = await _writeService.CreateCollectionPercentage(collectionPercentage);
             return CreatedAtAction("Get", new { id = createdCollectionPercentage.Id }, createdCollectionPercentage);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPercentage)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCollectionPercentage(id) is null)
                 return NotFound();
 
@@ -68,11 +74,10 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Collection Percentage by ID.")]
         [SwaggerResponse(204, "The Collection Percentage was succesfully deleted.")]
+        [SwaggerResponse(404, "No Collection Percentage was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteCollectionPercentage(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteCollectionPercentage(id) ? (IActionResult) NoContent() : NotFound();
+        
     }
 }

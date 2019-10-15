@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class CollectionStatusController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionStatus)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCollectionStatus = await _writeService.CreateCollectionStatus(collectionStatus);
             return CreatedAtAction("Get", new { id = createdCollectionStatus.Id }, createdCollectionStatus);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionStatus)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCollectionStatus(id) is null)
                 return NotFound();
 
@@ -68,11 +74,10 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Collection Status by ID.")]
         [SwaggerResponse(204, "The Collection Status was succesfully deleted.")]
+        [SwaggerResponse(404, "No Collection Status was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteCollectionStatus(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteCollectionStatus(id) ? (IActionResult) NoContent() : NotFound();
+        
     }
 }

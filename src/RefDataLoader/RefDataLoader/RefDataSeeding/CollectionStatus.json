@@ -1,0 +1,16 @@
+[
+    {
+      "value": "Not-started",
+      "sortOrder": 1
+    },
+
+    {
+      "value": "In progress",
+      "sortOrder": 2
+    },
+
+    {
+      "value": "Completed",
+      "sortOrder": 3
+    }
+  ]

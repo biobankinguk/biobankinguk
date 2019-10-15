@@ -5,6 +5,6 @@
     /// </summary>
     public class AnnualStatistic : BaseReferenceDatum
     {
-        public string Group { get; set; }
+        public virtual AnnualStatisticGroup AnnualStatisticGroup { get; set; } = null!;
     }
 }

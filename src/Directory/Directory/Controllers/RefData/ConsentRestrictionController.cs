@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class ConsentRestrictionController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto consentRestriction)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdConsentRestriction = await _writeService.CreateConsentRestriction(consentRestriction);
             return CreatedAtAction("Get", new { id = createdConsentRestriction.Id }, createdConsentRestriction);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto consentRestriction)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetConsentRestriction(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Consent Restriction by ID.")]
         [SwaggerResponse(204, "The Consent Restriction was succesfully deleted.")]
+        [SwaggerResponse(404, "No Consent Restriction was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteConsentRestriction(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteConsentRestriction(id) ? (IActionResult) NoContent() : NotFound();
     }
 }

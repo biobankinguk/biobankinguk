@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class CountyController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto county)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCounty = await _writeService.CreateCounty(county);
             return CreatedAtAction("Get", new { id = createdCounty.Id }, createdCounty);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto county)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCounty(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single County by ID.")]
         [SwaggerResponse(204, "The County was succesfully deleted.")]
+        [SwaggerResponse(404, "No County was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteCounty(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteCounty(id) ? (IActionResult) NoContent() : NotFound();
     }
 }

@@ -1,0 +1,297 @@
+[
+    {
+      "Value": "(Breast) Milk",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Amniotic Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Ascites Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Bile",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Body Cavity Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Bone BON",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Bone marrow aspirate BMA",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Bone Marrow Plasma",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Bronchoalveolar lavage",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Buffy coat"
+    },
+    {
+      "Value": "Cancer cell lines"
+    },
+    {
+      "Value": "Cerebrospinal Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Cord blood",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Dental pulp PLP",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "DNA"
+    },
+    {
+      "Value": "Dried whole blood (e.g. Guthrie cards) DWB",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Embryo",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Entire body organ",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Faeces",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Fetal tissue",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Fibroblasts"
+    },
+    {
+      "Value": "Gas, exhaled (=breath)"
+    },
+    {
+      "Value": "Fastric Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Gastric Fluid Sample",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Hair",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Immortalized cell lines"
+    },
+    {
+      "Value": "Isolated Pathogens (derived from human biospecimens)"
+    },
+    {
+      "Value": "Menstrual blood",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Nail",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Nasal washing NAS",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Pericardial Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Peripheral blood mononuclear cells (PBMC)"
+    },
+    {
+      "Value": "Placenta PLC",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Plasma",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Pleural fluid PFL",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Primary cells"
+    },
+    {
+      "Value": "Proteins"
+    },
+    {
+      "Value": "Red blood cells"
+    },
+    {
+      "Value": "RNA"
+    },
+    {
+      "Value": "Saliva",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Semen",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Serum",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Solid tissue TIS",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Sputum",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Stem cells and iPS cells"
+    },
+    {
+      "Value": "Sweat",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Synovial Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Tears",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Teeth TTH",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Umbilical cord",
+      "MaterialTypeGroupNames": [
+        "Tissue Sample",
+        "Extracted Sample"
+      ]
+    },
+    {
+      "Value": "Urine",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Vitreous Fluid",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Whole blood",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    },
+    {
+      "Value": "Whole Bone Marrow",
+      "MaterialTypeGroupNames": [
+        "Fluid Sample"
+      ]
+    }
+  ]

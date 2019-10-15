@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class AccessConditionController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdAccessCondition = await _writeService.CreateAccessCondition(collectionPoint);
             return CreatedAtAction("Get", new { id = createdAccessCondition.Id }, createdAccessCondition);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetAccessCondition(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers
 
         [SwaggerOperation("Delete a single Access Condition by ID.")]
         [SwaggerResponse(204, "The Access Condition was succesfully deleted.")]
+        [SwaggerResponse(404, "No Access Condition was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteAccessCondition(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteAccessCondition(id) ? (ActionResult)NoContent() : NotFound();
     }
 }

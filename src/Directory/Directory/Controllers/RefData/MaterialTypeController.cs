@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class MaterialTypeController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto materialType)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdMaterialType = await _writeService.CreateMaterialType(materialType);
             return CreatedAtAction("Get", new { id = createdMaterialType.Id }, createdMaterialType);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetMaterialType(id) is null)
                 return NotFound();
 
@@ -68,11 +74,8 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Material Type by ID.")]
         [SwaggerResponse(204, "The Material Type was succesfully deleted.")]
+        [SwaggerResponse(404, "No Material Type was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteMaterialType(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) => await _writeService.DeleteMaterialType(id) ? NoContent() : (IActionResult)NotFound();
     }
 }

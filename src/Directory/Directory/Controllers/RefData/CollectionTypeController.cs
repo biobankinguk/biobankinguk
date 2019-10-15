@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class CollectionTypeController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionType)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCollectionType = await _writeService.CreateCollectionType(collectionType);
             return CreatedAtAction("Get", new { id = createdCollectionType.Id }, createdCollectionType);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionType)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCollectionType(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Collection Type by ID.")]
         [SwaggerResponse(204, "The Collection Type was succesfully deleted.")]
+        [SwaggerResponse(404, "No Collection Type was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteCollectionType(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteCollectionType(id) ? (IActionResult) NoContent() : NotFound();
     }
 }

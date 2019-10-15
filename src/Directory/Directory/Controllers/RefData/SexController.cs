@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class SexController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sex)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdSex = await _writeService.CreateSex(sex);
             return CreatedAtAction("Get", new { id = createdSex.Id }, createdSex);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto sex)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetSex(id) is null)
                 return NotFound();
 
@@ -67,11 +73,10 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("Delete a single Sex by ID.")]
+        [SwaggerResponse(204, "The Sex was deleted successfully.")]
+        [SwaggerResponse(404, "No Sex was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteSex(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) 
+            => await _writeService.DeleteSex(id) ? NoContent() : (IActionResult)NotFound();
     }
 }

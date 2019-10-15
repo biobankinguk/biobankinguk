@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class OntologyTermController : Controller
     {
@@ -47,6 +47,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] OntologyTerm ontologyTerm)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdOntologyTerm = await _writeService.CreateOntologyTerm(ontologyTerm);
             return CreatedAtAction("Get", new { id = createdOntologyTerm.Id }, createdOntologyTerm);
         }
@@ -57,6 +60,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] OntologyTerm ontologyTerm)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetOntologyTerm(id) is null)
                 return NotFound();
 
@@ -67,11 +73,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Ontology Term by ID.")]
         [SwaggerResponse(204, "The Ontology Term was succesfully deleted.")]
+        [SwaggerResponse(404, "No Ontology Term was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteConsentRestriction(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) 
+            => await _writeService.DeleteConsentRestriction(id) ? NoContent() : (IActionResult)NotFound();
     }
 }
