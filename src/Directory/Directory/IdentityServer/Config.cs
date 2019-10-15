@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Common.Constants;
+using Common.Data;
 using IdentityServer4;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.Extensions.Configuration;
@@ -142,5 +145,32 @@ namespace Directory.IdentityServer
 
                 // Submission API Clients ...
             };
+
+        public static void SeedIdentityServerConfig(DirectoryContext context, IConfiguration config)
+        {
+            if (!context.Clients.Any())
+            {
+                foreach (var client in GetClients(config))
+                    context.Clients.Add(client.ToEntity());
+                
+                context.SaveChanges();
+            }
+
+            if (!context.IdentityResources.Any())
+            {
+                foreach (var resource in GetIdentityResources())
+                    context.IdentityResources.Add(resource.ToEntity());
+                
+                context.SaveChanges();
+            }
+
+            if (!context.ApiResources.Any())
+            {
+                foreach (var resource in GetApis())
+                    context.ApiResources.Add(resource.ToEntity());
+                
+                context.SaveChanges();
+            }
+        }
     }
 }

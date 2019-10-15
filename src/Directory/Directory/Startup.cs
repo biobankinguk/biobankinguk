@@ -90,6 +90,16 @@ namespace Directory
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // App initialisation
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<DirectoryContext>();
+                context.Database.Migrate();
+
+                Config.SeedIdentityServerConfig(context, _config);
+            }
+
+            // Pipeline Configuration
             app.GnuTerryPratchett();
 
             if (env.IsDevelopment())
