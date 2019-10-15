@@ -56,14 +56,18 @@ namespace Common.Data
 
         public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
 
+        private void ConfigureIdentityServer(ModelBuilder b)
+        {
+            b.ConfigurePersistedGrantContext(_opStoreOptions);
+            b.ConfigureClientContext(_configStoreOptions);
+            b.ConfigureResourcesContext(_configStoreOptions);
+        }
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ConfigurePersistedGrantContext(_opStoreOptions);
-            builder.ConfigureClientContext(_configStoreOptions);
-            builder.ConfigureResourcesContext(_configStoreOptions);
-
+            ConfigureIdentityServer(builder);
             base.OnModelCreating(builder);
         }
     }
