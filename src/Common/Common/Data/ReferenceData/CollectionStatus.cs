@@ -5,8 +5,5 @@
     /// </summary>
     public class CollectionStatus : SortedBaseReferenceDatum
     {
-        public CollectionStatus(string value) : base(value)
-        {
-        }
     }
 }

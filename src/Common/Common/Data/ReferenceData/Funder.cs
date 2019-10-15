@@ -5,8 +5,5 @@
     /// </summary>
     public class Funder : BaseReferenceDatum
     {
-        public Funder(string value) : base(value)
-        {
-        }
     }
 }

@@ -5,8 +5,5 @@
     /// </summary>
     public class Sex : SortedBaseReferenceDatum
     {
-        public Sex(string value) : base(value)
-        {
-        }
     }
 }

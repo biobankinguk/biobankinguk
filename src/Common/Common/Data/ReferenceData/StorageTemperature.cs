@@ -5,8 +5,5 @@
     /// </summary>
     public class StorageTemperature : SortedBaseReferenceDatum
     {
-        public StorageTemperature(string value) : base(value)
-        {
-        }
     }
 }

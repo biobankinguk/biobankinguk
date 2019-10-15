@@ -5,8 +5,5 @@
     /// </summary>
     public class HtaStatus : SortedBaseReferenceDatum
     {
-        public HtaStatus(string value) : base(value)
-        {
-        }
     }
 }

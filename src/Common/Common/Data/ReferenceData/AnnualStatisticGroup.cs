@@ -7,10 +7,5 @@ namespace Common.Data.ReferenceData
     /// </summary>
     public class AnnualStatisticGroup : SortedBaseReferenceDatum
     {
-        public AnnualStatisticGroup(string value) : base(value)
-        {
-        }
-
-        public virtual ICollection<AnnualStatistic> AnnualStatistics { get; set; } = null!;
     }
 }

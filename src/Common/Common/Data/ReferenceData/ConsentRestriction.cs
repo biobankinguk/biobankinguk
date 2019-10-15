@@ -5,8 +5,5 @@
     /// </summary>
     public class ConsentRestriction : SortedBaseReferenceDatum
     {
-        public ConsentRestriction(string value) : base(value)
-        {
-        }
     }
 }
