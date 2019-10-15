@@ -40,6 +40,7 @@ namespace Common.Data
         public DbSet<HtaStatus> HtaStatuses { get; set; } = null!;
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; } = null!;
         public DbSet<MaterialType> MaterialTypes { get; set; } = null!;
+        public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; } = null!;
         public DbSet<OntologyTerm> OntologyTerms { get; set; } = null!;
         public DbSet<ServiceOffering> ServiceOfferings { get; set; } = null!;
         public DbSet<Sex> Sexes { get; set; } = null!;
