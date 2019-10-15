@@ -69,6 +69,18 @@ namespace Common.Data
         {
             ConfigureIdentityServer(builder);
             base.OnModelCreating(builder);
+
+            builder.Entity<MaterialTypeGroupMaterialType>()
+                .HasKey(m => new { m.MaterialTypeId, m.MaterialTypeGroupId });
+            builder.Entity<MaterialTypeGroupMaterialType>()
+                .HasOne(m => m.MaterialType)
+                .WithMany(mt => mt.MaterialTypeGroupMaterialTypes)
+                .HasForeignKey(m => m.MaterialTypeId);
+            builder.Entity<MaterialTypeGroupMaterialType>()
+                .HasOne(m => m.MaterialTypeGroup)
+                .WithMany(mtg => mtg.MaterialTypeGroupMaterialTypes)
+                .HasForeignKey(m => m.MaterialTypeGroupId);
         }
+
     }
 }

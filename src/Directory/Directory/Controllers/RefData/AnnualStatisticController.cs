@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class AnnualStatisticController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdAnnualStatistic = await _writeService.CreateAnnualStatistic(collectionPoint);
             return CreatedAtAction("Get", new { id = createdAnnualStatistic.Id }, createdAnnualStatistic);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetAnnualStatistic(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Annual Statistic by ID.")]
         [SwaggerResponse(204, "The Annual Statistic was succesfully deleted.")]
+        [SwaggerResponse(404, "No Annual Statistic was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteAnnualStatistic(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteAnnualStatistic(id) ? (IActionResult) NoContent() : NotFound();
     }
 }

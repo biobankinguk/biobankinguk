@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class MacroscopicAssessmentController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto macroscopicAssessment)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdMacroscopicAssessment = await _writeService.CreateMacroscopicAssessment(macroscopicAssessment);
             return CreatedAtAction("Get", new { id = createdMacroscopicAssessment.Id }, createdMacroscopicAssessment);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto macroscopicAssessment)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetMacroscopicAssessment(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Macroscopic Assessment by ID.")]
         [SwaggerResponse(204, "The Macroscopic Assessment was succesfully deleted.")]
+        [SwaggerResponse(404, "No Macroscopic Assessment was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteMacroscopicAssessment(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) 
+            => await _writeService.DeleteMacroscopicAssessment(id) ? NoContent() : (IActionResult)NotFound();
     }
 }

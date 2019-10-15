@@ -5,6 +5,7 @@
     /// </summary>
     public class County : BaseReferenceDatum
     {
-        public virtual Country Country { get; set; }
+
+        public virtual Country Country { get; set; } = null!;
     }
 }

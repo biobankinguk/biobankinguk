@@ -1,0 +1,18 @@
+[
+    {
+      "value": "Male",
+      "sortOrder": 1
+    },
+    {
+      "value": "Female",
+      "sortOrder": 2
+    },
+    {
+      "value": "Unknown",
+      "sortOrder": 3
+    },
+    {
+      "value": "Undifferentiated",
+      "sortOrder": 4
+    }
+  ]

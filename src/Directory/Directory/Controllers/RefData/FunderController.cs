@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class FunderController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto funder)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdFunder = await _writeService.CreateFunder(funder);
             return CreatedAtAction("Get", new { id = createdFunder.Id }, createdFunder);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto funder)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetFunder(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Funder by ID.")]
         [SwaggerResponse(204, "The Funder was succesfully deleted.")]
+        [SwaggerResponse(404, "No Funder was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteFunder(id);
-            return NoContent();
-        }
+            => await _writeService.DeleteFunder(id) ? NoContent() : (IActionResult)NotFound();
     }
 }

@@ -43,6 +43,8 @@ namespace Directory.Contracts
         Task<MacroscopicAssessment> GetMacroscopicAssessment(int id);
         Task<ICollection<MaterialType>> ListMaterialTypes();
         Task<MaterialType> GetMaterialType(int id);
+        Task<ICollection<MaterialTypeGroup>> ListMaterialTypeGroups();
+        Task<MaterialTypeGroup> GetMaterialTypeGroup(int id);
         Task<ICollection<OntologyTerm>> ListOntologyTerms();
         Task<OntologyTerm> GetOntologyTerm(string id);
         Task<ICollection<ServiceOffering>> ListServiceOfferings();

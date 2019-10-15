@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class DonorCountController : Controller
     {
@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto donorCount)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdDonorCount = await _writeService.CreateDonorCount(donorCount);
             return CreatedAtAction("Get", new { id = createdDonorCount.Id }, createdDonorCount);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetDonorCount(id) is null)
                 return NotFound();
 
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single Donor Count by ID.")]
         [SwaggerResponse(204, "The Funder was succesfully deleted.")]
+        [SwaggerResponse(404, "No Donor Count was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteDonorCount(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) 
+            => await _writeService.DeleteDonorCount(id) ? NoContent() : (IActionResult)NotFound();
     }
 }

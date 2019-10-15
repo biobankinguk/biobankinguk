@@ -1,0 +1,27 @@
+  [
+    {
+      "value": "Closed to access",
+      "sortOrder": 6
+    },
+    {
+      "value": "Access restricted at present",
+      "sortOrder": 5
+    },
+    {
+      "value": "Open to applicants",
+      "sortOrder": 1
+    },
+    {
+      "value": "Open in response to specific calls",
+      "sortOrder": 2
+    },
+
+    {
+      "value": "Open only through collaboration",
+      "sortOrder": 3
+    },
+    {
+      "value": "Data access only",
+      "sortOrder": 4
+    }
+  ]

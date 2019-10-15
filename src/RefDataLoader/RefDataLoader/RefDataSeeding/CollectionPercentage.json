@@ -1,0 +1,31 @@
+[
+    {
+      "value": "0 - 10%",
+      "sortOrder": 1
+    },
+
+    {
+      "value": "11 - 25%",
+      "sortOrder": 2
+    },
+
+    {
+      "value": "26 - 50%",
+      "sortOrder": 3
+    },
+
+    {
+      "value": "51 - 75%",
+      "sortOrder": 4
+    },
+
+    {
+      "value": "75% -99%",
+      "sortOrder": 5
+    },
+
+    {
+      "value": "100%",
+      "sortOrder": 6
+    }
+  ]

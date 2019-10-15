@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Directory.Controllers.RefData
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/refdata/[controller]")]
     [ApiController]
     public class SopStatusController : Controller
     {
@@ -35,6 +35,9 @@ namespace Directory.Controllers.RefData
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var sopStatus = await _readService.GetSopStatus(id);
             if (sopStatus is null)
                 return NotFound();
@@ -48,6 +51,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sopStatus)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdSopStatus = await _writeService.CreateSopStatus(sopStatus);
             return CreatedAtAction("Get", new { id = createdSopStatus.Id }, createdSopStatus);
         }
@@ -68,11 +74,9 @@ namespace Directory.Controllers.RefData
 
         [SwaggerOperation("Delete a single SOP Status by ID.")]
         [SwaggerResponse(204, "The SOP Status was succesfully deleted.")]
+        [SwaggerResponse(404, "No SOP Status was found with the provided ID. It may have previously been deleted or not yet created.")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _writeService.DeleteSopStatus(id);
-            return NoContent();
-        }
+        public async Task<IActionResult> Delete(int id) 
+            => await _writeService.DeleteSopStatus(id) ? NoContent() : (IActionResult)NotFound();
     }
 }
