@@ -14,12 +14,12 @@ namespace RefDataLoader
         //todo figure out how to use fancy core 3.0 stuff to tidy this up
         static async Task Main()
         {
-            var dataService = BuildDi()
+            var dataService = ConfigureServices()
                .GetService(typeof(IDataService)) as DataService;
             await dataService.SeedData();
         }
 
-        private static IServiceProvider BuildDi()
+        private static IServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
 
