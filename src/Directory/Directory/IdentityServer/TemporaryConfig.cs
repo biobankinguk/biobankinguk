@@ -3,7 +3,7 @@ using IdentityServer4.Test;
 
 namespace Directory.IdentityServer
 {
-    public static class Config
+    public static class TemporaryConfig
     {
         /// <summary>
         /// Temporary Test Users until Identity is implemented

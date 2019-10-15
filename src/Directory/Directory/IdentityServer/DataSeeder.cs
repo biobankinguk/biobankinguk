@@ -1,17 +1,17 @@
 ﻿using System.Linq;
-using AutoMapper.Configuration;
 using Common.Data;
 using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.Extensions.Configuration;
 
 namespace Directory.IdentityServer
 {
-    public static class ConfigDataSeeder
+    public static class DataSeeder
     {
-        public static void SeedIdentityServerConfig(DirectoryContext context, IConfiguration config)
+        public static void Seed(DirectoryContext context, IConfiguration config)
         {
             if (!context.Clients.Any())
             {
-                foreach (var client in GetClients(config))
+                foreach (var client in TrustedClientData.List(config))
                     context.Clients.Add(client.ToEntity());
 
                 context.SaveChanges();

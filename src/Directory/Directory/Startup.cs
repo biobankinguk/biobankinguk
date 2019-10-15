@@ -36,7 +36,7 @@ namespace Directory
 
             // Identity Server
             services.AddIdentityServer()
-                .AddTestUsers(Config.GetUsers())
+                .AddTestUsers(TemporaryConfig.GetUsers())
                 .AddConfigurationStore<DirectoryContext>(opts =>
                     opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
                 .AddOperationalStore<DirectoryContext>(opts =>
@@ -96,7 +96,7 @@ namespace Directory
                 var context = serviceScope.ServiceProvider.GetRequiredService<DirectoryContext>();
                 context.Database.Migrate();
 
-                Config.SeedIdentityServerConfig(context, _config);
+                IdentityServer.DataSeeder.Seed(context, _config);
             }
 
             // Pipeline Configuration
