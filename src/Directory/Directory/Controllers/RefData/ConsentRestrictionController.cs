@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto consentRestriction)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdConsentRestriction = await _writeService.CreateConsentRestriction(consentRestriction);
             return CreatedAtAction("Get", new { id = createdConsentRestriction.Id }, createdConsentRestriction);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto consentRestriction)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetConsentRestriction(id) is null)
                 return NotFound();
 

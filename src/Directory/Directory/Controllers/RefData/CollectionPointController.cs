@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCollectionPoint = await _writeService.CreateCollectionPoint(collectionPoint);
             return CreatedAtAction("Get", new { id = createdCollectionPoint.Id }, createdCollectionPoint);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCollectionPoint(id) is null)
                 return NotFound();
 

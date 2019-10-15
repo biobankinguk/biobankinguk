@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto materialType)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdMaterialType = await _writeService.CreateMaterialType(materialType);
             return CreatedAtAction("Get", new { id = createdMaterialType.Id }, createdMaterialType);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetMaterialType(id) is null)
                 return NotFound();
 

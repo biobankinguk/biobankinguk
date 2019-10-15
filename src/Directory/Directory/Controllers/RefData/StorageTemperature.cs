@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto storageTemperature)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdStorageTemperature = await _writeService.CreateStorageTemperature(storageTemperature);
             return CreatedAtAction("Get", new { id = createdStorageTemperature.Id }, createdStorageTemperature);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto storageTemperature)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetStorageTemperature(id) is null)
                 return NotFound();
 

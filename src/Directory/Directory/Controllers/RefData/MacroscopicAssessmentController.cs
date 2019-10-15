@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto macroscopicAssessment)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdMacroscopicAssessment = await _writeService.CreateMacroscopicAssessment(macroscopicAssessment);
             return CreatedAtAction("Get", new { id = createdMacroscopicAssessment.Id }, createdMacroscopicAssessment);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto macroscopicAssessment)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetMacroscopicAssessment(id) is null)
                 return NotFound();
 

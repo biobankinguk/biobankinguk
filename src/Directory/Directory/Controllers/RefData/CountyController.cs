@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RefDataBaseDto county)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCounty = await _writeService.CreateCounty(county);
             return CreatedAtAction("Get", new { id = createdCounty.Id }, createdCounty);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto county)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCounty(id) is null)
                 return NotFound();
 

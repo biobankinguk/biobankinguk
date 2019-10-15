@@ -47,6 +47,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] OntologyTerm ontologyTerm)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdOntologyTerm = await _writeService.CreateOntologyTerm(ontologyTerm);
             return CreatedAtAction("Get", new { id = createdOntologyTerm.Id }, createdOntologyTerm);
         }
@@ -57,6 +60,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] OntologyTerm ontologyTerm)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetOntologyTerm(id) is null)
                 return NotFound();
 

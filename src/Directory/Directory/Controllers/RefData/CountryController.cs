@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto country)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCountry = await _writeService.CreateCountry(country);
             return CreatedAtAction("Get", new { id = createdCountry.Id }, createdCountry);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto country)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCountry(id) is null)
                 return NotFound();
 

@@ -35,6 +35,9 @@ namespace Directory.Controllers.RefData
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var sopStatus = await _readService.GetSopStatus(id);
             if (sopStatus is null)
                 return NotFound();
@@ -48,6 +51,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sopStatus)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdSopStatus = await _writeService.CreateSopStatus(sopStatus);
             return CreatedAtAction("Get", new { id = createdSopStatus.Id }, createdSopStatus);
         }

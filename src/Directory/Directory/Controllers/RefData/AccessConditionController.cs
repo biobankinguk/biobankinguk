@@ -48,6 +48,9 @@ namespace Directory.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdAccessCondition = await _writeService.CreateAccessCondition(collectionPoint);
             return CreatedAtAction("Get", new { id = createdAccessCondition.Id }, createdAccessCondition);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetAccessCondition(id) is null)
                 return NotFound();
 

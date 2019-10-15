@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto donorCount)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdDonorCount = await _writeService.CreateDonorCount(donorCount);
             return CreatedAtAction("Get", new { id = createdDonorCount.Id }, createdDonorCount);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetDonorCount(id) is null)
                 return NotFound();
 

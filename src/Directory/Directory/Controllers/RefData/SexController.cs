@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto sex)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdSex = await _writeService.CreateSex(sex);
             return CreatedAtAction("Get", new { id = createdSex.Id }, createdSex);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto sex)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetSex(id) is null)
                 return NotFound();
 

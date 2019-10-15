@@ -48,6 +48,9 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPercentage)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var createdCollectionPercentage = await _writeService.CreateCollectionPercentage(collectionPercentage);
             return CreatedAtAction("Get", new { id = createdCollectionPercentage.Id }, createdCollectionPercentage);
         }
@@ -58,6 +61,9 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPercentage)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (_readService.GetCollectionPercentage(id) is null)
                 return NotFound();
 
