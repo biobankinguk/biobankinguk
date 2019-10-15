@@ -1,18 +1,26 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Common.Data.ReferenceData;
 using IdentityServer4.EntityFramework.Entities;
+using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Interfaces;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Data
 {
     public class DirectoryContext : DbContext, IConfigurationDbContext, IPersistedGrantDbContext
     {
+        private readonly OperationalStoreOptions _opStoreOptions;
+        private readonly ConfigurationStoreOptions _configStoreOptions;
 
-        public DirectoryContext(DbContextOptions<DirectoryContext> options)
+        public DirectoryContext(
+            DbContextOptions<DirectoryContext> options,
+            OperationalStoreOptions opStoreOptions,
+            ConfigurationStoreOptions configStoreOptions)
             : base(options)
         {
-
+            _opStoreOptions = opStoreOptions;
+            _configStoreOptions = configStoreOptions;
         }
 
         public DbSet<AccessCondition> AccessConditions { get; set; }
@@ -40,11 +48,11 @@ namespace Common.Data
 
         #region IdentityServer4
 
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<IdentityResource> IdentityResources { get; set; }
-        public DbSet<ApiResource> ApiResources { get; set; }
-        public DbSet<PersistedGrant> PersistedGrants { get; set; }
-        public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
+        public DbSet<Client> Clients { get; set; } = null!;
+        public DbSet<IdentityResource> IdentityResources { get; set; } = null!;
+        public DbSet<ApiResource> ApiResources { get; set; } = null!;
+        public DbSet<PersistedGrant> PersistedGrants { get; set; } = null!;
+        public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; } = null!;
 
         public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
 
@@ -52,6 +60,10 @@ namespace Common.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ConfigurePersistedGrantContext(_opStoreOptions);
+            builder.ConfigureClientContext(_configStoreOptions);
+            builder.ConfigureResourcesContext(_configStoreOptions);
+
             base.OnModelCreating(builder);
 
             builder.Entity<DeviceFlowCodes>().HasNoKey();

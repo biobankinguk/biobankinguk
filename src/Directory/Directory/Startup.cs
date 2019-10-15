@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
@@ -36,14 +36,14 @@ namespace Directory
 
             // Identity Server
             services.AddIdentityServer()
-                //.AddInMemoryIdentityResources(Config.GetIdentityResources())
-                //.AddInMemoryApiResources(Config.GetApis())
-                //.AddInMemoryClients(Config.GetClients(_config))
                 .AddTestUsers(Config.GetUsers())
                 .AddConfigurationStore<DirectoryContext>(opts =>
                     opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
                 .AddOperationalStore<DirectoryContext>(opts =>
-                    opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
+                {
+                    opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb);
+                    opts.EnableTokenCleanup = true;
+                })
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             // MVC
@@ -103,7 +103,6 @@ namespace Directory
 
             app.UseRouting();
 
-            app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
 
