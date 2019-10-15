@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Common.Data.ReferenceData;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
@@ -23,28 +23,28 @@ namespace Common.Data
             _configStoreOptions = configStoreOptions;
         }
 
-        public DbSet<AccessCondition> AccessConditions { get; set; }
-        public DbSet<AgeRange> AgeRanges { get; set; }
-        public DbSet<AnnualStatistic> AnnualStatistics { get; set; }
-        public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
-        public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
-        public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
-        public DbSet<CollectionPoint> CollectionPoints { get; set; }
-        public DbSet<CollectionStatus> CollectionStatuses { get; set; }
-        public DbSet<CollectionType> CollectionTypes { get; set; }
-        public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<County> Counties { get; set; }
-        public DbSet<DonorCount> DonorCounts { get; set; }
-        public DbSet<Funder> Funders { get; set; }
-        public DbSet<HtaStatus> HtaStatuses { get; set; }
-        public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
-        public DbSet<MaterialType> MaterialTypes { get; set; }
-        public DbSet<OntologyTerm> OntologyTerms { get; set; }
-        public DbSet<ServiceOffering> ServiceOfferings { get; set; }
-        public DbSet<Sex> Sexes { get; set; }
-        public DbSet<SopStatus> SopStatuses { get; set; }
-        public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+        public DbSet<AccessCondition> AccessConditions { get; set; } = null!;
+        public DbSet<AgeRange> AgeRanges { get; set; } = null!;
+        public DbSet<AnnualStatistic> AnnualStatistics { get; set; } = null!;
+        public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; } = null!;
+        public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; } = null!;
+        public DbSet<CollectionPercentage> CollectionPercentages { get; set; } = null!;
+        public DbSet<CollectionPoint> CollectionPoints { get; set; } = null!;
+        public DbSet<CollectionStatus> CollectionStatuses { get; set; } = null!;
+        public DbSet<CollectionType> CollectionTypes { get; set; } = null!;
+        public DbSet<ConsentRestriction> ConsentRestrictions { get; set; } = null!;
+        public DbSet<Country> Countries { get; set; } = null!;
+        public DbSet<County> Counties { get; set; } = null!;
+        public DbSet<DonorCount> DonorCounts { get; set; } = null!;
+        public DbSet<Funder> Funders { get; set; } = null!;
+        public DbSet<HtaStatus> HtaStatuses { get; set; } = null!;
+        public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; } = null!;
+        public DbSet<MaterialType> MaterialTypes { get; set; } = null!;
+        public DbSet<OntologyTerm> OntologyTerms { get; set; } = null!;
+        public DbSet<ServiceOffering> ServiceOfferings { get; set; } = null!;
+        public DbSet<Sex> Sexes { get; set; } = null!;
+        public DbSet<SopStatus> SopStatuses { get; set; } = null!;
+        public DbSet<StorageTemperature> StorageTemperatures { get; set; } = null!;
 
         #region IdentityServer4
 
@@ -65,9 +65,6 @@ namespace Common.Data
             builder.ConfigureResourcesContext(_configStoreOptions);
 
             base.OnModelCreating(builder);
-
-            builder.Entity<DeviceFlowCodes>().HasNoKey();
-            builder.Entity<PersistedGrant>().HasNoKey();
         }
     }
 }
