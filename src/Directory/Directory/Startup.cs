@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
@@ -32,12 +32,18 @@ namespace Directory
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var defaultDb = _config.GetConnectionString("DefaultConnection");
+
             // Identity Server
             services.AddIdentityServer()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients(_config))
-                .AddTestUsers(Config.GetUsers())
+                .AddTestUsers(TemporaryConfig.GetUsers())
+                .AddConfigurationStore<DirectoryContext>(opts =>
+                    opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
+                .AddOperationalStore<DirectoryContext>(opts =>
+                {
+                    opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb);
+                    opts.EnableTokenCleanup = true;
+                })
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             // MVC
@@ -59,14 +65,12 @@ namespace Directory
                     opts.Audience = ApiResourceKeys.RefData;
                 });
             services.AddAuthorization(opts =>
-                {
-                    opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken);
-                });
+                opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken));
 
             // Entity Framework
             services.AddDbContext<DirectoryContext>(opts => opts
                 .UseLazyLoadingProxies()
-                .UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+                .UseSqlServer(defaultDb));
 
             // Service layer
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
@@ -86,6 +90,16 @@ namespace Directory
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // App initialisation
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<DirectoryContext>();
+                context.Database.Migrate();
+
+                IdentityServer.DataSeeder.Seed(context, _config);
+            }
+
+            // Pipeline Configuration
             app.GnuTerryPratchett();
 
             if (env.IsDevelopment())
@@ -99,7 +113,6 @@ namespace Directory
 
             app.UseRouting();
 
-            app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
 

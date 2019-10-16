@@ -34,7 +34,7 @@ namespace Upload.Services
             {
                 Address = disco.TokenEndpoint,
                 ClientId = TrustedClientIds.UploadApi,
-                ClientSecret = _config[$"ClientSecrets:{TrustedClientIds.UploadApi}"],
+                ClientSecret = _config[$"TrustedClients:{TrustedClientIds.UploadApi}:secret"],
 
                 Scope = ApiResourceKeys.RefData
             });
