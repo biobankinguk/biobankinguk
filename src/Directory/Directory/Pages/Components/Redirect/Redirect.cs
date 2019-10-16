@@ -5,7 +5,8 @@ namespace Directory.Pages.Components.Redirect
 {
     public class RedirectViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(string redirectUrl)
-            => View(new RedirectViewModel { RedirectUrl = redirectUrl });
+        public Task<IViewComponentResult> InvokeAsync(string redirectUrl)
+            => Task.FromResult<IViewComponentResult>(
+                View(new RedirectViewModel { RedirectUrl = redirectUrl }));
     }
 }

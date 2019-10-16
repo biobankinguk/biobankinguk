@@ -44,7 +44,7 @@ namespace MvcPoc
             //    opts.RequireHttpsMetadata = true;
 
             //    opts.ClientId = "mvc-poc-hybrid";
-            //    opts.ClientSecret = Configuration[$"ClientSecrets:{TrustedClientIds.UploadApi}"];
+            //    opts.ClientSecret = Configuration[$"TrustedClients:{TrustedClientIds.UploadApi}:secret"];
             //    opts.ResponseType = "code id_token";
 
             //    opts.SaveTokens = true;
@@ -67,7 +67,7 @@ namespace MvcPoc
                 opts.RequireHttpsMetadata = true;
 
                 opts.ClientId = "mvc-poc-pkce";
-                opts.ClientSecret = Configuration[$"ClientSecrets:{TrustedClientIds.UploadApi}"];
+                opts.ClientSecret = Configuration[$"TrustedClients:{TrustedClientIds.UploadApi}:secret"];
                 opts.ResponseType = "code";
 
                 opts.SaveTokens = true;
