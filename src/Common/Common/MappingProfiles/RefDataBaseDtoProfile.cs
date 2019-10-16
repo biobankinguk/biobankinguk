@@ -31,6 +31,7 @@ namespace Common.MappingProfiles
             CreateMap<SortedRefDataBaseDto, Sex>();
             CreateMap<SortedRefDataBaseDto, SopStatus>();
             CreateMap<SortedRefDataBaseDto, StorageTemperature>();
+            CreateMap<SortedRefDataBaseDto, AnnualStatisticGroup>();
         }
     }
 }
