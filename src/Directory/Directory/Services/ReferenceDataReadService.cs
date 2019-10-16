@@ -47,8 +47,19 @@ namespace Directory.Services
 
         #endregion
 
+        #region AnnualStatisticGroup
+
+        public async Task<ICollection<AnnualStatisticGroup>> ListAnnualStatisticGroups()
+            => await _context.AnnualStatisticGroups.ToListAsync();
+
+        public async Task<AnnualStatisticGroup> GetAnnualStatisticGroup(int id)
+            => await _context.AnnualStatisticGroups.FindAsync(id);
+
+        #endregion
+
+
         #region AssociatedDataProcurementTimeframe
-      
+
         public async Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes()
             => await _context.AssociatedDataProcurementTimeframes.ToListAsync();
      

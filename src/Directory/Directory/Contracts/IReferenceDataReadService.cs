@@ -15,6 +15,8 @@ namespace Directory.Contracts
         Task<AgeRange> GetAgeRange(int id);
         Task<ICollection<AnnualStatistic>> ListAnnualStatistics();
         Task<AnnualStatistic> GetAnnualStatistic(int id);
+        Task<ICollection<AnnualStatisticGroup>> ListAnnualStatisticGroups();
+        Task<AnnualStatisticGroup> GetAnnualStatisticGroup(int id);
         Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes();
         Task<AssociatedDataProcurementTimeframe> GetAssociatedDataProcurementTimeframe(int id);
         Task<ICollection<AssociatedDataType>> ListAssociatedDataTypes();

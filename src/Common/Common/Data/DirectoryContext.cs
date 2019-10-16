@@ -15,6 +15,7 @@ namespace Common.Data
         public DbSet<AccessCondition> AccessConditions { get; set; }
         public DbSet<AgeRange> AgeRanges { get; set; }
         public DbSet<AnnualStatistic> AnnualStatistics { get; set; }
+        public DbSet<AnnualStatisticGroup> AnnualStatisticGroups { get; set; }
         public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
