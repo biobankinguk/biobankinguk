@@ -32,6 +32,10 @@ namespace Common.MappingProfiles
             CreateMap<SortedRefDataBaseDto, SopStatus>();
             CreateMap<SortedRefDataBaseDto, StorageTemperature>();
             CreateMap<SortedRefDataBaseDto, AnnualStatisticGroup>();
+            CreateMap<AnnualStatisticDto, AnnualStatistic>();
+            CreateMap<AnnualStatistic, AnnualStatisticDto>().
+                ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Value)).
+                ForMember(dest => dest.AnnualStatisticGroupId, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Id));
         }
     }
 }

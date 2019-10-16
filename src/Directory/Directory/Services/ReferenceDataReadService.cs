@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Common.Data;
 using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +13,12 @@ namespace Directory.Services
     public class ReferenceDataReadService : IReferenceDataReadService
     {
         private readonly DirectoryContext _context;
+        private readonly IMapper _mapper;
 
-        public ReferenceDataReadService(DirectoryContext context)
+        public ReferenceDataReadService(DirectoryContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         #region AccessCondition
@@ -38,12 +42,18 @@ namespace Directory.Services
         #endregion
 
         #region AnnualStatistic
-       
-        public async Task<ICollection<AnnualStatistic>> ListAnnualStatistics()
-            => await _context.AnnualStatistics.ToListAsync();
+
+        public async Task<ICollection<AnnualStatisticDto>> ListAnnualStatistics()
+        {
+            var entities = await _context.AnnualStatistics.ToListAsync();
+            return _mapper.Map<ICollection<AnnualStatisticDto>>(entities);
+        }
       
-        public async Task<AnnualStatistic> GetAnnualStatistic(int id)
-            => await _context.AnnualStatistics.FindAsync(id);
+        public async Task<AnnualStatisticDto> GetAnnualStatistic(int id)
+        {
+            var entity = await _context.AnnualStatistics.FindAsync(id);
+            return _mapper.Map<AnnualStatisticDto>(entity);
+        }
 
         #endregion
 

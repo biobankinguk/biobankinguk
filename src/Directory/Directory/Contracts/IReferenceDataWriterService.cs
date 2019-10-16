@@ -15,8 +15,8 @@ namespace Directory.Contracts
         Task<AgeRange> CreateAgeRange(SortedRefDataBaseDto ageRange);
         Task<AgeRange> UpdateAgeRange(int id, SortedRefDataBaseDto ageRange);
         Task<bool> DeleteAgeRange(int id);
-        Task<AnnualStatistic> CreateAnnualStatistic(RefDataBaseDto annualStatistic);
-        Task<AnnualStatistic> UpdateAnnualStatistic(int id, RefDataBaseDto annualStatistic);
+        Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatisticDto annualStatistic);
+        Task<AnnualStatistic> UpdateAnnualStatistic(int id, AnnualStatisticDto annualStatistic);
         Task<bool> DeleteAnnualStatistic(int id);
         Task<AnnualStatisticGroup> CreateAnnualStatisticGroup(SortedRefDataBaseDto annualStatisticGroup);
         Task<AnnualStatisticGroup> UpdateAnnualStatisticGroup(int id, SortedRefDataBaseDto annualStatisticGroup);

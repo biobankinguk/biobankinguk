@@ -1,4 +1,5 @@
 ﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,8 +14,8 @@ namespace Directory.Contracts
         Task<AccessCondition> GetAccessCondition(int id);
         Task<ICollection<AgeRange>> ListAgeRanges();
         Task<AgeRange> GetAgeRange(int id);
-        Task<ICollection<AnnualStatistic>> ListAnnualStatistics();
-        Task<AnnualStatistic> GetAnnualStatistic(int id);
+        Task<ICollection<AnnualStatisticDto>> ListAnnualStatistics();
+        Task<AnnualStatisticDto> GetAnnualStatistic(int id);
         Task<ICollection<AnnualStatisticGroup>> ListAnnualStatisticGroups();
         Task<AnnualStatisticGroup> GetAnnualStatisticGroup(int id);
         Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes();

@@ -117,13 +117,18 @@ namespace Directory.Services
 
         #region AnnualStatistic
 
-        public async Task<AnnualStatistic> CreateAnnualStatistic(RefDataBaseDto annualStatistic)
-            => await CreateRefData(_mapper.Map<AnnualStatistic>(annualStatistic));
+        public async Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatisticDto annualStatistic)
+        {
+            var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
+            entity.AnnualStatisticGroup = await _context.AnnualStatisticGroups.SingleOrDefaultAsync(x => x.Id == annualStatistic.AnnualStatisticGroupId);
+            return await CreateRefData(entity);
+        }
 
-        public async Task<AnnualStatistic> UpdateAnnualStatistic(int id, RefDataBaseDto annualStatistic)
+        public async Task<AnnualStatistic> UpdateAnnualStatistic(int id, AnnualStatisticDto annualStatistic)
         {
             var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
             entity.Id = id;
+            entity.AnnualStatisticGroup = await _context.AnnualStatisticGroups.SingleOrDefaultAsync(x => x.Id == annualStatistic.AnnualStatisticGroupId);
             return await UpdateRefData(entity);
         }
 

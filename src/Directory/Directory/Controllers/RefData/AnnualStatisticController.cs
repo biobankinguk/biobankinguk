@@ -46,12 +46,12 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Annual Statistic was created", typeof(AnnualStatistic))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
+        public async Task<IActionResult> Post([FromBody] AnnualStatisticDto annualStatistic)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdAnnualStatistic = await _writeService.CreateAnnualStatistic(collectionPoint);
+            var createdAnnualStatistic = await _writeService.CreateAnnualStatistic(annualStatistic);
             return CreatedAtAction("Get", new { id = createdAnnualStatistic.Id }, createdAnnualStatistic);
         }
 
@@ -59,7 +59,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Annual Statistic was updated successfully.")]
         [SwaggerResponse(404, "No Annual Statistic was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
+        public async Task<IActionResult> Put(int id, [FromBody] AnnualStatisticDto annualStatistic)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -67,7 +67,7 @@ namespace Directory.Controllers.RefData
             if (_readService.GetAnnualStatistic(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateAnnualStatistic(id, collectionPoint);
+            await _writeService.UpdateAnnualStatistic(id, annualStatistic);
 
             return NoContent();
         }
