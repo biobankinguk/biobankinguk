@@ -10,7 +10,7 @@ namespace Directory.IdentityServer
     public static class IdentityResourceData
     {
         /// <summary>
-        /// All the proconfigured IdentityResources
+        /// All the preconfigured IdentityResources
         /// </summary>
         public static IEnumerable<IdentityResource> List()
             => new List<IdentityResource>
