@@ -4,7 +4,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace Directory.IdentityServer
+namespace Directory.Auth.IdentityServer
 {
     /// <summary>
     /// Purely a configuration class.

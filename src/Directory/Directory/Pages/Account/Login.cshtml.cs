@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Directory.IdentityServer;
+using Directory.Auth.IdentityServer;
 using Directory.Pages.Components.Redirect;
 using IdentityServer4.Events;
 using IdentityServer4.Models;

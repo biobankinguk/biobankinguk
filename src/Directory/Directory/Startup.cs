@@ -2,10 +2,11 @@ using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
+using Common.Data.Identity;
 using Common.MappingProfiles;
 using Directory.Auth;
+using Directory.Auth.IdentityServer;
 using Directory.Contracts;
-using Directory.IdentityServer;
 using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -36,10 +37,10 @@ namespace Directory
             var defaultDb = _config.GetConnectionString("DefaultConnection");
 
             // ASP.NET Core Identity
-            services.AddIdentityCore<IdentityUser>() // TODO: replace with custom user
+            services.AddIdentityCore<DirectoryUser>()
                 .AddEntityFrameworkStores<DirectoryContext>()
                 .AddDefaultTokenProviders()
-                .AddSignInManager<SignInManager<IdentityUser>>();
+                .AddSignInManager<SignInManager<DirectoryUser>>();
 
             // Identity Server
             services.AddIdentityServer()
@@ -103,7 +104,7 @@ namespace Directory
                 var context = serviceScope.ServiceProvider.GetRequiredService<DirectoryContext>();
                 context.Database.Migrate();
 
-                IdentityServer.DataSeeder.Seed(context, _config);
+                Auth.IdentityServer.DataSeeder.Seed(context, _config);
             }
 
             // Pipeline Configuration

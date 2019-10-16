@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using IdentityServer4.Test;
 
-namespace Directory.IdentityServer
+namespace Directory.Auth.IdentityServer
 {
     public static class TemporaryConfig
     {
