@@ -10,6 +10,7 @@ using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,12 @@ namespace Directory
         public void ConfigureServices(IServiceCollection services)
         {
             var defaultDb = _config.GetConnectionString("DefaultConnection");
+
+            // ASP.NET Core Identity
+            services.AddIdentityCore<IdentityUser>() // TODO: replace with custom user
+                .AddEntityFrameworkStores<DirectoryContext>()
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<IdentityUser>>();
 
             // Identity Server
             services.AddIdentityServer()
