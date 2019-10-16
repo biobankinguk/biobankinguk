@@ -1,4 +1,5 @@
-﻿using Common.DTO;
+﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using Config;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -36,23 +37,40 @@ namespace RefDataLoader
 
                 if (!containsIrregularRefData)
                 {
-                    var refData = PrepData($@"RefDataSeeding/{s.Key}.json");
+                    var refData = PrepData<SortedRefDataBaseDto>($@"RefDataSeeding/{s.Key}.json");
 
                     await SubmitData(refData, s);
                 }
 
             }
 
+            //Once the above is done we can move onto the less standard types, as some of these need Groups to have been seeded first.
+
             //TODO implement non standard RefData (to be done with relevant PBI due to DTO refactoring)
             //donor count
 
-            //TODO now handle the non standard objects/ones which have dependencies on groups
-            //annualStatistic
+            await PrepareAndSubmitAnnualStatistics(); 
+            
+
             //county
             //material type
         }
 
+        private async Task PrepareAndSubmitAnnualStatistics()
+        {
+            var asconfig = _config.RefDataEndpoints.SingleOrDefault(x => x.Key == "AnnualStatistic");
 
+            //get annual statistic groups
+            var annualStatisticGroups = await GetRefData<AnnualStatisticGroup>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "AnnualStatisticGroup").Value);
+
+            //match them by name to ones in DTOs, and set the ID values
+            foreach(var annualstatistic in PrepData<AnnualStatisticDto>($@"RefDataSeeding/{asconfig.Key}.json"))
+            {
+                annualstatistic.AnnualStatisticGroupId = annualStatisticGroups.Single(x => x.Value.Contains(annualstatistic.Group, StringComparison.OrdinalIgnoreCase)).Id;
+
+                await SendJsonAsync(asconfig.Value, JsonConvert.SerializeObject(annualstatistic));
+            }
+        }
 
         private void PrepareHttpClient()
         {
@@ -87,11 +105,11 @@ namespace RefDataLoader
             Console.WriteLine($"Running time so far: {timer.Elapsed}");
         }
 
-        private List<SortedRefDataBaseDto> PrepData(string datafile)
+        private List<T> PrepData<T>(string datafile)
         {
             using StreamReader r = new StreamReader(datafile);
             string json = r.ReadToEnd();
-            List<SortedRefDataBaseDto> items = JsonConvert.DeserializeObject<List<SortedRefDataBaseDto>>(json);
+            List<T> items = JsonConvert.DeserializeObject<List<T>>(json);
             return items;
         }
 
@@ -117,7 +135,7 @@ namespace RefDataLoader
             }
         }
 
-        private static async Task<string> GetJsonAsync(string endpoint)
+        private async Task<List<T>> GetRefData<T>(string endpoint) where T : BaseReferenceDatum
         {
             var r = (await Client.SendAsync(new HttpRequestMessage
             {
@@ -126,7 +144,8 @@ namespace RefDataLoader
                 RequestUri = new Uri(Client.BaseAddress, endpoint)
             })).EnsureSuccessStatusCode();
 
-            return await r.Content.ReadAsStringAsync();
+            var json = await r.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<T>>(json);
         }
     }
 
