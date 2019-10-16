@@ -80,5 +80,5 @@ namespace Directory.Controllers
             => await _writeService.DeleteAnnualStatisticGroup(id) ? (IActionResult)NoContent() : NotFound();
     }
 }
-    }
-}
+
+

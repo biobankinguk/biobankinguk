@@ -18,6 +18,9 @@ namespace Directory.Contracts
         Task<AnnualStatistic> CreateAnnualStatistic(RefDataBaseDto annualStatistic);
         Task<AnnualStatistic> UpdateAnnualStatistic(int id, RefDataBaseDto annualStatistic);
         Task<bool> DeleteAnnualStatistic(int id);
+        Task<AnnualStatisticGroup> CreateAnnualStatisticGroup(SortedRefDataBaseDto annualStatisticGroup);
+        Task<AnnualStatisticGroup> UpdateAnnualStatisticGroup(int id, SortedRefDataBaseDto annualStatisticGroup);
+        Task<bool> DeleteAnnualStatisticGroup(int id);
         Task<AssociatedDataProcurementTimeframe> CreateAssociatedDataProcurementTimeframe(SortedRefDataBaseDto associatedDataProcurementTimeframe);
         Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeframe(int id, SortedRefDataBaseDto associatedDataProcurementTimeframe);
         Task<bool> DeleteAssociatedDataProcurementTimeframe(int id);

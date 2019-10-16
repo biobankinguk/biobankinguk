@@ -132,6 +132,24 @@ namespace Directory.Services
 
         #endregion
 
+        #region Annual Statistic Groups
+
+        public async Task<AnnualStatisticGroup> CreateAnnualStatisticGroup(SortedRefDataBaseDto annualStatisticGroup)
+             => await CreateRefData(_mapper.Map<AnnualStatisticGroup>(annualStatisticGroup));
+        
+
+        public async Task<AnnualStatisticGroup> UpdateAnnualStatisticGroup(int id, SortedRefDataBaseDto annualStatisticGroup)
+        {
+            var entity = _mapper.Map<AnnualStatisticGroup>(annualStatisticGroup);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
+
+        public async Task<bool> DeleteAnnualStatisticGroup(int id)
+            => await DeleteRefData<AnnualStatisticGroup>(id);
+
+        #endregion
+
         #region AssociatedDataProcurementTimeframe
 
         public async Task<AssociatedDataProcurementTimeframe> CreateAssociatedDataProcurementTimeframe(SortedRefDataBaseDto associatedDataProcurementTimeframe)
