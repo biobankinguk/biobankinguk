@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Common.Data.Identity;
+using Directory.Auth.Identity;
 using Directory.Auth.IdentityServer;
 using Directory.Pages.Components.Redirect;
 using IdentityServer4.Events;
@@ -19,14 +20,14 @@ namespace Directory.Pages.Account
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IEventService _events;
-        private readonly UserManager<DirectoryUser> _users;
+        private readonly DirectoryUserManager _users;
         private readonly SignInManager<DirectoryUser> _signIn;
 
         public LoginModel(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events,
-            UserManager<DirectoryUser> userManager,
+            DirectoryUserManager userManager,
             SignInManager<DirectoryUser> signInManager)
         {
             _interaction = interaction;
@@ -90,6 +91,7 @@ namespace Directory.Pages.Account
             {
                 // Validate credentials
                 var result = await _signIn.PasswordSignInAsync(Username, Password, false, true);
+
                 if (result.Succeeded)
                 {
                     var user = await _users.FindByNameAsync(Username);
@@ -98,6 +100,8 @@ namespace Directory.Pages.Account
                         user.Id,
                         user.Name,
                         clientId: context?.ClientId));
+                    
+                    await _users.UpdateLastLogin(user);
 
                     if (context is { }) return await ContextAwareRedirect(context, returnUrl);
 

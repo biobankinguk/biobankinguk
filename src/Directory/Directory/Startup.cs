@@ -7,6 +7,7 @@ using Common.Data;
 using Common.Data.Identity;
 using Common.MappingProfiles;
 using Directory.Auth;
+using Directory.Auth.Identity;
 using Directory.Contracts;
 using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +43,7 @@ namespace Directory
             services.AddIdentityCore<DirectoryUser>()
                 .AddEntityFrameworkStores<DirectoryContext>()
                 .AddDefaultTokenProviders()
+                .AddUserManager<DirectoryUserManager>()
                 .AddSignInManager<SignInManager<DirectoryUser>>();
 
             services.Configure<IdentityOptions>(_config)
