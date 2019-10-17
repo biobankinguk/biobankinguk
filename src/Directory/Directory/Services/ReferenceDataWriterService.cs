@@ -55,7 +55,7 @@ namespace Directory.Services
         /// <typeparam name="T"></typeparam>
         /// <param name="id"></param>
         /// <returns></returns>
-        private async Task<bool> DeleteRefData<T>(int id) where T : BaseReferenceDatum, new() 
+        private async Task<bool> DeleteRefData<T>(int id) where T : BaseReferenceDatum, new()
         {
             try
             {
@@ -63,18 +63,18 @@ namespace Directory.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch(DbUpdateConcurrencyException e)
+            catch (DbUpdateConcurrencyException)
             {
                 //we need to figure out if this exception was thrown because of the id not existing, or due to another error
                 if (await _context.Set<T>()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == id) != null)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.Id == id) != null)
                 {
                     //we found some entries, so it must be another error - let this bubble up
-                    throw e;
+                    throw;
                 }
                 else
-                    return false;          
+                    return false;
             }
         }
 
@@ -83,7 +83,7 @@ namespace Directory.Services
         #region AccessCondition
 
         public async Task<AccessCondition> CreateAccessCondition(SortedRefDataBaseDto accessCondition)
-            => await CreateRefData(_mapper.Map<AccessCondition>(accessCondition));      
+            => await CreateRefData(_mapper.Map<AccessCondition>(accessCondition));
 
         public async Task<AccessCondition> UpdateAccessCondition(int id, SortedRefDataBaseDto accessCondition)
         {
@@ -91,7 +91,7 @@ namespace Directory.Services
             entity.Id = id;
             return await UpdateRefData(entity);
         }
-            
+
 
         public async Task<bool> DeleteAccessCondition(int id)
             => await DeleteRefData<AccessCondition>(id);
@@ -144,8 +144,8 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-            public async Task<bool> DeleteAssociatedDataProcurementTimeframe(int id)
-            => await DeleteRefData<AssociatedDataProcurementTimeframe>(id);
+        public async Task<bool> DeleteAssociatedDataProcurementTimeframe(int id)
+        => await DeleteRefData<AssociatedDataProcurementTimeframe>(id);
 
         #endregion
 
@@ -161,8 +161,8 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-            public async Task<bool> DeleteAssociatedDataType(int id)
-            => await DeleteRefData<AssociatedDataType>(id);
+        public async Task<bool> DeleteAssociatedDataType(int id)
+        => await DeleteRefData<AssociatedDataType>(id);
 
         #endregion
 
@@ -212,7 +212,7 @@ namespace Directory.Services
             return await UpdateRefData(entity);
         }
 
-        public async  Task<bool> DeleteCollectionStatus(int id)
+        public async Task<bool> DeleteCollectionStatus(int id)
             => await DeleteRefData<CollectionStatus>(id);
 
         #endregion
@@ -450,7 +450,7 @@ namespace Directory.Services
 
         public async Task<SopStatus> CreateSopStatus(SortedRefDataBaseDto sopStatus)
         {
-              return await CreateRefData(_mapper.Map<SopStatus>(sopStatus));
+            return await CreateRefData(_mapper.Map<SopStatus>(sopStatus));
         }
 
         public async Task<SopStatus> UpdateSopStatus(int id, SortedRefDataBaseDto sopStatus)

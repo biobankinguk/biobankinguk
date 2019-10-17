@@ -4,7 +4,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace Directory.IdentityServer
+namespace Directory.Auth.IdentityServer
 {
     /// <summary>
     /// Purely a configuration class.
@@ -22,7 +22,7 @@ namespace Directory.IdentityServer
             {
                 DirectoryWebApp(config[$"TrustedClients:{TrustedClientIds.DirectoryWebApp}:origin"]),
                 UploadApi(config[$"TrustedClients:{TrustedClientIds.UploadApi}:secret"]),
-                
+
                 // MVC PoC Clients // TODO: REMOVE when ready
                 MvcPoc("Hybrid",
                     config["TrustedClients:mvc-poc:origin"],
@@ -80,16 +80,20 @@ namespace Directory.IdentityServer
 
         // TODO: PoC only - REMOVE when ready
         /// <summary>
-        /// Proof of Concept MVC (or other Server Side Web App) Client.
+        /// <para>Proof of Concept MVC (or other Server Side Web App) Client.</para>
         /// 
+        /// <para>
         /// This provides both PKCE and Hybrid Flow versions.
         /// PKCE should be used anywhere it's supported.
+        /// </para>
         /// 
-        /// We may not know until we try if ASP.NET 4.x (e.g. the Framework Directory) supports PKCE.
+        /// <para>We may not know until we try if ASP.NET 4.x (e.g. the Framework Directory) supports PKCE.</para>
         /// 
+        /// <para>
         /// Bear in mind MVC is a server-side app and can therefore also use Client Credentials
         /// for client-level API access tokens if it wants,
         /// though if a user is logged in their access token may be easer, if appropriate.
+        /// </para>
         /// </summary>
         /// <param name="type">"PKCE" or "Hybrid" to determine the flow configuration.</param>
         /// <param name="origin">The origin of the app urls</param>

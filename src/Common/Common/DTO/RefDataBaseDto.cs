@@ -8,7 +8,7 @@ namespace Common.DTO
     public class RefDataBaseDto
     {
         [Required]
-        public string Value { get; set; }
+        public string Value { get; set; } = string.Empty; // TODO: service layer may or may not want to check for empty
     }
 
     public class SortedRefDataBaseDto : RefDataBaseDto

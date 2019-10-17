@@ -2,7 +2,7 @@
 using Common.Constants;
 using IdentityServer4.Models;
 
-namespace Directory.IdentityServer
+namespace Directory.Auth.IdentityServer
 {
     /// <summary>
     /// Purely a configuration class.
