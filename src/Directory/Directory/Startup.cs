@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
@@ -6,7 +7,6 @@ using Common.Data;
 using Common.Data.Identity;
 using Common.MappingProfiles;
 using Directory.Auth;
-using Directory.Auth.IdentityServer;
 using Directory.Contracts;
 using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,9 +44,12 @@ namespace Directory
                 .AddDefaultTokenProviders()
                 .AddSignInManager<SignInManager<DirectoryUser>>();
 
+            services.Configure<IdentityOptions>(_config)
+                .Configure<DataProtectionTokenProviderOptions>(options =>
+                    options.TokenLifespan = TimeSpan.FromDays(5));
+
             // Identity Server
             services.AddIdentityServer()
-                .AddTestUsers(TemporaryConfig.GetUsers())
                 .AddConfigurationStore<DirectoryContext>(opts =>
                     opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
                 .AddOperationalStore<DirectoryContext>(opts =>
@@ -54,6 +57,7 @@ namespace Directory
                     opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb);
                     opts.EnableTokenCleanup = true;
                 })
+                .AddAspNetIdentity<DirectoryUser>()
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             // MVC
@@ -67,13 +71,13 @@ namespace Directory
             });
 
             // Auth
-            services.AddAuthentication() // DO NOT set a default; IdentityServer does that
-                // Also add Bearer Auth for our API
+            services.AddAuthentication(IdentityConstants.ApplicationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
                 {
                     opts.Authority = _config["JwtBearer:Authority"];
                     opts.Audience = ApiResourceKeys.RefData;
-                });
+                })
+                .AddIdentityCookies();
             services.AddAuthorization(opts =>
                 opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken));
 
@@ -144,14 +148,31 @@ namespace Directory
         /// Called in Main to peform any App Initialisation
         /// before the WebHost itself is run.
         /// </summary>
-        public static void Initialise(IServiceProvider services)
+        public static async Task Initialise(IServiceProvider services)
         {
             var config = services.GetRequiredService<IConfiguration>();
             var context = services.GetRequiredService<DirectoryContext>();
-            
+            var users = services.GetRequiredService<UserManager<DirectoryUser>>();
+            var passwords = services.GetRequiredService<IPasswordHasher<DirectoryUser>>();
+
             context.Database.Migrate();
 
             Auth.IdentityServer.DataSeeder.Seed(context, config);
+
+            // Seed a dummy user
+            if (await users.FindByNameAsync("jon@jon.jon") is null)
+            {
+                var user = new DirectoryUser
+                {
+                    UserName = "jon@jon.jon",
+                    Email = "jon@jon.jon",
+                    Name = "Jon Jon",
+                    EmailConfirmed = true
+                };
+                user.PasswordHash = passwords.HashPassword(user, "test");
+
+                await users.CreateAsync(user);
+            }
         }
     }
 }

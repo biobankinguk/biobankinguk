@@ -13,7 +13,7 @@ namespace Directory
             var host = CreateHostBuilder(args).Build();
 
             using (var serviceScope = host.Services.GetService<IServiceScopeFactory>().CreateScope())
-                Startup.Initialise(serviceScope.ServiceProvider);
+                await Startup.Initialise(serviceScope.ServiceProvider);
 
             await host.RunAsync();
         }
