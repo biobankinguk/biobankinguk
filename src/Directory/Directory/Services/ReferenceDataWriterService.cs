@@ -5,6 +5,7 @@ using Common.DTO;
 using Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Directory.Services
@@ -378,13 +379,37 @@ namespace Directory.Services
 
         #region MaterialType
 
-        public async Task<MaterialType> CreateMaterialType(SortedRefDataBaseDto materialType)
-            => await CreateRefData(_mapper.Map<MaterialType>(materialType));
-
-        public async Task<MaterialType> UpdateMaterialType(int id, SortedRefDataBaseDto materialType)
+        public async Task<MaterialType> CreateMaterialType(MaterialTypeDto materialType)
         {
             var entity = _mapper.Map<MaterialType>(materialType);
+            foreach(var x in materialType.MaterialTypeGroups)
+                entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType 
+                { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.SingleOrDefaultAsync(y => y.Id == y.Id) });
+
+            return await CreateRefData(entity);
+        }
+
+        public async Task<MaterialType> UpdateMaterialType(int id, MaterialTypeDto materialType)
+        { 
+            var entity = _mapper.Map<MaterialType>(materialType);
             entity.Id = id;
+
+            var existingJoinEntities = _context.MaterialTypeGroupMaterialTypes.Where(x => x.MaterialTypeId == id).ToList();
+
+            foreach (var x in materialType.MaterialTypeGroups)
+            {
+                if (existingJoinEntities.FindIndex(y => y.MaterialTypeGroupId == x.GroupId) > 0)
+                {
+                    entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType
+                    { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.SingleOrDefaultAsync(y => y.Id == y.Id) });
+                }
+            }
+            //we now need to check for any Join Entities which have been deleted in the client
+            foreach(var x in existingJoinEntities.Except(entity.MaterialTypeGroupMaterialTypes))
+            {
+                _context.Remove(x);
+            }
+
             return await UpdateRefData(entity);
         }
 

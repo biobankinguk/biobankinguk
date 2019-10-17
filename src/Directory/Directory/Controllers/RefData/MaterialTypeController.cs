@@ -46,7 +46,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Material Type was created", typeof(MaterialType))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto materialType)
+        public async Task<IActionResult> Post([FromBody] MaterialTypeDto materialType)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -59,7 +59,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Material Type was updated successfully.")]
         [SwaggerResponse(404, "No Material Type was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
+        public async Task<IActionResult> Put(int id, [FromBody] MaterialTypeDto materialType)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
