@@ -154,27 +154,15 @@ namespace Directory
         {
             var config = services.GetRequiredService<IConfiguration>();
             var context = services.GetRequiredService<DirectoryContext>();
-            var users = services.GetRequiredService<UserManager<DirectoryUser>>();
-            var passwords = services.GetRequiredService<IPasswordHasher<DirectoryUser>>();
 
             context.Database.Migrate();
 
             Auth.IdentityServer.DataSeeder.Seed(context, config);
-
-            // Seed a dummy user
-            if (await users.FindByNameAsync("jon@jon.jon") is null)
-            {
-                var user = new DirectoryUser
-                {
-                    UserName = "jon@jon.jon",
-                    Email = "jon@jon.jon",
-                    Name = "Jon Jon",
-                    EmailConfirmed = true
-                };
-                user.PasswordHash = passwords.HashPassword(user, "test");
-
-                await users.CreateAsync(user);
-            }
+            
+            await Auth.Identity.DataSeeder.Seed(
+                services.GetRequiredService<DirectoryUserManager>(),
+                services.GetRequiredService<IPasswordHasher<DirectoryUser>>(),
+                config);
         }
     }
 }
