@@ -67,10 +67,7 @@ namespace Directory
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
             // ClientApp
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/build");
 
             // Auth
             services.AddAuthentication(IdentityConstants.ApplicationScheme)
@@ -158,7 +155,7 @@ namespace Directory
             context.Database.Migrate();
 
             Auth.IdentityServer.DataSeeder.Seed(context, config);
-            
+
             await Auth.Identity.DataSeeder.Seed(
                 services.GetRequiredService<DirectoryUserManager>(),
                 services.GetRequiredService<IPasswordHasher<DirectoryUser>>(),

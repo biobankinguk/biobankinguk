@@ -80,7 +80,7 @@ namespace Directory.Pages.Account
             });
         }
 
-        private string? GetClientName(LogoutRequest? logout)
+        private static string? GetClientName(LogoutRequest? logout)
             => string.IsNullOrWhiteSpace(logout?.ClientName)
                 ? logout?.ClientId
                 : logout?.ClientName;

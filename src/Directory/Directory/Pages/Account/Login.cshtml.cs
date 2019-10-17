@@ -100,7 +100,7 @@ namespace Directory.Pages.Account
                         user.Id,
                         user.Name,
                         clientId: context?.ClientId));
-                    
+
                     await _users.UpdateLastLogin(user);
 
                     if (context is { }) return await ContextAwareRedirect(context, returnUrl);
