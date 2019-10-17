@@ -27,7 +27,7 @@ namespace Directory.Controllers
         [SwaggerResponse(200, "All Annual Statistic Groups", typeof(List<AnnualStatisticGroup>))]
         [HttpGet]
         public async Task<IActionResult> Index()
-           => Ok(await _readService.ListAnnualStatistics());
+           => Ok(await _readService.ListAnnualStatisticGroups());
 
         [SwaggerOperation("Get a single Annual Statistic Group by ID")]
         [SwaggerResponse(200, "The Annual Statistic Group with the requested ID.", typeof(AnnualStatistic))]

@@ -45,7 +45,7 @@ namespace Directory.Services
 
         public async Task<ICollection<AnnualStatisticDto>> ListAnnualStatistics()
         {
-            var entities = await _context.AnnualStatistics.ToListAsync();
+            var entities = await _context.AnnualStatistics.Include(a => a.AnnualStatisticGroup).ToListAsync();
             return _mapper.Map<ICollection<AnnualStatisticDto>>(entities);
         }
       

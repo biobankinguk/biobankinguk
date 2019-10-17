@@ -59,15 +59,19 @@ namespace RefDataLoader
             //get annual statistic groups
             var annualStatisticGroups = await GetRefData<AnnualStatisticGroup>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "AnnualStatisticGroup").Value);
 
+            var annualStatistics = new List<AnnualStatisticDto>();
+
             //match them by name to ones in DTOs, and set the ID values
             foreach(var annualstatistic in PrepData<AnnualStatisticDto>($@"RefDataSeeding/{asconfig.Key}.json"))
             {
-
                 annualstatistic.AnnualStatisticGroupId = annualStatisticGroups.Single(x => x.Value.Contains(annualstatistic.Group, StringComparison.OrdinalIgnoreCase)).Id;
-                await SendJsonAsync(asconfig.Value, JsonConvert.SerializeObject(annualstatistic));
+                annualStatistics.Add(annualstatistic);
             }
+
+            await SubmitData(annualStatistics, asconfig);
+
         }
-        private async Task SubmitData(IList<SortedRefDataBaseDto> data, KeyValuePair<string, string> refDataInfo)
+        private async Task SubmitData<T>(IList<T> data, KeyValuePair<string, string> refDataInfo)
         {
             //We post ontologies individually.
 
