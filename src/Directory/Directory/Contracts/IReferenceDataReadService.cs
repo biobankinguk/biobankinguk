@@ -44,8 +44,8 @@ namespace Directory.Contracts
         Task<HtaStatus> GetHtaStatus(int id);
         Task<ICollection<MacroscopicAssessment>> ListMacroscopicAssessments();
         Task<MacroscopicAssessment> GetMacroscopicAssessment(int id);
-        Task<ICollection<MaterialType>> ListMaterialTypes();
-        Task<MaterialType> GetMaterialType(int id);
+        Task<ICollection<MaterialTypeDto>> ListMaterialTypes();
+        Task<MaterialTypeDto> GetMaterialType(int id);
         Task<ICollection<MaterialTypeGroup>> ListMaterialTypeGroups();
         Task<MaterialTypeGroup> GetMaterialTypeGroup(int id);
         Task<ICollection<OntologyTerm>> ListOntologyTerms();

@@ -201,11 +201,19 @@ namespace Directory.Services
 
         #region MaterialType
         
-        public async Task<ICollection<MaterialType>> ListMaterialTypes()
-            => await _context.MaterialTypes.ToListAsync();
+        public async Task<ICollection<MaterialTypeDto>> ListMaterialTypes()
+        {
+            var entities = await _context.MaterialTypes.Include(x => x.MaterialTypeGroupMaterialTypes).ThenInclude(y => y.MaterialTypeGroup).ToListAsync();
+            var dtos = _mapper.Map<List<MaterialTypeDto>>(entities);
+            return dtos;
+        }
        
-        public async Task<MaterialType> GetMaterialType(int id)
-            => await _context.MaterialTypes.FindAsync(id);
+        public async Task<MaterialTypeDto> GetMaterialType(int id)
+        {
+            var entity = await _context.MaterialTypes.Include(x => x.MaterialTypeGroupMaterialTypes).ThenInclude(y => y.MaterialTypeGroup).SingleOrDefaultAsync(x => x.Id == id);
+            var dto = _mapper.Map<MaterialTypeDto>(entity);
+            return dto;
+        }
 
         #endregion
 

@@ -24,13 +24,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Annual Statistics")]
-        [SwaggerResponse(200, "All Annual Statistics", typeof(List<AnnualStatistic>))]
+        [SwaggerResponse(200, "All Annual Statistics", typeof(List<AnnualStatisticDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAnnualStatistics());
 
         [SwaggerOperation("Get a single Annual Statistic by ID")]
-        [SwaggerResponse(200, "The Annual Statistic with the requested ID.", typeof(AnnualStatistic))]
+        [SwaggerResponse(200, "The Annual Statistic with the requested ID.", typeof(AnnualStatisticDto))]
         [SwaggerResponse(404, "No Annual Statistic was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)

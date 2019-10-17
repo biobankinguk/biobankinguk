@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Common.Data.ReferenceData;
 using Common.DTO;
+using System.Linq;
 
 namespace Common.MappingProfiles
 {
@@ -36,6 +37,9 @@ namespace Common.MappingProfiles
             CreateMap<AnnualStatistic, AnnualStatisticDto>().
                 ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Value)).
                 ForMember(dest => dest.AnnualStatisticGroupId, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Id));
+            CreateMap<MaterialType, MaterialTypeDto>().ForMember(dest => dest.MaterialTypeGroups, opt => opt.MapFrom(src => src.MaterialTypeGroupMaterialTypes.
+                        Select(x => x.MaterialTypeGroup).Select(y => new MaterialTypeGroupChildDto { GroupId = y.Id, GroupName = y.Value })));
+            CreateMap<MaterialTypeDto, MaterialType>();
         }
     }
 }

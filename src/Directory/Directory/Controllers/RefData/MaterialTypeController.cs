@@ -24,13 +24,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Material Types")]
-        [SwaggerResponse(200, "All Material Types", typeof(List<MaterialType>))]
+        [SwaggerResponse(200, "All Material Types", typeof(List<MaterialTypeDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListMaterialTypes());
 
         [SwaggerOperation("Get a single Material Type by ID")]
-        [SwaggerResponse(200, "The Material Type with the requested ID.", typeof(MaterialType))]
+        [SwaggerResponse(200, "The Material Type with the requested ID.", typeof(MaterialTypeDto))]
         [SwaggerResponse(404, "No Material Type was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)

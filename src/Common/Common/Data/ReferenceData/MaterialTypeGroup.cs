@@ -7,7 +7,6 @@ namespace Common.Data.ReferenceData
     /// </summary>
     public class MaterialTypeGroup : BaseReferenceDatum
     {
-
         public virtual ICollection<MaterialTypeGroupMaterialType> MaterialTypeGroupMaterialTypes { get; set; } = null!;
     }
 }
