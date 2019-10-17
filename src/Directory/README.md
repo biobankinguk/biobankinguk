@@ -9,11 +9,21 @@ Services provided by the App at this time:
 
 # Getting Started
 
-Mainly, just open the Solution in Visual Studio, or the folder in your favourite editor, such as VS Code.
+#### Prerequisites:
 
-Extra guidance follows:
+1. .NET Core 3.x
+2. node.js 5.x+
+3. a SQL Server instance (e.g. LocalDB)
 
-## Database
+#### First time setup steps:
+
+1. Initialise the database
+2. Build the frontend
+3. Set Environment Configuration Settings
+
+Details for each step follow below.
+
+## 1. Initialise the database
 
 The App uses Entity Framework Core with Code First Migrations.
 
@@ -34,45 +44,74 @@ Because of the solution structure (featuring the Data bits in a Common class lib
 - `dotnet ef migrations add <name> -s ../../Directory/Directory/Directory.csproj`
 - `dotnet ef database update -s ../../Directory/Directory/Directory.csproj`
 
-## Frontend
+## 2. Build the frontend
 
-The Directory Web Project contains two distinct frontend areas:
-
-- **Razor Pages**
-    - These are server side pages in the ASP.NET Core App
-    - They are fairly minimal and are used exclusively for **Identity** interactions that shouldn't be in an external client, such as IdentityProvider **Login** and **Logout** routes.
-- **React Client App**
-    - This constitutes the actual frontend Directory application.
+The Directory Web Project contains two distinct frontend areas, which both have `npm` build steps:
 
 ### Razor Pages
 
-As summarised above, there are a few "server-side" pages, for authentication only. These are Razor Pages, and they depend on a small frontend bundle, for which npm manages dependencies and tasks.
+These are fairly minimal server side pages in the ASP.NET Core App, used exclusively for **Identity** interactions that shouldn't be in an external client, such as IdentityProvider **Login** and **Logout** routes.
 
-You'll want to build the frontend bundles for these pages to work correctly:
+These are Razor Pages, and they depend on a small frontend bundle, for which `npm` manages dependencies and tasks.
 
-- Have `npm` 5+
-- In Visual Studio:
-    - **Configure External Tools** so your `PATH` version of `npm` is prioritised over VS's own.
-    - Install the **NPM Task Runner** extension.
-    - VS should now run the `build` task whenever you build the ASP.NET Core project.
-    - You can run the `build` task manually from **Task Runner Explorer** if you need to.
-- On the command line:
-    - In the same directory as `Directory.csproj`
-    - `npm i`
-    - `npm run build`
+#### In Visual Studio:
+
+1. **Configure External Tools** so your `PATH` version of `npm` is prioritised over VS's own.
+1. Install the **NPM Task Runner** extension.
+
+VS should now run the `build` task whenever you build the ASP.NET Core project.
+
+> ℹ You can run the `build` task manually from **Task Runner Explorer** if you need to.
+
+#### On the command line:
+
+In the same directory as `Directory.csproj`
+
+1. `npm i`
+1. `npm run build`
 
 ### React Client App
 
-As summarised above, this is the real frontend. It's a typical `create-react-app` based React application.
+This is the actual frontend. It's a typical `create-react-app` based React application.
 
-In local development, ASP.NET Core's SPA tools will take care of building and HMR via Webpack's Dev server.
+In local development, ASP.NET Core's SPA tools will take care of building and HMR via a Webpack Dev server.
 
-In any other environment, the React App needs building before the .NET Core app is run or published. This is typically done in CI, but the process is as follows:
+In any other environment, the React App needs building before the .NET Core app is run or published.
 
-- Have `npm` 5+
-- On the command line:
-    - In the `ClientApp/` directory, **below** `Directory.csproj`
-    - `npm i`
-    - `npm run build`
+This is typically done in CI, but the process is as follows:
 
-Once the built files exist at `ClientApp/build/`, `dotnet publish` will include them and the resulting published App will serve the SPA correctly.
+#### On the command line:
+
+In the `ClientApp/` directory, **below** `Directory.csproj`:
+
+1. `npm i`
+1. `npm run build`
+
+Once the built files exist at `ClientApp/build/`, they will be included by `dotnet publish` and the resulting published App will serve the SPA correctly.
+
+## 3. Set Environment Configuration Settings
+
+There are a few configuration settings that are not in source control because they are considered secrets, or expected to change.
+
+There are two ways these can be configured:
+
+### Using Environment Variables
+
+In ASP.NET Core applications, any configuration value can be set on the environment by setting an Environment Variable named as follows:
+
+`DOTNET_<setting key>` or `ASPNETCORE_<setting key>`, where `<setting key>` is replaced by the name of the relevant configuration setting.
+
+### Using Visual Studio
+
+Visual Studio provides a means to set values which should remain outside source control via User Secrets.
+
+Simply right-click the **Directory** Project and choose "Manage User Secrets..." to add the secrets to a json file, similar to the source controlled `appsettings.json`.
+
+### Settings
+
+The settings which need configuring are as follows:
+
+| Setting Key            | Description                                                                  | Example |
+| ---------------------- | ---------------------------------------------------------------------------- | ------- |
+| `SuperAdminSeedPassword` | A password used to seed the SuperAdmin user on first run. **Must not** be empty. | `test`  |
+| `TrustedClients:upload-api:secret` | The Client Secret for the Upload API Client. | `test` |

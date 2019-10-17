@@ -1,15 +1,15 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Directory.IdentityServer;
+using Common.Data.Identity;
+using Directory.Auth.Identity;
+using Directory.Auth.IdentityServer;
 using Directory.Pages.Components.Redirect;
 using IdentityServer4.Events;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer4.Test;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -20,19 +20,21 @@ namespace Directory.Pages.Account
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IEventService _events;
-        private readonly TestUserStore _users;
+        private readonly DirectoryUserManager _users;
+        private readonly SignInManager<DirectoryUser> _signIn;
 
         public LoginModel(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events,
-            TestUserStore users // TODO: Identity UserStore?
-            )
+            DirectoryUserManager userManager,
+            SignInManager<DirectoryUser> signInManager)
         {
             _interaction = interaction;
             _clientStore = clientStore;
             _events = events;
-            _users = users;
+            _users = userManager;
+            _signIn = signInManager;
         }
 
         [BindProperty]
@@ -87,19 +89,19 @@ namespace Directory.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // Validate credentials // TODO: Identity
-                if (_users.ValidateCredentials(Username, Password))
+                // Validate credentials
+                var result = await _signIn.PasswordSignInAsync(Username, Password, false, true);
+
+                if (result.Succeeded)
                 {
-                    var user = _users.FindByUsername(Username);
+                    var user = await _users.FindByNameAsync(Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(
-                        user.Username,
-                        user.SubjectId,
-                        user.Username,
+                        user.UserName,
+                        user.Id,
+                        user.Name,
                         clientId: context?.ClientId));
 
-                    await HttpContext.SignInAsync(
-                        user.SubjectId,
-                        user.Username);
+                    await _users.UpdateLastLogin(user);
 
                     if (context is { }) return await ContextAwareRedirect(context, returnUrl);
 

@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UserSecretsId>f802e04f-2173-4a8a-9878-231ed88b5005</UserSecretsId>
     <Nullable>enable</Nullable>
+    <WarningsAsErrors>CS8618;CS8600;CS8602;CS8603</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

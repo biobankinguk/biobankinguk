@@ -8,16 +8,16 @@
         /// <summary>
         /// This id is the actual code from the SNOMED list
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
 
         /// <summary>
         /// A friendly description of this ontology term used by the Tissue Directory
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// A Tissue Directory specific categorisation tag for this ontology term
         /// </summary>
-        public string Tag { get; set; }
+        public string Tag { get; set; } = null!;
     }
 }

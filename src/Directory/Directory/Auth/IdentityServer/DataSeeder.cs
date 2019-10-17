@@ -3,7 +3,7 @@ using Common.Data;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.Extensions.Configuration;
 
-namespace Directory.IdentityServer
+namespace Directory.Auth.IdentityServer
 {
     public static class DataSeeder
     {

@@ -1,14 +1,16 @@
 ﻿using System.Threading.Tasks;
+using Common.Data.Identity;
 using Common.Data.ReferenceData;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Data
 {
-    public class DirectoryContext : DbContext, IConfigurationDbContext, IPersistedGrantDbContext
+    public class DirectoryContext : IdentityUserContext<DirectoryUser>, IConfigurationDbContext, IPersistedGrantDbContext
     {
         private readonly OperationalStoreOptions _opStoreOptions;
         private readonly ConfigurationStoreOptions _configStoreOptions;

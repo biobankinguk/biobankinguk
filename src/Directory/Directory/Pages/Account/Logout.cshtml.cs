@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using IdentityModel;
+using Common.Data.Identity;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -14,13 +14,16 @@ namespace Directory.Pages.Account
     {
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
+        private readonly SignInManager<DirectoryUser> _signIn;
 
         public LogoutModel(
             IIdentityServerInteractionService interaction,
-            IEventService events)
+            IEventService events,
+            SignInManager<DirectoryUser> signIn)
         {
             _interaction = interaction;
             _events = events;
+            _signIn = signIn;
         }
 
         [BindProperty]
@@ -59,7 +62,7 @@ namespace Directory.Pages.Account
 
             if (User?.Identity.IsAuthenticated is true)
             {
-                await HttpContext.SignOutAsync();
+                await _signIn.SignOutAsync();
 
                 await _events.RaiseAsync(new UserLogoutSuccessEvent(
                     User.GetSubjectId(),
@@ -77,7 +80,7 @@ namespace Directory.Pages.Account
             });
         }
 
-        private string? GetClientName(LogoutRequest? logout)
+        private static string? GetClientName(LogoutRequest? logout)
             => string.IsNullOrWhiteSpace(logout?.ClientName)
                 ? logout?.ClientId
                 : logout?.ClientName;
