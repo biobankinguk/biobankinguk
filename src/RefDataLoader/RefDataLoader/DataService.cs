@@ -45,9 +45,9 @@ namespace RefDataLoader
             //TODO implement non standard RefData (to be done with relevant PBI due to DTO refactoring)
             //donor count
 
-            await PrepareAndSubmitAnnualStatistics(); 
-            
+            await PrepareAndSubmitAnnualStatistics();
 
+            await PrepareAndSubmitMaterialType();
             //county
             //material type
         }
@@ -62,15 +62,45 @@ namespace RefDataLoader
             var annualStatistics = new List<AnnualStatisticDto>();
 
             //match them by name to ones in DTOs, and set the ID values
-            foreach(var annualstatistic in PrepData<AnnualStatisticDto>($@"RefDataSeeding/{asconfig.Key}.json"))
+            foreach(var annualstatistic in PrepData<AnnualStatisticDto>($"RefDataSeeding/{asconfig.Key}.json"))
             {
                 annualstatistic.AnnualStatisticGroupId = annualStatisticGroups.Single(x => x.Value.Contains(annualstatistic.Group, StringComparison.OrdinalIgnoreCase)).Id;
                 annualStatistics.Add(annualstatistic);
             }
 
             await SubmitData(annualStatistics, asconfig);
-
         }
+
+        private async Task PrepareAndSubmitMaterialType()
+        {
+            var mtConfig = _config.RefDataEndpoints.SingleOrDefault(x => x.Key == "MaterialType");
+
+            // Get the material type groups
+            var materialTypeGroups = await GetRefData<MaterialTypeGroup>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "MaterialTypeGroup").Value);
+
+            var materialTypes = new List<MaterialTypeDto>();
+            try
+            {
+                var materialTypeData = PrepData<MaterialTypeDto>($"RefDataSeeding/{mtConfig.Key}.json");
+                // match them by name to ones in DTOs, and set the ID values
+                foreach (var materialType in materialTypeData)
+                {
+                    foreach (var group in materialType.MaterialTypeGroups)
+                    {
+                        //var x = materialTypeGroups.Where(x => x.Value.Contains(group.GroupName, StringComparison.OrdinalIgnoreCase)).ToList();
+                        group.GroupId = materialTypeGroups.SingleOrDefault(x => x.Value.Equals(group.GroupName, StringComparison.OrdinalIgnoreCase)).Id;
+                    }
+                    materialTypes.Add(materialType);
+                    Console.WriteLine($"{materialType.Value} added.");
+                }
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
+            await SubmitData(materialTypes, mtConfig);
+        }
+
         private async Task SubmitData<T>(IList<T> data, KeyValuePair<string, string> refDataInfo)
         {
             //We post ontologies individually.
@@ -117,7 +147,7 @@ namespace RefDataLoader
             }
             catch(Exception e)
             {
-                Console.WriteLine("POST failed: " + e.Message); ;
+                Console.WriteLine("POST failed: " + e.Message);
                 return false;
             }
         }

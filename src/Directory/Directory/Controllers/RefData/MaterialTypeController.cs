@@ -52,7 +52,7 @@ namespace Directory.Controllers.RefData
                 return BadRequest(ModelState);
 
             var createdMaterialType = await _writeService.CreateMaterialType(materialType);
-            return CreatedAtAction("Get", new { id = createdMaterialType.Id }, createdMaterialType);
+            return CreatedAtAction("Get", new { id = createdMaterialType.Item1 }, createdMaterialType.Item2);
         }
 
         [SwaggerOperation("Updates an existing Material Type")]

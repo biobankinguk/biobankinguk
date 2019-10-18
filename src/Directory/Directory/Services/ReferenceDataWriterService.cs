@@ -379,17 +379,37 @@ namespace Directory.Services
 
         #region MaterialType
 
-        public async Task<MaterialType> CreateMaterialType(MaterialTypeDto materialType)
+        public async Task<(int, MaterialTypeDto)> CreateMaterialType(MaterialTypeDto materialType)
         {
             var entity = _mapper.Map<MaterialType>(materialType);
-            foreach(var x in materialType.MaterialTypeGroups)
-                entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType 
-                { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.SingleOrDefaultAsync(y => y.Id == y.Id) });
 
-            return await CreateRefData(entity);
+            //await CreateRefData(entity);
+
+            foreach (var x in materialType.MaterialTypeGroups)
+            {
+                    var materialTypeGroup = await _context.MaterialTypeGroups.SingleOrDefaultAsync(y => y.Id == x.GroupId);
+
+                    var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
+
+                    entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity );
+            }
+            try
+            {
+                await CreateRefData(entity);
+
+                //convert back to DTO
+                return (entity.Id, _mapper.Map<MaterialTypeDto>(entity));
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+
         }
 
-        public async Task<MaterialType> UpdateMaterialType(int id, MaterialTypeDto materialType)
+        public async Task<MaterialTypeDto> UpdateMaterialType(int id, MaterialTypeDto materialType)
         { 
             var entity = _mapper.Map<MaterialType>(materialType);
             entity.Id = id;
@@ -410,7 +430,9 @@ namespace Directory.Services
                 _context.Remove(x);
             }
 
-            return await UpdateRefData(entity);
+            await UpdateRefData(entity);
+
+            return _mapper.Map<MaterialTypeDto>(entity);
         }
 
         public async Task<bool> DeleteMaterialType(int id)
