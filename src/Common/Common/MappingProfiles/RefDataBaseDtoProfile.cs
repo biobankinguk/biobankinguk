@@ -40,6 +40,8 @@ namespace Common.MappingProfiles
             CreateMap<MaterialType, MaterialTypeDto>().ForMember(dest => dest.MaterialTypeGroups, opt => opt.MapFrom(src => src.MaterialTypeGroupMaterialTypes.
                         Select(x => x.MaterialTypeGroup).Select(y => new MaterialTypeGroupChildDto { GroupId = y.Id, GroupName = y.Value })));
             CreateMap<MaterialTypeDto, MaterialType>();
+            CreateMap<County, CountyDto>().ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Country.Id)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Value));
+            CreateMap<CountyDto, County>();
         }
     }
 }

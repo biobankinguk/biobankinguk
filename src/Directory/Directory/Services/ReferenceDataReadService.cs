@@ -67,7 +67,6 @@ namespace Directory.Services
 
         #endregion
 
-
         #region AssociatedDataProcurementTimeframe
 
         public async Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes()
@@ -150,12 +149,17 @@ namespace Directory.Services
 
         #region County
 
-        //TODO replace with mapping to DTO  
-        public async Task<ICollection<County>> ListCounties()
-            => await _context.Counties.ToListAsync();
-     
-        public async Task<County> GetCounty(int id)
-            => await _context.Counties.FindAsync(id);
+        public async Task<ICollection<CountyDto>> ListCounties()
+        {
+            var counties = await _context.Counties.ToListAsync();
+            return _mapper.Map<List<CountyDto>>(counties);
+        }
+
+        public async Task<CountyDto> GetCounty(int id)
+        {
+            var county = await _context.Counties.FindAsync(id);
+            return _mapper.Map<CountyDto>(county);
+        }
 
         #endregion
 
@@ -276,8 +280,6 @@ namespace Directory.Services
             => await _context.StorageTemperatures.FindAsync(id);
 
         #endregion
-
-
 
     }
 }

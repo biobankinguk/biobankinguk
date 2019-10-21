@@ -45,8 +45,8 @@ namespace Directory.Contracts
         Task<Country> CreateCountry(RefDataBaseDto country);
         Task<Country> UpdateCountry(int id, RefDataBaseDto country);
         Task<bool> DeleteCountry(int id);
-        Task<County> CreateCounty(RefDataBaseDto county);
-        Task<County> UpdateCounty(int id, RefDataBaseDto county);
+        Task<County> CreateCounty(CountyDto county);
+        Task<County> UpdateCounty(int id, CountyDto county);
         Task<bool> DeleteCounty(int id);
         Task<DonorCount> CreateDonorCount(SortedRefDataBaseDto donorCount);
         Task<DonorCount> UpdateDonorCount(int id, SortedRefDataBaseDto donorCount);

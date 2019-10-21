@@ -34,8 +34,8 @@ namespace Directory.Contracts
         Task<ConsentRestriction> GetConsentRestriction(int id);
         Task<ICollection<Country>> ListCountries();
         Task<Country> GetCountry(int id);
-        Task<ICollection<County>> ListCounties();
-        Task<County> GetCounty(int id);
+        Task<ICollection<CountyDto>> ListCounties();
+        Task<CountyDto> GetCounty(int id);
         Task<ICollection<DonorCount>> ListDonorCounts();
         Task<DonorCount> GetDonorCount(int id);
         Task<ICollection<Funder>> ListFunders();

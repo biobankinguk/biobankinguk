@@ -294,13 +294,24 @@ namespace Directory.Services
 
         #region County
 
-        public async Task<County> CreateCounty(RefDataBaseDto county)
-            => await CreateRefData(_mapper.Map<County>(county));
-
-        public async Task<County> UpdateCounty(int id, RefDataBaseDto county)
+        public async Task<County> CreateCounty(CountyDto county)
         {
+            //get a country, assign to County
+            var country = await _context.Countries.FindAsync(county.CountryId);
+            var entity = _mapper.Map<County>(county);
+            entity.Country = country;
+
+            return await CreateRefData(entity);
+        }
+
+        public async Task<County> UpdateCounty(int id, CountyDto county)
+        {
+            //get a country, assign to County
+            var country = await _context.Countries.FindAsync(county.CountryId);
+
             var entity = _mapper.Map<County>(county);
             entity.Id = id;
+            entity.Country = country;
             return await UpdateRefData(entity);
         }
 
@@ -385,7 +396,7 @@ namespace Directory.Services
 
             foreach (var x in materialType.MaterialTypeGroups)
             {
-                    var materialTypeGroup = await _context.MaterialTypeGroups.SingleOrDefaultAsync(y => y.Id == x.GroupId);
+                    var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(x.GroupId);
 
                     var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
 
@@ -409,7 +420,7 @@ namespace Directory.Services
                 if (existingJoinEntities.FindIndex(y => y.MaterialTypeGroupId == x.GroupId) > 0)
                 {
                     entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType
-                    { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.SingleOrDefaultAsync(y => y.Id == y.Id) });
+                    { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.FindAsync(x.GroupId) });
                 }
             }
             //we now need to check for any Join Entities which have been deleted in the client
