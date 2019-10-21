@@ -1,7 +1,8 @@
 ﻿import React from "react";
 import ReactDOM from "react-dom";
 import { Normalize } from "styled-normalize";
-import Login from "../Account/Login";
+import Login from "../Account/pages/Login";
+import LoginRedirect from "../Account/pages/LoginRedirect";
 
 /*
  * Here we conditionally render small one page React apps
@@ -20,12 +21,17 @@ switch (document.getElementById("react-app").dataset.route) {
       </>
     );
     break;
+    case "login":
+      app = (
+        <>
+          <Normalize />
+          <LoginRedirect />
+        </>
+      );
+      break;
   default:
     defaultRender = false; // no React to render
 }
 
 if (defaultRender)
-  ReactDOM.render(
-    <React.Fragment>{app}</React.Fragment>,
-    document.getElementById("react-app")
-  );
+  ReactDOM.render(<>{app}</>, document.getElementById("react-app"));

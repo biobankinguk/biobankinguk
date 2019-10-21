@@ -1,28 +1,9 @@
 ﻿import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { postObjectAsFormData, constants } from "js-forms";
+import valSchema from "./login-form-validation";
 
-const LoginSchema = Yup.object().shape({
-  Username: Yup.string()
-    .test("valid-username", "Invalid email", v => {
-      const isEmail = Yup.string()
-        .email()
-        .isValidSync(v);
-      console.log(isEmail);
-
-      const isLocal = Yup.string()
-        .matches(/@localhost$/)
-        .isValidSync(v);
-      console.log(isLocal);
-
-      return isEmail || isLocal;
-    })
-    .required("Required"),
-  Password: Yup.string().required("Required")
-});
-
-const Login = () => {
+const LoginForm = () => {
   const aspForm = document.getElementById("asp-form");
   const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
 
@@ -42,7 +23,7 @@ const Login = () => {
         loginPost({ ...values, button: "login" });
         actions.setSubmitting(false);
       }}
-      validationSchema={LoginSchema}
+      validationSchema={valSchema}
       render={p => (
         <Form>
           <label htmlFor="Username">Username</label>
@@ -67,4 +48,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginForm;

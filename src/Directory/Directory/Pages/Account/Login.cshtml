@@ -4,7 +4,15 @@
     ViewBag.Title = "Login";
 }
 
-<!-- Asking Razor to render a form gives us a CSRF token and the Action route -->
-<form id="asp-form" method="post" data-username="@Model.Username">
-    <div id="react-app" data-route="login"></div>
-</form>
+@switch (Model.Route)
+{
+    case "login-redirect":
+        <meta id="meta-refresh" http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
+        break;
+    default:
+        <!-- Asking Razor to render a form gives us a CSRF token and the Action route -->
+        <form id="asp-form" method="post" data-username="@Model.Username"></form>
+        break;
+}
+
+<div id="react-app" data-route="@(Model.Route ?? "login")"></div>
