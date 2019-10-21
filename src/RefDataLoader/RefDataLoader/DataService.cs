@@ -80,15 +80,16 @@ namespace RefDataLoader
             //get annual statistic groups
             var annualStatisticGroups = await GetRefData<AnnualStatisticGroup>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "AnnualStatisticGroup").Value);
 
-            var annualStatistics = new List<AnnualStatisticDto>();
+            var annualStatistics = new List<AnnualStatisticOutboundDto>();
 
             //match them by name to ones in DTOs, and set the ID values
-            foreach(var annualstatistic in PrepData<AnnualStatisticDto>($"RefDataSeeding/{asconfig.Key}.json"))
+            foreach(var annualstatistic in PrepData<AnnualStatisticOutboundDto>($"RefDataSeeding/{asconfig.Key}.json"))
             {
-                annualstatistic.AnnualStatisticGroupId = annualStatisticGroups.Single(x => x.Value.Equals(annualstatistic.Group, StringComparison.OrdinalIgnoreCase)).Id;
+                annualstatistic.AnnualStatisticGroupId = annualStatisticGroups.Single(x => x.Value.Equals(annualstatistic.GroupName, StringComparison.OrdinalIgnoreCase)).Id;
                 annualStatistics.Add(annualstatistic);
             }
 
+            //we can just post an outbound dto as it has the same properties as the inbound (namely, the Ids)
             await SubmitData(annualStatistics, asconfig);
         }
 

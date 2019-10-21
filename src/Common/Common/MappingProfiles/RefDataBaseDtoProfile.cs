@@ -33,9 +33,9 @@ namespace Common.MappingProfiles
             CreateMap<SortedRefDataBaseDto, SopStatus>();
             CreateMap<SortedRefDataBaseDto, StorageTemperature>();
             CreateMap<SortedRefDataBaseDto, AnnualStatisticGroup>();
-            CreateMap<AnnualStatisticDto, AnnualStatistic>();
-            CreateMap<AnnualStatistic, AnnualStatisticDto>().
-                ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Value)).
+            CreateMap<OutgoingAnnualStatisticDto, AnnualStatistic>();
+            CreateMap<AnnualStatistic, OutgoingAnnualStatisticDto>().
+                ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Value)).
                 ForMember(dest => dest.AnnualStatisticGroupId, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Id));
             CreateMap<MaterialType, MaterialTypeDto>().ForMember(dest => dest.MaterialTypeGroups, opt => opt.MapFrom(src => src.MaterialTypeGroupMaterialTypes.
                         Select(x => x.MaterialTypeGroup).Select(y => new MaterialTypeGroupChildDto { GroupId = y.Id, GroupName = y.Value })));

@@ -48,7 +48,7 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] MaterialTypeDto materialType)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || materialType.MaterialTypeGroups.Count == 0) 
                 return BadRequest(ModelState);
 
             var createdMaterialType = await _writeService.CreateMaterialType(materialType);
