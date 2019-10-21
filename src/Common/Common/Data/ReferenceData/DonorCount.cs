@@ -5,5 +5,7 @@
     /// </summary>
     public class DonorCount : SortedBaseReferenceDatum
     {
+        public int LowerBound { get; set; }
+        public int UpperBound { get; set; }
     }
 }
