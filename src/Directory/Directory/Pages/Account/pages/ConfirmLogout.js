@@ -1,9 +1,12 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
+import Layout from "../../Shared/Layout";
 
 const ConfirmLogout = () => (
-  <>
+  <Layout>
+    <h1>Logout</h1>
+
     <p>Would you like to logout of the UKCRC Tissue Directory?</p>
 
     <Formik
@@ -24,7 +27,7 @@ const ConfirmLogout = () => (
         </Form>
       )}
     />
-  </>
+  </Layout>
 );
 
 export default ConfirmLogout;

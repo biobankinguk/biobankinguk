@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Normalize } from "styled-normalize";
 
 const LogoutRedirect = () => {
   const { redirectUrl, clientName } = document.getElementById(
@@ -11,6 +12,7 @@ const LogoutRedirect = () => {
 
   return (
     <>
+      <Normalize />
       <h1>You are now logged out.</h1>
       {!!redirectUrl ? (
         <div>

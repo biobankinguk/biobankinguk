@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Normalize } from "styled-normalize";
 
 const LoginRedirect = () => {
   useEffect(() => {
@@ -7,6 +8,7 @@ const LoginRedirect = () => {
 
   return (
     <>
+      <Normalize />
       <h1>You are now being returned to the application.</h1>
       <p>Once complete, you may close this tab</p>
     </>
