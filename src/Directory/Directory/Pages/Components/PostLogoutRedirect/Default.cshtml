@@ -22,6 +22,11 @@
 
 @section Scripts {
     <script>
+        /*
+        window.location = document
+            .getElementById("@postLogoutRedirectElementId")
+            .href;
+        /**/
         const ready = () => {
             if (document.readyState == "complete") {
                 __UKCRC_TDCC__.Redirect(document
@@ -32,5 +37,6 @@
         };
 
         if (!ready()) document.onreadystatechange = ready;
+        /**/
     </script>
 }
