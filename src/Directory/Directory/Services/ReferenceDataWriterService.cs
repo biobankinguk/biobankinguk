@@ -383,8 +383,6 @@ namespace Directory.Services
         {
             var entity = _mapper.Map<MaterialType>(materialType);
 
-            //await CreateRefData(entity);
-
             foreach (var x in materialType.MaterialTypeGroups)
             {
                     var materialTypeGroup = await _context.MaterialTypeGroups.SingleOrDefaultAsync(y => y.Id == x.GroupId);
@@ -393,20 +391,10 @@ namespace Directory.Services
 
                     entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity );
             }
-            try
-            {
                 await CreateRefData(entity);
 
                 //convert back to DTO
                 return (entity.Id, _mapper.Map<MaterialTypeDto>(entity));
-
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
-
         }
 
         public async Task<MaterialTypeDto> UpdateMaterialType(int id, MaterialTypeDto materialType)
