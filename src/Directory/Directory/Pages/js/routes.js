@@ -1,6 +1,5 @@
 ﻿import React from "react";
 import ReactDOM from "react-dom";
-import { Normalize } from "styled-normalize";
 import Login from "../Account/pages/Login";
 import LoginRedirect from "../Account/pages/LoginRedirect";
 import ConfirmLogout from "../Account/pages/ConfirmLogout";
@@ -11,45 +10,21 @@ import LogoutRedirect from "../Account/pages/LogoutRedirect";
  * based on the server-side page loaded
  */
 
-let defaultRender = true;
-let app;
+const routeComponents = {
+  login: <Login />,
+  ["login-redirect"]: <LoginRedirect />,
+  ["confirm-logout"]: <ConfirmLogout />,
+  ["logout-redirect"]: <LogoutRedirect />
+};
 
-switch (document.getElementById("react-app").dataset.route) {
-  case "login":
-    app = (
-      <>
-        <Normalize />
-        <Login />
-      </>
+const root = document.getElementById("react-app");
+
+if (root && root.dataset.route) {
+  const { route } = root.dataset;
+  if (routeComponents.hasOwnProperty(route)) {
+    ReactDOM.render(
+      <>{routeComponents[route]}</>,
+      document.getElementById("react-app")
     );
-    break;
-  case "login-redirect":
-    app = (
-      <>
-        <Normalize />
-        <LoginRedirect />
-      </>
-    );
-    break;
-  case "confirm-logout":
-    app = (
-      <>
-        <Normalize />
-        <ConfirmLogout />
-      </>
-    );
-    break;
-  case "logout-redirect":
-    app = (
-      <>
-        <Normalize />
-        <LogoutRedirect />
-      </>
-    );
-    break;
-  default:
-    defaultRender = false; // no React to render
+  }
 }
-
-if (defaultRender)
-  ReactDOM.render(<>{app}</>, document.getElementById("react-app"));
