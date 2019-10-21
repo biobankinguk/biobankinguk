@@ -100,25 +100,21 @@ namespace RefDataLoader
             var materialTypeGroups = await GetRefData<MaterialTypeGroup>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "MaterialTypeGroup").Value);
 
             var materialTypes = new List<MaterialTypeDto>();
-            try
+
+            var materialTypeData = PrepData<MaterialTypeDto>($"RefDataSeeding/{mtConfig.Key}.json");
+            // match them by name to ones in DTOs, and set the ID values
+            foreach (var materialType in materialTypeData)
             {
-                var materialTypeData = PrepData<MaterialTypeDto>($"RefDataSeeding/{mtConfig.Key}.json");
-                // match them by name to ones in DTOs, and set the ID values
-                foreach (var materialType in materialTypeData)
+                foreach (var group in materialType.MaterialTypeGroups)
                 {
-                    foreach (var group in materialType.MaterialTypeGroups)
-                    {
-                        //var x = materialTypeGroups.Where(x => x.Value.Contains(group.GroupName, StringComparison.OrdinalIgnoreCase)).ToList();
-                        group.GroupId = materialTypeGroups.SingleOrDefault(x => x.Value.Equals(group.GroupName, StringComparison.OrdinalIgnoreCase)).Id;
-                    }
-                    materialTypes.Add(materialType);
-                    Console.WriteLine($"{materialType.Value} added.");
+                    //var x = materialTypeGroups.Where(x => x.Value.Contains(group.GroupName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    group.GroupId = materialTypeGroups.SingleOrDefault(x => x.Value.Equals(group.GroupName, StringComparison.OrdinalIgnoreCase)).Id;
                 }
+                materialTypes.Add(materialType);
+                Console.WriteLine($"{materialType.Value} added.");
             }
-            catch(Exception e)
-            {
-                throw;
-            }
+        
+
             await SubmitData(materialTypes, mtConfig);
         }
 
