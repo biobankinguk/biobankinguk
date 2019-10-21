@@ -48,8 +48,28 @@ namespace RefDataLoader
             await PrepareAndSubmitAnnualStatistics();
 
             await PrepareAndSubmitMaterialType();
+
+            await PrepareAndSubmitCounty();
             //county
             //material type
+        }
+
+        private async Task PrepareAndSubmitCounty()
+        {
+            var countyConfig = _config.RefDataEndpoints.SingleOrDefault(x => x.Key == "County");
+
+            //get countries
+            var countries = await GetRefData<Country>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "Country").Value);
+            var counties = new List<CountyDto>();
+
+            //match them by name to ones in DTOs, and set the ID values
+            foreach(var county in PrepData<CountyDto>($"RefDataSeeding/{countyConfig.Key}.json"))
+            {
+                county.CountryId = countries.Single(x => x.Value.Equals(county.CountryName, StringComparison.OrdinalIgnoreCase)).Id;
+                counties.Add(county);
+            }
+
+            await SubmitData(counties, countyConfig);
         }
 
         private async Task PrepareAndSubmitAnnualStatistics()
@@ -64,7 +84,7 @@ namespace RefDataLoader
             //match them by name to ones in DTOs, and set the ID values
             foreach(var annualstatistic in PrepData<AnnualStatisticDto>($"RefDataSeeding/{asconfig.Key}.json"))
             {
-                annualstatistic.AnnualStatisticGroupId = annualStatisticGroups.Single(x => x.Value.Contains(annualstatistic.Group, StringComparison.OrdinalIgnoreCase)).Id;
+                annualstatistic.AnnualStatisticGroupId = annualStatisticGroups.Single(x => x.Value.Equals(annualstatistic.Group, StringComparison.OrdinalIgnoreCase)).Id;
                 annualStatistics.Add(annualstatistic);
             }
 
