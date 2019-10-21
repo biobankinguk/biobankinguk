@@ -27,7 +27,7 @@ namespace RefDataLoader
 
         public async Task SeedData()
         {
-            foreach(var s in _config.RefDataEndpoints)
+            foreach (var s in _config.RefDataEndpoints)
             {
                 //we don't want the irregular ref data yet (to be handled below)
                 var containsIrregularRefData = new List<string> { "AnnualStatistic", "County", "DonorCount", "MaterialType" }.Contains(s.Key, StringComparer.OrdinalIgnoreCase);
@@ -40,18 +40,19 @@ namespace RefDataLoader
                 }
             }
 
-            //Once the above is done we can move onto the less standard types, as some of these need Groups to have been seeded first.
-
-            //TODO implement non standard RefData (to be done with relevant PBI due to DTO refactoring)
-            //donor count
-
+            //Once the above is done we can move onto the less standard types, as some of these need Groups or other entities to have been seeded first.
+                        
             await PrepareAndSubmitAnnualStatistics();
-
             await PrepareAndSubmitMaterialType();
-
             await PrepareAndSubmitCounty();
-            //county
-            //material type
+            await PrepareAndSubmitDonorCount();
+        }
+
+        private async Task PrepareAndSubmitDonorCount()
+        {
+            var donorCountConfig = _config.RefDataEndpoints.SingleOrDefault(x => x.Key == "DonorCount");
+            var donorCounts = PrepData<DonorCountDto>($"RefDataSeeding/{donorCountConfig.Key}.json");
+            await SubmitData(donorCounts, donorCountConfig);
         }
 
         private async Task PrepareAndSubmitCounty()
