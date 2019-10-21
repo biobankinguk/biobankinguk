@@ -1,15 +1,19 @@
+using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
+using Common.Data.Identity;
 using Common.MappingProfiles;
 using Directory.Auth;
+using Directory.Auth.Identity;
 using Directory.Contracts;
-using Directory.IdentityServer;
 using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,15 +32,26 @@ namespace Directory
             _config = config;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// <summary>
+        /// Called by the WebHostBuilder to Register DI Services.
+        /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
             var defaultDb = _config.GetConnectionString("DefaultConnection");
 
+            // ASP.NET Core Identity
+            services.AddIdentityCore<DirectoryUser>()
+                .AddEntityFrameworkStores<DirectoryContext>()
+                .AddDefaultTokenProviders()
+                .AddUserManager<DirectoryUserManager>()
+                .AddSignInManager<SignInManager<DirectoryUser>>();
+
+            services.Configure<IdentityOptions>(_config)
+                .Configure<DataProtectionTokenProviderOptions>(options =>
+                    options.TokenLifespan = TimeSpan.FromDays(5));
+
             // Identity Server
             services.AddIdentityServer()
-                .AddTestUsers(TemporaryConfig.GetUsers())
                 .AddConfigurationStore<DirectoryContext>(opts =>
                     opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb))
                 .AddOperationalStore<DirectoryContext>(opts =>
@@ -44,6 +59,7 @@ namespace Directory
                     opts.ConfigureDbContext = b => b.UseSqlServer(defaultDb);
                     opts.EnableTokenCleanup = true;
                 })
+                .AddAspNetIdentity<DirectoryUser>()
                 .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
             // MVC
@@ -51,19 +67,16 @@ namespace Directory
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
             // ClientApp
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/build");
 
             // Auth
-            services.AddAuthentication() // DO NOT set a default; IdentityServer does that
-                // Also add Bearer Auth for our API
+            services.AddAuthentication(IdentityConstants.ApplicationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
                 {
                     opts.Authority = _config["JwtBearer:Authority"];
                     opts.Audience = ApiResourceKeys.RefData;
-                });
+                })
+                .AddIdentityCookies();
             services.AddAuthorization(opts =>
                 opts.AddPolicy(nameof(AuthPolicies.BearerToken), AuthPolicies.BearerToken));
 
@@ -87,19 +100,13 @@ namespace Directory
             services.AddAutoMapper(typeof(RefDataBaseDtoProfile));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Called by the WebHostBuilder to to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // App initialisation
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                var context = serviceScope.ServiceProvider.GetRequiredService<DirectoryContext>();
-                context.Database.Migrate();
-
-                IdentityServer.DataSeeder.Seed(context, _config);
-            }
-
-            // Pipeline Configuration
             app.GnuTerryPratchett();
 
             if (env.IsDevelopment())
@@ -134,6 +141,25 @@ namespace Directory
                 if (env.IsDevelopment())
                     spa.UseReactDevelopmentServer(npmScript: "start");
             });
+        }
+
+        /// <summary>
+        /// Called in Main to peform any App Initialisation
+        /// before the WebHost itself is run.
+        /// </summary>
+        public static async Task Initialise(IServiceProvider services)
+        {
+            var config = services.GetRequiredService<IConfiguration>();
+            var context = services.GetRequiredService<DirectoryContext>();
+
+            context.Database.Migrate();
+
+            Auth.IdentityServer.DataSeeder.Seed(context, config);
+
+            await Auth.Identity.DataSeeder.Seed(
+                services.GetRequiredService<DirectoryUserManager>(),
+                services.GetRequiredService<IPasswordHasher<DirectoryUser>>(),
+                config);
         }
     }
 }
