@@ -46,7 +46,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Donor Count was created", typeof(DonorCount))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto donorCount)
+        public async Task<IActionResult> Post([FromBody] DonorCountDto donorCount)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -59,7 +59,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Donor Count was updated successfully.")]
         [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
+        public async Task<IActionResult> Put(int id, [FromBody] DonorCountDto donorCount)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -42,6 +42,8 @@ namespace Common.MappingProfiles
             CreateMap<MaterialTypeDto, MaterialType>();
             CreateMap<County, CountyDto>().ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Country.Id)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Value));
             CreateMap<CountyDto, County>();
+            CreateMap<DonorCount, DonorCountDto>();
+            CreateMap<DonorCountDto, DonorCount>();
         }
     }
 }

@@ -322,10 +322,10 @@ namespace Directory.Services
 
         #region DonorCount
 
-        public async Task<DonorCount> CreateDonorCount(SortedRefDataBaseDto donorCount)
+        public async Task<DonorCount> CreateDonorCount(DonorCountDto donorCount)
             => await CreateRefData(_mapper.Map<DonorCount>(donorCount));
 
-        public async Task<DonorCount> UpdateDonorCount(int id, SortedRefDataBaseDto donorCount)
+        public async Task<DonorCount> UpdateDonorCount(int id, DonorCountDto donorCount)
         {
             var entity = _mapper.Map<DonorCount>(donorCount);
             entity.Id = id;

@@ -48,8 +48,8 @@ namespace Directory.Contracts
         Task<County> CreateCounty(CountyDto county);
         Task<County> UpdateCounty(int id, CountyDto county);
         Task<bool> DeleteCounty(int id);
-        Task<DonorCount> CreateDonorCount(SortedRefDataBaseDto donorCount);
-        Task<DonorCount> UpdateDonorCount(int id, SortedRefDataBaseDto donorCount);
+        Task<DonorCount> CreateDonorCount(DonorCountDto donorCount);
+        Task<DonorCount> UpdateDonorCount(int id, DonorCountDto donorCount);
         Task<bool> DeleteDonorCount(int id);
         Task<Funder> CreateFunder(RefDataBaseDto funder);
         Task<Funder> UpdateFunder(int id, RefDataBaseDto funder);
