@@ -37,9 +37,9 @@ namespace Common.MappingProfiles
             CreateMap<AnnualStatistic, AnnualStatisticOutboundDto>().
                 ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Value)).
                 ForMember(dest => dest.AnnualStatisticGroupId, opt => opt.MapFrom(src => src.AnnualStatisticGroup.Id));
-            CreateMap<MaterialType, MaterialTypeDto>().ForMember(dest => dest.MaterialTypeGroups, opt => opt.MapFrom(src => src.MaterialTypeGroupMaterialTypes.
+            CreateMap<MaterialType, MaterialTypeOutboundDto>().ForMember(dest => dest.MaterialTypeGroups, opt => opt.MapFrom(src => src.MaterialTypeGroupMaterialTypes.
                         Select(x => x.MaterialTypeGroup).Select(y => new MaterialTypeGroupChildDto { GroupId = y.Id, GroupName = y.Value })));
-            CreateMap<MaterialTypeDto, MaterialType>();
+            CreateMap<MaterialTypeInboundDto, MaterialType>();
             CreateMap<County, CountyOutboundDto>().ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Country.Id)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Value));
             CreateMap<CountyInboundDto, County>();
             CreateMap<DonorCount, DonorCountDto>();

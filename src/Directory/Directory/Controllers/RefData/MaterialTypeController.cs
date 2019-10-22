@@ -24,13 +24,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Material Types")]
-        [SwaggerResponse(200, "All Material Types", typeof(List<MaterialTypeDto>))]
+        [SwaggerResponse(200, "All Material Types", typeof(List<MaterialTypeOutboundDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListMaterialTypes());
 
         [SwaggerOperation("Get a single Material Type by ID")]
-        [SwaggerResponse(200, "The Material Type with the requested ID.", typeof(MaterialTypeDto))]
+        [SwaggerResponse(200, "The Material Type with the requested ID.", typeof(MaterialTypeOutboundDto))]
         [SwaggerResponse(404, "No Material Type was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -46,9 +46,9 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Material Type was created", typeof(MaterialType))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] MaterialTypeDto materialType)
+        public async Task<IActionResult> Post([FromBody] MaterialTypeInboundDto materialType)
         {
-            if (!ModelState.IsValid || materialType.MaterialTypeGroups.Count == 0) 
+            if (!ModelState.IsValid || materialType.MaterialTypeGroupIds.Count == 0) 
                 return BadRequest(ModelState);
 
             var createdMaterialType = await _writeService.CreateMaterialType(materialType);
@@ -59,9 +59,9 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Material Type was updated successfully.")]
         [SwaggerResponse(404, "No Material Type was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] MaterialTypeDto materialType)
+        public async Task<IActionResult> Put(int id, [FromBody] MaterialTypeInboundDto materialType)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || materialType.MaterialTypeGroupIds.Count == 0)
                 return BadRequest(ModelState);
 
             if (_readService.GetMaterialType(id) is null)

@@ -390,37 +390,32 @@ namespace Directory.Services
 
         #region MaterialType
 
-        public async Task<(int, MaterialTypeDto)> CreateMaterialType(MaterialTypeDto materialType)
+        public async Task<(int, MaterialTypeOutboundDto)> CreateMaterialType(MaterialTypeInboundDto materialType)
         {
             var entity = _mapper.Map<MaterialType>(materialType);
-
-            foreach (var x in materialType.MaterialTypeGroups)
+            foreach (var id in materialType.MaterialTypeGroupIds)
             {
-                    var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(x.GroupId);
-
+                    var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(id);
                     var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
-
-                    entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity );
+                    entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
             }
                 await CreateRefData(entity);
-
-                //convert back to DTO
-                return (entity.Id, _mapper.Map<MaterialTypeDto>(entity));
+                return (entity.Id, _mapper.Map<MaterialTypeOutboundDto>(entity));
         }
 
-        public async Task<MaterialTypeDto> UpdateMaterialType(int id, MaterialTypeDto materialType)
+        public async Task<MaterialTypeOutboundDto> UpdateMaterialType(int id, MaterialTypeInboundDto materialType)
         { 
             var entity = _mapper.Map<MaterialType>(materialType);
             entity.Id = id;
 
             var existingJoinEntities = _context.MaterialTypeGroupMaterialTypes.Where(x => x.MaterialTypeId == id).ToList();
 
-            foreach (var x in materialType.MaterialTypeGroups)
+            foreach (var groupId in materialType.MaterialTypeGroupIds)
             {
-                if (existingJoinEntities.FindIndex(y => y.MaterialTypeGroupId == x.GroupId) > 0)
+                if (existingJoinEntities.FindIndex(y => y.MaterialTypeGroupId == groupId) > 0)
                 {
                     entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType
-                    { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.FindAsync(x.GroupId) });
+                    { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.FindAsync(groupId) });
                 }
             }
             //we now need to check for any Join Entities which have been deleted in the client
@@ -428,10 +423,8 @@ namespace Directory.Services
             {
                 _context.Remove(x);
             }
-
             await UpdateRefData(entity);
-
-            return _mapper.Map<MaterialTypeDto>(entity);
+            return _mapper.Map<MaterialTypeOutboundDto>(entity);
         }
 
         public async Task<bool> DeleteMaterialType(int id)

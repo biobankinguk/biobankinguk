@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Common.DTO
 {
-    public class MaterialTypeDto : RefDataBaseDto
+    public class MaterialTypeOutboundDto : RefDataBaseDto
     {
         [Required]
         public List<MaterialTypeGroupChildDto> MaterialTypeGroups { get; set; } = new List<MaterialTypeGroupChildDto>();
