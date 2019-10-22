@@ -30,7 +30,7 @@ namespace Directory.Controllers
            => Ok(await _readService.ListAnnualStatisticGroups());
 
         [SwaggerOperation("Get a single Annual Statistic Group by ID")]
-        [SwaggerResponse(200, "The Annual Statistic Group with the requested ID.", typeof(AnnualStatistic))]
+        [SwaggerResponse(200, "The Annual Statistic Group with the requested ID.", typeof(AnnualStatisticGroup))]
         [SwaggerResponse(404, "No Annual Statistic Group was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
