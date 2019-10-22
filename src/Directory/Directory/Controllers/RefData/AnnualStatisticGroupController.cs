@@ -46,12 +46,12 @@ namespace Directory.Controllers
         [SwaggerResponse(201, "The Annual Statistic Group was created", typeof(AnnualStatisticGroup))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
+        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto annualStatisticGroup)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdAnnualStatistic = await _writeService.CreateAnnualStatisticGroup(collectionPoint);
+            var createdAnnualStatistic = await _writeService.CreateAnnualStatisticGroup(annualStatisticGroup);
             return CreatedAtAction("Get", new { id = createdAnnualStatistic.Id }, createdAnnualStatistic);
         }
 
@@ -59,7 +59,7 @@ namespace Directory.Controllers
         [SwaggerResponse(204, "The Annual Statistic Group was updated successfully.")]
         [SwaggerResponse(404, "No Annual Statistic Group was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto annualStatisticGroup)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -67,7 +67,7 @@ namespace Directory.Controllers
             if (_readService.GetAnnualStatisticGroup(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateAnnualStatisticGroup(id, collectionPoint);
+            await _writeService.UpdateAnnualStatisticGroup(id, annualStatisticGroup);
 
             return NoContent();
         }

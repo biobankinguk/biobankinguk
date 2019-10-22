@@ -118,14 +118,14 @@ namespace Directory.Services
 
         #region AnnualStatistic
 
-        public async Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatisticDto annualStatistic)
+        public async Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatisticInboundDto annualStatistic)
         {
             var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
             entity.AnnualStatisticGroup = await _context.AnnualStatisticGroups.SingleOrDefaultAsync(x => x.Id == annualStatistic.AnnualStatisticGroupId);
             return await CreateRefData(entity);
         }
 
-        public async Task<AnnualStatistic> UpdateAnnualStatistic(int id, AnnualStatisticDto annualStatistic)
+        public async Task<AnnualStatistic> UpdateAnnualStatistic(int id, AnnualStatisticInboundDto annualStatistic)
         {
             var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
             entity.Id = id;
@@ -294,7 +294,7 @@ namespace Directory.Services
 
         #region County
 
-        public async Task<County> CreateCounty(CountyDto county)
+        public async Task<County> CreateCounty(CountyInboundDto county)
         {
             //get a country, assign to County
             var country = await _context.Countries.FindAsync(county.CountryId);
@@ -304,7 +304,7 @@ namespace Directory.Services
             return await CreateRefData(entity);
         }
 
-        public async Task<County> UpdateCounty(int id, CountyDto county)
+        public async Task<County> UpdateCounty(int id, CountyInboundDto county)
         {
             //get a country, assign to County
             var country = await _context.Countries.FindAsync(county.CountryId);

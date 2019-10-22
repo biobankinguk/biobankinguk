@@ -2,9 +2,8 @@
 
 namespace Common.DTO
 {
-    public class CountyDto : RefDataBaseDto
+    public class CountyInboundDto : RefDataBaseDto
     {
         public int CountryId { get; set; }
-        public string CountryName { get; set; } = null!;
     }
 }

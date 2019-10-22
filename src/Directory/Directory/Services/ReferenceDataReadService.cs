@@ -43,16 +43,16 @@ namespace Directory.Services
 
         #region AnnualStatistic
 
-        public async Task<ICollection<AnnualStatisticDto>> ListAnnualStatistics()
+        public async Task<ICollection<AnnualStatisticOutboundDto>> ListAnnualStatistics()
         {
             var entities = await _context.AnnualStatistics.Include(a => a.AnnualStatisticGroup).ToListAsync();
-            return _mapper.Map<ICollection<AnnualStatisticDto>>(entities);
+            return _mapper.Map<ICollection<AnnualStatisticOutboundDto>>(entities);
         }
       
-        public async Task<AnnualStatisticDto> GetAnnualStatistic(int id)
+        public async Task<AnnualStatisticOutboundDto> GetAnnualStatistic(int id)
         {
             var entity = await _context.AnnualStatistics.FindAsync(id);
-            return _mapper.Map<AnnualStatisticDto>(entity);
+            return _mapper.Map<AnnualStatisticOutboundDto>(entity);
         }
 
         #endregion
@@ -149,16 +149,16 @@ namespace Directory.Services
 
         #region County
 
-        public async Task<ICollection<CountyDto>> ListCounties()
+        public async Task<ICollection<CountyOutboundDto>> ListCounties()
         {
             var counties = await _context.Counties.ToListAsync();
-            return _mapper.Map<List<CountyDto>>(counties);
+            return _mapper.Map<List<CountyOutboundDto>>(counties);
         }
 
-        public async Task<CountyDto> GetCounty(int id)
+        public async Task<CountyOutboundDto> GetCounty(int id)
         {
             var county = await _context.Counties.FindAsync(id);
-            return _mapper.Map<CountyDto>(county);
+            return _mapper.Map<CountyOutboundDto>(county);
         }
 
         #endregion

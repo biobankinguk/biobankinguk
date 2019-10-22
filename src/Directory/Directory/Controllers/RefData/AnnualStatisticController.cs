@@ -24,13 +24,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Annual Statistics")]
-        [SwaggerResponse(200, "All Annual Statistics", typeof(List<AnnualStatisticDto>))]
+        [SwaggerResponse(200, "All Annual Statistics", typeof(List<AnnualStatisticOutboundDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListAnnualStatistics());
 
         [SwaggerOperation("Get a single Annual Statistic by ID")]
-        [SwaggerResponse(200, "The Annual Statistic with the requested ID.", typeof(AnnualStatisticDto))]
+        [SwaggerResponse(200, "The Annual Statistic with the requested ID.", typeof(AnnualStatisticOutboundDto))]
         [SwaggerResponse(404, "No Annual Statistic was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -46,7 +46,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Annual Statistic was created", typeof(AnnualStatistic))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AnnualStatisticDto annualStatistic)
+        public async Task<IActionResult> Post([FromBody] AnnualStatisticInboundDto annualStatistic)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -59,7 +59,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Annual Statistic was updated successfully.")]
         [SwaggerResponse(404, "No Annual Statistic was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] AnnualStatisticDto annualStatistic)
+        public async Task<IActionResult> Put(int id, [FromBody] AnnualStatisticInboundDto annualStatistic)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

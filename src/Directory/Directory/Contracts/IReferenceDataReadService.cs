@@ -14,8 +14,8 @@ namespace Directory.Contracts
         Task<AccessCondition> GetAccessCondition(int id);
         Task<ICollection<AgeRange>> ListAgeRanges();
         Task<AgeRange> GetAgeRange(int id);
-        Task<ICollection<AnnualStatisticDto>> ListAnnualStatistics();
-        Task<AnnualStatisticDto> GetAnnualStatistic(int id);
+        Task<ICollection<AnnualStatisticOutboundDto>> ListAnnualStatistics();
+        Task<AnnualStatisticOutboundDto> GetAnnualStatistic(int id);
         Task<ICollection<AnnualStatisticGroup>> ListAnnualStatisticGroups();
         Task<AnnualStatisticGroup> GetAnnualStatisticGroup(int id);
         Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes();
@@ -34,8 +34,8 @@ namespace Directory.Contracts
         Task<ConsentRestriction> GetConsentRestriction(int id);
         Task<ICollection<Country>> ListCountries();
         Task<Country> GetCountry(int id);
-        Task<ICollection<CountyDto>> ListCounties();
-        Task<CountyDto> GetCounty(int id);
+        Task<ICollection<CountyOutboundDto>> ListCounties();
+        Task<CountyOutboundDto> GetCounty(int id);
         Task<ICollection<DonorCount>> ListDonorCounts();
         Task<DonorCount> GetDonorCount(int id);
         Task<ICollection<Funder>> ListFunders();
