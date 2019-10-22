@@ -48,8 +48,10 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] MaterialTypeGroupInboundDto materialTypeGroup)
         {
-            if (!ModelState.IsValid || materialTypeGroup.MaterialTypeIds.Count == 0)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            else if (materialTypeGroup.MaterialTypeIds.Count == 0)
+                return BadRequest("No values in MaterialTypeIds have been provided.");
 
             var createdMaterialTypeGroup = await _writeService.CreateMaterialTypeGroup(materialTypeGroup);
             return CreatedAtAction("Get", new { id = createdMaterialTypeGroup.Id }, createdMaterialTypeGroup);
@@ -61,8 +63,10 @@ namespace Directory.Controllers.RefData
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] MaterialTypeGroupInboundDto materialTypeGroup)
         {
-            if (!ModelState.IsValid || materialTypeGroup.MaterialTypeIds.Count == 0)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            else if (materialTypeGroup.MaterialTypeIds.Count == 0)
+                return BadRequest("No values in MaterialTypeIds have been provided.");
 
             if (_readService.GetMaterialTypeGroup(id) is null)
                 return NotFound();
