@@ -322,14 +322,19 @@ namespace Directory.Services
 
         #region DonorCount
 
-        public async Task<DonorCount> CreateDonorCount(DonorCountInboundDto donorCount)
-            => await CreateRefData(_mapper.Map<DonorCount>(donorCount));
+        public async Task<DonorCountOutboundDto> CreateDonorCount(DonorCountInboundDto donorCount)
+        {
+            var entity = await CreateRefData(_mapper.Map<DonorCount>(donorCount));
+            return _mapper.Map<DonorCountOutboundDto>(entity);
+        }
+            
 
-        public async Task<DonorCount> UpdateDonorCount(int id, DonorCountInboundDto donorCount)
+        public async Task<DonorCountOutboundDto> UpdateDonorCount(int id, DonorCountInboundDto donorCount)
         {
             var entity = _mapper.Map<DonorCount>(donorCount);
             entity.Id = id;
-            return await UpdateRefData(entity);
+            entity = await UpdateRefData(entity);
+            return _mapper.Map<DonorCountOutboundDto>(entity);
         }
 
         public async Task<bool> DeleteDonorCount(int id)

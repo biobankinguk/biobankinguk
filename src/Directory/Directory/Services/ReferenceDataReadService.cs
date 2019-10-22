@@ -165,11 +165,18 @@ namespace Directory.Services
 
         #region DonorCount
       
-        public async Task<ICollection<DonorCount>> ListDonorCounts()
-            => await _context.DonorCounts.ToListAsync();
+        public async Task<ICollection<DonorCountOutboundDto>> ListDonorCounts()
+        {
+            var donorCounts = await _context.DonorCounts.ToListAsync();
+            return _mapper.Map<List<DonorCountOutboundDto>>(donorCounts);
+        }
        
-        public async Task<DonorCount> GetDonorCount(int id)
-            => await _context.DonorCounts.FindAsync(id);
+        public async Task<DonorCountOutboundDto> GetDonorCount(int id)
+        {
+            var donorCount = await _context.DonorCounts.FindAsync(id);
+            return _mapper.Map<DonorCountOutboundDto>(donorCount);
+        }
+            
 
         #endregion
 

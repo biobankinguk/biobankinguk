@@ -20,7 +20,6 @@ namespace Common.MappingProfiles
             CreateMap<SortedRefDataBaseDto, CollectionType>();
             CreateMap<SortedRefDataBaseDto, ConsentRestriction>();
             CreateMap<RefDataBaseDto, Country>();
-            CreateMap<SortedRefDataBaseDto, DonorCount>();
             CreateMap<RefDataBaseDto, Funder>();
             CreateMap<SortedRefDataBaseDto, HtaStatus>();
             CreateMap<RefDataBaseDto, MacroscopicAssessment>();
@@ -41,7 +40,7 @@ namespace Common.MappingProfiles
             CreateMap<MaterialTypeGroupInboundDto, MaterialTypeGroup>();
             CreateMap<County, CountyOutboundDto>().ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Country.Id)).ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Value));
             CreateMap<CountyInboundDto, County>();
-            CreateMap<DonorCount, DonorCountInboundDto>();
+            CreateMap<DonorCount, DonorCountOutboundDto>();
             CreateMap<DonorCountInboundDto, DonorCount>();
         }
     }
