@@ -24,13 +24,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Donor Counts")]
-        [SwaggerResponse(200, "All Donor Counts", typeof(List<DonorCount>))]
+        [SwaggerResponse(200, "All Donor Counts", typeof(List<DonorCountOutboundDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListDonorCounts());
 
         [SwaggerOperation("Get a single Donor Count by ID")]
-        [SwaggerResponse(200, "The Donor Count with the requested ID.", typeof(DonorCount))]
+        [SwaggerResponse(200, "The Donor Count with the requested ID.", typeof(DonorCountOutboundDto))]
         [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -46,7 +46,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Donor Count was created", typeof(DonorCount))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] DonorCountDto donorCount)
+        public async Task<IActionResult> Post([FromBody] DonorCountInboundDto donorCount)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -59,7 +59,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Donor Count was updated successfully.")]
         [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] DonorCountDto donorCount)
+        public async Task<IActionResult> Put(int id, [FromBody] DonorCountInboundDto donorCount)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

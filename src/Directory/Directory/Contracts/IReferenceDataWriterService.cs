@@ -48,8 +48,8 @@ namespace Directory.Contracts
         Task<County> CreateCounty(CountyInboundDto county);
         Task<County> UpdateCounty(int id, CountyInboundDto county);
         Task<bool> DeleteCounty(int id);
-        Task<DonorCount> CreateDonorCount(DonorCountDto donorCount);
-        Task<DonorCount> UpdateDonorCount(int id, DonorCountDto donorCount);
+        Task<DonorCountOutboundDto> CreateDonorCount(DonorCountInboundDto donorCount);
+        Task<DonorCountOutboundDto> UpdateDonorCount(int id, DonorCountInboundDto donorCount);
         Task<bool> DeleteDonorCount(int id);
         Task<Funder> CreateFunder(RefDataBaseDto funder);
         Task<Funder> UpdateFunder(int id, RefDataBaseDto funder);
@@ -63,8 +63,8 @@ namespace Directory.Contracts
         Task<(int, MaterialTypeOutboundDto)> CreateMaterialType(MaterialTypeInboundDto materialType);
         Task<MaterialTypeOutboundDto> UpdateMaterialType(int id, MaterialTypeInboundDto materialType);
         Task<bool> DeleteMaterialType(int id);
-        Task<MaterialTypeGroup> CreateMaterialTypeGroup(RefDataBaseDto materialTypeGroup);
-        Task<MaterialTypeGroup> UpdateMaterialTypeGroup(int id, RefDataBaseDto materialTypeGroup);
+        Task<MaterialTypeGroupOutboundDto> CreateMaterialTypeGroup(MaterialTypeGroupInboundDto materialTypeGroup);
+        Task<MaterialTypeGroupOutboundDto> UpdateMaterialTypeGroup(int id, MaterialTypeGroupInboundDto materialTypeGroup);
         Task<bool> DeleteMaterialTypeGroup(int id);
         Task<OntologyTerm> CreateOntologyTerm(OntologyTerm ontologyTerm);
         Task<OntologyTerm> UpdateOntologyTerm(string id, OntologyTerm ontologyTerm);

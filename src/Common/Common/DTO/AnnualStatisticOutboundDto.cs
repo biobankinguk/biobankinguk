@@ -1,10 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Common.DTO
+﻿namespace Common.DTO
 {
     public class AnnualStatisticOutboundDto : AnnualStatisticInboundDto
     {
+        public int Id { get; set; }
         public string GroupName { get; set; } = string.Empty;
     }
 }

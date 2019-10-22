@@ -36,8 +36,8 @@ namespace Directory.Contracts
         Task<Country> GetCountry(int id);
         Task<ICollection<CountyOutboundDto>> ListCounties();
         Task<CountyOutboundDto> GetCounty(int id);
-        Task<ICollection<DonorCount>> ListDonorCounts();
-        Task<DonorCount> GetDonorCount(int id);
+        Task<ICollection<DonorCountOutboundDto>> ListDonorCounts();
+        Task<DonorCountOutboundDto> GetDonorCount(int id);
         Task<ICollection<Funder>> ListFunders();
         Task<Funder> GetFunder(int id);
         Task<ICollection<HtaStatus>> ListHtaStatuses();

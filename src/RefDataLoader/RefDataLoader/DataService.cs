@@ -61,10 +61,10 @@ namespace RefDataLoader
 
             //get countries
             var countries = await GetRefData<Country>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "Country").Value);
-            var counties = new List<CountyDto>();
+            var counties = new List<CountyOutboundDto>();
 
             //match them by name to ones in DTOs, and set the ID values
-            foreach(var county in PrepData<CountyDto>($"RefDataSeeding/{countyConfig.Key}.json"))
+            foreach(var county in PrepData<CountyOutboundDto>($"RefDataSeeding/{countyConfig.Key}.json"))
             {
                 county.CountryId = countries.Single(x => x.Value.Equals(county.CountryName, StringComparison.OrdinalIgnoreCase)).Id;
                 counties.Add(county);
@@ -100,9 +100,9 @@ namespace RefDataLoader
             // Get the material type groups
             var materialTypeGroups = await GetRefData<MaterialTypeGroup>(_config.RefDataEndpoints.SingleOrDefault(x => x.Key == "MaterialTypeGroup").Value);
 
-            var materialTypes = new List<MaterialTypeDto>();
+            var materialTypes = new List<MaterialTypeOutboundDto>();
 
-            var materialTypeData = PrepData<MaterialTypeDto>($"RefDataSeeding/{mtConfig.Key}.json");
+            var materialTypeData = PrepData<MaterialTypeOutboundDto>($"RefDataSeeding/{mtConfig.Key}.json");
             // match them by name to ones in DTOs, and set the ID values
             foreach (var materialType in materialTypeData)
             {

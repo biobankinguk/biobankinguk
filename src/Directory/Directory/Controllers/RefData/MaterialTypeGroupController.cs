@@ -24,13 +24,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Material Type Groups")]
-        [SwaggerResponse(200, "All Material Type Groups", typeof(List<MaterialTypeGroup>))]
+        [SwaggerResponse(200, "All Material Type Groups", typeof(List<MaterialTypeGroupOutboundDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListMaterialTypeGroups());
 
         [SwaggerOperation("Get a single Material Type Group by ID")]
-        [SwaggerResponse(200, "The Material Type Group with the requested ID.", typeof(MaterialTypeGroup))]
+        [SwaggerResponse(200, "The Material Type Group with the requested ID.", typeof(MaterialTypeGroupOutboundDto))]
         [SwaggerResponse(404, "No Material Type Group was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -46,7 +46,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Material Type Group was created", typeof(MaterialTypeGroup))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] RefDataBaseDto materialTypeGroup)
+        public async Task<IActionResult> Post([FromBody] MaterialTypeGroupInboundDto materialTypeGroup)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -59,7 +59,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Material Type Group was updated successfully.")]
         [SwaggerResponse(404, "No Material Type Group was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] RefDataBaseDto materialTypeGroup)
+        public async Task<IActionResult> Put(int id, [FromBody] MaterialTypeGroupInboundDto materialTypeGroup)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
