@@ -121,8 +121,6 @@ namespace RefDataLoader
 
         private async Task SubmitData<T>(IList<T> data, KeyValuePair<string, string> refDataInfo)
         {
-            //We post ontologies individually.
-
             var timer = Stopwatch.StartNew();
             var count = 1;
             foreach (var refData in data)
