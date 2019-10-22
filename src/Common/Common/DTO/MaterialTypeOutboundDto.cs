@@ -6,7 +6,6 @@ namespace Common.DTO
     public class MaterialTypeOutboundDto : RefDataBaseDto
     {
         public int Id { get; set; }
-        [Required]
         public List<MaterialTypeGroupChildDto> MaterialTypeGroups { get; set; } = new List<MaterialTypeGroupChildDto>();
     }
 
