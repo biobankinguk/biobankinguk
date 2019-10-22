@@ -51,7 +51,7 @@ namespace RefDataLoader
         private async Task PrepareAndSubmitDonorCount()
         {
             var donorCountConfig = _config.RefDataEndpoints.SingleOrDefault(x => x.Key == "DonorCount");
-            var donorCounts = PrepData<DonorCountDto>($"RefDataSeeding/{donorCountConfig.Key}.json");
+            var donorCounts = PrepData<DonorCountInboundDto>($"RefDataSeeding/{donorCountConfig.Key}.json");
             await SubmitData(donorCounts, donorCountConfig);
         }
 
