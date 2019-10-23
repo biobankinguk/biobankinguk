@@ -431,17 +431,25 @@ namespace Directory.Services
 
         #region MaterialType
 
-        public async Task<(int, MaterialTypeOutboundDto)> CreateMaterialType(MaterialTypeInboundDto materialType)
+        public async Task<MaterialTypeOutboundDto> CreateMaterialType(MaterialTypeInboundDto materialType)
         {
             var entity = _mapper.Map<MaterialType>(materialType);
             foreach (var id in materialType.MaterialTypeGroupIds)
             {
-                    var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(id);
-                    var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
-                    entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
+                var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(id);
+
+                if (materialTypeGroup is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(id));
+                    throw (e);
+                }
+
+                var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
+                entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
             }
                 await CreateRefData(entity);
-                return (entity.Id, _mapper.Map<MaterialTypeOutboundDto>(entity));
+                return _mapper.Map<MaterialTypeOutboundDto>(entity);
         }
 
         public async Task<MaterialTypeOutboundDto> UpdateMaterialType(int id, MaterialTypeInboundDto materialType)
@@ -453,10 +461,19 @@ namespace Directory.Services
 
             foreach (var groupId in materialType.MaterialTypeGroupIds)
             {
+                var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(groupId);
+
+                if (materialTypeGroup is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(groupId));
+                    throw (e);
+                }
+
                 if (existingJoinEntities.FindIndex(y => y.MaterialTypeGroupId == groupId) > 0)
                 {
-                    entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType
-                    { MaterialType = entity, MaterialTypeGroup = await _context.MaterialTypeGroups.FindAsync(groupId) });
+                    var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
+                    entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
                 }
             }
             //we now need to check for any Join Entities which have been deleted in the client
@@ -481,6 +498,14 @@ namespace Directory.Services
             foreach(var id in materialTypeGroup.MaterialTypeIds)
             {
                 var materialType = await _context.MaterialTypes.FindAsync(id);
+
+                if(materialType is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(id));
+                    throw (e);
+                }
+
                 var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = materialType, MaterialTypeGroup = entity };
                 entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
             }
@@ -495,12 +520,20 @@ namespace Directory.Services
 
             var existingJoinEntities = _context.MaterialTypeGroupMaterialTypes.Where(x => x.MaterialTypeId == id).ToList();
 
-            foreach (var materialtypeId in materialTypeGroup.MaterialTypeIds)
+            foreach (var materialTypeId in materialTypeGroup.MaterialTypeIds)
             {
-                if (existingJoinEntities.FindIndex(y => y.MaterialTypeId == materialtypeId) > 0)
+                var materialType = await _context.MaterialTypes.FindAsync(materialTypeId);
+                if(materialType is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(materialTypeId));
+                    throw (e);
+                }
+
+                if (existingJoinEntities.FindIndex(y => y.MaterialTypeId == materialTypeId) > 0)
                 {
                     entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType
-                    { MaterialType = await _context.MaterialTypes.FindAsync(materialtypeId), MaterialTypeGroup = entity });
+                    { MaterialType = await _context.MaterialTypes.FindAsync(materialTypeId), MaterialTypeGroup = entity });
                 }
             }
             //we now need to check for any Join Entities which have been deleted in the client

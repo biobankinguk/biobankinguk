@@ -1,4 +1,5 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common;
+using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -48,13 +49,26 @@ namespace Directory.Controllers.RefData
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] MaterialTypeInboundDto materialType)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             else if (materialType.MaterialTypeGroupIds.Count == 0)
                 return BadRequest("No values in MaterialTypeGroupIds have been provided.");
 
-            var createdMaterialType = await _writeService.CreateMaterialType(materialType);
-            return CreatedAtAction("Get", new { id = createdMaterialType.Item1 }, createdMaterialType.Item2);
+            var createdMaterialType = new MaterialTypeOutboundDto();
+
+            try
+            {
+                createdMaterialType = await _writeService.CreateMaterialType(materialType);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
+
+            return CreatedAtAction("Get", new { id = createdMaterialType.Id }, createdMaterialType);
         }
 
         [SwaggerOperation("Updates an existing Material Type")]
@@ -71,7 +85,17 @@ namespace Directory.Controllers.RefData
             if (_readService.GetMaterialType(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateMaterialType(id, materialType);
+            try
+            {
+                await _writeService.UpdateMaterialType(id, materialType);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
 
             return NoContent();
         }

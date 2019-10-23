@@ -60,7 +60,7 @@ namespace Directory.Contracts
         Task<MacroscopicAssessment> CreateMacroscopicAssessment(RefDataBaseDto macroscopicAssessment);
         Task<MacroscopicAssessment> UpdateMacroscopicAssessment(int id, RefDataBaseDto macroscopicAssessment);
         Task<bool> DeleteMacroscopicAssessment(int id);
-        Task<(int, MaterialTypeOutboundDto)> CreateMaterialType(MaterialTypeInboundDto materialType);
+        Task<MaterialTypeOutboundDto> CreateMaterialType(MaterialTypeInboundDto materialType);
         Task<MaterialTypeOutboundDto> UpdateMaterialType(int id, MaterialTypeInboundDto materialType);
         Task<bool> DeleteMaterialType(int id);
         Task<MaterialTypeGroupOutboundDto> CreateMaterialTypeGroup(MaterialTypeGroupInboundDto materialTypeGroup);

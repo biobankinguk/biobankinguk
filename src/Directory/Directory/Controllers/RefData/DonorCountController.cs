@@ -1,4 +1,5 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common;
+using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -51,7 +52,20 @@ namespace Directory.Controllers.RefData
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdDonorCount = await _writeService.CreateDonorCount(donorCount);
+            var createdDonorCount = new DonorCountOutboundDto();
+
+            try
+            {
+                createdDonorCount = await _writeService.CreateDonorCount(donorCount);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
+
             return CreatedAtAction("Get", new { id = createdDonorCount.Id }, createdDonorCount);
         }
 
@@ -67,7 +81,17 @@ namespace Directory.Controllers.RefData
             if (_readService.GetDonorCount(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateDonorCount(id, donorCount);
+            try
+            {
+                await _writeService.UpdateDonorCount(id, donorCount);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
 
             return NoContent();
         }

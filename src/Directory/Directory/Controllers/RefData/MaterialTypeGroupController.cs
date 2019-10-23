@@ -1,4 +1,5 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common;
+using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -53,7 +54,20 @@ namespace Directory.Controllers.RefData
             else if (materialTypeGroup.MaterialTypeIds.Count == 0)
                 return BadRequest("No values in MaterialTypeIds have been provided.");
 
-            var createdMaterialTypeGroup = await _writeService.CreateMaterialTypeGroup(materialTypeGroup);
+            var createdMaterialTypeGroup = new MaterialTypeGroupOutboundDto();
+
+            try
+            {
+                createdMaterialTypeGroup = await _writeService.CreateMaterialTypeGroup(materialTypeGroup);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
+
             return CreatedAtAction("Get", new { id = createdMaterialTypeGroup.Id }, createdMaterialTypeGroup);
         }
 
@@ -71,7 +85,17 @@ namespace Directory.Controllers.RefData
             if (_readService.GetMaterialTypeGroup(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateMaterialTypeGroup(id, materialTypeGroup);
+            try
+            {
+                await _writeService.UpdateMaterialTypeGroup(id, materialTypeGroup);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
 
             return NoContent();
         }
