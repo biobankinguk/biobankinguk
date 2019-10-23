@@ -25,6 +25,7 @@ namespace Common.Data
             _configStoreOptions = configStoreOptions;
         }
 
+        public DbSet<AnnualStatisticGroup> AnnualStatisticGroups { get; set; } = null!;
         public DbSet<AccessCondition> AccessConditions { get; set; } = null!;
         public DbSet<AgeRange> AgeRanges { get; set; } = null!;
         public DbSet<AnnualStatistic> AnnualStatistics { get; set; } = null!;
@@ -43,6 +44,7 @@ namespace Common.Data
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; } = null!;
         public DbSet<MaterialType> MaterialTypes { get; set; } = null!;
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; } = null!;
+        public DbSet<MaterialTypeGroupMaterialType> MaterialTypeGroupMaterialTypes { get; set;} = null!;
         public DbSet<OntologyTerm> OntologyTerms { get; set; } = null!;
         public DbSet<ServiceOffering> ServiceOfferings { get; set; } = null!;
         public DbSet<Sex> Sexes { get; set; } = null!;

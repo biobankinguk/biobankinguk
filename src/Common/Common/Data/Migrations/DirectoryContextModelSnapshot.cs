@@ -166,7 +166,7 @@ namespace Common.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AnnualStatisticGroup");
+                    b.ToTable("AnnualStatisticGroups");
                 });
 
             modelBuilder.Entity("Common.Data.ReferenceData.AssociatedDataProcurementTimeframe", b =>
@@ -343,7 +343,13 @@ namespace Common.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("LowerBound")
+                        .HasColumnType("int");
+
                     b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpperBound")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
@@ -453,7 +459,7 @@ namespace Common.Migrations
 
                     b.HasIndex("MaterialTypeGroupId");
 
-                    b.ToTable("MaterialTypeGroupMaterialType");
+                    b.ToTable("MaterialTypeGroupMaterialTypes");
                 });
 
             modelBuilder.Entity("Common.Data.ReferenceData.OntologyTerm", b =>

@@ -36,7 +36,7 @@ namespace Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AnnualStatisticGroup",
+                name: "AnnualStatisticGroups",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -46,7 +46,7 @@ namespace Common.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AnnualStatisticGroup", x => x.Id);
+                    table.PrimaryKey("PK_AnnualStatisticGroups", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -283,7 +283,9 @@ namespace Common.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Value = table.Column<string>(nullable: false),
-                    SortOrder = table.Column<int>(nullable: false)
+                    SortOrder = table.Column<int>(nullable: false),
+                    LowerBound = table.Column<int>(nullable: false),
+                    UpperBound = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -478,9 +480,9 @@ namespace Common.Migrations
                 {
                     table.PrimaryKey("PK_AnnualStatistics", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AnnualStatistics_AnnualStatisticGroup_AnnualStatisticGroupId",
+                        name: "FK_AnnualStatistics_AnnualStatisticGroups_AnnualStatisticGroupId",
                         column: x => x.AnnualStatisticGroupId,
-                        principalTable: "AnnualStatisticGroup",
+                        principalTable: "AnnualStatisticGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -884,7 +886,7 @@ namespace Common.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MaterialTypeGroupMaterialType",
+                name: "MaterialTypeGroupMaterialTypes",
                 columns: table => new
                 {
                     MaterialTypeId = table.Column<int>(nullable: false),
@@ -892,15 +894,15 @@ namespace Common.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MaterialTypeGroupMaterialType", x => new { x.MaterialTypeId, x.MaterialTypeGroupId });
+                    table.PrimaryKey("PK_MaterialTypeGroupMaterialTypes", x => new { x.MaterialTypeId, x.MaterialTypeGroupId });
                     table.ForeignKey(
-                        name: "FK_MaterialTypeGroupMaterialType_MaterialTypeGroups_MaterialTypeGroupId",
+                        name: "FK_MaterialTypeGroupMaterialTypes_MaterialTypeGroups_MaterialTypeGroupId",
                         column: x => x.MaterialTypeGroupId,
                         principalTable: "MaterialTypeGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MaterialTypeGroupMaterialType_MaterialTypes_MaterialTypeId",
+                        name: "FK_MaterialTypeGroupMaterialTypes_MaterialTypes_MaterialTypeId",
                         column: x => x.MaterialTypeId,
                         principalTable: "MaterialTypes",
                         principalColumn: "Id",
@@ -1075,8 +1077,8 @@ namespace Common.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MaterialTypeGroupMaterialType_MaterialTypeGroupId",
-                table: "MaterialTypeGroupMaterialType",
+                name: "IX_MaterialTypeGroupMaterialTypes_MaterialTypeGroupId",
+                table: "MaterialTypeGroupMaterialTypes",
                 column: "MaterialTypeGroupId");
 
             migrationBuilder.CreateIndex(
@@ -1195,7 +1197,7 @@ namespace Common.Migrations
                 name: "MacroscopicAssessments");
 
             migrationBuilder.DropTable(
-                name: "MaterialTypeGroupMaterialType");
+                name: "MaterialTypeGroupMaterialTypes");
 
             migrationBuilder.DropTable(
                 name: "OntologyTerms");
@@ -1216,7 +1218,7 @@ namespace Common.Migrations
                 name: "StorageTemperatures");
 
             migrationBuilder.DropTable(
-                name: "AnnualStatisticGroup");
+                name: "AnnualStatisticGroups");
 
             migrationBuilder.DropTable(
                 name: "ApiScopes");

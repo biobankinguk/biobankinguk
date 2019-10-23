@@ -1,4 +1,5 @@
 ﻿using Common.Data.ReferenceData;
+using Common.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,8 +14,10 @@ namespace Directory.Contracts
         Task<AccessCondition> GetAccessCondition(int id);
         Task<ICollection<AgeRange>> ListAgeRanges();
         Task<AgeRange> GetAgeRange(int id);
-        Task<ICollection<AnnualStatistic>> ListAnnualStatistics();
-        Task<AnnualStatistic> GetAnnualStatistic(int id);
+        Task<ICollection<AnnualStatisticOutboundDto>> ListAnnualStatistics();
+        Task<AnnualStatisticOutboundDto> GetAnnualStatistic(int id);
+        Task<ICollection<AnnualStatisticGroup>> ListAnnualStatisticGroups();
+        Task<AnnualStatisticGroup> GetAnnualStatisticGroup(int id);
         Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes();
         Task<AssociatedDataProcurementTimeframe> GetAssociatedDataProcurementTimeframe(int id);
         Task<ICollection<AssociatedDataType>> ListAssociatedDataTypes();
@@ -31,18 +34,18 @@ namespace Directory.Contracts
         Task<ConsentRestriction> GetConsentRestriction(int id);
         Task<ICollection<Country>> ListCountries();
         Task<Country> GetCountry(int id);
-        Task<ICollection<County>> ListCounties();
-        Task<County> GetCounty(int id);
-        Task<ICollection<DonorCount>> ListDonorCounts();
-        Task<DonorCount> GetDonorCount(int id);
+        Task<ICollection<CountyOutboundDto>> ListCounties();
+        Task<CountyOutboundDto> GetCounty(int id);
+        Task<ICollection<DonorCountOutboundDto>> ListDonorCounts();
+        Task<DonorCountOutboundDto> GetDonorCount(int id);
         Task<ICollection<Funder>> ListFunders();
         Task<Funder> GetFunder(int id);
         Task<ICollection<HtaStatus>> ListHtaStatuses();
         Task<HtaStatus> GetHtaStatus(int id);
         Task<ICollection<MacroscopicAssessment>> ListMacroscopicAssessments();
         Task<MacroscopicAssessment> GetMacroscopicAssessment(int id);
-        Task<ICollection<MaterialType>> ListMaterialTypes();
-        Task<MaterialType> GetMaterialType(int id);
+        Task<ICollection<MaterialTypeOutboundDto>> ListMaterialTypes();
+        Task<MaterialTypeOutboundDto> GetMaterialType(int id);
         Task<ICollection<MaterialTypeGroup>> ListMaterialTypeGroups();
         Task<MaterialTypeGroup> GetMaterialTypeGroup(int id);
         Task<ICollection<OntologyTerm>> ListOntologyTerms();

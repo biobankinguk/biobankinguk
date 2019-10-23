@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Common.Constants;
 using Common.Data;
 using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Directory.Services
@@ -117,18 +120,60 @@ namespace Directory.Services
 
         #region AnnualStatistic
 
-        public async Task<AnnualStatistic> CreateAnnualStatistic(RefDataBaseDto annualStatistic)
-            => await CreateRefData(_mapper.Map<AnnualStatistic>(annualStatistic));
+        public async Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatisticInboundDto annualStatistic)
+        {
+            var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
 
-        public async Task<AnnualStatistic> UpdateAnnualStatistic(int id, RefDataBaseDto annualStatistic)
+            var annualStatisticGroup = await _context.AnnualStatisticGroups.FindAsync(annualStatistic.AnnualStatisticGroupId);
+
+            if (annualStatisticGroup is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(annualStatistic.AnnualStatisticGroupId));
+                throw(e);
+            }
+
+            entity.AnnualStatisticGroup = annualStatisticGroup;         
+            return await CreateRefData(entity);
+        }
+
+        public async Task<AnnualStatistic> UpdateAnnualStatistic(int id, AnnualStatisticInboundDto annualStatistic)
         {
             var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
             entity.Id = id;
+            var annualStatisticGroup = await _context.AnnualStatisticGroups.FindAsync(annualStatistic.AnnualStatisticGroupId);
+
+            if (annualStatisticGroup is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(annualStatistic.AnnualStatisticGroupId));
+                throw (e);
+            }
+
+            entity.AnnualStatisticGroup = annualStatisticGroup;
             return await UpdateRefData(entity);
         }
 
         public async Task<bool> DeleteAnnualStatistic(int id)
             => await DeleteRefData<AnnualStatistic>(id);
+
+        #endregion
+
+        #region Annual Statistic Groups
+
+        public async Task<AnnualStatisticGroup> CreateAnnualStatisticGroup(SortedRefDataBaseDto annualStatisticGroup)
+             => await CreateRefData(_mapper.Map<AnnualStatisticGroup>(annualStatisticGroup));
+        
+
+        public async Task<AnnualStatisticGroup> UpdateAnnualStatisticGroup(int id, SortedRefDataBaseDto annualStatisticGroup)
+        {
+            var entity = _mapper.Map<AnnualStatisticGroup>(annualStatisticGroup);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
+
+        public async Task<bool> DeleteAnnualStatisticGroup(int id)
+            => await DeleteRefData<AnnualStatisticGroup>(id);
 
         #endregion
 
@@ -270,13 +315,39 @@ namespace Directory.Services
 
         #region County
 
-        public async Task<County> CreateCounty(RefDataBaseDto county)
-            => await CreateRefData(_mapper.Map<County>(county));
-
-        public async Task<County> UpdateCounty(int id, RefDataBaseDto county)
+        public async Task<County> CreateCounty(CountyInboundDto county)
         {
+            //get a country, assign to County
+            var country = await _context.Countries.FindAsync(county.CountryId);
+
+            if (country is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(county.CountryId));
+                throw (e);
+            }
+
+            var entity = _mapper.Map<County>(county);
+            entity.Country = country;
+
+            return await CreateRefData(entity);
+        }
+
+        public async Task<County> UpdateCounty(int id, CountyInboundDto county)
+        {
+            //get a country, assign to County
+            var country = await _context.Countries.FindAsync(county.CountryId);
+
+            if (country is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(county.CountryId));
+                throw (e);
+            }
+
             var entity = _mapper.Map<County>(county);
             entity.Id = id;
+            entity.Country = country;
             return await UpdateRefData(entity);
         }
 
@@ -287,14 +358,19 @@ namespace Directory.Services
 
         #region DonorCount
 
-        public async Task<DonorCount> CreateDonorCount(SortedRefDataBaseDto donorCount)
-            => await CreateRefData(_mapper.Map<DonorCount>(donorCount));
+        public async Task<DonorCountOutboundDto> CreateDonorCount(DonorCountInboundDto donorCount)
+        {
+            var entity = await CreateRefData(_mapper.Map<DonorCount>(donorCount));
+            return _mapper.Map<DonorCountOutboundDto>(entity);
+        }
+            
 
-        public async Task<DonorCount> UpdateDonorCount(int id, SortedRefDataBaseDto donorCount)
+        public async Task<DonorCountOutboundDto> UpdateDonorCount(int id, DonorCountInboundDto donorCount)
         {
             var entity = _mapper.Map<DonorCount>(donorCount);
             entity.Id = id;
-            return await UpdateRefData(entity);
+            entity = await UpdateRefData(entity);
+            return _mapper.Map<DonorCountOutboundDto>(entity);
         }
 
         public async Task<bool> DeleteDonorCount(int id)
@@ -355,14 +431,58 @@ namespace Directory.Services
 
         #region MaterialType
 
-        public async Task<MaterialType> CreateMaterialType(SortedRefDataBaseDto materialType)
-            => await CreateRefData(_mapper.Map<MaterialType>(materialType));
-
-        public async Task<MaterialType> UpdateMaterialType(int id, SortedRefDataBaseDto materialType)
+        public async Task<MaterialTypeOutboundDto> CreateMaterialType(MaterialTypeInboundDto materialType)
         {
             var entity = _mapper.Map<MaterialType>(materialType);
+            foreach (var id in materialType.MaterialTypeGroupIds)
+            {
+                var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(id);
+
+                if (materialTypeGroup is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(id));
+                    throw (e);
+                }
+
+                var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
+                entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
+            }
+                await CreateRefData(entity);
+                return _mapper.Map<MaterialTypeOutboundDto>(entity);
+        }
+
+        public async Task<MaterialTypeOutboundDto> UpdateMaterialType(int id, MaterialTypeInboundDto materialType)
+        { 
+            var entity = _mapper.Map<MaterialType>(materialType);
             entity.Id = id;
-            return await UpdateRefData(entity);
+
+            var existingJoinEntities = _context.MaterialTypeGroupMaterialTypes.Where(x => x.MaterialTypeId == id).ToList();
+
+            foreach (var groupId in materialType.MaterialTypeGroupIds)
+            {
+                var materialTypeGroup = await _context.MaterialTypeGroups.FindAsync(groupId);
+
+                if (materialTypeGroup is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(groupId));
+                    throw (e);
+                }
+
+                if (existingJoinEntities.FindIndex(y => y.MaterialTypeGroupId == groupId) > 0)
+                {
+                    var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = entity, MaterialTypeGroup = materialTypeGroup };
+                    entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
+                }
+            }
+            //we now need to check for any Join Entities which have been deleted in the client
+            foreach(var x in existingJoinEntities.Except(entity.MaterialTypeGroupMaterialTypes))
+            {
+                _context.Remove(x);
+            }
+            await UpdateRefData(entity);
+            return _mapper.Map<MaterialTypeOutboundDto>(entity);
         }
 
         public async Task<bool> DeleteMaterialType(int id)
@@ -372,14 +492,57 @@ namespace Directory.Services
 
         #region MaterialTypeGroup
 
-        public async Task<MaterialTypeGroup> CreateMaterialTypeGroup(RefDataBaseDto materialTypeGroup)
-            => await CreateRefData(_mapper.Map<MaterialTypeGroup>(materialTypeGroup));
+        public async Task<MaterialTypeGroupOutboundDto> CreateMaterialTypeGroup(MaterialTypeGroupInboundDto materialTypeGroup)
+        {
+            var entity = _mapper.Map<MaterialTypeGroup>(materialTypeGroup);
+            foreach(var id in materialTypeGroup.MaterialTypeIds)
+            {
+                var materialType = await _context.MaterialTypes.FindAsync(id);
 
-        public async Task<MaterialTypeGroup> UpdateMaterialTypeGroup(int id, RefDataBaseDto materialTypeGroup)
+                if(materialType is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(id));
+                    throw (e);
+                }
+
+                var joiningEntity = new MaterialTypeGroupMaterialType { MaterialType = materialType, MaterialTypeGroup = entity };
+                entity.MaterialTypeGroupMaterialTypes.Add(joiningEntity);
+            }
+            await CreateRefData(entity);
+            return _mapper.Map<MaterialTypeGroupOutboundDto>(entity);
+        }
+
+        public async Task<MaterialTypeGroupOutboundDto> UpdateMaterialTypeGroup(int id, MaterialTypeGroupInboundDto materialTypeGroup)
         {
             var entity = _mapper.Map<MaterialTypeGroup>(materialTypeGroup);
             entity.Id = id;
-            return await UpdateRefData(entity);
+
+            var existingJoinEntities = _context.MaterialTypeGroupMaterialTypes.Where(x => x.MaterialTypeId == id).ToList();
+
+            foreach (var materialTypeId in materialTypeGroup.MaterialTypeIds)
+            {
+                var materialType = await _context.MaterialTypes.FindAsync(materialTypeId);
+                if(materialType is null)
+                {
+                    var e = new KeyNotFoundException();
+                    e.Data.Add(ExceptionData.KeyNotFound, nameof(materialTypeId));
+                    throw (e);
+                }
+
+                if (existingJoinEntities.FindIndex(y => y.MaterialTypeId == materialTypeId) > 0)
+                {
+                    entity.MaterialTypeGroupMaterialTypes.Add(new MaterialTypeGroupMaterialType
+                    { MaterialType = await _context.MaterialTypes.FindAsync(materialTypeId), MaterialTypeGroup = entity });
+                }
+            }
+            //we now need to check for any Join Entities which have been deleted in the client
+            foreach (var x in existingJoinEntities.Except(entity.MaterialTypeGroupMaterialTypes))
+            {
+                _context.Remove(x);
+            }
+            await UpdateRefData(entity);
+            return _mapper.Map<MaterialTypeGroupOutboundDto>(entity);
         }
 
         public async Task<bool> DeleteMaterialTypeGroup(int id)

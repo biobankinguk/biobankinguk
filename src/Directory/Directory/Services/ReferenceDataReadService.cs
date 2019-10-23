@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Common.Data;
 using Common.Data.ReferenceData;
+using Common.DTO;
 using Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +13,12 @@ namespace Directory.Services
     public class ReferenceDataReadService : IReferenceDataReadService
     {
         private readonly DirectoryContext _context;
+        private readonly IMapper _mapper;
 
-        public ReferenceDataReadService(DirectoryContext context)
+        public ReferenceDataReadService(DirectoryContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         #region AccessCondition
@@ -38,17 +42,33 @@ namespace Directory.Services
         #endregion
 
         #region AnnualStatistic
-       
-        public async Task<ICollection<AnnualStatistic>> ListAnnualStatistics()
-            => await _context.AnnualStatistics.ToListAsync();
+
+        public async Task<ICollection<AnnualStatisticOutboundDto>> ListAnnualStatistics()
+        {
+            var entities = await _context.AnnualStatistics.Include(a => a.AnnualStatisticGroup).ToListAsync();
+            return _mapper.Map<ICollection<AnnualStatisticOutboundDto>>(entities);
+        }
       
-        public async Task<AnnualStatistic> GetAnnualStatistic(int id)
-            => await _context.AnnualStatistics.FindAsync(id);
+        public async Task<AnnualStatisticOutboundDto> GetAnnualStatistic(int id)
+        {
+            var entity = await _context.AnnualStatistics.FindAsync(id);
+            return _mapper.Map<AnnualStatisticOutboundDto>(entity);
+        }
+
+        #endregion
+
+        #region AnnualStatisticGroup
+
+        public async Task<ICollection<AnnualStatisticGroup>> ListAnnualStatisticGroups()
+            => await _context.AnnualStatisticGroups.ToListAsync();
+
+        public async Task<AnnualStatisticGroup> GetAnnualStatisticGroup(int id)
+            => await _context.AnnualStatisticGroups.FindAsync(id);
 
         #endregion
 
         #region AssociatedDataProcurementTimeframe
-      
+
         public async Task<ICollection<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeframes()
             => await _context.AssociatedDataProcurementTimeframes.ToListAsync();
      
@@ -129,22 +149,34 @@ namespace Directory.Services
 
         #region County
 
-        //TODO replace with mapping to DTO  
-        public async Task<ICollection<County>> ListCounties()
-            => await _context.Counties.ToListAsync();
-     
-        public async Task<County> GetCounty(int id)
-            => await _context.Counties.FindAsync(id);
+        public async Task<ICollection<CountyOutboundDto>> ListCounties()
+        {
+            var counties = await _context.Counties.ToListAsync();
+            return _mapper.Map<List<CountyOutboundDto>>(counties);
+        }
+
+        public async Task<CountyOutboundDto> GetCounty(int id)
+        {
+            var county = await _context.Counties.FindAsync(id);
+            return _mapper.Map<CountyOutboundDto>(county);
+        }
 
         #endregion
 
         #region DonorCount
       
-        public async Task<ICollection<DonorCount>> ListDonorCounts()
-            => await _context.DonorCounts.ToListAsync();
+        public async Task<ICollection<DonorCountOutboundDto>> ListDonorCounts()
+        {
+            var donorCounts = await _context.DonorCounts.ToListAsync();
+            return _mapper.Map<List<DonorCountOutboundDto>>(donorCounts);
+        }
        
-        public async Task<DonorCount> GetDonorCount(int id)
-            => await _context.DonorCounts.FindAsync(id);
+        public async Task<DonorCountOutboundDto> GetDonorCount(int id)
+        {
+            var donorCount = await _context.DonorCounts.FindAsync(id);
+            return _mapper.Map<DonorCountOutboundDto>(donorCount);
+        }
+            
 
         #endregion
 
@@ -180,11 +212,19 @@ namespace Directory.Services
 
         #region MaterialType
         
-        public async Task<ICollection<MaterialType>> ListMaterialTypes()
-            => await _context.MaterialTypes.ToListAsync();
+        public async Task<ICollection<MaterialTypeOutboundDto>> ListMaterialTypes()
+        {
+            var entities = await _context.MaterialTypes.Include(x => x.MaterialTypeGroupMaterialTypes).ThenInclude(y => y.MaterialTypeGroup).ToListAsync();
+            var dtos = _mapper.Map<List<MaterialTypeOutboundDto>>(entities);
+            return dtos;
+        }
        
-        public async Task<MaterialType> GetMaterialType(int id)
-            => await _context.MaterialTypes.FindAsync(id);
+        public async Task<MaterialTypeOutboundDto> GetMaterialType(int id)
+        {
+            var entity = await _context.MaterialTypes.Include(x => x.MaterialTypeGroupMaterialTypes).ThenInclude(y => y.MaterialTypeGroup).SingleOrDefaultAsync(x => x.Id == id);
+            var dto = _mapper.Map<MaterialTypeOutboundDto>(entity);
+            return dto;
+        }
 
         #endregion
 
@@ -247,8 +287,6 @@ namespace Directory.Services
             => await _context.StorageTemperatures.FindAsync(id);
 
         #endregion
-
-
 
     }
 }

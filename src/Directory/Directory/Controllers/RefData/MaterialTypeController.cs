@@ -1,4 +1,5 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common.Constants;
+using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -24,13 +25,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Material Types")]
-        [SwaggerResponse(200, "All Material Types", typeof(List<MaterialType>))]
+        [SwaggerResponse(200, "All Material Types", typeof(List<MaterialTypeOutboundDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListMaterialTypes());
 
         [SwaggerOperation("Get a single Material Type by ID")]
-        [SwaggerResponse(200, "The Material Type with the requested ID.", typeof(MaterialType))]
+        [SwaggerResponse(200, "The Material Type with the requested ID.", typeof(MaterialTypeOutboundDto))]
         [SwaggerResponse(404, "No Material Type was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -46,12 +47,27 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Material Type was created", typeof(MaterialType))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto materialType)
+        public async Task<IActionResult> Post([FromBody] MaterialTypeInboundDto materialType)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            else if (materialType.MaterialTypeGroupIds.Count == 0)
+                return BadRequest("No values in MaterialTypeGroupIds have been provided.");
 
-            var createdMaterialType = await _writeService.CreateMaterialType(materialType);
+            var createdMaterialType = new MaterialTypeOutboundDto();
+
+            try
+            {
+                createdMaterialType = await _writeService.CreateMaterialType(materialType);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
+
             return CreatedAtAction("Get", new { id = createdMaterialType.Id }, createdMaterialType);
         }
 
@@ -59,15 +75,27 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Material Type was updated successfully.")]
         [SwaggerResponse(404, "No Material Type was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto materialType)
+        public async Task<IActionResult> Put(int id, [FromBody] MaterialTypeInboundDto materialType)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            else if (materialType.MaterialTypeGroupIds.Count == 0)
+                return BadRequest("No values in MaterialTypeGroupIds have been provided.");
 
             if (_readService.GetMaterialType(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateMaterialType(id, materialType);
+            try
+            {
+                await _writeService.UpdateMaterialType(id, materialType);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
 
             return NoContent();
         }
