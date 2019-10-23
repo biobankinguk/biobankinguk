@@ -1,4 +1,4 @@
-﻿namespace Common
+﻿namespace Common.Constants
 {
     public static class ExceptionData
     {

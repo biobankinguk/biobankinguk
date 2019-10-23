@@ -1,4 +1,4 @@
-﻿using Common;
+﻿using Common.Constants;
 using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;

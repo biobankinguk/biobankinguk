@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Common;
+using Common.Constants;
 using Common.Data;
 using Common.Data.ReferenceData;
 using Common.DTO;
