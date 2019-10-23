@@ -1,4 +1,5 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common;
+using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -51,7 +52,20 @@ namespace Directory.Controllers.RefData
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdCounty = await _writeService.CreateCounty(county);
+            var createdCounty = new County();
+
+            try
+            {
+                createdCounty = await _writeService.CreateCounty(county);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
+
             return CreatedAtAction("Get", new { id = createdCounty.Id }, createdCounty);
         }
 
@@ -67,7 +81,17 @@ namespace Directory.Controllers.RefData
             if (_readService.GetCounty(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateCounty(id, county);
+            try
+            {
+                await _writeService.UpdateCounty(id, county);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
 
             return NoContent();
         }

@@ -319,6 +319,14 @@ namespace Directory.Services
         {
             //get a country, assign to County
             var country = await _context.Countries.FindAsync(county.CountryId);
+
+            if (country is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(county.CountryId));
+                throw (e);
+            }
+
             var entity = _mapper.Map<County>(county);
             entity.Country = country;
 
@@ -329,6 +337,13 @@ namespace Directory.Services
         {
             //get a country, assign to County
             var country = await _context.Countries.FindAsync(county.CountryId);
+
+            if (country is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(county.CountryId));
+                throw (e);
+            }
 
             var entity = _mapper.Map<County>(county);
             entity.Id = id;
