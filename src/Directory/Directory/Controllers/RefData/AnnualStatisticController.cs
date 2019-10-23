@@ -1,9 +1,11 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common;
+using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -51,7 +53,20 @@ namespace Directory.Controllers.RefData
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdAnnualStatistic = await _writeService.CreateAnnualStatistic(annualStatistic);
+            var createdAnnualStatistic = new AnnualStatistic();
+
+            try
+            {
+                createdAnnualStatistic = await _writeService.CreateAnnualStatistic(annualStatistic);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
+
             return CreatedAtAction("Get", new { id = createdAnnualStatistic.Id }, createdAnnualStatistic);
         }
 
@@ -67,7 +82,17 @@ namespace Directory.Controllers.RefData
             if (_readService.GetAnnualStatistic(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateAnnualStatistic(id, annualStatistic);
+            try
+            {
+                await _writeService.UpdateAnnualStatistic(id, annualStatistic);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
 
             return NoContent();
         }

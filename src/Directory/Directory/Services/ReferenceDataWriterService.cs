@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Common;
 using Common.Data;
 using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -121,7 +123,17 @@ namespace Directory.Services
         public async Task<AnnualStatistic> CreateAnnualStatistic(AnnualStatisticInboundDto annualStatistic)
         {
             var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
-            entity.AnnualStatisticGroup = await _context.AnnualStatisticGroups.SingleOrDefaultAsync(x => x.Id == annualStatistic.AnnualStatisticGroupId);
+
+            var annualStatisticGroup = await _context.AnnualStatisticGroups.FindAsync(annualStatistic.AnnualStatisticGroupId);
+
+            if (annualStatisticGroup is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(annualStatistic.AnnualStatisticGroupId));
+                throw(e);
+            }
+
+            entity.AnnualStatisticGroup = annualStatisticGroup;         
             return await CreateRefData(entity);
         }
 
@@ -129,7 +141,16 @@ namespace Directory.Services
         {
             var entity = _mapper.Map<AnnualStatistic>(annualStatistic);
             entity.Id = id;
-            entity.AnnualStatisticGroup = await _context.AnnualStatisticGroups.SingleOrDefaultAsync(x => x.Id == annualStatistic.AnnualStatisticGroupId);
+            var annualStatisticGroup = await _context.AnnualStatisticGroups.FindAsync(annualStatistic.AnnualStatisticGroupId);
+
+            if (annualStatisticGroup is null)
+            {
+                var e = new KeyNotFoundException();
+                e.Data.Add(ExceptionData.KeyNotFound, nameof(annualStatistic.AnnualStatisticGroupId));
+                throw (e);
+            }
+
+            entity.AnnualStatisticGroup = annualStatisticGroup;
             return await UpdateRefData(entity);
         }
 
