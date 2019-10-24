@@ -1,10 +1,11 @@
 import React from "react";
 import Layout from "../../Shared/Layout";
+import RegisterForm from "../components/RegisterForm";
 
 const Register = () => {
   return (
     <Layout heading="Register">
-        <div>TODO: Registration form here</div>
+      <RegisterForm />
     </Layout>
   );
 };
