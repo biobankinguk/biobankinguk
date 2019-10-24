@@ -1,9 +1,9 @@
+import React from "react";
 import LoginForm from "../components/LoginForm";
 import Layout from "../../Shared/Layout";
 
 const Login = () => (
-  <Layout>
-    <h1>Login</h1>
+  <Layout heading="Login">
     <LoginForm />
   </Layout>
 );

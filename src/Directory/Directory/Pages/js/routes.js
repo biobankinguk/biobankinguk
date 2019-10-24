@@ -1,11 +1,13 @@
 ﻿import React from "react";
 import ReactDOM from "react-dom";
-import { ThemeProvider, CSSReset } from "@chakra-ui/core";
+import { ThemeProvider, CSSReset, theme } from "@chakra-ui/core";
+import ukcrcTheme from "../../../../theme/dist/theme";
+import merge from "lodash-es/merge";
+import { Global } from "@emotion/core";
 import Login from "../Account/pages/Login";
 import LoginRedirect from "../Account/pages/LoginRedirect";
 import ConfirmLogout from "../Account/pages/ConfirmLogout";
 import LogoutRedirect from "../Account/pages/LogoutRedirect";
-import theme from "../../../../theme/dist/theme";
 
 /*
  * Here we conditionally render small one page React apps
@@ -19,14 +21,25 @@ const routeComponents = {
   ["logout-redirect"]: <LogoutRedirect />
 };
 
+/*
+ * Below is where the actual React bootstrapping happens.
+ * It shouldn't need touching often
+ */
+
 const root = document.getElementById("react-app");
 
 if (root && root.dataset.route) {
   const { route } = root.dataset;
   if (routeComponents.hasOwnProperty(route)) {
+    merge(theme, ukcrcTheme);
     ReactDOM.render(
       <ThemeProvider theme={theme}>
         <CSSReset />
+        <Global
+          styles={{
+            body: { backgroundColor: theme.colors.defaultBackground }
+          }}
+        />
         {routeComponents[route]}
       </ThemeProvider>,
       document.getElementById("react-app")

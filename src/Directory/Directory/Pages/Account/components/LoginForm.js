@@ -1,7 +1,18 @@
 ﻿import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
 import valSchema from "./login-form-validation";
+import {
+  FormLabel,
+  FormControl,
+  Input,
+  FormErrorMessage,
+  Button,
+  Link,
+  Flex,
+  Box,
+  Stack
+} from "@chakra-ui/core";
 
 const LoginForm = () => {
   const aspForm = document.getElementById("asp-form");
@@ -26,22 +37,61 @@ const LoginForm = () => {
       validationSchema={valSchema}
       render={p => (
         <Form>
-          <label htmlFor="Username">Username</label>
-          <Field name="Username" />
-          <ErrorMessage name="Username" />
+          <Field name="Username">
+            {({ field, form }) => (
+              <FormControl
+                isRequired
+                isInvalid={form.errors.Username && form.touched.Username}
+              >
+                <FormLabel htmlFor="Username">Username</FormLabel>
+                <Input {...field} id="Username" placeholder="Username" />
+                <FormErrorMessage>{form.errors.Username}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Field>
 
-          <label htmlFor="password">Password</label>
-          <Field type="password" name="Password" />
-          <ErrorMessage name="Password" />
+          <Field name="Password">
+            {({ field, form }) => (
+              <FormControl
+                mt={3}
+                isRequired
+                isInvalid={form.errors.Password && form.touched.Password}
+              >
+                <FormLabel htmlFor="Password">Password</FormLabel>
+                <Input
+                  {...field}
+                  type="password"
+                  id="Password"
+                  placeholder="Password"
+                />
+                <FormErrorMessage>{form.errors.Password}</FormErrorMessage>
+              </FormControl>
+            )}
+          </Field>
 
-          <button type="submit" disabled={p.isSubmitting}>
-            Login
-          </button>
-          <button type="button" onClick={handleCancel}>
-            Cancel
-          </button>
+          <Flex justifyContent="space-between" mb={2} mt={3}>
+            <Button
+              width="2xs"
+              variantColor="primary"
+              type="submit"
+              disabled={p.isSubmitting}
+            >
+              Login
+            </Button>
+            <Button
+              variant="outline"
+              variantColor="dark"
+              width="2xs"
+              type="button"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+          </Flex>
 
-          <a href="#">Forgot password?</a>
+          <Link color="primary.500" href="#">
+            Forgot password?
+          </Link>
         </Form>
       )}
     />
