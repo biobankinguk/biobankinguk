@@ -52,23 +52,27 @@ The Directory Web Project contains two distinct frontend areas, which both have 
 
 These are fairly minimal server side pages in the ASP.NET Core App, used exclusively for **Identity** interactions that shouldn't be in an external client, such as IdentityProvider **Login** and **Logout** routes.
 
-These are Razor Pages, and they depend on a small frontend bundle, for which `npm` manages dependencies and tasks.
+They are Razor Pages, but they actually each bootstrap a small React app for the page, to allow for component reuse with the main frontend. As such, the javascript bundle containing the React apps needs building, which done by `npm`.
+
+There are two build tasks - `dev` and `build`.
+- `dev` should mostly be used for local development.
+- `build` does an optimised production build, which is used in CI when producing actual releases.
 
 #### In Visual Studio:
 
 1. **Configure External Tools** so your `PATH` version of `npm` is prioritised over VS's own.
 1. Install the **NPM Task Runner** extension.
 
-VS should now run the `build` task whenever you build the ASP.NET Core project.
+VS should now run the `dev` task whenever you build the ASP.NET Core project.
 
-> ℹ You can run the `build` task manually from **Task Runner Explorer** if you need to.
+> ℹ You can run the `dev` or `build` tasks manually from **Task Runner Explorer** if you need to.
 
 #### On the command line:
 
 In the same directory as `Directory.csproj`
 
 1. `npm i`
-1. `npm run build`
+1. `npm run dev`
 
 ### React Client App
 

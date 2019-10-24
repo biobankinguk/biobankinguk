@@ -15,10 +15,15 @@ The `src/` folder contains roughly project or app categorised folders, which als
 ## Directory structure:
 
 - `.azure/pipelines/` - Azure Pipelines configurations for conditionally building the different applications and libraries in the repo
-- `src/` - actual source code
-    - `Common/` - class libraries containing code shared between some or all of the other apps
-    - `Directory/` - the new Directory app (sometimes called "Core"; contains core functionality such as identity services)
-    - `Upload/` - the new Upload API (the Submission API and its process dependencies such as WebJobs)
+- `src/` - actual source code:
+
+| Folder | Description | `README` |
+| - | - | - |
+| `Common/` | Class libraries containing code shared between some or all of the other apps | |
+| `Directory/` | The new Directory app (sometimes called "Core"; contains core functionality such as identity services) | ✔ |
+| `Upload/` | The new Upload API (the Submission API and its process dependencies such as WebJobs) | |
+| `RefDataLoader/` | a console app for seeding a new **Directory** installation with initial Reference Data. | |
+| `theme/` | Shared Theme spec for use in any frontend projects. | ✔ |
 
 # Contribute
 

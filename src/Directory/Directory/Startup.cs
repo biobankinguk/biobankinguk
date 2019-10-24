@@ -39,6 +39,8 @@ namespace Directory
         {
             var defaultDb = _config.GetConnectionString("DefaultConnection");
 
+            services.AddResponseCompression();
+
             // ASP.NET Core Identity
             services.AddIdentityCore<DirectoryUser>()
                 .AddEntityFrameworkStores<DirectoryContext>()
@@ -107,6 +109,8 @@ namespace Directory
         /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             app.GnuTerryPratchett();
 
             if (env.IsDevelopment())

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Common.Data.Identity;
 using Directory.Auth.Identity;
 using Directory.Auth.IdentityServer;
-using Directory.Pages.Components.Redirect;
 using IdentityServer4.Events;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
@@ -46,6 +45,9 @@ namespace Directory.Pages.Account
         [Required]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
+
+        public string? Route { get; set; }
+        public string? RedirectUrl { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string? returnUrl = null)
         {
@@ -133,7 +135,9 @@ namespace Directory.Pages.Account
             {
                 // if the client is PKCE then we assume it's native, so this change in how to
                 // return the response is for better UX for the end user.
-                return ViewComponent("Redirect", new RedirectViewModel { RedirectUrl = url });
+                Route = "login-redirect";
+                RedirectUrl = url;
+                return Page();
             }
 
             // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null

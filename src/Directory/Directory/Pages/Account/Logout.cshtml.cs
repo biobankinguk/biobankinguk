@@ -29,6 +29,12 @@ namespace Directory.Pages.Account
         [BindProperty]
         public string? LogoutId { get; set; }
 
+        public string? PostLogoutRedirectUri { get; set; }
+        public string? ClientName { get; set; }
+        public string? SignOutIframeUrl { get; set; }
+
+        public string? Route { get; set; }
+
         public async Task<IActionResult> OnGet(string? logoutId = null)
         {
             LogoutId = logoutId;
@@ -71,13 +77,13 @@ namespace Directory.Pages.Account
 
             // Here's where we'd trigger external signouts if there were any
 
-            return ViewComponent("PostLogoutRedirect", new
-            {
-                clientName = GetClientName(logout),
-                redirectUri = logout?.PostLogoutRedirectUri,
-                iframeUrl = logout?.SignOutIFrameUrl,
-                logoutId = LogoutId
-            });
+            // Set Model props and return the Page
+            Route = "logout-redirect";
+            ClientName = GetClientName(logout);
+            PostLogoutRedirectUri = logout?.PostLogoutRedirectUri;
+            SignOutIframeUrl = logout?.SignOutIFrameUrl;
+
+            return Page();
         }
 
         private static string? GetClientName(LogoutRequest? logout)

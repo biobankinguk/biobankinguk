@@ -5,18 +5,24 @@
     ViewBag.Title = "Logout";
 }
 
-<h2>@ViewBag.Title</h2>
+@switch (Model.Route)
+{
+    case "logout-redirect":
+        <span id="react-data"
+              data-redirect-url="@Model.PostLogoutRedirectUri" 
+              data-client-name="@Model.ClientName">
+        </span>
 
-<div class="row justify-content-center mt-4">
+        <!-- Let the server render signout channel iframe as appropriate -->
+        @if (Model.SignOutIframeUrl is { })
+        {
+            <iframe width="0" height="0" style="display: none" src="@Model.SignOutIframeUrl"></iframe>
+        }
+        break;
+    default:
+        <!-- Asking Razor to render a form gives us a CSRF token and the Action route -->
+        <form id="asp-form" method="post"></form>
+        break;
+}
 
-        <div class="col-sm-6">
-            <p>Would you like to logout of the UKCRC Tissue Directory?</p>
-            <form method="post">
-                <input type="hidden" name="logoutId" value="@Model.LogoutId" />
-
-                <div class="form-group">
-                    <button class="btn btn-primary">Yes</button>
-                </div>
-            </form>
-        </div>
-    </div>
+<div id="react-app" data-route="@(Model.Route ?? "confirm-logout")"></div>
