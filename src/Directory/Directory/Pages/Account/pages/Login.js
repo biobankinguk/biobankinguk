@@ -8,7 +8,7 @@ const Login = () => {
   let valErrors = null;
   if (valSummary && valSummary.className.includes("validation-summary-errors"))
     valErrors = (
-      <Alert status="error" my={2} p={2}>
+      <Alert status="error" my={2} p={2} variant="left-accent">
         <AlertDescription
           dangerouslySetInnerHTML={{ __html: valSummary.innerHTML }}
         ></AlertDescription>

@@ -9,9 +9,7 @@ import {
   FormErrorMessage,
   Button,
   Link,
-  Flex,
-  Box,
-  Stack
+  Flex
 } from "@chakra-ui/core";
 
 const LoginForm = () => {
