@@ -123,7 +123,7 @@ namespace Directory.Pages.Account
                 ModelState.AddModelError(string.Empty, "Invalid username or password.");
             }
 
-            // Something went wrong // TODO: How to return this information to React?
+            // Something went wrong
             return Page();
         }
 
