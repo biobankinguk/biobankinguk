@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Normalize } from "styled-normalize";
+import Layout from "../../Shared/Layout";
+import { Alert, AlertTitle, Link, AlertDescription } from "@chakra-ui/core";
 
 const LogoutRedirect = () => {
   const { redirectUrl, clientName } = document.getElementById(
@@ -11,16 +12,17 @@ const LogoutRedirect = () => {
   });
 
   return (
-    <>
-      <Normalize />
-      <h1>You are now logged out.</h1>
-      {!!redirectUrl ? (
-        <div>
-          Click <a href={redirectUrl}>here</a> to return to the {clientName}{" "}
-          application.
-        </div>
-      ) : null}
-    </>
+    <Layout heading="Logout">
+      <Alert status="info" variant="left-accent" flexDirection="column">
+        <AlertTitle>You are now logged out.</AlertTitle>
+        {!!redirectUrl ? (
+          <AlertDescription>
+            Click <Link href={redirectUrl}>here</Link> to return to the{" "}
+            {clientName} application.
+          </AlertDescription>
+        ) : null}
+      </Alert>
+    </Layout>
   );
 };
 
