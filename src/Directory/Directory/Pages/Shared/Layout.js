@@ -1,10 +1,11 @@
 ﻿import React from "react";
-import { Normalize } from "styled-normalize";
+import { Box } from "@chakra-ui/core";
 
-const Layout = children => (
+const Layout = ({ children }) => (
   <>
-    <Normalize />
+    <Box>Navbar...</Box>
     {children}
+    <Box>Footer</Box>
   </>
 );
 

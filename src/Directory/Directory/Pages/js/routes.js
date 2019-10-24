@@ -1,9 +1,11 @@
 ﻿import React from "react";
 import ReactDOM from "react-dom";
+import { ThemeProvider, CSSReset } from "@chakra-ui/core";
 import Login from "../Account/pages/Login";
 import LoginRedirect from "../Account/pages/LoginRedirect";
 import ConfirmLogout from "../Account/pages/ConfirmLogout";
 import LogoutRedirect from "../Account/pages/LogoutRedirect";
+import theme from "../../../../theme/dist/theme";
 
 /*
  * Here we conditionally render small one page React apps
@@ -23,7 +25,10 @@ if (root && root.dataset.route) {
   const { route } = root.dataset;
   if (routeComponents.hasOwnProperty(route)) {
     ReactDOM.render(
-      <>{routeComponents[route]}</>,
+      <ThemeProvider theme={theme}>
+        <CSSReset />
+        {routeComponents[route]}
+      </ThemeProvider>,
       document.getElementById("react-app")
     );
   }

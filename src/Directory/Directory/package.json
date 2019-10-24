@@ -22,12 +22,17 @@
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
+    "@chakra-ui/core": "^0.4.1",
+    "@emotion/core": "^10.0.21",
+    "@emotion/styled": "^10.0.17",
+    "@extra-array/linspace": "^1.1.7",
+    "chroma-js": "^2.0.6",
+    "emotion-theming": "^10.0.19",
     "formik": "^1.5.8",
     "js-forms": "2.0.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "styled-components": "^4.4.0",
-    "styled-normalize": "^8.0.6",
+    "react-icons": "^3.7.0",
     "yup": "^0.27.0"
   },
   "-vs-binding": {
