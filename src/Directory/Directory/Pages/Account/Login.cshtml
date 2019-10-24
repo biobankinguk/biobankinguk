@@ -11,7 +11,13 @@
         break;
     default:
         <!-- Asking Razor to render a form gives us a CSRF token and the Action route -->
-        <form id="asp-form" method="post" data-username="@Model.Username"></form>
+        <form id="asp-form" method="post" data-username="@Model.Username">
+            <div
+                 id="asp-validation-summary"
+                 asp-validation-summary="ModelOnly"
+                 style="display: none">
+            </div>
+        </form>
         break;
 }
 
