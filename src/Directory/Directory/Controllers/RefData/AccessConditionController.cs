@@ -46,12 +46,12 @@ namespace Directory.Controllers
         [SwaggerResponse(201, "The Access Condition was created", typeof(AccessCondition))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto collectionPoint)
+        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto accessCondition)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdAccessCondition = await _writeService.CreateAccessCondition(collectionPoint);
+            var createdAccessCondition = await _writeService.CreateAccessCondition(accessCondition);
             return CreatedAtAction("Get", new { id = createdAccessCondition.Id }, createdAccessCondition);
         }
 
@@ -59,7 +59,7 @@ namespace Directory.Controllers
         [SwaggerResponse(204, "The Access Condition was updated successfully.")]
         [SwaggerResponse(404, "No Access Condition was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto collectionPoint)
+        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto accessCondition)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -67,7 +67,7 @@ namespace Directory.Controllers
             if (_readService.GetAccessCondition(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateAccessCondition(id, collectionPoint);
+            await _writeService.UpdateAccessCondition(id, accessCondition);
 
             return NoContent();
         }

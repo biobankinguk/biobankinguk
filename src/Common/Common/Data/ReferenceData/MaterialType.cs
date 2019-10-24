@@ -7,7 +7,6 @@ namespace Common.Data.ReferenceData
     /// </summary>
     public class MaterialType : SortedBaseReferenceDatum
     {
-
-        public virtual ICollection<MaterialTypeGroupMaterialType> MaterialTypeGroupMaterialTypes { get; set; } = null!;
+        public virtual List<MaterialTypeGroupMaterialType> MaterialTypeGroupMaterialTypes { get; set; } = new List<MaterialTypeGroupMaterialType>();
     }
 }

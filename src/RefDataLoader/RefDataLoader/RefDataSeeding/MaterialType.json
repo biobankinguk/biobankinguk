@@ -1,59 +1,61 @@
 [
-    {
-      "Value": "(Breast) Milk",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
-    {
-      "Value": "Amniotic Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
-    {
-      "Value": "Ascites Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
-    {
-      "Value": "Bile",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
-    {
-      "Value": "Body Cavity Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
-    {
-      "Value": "Bone BON",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
-      ]
-    },
-    {
-      "Value": "Bone marrow aspirate BMA",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
-    {
-      "Value": "Bone Marrow Plasma",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
-    {
-      "Value": "Bronchoalveolar lavage",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
-      ]
-    },
+  {
+    "Value": "(Breast) Milk",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
+  {
+    "Value": "Amniotic Fluid",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
+  {
+    "Value": "Ascites Fluid",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
+  {
+    "Value": "Bile",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
+  {
+    "Value": "Body Cavity Fluid",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
+  {
+    "Value": "Bone BON",
+    "MaterialTypeGroups": [
+      {
+        "GroupName": "Tissue Sample"
+      },
+      { "GroupName" : "Extracted Sample" }
+    ]
+  },
+  {
+    "Value": "Bone marrow aspirate BMA",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
+  {
+    "Value": "Bone Marrow Plasma",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
+  {
+    "Value": "Bronchoalveolar lavage",
+    "MaterialTypeGroups": [
+      { "GroupName": "Fluid Sample" }
+    ]
+  },
     {
       "Value": "Buffy coat"
     },
@@ -62,20 +64,20 @@
     },
     {
       "Value": "Cerebrospinal Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Cord blood",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Dental pulp PLP",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
@@ -83,35 +85,41 @@
     },
     {
       "Value": "Dried whole blood (e.g. Guthrie cards) DWB",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Embryo",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        { "GroupName" : "Tissue Sample" },
+        { "GroupName" : "Extracted Sample"}
       ]
     },
     {
       "Value": "Entire body organ",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        {
+          "GroupName": "Extracted Sample" 
+        }
       ]
     },
     {
       "Value": "Faeces",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName" : "Fluid Sample"}
       ]
     },
     {
       "Value": "Fetal tissue",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        { "GroupName": "Extracted Sample"}
       ]
     },
     {
@@ -122,21 +130,23 @@
     },
     {
       "Value": "Fastric Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Gastric Fluid Sample",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Hair",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        { "GroupName": "Extracted Sample"}
       ]
     },
     {
@@ -147,27 +157,29 @@
     },
     {
       "Value": "Menstrual blood",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Nail",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        { "GroupName": "Extracted Sample" }
       ]
     },
     {
       "Value": "Nasal washing NAS",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Pericardial Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
@@ -175,21 +187,23 @@
     },
     {
       "Value": "Placenta PLC",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        { "GroupName": "Extracted Sample"}
       ]
     },
     {
       "Value": "Plasma",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Pleural fluid PFL",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
@@ -206,33 +220,35 @@
     },
     {
       "Value": "Saliva",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Semen",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Serum",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample" }
       ]
     },
     {
       "Value": "Solid tissue TIS",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        { "GroupName" : "Extracted Sample"}
       ]
     },
     {
       "Value": "Sputum",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     },
     {
@@ -240,58 +256,62 @@
     },
     {
       "Value": "Sweat",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     },
     {
       "Value": "Synovial Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     },
     {
       "Value": "Tears",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     },
     {
       "Value": "Teeth TTH",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        { "GroupName": "Extracted Sample"}
       ]
     },
     {
       "Value": "Umbilical cord",
-      "MaterialTypeGroupNames": [
-        "Tissue Sample",
-        "Extracted Sample"
+      "MaterialTypeGroups": [
+        {
+          "GroupName": "Tissue Sample"
+        },
+        { "GroupName": "Extracted Sample" }
       ]
     },
     {
       "Value": "Urine",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     },
     {
       "Value": "Vitreous Fluid",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     },
     {
       "Value": "Whole blood",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     },
     {
       "Value": "Whole Bone Marrow",
-      "MaterialTypeGroupNames": [
-        "Fluid Sample"
+      "MaterialTypeGroups": [
+        { "GroupName": "Fluid Sample"}
       ]
     }
   ]

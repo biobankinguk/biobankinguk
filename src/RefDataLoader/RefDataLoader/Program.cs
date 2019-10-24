@@ -32,6 +32,8 @@ namespace RefDataLoader
             services.AddSingleton(_ => config);
             services.Configure<ApiSettings>(config.GetSection("ApiSettings"));
 
+            services.AddTransient<IDataService, DataService>();
+
             // Services
             services.AddHttpClient<IDataService, DataService>(client =>
             {
@@ -40,7 +42,7 @@ namespace RefDataLoader
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
-            services.AddTransient<IDataService, DataService>();
+            
 
             return services.BuildServiceProvider();
         }

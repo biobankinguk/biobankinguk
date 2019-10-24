@@ -1,4 +1,5 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common.Constants;
+using Common.Data.ReferenceData;
 using Common.DTO;
 using Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -24,13 +25,13 @@ namespace Directory.Controllers.RefData
         }
 
         [SwaggerOperation("List of all Donor Counts")]
-        [SwaggerResponse(200, "All Donor Counts", typeof(List<DonorCount>))]
+        [SwaggerResponse(200, "All Donor Counts", typeof(List<DonorCountOutboundDto>))]
         [HttpGet]
         public async Task<IActionResult> Index()
            => Ok(await _readService.ListDonorCounts());
 
         [SwaggerOperation("Get a single Donor Count by ID")]
-        [SwaggerResponse(200, "The Donor Count with the requested ID.", typeof(DonorCount))]
+        [SwaggerResponse(200, "The Donor Count with the requested ID.", typeof(DonorCountOutboundDto))]
         [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -46,12 +47,25 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(201, "The Donor Count was created", typeof(DonorCount))]
         [SwaggerResponse(400, "The data is invalid")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SortedRefDataBaseDto donorCount)
+        public async Task<IActionResult> Post([FromBody] DonorCountInboundDto donorCount)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdDonorCount = await _writeService.CreateDonorCount(donorCount);
+            var createdDonorCount = new DonorCountOutboundDto();
+
+            try
+            {
+                createdDonorCount = await _writeService.CreateDonorCount(donorCount);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
+
             return CreatedAtAction("Get", new { id = createdDonorCount.Id }, createdDonorCount);
         }
 
@@ -59,7 +73,7 @@ namespace Directory.Controllers.RefData
         [SwaggerResponse(204, "The Donor Count was updated successfully.")]
         [SwaggerResponse(404, "No Donor Count was found with the provided ID.")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] SortedRefDataBaseDto donorCount)
+        public async Task<IActionResult> Put(int id, [FromBody] DonorCountInboundDto donorCount)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -67,7 +81,17 @@ namespace Directory.Controllers.RefData
             if (_readService.GetDonorCount(id) is null)
                 return NotFound();
 
-            await _writeService.UpdateDonorCount(id, donorCount);
+            try
+            {
+                await _writeService.UpdateDonorCount(id, donorCount);
+            }
+            catch (KeyNotFoundException e)
+            {
+                if (e.Data.Contains(ExceptionData.KeyNotFound))
+                {
+                    return UnprocessableEntity(e.Data[ExceptionData.KeyNotFound]);
+                }
+            }
 
             return NoContent();
         }
