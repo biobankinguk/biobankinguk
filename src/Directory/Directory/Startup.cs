@@ -8,6 +8,7 @@ using Common.Data.Identity;
 using Common.MappingProfiles;
 using Directory.Auth;
 using Directory.Auth.Identity;
+using Directory.Config;
 using Directory.Contracts;
 using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -86,6 +87,7 @@ namespace Directory
             // Service layer
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
+            services.AddTransient<IEmailSender, LocalDiskEmailSender>();
 
             // Swagger
             services.AddSwaggerGen(c =>
@@ -98,9 +100,11 @@ namespace Directory
             services.AddAutoMapper(typeof(RefDataBaseDtoProfile));
 
             // Configuration
-            services.Configure<IdentityOptions>(_config.GetSection("IdentityOptions"))
+            services.Configure<IdentityOptions>(_config.GetSection("Identity"))
                 .Configure<DataProtectionTokenProviderOptions>(options =>
                     options.TokenLifespan = TimeSpan.FromDays(5));
+
+            services.Configure<LocalMailOptions>(_config.GetSection("OutboundEmail"));
         }
 
         /// <summary>
