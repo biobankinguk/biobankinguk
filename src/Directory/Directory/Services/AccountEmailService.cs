@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Directory.Pages.Emails;
+using Directory.Views.Emails;
 
 namespace Directory.Services
 {

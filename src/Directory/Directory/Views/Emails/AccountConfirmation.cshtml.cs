@@ -1,4 +1,4 @@
-namespace Directory.Pages.Emails
+namespace Directory.Views.Emails
 {
     public class AccountConfirmationModel
     {
