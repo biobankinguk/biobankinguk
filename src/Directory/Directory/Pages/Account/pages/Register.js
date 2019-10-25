@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "../../Shared/Layout";
 import RegisterForm from "../components/RegisterForm";
 import WrongFormAlert from "../components/WrongFormAlert";
+import AspValidationSummary from "../components/AspValidationSummary";
 
 const Register = () => {
   return (
@@ -9,9 +10,10 @@ const Register = () => {
       <WrongFormAlert
         text="Already have an account?"
         linkText="Log in"
-        href="Login"
+        href="/auth/login"
       />
 
+      <AspValidationSummary />
       <RegisterForm />
     </Layout>
   );

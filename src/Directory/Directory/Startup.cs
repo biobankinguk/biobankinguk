@@ -48,10 +48,6 @@ namespace Directory
                 .AddUserManager<DirectoryUserManager>()
                 .AddSignInManager<SignInManager<DirectoryUser>>();
 
-            services.Configure<IdentityOptions>(_config)
-                .Configure<DataProtectionTokenProviderOptions>(options =>
-                    options.TokenLifespan = TimeSpan.FromDays(5));
-
             // Identity Server
             services.AddIdentityServer()
                 .AddConfigurationStore<DirectoryContext>(opts =>
@@ -100,6 +96,11 @@ namespace Directory
 
             // Other third party
             services.AddAutoMapper(typeof(RefDataBaseDtoProfile));
+
+            // Configuration
+            services.Configure<IdentityOptions>(_config.GetSection("IdentityOptions"))
+                .Configure<DataProtectionTokenProviderOptions>(options =>
+                    options.TokenLifespan = TimeSpan.FromDays(5));
         }
 
         /// <summary>

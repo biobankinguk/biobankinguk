@@ -4,10 +4,13 @@ import { postObjectAsFormData, constants } from "js-forms";
 import { Button, Stack, Box } from "@chakra-ui/core";
 import valSchema from "./register-form-validation";
 import CommonFormikInput from "./CommonFormikInput";
+import { useAspValidationSummary } from "./AspValidationSummary";
 
 const RegisterForm = () => {
   const aspForm = document.getElementById("asp-form");
   const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
+
+  const { hasErrors } = useAspValidationSummary();
 
   const handleSubmit = (values, actions) => {
     postObjectAsFormData(aspForm.action, {
@@ -62,7 +65,7 @@ const RegisterForm = () => {
               </Field>
             </Box>
 
-            <Box hidden={!touched.Email}>
+            <Box hidden={!(touched.Email || hasErrors)}>
               <Field name="EmailConfirm">
                 {rp => (
                   <CommonFormikInput
@@ -89,7 +92,7 @@ const RegisterForm = () => {
               </Field>
             </Box>
 
-            <Box hidden={!touched.Password}>
+            <Box hidden={!(touched.Password || hasErrors)}>
               <Field name="PasswordConfirm">
                 {rp => (
                   <CommonFormikInput

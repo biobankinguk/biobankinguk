@@ -7,12 +7,29 @@ import {
   AlertDescription
 } from "@chakra-ui/core";
 
+export const defaultElementId = "asp-validation-summary";
+export const defaultErrorClass = "validation-summary-errors";
+
+export const useAspValidationSummary = (
+  elementId = defaultElementId,
+  errorClass = defaultErrorClass
+) => {
+  const element = document.getElementById(elementId);
+  const hasErrors = element && element.className.includes(errorClass);
+  const summaryHTML = element ? element.innerHTML : null;
+  return { element, summaryHTML, hasErrors };
+};
+
 const AspValidationSummary = ({
-  elementId = "asp-validation-summary",
-  errorClass = "validation-summary-errors"
+  elementId = defaultElementId,
+  errorClass = defaultErrorClass
 }) => {
-  const valSummary = document.getElementById(elementId);
-  if (valSummary && valSummary.className.includes(errorClass))
+  const { hasErrors, summaryHTML } = useAspValidationSummary(
+    elementId,
+    errorClass
+  );
+
+  if (hasErrors)
     return (
       <Alert
         status="error"
@@ -28,7 +45,7 @@ const AspValidationSummary = ({
           </AlertTitle>
         </Flex>
         <AlertDescription
-          dangerouslySetInnerHTML={{ __html: valSummary.innerHTML }}
+          dangerouslySetInnerHTML={{ __html: summaryHTML }}
         ></AlertDescription>
       </Alert>
     );
