@@ -1,28 +1,24 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
+import { Button, Stack, Box } from "@chakra-ui/core";
 import valSchema from "./register-form-validation";
-import {
-  FormLabel,
-  FormControl,
-  Input,
-  FormErrorMessage,
-  Button,
-  Link,
-  Flex,
-  Box
-} from "@chakra-ui/core";
+import CommonFormikInput from "./CommonFormikInput";
 
 const RegisterForm = () => {
   const aspForm = document.getElementById("asp-form");
   const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
 
-  const post = values => {
+  const handleSubmit = (values, actions) => {
     postObjectAsFormData(aspForm.action, {
       ...values,
       [constants.aspNetCoreCsrf]: csrfToken
     });
+    actions.setSubmitting(false);
   };
+
+  const touch = ({ form: { setFieldTouched }, field: { name } }) => () =>
+    setFieldTouched(name, true, false);
 
   return (
     <Formik
@@ -33,122 +29,92 @@ const RegisterForm = () => {
         Password: "",
         PasswordConfirm: ""
       }}
-      onSubmit={(values, actions) => {
-        loginPost({ ...values, button: "login" });
-        actions.setSubmitting(false);
-      }}
+      onSubmit={handleSubmit}
       validationSchema={valSchema}
-      render={p => (
-        <Form>
-          <Field name="FullName">
-            {({ field, form }) => (
-              <FormControl
-                isRequired
-                isInvalid={form.errors.FullName && form.touched.FullName}
-              >
-                <FormLabel htmlFor="FullName">Name</FormLabel>
-                <Input {...field} id="FullName" placeholder="John Smith" />
-                <FormErrorMessage>{form.errors.FullName}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
+    >
+      {({ touched, isSubmitting }) => (
+        <Form noValidate>
+          <Stack spacing={3} my={3}>
+            <Box>
+              <Field name="FullName">
+                {rp => (
+                  <CommonFormikInput
+                    {...rp}
+                    label="Name"
+                    placeholder="John Smith"
+                    isRequired
+                  />
+                )}
+              </Field>
+            </Box>
 
-          <Field name="Email">
-            {({ field, form }) => (
-              <FormControl
-                isRequired
-                isInvalid={form.errors.Email && form.touched.Email}
-              >
-                <FormLabel htmlFor="Email">Email Address</FormLabel>
-                <Input
-                  {...field}
-                  id="Email"
-                  placeholder="john.smith@example.com"
-                />
-                <FormErrorMessage>{form.errors.Email}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
+            <Box>
+              <Field name="Email">
+                {rp => (
+                  <CommonFormikInput
+                    {...rp}
+                    label="Email Address"
+                    placeholder="john.smith@example.com"
+                    isRequired
+                    onFocus={touch(rp)}
+                  />
+                )}
+              </Field>
+            </Box>
 
-          <Field name="EmailConfirm">
-            {({ field, form }) => (
-              <FormControl
-                isRequired
-                isInvalid={
-                  form.errors.EmailConfirm && form.touched.EmailConfirm
-                }
-              >
-                <FormLabel htmlFor="EmailConfirm">
-                  Confirm Email Address
-                </FormLabel>
-                <Input
-                  {...field}
-                  id="EmailConfirm"
-                  placeholder="john.smith@example.com"
-                />
-                <FormErrorMessage>{form.errors.EmailConfirm}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
+            <Box hidden={!touched.Email}>
+              <Field name="EmailConfirm">
+                {rp => (
+                  <CommonFormikInput
+                    {...rp}
+                    label="Confirm Email Address"
+                    placeholder="john.smith@example.com"
+                    isRequired
+                  />
+                )}
+              </Field>
+            </Box>
+            <Box>
+              <Field name="Password">
+                {rp => (
+                  <CommonFormikInput
+                    {...rp}
+                    label={rp.field.name}
+                    placeholder={rp.field.name}
+                    isRequired
+                    isPassword
+                    onFocus={touch(rp)}
+                  />
+                )}
+              </Field>
+            </Box>
 
-          <Field name="Password">
-            {({ field, form }) => (
-              <FormControl
-                mt={3}
-                isRequired
-                isInvalid={form.errors.Password && form.touched.Password}
-              >
-                <FormLabel htmlFor="Password">Password</FormLabel>
-                <Input
-                  {...field}
-                  type="password"
-                  id="Password"
-                  placeholder="Password"
-                />
-                <FormErrorMessage>{form.errors.Password}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
+            <Box hidden={!touched.Password}>
+              <Field name="PasswordConfirm">
+                {rp => (
+                  <CommonFormikInput
+                    {...rp}
+                    label="Confirm Password"
+                    placeholder="Password"
+                    isRequired
+                    isPassword
+                  />
+                )}
+              </Field>
+            </Box>
 
-          <Field name="PasswordConfirm">
-            {({ field, form }) => (
-              <FormControl
-                mt={3}
-                isRequired
-                isInvalid={form.errors.PasswordConfirm && form.touched.PasswordConfirm}
-              >
-                <FormLabel htmlFor="PasswordConfirm">Confirm Password</FormLabel>
-                <Input
-                  {...field}
-                  type="password"
-                  id="PasswordConfirm"
-                  placeholder="Confirm Password"
-                />
-                <FormErrorMessage>{form.errors.PasswordConfirm}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
-
-          <Button
-            mb={2}
-            mt={3}
-            width="2xs"
-            variantColor="primary"
-            type="submit"
-            disabled={p.isSubmitting}
-          >
-            Register
-          </Button>
-
-          <Box>
-            Already a user?
-            <Link color="primary.500" href="#">
-              Log in
-            </Link>
-          </Box>
+            <Button
+              width="2xs"
+              variantColor="primary"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              Register
+            </Button>
+          </Stack>
         </Form>
       )}
-    />
+    </Formik>
   );
 };
 
