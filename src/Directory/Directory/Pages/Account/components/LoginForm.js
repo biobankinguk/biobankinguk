@@ -1,98 +1,86 @@
 ﻿import React from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
+import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "./login-form-validation";
-import {
-  FormLabel,
-  FormControl,
-  Input,
-  FormErrorMessage,
-  Button,
-  Link,
-  Flex
-} from "@chakra-ui/core";
+import CommonFormikInput from "./CommonFormikInput";
 
 const LoginForm = () => {
   const aspForm = document.getElementById("asp-form");
   const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
 
-  const loginPost = values => {
+  const post = values => {
     postObjectAsFormData(aspForm.action, {
       ...values,
       [constants.aspNetCoreCsrf]: csrfToken
     });
   };
 
-  const handleCancel = () => loginPost({ button: "" });
+  const handleCancel = () => post({ button: "" });
+  const handleSubmit = (values, actions) => {
+    post({ ...values, button: "login" });
+    actions.setSubmitting(false);
+  };
 
   return (
     <Formik
       initialValues={{ Username: aspForm.dataset.username, Password: "" }}
-      onSubmit={(values, actions) => {
-        loginPost({ ...values, button: "login" });
-        actions.setSubmitting(false);
-      }}
+      onSubmit={handleSubmit}
       validationSchema={valSchema}
-      render={p => (
-        <Form>
-          <Field name="Username">
-            {({ field, form }) => (
-              <FormControl
-                isRequired
-                isInvalid={form.errors.Username && form.touched.Username}
+    >
+      {({ isSubmitting }) => (
+        <Form noValidate>
+          <Stack spacing={3} my={3}>
+            <Box>
+              <Field name="Username">
+                {rp => (
+                  <CommonFormikInput
+                    {...rp}
+                    label="Email Address"
+                    placeholder="john.smith@example.com"
+                    isRequired
+                  />
+                )}
+              </Field>
+            </Box>
+
+            <Box>
+              <Field name="Password">
+                {rp => (
+                  <CommonFormikInput
+                    {...rp}
+                    label={rp.field.name}
+                    placeholder={rp.field.name}
+                    isRequired
+                    isPassword
+                  />
+                )}
+              </Field>
+            </Box>
+
+            <Flex justifyContent="space-between">
+              <Button
+                width="2xs"
+                variantColor="primary"
+                type="submit"
+                disabled={isSubmitting}
               >
-                <FormLabel htmlFor="Username">Username</FormLabel>
-                <Input {...field} id="Username" placeholder="Username" />
-                <FormErrorMessage>{form.errors.Username}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
-
-          <Field name="Password">
-            {({ field, form }) => (
-              <FormControl
-                mt={3}
-                isRequired
-                isInvalid={form.errors.Password && form.touched.Password}
+                Login
+              </Button>
+              <Button
+                variant="outline"
+                variantColor="dark"
+                width="2xs"
+                type="button"
+                onClick={handleCancel}
               >
-                <FormLabel htmlFor="Password">Password</FormLabel>
-                <Input
-                  {...field}
-                  type="password"
-                  id="Password"
-                  placeholder="Password"
-                />
-                <FormErrorMessage>{form.errors.Password}</FormErrorMessage>
-              </FormControl>
-            )}
-          </Field>
-
-          <Flex justifyContent="space-between" mb={2} mt={3}>
-            <Button
-              width="2xs"
-              variantColor="primary"
-              type="submit"
-              disabled={p.isSubmitting}
-            >
-              Login
-            </Button>
-            <Button
-              variant="outline"
-              variantColor="dark"
-              width="2xs"
-              type="button"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-          </Flex>
-
-          <Link color="primary.500" href="#">
-            Forgot password?
-          </Link>
+                Cancel
+              </Button>
+            </Flex>
+          </Stack>
         </Form>
       )}
-    />
+    </Formik>
   );
 };
 
