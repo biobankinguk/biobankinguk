@@ -5,7 +5,7 @@ export default object().shape({
   Username: string()
     .test(
       "valid-username",
-      "Invalid email",
+      "Please enter a valid email address.",
       v =>
         string()
           .email()
@@ -14,6 +14,6 @@ export default object().shape({
           .matches(/@localhost$/)
           .isValidSync(v)
     )
-    .required("Required"),
-  Password: string().required("Required")
+    .required("Please enter your account email address."),
+  Password: string().required("Please enter your account password.")
 });

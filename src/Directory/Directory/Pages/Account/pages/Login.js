@@ -1,25 +1,32 @@
 import React from "react";
-import LoginForm from "../components/LoginForm";
+import {
+  Flex,
+  Alert,
+  AlertDescription,
+  Link,
+  AlertIcon
+} from "@chakra-ui/core";
 import Layout from "../../Shared/Layout";
-import { Flex, Alert, AlertDescription } from "@chakra-ui/core";
+import LoginForm from "../components/LoginForm";
+import AspValidationSummary from "../components/AspValidationSummary";
+import WrongFormAlert from "../components/WrongFormAlert";
 
 const Login = () => {
-  const valSummary = document.getElementById("asp-validation-summary");
-  let valErrors = null;
-  if (valSummary && valSummary.className.includes("validation-summary-errors"))
-    valErrors = (
-      <Alert status="error" my={2} p={2} variant="left-accent">
-        <AlertDescription
-          dangerouslySetInnerHTML={{ __html: valSummary.innerHTML }}
-        ></AlertDescription>
-      </Alert>
-    );
-
   return (
     <Layout heading="Login">
       <Flex flexDirection="column">
-        {valErrors}
+        <WrongFormAlert
+          text="Don't have an account?"
+          linkText="Register one"
+          href="Register"
+        />
+
+        <AspValidationSummary />
         <LoginForm />
+
+        <Link color="primary.500" href="#">
+          Forgot password?
+        </Link>
       </Flex>
     </Layout>
   );
