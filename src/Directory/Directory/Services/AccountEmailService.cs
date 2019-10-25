@@ -17,6 +17,7 @@ namespace Directory.Services
                 to,
                 "UKCRC Tissue Directory Account Confirmation",
                 "Emails/AccountConfirmation",
-                new AccountConfirmationModel(name, confirmLink));
+                new AccountConfirmationModel(name, confirmLink),
+                name);
     }
 }

@@ -41,7 +41,16 @@ namespace Directory.Services
 
             await message.WriteToAsync(
                 Path.Combine(_config.LocalPath,
-                $"{nameof(model).Replace("Model", "")}_{toName ?? toAddress}_{DateTimeOffset.UtcNow}.eml"));
+                    MessageFileName(viewName, toAddress)));
         }
+
+        private static string ShortViewName(string viewName)
+            => viewName[(viewName.LastIndexOf('/') + 1)..];
+
+        private static string SafeIsoDate(DateTimeOffset date)
+            => date.ToString("o").Replace(":", "-");
+
+        private static string MessageFileName(string viewName, string recipient)
+            => $"{ShortViewName(viewName)}_{recipient}_{SafeIsoDate(DateTimeOffset.UtcNow)}.eml";
     }
 }

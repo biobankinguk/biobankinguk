@@ -2,6 +2,6 @@
 {
     public class LocalMailOptions : EmailSenderOptions
     {
-        public string LocalPath { get; set; } = "C:\\temp";
+        public string LocalPath { get; set; } = "/temp";
     }
 }

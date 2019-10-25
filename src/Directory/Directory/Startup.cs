@@ -172,6 +172,10 @@ namespace Directory
                 services.GetRequiredService<DirectoryUserManager>(),
                 services.GetRequiredService<IPasswordHasher<DirectoryUser>>(),
                 config);
+
+            // send an email for funs
+            await services.GetRequiredService<AccountEmailService>()
+                .SendAccountConfirmation("test@test.com", "Mr Test", "http://google.com");
         }
     }
 }
