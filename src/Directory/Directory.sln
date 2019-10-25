@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Directory", "Directory\Dire
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\Common\Common\Common.csproj", "{7F5613CC-314C-4FEA-9311-ABD73D6024D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcPoc", "MvcPoc\MvcPoc.csproj", "{141C3AFF-27F7-4A4C-A991-DA0772D75B6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvcPoc", "MvcPoc\MvcPoc.csproj", "{141C3AFF-27F7-4A4C-A991-DA0772D75B6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -8,6 +8,7 @@ using Common.Data.Identity;
 using Common.MappingProfiles;
 using Directory.Auth;
 using Directory.Auth.Identity;
+using Directory.Config;
 using Directory.Contracts;
 using Directory.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using UoN.AspNetCore.RazorViewRenderer;
 
 namespace Directory
 {
@@ -83,10 +85,6 @@ namespace Directory
                 .UseLazyLoadingProxies()
                 .UseSqlServer(defaultDb));
 
-            // Service layer
-            services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
-            services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
-
             // Swagger
             services.AddSwaggerGen(c =>
             {
@@ -97,10 +95,19 @@ namespace Directory
             // Other third party
             services.AddAutoMapper(typeof(RefDataBaseDtoProfile));
 
+            // Service layer
+            services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
+            services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
+            services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
+            services.AddTransient<IEmailSender, LocalDiskEmailSender>();
+            services.AddTransient<AccountEmailService>();
+
             // Configuration
-            services.Configure<IdentityOptions>(_config.GetSection("IdentityOptions"))
+            services.Configure<IdentityOptions>(_config.GetSection("Identity"))
                 .Configure<DataProtectionTokenProviderOptions>(options =>
                     options.TokenLifespan = TimeSpan.FromDays(5));
+
+            services.Configure<LocalMailOptions>(_config.GetSection("OutboundEmail"));
         }
 
         /// <summary>
