@@ -1,0 +1,12 @@
+﻿@model Directory.Pages.Emails.AccountConfirmationModel
+
+Dear @Html.Raw(Model.Name)
+
+We received a request to resend your account confirmation link.
+
+Please use this link below to complete registration and set your password:
+
+@Html.Raw(Model.ConfirmLink)
+
+Regards,
+UKCRC Tissue Directory and Coordination Centre

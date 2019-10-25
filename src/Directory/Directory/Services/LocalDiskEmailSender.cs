@@ -19,7 +19,8 @@ namespace Directory.Services
             FromAddress = _config.FromAddress;
         }
 
-        public Task SendEmail<TModel>(string toAddress, string subject, string viewName, TModel model)
+        /// <inheritdoc />
+        public async Task SendEmail<TModel>(string toAddress, string subject, string viewName, TModel model)
         {
             throw new NotImplementedException();
         }
