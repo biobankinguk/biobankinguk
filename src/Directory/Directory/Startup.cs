@@ -101,6 +101,7 @@ namespace Directory
             services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
             services.AddTransient<IEmailSender, LocalDiskEmailSender>();
             services.AddTransient<AccountEmailService>();
+            services.AddTransient<TokenLoggingService>();
 
             // Configuration
             services.Configure<IdentityOptions>(_config.GetSection("Identity"))

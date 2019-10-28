@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Data.Identity;
 using Directory.Auth.Identity;
-using Microsoft.AspNetCore.Identity;
+using Directory.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
@@ -13,10 +13,12 @@ namespace Directory.Pages.Account
     public class RegisterModel : PageModel
     {
         private readonly DirectoryUserManager _users;
+        private readonly TokenLoggingService _tokenLog;
 
-        public RegisterModel(DirectoryUserManager users)
+        public RegisterModel(DirectoryUserManager users, TokenLoggingService tokenLog)
         {
             _users = users;
+            _tokenLog = tokenLog;
         }
 
         public string? Route { get; set; }
@@ -77,6 +79,8 @@ namespace Directory.Pages.Account
                         pageHandler: null,
                         values: new { userId = user.Id, code },
                         protocol: Request.Scheme);
+
+                    await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
 
                     // TODO: Send confirmation email
 
