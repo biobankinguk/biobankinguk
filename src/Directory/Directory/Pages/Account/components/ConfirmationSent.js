@@ -28,8 +28,7 @@ const ConfirmationSent = () => (
         <AlertTitle>Haven't received a link in your email?</AlertTitle>
       </Flex>
       <AlertDescription flexDirection="column" textAlign="center">
-        <Link color="primary.500" href="/auth/login">
-          {/* TODO: resend link */}
+        <Link color="primary.500" href="/Account/Confirm/Resend">
           Click here to resend it
         </Link>
         <Box>

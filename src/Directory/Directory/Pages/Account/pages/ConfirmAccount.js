@@ -33,8 +33,7 @@ const ConfirmAccount = () => {
           </Text>
           <Box mt={3}>
             You can{" "}
-            <Link color="primary.500" href="/auth/login">
-              {/* TODO: resend link */}
+            <Link color="primary.500" href="/Account/Confirm/Resend">
               resend your confirmation link,
             </Link>
           </Box>
@@ -64,7 +63,7 @@ const ConfirmAccount = () => {
             complete.
           </Text>
           <Box mt={3}>
-            <Link color="primary.500" href="/">
+            <Link color="primary.500" href="/auth/login">
               Return home
             </Link>
           </Box>
