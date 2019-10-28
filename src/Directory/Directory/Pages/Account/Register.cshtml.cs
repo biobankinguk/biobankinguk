@@ -14,11 +14,16 @@ namespace Directory.Pages.Account
     {
         private readonly DirectoryUserManager _users;
         private readonly TokenLoggingService _tokenLog;
+        private readonly AccountEmailService _accountEmail;
 
-        public RegisterModel(DirectoryUserManager users, TokenLoggingService tokenLog)
+        public RegisterModel(
+            DirectoryUserManager users,
+            TokenLoggingService tokenLog,
+            AccountEmailService _accountEmail)
         {
             _users = users;
             _tokenLog = tokenLog;
+            this._accountEmail = _accountEmail;
         }
 
         public string? Route { get; set; }
@@ -82,7 +87,10 @@ namespace Directory.Pages.Account
 
                     await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
 
-                    // TODO: Send confirmation email
+                    await _accountEmail.SendAccountConfirmation(
+                        user.Email!, // [Required]
+                        user.Name,
+                        confirmLink);
 
                     Route = "register-result";
                 }
