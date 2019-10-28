@@ -53,8 +53,6 @@ namespace Directory.Pages.Account
         [DataType(DataType.Password)]
         public string? PasswordConfirm { get; set; }
 
-        public void OnGet() => Page();
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid) // Perform additional Model validation
