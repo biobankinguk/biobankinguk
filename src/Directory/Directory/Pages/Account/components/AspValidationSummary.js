@@ -41,7 +41,7 @@ const AspValidationSummary = ({
         <Flex alignItems="center">
           <AlertIcon />
           <AlertTitle>
-            There were some errors with the form submission
+            There were some errors with your request
           </AlertTitle>
         </Flex>
         <AlertDescription

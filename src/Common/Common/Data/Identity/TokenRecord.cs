@@ -19,6 +19,7 @@ namespace Common.Data.Identity
         public string UserId { get; set; }
 
         public string EventType { get; set; }
+        public string? Details { get; set; }
         public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
     }
 }

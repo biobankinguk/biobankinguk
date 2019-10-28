@@ -21,10 +21,8 @@ const RegisterResult = () => {
           <AlertTitle>Almost there!</AlertTitle>
         </Flex>
         <AlertDescription textAlign="center">
-          <Text>
-            To complete your registration, please confirm your email address by
-            clicking the link we've emailed you.
-          </Text>
+          To complete your registration, please confirm your email address by
+          clicking the link we've emailed you.
         </AlertDescription>
       </Alert>
       <Alert status="info" variant="left-accent" flexDirection="column">
