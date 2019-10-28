@@ -9,7 +9,7 @@ namespace Common.Data.Identity
             Purpose = purpose;
             Token = token;
             UserId = userId;
-            Event = eventType;
+            EventType = eventType;
         }
 
         public int Id { get; set; }
@@ -18,7 +18,7 @@ namespace Common.Data.Identity
         public string Purpose { get; set; }
         public string UserId { get; set; }
 
-        public string Event { get; set; }
+        public string EventType { get; set; }
         public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
     }
 }
