@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{handler?}"
 @model Directory.Pages.Account.ConfirmModel
 
 <div id="asp-validation-summary"
@@ -6,4 +6,4 @@
      style="display: none">
 </div>
 
-<div id="react-app" data-route="confirm"></div>
+<div id="react-app" data-route="@Model.Route"></div>

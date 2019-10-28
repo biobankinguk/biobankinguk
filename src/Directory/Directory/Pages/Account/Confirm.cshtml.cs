@@ -15,21 +15,26 @@ namespace Directory.Pages.Account
 {
     public class ConfirmModel : PageModel
     {
+        public string Route { get; set; } = "confirm";
+
         private readonly DirectoryUserManager _users;
         private readonly TokenLoggingService _tokenLog;
         private readonly IConfiguration _config;
         private readonly SignInManager<DirectoryUser> _signIn;
+        private readonly AccountEmailService _accountEmail;
 
         public ConfirmModel(
             DirectoryUserManager users,
             SignInManager<DirectoryUser> signIn,
             TokenLoggingService tokenLog,
+            AccountEmailService accountEmail,
             IConfiguration config)
         {
             _users = users;
             _tokenLog = tokenLog;
             _config = config;
             _signIn = signIn;
+            _accountEmail = accountEmail;
         }
 
         public async Task<IActionResult> OnGet(string? userId, string? code)
@@ -73,6 +78,33 @@ namespace Directory.Pages.Account
                 await _tokenLog.AccountConfirmationTokenValidationSuccessful(code, userId);
             }
 
+            return Page();
+        }
+
+        public async Task<IActionResult> OnGetResend(string userId)
+        {
+            var user = await _users.FindByIdAsync(userId);
+            if (user is null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid User ID");
+                return Page();
+            }
+
+            var code = await _users.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var confirmLink = Url.Page("/Account/Confirm",
+                pageHandler: null,
+                values: new { userId = user.Id, code },
+                protocol: Request.Scheme);
+
+            await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
+
+            await _accountEmail.SendAccountConfirmation(
+                user.Email,
+                user.Name,
+                confirmLink);
+
+            Route = "confirm-resend";
             return Page();
         }
     }

@@ -11,6 +11,7 @@ import LogoutRedirect from "../Account/pages/LogoutRedirect";
 import Register from "../Account/pages/Register";
 import RegisterResult from "../Account/pages/RegisterResult";
 import ConfirmAccount from "../Account/pages/ConfirmAccount";
+import ResendConfirm from "../Account/pages/ResendConfirm";
 
 /*
  * Here we conditionally render small one page React apps
@@ -24,7 +25,8 @@ const routeComponents = {
   ["logout-redirect"]: <LogoutRedirect />,
   register: <Register />,
   ["register-result"]: <RegisterResult />,
-  confirm: <ConfirmAccount />
+  confirm: <ConfirmAccount />,
+  ["confirm-resend"]: <ResendConfirm />
 };
 
 /*
