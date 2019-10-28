@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
 using System.Threading.Tasks;
 using Common.Data.Identity;
 using Directory.Auth.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Directory.Pages.Account
 {
@@ -63,13 +65,18 @@ namespace Directory.Pages.Account
                 {
                     UserName = Email,
                     Email = Email,
-                    Name = FullName!, // [Required] prevents null, empty string
-                    EmailConfirmed = true // TODO: set to false once we add confirmation process
+                    Name = FullName! // [Required] prevents null, empty string
                 };
 
                 var result = await _users.CreateAsync(user, Password);
                 if (result.Succeeded)
                 {
+                    var code = await _users.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var confirmLink = Url.Page("/Account/Confirm",
+                        pageHandler: null,
+                        values: new { userId = user.Id, code },
+                        protocol: Request.Scheme);
 
                     // TODO: Send confirmation email
 
