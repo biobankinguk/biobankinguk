@@ -24,7 +24,7 @@ const routeComponents = {
   ["confirm-logout"]: <ConfirmLogout />,
   ["logout-redirect"]: <LogoutRedirect />,
   register: <Register />,
-  ["register-result"]: <RegisterResult />,
+  registerResult: <RegisterResult />,
   confirm: <ConfirmAccount />,
   ["confirm-resend"]: <ResendConfirm />
 };

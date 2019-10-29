@@ -89,7 +89,7 @@ namespace Directory.Pages.Account
                         user.Name,
                         confirmLink);
 
-                    Route = "register-result";
+                    Route = ReactRoutes.RegisterResult;
                 }
                 else
                 {
