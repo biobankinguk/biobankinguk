@@ -19,6 +19,7 @@ const Register = vm => {
   return (
     <Layout heading="Register">
       <TryThisAlert
+        my={2}
         text="Already have an account?"
         linkText="Log in"
         href="/auth/login"

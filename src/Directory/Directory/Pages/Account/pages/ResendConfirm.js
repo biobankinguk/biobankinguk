@@ -12,7 +12,7 @@ import ConfirmationSent from "../components/ConfirmationSent";
 
 const ResendConfirm = ({ ModelState, Username }) => {
   let content;
-  if (hasErrors(ModelState, true)) {
+  if (hasErrors(ModelState, "")) {
     content = (
       <Alert status="error" variant="left-accent" flexDirection="column">
         <Flex alignItems="center">

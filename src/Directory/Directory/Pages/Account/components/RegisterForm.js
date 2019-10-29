@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
 import { Button, Stack, Box } from "@chakra-ui/core";
@@ -7,6 +7,15 @@ import CommonFormikInput from "./CommonFormikInput";
 import { hasErrors } from "./ModelValidationSummary";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
+  const [hideEmailConfirm, setHideEmailConfirm] = useState(
+    !hasErrors(ModelState)
+  );
+  const [hidePasswordConfirm, setHidePasswordConfirm] = useState(
+    !hasErrors(ModelState)
+  );
+  const touchEmail = () => setHideEmailConfirm(false);
+  const touchPassword = () => setHidePasswordConfirm(false);
+
   const aspForm = document.getElementById("asp-form");
   const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
 
@@ -17,9 +26,6 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
     });
     actions.setSubmitting(false);
   };
-
-  const touch = ({ form: { setFieldTouched }, field: { name } }) => () =>
-    setFieldTouched(name, true, false);
 
   return (
     <Formik
@@ -57,13 +63,13 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
                     label="Email Address"
                     placeholder="john.smith@example.com"
                     isRequired
-                    onFocus={touch(rp)}
+                    onFocus={touchEmail}
                   />
                 )}
               </Field>
             </Box>
 
-            <Box hidden={!(touched.Email || hasErrors(ModelState))}>
+            <Box hidden={hideEmailConfirm}>
               <Field name="EmailConfirm">
                 {rp => (
                   <CommonFormikInput
@@ -84,13 +90,13 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
                     placeholder={rp.field.name}
                     isRequired
                     isPassword
-                    onFocus={touch(rp)}
+                    onFocus={touchPassword}
                   />
                 )}
               </Field>
             </Box>
 
-            <Box hidden={!(touched.Password || hasErrors(ModelState))}>
+            <Box hidden={hidePasswordConfirm}>
               <Field name="PasswordConfirm">
                 {rp => (
                   <CommonFormikInput
