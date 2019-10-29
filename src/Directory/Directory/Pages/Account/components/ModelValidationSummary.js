@@ -10,7 +10,7 @@ import {
 export const hasErrors = state => Object.keys(state).length;
 
 const ModelValidationSummary = ({ errors }) => {
-  if (hasErrors(errors))
+  if (hasErrors(errors) && errors[""])
     return (
       <Alert
         status="error"

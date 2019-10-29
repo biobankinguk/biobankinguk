@@ -1,24 +1,18 @@
 ﻿@page
 @model Directory.Pages.Account.LoginModel
-@{
-    ViewBag.Title = "Login";
-}
 
-@switch (Model.Route)
+@using Directory.Pages;
+
+@{ ViewBag.Title = "Login"; }
+
+@if (Model.Route == ReactRoutes.Login)
 {
-    case "login-redirect":
-        <meta id="meta-refresh" http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
-        break;
-    default:
-        <!-- Asking Razor to render a form gives us a CSRF token and the Action route -->
-        <form id="asp-form" method="post" data-username="@Model.Username">
-            <div
-                 id="asp-validation-summary"
-                 asp-validation-summary="ModelOnly"
-                 style="display: none">
-            </div>
-        </form>
-        break;
+    <form id="asp-form" method="post"></form>
 }
 
-<div id="react-app" data-route="@(Model.Route ?? "login")"></div>
+@if (Model.Route == ReactRoutes.LoginRedirect)
+{
+    <meta id="meta-refresh" http-equiv="refresh" content="0;url=@Model.RedirectUrl">
+}
+
+<partial name="_ReactRoute" />

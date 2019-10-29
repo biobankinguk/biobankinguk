@@ -1,16 +1,10 @@
 import React, { useEffect } from "react";
-import {
-  Heading,
-  Text,
-  AlertTitle,
-  AlertDescription,
-  Alert
-} from "@chakra-ui/core";
+import { AlertTitle, AlertDescription, Alert } from "@chakra-ui/core";
 import Layout from "../../Shared/Layout";
 
-const LoginRedirect = () => {
+const LoginRedirect = ({ RedirectUrl }) => {
   useEffect(() => {
-    window.location.href = document.getElementById("meta-refresh").dataset.url;
+    window.location.href = RedirectUrl;
   });
 
   return (

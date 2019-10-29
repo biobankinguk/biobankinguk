@@ -19,8 +19,8 @@ import ResendConfirm from "../Account/pages/ResendConfirm";
  */
 
 const routeComponents = {
-  login: <Login />,
-  ["login-redirect"]: <LoginRedirect />,
+  Login: <Login />,
+  LoginRedirect: <LoginRedirect />,
   LogoutConfirm: <ConfirmLogout />,
   LogoutRedirect: <LogoutRedirect />,
   Register: <Register />,
