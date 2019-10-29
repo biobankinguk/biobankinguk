@@ -2,23 +2,19 @@ import React, { useEffect } from "react";
 import Layout from "../../Shared/Layout";
 import { Alert, AlertTitle, Link, AlertDescription } from "@chakra-ui/core";
 
-const LogoutRedirect = () => {
-  const { redirectUrl, clientName } = document.getElementById(
-    "react-data"
-  ).dataset;
-
+const LogoutRedirect = ({ RedirectUrl, ClientName }) => {
   useEffect(() => {
-    if (redirectUrl) window.location.href = redirectUrl;
+    if (RedirectUrl) window.location.href = RedirectUrl;
   });
 
   return (
     <Layout heading="Logout">
       <Alert status="info" variant="left-accent" flexDirection="column">
         <AlertTitle>You are now logged out.</AlertTitle>
-        {!!redirectUrl ? (
+        {!!RedirectUrl ? (
           <AlertDescription>
-            Click <Link href={redirectUrl}>here</Link> to return to the{" "}
-            {clientName} application.
+            Click <Link href={RedirectUrl}>here</Link> to return to the{" "}
+            {ClientName} application.
           </AlertDescription>
         ) : null}
       </Alert>

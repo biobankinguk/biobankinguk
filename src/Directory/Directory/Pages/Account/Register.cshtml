@@ -10,8 +10,4 @@
     <form id="asp-form" method="post"></form>
 }
 
-<script>
-    __TDCC__.ViewModel = @Html.Raw(Model.JsonViewModel);
-</script>
-
-<div id="react-app" data-route="@Model.Route"></div>
+<partial name="_ReactRoute" />

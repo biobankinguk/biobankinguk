@@ -2,7 +2,10 @@
 {
     public static class ReactRoutes
     {
-        public const string Register = "register";
-        public const string RegisterResult = "registerResult";
+        public const string Register = "Register";
+        public const string RegisterResult = "RegisterResult";
+
+        public const string LogoutConfirm = "LogoutConfirm";
+        public const string LogoutRedirect = "LogoutRedirect";
     }
 }
