@@ -1,16 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Data.Identity;
 using Directory.Auth.Identity;
 using Directory.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Directory.Pages.Account
 {
-    public class RegisterModel : PageModel
+    public class RegisterModel : BaseReactModel
     {
         private readonly DirectoryUserManager _users;
         private readonly TokenLoggingService _tokenLog;
@@ -19,49 +18,49 @@ namespace Directory.Pages.Account
         public RegisterModel(
             DirectoryUserManager users,
             TokenLoggingService tokenLog,
-            AccountEmailService _accountEmail)
+            AccountEmailService accountEmail)
+            : base(ReactRoutes.Register)
         {
             _users = users;
             _tokenLog = tokenLog;
-            this._accountEmail = _accountEmail;
+            _accountEmail = accountEmail;
         }
-
-        public string? Route { get; set; }
 
         [BindProperty]
         [Required]
         [DataType(DataType.Text)]
-        public string? FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
         [BindProperty]
         [Required]
-        [DataType(DataType.EmailAddress)]
-        public string? Email { get; set; }
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
 
         [BindProperty]
         [Required]
-        [DataType(DataType.EmailAddress)]
-        public string? EmailConfirm { get; set; }
-
-        [BindProperty]
-        [Required]
-        [DataType(DataType.Password)]
-        public string? Password { get; set; }
+        [EmailAddress]
+        public string EmailConfirm { get; set; } = string.Empty;
 
         [BindProperty]
         [Required]
         [DataType(DataType.Password)]
-        public string? PasswordConfirm { get; set; }
+        public string Password { get; set; } = string.Empty;
 
-        public async Task<IActionResult> OnPostAsync()
+        [BindProperty]
+        [Required]
+        [DataType(DataType.Password)]
+        public string PasswordConfirm { get; set; } = string.Empty;
+
+
+        public async Task<IActionResult> OnPost()
         {
             if (ModelState.IsValid) // Perform additional Model validation
             {
                 // Client side should catch these, but we should be on the safe side.
                 if (Email != EmailConfirm)
-                    ModelState.AddModelError("", "The email addresses entered do not match.");
+                    ModelState.AddModelError(string.Empty, "The email addresses entered do not match.");
                 if (Password != PasswordConfirm)
-                    ModelState.AddModelError("", "The passwords entered do not match.");
+                    ModelState.AddModelError(string.Empty, "The passwords entered do not match.");
             }
 
             if (ModelState.IsValid) // Actual success route
@@ -70,7 +69,7 @@ namespace Directory.Pages.Account
                 {
                     UserName = Email,
                     Email = Email,
-                    Name = FullName! // [Required] prevents null, empty string
+                    Name = FullName! // [Required]
                 };
 
                 var result = await _users.CreateAsync(user, Password);
@@ -95,9 +94,7 @@ namespace Directory.Pages.Account
                 else
                 {
                     foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
+                        ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 

@@ -1,24 +1,17 @@
 ﻿@page
 @model Directory.Pages.Account.RegisterModel
-@{
-    ViewBag.Title = "Register";
-}
 
-@switch (Model.Route)
+@using Directory.Pages;
+
+@{ ViewBag.Title = "Register"; }
+
+@if (Model.Route == ReactRoutes.Register)
 {
-    case "register-result": break;
-    default:
-        <!-- Asking Razor to render a form gives us a CSRF token and the Action route -->
-        <form id="asp-form" method="post"
-              data-full-name="@Model.FullName"
-              data-email="@Model.Email"
-              data-email-confirm="@Model.EmailConfirm">
-            <div id="asp-validation-summary"
-                 asp-validation-summary="ModelOnly"
-                 style="display: none">
-            </div>
-        </form>
-        break;
+    <form id="asp-form" method="post"></form>
 }
 
-<div id="react-app" data-route="@(Model.Route ?? "register")"></div>
+<script>
+    __TDCC__.ViewModel = @Html.Raw(Model.JsonViewModel);
+</script>
+
+<div id="react-app" data-route="@Model.Route"></div>

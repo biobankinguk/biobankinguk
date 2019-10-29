@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, { cloneElement } from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider, CSSReset, theme } from "@chakra-ui/core";
 import ukcrcTheme from "../../../../theme/dist/theme";
@@ -48,7 +48,7 @@ if (root && root.dataset.route) {
             body: { backgroundColor: theme.colors.defaultBackground }
           }}
         />
-        {routeComponents[route]}
+        {cloneElement(routeComponents[route], window.__TDCC__.ViewModel)}
       </ThemeProvider>,
       document.getElementById("react-app")
     );

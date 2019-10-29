@@ -2,9 +2,9 @@ import React from "react";
 import Layout from "../../Shared/Layout";
 import RegisterForm from "../components/RegisterForm";
 import WrongFormAlert from "../components/WrongFormAlert";
-import AspValidationSummary from "../components/AspValidationSummary";
+import ModelValidationSummary from "../components/ModelValidationSummary";
 
-const Register = () => {
+const Register = vm => {
   return (
     <Layout heading="Register">
       <WrongFormAlert
@@ -13,8 +13,8 @@ const Register = () => {
         href="/auth/login"
       />
 
-      <AspValidationSummary />
-      <RegisterForm />
+      <ModelValidationSummary errors={vm.ModelState} />
+      <RegisterForm {...vm} />
     </Layout>
   );
 };

@@ -6,10 +6,10 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+    <script>__TDCC__ = {};</script>
+
     @RenderBody()
 
-    <script src="~/dist/bundle.js"></script>
-
-    @RenderSection("Scripts", false)
+    <script src="~/dist/bundle.js" defer></script>
 </body>
 </html>
