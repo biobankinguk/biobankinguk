@@ -7,10 +7,19 @@ import {
   AlertDescription
 } from "@chakra-ui/core";
 
-export const hasErrors = state => Object.keys(state).length;
+export const hasErrors = (state, unkeyedOnly = false) => {
+  if (!state) return false;
+  if (!Object.keys(state).length) return false;
+  if (unkeyedOnly) return !!state[""] && state[""].length;
+
+  for (let k in Object.keys(state)) {
+    if (state[k] && state[k].length) return true;
+  }
+  return false;
+};
 
 const ModelValidationSummary = ({ errors }) => {
-  if (hasErrors(errors) && errors[""])
+  if (hasErrors(errors, true))
     return (
       <Alert
         status="error"

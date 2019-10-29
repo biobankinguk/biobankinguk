@@ -6,28 +6,26 @@ import {
   AlertTitle,
   AlertDescription
 } from "@chakra-ui/core";
-import { useAspValidationSummary } from "../components/AspValidationSummary";
+import { hasErrors } from "../components/ModelValidationSummary";
 import Layout from "../../Shared/Layout";
 import ConfirmationSent from "../components/ConfirmationSent";
 
-const ResendConfirm = () => {
-  const { hasErrors } = useAspValidationSummary();
-
+const ResendConfirm = ({ ModelState, Username }) => {
   let content;
-  if (hasErrors) {
+  if (hasErrors(ModelState, true)) {
     content = (
       <Alert status="error" variant="left-accent" flexDirection="column">
         <Flex alignItems="center">
           <AlertIcon />
           <AlertTitle>There seems to be a problem.</AlertTitle>
         </Flex>
-        <AlertDescription flexDirection="column" textAlign="center">
+        <AlertDescription>
           Failed to resend confirmation link for this invalid User ID.
         </AlertDescription>
       </Alert>
     );
   } else {
-    content = <ConfirmationSent />;
+    content = <ConfirmationSent username={Username} />;
   }
 
   return <Layout heading="Register">{content}</Layout>;

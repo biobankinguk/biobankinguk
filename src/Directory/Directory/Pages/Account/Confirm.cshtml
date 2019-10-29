@@ -1,9 +1,4 @@
 ﻿@page "{handler?}"
 @model Directory.Pages.Account.ConfirmModel
 
-<div id="asp-validation-summary"
-     asp-validation-summary="ModelOnly"
-     style="display: none">
-</div>
-
-<div id="react-app" data-route="@Model.Route"></div>
+<partial name="_ReactRoute" />

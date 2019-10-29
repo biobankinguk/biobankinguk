@@ -10,5 +10,8 @@
 
         public const string LogoutConfirm = "LogoutConfirm";
         public const string LogoutRedirect = "LogoutRedirect";
+
+        public const string Confirm = "Confirm";
+        public const string ConfirmResend = "ConfirmResend";
     }
 }

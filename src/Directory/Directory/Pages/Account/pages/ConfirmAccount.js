@@ -9,46 +9,30 @@ import {
   Box,
   Link
 } from "@chakra-ui/core";
-import { useAspValidationSummary } from "../components/AspValidationSummary";
-import appSettings from "../../../appsettings.json";
+import { hasErrors } from "../components/ModelValidationSummary";
 import Layout from "../../Shared/Layout";
+import ResendConfirmationAlert from "../components/ResendConfirmationAlert";
 
-const ConfirmAccount = () => {
-  const { hasErrors } = useAspValidationSummary();
-
+const ConfirmAccount = ({ ModelState, Username }) => {
   let content;
-  if (hasErrors) {
+  if (hasErrors(ModelState)) {
     content = (
-      <Alert status="error" variant="left-accent" flexDirection="column">
-        <Flex alignItems="center">
-          <AlertIcon />
-          <AlertTitle>
-            There seems to be a problem with this confirmation link.
-          </AlertTitle>
-        </Flex>
-        <AlertDescription flexDirection="column" textAlign="center">
-          <Text>
+      <>
+        <Alert status="error" variant="left-accent" flexDirection="column">
+          <Flex alignItems="center">
+            <AlertIcon />
+            <AlertTitle>
+              There seems to be a problem with this confirmation link.
+            </AlertTitle>
+          </Flex>
+          <AlertDescription>
             Your user ID or account confirmation token is invalid, or has
             expired.
-          </Text>
-          <Box mt={3}>
-            You can{" "}
-            <Link color="primary.500" href="/Account/Confirm/Resend">
-              resend your confirmation link,
-            </Link>
-          </Box>
-          <Box>
-            or contact{" "}
-            <Link
-              color="primary.500"
-              href={`mailto:${appSettings.SupportEmail}`}
-            >
-              {appSettings.SupportEmail}
-            </Link>{" "}
-            if you're having trouble.
-          </Box>
-        </AlertDescription>
-      </Alert>
+          </AlertDescription>
+        </Alert>
+
+        <ResendConfirmationAlert username={Username} />
+      </>
     );
   } else {
     content = (

@@ -9,17 +9,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
 
 namespace Directory.Pages.Account
 {
-    public class ConfirmModel : PageModel
+    public class ConfirmModel : BaseReactModel
     {
-        public string Route { get; set; } = "confirm";
+        public string? Username { get; set; }
 
         private readonly DirectoryUserManager _users;
         private readonly TokenLoggingService _tokenLog;
-        private readonly IConfiguration _config;
         private readonly SignInManager<DirectoryUser> _signIn;
         private readonly AccountEmailService _accountEmail;
 
@@ -27,12 +25,11 @@ namespace Directory.Pages.Account
             DirectoryUserManager users,
             SignInManager<DirectoryUser> signIn,
             TokenLoggingService tokenLog,
-            AccountEmailService accountEmail,
-            IConfiguration config)
+            AccountEmailService accountEmail)
+            : base(ReactRoutes.Confirm)
         {
             _users = users;
             _tokenLog = tokenLog;
-            _config = config;
             _signIn = signIn;
             _accountEmail = accountEmail;
         }
@@ -61,6 +58,8 @@ namespace Directory.Pages.Account
                 return Page();
             }
 
+            Username = user.UserName;
+
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
             var result = await _users.ConfirmEmailAsync(user, code);
@@ -81,12 +80,14 @@ namespace Directory.Pages.Account
             return Page();
         }
 
-        public async Task<IActionResult> OnGetResend(string userId)
+        public async Task<IActionResult> OnGetResend(string username)
         {
-            var user = await _users.FindByIdAsync(userId);
+            Username = username;
+
+            var user = await _users.FindByEmailAsync(username);
             if (user is null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid User ID");
+                ModelState.AddModelError(string.Empty, "Invalid Username");
                 return Page();
             }
 
@@ -104,7 +105,7 @@ namespace Directory.Pages.Account
                 user.Name,
                 confirmLink);
 
-            Route = "confirm-resend";
+            Route = ReactRoutes.ConfirmResend;
             return Page();
         }
     }
