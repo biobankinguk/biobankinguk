@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Biobanks.Common.Models;
-using Biobanks.Common.Types;
+using Upload.Common.Types;
 
 namespace Biobanks.SubmissionApi.Models
 {
@@ -86,7 +85,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The content of the sample.
         /// </summary>
-        public string SampleContent { get; set; }
+        public string SampleContent { get; set; } = string.Empty;
 
         /// <summary>
         /// Ontology field to which the code relates.
@@ -97,7 +96,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The macroscopic/microscopic assessment method of the sample content.
         /// </summary>
-        public string SampleContentMethod { get; set; }
+        public string SampleContentMethod { get; set; } = string.Empty;
 
         #endregion
     }

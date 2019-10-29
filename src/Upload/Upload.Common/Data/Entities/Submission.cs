@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Biobanks.Common.Data.Entities.ReferenceData;
 
 namespace Common.Data.Upload
 {
@@ -8,7 +7,10 @@ namespace Common.Data.Upload
     {
         public int Id { get; set; }
 
-        public int BiobankId { get; set; } // TODO This can become a strong Relationship in the unified Data Model
+        /// <summary>
+        /// Foreign key to Biobank
+        /// </summary>
+        public int BiobankId { get; set; } 
 
         public DateTime SubmissionTimestamp { get; set; } = DateTime.UtcNow;
 
@@ -16,8 +18,11 @@ namespace Common.Data.Upload
 
         public int RecordsProcessed { get; set; }
 
+        /// <summary>
+        /// Foreign key to reference data. 
+        /// TODO figure out what - not on the list
+        /// </summary>
         public int StatusId { get; set; }
-        public Status Status { get; set; }
 
         public DateTime StatusChangeTimestamp { get; set; } = DateTime.UtcNow;
 

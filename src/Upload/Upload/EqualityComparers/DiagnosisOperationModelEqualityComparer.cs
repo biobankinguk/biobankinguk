@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Biobanks.SubmissionApi.Models;
 
-namespace Biobanks.SubmissionApi.EqualityComparers
+namespace Upload.EqualityComparers
 {
     /// <inheritdoc />
     public class DiagnosisOperationModelEqualityComparer : IEqualityComparer<DiagnosisOperationModel>
