@@ -1,27 +1,20 @@
 import React from "react";
-import { Flex, Link, AlertIcon, AlertTitle, Alert, Box } from "@chakra-ui/core";
+import { Flex, Link } from "@chakra-ui/core";
 import Layout from "../../Shared/Layout";
 import LoginForm from "../components/LoginForm";
 import ModelValidationSummary from "../components/ModelValidationSummary";
 import TryThisAlert from "../components/TryThisAlert";
-import ResendConfirmationAlert from "../components/ResendConfirmationAlert";
-
-const ResendConfirmation = ({ username }) => (
-  <Box>
-    <Alert status="error" variant="left-accent" flexDirection="column">
-      <Flex alignItems="center">
-        <AlertIcon />
-        <AlertTitle>This account seems to be unconfirmed.</AlertTitle>
-      </Flex>
-    </Alert>
-
-    <ResendConfirmationAlert username={username} />
-  </Box>
-);
+import UnconfirmedAccountFound from "../components/UnconfirmedAccountFound";
 
 const Login = vm => {
   let failureAlert;
-  if (vm.AllowResend) failureAlert = <ResendConfirmation username={vm.Username} />;
+  if (vm.AllowResend)
+    failureAlert = (
+      <UnconfirmedAccountFound
+        message="This account seems to be unconfirmed."
+        username={vm.Username}
+      />
+    );
   else failureAlert = <ModelValidationSummary errors={vm.ModelState} />;
 
   return (

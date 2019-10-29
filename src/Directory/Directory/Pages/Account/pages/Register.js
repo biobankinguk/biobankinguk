@@ -3,8 +3,19 @@ import Layout from "../../Shared/Layout";
 import RegisterForm from "../components/RegisterForm";
 import TryThisAlert from "../components/TryThisAlert";
 import ModelValidationSummary from "../components/ModelValidationSummary";
+import UnconfirmedAccountFound from "../components/UnconfirmedAccountFound";
 
 const Register = vm => {
+  let failureAlert;
+  if (vm.AllowResend)
+    failureAlert = (
+      <UnconfirmedAccountFound
+        message="This account already exists, but seems to be unconfirmed."
+        username={vm.Email}
+      />
+    );
+  else failureAlert = <ModelValidationSummary errors={vm.ModelState} />;
+
   return (
     <Layout heading="Register">
       <TryThisAlert
@@ -13,7 +24,7 @@ const Register = vm => {
         href="/auth/login"
       />
 
-      <ModelValidationSummary errors={vm.ModelState} />
+      {failureAlert}
       <RegisterForm {...vm} />
     </Layout>
   );

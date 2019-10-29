@@ -51,6 +51,7 @@ namespace Directory.Pages.Account
         [DataType(DataType.Password)]
         public string PasswordConfirm { get; set; } = string.Empty;
 
+        public bool AllowResend { get; set; }
 
         public async Task<IActionResult> OnPost()
         {
@@ -94,7 +95,10 @@ namespace Directory.Pages.Account
                 else
                 {
                     foreach (var error in result.Errors)
+                    {
+                        if (error.Code == "DuplicateEmail") AllowResend = true;
                         ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
 
