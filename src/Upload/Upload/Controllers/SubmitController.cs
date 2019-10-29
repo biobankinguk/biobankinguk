@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Biobanks.Common.Models;
+using Biobanks.SubmissionApi.Models;
+using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -7,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Upload.Common.Types;
 
 namespace Upload.Controllers
 {

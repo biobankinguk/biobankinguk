@@ -24,43 +24,43 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The material type of the sample donated.
         /// </summary>
-        public string MaterialType { get; set; }
+        public string MaterialType { get; set; } = string.Empty;
 
         /// <summary>
         /// The storage temperature of the sample.
         /// </summary>
-        public string StorageTemperature { get; set; }
+        public string StorageTemperature { get; set; } = string.Empty;
 
         /// <summary>
         /// The date the sample was donated/taken.
         /// </summary>
-        public DateTime DateCreated { get; set; }
+        public DateTime DateCreated { get; set; } = new DateTime();
 
         /// <summary>
         /// The biological sex of the donor.
         /// </summary>
-        public string Sex { get; set; }
+        public string Sex { get; set; } = string.Empty;
 
         #region Tissue Sample properties
 
         /// <summary>
         /// The anatomical location of where the sample was extracted.
         /// </summary>
-        public string ExtractionSite { get; set; }
+        public string ExtractionSite { get; set; } = string.Empty;
 
         /// <summary>
         /// The ontology to which the ExtractionSite code relates.
         /// </summary>
         /// <seealso cref="ExtractionSite"/>
         /// <seealso cref="ExtractionSiteOntologyVersion"/>
-        public string ExtractionSiteOntology { get; set; }
+        public string ExtractionSiteOntology { get; set; } = string.Empty;
 
         /// <summary>
         /// The version of the ontology to which the ExtractionSite code relates.
         /// </summary>
         /// <seealso cref="ExtractionSite"/>
         /// <seealso cref="ExtractionSiteOntology"/>
-        public string ExtractionSiteOntologyVersion { get; set; }
+        public string ExtractionSiteOntologyVersion { get; set; } = string.Empty;
 
         /// <summary>
         /// Ontology field to which the code relates.
@@ -75,7 +75,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The procedure by which the sample was extracted.
         /// </summary>
-        public string ExtractionProcedure { get; set; }
+        public string ExtractionProcedure { get; set; } = string.Empty;
 
         /// <summary>
         /// Ontology field to which the code relates.

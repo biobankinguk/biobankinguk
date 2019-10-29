@@ -1,5 +1,5 @@
 ﻿using System;
-using Biobanks.Common.Types;
+using Upload.Common.Types;
 
 namespace Biobanks.Common.Models
 {

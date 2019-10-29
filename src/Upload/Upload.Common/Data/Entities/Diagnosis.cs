@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Upload.Common.Models;
 
 namespace Common.Data.Upload
 {
@@ -20,22 +21,16 @@ namespace Common.Data.Upload
         [Required]
         public string DiagnosisCodeId { get; set; }
         /// <summary>
-        /// A SNOMED term representing the Diagnosis.
+        /// An OMOP term representing the Diagnosis.
         /// </summary>
         [Required]
-        public SnomedTerm DiagnosisCode { get; set; }
+        public OmopTerm DiagnosisCode { get; set; }
 
         /// <summary>
         /// Foreign key column.
         /// </summary>
         [Required]
         public int DiagnosisCodeOntologyVersionId { get; set; }
-
-        /// <summary>
-        /// Ontology version used for diagnosis code.
-        /// </summary>
-        [Required]
-        public OntologyVersion DiagnosisCodeOntologyVersion { get; set; }
     }
 
     /// <inheritdoc />
