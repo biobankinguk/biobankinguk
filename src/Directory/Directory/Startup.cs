@@ -40,6 +40,7 @@ namespace Directory
         public void ConfigureServices(IServiceCollection services)
         {
             var defaultDb = _config.GetConnectionString("DefaultConnection");
+            var useSendGrid = !string.IsNullOrEmpty(_config["OutboundEmail:SendGridApiKey"]);
 
             services.AddResponseCompression();
 
@@ -99,16 +100,19 @@ namespace Directory
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
             services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
-            services.AddTransient<IEmailSender, LocalDiskEmailSender>();
             services.AddTransient<AccountEmailService>();
             services.AddTransient<TokenLoggingService>();
+
+            if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
+            else services.AddTransient<IEmailSender, LocalDiskEmailSender>();
 
             // Configuration
             services.Configure<IdentityOptions>(_config.GetSection("Identity"))
                 .Configure<DataProtectionTokenProviderOptions>(options =>
                     options.TokenLifespan = TimeSpan.FromDays(5));
 
-            services.Configure<LocalMailOptions>(_config.GetSection("OutboundEmail"));
+            if (useSendGrid) services.Configure<SendGridOptions>(_config.GetSection("OutboundEmail"));
+            else services.Configure<LocalMailOptions>(_config.GetSection("OutboundEmail"));
         }
 
         /// <summary>
