@@ -50,6 +50,7 @@ namespace Common.Data
         public DbSet<Sex> Sexes { get; set; } = null!;
         public DbSet<SopStatus> SopStatuses { get; set; } = null!;
         public DbSet<StorageTemperature> StorageTemperatures { get; set; } = null!;
+        public DbSet<TokenRecord> TokenRecords { get; set; } = null!;
 
         #region IdentityServer4
 

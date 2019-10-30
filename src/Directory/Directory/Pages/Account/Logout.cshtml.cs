@@ -6,11 +6,10 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Directory.Pages.Account
 {
-    public class LogoutModel : PageModel
+    public class LogoutModel : BaseReactModel
     {
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
@@ -20,6 +19,7 @@ namespace Directory.Pages.Account
             IIdentityServerInteractionService interaction,
             IEventService events,
             SignInManager<DirectoryUser> signIn)
+            : base(ReactRoutes.LogoutConfirm)
         {
             _interaction = interaction;
             _events = events;
@@ -27,13 +27,14 @@ namespace Directory.Pages.Account
         }
 
         [BindProperty]
+        [NoJsonViewModel]
         public string? LogoutId { get; set; }
 
         public string? PostLogoutRedirectUri { get; set; }
         public string? ClientName { get; set; }
-        public string? SignOutIframeUrl { get; set; }
 
-        public string? Route { get; set; }
+        [NoJsonViewModel]
+        public string? SignOutIframeUrl { get; set; }
 
         public async Task<IActionResult> OnGet(string? logoutId = null)
         {
@@ -78,7 +79,7 @@ namespace Directory.Pages.Account
             // Here's where we'd trigger external signouts if there were any
 
             // Set Model props and return the Page
-            Route = "logout-redirect";
+            Route = ReactRoutes.LogoutRedirect;
             ClientName = GetClientName(logout);
             PostLogoutRedirectUri = logout?.PostLogoutRedirectUri;
             SignOutIframeUrl = logout?.SignOutIFrameUrl;

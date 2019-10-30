@@ -5,7 +5,7 @@ import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "./login-form-validation";
 import CommonFormikInput from "./CommonFormikInput";
 
-const LoginForm = () => {
+const LoginForm = ({ Username }) => {
   const aspForm = document.getElementById("asp-form");
   const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
 
@@ -24,7 +24,7 @@ const LoginForm = () => {
 
   return (
     <Formik
-      initialValues={{ Username: aspForm.dataset.username, Password: "" }}
+      initialValues={{ Username, Password: "" }}
       onSubmit={handleSubmit}
       validationSchema={valSchema}
     >

@@ -10,11 +10,10 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Directory.Pages.Account
 {
-    public class LoginModel : PageModel
+    public class LoginModel : BaseReactModel
     {
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
@@ -28,6 +27,7 @@ namespace Directory.Pages.Account
             IEventService events,
             DirectoryUserManager userManager,
             SignInManager<DirectoryUser> signInManager)
+            : base(ReactRoutes.Login)
         {
             _interaction = interaction;
             _clientStore = clientStore;
@@ -38,16 +38,16 @@ namespace Directory.Pages.Account
 
         [BindProperty]
         [Required]
-        [DataType(DataType.EmailAddress)]
-        public string? Username { get; set; }
+        [EmailAddress]
+        public string Username { get; set; } = string.Empty;
 
         [BindProperty]
         [Required]
         [DataType(DataType.Password)]
-        public string? Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
-        public string? Route { get; set; }
         public string? RedirectUrl { get; set; }
+        public bool AllowResend { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string? returnUrl = null)
         {
@@ -62,7 +62,7 @@ namespace Directory.Pages.Account
             // This may change, and if it does should be checked and recorded on this ViewModel
 
             // if we've come from a client, we may want to pre-populate an expected username
-            Username = context?.LoginHint;
+            Username = context?.LoginHint ?? string.Empty;
             return Page();
         }
 
@@ -94,9 +94,10 @@ namespace Directory.Pages.Account
                 // Validate credentials
                 var result = await _signIn.PasswordSignInAsync(Username, Password, false, true);
 
+                var user = await _users.FindByNameAsync(Username);
+
                 if (result.Succeeded)
                 {
-                    var user = await _users.FindByNameAsync(Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(
                         user.UserName,
                         user.Id,
@@ -115,12 +116,35 @@ namespace Directory.Pages.Account
                     };
                 }
 
-                // If we're here, credentials were invalid
+                // handle various failure scenarios appropriately
+
+                string eventError = "Login failure";
+                string friendlyError = "The username and/or password are invalid, or otherwise not allowed.";
+
+                if (result.IsLockedOut)
+                {
+                    eventError = "Account locked out";
+                    friendlyError = "This account is currently locked out. Please try again later.";
+                }
+
+                if (result.RequiresTwoFactor)
+                    throw new NotImplementedException("2 Factor Authentication is not yet handled.");
+
+                // all other disallowed cases
+                if (result.IsNotAllowed)
+                {
+                    if (user is { } && !user.EmailConfirmed)
+                        AllowResend = true;
+
+                    eventError = "Credentials not allowed";
+                }
+
+                // log the failure and set model state errors if appropriate
                 await _events.RaiseAsync(new UserLoginFailureEvent(
-                    Username,
-                    error: "Invalid credentials",
-                    clientId: context?.ClientId));
-                ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                        Username,
+                        error: eventError,
+                        clientId: context?.ClientId));
+                ModelState.AddModelError(string.Empty, friendlyError);
             }
 
             // Something went wrong
@@ -135,7 +159,7 @@ namespace Directory.Pages.Account
             {
                 // if the client is PKCE then we assume it's native, so this change in how to
                 // return the response is for better UX for the end user.
-                Route = "login-redirect";
+                Route = ReactRoutes.LoginRedirect;
                 RedirectUrl = url;
                 return Page();
             }

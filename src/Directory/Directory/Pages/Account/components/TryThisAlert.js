@@ -1,8 +1,13 @@
 import React from "react";
 import { Alert, AlertIcon, AlertDescription, Link } from "@chakra-ui/core";
 
-const WrongFormAlert = ({ text, linkText, href = "#" }) => (
-  <Alert status="info" variant="left-accent" my={2}>
+/**
+ * Poses a question, and a link to try in response, in an alert
+ *
+ * e.g. "Feeling hungry? <Try Eating>" where <> links somewhere
+ */
+const TryThisAlert = ({ text, linkText, href = "#", ...p }) => (
+  <Alert status="info" variant="left-accent" {...p}>
     <AlertIcon />
     <AlertDescription>
       {text && linkText ? <>{text} </> : text}
@@ -15,4 +20,4 @@ const WrongFormAlert = ({ text, linkText, href = "#" }) => (
   </Alert>
 );
 
-export default WrongFormAlert;
+export default TryThisAlert;

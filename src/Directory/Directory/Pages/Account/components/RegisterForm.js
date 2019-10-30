@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
 import { Button, Stack, Box } from "@chakra-ui/core";
 import valSchema from "./register-form-validation";
 import CommonFormikInput from "./CommonFormikInput";
-import { useAspValidationSummary } from "./AspValidationSummary";
+import { hasErrors } from "./ModelValidationSummary";
 
-const RegisterForm = () => {
+const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
+  const [hideEmailConfirm, setHideEmailConfirm] = useState(
+    !hasErrors(ModelState)
+  );
+  const [hidePasswordConfirm, setHidePasswordConfirm] = useState(
+    !hasErrors(ModelState)
+  );
+  const touchEmail = () => setHideEmailConfirm(false);
+  const touchPassword = () => setHidePasswordConfirm(false);
+
   const aspForm = document.getElementById("asp-form");
   const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
-
-  const { hasErrors } = useAspValidationSummary();
 
   const handleSubmit = (values, actions) => {
     postObjectAsFormData(aspForm.action, {
@@ -20,15 +27,12 @@ const RegisterForm = () => {
     actions.setSubmitting(false);
   };
 
-  const touch = ({ form: { setFieldTouched }, field: { name } }) => () =>
-    setFieldTouched(name, true, false);
-
   return (
     <Formik
       initialValues={{
-        FullName: aspForm.dataset.fullName,
-        Email: aspForm.dataset.email,
-        EmailConfirm: aspForm.dataset.emailConfirm,
+        FullName,
+        Email,
+        EmailConfirm,
         Password: "",
         PasswordConfirm: ""
       }}
@@ -59,13 +63,13 @@ const RegisterForm = () => {
                     label="Email Address"
                     placeholder="john.smith@example.com"
                     isRequired
-                    onFocus={touch(rp)}
+                    onFocus={touchEmail}
                   />
                 )}
               </Field>
             </Box>
 
-            <Box hidden={!(touched.Email || hasErrors)}>
+            <Box hidden={hideEmailConfirm}>
               <Field name="EmailConfirm">
                 {rp => (
                   <CommonFormikInput
@@ -86,13 +90,13 @@ const RegisterForm = () => {
                     placeholder={rp.field.name}
                     isRequired
                     isPassword
-                    onFocus={touch(rp)}
+                    onFocus={touchPassword}
                   />
                 )}
               </Field>
             </Box>
 
-            <Box hidden={!(touched.Password || hasErrors)}>
+            <Box hidden={hidePasswordConfirm}>
               <Field name="PasswordConfirm">
                 {rp => (
                   <CommonFormikInput
