@@ -96,7 +96,10 @@ namespace Directory.Pages.Account
                 {
                     foreach (var error in result.Errors)
                     {
-                        if (error.Code == "DuplicateEmail") AllowResend = true;
+                        if (error.Code == "DuplicateEmail") {
+                            var existingUser = await _users.FindByEmailAsync(Email);
+                            if(!existingUser.EmailConfirmed) AllowResend = true;
+                        }
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
