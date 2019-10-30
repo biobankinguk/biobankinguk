@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Biobanks.Common.Data.Entities;
 using Biobanks.SubmissionApi.Models;
+using Common.Data.Upload;
 using SampleModel = Biobanks.Common.Models.SampleModel;
 
 namespace Biobanks.SubmissionApi.MappingProfiles

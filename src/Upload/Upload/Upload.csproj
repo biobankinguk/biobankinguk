@@ -9,9 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
+    <PackageReference Include="Hangfire" Version="1.7.7" />
     <PackageReference Include="IdentityModel" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-rc4" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.20" />
   </ItemGroup>
 
   <ItemGroup>

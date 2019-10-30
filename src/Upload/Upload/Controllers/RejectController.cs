@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Biobanks.SubmissionApi.Services.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,9 @@ namespace Upload.Controllers
         [SwaggerResponse(400, Description = "Organisation ID claim in bad format.")]
         public IActionResult Post(int biobankId)
         {
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                biobankId.ToString()))
-                return Forbid();
+          //  if (!User.HasClaim(CustomClaimTypes.BiobankId,
+          //      biobankId.ToString()))
+          //      return Forbid();
 
             //Hangfire stuff
             //TODO check if this is still suitable

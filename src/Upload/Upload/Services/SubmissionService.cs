@@ -6,6 +6,7 @@ using Biobanks.SubmissionApi.Services.Contracts;
 using Common.Data;
 using Common.Data.Upload;
 using Microsoft.EntityFrameworkCore;
+using Upload.Common;
 using Upload.Common.Types;
 
 namespace Upload.Services
@@ -49,7 +50,7 @@ namespace Upload.Services
 
                 //get the timestamp of the nth most recent commit
                 var nthCommitTimeStamp = (await query
-                        .Where(predicate.And(y => y.Status.Value == Statuses.Committed))
+                        .Where(predicate.And(y => y.UploadStatus.Value == Statuses.Committed))
                         .OrderByDescending(x => x.SubmissionTimestamp)
                         .Select(x => new { x.StatusChangeTimestamp, x.SubmissionTimestamp })
                         .Distinct()
@@ -109,7 +110,7 @@ namespace Upload.Services
             {
                 BiobankId = biobankId,
                 TotalRecords = totalRecords,
-                Status = status
+                UploadStatus = status
             };
 
             await _db.Submissions.AddAsync(sub);

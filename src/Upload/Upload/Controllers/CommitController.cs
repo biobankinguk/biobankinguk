@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Biobanks.SubmissionApi.Services.Contracts;
+using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,9 +47,9 @@ namespace Upload.Controllers
             if (type == null)
                 return BadRequest("Expected Type parameter to specify 'update' or 'replace'");
 
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                biobankId.ToString()))
-                return Forbid();
+            //if (!User.HasClaim(CustomClaimTypes.BiobankId,
+           //     biobankId.ToString()))
+            //    return Forbid();
 
             var submissionsInProgress = await _submissionService.ListSubmissionsInProgress(biobankId);
             if (submissionsInProgress.Any())
@@ -57,8 +58,7 @@ namespace Upload.Controllers
             }
 
             //Hangfire stuff 
-            //TODO see if this is still suitable
-            //BackgroundJob.Enqueue(() => _commitService.CommitStagedData(type.Equals("replace", StringComparison.OrdinalIgnoreCase), biobankId));
+            BackgroundJob.Enqueue(() => _commitService.CommitStagedData(type.Equals("replace", StringComparison.OrdinalIgnoreCase), biobankId));
 
             return NoContent();
         }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Biobanks.Common.Models;
-using Biobanks.Common.Types;
+using Upload.Common.Types;
 
 namespace Biobanks.SubmissionApi.Models
 {
@@ -10,7 +10,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The anatomical location where the treatment was performed.
         /// </summary>
-        public string TreatmentLocation { get; set; }
+        public string TreatmentLocation { get; set; } = string.Empty;
 
         /// <summary>
         /// The ontology for the given treatment location.
@@ -18,7 +18,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <seealso cref="TreatmentLocation"/>
         /// <seealso cref="TreatmentCodeOntologyVersion"/>
         [Required]
-        public string TreatmentCodeOntology { get; set; }
+        public string TreatmentCodeOntology { get; set; } = string.Empty;
 
         /// <summary>
         /// The version of the ontology for the given treatment location.
@@ -26,7 +26,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <seealso cref="TreatmentLocation"/>
         /// <seealso cref="TreatmentCodeOntology"/>
         [Required]
-        public string TreatmentCodeOntologyVersion { get; set; }
+        public string TreatmentCodeOntologyVersion { get; set; } = string.Empty;
 
         /// <summary>
         /// Ontology field to which the code relates.

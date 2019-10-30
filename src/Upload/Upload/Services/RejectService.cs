@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
-using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
+using Common.Data;
+using Upload.Common.Types;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.SubmissionApi.Services
@@ -11,10 +11,10 @@ namespace Biobanks.SubmissionApi.Services
     /// <inheritdoc />
     public class RejectService : IRejectService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly UploadContext _db;
 
         /// <inheritdoc />
-        public RejectService(SubmissionsDbContext db)
+        public RejectService(UploadContext db)
         {
             _db = db;
         }
@@ -36,7 +36,7 @@ namespace Biobanks.SubmissionApi.Services
             foreach (var submission in _db.Submissions.Where(s => s.BiobankId == organisationId))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.Status = _db.Statuses.FirstOrDefault(s => s.Value == Statuses.Rejected);
+                submission.UploadStatus = _db.UploadStatuses.FirstOrDefault(s => s.Value == Statuses.Rejected);
             }
 
             // save the submission changes to db

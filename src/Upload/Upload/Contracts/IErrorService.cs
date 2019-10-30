@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Common.Data.Upload;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Types;
+using Upload.Common.Types;
 
 namespace Biobanks.SubmissionApi.Services.Contracts
 {

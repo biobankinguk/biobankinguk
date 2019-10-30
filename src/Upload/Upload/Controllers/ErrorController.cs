@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
+using Biobanks.SubmissionApi.Models;
+using Biobanks.SubmissionApi.Services.Contracts;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Upload.Common;
+using Upload.Common.Types;
 
 namespace Upload.Controllers
 {
@@ -47,9 +52,9 @@ namespace Upload.Controllers
             if (paging.Offset >= total && paging.Offset > 0)
                 return BadRequest($"'offset' exceeds total of {total} records"); //Is this really bad request?
 
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                subBiobankId.ToString()))
-                return Forbid();
+           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
+           //     subBiobankId.ToString()))
+           //     return Forbid();
 
             if (total == 0)
                 return Ok(new PaginatedErrorsModel()
@@ -89,9 +94,9 @@ namespace Upload.Controllers
 
             if (error?.Submission.Id != submissionId) return NotFound();
 
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                error.Submission.BiobankId.ToString()))
-                return Forbid();
+           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
+           //    error.Submission.BiobankId.ToString()))
+           //     return Forbid();
 
             return Ok(_mapper.Map<ErrorModel>(error));
         }

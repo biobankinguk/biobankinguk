@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Models;
+using Common.Data.Upload;
 
 namespace Biobanks.SubmissionApi.MappingProfiles
 {
@@ -16,15 +16,14 @@ namespace Biobanks.SubmissionApi.MappingProfiles
                 .ForMember(
                     dest => dest.Status,
                     opts => opts.MapFrom(
-                        src => src.Status.Value))
+                        src => src.UploadStatus.Value))
                 .ForMember(
                     dest => dest.ErrorCount,
                     opts => opts.MapFrom(
                         src => src.Errors.Count))
                 .ForMember(
                     dest => dest.RecordsFailed,
-                    opts => opts.ResolveUsing(
-                        src => src.Errors?.Select(e => e.RecordIdentifiers).Distinct().Count()))
+                    opts => opts.MapFrom(src => src.Errors.Select(e => e.RecordIdentifiers).Distinct().Count()))
                 .ForMember(
                     dest => dest.ErrorUri,
                     opts => opts.MapFrom(
