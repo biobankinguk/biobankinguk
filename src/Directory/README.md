@@ -27,7 +27,7 @@ Details for each step follow below.
 
 The App uses Entity Framework Core with Code First Migrations.
 
-Currently (at this stage of development) migrations are manual, but they will become automatic in future.
+Migrations do run automatically during App Startup, so you shouldn't normally need to update the database.
 
 Because of the solution structure (featuring the Data bits in a Common class library), the right projects must be specified when adding migrations or applying them to a database:
 
@@ -55,6 +55,7 @@ These are fairly minimal server side pages in the ASP.NET Core App, used exclusi
 They are Razor Pages, but they actually each bootstrap a small React app for the page, to allow for component reuse with the main frontend. As such, the javascript bundle containing the React apps needs building, which done by `npm`.
 
 There are two build tasks - `dev` and `build`.
+
 - `dev` should mostly be used for local development.
 - `build` does an optimised production build, which is used in CI when producing actual releases.
 
@@ -115,7 +116,8 @@ Simply right-click the **Directory** Project and choose "Manage User Secrets..."
 
 The settings which need configuring are as follows:
 
-| Setting Key            | Description                                                                  | Example |
-| ---------------------- | ---------------------------------------------------------------------------- | ------- |
-| `SuperAdminSeedPassword` | A password used to seed the SuperAdmin user on first run. **Must not** be empty. | `test`  |
+| Setting Key | Description | Example |
+| - | - | - |
+| `SuperAdminSeedPassword` | A password used to seed the SuperAdmin user on first run. **Must not** be empty. | `test` |
 | `TrustedClients:upload-api:secret` | The Client Secret for the Upload API Client. | `test` |
+| `OutboundEmail:SendGridApiKey` | An API key for SendGrid. If populated, emails will be sent via SendGrid instead of the local debug service. | `<a SendGrid API key>` |
