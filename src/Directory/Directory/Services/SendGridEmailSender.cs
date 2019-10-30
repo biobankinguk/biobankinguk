@@ -34,7 +34,7 @@ namespace Directory.Services
             {
                 From = new EmailAddress(FromAddress, FromName),
                 Subject = subject,
-                HtmlContent = await _emailViews.AsString(
+                PlainTextContent = await _emailViews.AsString(
                     viewName,
                     model)
             };
