@@ -9,10 +9,14 @@
     "presets": [
       "@babel/preset-react",
       "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-template-literals"
     ]
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
+    "@babel/plugin-transform-template-literals": "^7.4.4",
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.6.3",
     "@babel/register": "^7.6.2",

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
-import { Button, Stack, Box } from "@chakra-ui/core";
+import { Button, Stack, Box, Flex, Grid, SimpleGrid } from "@chakra-ui/core";
 import valSchema from "./register-form-validation";
 import CommonFormikInput from "./CommonFormikInput";
 import { hasErrors } from "./ModelValidationSummary";
+import PasswordRequirementsInfo from "./PasswordRequirementsInfo";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(
@@ -39,7 +40,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
       onSubmit={handleSubmit}
       validationSchema={valSchema}
     >
-      {({ touched, isSubmitting }) => (
+      {({ isSubmitting }) => (
         <Form noValidate>
           <Stack spacing={3} my={3}>
             <Box>
@@ -81,34 +82,40 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
                 )}
               </Field>
             </Box>
-            <Box>
-              <Field name="Password">
-                {rp => (
-                  <CommonFormikInput
-                    {...rp}
-                    label={rp.field.name}
-                    placeholder={rp.field.name}
-                    isRequired
-                    isPassword
-                    onFocus={touchPassword}
-                  />
-                )}
-              </Field>
-            </Box>
 
-            <Box hidden={hidePasswordConfirm}>
-              <Field name="PasswordConfirm">
-                {rp => (
-                  <CommonFormikInput
-                    {...rp}
-                    label="Confirm Password"
-                    placeholder="Password"
-                    isRequired
-                    isPassword
-                  />
-                )}
-              </Field>
-            </Box>
+            <SimpleGrid minChildWidth="300px">
+              <Stack spacing={3} flexGrow={1} flexBasis="50%">
+                <Box>
+                  <Field name="Password">
+                    {rp => (
+                      <CommonFormikInput
+                        {...rp}
+                        label={rp.field.name}
+                        placeholder={rp.field.name}
+                        isRequired
+                        isPassword
+                        onFocus={touchPassword}
+                      />
+                    )}
+                  </Field>
+                </Box>
+                <Box hidden={hidePasswordConfirm}>
+                  <Field name="PasswordConfirm">
+                    {rp => (
+                      <CommonFormikInput
+                        {...rp}
+                        label="Confirm Password"
+                        placeholder="Password"
+                        isRequired
+                        isPassword
+                      />
+                    )}
+                  </Field>
+                </Box>
+              </Stack>
+
+              <PasswordRequirementsInfo m={2} flexBasis="40%" />
+            </SimpleGrid>
 
             <Button
               width="2xs"
