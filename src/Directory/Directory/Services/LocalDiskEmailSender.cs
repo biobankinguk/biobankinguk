@@ -27,6 +27,7 @@ namespace Directory.Services
 
         /// <inheritdoc />
         public async Task SendEmail<TModel>(string toAddress, string subject, string viewName, TModel model, string? toName)
+            where TModel : class
         {
             var message = new MimeMessage();
             message.To.Add(!string.IsNullOrEmpty(toName)

@@ -25,6 +25,12 @@ namespace Directory.Services
         /// <param name="viewName">a Razor View to compile to form the email content</param>
         /// <param name="model">a ViewModel instance for the specified View</param>
         /// <param name="toName">Optional name of the target recipient</param>
-        Task SendEmail<TModel>(string toAddress, string subject, string viewName, TModel model, string? toName = null);
+        Task SendEmail<TModel>(
+            string toAddress,
+            string subject,
+            string viewName,
+            TModel model,
+            string? toName = null)
+            where TModel : class;
     }
 }
