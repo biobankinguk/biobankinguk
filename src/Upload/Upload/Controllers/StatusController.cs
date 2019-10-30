@@ -48,17 +48,18 @@ namespace Upload.Controllers
         [SwaggerResponse(400, "The parameters 'Since' and 'N' are mutually exclusive.")]
         public async Task<IActionResult> List(int biobankId, [FromQuery]SubmissionPaginationParams paging)
         {
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                biobankId.ToString()))
-                return Forbid();
+          //  if (!User.HasClaim(CustomClaimTypes.BiobankId,
+          //      biobankId.ToString()))
+          //      return Forbid();
 
             if (paging.N > 0 && paging.Since != null)
                 return BadRequest(
                     "the parameters 'since' and 'n' are mutually exclusive");
 
             // Try and fetch data
-            var (total, submissions) = await _submissions.List(biobankId, paging);
-
+            var totalSubmissions = await _submissions.List(biobankId, paging);
+           // var total = totalSubmissions.
+            //(total, submissions)
             // Possible short circuits
             if (paging.Offset >= total && paging.Offset > 0)
                 return BadRequest($"'offset' exceeds total of {total} records"); //Is this really bad request?
@@ -100,9 +101,9 @@ namespace Upload.Controllers
             var submission = await _submissions.Get(submissionId);
             if (submission == null) return NotFound();
 
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                submission.BiobankId.ToString()))
-                return Forbid();
+           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
+           //     submission.BiobankId.ToString()))
+           //     return Forbid();
 
             return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
         }

@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// Represents a term from a given ontology list (currently only Snomed).
+    /// TODO decide if we still need this when the move over to OMOP occurs.
     /// </summary>
     public class OntologyTerm
     {

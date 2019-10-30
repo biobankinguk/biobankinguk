@@ -58,9 +58,9 @@ namespace Upload.Controllers
         [SwaggerResponse(409, "Newer record exists.")]
         public async Task<IActionResult> Post(int biobankId, [FromBody] SubmissionModel model)
         {
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                biobankId.ToString()))
-                return Forbid();
+           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
+           //     biobankId.ToString()))
+           //     return Forbid();
 
             // validate the model
             if (model is null) return BadRequest("Request body expected.");

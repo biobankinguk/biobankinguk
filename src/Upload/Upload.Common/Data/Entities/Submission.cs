@@ -10,7 +10,7 @@ namespace Common.Data.Upload
         /// <summary>
         /// Foreign key to Biobank
         /// </summary>
-        public int BiobankId { get; set; } 
+        public int BiobankId { get; set; }
 
         public DateTime SubmissionTimestamp { get; set; } = DateTime.UtcNow;
 
@@ -20,9 +20,10 @@ namespace Common.Data.Upload
 
         /// <summary>
         /// Foreign key to reference data. 
-        /// TODO figure out what - not on the list
+        /// TODO figure out what to do with this status type- not on the list
         /// </summary>
         public int StatusId { get; set; }
+        public virtual UploadStatus UploadStatus{get; set;}
 
         public DateTime StatusChangeTimestamp { get; set; } = DateTime.UtcNow;
 

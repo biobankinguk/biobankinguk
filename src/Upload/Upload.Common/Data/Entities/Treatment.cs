@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Common.Data.ReferenceData;
+using System;
 using System.ComponentModel.DataAnnotations;
+using Upload.Common.Data.Entities;
 
 namespace Common.Data.Upload
 {
@@ -20,10 +22,10 @@ namespace Common.Data.Upload
         [Required]
         public string TreatmentCodeId { get; set; }
         /// <summary>
-        /// A SNOMED term representing the Treatment.
+        /// An ontology (e.g. SNOMED) term representing the Treatment.
         /// </summary>
         [Required]
-        public SnomedTerm TreatmentCode { get; set; }
+        public OntologyTerm TreatmentCode { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -32,7 +34,8 @@ namespace Common.Data.Upload
         /// <summary>
         /// Optional Treatment Location.
         /// </summary>
-        public TreatmentLocation TreatmentLocation { get; set; }
+        /// TODO figure out what the decision is on this ref data type
+  //      public TreatmentLocation TreatmentLocation { get; set; }
 
         /// <summary>
         /// Foreign key column.

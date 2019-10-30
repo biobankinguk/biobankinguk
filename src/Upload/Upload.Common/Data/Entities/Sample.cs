@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Upload.Common.Data.Entities;
 
 namespace Common.Data.Upload
 {
@@ -64,7 +65,7 @@ namespace Common.Data.Upload
         /// A SNOMED term representing the site of extraction of this tissue sample.
         /// Tissue Sample only.
         /// </summary>
-        public SnomedTerm ExtractionSite { get; set; }
+        public OntologyTerm ExtractionSite { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -81,20 +82,20 @@ namespace Common.Data.Upload
         /// </summary>
         public string ExtractionProcedureId { get; set; }
         /// <summary>
-        /// A SNOMED term for the sample extraction procedure.
+        /// An ontology (e.g. SNOMED) term for the sample extraction procedure.
         /// Extracted Samples only.
         /// </summary>
-        public SnomedTerm ExtractionProcedure { get; set; }
+        public OntologyTerm ExtractionProcedure { get; set; }
 
         /// <summary>
         /// Foreign key column.
         /// </summary>
         public string SampleContentId { get; set; }
         /// <summary>
-        /// A SNOMED term describing the sample content.
+        /// An ontology (e.g. SNOMED) term describing the sample content.
         /// Exracted Samples only.
         /// </summary>
-        public SnomedTerm SampleContent { get; set; }
+        public OntologyTerm SampleContent { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -104,7 +105,7 @@ namespace Common.Data.Upload
         /// Method of acquisition for the sample content.
         /// Extracted Samples only.
         /// </summary>
-        public SampleContentMethod SampleContentMethod { get; set; }
+     //   public SampleContentMethod SampleContentMethod { get; set; }
 
         /// <summary>
         /// Foreign key column.

@@ -1,7 +1,6 @@
-﻿using Biobanks.Common.Types;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Upload.Common.Types;
 
 namespace Biobanks.Common.Models
 {

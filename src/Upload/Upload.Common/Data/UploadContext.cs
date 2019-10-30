@@ -1,13 +1,21 @@
 ﻿using Common.Data.Upload;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Data
 {
     public class UploadContext : DbContext
     {
+
+        public UploadContext(DbContextOptions options) : base(options) { }
+
+        //Data which might be moved
+
+            public DbSet<UploadStatus> UploadStatuses { get; set; }
+
+           
+        //
+
+
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Error> Errors { get; set; }
 
@@ -80,15 +88,8 @@ namespace Common.Data
                     x.CollectionName
                 }).IsUnique();
 
-            //Join entity keys
-            model.Entity<MaterialTypeMaterialTypeGroup>()
-                .HasKey(x => new
-                {
-                    x.MaterialTypeId,
-                    x.MaterialTypeGroupId
-                });
         }
 
-        public SubmissionsDbContext(DbContextOptions options) : base(options) { }
+        
     }
 }

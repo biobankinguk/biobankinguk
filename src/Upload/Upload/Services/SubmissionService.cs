@@ -2,23 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common;
-using Biobanks.Common.Data;
-using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
-using Biobanks.SubmissionApi.Types;
+using Common.Data;
+using Common.Data.Upload;
 using Microsoft.EntityFrameworkCore;
+using Upload.Common.Types;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Upload.Services
 {
     /// <inheritdoc />
     public class SubmissionService : ISubmissionService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly UploadContext _db;
 
         /// <inheritdoc />
-        public SubmissionService(SubmissionsDbContext db)
+        public SubmissionService(UploadContext db)
         {
             _db = db;
         }
@@ -27,7 +25,7 @@ namespace Biobanks.SubmissionApi.Services
         public async Task<Submission> Get(int submissionId)
             => await _db.Submissions
                 .AsNoTracking()
-                .Include(x => x.Status)
+                .Include(x => x.UploadStatus)
                 .Include(x => x.Errors)
                 .SingleOrDefaultAsync(x => x.Id == submissionId);
 
@@ -84,7 +82,7 @@ namespace Biobanks.SubmissionApi.Services
             return (await query.CountAsync(),
                 await query
                     .OrderByDescending(x => x.SubmissionTimestamp)
-                    .Include(x => x.Status)
+                    .Include(x => x.UploadStatus)
                     .Include(x => x.Errors)
                     .Skip(paging.Offset)
                     .Take(paging.Limit)
@@ -95,7 +93,7 @@ namespace Biobanks.SubmissionApi.Services
         public async Task<IEnumerable<Submission>> ListSubmissionsInProgress(int biobankId)
             => await _db.Submissions.Where(s =>
                 s.BiobankId == biobankId
-                && s.Status.Value == Statuses.Open
+                && s.UploadStatus.Value == Statuses.Open
                 && s.RecordsProcessed != s.TotalRecords)
                 .AsNoTracking()
                 .ToListAsync();
@@ -103,7 +101,7 @@ namespace Biobanks.SubmissionApi.Services
         /// <inheritdoc />
         public async Task<Submission> CreateSubmission(int totalRecords, int biobankId)
         {
-            var status = await _db.Statuses
+            var status = await _db.UploadStatuses
                 .Where(x => x.Value == Statuses.Open)
                 .SingleAsync();
 
