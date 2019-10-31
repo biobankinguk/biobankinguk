@@ -9,6 +9,6 @@
         /// <summary>
         /// The Treatment identity model on which to operate.
         /// </summary>
-        public TreatmentSubmissionModel Treatment { get; set; }
+        public TreatmentSubmissionModel Treatment { get; set; } = null!;
     }
 }

@@ -1,11 +1,14 @@
 using ClacksMiddleware.Extensions;
 using Common.Constants;
+using Common.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace Upload
 {
@@ -22,6 +25,8 @@ namespace Upload
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var defaultDb = _config.GetConnectionString("DefaultConnection");
+
             services.AddControllers();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -31,6 +36,18 @@ namespace Upload
                     opts.Authority = _config["JwtBearer:Authority"];
                     opts.Audience = ApiResourceKeys.Upload;
                 });
+
+            // Entity Framework
+            services.AddDbContext<UploadContext>(opts => opts
+                .UseLazyLoadingProxies()
+                .UseSqlServer(defaultDb));
+
+            // Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "UKCRC Tissue Directory Upload API", Version = "v1" });
+                c.EnableAnnotations();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

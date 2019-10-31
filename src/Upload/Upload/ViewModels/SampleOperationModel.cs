@@ -9,6 +9,6 @@
         /// <summary>
         /// The Sample identity model on which to operate.
         /// </summary>
-        public SampleSubmissionModel Sample { get; set; }
+        public SampleSubmissionModel Sample { get; set; } = null!;
     }
 }

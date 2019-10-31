@@ -10,12 +10,7 @@ namespace Common.Data
 
         //Data which might be moved
 
-            public DbSet<UploadStatus> UploadStatuses { get; set; }
-
-           
-        //
-
-
+        public DbSet<UploadStatus> UploadStatuses { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Error> Errors { get; set; }
 
@@ -87,9 +82,6 @@ namespace Common.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
-
-        }
-
-        
+        }      
     }
 }

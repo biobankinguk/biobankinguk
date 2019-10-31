@@ -9,6 +9,6 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// Collection of error models for the given paginated response viewmodel.
         /// </summary>
-        public ICollection<ErrorModel> Errors { get; set; }
+        public ICollection<ErrorModel> Errors { get; set; } = null!;
     }
 }
