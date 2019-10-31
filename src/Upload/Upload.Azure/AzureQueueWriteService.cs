@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Biobanks.SubmissionApi.Services.Contracts;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Queue;
 
 namespace Biobanks.SubmissionApi.Services
 {
