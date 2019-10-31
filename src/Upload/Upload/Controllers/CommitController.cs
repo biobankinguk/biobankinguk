@@ -42,7 +42,7 @@ namespace Upload.Controllers
         [SwaggerResponse(400, Description = "Expected Type parameter to specify 'update' or 'replace'.")]
         [SwaggerResponse(400, Description = "Organisation ID claim in bad format.")]
         [SwaggerResponse(400, Description = "There are Open Submissions which have not been processed.")]
-        public async Task<IActionResult> Post(int biobankId, string type = null)
+        public async Task<IActionResult> Post(int biobankId, string type)
         {
             if (type == null)
                 return BadRequest("Expected Type parameter to specify 'update' or 'replace'");

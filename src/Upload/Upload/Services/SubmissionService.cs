@@ -31,8 +31,7 @@ namespace Upload.Services
                 .SingleOrDefaultAsync(x => x.Id == submissionId);
 
         /// <inheritdoc />
-        public async Task<(int total, IEnumerable<Submission> submissions)>
-            List(int biobankId, SubmissionPaginationParams paging)
+        public async Task<IEnumerable<Submission>> List(int biobankId, SubmissionPaginationParams paging)
         {
             // we're gonna build up conditional stuff on this query, so store a basic one for now
             var query = _db.Submissions.AsNoTracking();
@@ -80,14 +79,13 @@ namespace Upload.Services
 
             query = query.Where(predicate); //add the filter permanently now
 
-            return (await query.CountAsync(),
-                await query
+            return await query
                     .OrderByDescending(x => x.SubmissionTimestamp)
                     .Include(x => x.UploadStatus)
                     .Include(x => x.Errors)
                     .Skip(paging.Offset)
                     .Take(paging.Limit)
-                    .ToListAsync());
+                    .ToListAsync();
         }
 
         /// <inheritdoc />

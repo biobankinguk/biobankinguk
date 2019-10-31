@@ -113,7 +113,7 @@ namespace Upload.Controllers
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntology value.");
                         else if (string.IsNullOrEmpty(diagnosisModel.DiagnosisCodeOntologyVersion))
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntologyVersion value.");
-                        else if (diagnosisModel.DateDiagnosed == default(DateTime) || diagnosisModel.DateDiagnosed > DateTime.Now)
+                        else if (diagnosisModel.DateDiagnosed == default || diagnosisModel.DateDiagnosed > DateTime.Now)
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DateDiagnosed value.");
                         else
                             diagnosesUpdates.Add(diagnosisModel);
@@ -152,7 +152,7 @@ namespace Upload.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
                         else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
-                        else if (sampleModel.DateCreated == default(DateTime) || sampleModel.DateCreated > DateTime.Now)
+                        else if (sampleModel.DateCreated == default || sampleModel.DateCreated > DateTime.Now)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid DateCreated value.");
 
                         else
@@ -192,7 +192,7 @@ namespace Upload.Controllers
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntology value.");
                         else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntologyVersion))
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
-                        else if (treatmentModel.DateTreated == default(DateTime) || treatmentModel.DateTreated > DateTime.Now)
+                        else if (treatmentModel.DateTreated == default || treatmentModel.DateTreated > DateTime.Now)
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid DateTreated value.");
                         else
                             treatmentsUpdates.Add(treatmentModel);
@@ -329,7 +329,7 @@ namespace Upload.Controllers
         {
             sections = new List<string>();
 
-            IEqualityComparer<T> GetComparer<T>(ICollection<T> models)
+            static IEqualityComparer<T> GetComparer<T>(ICollection<T> models)
             {
                 switch (models)
                 {
@@ -343,7 +343,7 @@ namespace Upload.Controllers
                 }
             }
 
-            bool NoDuplicates<T>(ICollection<T> models)
+            static bool NoDuplicates<T>(ICollection<T> models)
                 where T : BaseOperationModel
                 => models.Count == models.Distinct(GetComparer(models)).Count();
 

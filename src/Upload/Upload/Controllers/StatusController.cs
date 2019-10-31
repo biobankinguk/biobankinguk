@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -48,23 +49,23 @@ namespace Upload.Controllers
         [SwaggerResponse(400, "The parameters 'Since' and 'N' are mutually exclusive.")]
         public async Task<IActionResult> List(int biobankId, [FromQuery]SubmissionPaginationParams paging)
         {
-          //  if (!User.HasClaim(CustomClaimTypes.BiobankId,
-          //      biobankId.ToString()))
-          //      return Forbid();
+              //  if (!User.HasClaim(CustomClaimTypes.BiobankId,
+              //      biobankId.ToString()))
+              //      return Forbid();
 
             if (paging.N > 0 && paging.Since != null)
                 return BadRequest(
                     "the parameters 'since' and 'n' are mutually exclusive");
 
             // Try and fetch data
-            var totalSubmissions = await _submissions.List(biobankId, paging);
-           // var total = totalSubmissions.
-            //(total, submissions)
-            // Possible short circuits
-            if (paging.Offset >= total && paging.Offset > 0)
-                return BadRequest($"'offset' exceeds total of {total} records"); //Is this really bad request?
+            var submissions = await _submissions.List(biobankId, paging);
+            var submissionCount = submissions.Count();
 
-            if (total == 0)
+            // Possible short circuits
+            if (paging.Offset >= submissionCount && paging.Offset > 0)
+                return BadRequest($"'offset' exceeds total of {submissionCount} records"); //Is this really bad request?
+
+            if (submissionCount == 0)
                 return Ok(new PaginatedSubmissionSummariesModel
                 {
                     Submissions = new List<SubmissionSummaryModel>()
@@ -81,7 +82,7 @@ namespace Upload.Controllers
                 new Uri(HttpContext.Request.GetEncodedUrl()),
                 biobankId,
                 paging,
-                model.Submissions.Count, total,
+                model.Submissions.Count, submissionCount,
                 ref model);
 
             return Ok(model);

@@ -23,7 +23,7 @@ namespace Biobanks.SubmissionApi.Services.Contracts
         /// <param name="biobankId">The ID of the Biobank to list Submissions for</param>
         /// <param name="paging">Paging parameters</param>
         /// <returns>A paged list of Submissions for the requested Biobank</returns>
-        Task<(int total, IEnumerable<Submission> submissions)> List(int biobankId, SubmissionPaginationParams paging);
+        Task<IEnumerable<Submission>> List(int biobankId, SubmissionPaginationParams paging);
 
         /// <summary>
         /// Get a list of metadata records for Submissions belonging to a given Biobank, which 
