@@ -8,20 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using Upload;
 using Upload.Common.Types;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Upload.Services
 {
     /// <inheritdoc />
     public class CommitService : ICommitService
     {
-        private readonly IMapper _mapper;
 
         private readonly UploadContext _db;
 
         /// <inheritdoc />
-        public CommitService(UploadContext db, IMapper mapper)
+        public CommitService(UploadContext db)
         {
             _db = db;
-            _mapper = mapper;
         }
 
         /// <inheritdoc />

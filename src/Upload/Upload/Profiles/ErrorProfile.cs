@@ -2,7 +2,7 @@
 using Biobanks.SubmissionApi.Models;
 using Common.Data.Upload;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Upload.Profiles
 {
     /// <inheritdoc />
     public class ErrorProfile : Profile

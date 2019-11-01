@@ -7,7 +7,7 @@ using Common.Data.Upload;
 using Microsoft.EntityFrameworkCore;
 using Upload.Common.Types;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Upload.Services
 {
     /// <inheritdoc />
     public class ErrorService : IErrorService

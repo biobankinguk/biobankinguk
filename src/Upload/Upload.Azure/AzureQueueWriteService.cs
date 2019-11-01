@@ -3,7 +3,7 @@ using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Queue;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Upload.Azure
 {
     /// <inheritdoc />
     public class AzureQueueWriteService : IQueueWriteService

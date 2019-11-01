@@ -1,3 +1,5 @@
+using AutoMapper;
+using Biobanks.SubmissionApi.Services.Contracts;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;
@@ -9,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Upload.Azure;
+using Upload.Services;
 
 namespace Upload
 {
@@ -48,6 +52,17 @@ namespace Upload
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UKCRC Tissue Directory Upload API", Version = "v1" });
                 c.EnableAnnotations();
             });
+
+            //Other 3rd party
+            services.AddAutoMapper(typeof(DiagnosisProfile));
+
+            //services
+            services.AddTransient<ICommitService, CommitService>();
+            services.AddTransient<IErrorService, ErrorService>();
+            services.AddTransient<IRejectService, RejectService>();
+            services.AddTransient<ISubmissionService, SubmissionService>();
+            services.AddTransient<IBlobWriteService, AzureBlobWriteService>();
+            services.AddTransient<IQueueWriteService, AzureQueueWriteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,8 +85,14 @@ namespace Upload
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers().RequireAuthorization();
-
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint(
+                "/swagger/v1/swagger.json",
+                "UKCRC Tissue Director Upload API"));
+
+            
         }
     }
 }

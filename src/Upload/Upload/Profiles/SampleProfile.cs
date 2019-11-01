@@ -3,7 +3,7 @@ using Biobanks.SubmissionApi.Models;
 using Common.Data.Upload;
 using SampleModel = Biobanks.Common.Models.SampleModel;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Upload.Profiles
 {
     /// <inheritdoc />
     public class SampleProfile : Profile

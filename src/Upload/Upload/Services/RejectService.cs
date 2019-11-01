@@ -6,7 +6,7 @@ using Common.Data;
 using Upload.Common.Types;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Upload.Services
 {
     /// <inheritdoc />
     public class RejectService : IRejectService

@@ -4,7 +4,7 @@ using AutoMapper;
 using Biobanks.Common.Models;
 using Common.Data.Upload;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Upload.Profiles
 {
     /// <inheritdoc />
     public class SubmissionProfile : Profile

@@ -4,7 +4,7 @@ using Common.Data.ReferenceData;
 using Upload.Common.Data.Entities;
 using Upload.ViewModels;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Upload.Profiles
 {
     /// <inheritdoc />
     public class OntologyProfile : Profile

@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="Hangfire" Version="1.7.7" />
     <PackageReference Include="IdentityModel" Version="4.0.0" />
@@ -24,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common\Common.csproj" />
+    <ProjectReference Include="..\Upload.Azure\Upload.Azure.csproj" />
     <ProjectReference Include="..\Upload.Common\Upload.Common.csproj" />
     <ProjectReference Include="..\Upload.Contracts\Upload.Contracts.csproj" />
   </ItemGroup>

@@ -18,9 +18,9 @@ namespace Directory.Auth.Identity
                 if (string.IsNullOrEmpty(pwd))
                 {
                     throw new ApplicationException(@"
-A non-empty password must be configured for seeding the inital SuperAdmin User.
-Please set SuperAdminSeedPassword in a user secrets file,
-or the environment variable ASPNETCORE_SuperAdminSeedPassword");
+                    A non-empty password must be configured for seeding the inital SuperAdmin User.
+                    Please set SuperAdminSeedPassword in a user secrets file,
+                    or the environment variable ASPNETCORE_SuperAdminSeedPassword");
                 }
 
                 var user = new DirectoryUser
