@@ -33,23 +33,14 @@ namespace Common.Data.Upload
         public int? AgeAtDonation { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public int MaterialTypeId { get; set; }
-        /// <summary>
-        /// The type of sample material.
-        /// </summary>
-        [Required]
-        public MaterialType MaterialType { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public int? StorageTemperatureId { get; set; }
-        /// <summary>
-        /// The storage temperature of this sample.
-        /// </summary>
-        public StorageTemperature StorageTemperature { get; set; }
 
         /// <summary>
         /// The date the sample was "created" e.g. extracted.
@@ -58,64 +49,34 @@ namespace Common.Data.Upload
         public DateTime DateCreated { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public string ExtractionSiteId { get; set; }
-        /// <summary>
-        /// A SNOMED term representing the site of extraction of this tissue sample.
-        /// Tissue Sample only.
-        /// </summary>
-        public OntologyTerm ExtractionSite { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public int? ExtractionSiteOntologyVersionId { get; set; }
 
         /// <summary>
-        /// Ontology version used for sample extraction site.
-        /// </summary>
-        public OntologyVersion ExtractionSiteOntologyVersion { get; set; }
-
-        /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public string ExtractionProcedureId { get; set; }
-        /// <summary>
-        /// An ontology (e.g. SNOMED) term for the sample extraction procedure.
-        /// Extracted Samples only.
-        /// </summary>
-        public OntologyTerm ExtractionProcedure { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public string SampleContentId { get; set; }
-        /// <summary>
-        /// An ontology (e.g. SNOMED) term describing the sample content.
-        /// Exracted Samples only.
-        /// </summary>
-        public OntologyTerm SampleContent { get; set; }
 
         /// <summary>
         /// Foreign key column.
         /// </summary>
         public int? SampleContentMethodId { get; set; }
-        /// <summary>
-        /// Method of acquisition for the sample content.
-        /// Extracted Samples only.
-        /// </summary>
-     //   public SampleContentMethod SampleContentMethod { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public int? SexId { get; set; }
-
-        /// <summary>
-        /// Sex of the individual.
-        /// </summary>
-        public Sex Sex { get; set; }
 
         /// <summary>
         /// Name of the collection to associate the sample with.
@@ -124,8 +85,7 @@ namespace Common.Data.Upload
     }
 
     /// <inheritdoc />
-    public class Sample<TSampleAvailability> : Sample
-        where TSampleAvailability : class
+    public class Sample<TSampleAvailability> : Sample where TSampleAvailability : class
     {
         /// <summary>
         /// Join entities for Availibility constraints which apply to this sample.

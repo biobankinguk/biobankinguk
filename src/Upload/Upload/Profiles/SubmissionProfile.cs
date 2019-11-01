@@ -14,9 +14,9 @@ namespace Biobanks.SubmissionApi.MappingProfiles
         {
             CreateMap<Submission, SubmissionSummaryModel>()
                 .ForMember(
-                    dest => dest.Status,
+                    dest => dest.UploadStatus,
                     opts => opts.MapFrom(
-                        src => src.UploadStatus.Value))
+                        src => src.UploadStatus))
                 .ForMember(
                     dest => dest.ErrorCount,
                     opts => opts.MapFrom(

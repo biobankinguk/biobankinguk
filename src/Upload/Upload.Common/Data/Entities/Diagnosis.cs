@@ -24,7 +24,7 @@ namespace Common.Data.Upload
         /// An OMOP term representing the Diagnosis.
         /// </summary>
         [Required]
-        public OmopTerm DiagnosisCode { get; set; }
+        public virtual OmopTerm DiagnosisCode { get; set; }
 
         /// <summary>
         /// Foreign key column.

@@ -44,6 +44,7 @@ namespace Biobanks.SubmissionApi.Services
 
             _db.Database.CommitTransaction();
 
+            //TODO need to do UploadStatus lookup - or move to DB?
             // mark the open submissions as committed
             foreach (var submission in _db.Submissions
                 .Include(s => s.UploadStatus)

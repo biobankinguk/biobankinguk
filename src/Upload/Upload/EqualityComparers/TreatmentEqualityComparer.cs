@@ -12,14 +12,14 @@ namespace Biobanks.SubmissionApi.EqualityComparers
             => x.OrganisationId == y.OrganisationId &&
                x.IndividualReferenceId.Equals(y.IndividualReferenceId, StringComparison.OrdinalIgnoreCase) &&
                x.DateTreated == y.DateTreated &&
-               x.TreatmentCode == y.TreatmentCode;
+               x.TreatmentCodeId == y.TreatmentCodeId;
 
         /// <inheritdoc />
         public int GetHashCode(Treatment obj)
             => (obj.OrganisationId +
                 obj.IndividualReferenceId +
                 obj.DateTreated +
-                obj.TreatmentCode)
+                obj.TreatmentCodeId)
                 .GetHashCode();
     }
 }

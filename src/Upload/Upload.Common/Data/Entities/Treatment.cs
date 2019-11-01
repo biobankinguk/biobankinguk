@@ -17,37 +17,21 @@ namespace Common.Data.Upload
         public DateTime DateTreated { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         [Required]
         public string TreatmentCodeId { get; set; }
-        /// <summary>
-        /// An ontology (e.g. SNOMED) term representing the Treatment.
-        /// </summary>
-        [Required]
-        public OntologyTerm TreatmentCode { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         public int? TreatmentLocationId { get; set; }
-        /// <summary>
-        /// Optional Treatment Location.
-        /// </summary>
-        /// TODO figure out what the decision is on this ref data type
-  //      public TreatmentLocation TreatmentLocation { get; set; }
 
         /// <summary>
-        /// Foreign key column.
+        /// Weak Foreign key column.
         /// </summary>
         [Required]
         public int TreatmentCodeOntologyVersionId { get; set; }
-
-        /// <summary>
-        /// Ontology version used for treatment code.
-        /// </summary>
-        [Required]
-        public OntologyVersion TreatmentCodeOntologyVersion { get; set; }
     }
 
     /// <inheritdoc />

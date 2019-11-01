@@ -9,6 +9,6 @@
         public string RecordIdentifiers { get; set; }
 
         public int SubmissionId { get; set; }
-        public Submission Submission { get; set; }
+        public virtual Submission Submission { get; set; }
     }
 }

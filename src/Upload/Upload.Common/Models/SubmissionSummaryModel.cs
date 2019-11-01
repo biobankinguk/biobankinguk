@@ -11,7 +11,7 @@ namespace Biobanks.Common.Models
         public int RecordsProcessed { get; set; }
         public int RecordsPassed => RecordsProcessed - RecordsFailed;
         public int RecordsFailed { get;set; }
-        public string Status { get; set; }
+        public string UploadStatus { get; set; }
         public DateTime StatusChangeTimestamp { get; set; }
         public int ErrorCount { get; set; }
         public Uri ErrorUri { get; set; }
