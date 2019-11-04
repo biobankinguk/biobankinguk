@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Upload.Contracts
 {
     /// <summary>
     /// Service for writing messages to storage queues.

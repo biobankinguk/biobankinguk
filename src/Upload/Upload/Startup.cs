@@ -6,12 +6,15 @@ using Common.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Upload.Azure;
+using Upload.Contracts;
+using Upload.Profiles;
 using Upload.Services;
 
 namespace Upload
@@ -46,6 +49,11 @@ namespace Upload
                 .UseLazyLoadingProxies()
                 .UseSqlServer(defaultDb));
 
+            //
+            services.AddTransient(s =>
+                        CloudStorageAccount.Parse(
+                            _config.GetConnectionString("blobstorage")));
+
             // Swagger
             services.AddSwaggerGen(c =>
             {
@@ -61,6 +69,9 @@ namespace Upload
             services.AddTransient<IErrorService, ErrorService>();
             services.AddTransient<IRejectService, RejectService>();
             services.AddTransient<ISubmissionService, SubmissionService>();
+
+            //Services which talk to Azure. Can be swapped out for other services
+            //TODO replace with an extension method which handles DI for Azure (bit neater)
             services.AddTransient<IBlobWriteService, AzureBlobWriteService>();
             services.AddTransient<IQueueWriteService, AzureQueueWriteService>();
         }

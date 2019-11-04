@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Newtonsoft.Json;
+using Upload.Contracts;
 
 namespace Upload.Azure
 {
