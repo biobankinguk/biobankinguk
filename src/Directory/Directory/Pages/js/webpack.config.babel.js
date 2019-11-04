@@ -2,10 +2,13 @@
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
 export default {
-  entry: "./Pages/js/main.js",
+  entry: {
+    ie: "./Pages/js/main-ie.js",
+    bundle: "./Pages/js/main.js"
+  },
   output: {
     path: path.resolve(__dirname, "../../wwwroot/dist"),
-    filename: "bundle.js"
+    filename: "[name].js"
   },
   devtool: "source-map",
   module: {
