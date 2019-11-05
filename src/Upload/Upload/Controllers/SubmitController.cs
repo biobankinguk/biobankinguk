@@ -3,6 +3,7 @@ using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.EqualityComparers;
 using Biobanks.SubmissionApi.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -21,6 +22,7 @@ namespace Upload.Controllers
     /// <summary>
     /// Controller for handling submissions of data for a biobank
     /// </summary>
+    [AllowAnonymous]
     [Route("[controller]")]
     [ApiController]
     public class SubmitController : Controller
