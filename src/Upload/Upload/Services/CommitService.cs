@@ -46,10 +46,10 @@ namespace Upload.Services
             // mark the open submissions as committed
             foreach (var submission in _db.Submissions
                 .Include(s => s.UploadStatus)
-                .Where(s => s.BiobankId == organisationId && s.UploadStatus.Value == Statuses.Open))
+                .Where(s => s.BiobankId == organisationId && s.UploadStatus == Statuses.Open))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.UploadStatus = _db.UploadStatuses.FirstOrDefault(s => s.Value == Statuses.Committed);
+                submission.UploadStatus = Statuses.Committed;
             }
 
             await _db.SaveChangesAsync();

@@ -49,7 +49,7 @@ namespace Upload.Services
 
                 //get the timestamp of the nth most recent commit
                 var nthCommitTimeStamp = (await query
-                        .Where(predicate.And(y => y.UploadStatus.Value == Statuses.Committed))
+                        .Where(predicate.And(y => y.UploadStatus == Statuses.Committed))
                         .OrderByDescending(x => x.SubmissionTimestamp)
                         .Select(x => new { x.StatusChangeTimestamp, x.SubmissionTimestamp })
                         .Distinct()
@@ -92,7 +92,7 @@ namespace Upload.Services
         public async Task<IEnumerable<Submission>> ListSubmissionsInProgress(int biobankId)
             => await _db.Submissions.Where(s =>
                 s.BiobankId == biobankId
-                && s.UploadStatus.Value == Statuses.Open
+                && s.UploadStatus == Statuses.Open
                 && s.RecordsProcessed != s.TotalRecords)
                 .AsNoTracking()
                 .ToListAsync();
@@ -100,15 +100,11 @@ namespace Upload.Services
         /// <inheritdoc />
         public async Task<Submission> CreateSubmission(int totalRecords, int biobankId)
         {
-            var status = await _db.UploadStatuses
-                .Where(x => x.Value == Statuses.Open)
-                .SingleAsync();
-
             var sub = new Submission
             {
                 BiobankId = biobankId,
                 TotalRecords = totalRecords,
-                UploadStatus = status
+                UploadStatus = Statuses.Open
             };
 
             await _db.Submissions.AddAsync(sub);

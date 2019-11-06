@@ -6,6 +6,7 @@ using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Upload.Common.Types;
+using Upload.Config;
 using Upload.Contracts;
 using Upload.EqualityComparers;
 
@@ -27,20 +29,20 @@ namespace Upload.Controllers
     [ApiController]
     public class SubmitController : Controller
     {
-        private readonly IConfiguration _config;
+        private readonly ApiSettings _config;
         private readonly IMapper _mapper;
         private readonly ISubmissionService _submissionService;
         private readonly IBlobWriteService _blobWriteService;
         private readonly IQueueWriteService _queueWriteService;
 
         /// <inheritdoc />
-        public SubmitController(IConfiguration config,
+        public SubmitController(IOptions<ApiSettings> options,
             IMapper mapper,
             ISubmissionService submissionService,
             IBlobWriteService blobWriteService,
             IQueueWriteService queueWriteService)
         {
-            _config = config;
+            _config = options.Value;
             _mapper = mapper;
             _submissionService = submissionService;
             _blobWriteService = blobWriteService;
@@ -82,7 +84,7 @@ namespace Upload.Controllers
                 return BadRequest(
                     $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', sections)}");
 
-            var maxEntitiesPerSubmission = _config.GetValue<int>("Limits:EntitiesPerSubmission");
+            var maxEntitiesPerSubmission = _config.EntitiesPerSubmission;
             if (model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count > maxEntitiesPerSubmission)
             {
                 return BadRequest($"This submission contains more than the maximum of {maxEntitiesPerSubmission} records allowed.");

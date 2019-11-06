@@ -12,7 +12,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Threading.Tasks;
 using Upload.Azure;
+using Upload.Config;
 using Upload.Contracts;
 using Upload.Profiles;
 using Upload.Services;
@@ -33,6 +36,14 @@ namespace Upload
         public void ConfigureServices(IServiceCollection services)
         {
             var defaultDb = _config.GetConnectionString("DefaultConnection");
+
+            var config = new ConfigurationBuilder()
+               .AddJsonFile("appsettings.json", false, true)
+               .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true)
+               .AddEnvironmentVariables()
+               .Build();
+            services.AddSingleton(_ => config);
+            services.Configure<ApiSettings>(config.GetSection("ApiSettings"));
 
             services.AddControllers();
 

@@ -36,7 +36,7 @@ namespace Upload.Services
             foreach (var submission in _db.Submissions.Where(s => s.BiobankId == organisationId))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.UploadStatus = _db.UploadStatuses.FirstOrDefault(s => s.Value == Statuses.Rejected);
+                submission.UploadStatus = Statuses.Rejected;
             }
 
             // save the submission changes to db

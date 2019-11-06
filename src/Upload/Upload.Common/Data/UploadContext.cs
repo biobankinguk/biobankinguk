@@ -9,8 +9,6 @@ namespace Common.Data
         public UploadContext(DbContextOptions options) : base(options) { }
 
         //Data which might be moved
-
-        public DbSet<UploadStatus> UploadStatuses { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Error> Errors { get; set; }
 

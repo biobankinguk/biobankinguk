@@ -18,7 +18,7 @@ namespace Common.Data.Upload
 
         public int RecordsProcessed { get; set; }
 
-        public virtual UploadStatus UploadStatus { get; set; }
+        public string UploadStatus { get; set; }
 
         public DateTime StatusChangeTimestamp { get; set; } = DateTime.UtcNow;
 
