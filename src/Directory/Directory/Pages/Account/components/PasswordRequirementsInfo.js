@@ -1,9 +1,6 @@
 import React from "react";
 import {
-  Box,
   Flex,
-  Icon,
-  Text,
   Alert,
   AlertTitle,
   AlertIcon,
