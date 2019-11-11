@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Upload.Contracts;
 
@@ -13,8 +14,10 @@ namespace Upload.Azure
         private readonly CloudBlobClient _blobClient;
 
         /// <inheritdoc />
-        public AzureBlobWriteService(CloudStorageAccount storageAccount)
+        public AzureBlobWriteService(IConfiguration _config)
         {
+            var storageAccount = CloudStorageAccount.Parse(
+                            _config.GetConnectionString("AzureStorageAccount"));
             _blobClient = storageAccount.CreateCloudBlobClient();
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Queue;
+using Microsoft.Extensions.Configuration;
 using Upload.Contracts;
 
 namespace Upload.Azure
@@ -11,9 +12,12 @@ namespace Upload.Azure
         private readonly CloudQueueClient _queueClient;
 
         /// <inheritdoc />
-        public AzureQueueWriteService(CloudStorageAccount storageAccount)
+        public AzureQueueWriteService(IConfiguration _config)
         {
+            var storageAccount = CloudStorageAccount.Parse(
+                            _config.GetConnectionString("AzureStorageAccount"));
             _queueClient = storageAccount.CreateCloudQueueClient();
+            
         }
 
         /// <inheritdoc />
