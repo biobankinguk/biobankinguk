@@ -6,9 +6,9 @@ import {
   AlertTitle,
   AlertDescription
 } from "@chakra-ui/core";
-import { hasErrors } from "../components/ModelValidationSummary";
-import Layout from "../../Shared/Layout";
-import ConfirmationSent from "../components/ConfirmationSent";
+import Layout from "../../../components/Layout";
+import { hasErrors } from "../../../components/ModelValidationSummary";
+import ConfirmationSent from "../../../components/ConfirmationSent";
 
 const ResendConfirm = ({ ModelState, Username }) => {
   let content;
