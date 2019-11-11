@@ -1,6 +1,7 @@
 ﻿using Common.Data.ReferenceData;
 using Common.DTO;
 using Config;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
@@ -10,19 +11,20 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RefDataLoader
 {
-    public class DataService : IDataService
+    public class DataService : IDataService, IHostedService
     {
         private readonly ApiSettings _config;
         private readonly HttpClient _client;
 
-        public DataService(IOptions<ApiSettings> options, HttpClient client)
+        public DataService(IOptions<ApiSettings> options, IHttpClientFactory client)
         {
             _config = options.Value;
-            _client = client;
+            _client = client.CreateClient(string.Empty);
         }
 
         public async Task SeedData()
@@ -180,6 +182,12 @@ namespace RefDataLoader
             var json = await r.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<T>>(json);
         }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+            => await SeedData();
+
+        public Task StopAsync(CancellationToken cancellationToken)
+            => Task.CompletedTask;
     }
 
     public interface IDataService

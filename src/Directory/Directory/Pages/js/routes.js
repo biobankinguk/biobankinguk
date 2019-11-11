@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, { cloneElement } from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider, CSSReset, theme } from "@chakra-ui/core";
 import ukcrcTheme from "../../../../theme/dist/theme";
@@ -10,6 +10,8 @@ import ConfirmLogout from "../Account/pages/ConfirmLogout";
 import LogoutRedirect from "../Account/pages/LogoutRedirect";
 import Register from "../Account/pages/Register";
 import RegisterResult from "../Account/pages/RegisterResult";
+import ConfirmAccount from "../Account/pages/ConfirmAccount";
+import ResendConfirm from "../Account/pages/ResendConfirm";
 
 /*
  * Here we conditionally render small one page React apps
@@ -17,12 +19,14 @@ import RegisterResult from "../Account/pages/RegisterResult";
  */
 
 const routeComponents = {
-  login: <Login />,
-  ["login-redirect"]: <LoginRedirect />,
-  ["confirm-logout"]: <ConfirmLogout />,
-  ["logout-redirect"]: <LogoutRedirect />,
-  register: <Register />,
-  ["register-result"]: <RegisterResult />
+  Login: <Login />,
+  LoginRedirect: <LoginRedirect />,
+  LogoutConfirm: <ConfirmLogout />,
+  LogoutRedirect: <LogoutRedirect />,
+  Register: <Register />,
+  RegisterResult: <RegisterResult />,
+  Confirm: <ConfirmAccount />,
+  ConfirmResend: <ResendConfirm />
 };
 
 /*
@@ -44,7 +48,7 @@ if (root && root.dataset.route) {
             body: { backgroundColor: theme.colors.defaultBackground }
           }}
         />
-        {routeComponents[route]}
+        {cloneElement(routeComponents[route], window.__TDCC__.ViewModel)}
       </ThemeProvider>,
       document.getElementById("react-app")
     );
