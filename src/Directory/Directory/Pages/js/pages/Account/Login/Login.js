@@ -30,7 +30,7 @@ const Login = vm => {
         {failureAlert}
         <LoginForm {...vm} />
 
-        <Link color="primary.500" href="#">
+        <Link color="primary.500" href="ForgotPassword">
           Forgot password?
         </Link>
       </Flex>
