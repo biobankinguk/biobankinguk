@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
-import { Button, Stack, Box, Flex, Grid, SimpleGrid } from "@chakra-ui/core";
+import { Button, Stack, Box, SimpleGrid } from "@chakra-ui/core";
 import valSchema from "./register-form-validation";
 import CommonFormikInput from "./CommonFormikInput";
 import { hasErrors } from "./ModelValidationSummary";
