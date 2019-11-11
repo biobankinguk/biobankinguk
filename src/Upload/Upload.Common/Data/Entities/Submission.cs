@@ -18,10 +18,10 @@ namespace Common.Data.Upload
 
         public int RecordsProcessed { get; set; }
 
-        public string UploadStatus { get; set; }
+        public string UploadStatus { get; set; } = string.Empty;
 
         public DateTime StatusChangeTimestamp { get; set; } = DateTime.UtcNow;
 
-        public virtual ICollection<Error> Errors { get; set; }
+        public virtual ICollection<Error> Errors { get; set; } = null!;
     }
 }

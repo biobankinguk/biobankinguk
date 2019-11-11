@@ -11,11 +11,11 @@ namespace Biobanks.Common.Models
         /// A non-identifiable reference number for the individual
         /// </summary>
         [Required]
-        public string IndividualReferenceId { get; set; }
+        public string IndividualReferenceId { get; set; } = string.Empty;
 
         public DateTime DateTreated { get; set; }
 
         [Required]
-        public string TreatmentCode { get; set; }
+        public string TreatmentCode { get; set; } = string.Empty;
     }
 }

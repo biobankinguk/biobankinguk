@@ -10,8 +10,8 @@ namespace Biobanks.Common.Models
 
         public int Total { get; set; }
 
-        public Uri Next { get; set; }
+        public Uri? Next { get; set; }
 
-        public Uri Previous { get; set; }
+        public Uri? Previous { get; set; }
     }
 }

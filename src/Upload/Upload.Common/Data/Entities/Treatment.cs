@@ -1,9 +1,8 @@
-﻿using Common.Data.ReferenceData;
+﻿using Common.Data.Upload;
 using System;
 using System.ComponentModel.DataAnnotations;
-using Upload.Common.Data.Entities;
 
-namespace Common.Data.Upload
+namespace Upload.Common.Data.Entities
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>
@@ -20,7 +19,7 @@ namespace Common.Data.Upload
         /// Weak Foreign key column.
         /// </summary>
         [Required]
-        public string TreatmentCodeId { get; set; }
+        public string TreatmentCodeId { get; set; } = string.Empty;
 
         /// <summary>
         /// Weak Foreign key column.

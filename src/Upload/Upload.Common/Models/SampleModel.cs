@@ -19,13 +19,13 @@ namespace Biobanks.Common.Models
         /// The type of material
         /// </summary>
         [Required]
-        public string MaterialType { get; set; }
+        public string MaterialType { get; set; } = string.Empty;
 
         /// <summary>
         /// The routine temperature that the sample is kept at
         /// </summary>
         [Required]
-        public string StorageTemperature { get; set; }
+        public string StorageTemperature { get; set; } = string.Empty;
 
         /// <summary>
         /// The date the sample was created, in ISO-8601 extended date or IETF RFC-3339 full-date format, e.g. 2016-01-01
@@ -35,15 +35,15 @@ namespace Biobanks.Common.Models
         /// <summary>
         /// The sex of the individual.
         /// </summary>
-        public string Sex { get; set; }
+        public string Sex { get; set; } = string.Empty;
 
         //The properties below are all conditionally nullable
 
         #region Tissue Sample properties
 
-        public string ExtractionSite { get; set; }
-        public string ExtractionSiteOntology { get;set; }
-        public string ExtractionSiteOntologyVersion { get;set; }
+        public string ExtractionSite { get; set; } = string.Empty;
+        public string ExtractionSiteOntology { get; set; } = string.Empty;
+        public string ExtractionSiteOntologyVersion { get; set; } = string.Empty;
 
         public OntologyField ExtractionSiteOntologyField { get; set; } = OntologyField.Code;
 
@@ -51,11 +51,11 @@ namespace Biobanks.Common.Models
 
         #region Extracted Sample Properties
 
-        public string ExtractionProcedure { get; set; }
+        public string ExtractionProcedure { get; set; } = string.Empty;
 
-        public string SampleContent { get; set; }
+        public string SampleContent { get; set; } = string.Empty;
 
-        public string SampleContentMethod { get; set; }
+        public string SampleContentMethod { get; set; } = string.Empty;
 
         public OntologyField ExtractionProcedureOntologyField { get; set; } = OntologyField.Code;
 

@@ -18,6 +18,6 @@ namespace Biobanks.Common.Models
         /// A non-identifiable reference number for the individual
         /// </summary>
         [Required]
-        public string IndividualReferenceId { get; set; }
+        public string IndividualReferenceId { get; set; } = string.Empty;
     }
 }

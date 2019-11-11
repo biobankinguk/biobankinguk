@@ -18,7 +18,7 @@ namespace Common.Data.Upload
         /// (and unique within organisation) sample identifier.
         /// </summary>
         [Required]
-        public string Barcode { get; set; }
+        public string Barcode { get; set; } = string.Empty;
 
         /// <summary>
         /// Optional Year of birth of the individual.
@@ -51,7 +51,7 @@ namespace Common.Data.Upload
         /// <summary>
         /// Weak Foreign key column.
         /// </summary>
-        public string ExtractionSiteId { get; set; }
+        public string ExtractionSiteId { get; set; } = string.Empty;
 
         /// <summary>
         /// Weak Foreign key column.
@@ -61,12 +61,12 @@ namespace Common.Data.Upload
         /// <summary>
         /// Weak Foreign key column.
         /// </summary>
-        public string ExtractionProcedureId { get; set; }
+        public string ExtractionProcedureId { get; set; } = string.Empty;
 
         /// <summary>
         /// Weak Foreign key column.
         /// </summary>
-        public string SampleContentId { get; set; }
+        public string SampleContentId { get; set; } = string.Empty;
 
         /// <summary>
         /// Foreign key column.
@@ -81,7 +81,7 @@ namespace Common.Data.Upload
         /// <summary>
         /// Name of the collection to associate the sample with.
         /// </summary>
-        public string CollectionName { get; set; }
+        public string CollectionName { get; set; } = string.Empty;
     }
 
     /// <inheritdoc />
@@ -90,7 +90,7 @@ namespace Common.Data.Upload
         /// <summary>
         /// Join entities for Availibility constraints which apply to this sample.
         /// </summary>
-        public ICollection<TSampleAvailability> SampleAvailabilities { get; set; }
+        public List<TSampleAvailability> SampleAvailabilities { get; set; } = new List<TSampleAvailability>();
     }
 
     /// <summary>

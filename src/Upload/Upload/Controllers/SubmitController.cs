@@ -5,7 +5,6 @@ using Biobanks.SubmissionApi.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
@@ -218,22 +217,23 @@ namespace Upload.Controllers
 
             }
 
+            string blobType = diagnosesUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get FullName of type of variable diagnosesUpdates.");
+
             // Send the diagnosis insert/updates up to queue
             var diagnosesUpdatesBlobId =
                 await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesUpdates);
 
-            await _queueWriteService.PushAsync("operations",
-                JsonConvert.SerializeObject(
-                    new OperationsQueueItem
-                    {
-                        SubmissionId = submission.Id,
-                        Operation = Operation.Submit,
-                        BlobId = diagnosesUpdatesBlobId,
-                        BlobType = diagnosesUpdates.GetType().FullName,
-                        BiobankId = biobankId
-                    }
-                )
-            );
+                await _queueWriteService.PushAsync("operations", JsonConvert.SerializeObject(
+                        new OperationsQueueItem
+                        {
+                            SubmissionId = submission.Id,
+                            Operation = Operation.Submit,
+                            BlobId = diagnosesUpdatesBlobId,
+                            BlobType = blobType,
+                            BiobankId = biobankId
+                        }
+                    )
+                );
 
             // Send the diagnosis deletes up to queue
             var diagnosesDeletesBlobId =

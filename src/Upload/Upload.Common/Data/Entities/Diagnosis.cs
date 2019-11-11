@@ -19,12 +19,12 @@ namespace Common.Data.Upload
         /// Foreign key column.
         /// </summary>
         [Required]
-        public string DiagnosisCodeId { get; set; }
+        public string DiagnosisCodeId { get; set; } = string.Empty;
         /// <summary>
         /// An OMOP term representing the Diagnosis.
         /// </summary>
         [Required]
-        public virtual OmopTerm DiagnosisCode { get; set; }
+        public virtual OmopTerm DiagnosisCode { get; set; } = null!;
 
         /// <summary>
         /// Foreign key column.

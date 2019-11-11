@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Common.Data.Upload;
+using Upload.Common.Data.Entities;
 
 namespace Biobanks.SubmissionApi.EqualityComparers
 {

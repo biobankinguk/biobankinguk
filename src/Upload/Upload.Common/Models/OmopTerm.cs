@@ -5,12 +5,12 @@
     /// </summary>
     public class OmopTerm
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// A friendly description of this term
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Foreign key column.

@@ -4,6 +4,6 @@ namespace Biobanks.Common.Models
 {
     public class PaginatedSubmissionSummariesModel : BasePaginatedModel
     {
-        public ICollection<SubmissionSummaryModel> Submissions { get; set; }
+        public List<SubmissionSummaryModel> Submissions { get; set; } = new List<SubmissionSummaryModel>();
     }
 }

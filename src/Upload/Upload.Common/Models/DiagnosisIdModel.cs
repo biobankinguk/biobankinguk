@@ -16,19 +16,19 @@ namespace Biobanks.Common.Models
         /// Foreign key column.
         /// </summary>
         [Required]
-        public string DiagnosisCode { get; set; }
+        public string DiagnosisCode { get; set; } = string.Empty;
 
         /// <summary>
         /// Ontology name for DiagnosisCode
         /// </summary>
         [Required]
-        public string DiagnosisCodeOntology { get; set; }
-        
+        public string DiagnosisCodeOntology { get; set; } = string.Empty;
+
         /// <summary>
         /// Ontology version for DiagnosisCode
         /// </summary>
         [Required]
-        public string DiagnosisCodeOntologyVersion { get; set; }
+        public string DiagnosisCodeOntologyVersion { get; set; } = string.Empty;
 
         /// <summary>
         /// Ontology field to which the code relates.

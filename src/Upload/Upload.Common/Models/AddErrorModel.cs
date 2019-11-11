@@ -2,7 +2,7 @@
 {
     public class AddErrorModel
     {
-        public string Message { get; set; }
-        public string RecordIdentifiers { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string RecordIdentifiers { get; set; } = string.Empty;
     }
 }

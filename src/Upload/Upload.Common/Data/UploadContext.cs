@@ -1,5 +1,6 @@
 ﻿using Common.Data.Upload;
 using Microsoft.EntityFrameworkCore;
+using Upload.Common.Data.Entities;
 
 namespace Common.Data
 {
@@ -9,21 +10,21 @@ namespace Common.Data
         public UploadContext(DbContextOptions options) : base(options) { }
 
         //Data which might be moved
-        public DbSet<Submission> Submissions { get; set; }
-        public DbSet<Error> Errors { get; set; }
+        public DbSet<Submission> Submissions { get; set; } = null!;
+        public DbSet<Error> Errors { get; set; } = null!;
 
         // Actual Data
-        public DbSet<LiveDiagnosis> Diagnoses { get; set; }
-        public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
-        public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
+        public DbSet<LiveDiagnosis> Diagnoses { get; set; } = null!;
+        public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; } = null!;
+        public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; } = null!;
 
-        public DbSet<LiveTreatment> Treatments { get; set; }
-        public DbSet<StagedTreatment> StagedTreatments { get; set; }
-        public DbSet<StagedTreatmentDelete> StagedTreatmentDeletes { get; set; }
+        public DbSet<LiveTreatment> Treatments { get; set; } = null!;
+        public DbSet<StagedTreatment> StagedTreatments { get; set; } = null!;
+        public DbSet<StagedTreatmentDelete> StagedTreatmentDeletes { get; set; } = null!;
 
-        public DbSet<LiveSample> Samples { get; set; }
-        public DbSet<StagedSample> StagedSamples { get; set; }
-        public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
+        public DbSet<LiveSample> Samples { get; set; } = null!;
+        public DbSet<StagedSample> StagedSamples { get; set; } = null!;
+        public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder model)
         {

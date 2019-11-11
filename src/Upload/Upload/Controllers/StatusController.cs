@@ -74,7 +74,7 @@ namespace Upload.Controllers
             // Prepare the model for return
             var model = new PaginatedSubmissionSummariesModel
             {
-                Submissions = _mapper.Map<ICollection<SubmissionSummaryModel>>(submissions)
+                Submissions = _mapper.Map<List<SubmissionSummaryModel>>(submissions)
             };
 
             // Set all the paging bits

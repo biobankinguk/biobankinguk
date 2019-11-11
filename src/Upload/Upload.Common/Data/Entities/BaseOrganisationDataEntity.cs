@@ -31,6 +31,6 @@ namespace Common.Data.Upload
         /// </summary>
         [Required]
         [MaxLength(255)]
-        public string IndividualReferenceId { get; set; }
+        public string IndividualReferenceId { get; set; } = string.Empty;
     }
 }

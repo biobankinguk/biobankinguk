@@ -10,7 +10,7 @@ namespace Biobanks.Common.Models
 
         public Guid BlobId { get; set; }
 
-        public string BlobType { get; set; }
+        public string BlobType { get; set; } = string.Empty;
 
         public int BiobankId { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Models;
-using Common.Data.Upload;
+using Upload.Common.Data.Entities;
 
 namespace Upload.Profiles
 {
