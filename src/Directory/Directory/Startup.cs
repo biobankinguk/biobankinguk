@@ -172,7 +172,7 @@ namespace Directory
 
             Auth.IdentityServer.DataSeeder.Seed(context, config);
 
-            await DataSeeder.Seed(
+            await Auth.Identity.DataSeeder.Seed(
                 services.GetRequiredService<DirectoryUserManager>(),
                 services.GetRequiredService<IPasswordHasher<DirectoryUser>>(),
                 config);
