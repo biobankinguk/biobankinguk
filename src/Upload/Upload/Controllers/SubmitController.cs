@@ -217,7 +217,7 @@ namespace Upload.Controllers
 
             }
 
-            string blobType = diagnosesUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get FullName of type of variable diagnosesUpdates.");
+            string updateDiagnosesBlobType = diagnosesUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get FullName of type for variable diagnosesUpdates.");
 
             // Send the diagnosis insert/updates up to queue
             var diagnosesUpdatesBlobId =
@@ -229,11 +229,13 @@ namespace Upload.Controllers
                             SubmissionId = submission.Id,
                             Operation = Operation.Submit,
                             BlobId = diagnosesUpdatesBlobId,
-                            BlobType = blobType,
+                            BlobType = updateDiagnosesBlobType,
                             BiobankId = biobankId
                         }
                     )
                 );
+
+            var deleteDiagnosesBlobType = diagnosesDeletes.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable diagnosesDeletes.");
 
             // Send the diagnosis deletes up to queue
             var diagnosesDeletesBlobId =
@@ -246,11 +248,13 @@ namespace Upload.Controllers
                         SubmissionId = submission.Id,
                         Operation = Operation.Delete,
                         BlobId = diagnosesDeletesBlobId,
-                        BlobType = diagnosesDeletes.GetType().FullName,
+                        BlobType = deleteDiagnosesBlobType,
                         BiobankId = biobankId
                     }
                 )
             );
+
+            var updateSampleBlobType = samplesUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable samplesUpdates");
 
             // Send the sample insert/updates up to queue
             var samplesUpdatesBlobId =
@@ -263,11 +267,13 @@ namespace Upload.Controllers
                         SubmissionId = submission.Id,
                         Operation = Operation.Submit,
                         BlobId = samplesUpdatesBlobId,
-                        BlobType = samplesUpdates.GetType().FullName,
+                        BlobType = updateSampleBlobType,
                         BiobankId = biobankId
                     }
                 )
             );
+
+            var deleteSampleBlobType = samplesDeletes.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable samplesDeletes");
 
             // Send the sample deletes up to queue
             var samplesDeletesBlobId =
@@ -280,11 +286,13 @@ namespace Upload.Controllers
                         SubmissionId = submission.Id,
                         Operation = Operation.Delete,
                         BlobId = samplesDeletesBlobId,
-                        BlobType = samplesDeletes.GetType().FullName,
+                        BlobType = deleteSampleBlobType,
                         BiobankId = biobankId
                     }
                 )
             );
+
+            var updateTreatmentBlobType = treatmentsUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable treatmentsUpdates");
 
             // Send the treatment insert/updates up to queue
             var treatmentsUpdatesBlobId =
@@ -297,11 +305,13 @@ namespace Upload.Controllers
                         SubmissionId = submission.Id,
                         Operation = Operation.Submit,
                         BlobId = treatmentsUpdatesBlobId,
-                        BlobType = treatmentsUpdates.GetType().FullName,
+                        BlobType = updateTreatmentBlobType,
                         BiobankId = biobankId
                     }
                 )
             );
+
+            var deleteTreatmentBlobType = treatmentsDeletes.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable treatmentDeletes");
 
             // Send the treatment deletes up to queue
             var treatmentsDeletesBlobId =
@@ -314,7 +324,7 @@ namespace Upload.Controllers
                         SubmissionId = submission.Id,
                         Operation = Operation.Delete,
                         BlobId = treatmentsDeletesBlobId,
-                        BlobType = treatmentsDeletes.GetType().FullName,
+                        BlobType = deleteTreatmentBlobType,
                         BiobankId = biobankId
                     }
                 )
@@ -336,16 +346,13 @@ namespace Upload.Controllers
 
             static IEqualityComparer<T> GetComparer<T>(ICollection<T> models)
             {
-                switch (models)
+                return models switch
                 {
-                    case ICollection<DiagnosisOperationModel> d:
-                        return (IEqualityComparer<T>)new DiagnosisOperationModelEqualityComparer();
-                    case ICollection<TreatmentOperationModel> t:
-                        return (IEqualityComparer<T>)new TreatmentOperationModelEqualityComparer();
-                    case ICollection<SampleOperationModel> s:
-                        return (IEqualityComparer<T>)new SampleOperationModelEqualityComparer();
-                    default: throw new InvalidOperationException();
-                }
+                    ICollection<DiagnosisOperationModel> _ => (IEqualityComparer<T>)new DiagnosisOperationModelEqualityComparer(),
+                    ICollection<TreatmentOperationModel> _ => (IEqualityComparer<T>)new TreatmentOperationModelEqualityComparer(),
+                    ICollection<SampleOperationModel> _ => (IEqualityComparer<T>)new SampleOperationModelEqualityComparer(),
+                    _ => throw new InvalidOperationException(),
+                };
             }
 
             static bool NoDuplicates<T>(ICollection<T> models)
