@@ -1,9 +1,9 @@
 import React from "react";
-import Layout from "../../Shared/Layout";
-import RegisterForm from "../components/RegisterForm";
-import TryThisAlert from "../components/TryThisAlert";
-import ModelValidationSummary from "../components/ModelValidationSummary";
-import UnconfirmedAccountFound from "../components/UnconfirmedAccountFound";
+import Layout from "Components/Layout";
+import UnconfirmedAccountFound from "Components/UnconfirmedAccountFound";
+import ModelValidationSummary from "Components/ModelValidationSummary";
+import TryThisAlert from "Components/TryThisAlert";
+import RegisterForm from "./components/RegisterForm";
 
 const Register = vm => {
   let failureAlert;
