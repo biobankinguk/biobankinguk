@@ -6,5 +6,6 @@
       "Services/*": ["./services/*"],
       "Hooks/*": ["./hooks/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist", "bin", "ClientApp"]
 }
