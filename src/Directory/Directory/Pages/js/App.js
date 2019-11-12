@@ -1,8 +1,8 @@
-import React, { cloneElement } from "react";
+import React from "react";
 import { ThemeProvider, CSSReset } from "@chakra-ui/core";
 import { Global } from "@emotion/core";
 
-const App = ({theme, page}) => {
+const App = ({ theme, page: Page }) => {
   return (
     <ThemeProvider theme={theme}>
       <CSSReset />
@@ -11,7 +11,7 @@ const App = ({theme, page}) => {
           body: { backgroundColor: theme.colors.defaultBackground }
         }}
       />
-      {cloneElement(page, window.__TDCC__.ViewModel)}
+      <Page {...window.__TDCC__.ViewModel} />
     </ThemeProvider>
   );
 };

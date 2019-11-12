@@ -8,7 +8,8 @@ export default {
   },
   output: {
     path: path.resolve(__dirname, "../../wwwroot/dist"),
-    filename: "[name].js"
+    filename: "[name].js",
+    publicPath: "/dist/"
   },
   devtool: "source-map",
   module: {

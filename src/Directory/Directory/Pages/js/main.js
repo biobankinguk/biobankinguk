@@ -14,11 +14,15 @@ const root = document.getElementById("react-app");
 
 if (root && root.dataset.route) {
   const { route } = root.dataset;
-  if (routes.hasOwnProperty(route)) {
-    merge(theme, ukcrcTheme);
-    ReactDOM.render(
-      <App theme={theme} page={routes[route]} />,
-      document.getElementById("react-app")
-    );
-  }
+  routes(route).then(({ default: page }) => {
+    if (page) {
+      merge(theme, ukcrcTheme);
+      ReactDOM.render(
+        <App theme={theme} page={page} />,
+        document.getElementById("react-app")
+      );
+    } else {
+      console.error(`No configured React route was found matching: ${route}`);
+    }
+  });
 }

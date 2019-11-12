@@ -11,7 +11,8 @@
       "@babel/preset-env"
     ],
     "plugins": [
-      "@babel/plugin-transform-template-literals"
+      "@babel/plugin-transform-template-literals",
+      "@babel/plugin-syntax-dynamic-import"
     ]
   },
   "eslintConfig": {
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-template-literals": "^7.4.4",
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.6.3",
