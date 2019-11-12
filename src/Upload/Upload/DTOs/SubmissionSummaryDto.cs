@@ -5,7 +5,7 @@ namespace Upload.Common.Models
     public class SubmissionSummaryDto
     {
         public int Id { get; set; }
-        public int BiobankId { get; set; }
+        public int OrganisationId { get; set; }
         public DateTime SubmissionTimestamp { get; set; }
         public int TotalRecords { get; set; }
         public int RecordsProcessed { get; set; }

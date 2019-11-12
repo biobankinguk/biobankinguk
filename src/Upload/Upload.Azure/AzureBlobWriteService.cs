@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using Upload.Contracts;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Upload.Azure
 {
@@ -24,7 +24,7 @@ namespace Upload.Azure
         /// <inheritdoc />
         public async Task<Guid> StoreObjectAsJsonAsync(string container, object obj)
         {
-            var json = JsonConvert.SerializeObject(obj);
+            var json = JsonSerializer.Serialize(obj); // JsonConvert.SerializeObject(obj);
             return await StoreTextAsync(container, json, "application/json");
         }
 

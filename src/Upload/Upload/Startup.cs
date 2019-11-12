@@ -98,7 +98,7 @@ namespace Upload
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint(
                 "/swagger/v1/swagger.json",
-                "UKCRC Tissue Director Upload API"));
+                "UKCRC Tissue Directory Upload API"));
 
             
         }

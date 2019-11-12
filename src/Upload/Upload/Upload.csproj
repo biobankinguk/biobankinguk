@@ -13,7 +13,7 @@
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="Hangfire" Version="1.7.7" />
     <PackageReference Include="IdentityModel" Version="4.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0-preview9.19424.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,12 +32,4 @@
     <ProjectReference Include="..\Upload.Common\Upload.Common.csproj" />
     <ProjectReference Include="..\Upload.Contracts\Upload.Contracts.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\" />
-    <Folder Include="EqualityComparers\" />
-    <Folder Include="Profiles\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

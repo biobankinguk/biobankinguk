@@ -1,4 +1,6 @@
-﻿namespace Upload.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Upload.DTOs
 {
     /// <inheritdoc />
     /// <summary>
@@ -9,6 +11,7 @@
         /// <summary>
         /// The Diagnosis identity model on which to operate.
         /// </summary>
-        public DiagnosisIdDto Diagnosis { get; set; } = null!;
+        [Required]
+        public DiagnosisIdDto? Diagnosis { get; set; }
     }
 }
