@@ -9,9 +9,9 @@ import {
   Box,
   Link
 } from "@chakra-ui/core";
-import Layout from "../../../components/Layout";
-import ResendConfirmationAlert from "../../../components/ResendConfirmationAlert";
-import { hasErrors } from "../../../components/ModelValidationSummary";
+import Layout from "Components/Layout";
+import ResendConfirmationAlert from "Components/ResendConfirmationAlert";
+import { hasErrors } from "Services/modelstate-validation";
 
 const ConfirmAccount = ({ ModelState, Username }) => {
   let content;

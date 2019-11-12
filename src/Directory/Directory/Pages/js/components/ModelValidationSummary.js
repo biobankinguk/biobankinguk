@@ -6,14 +6,7 @@ import {
   AlertTitle,
   AlertDescription
 } from "@chakra-ui/core";
-
-export const hasErrors = (state, ...fields) => {
-  if (!state) return false;
-  if (!Object.keys(state).length) return false;
-  const fieldHasErrors = field => state[field] && state[field].length;
-  if (fields) return fields.some(fieldHasErrors);
-  return Object.keys(state).some(fieldHasErrors);
-};
+import { hasErrors } from "Services/modelstate-validation";
 
 const ModelValidationSummary = ({ errors }) => {
   if (hasErrors(errors, ""))

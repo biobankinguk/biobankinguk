@@ -2,8 +2,8 @@
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
 import { Button, Flex, Stack, Box } from "@chakra-ui/core";
-import valSchema from "../login-form-validation";
-import CommonFormikInput from "../../../../components/CommonFormikInput";
+import valSchema from "../validation/login-form";
+import CommonFormikInput from "Components/CommonFormikInput";
 
 const LoginForm = ({ Username }) => {
   const aspForm = document.getElementById("asp-form");

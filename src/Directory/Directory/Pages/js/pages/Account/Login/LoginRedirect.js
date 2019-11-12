@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { AlertTitle, AlertDescription, Alert } from "@chakra-ui/core";
-import Layout from "../../../components/Layout";
+import Layout from "Components/Layout";
 
 const LoginRedirect = ({ RedirectUrl }) => {
   useEffect(() => {

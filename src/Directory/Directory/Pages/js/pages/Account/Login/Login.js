@@ -1,10 +1,10 @@
 import React from "react";
 import { Flex, Link } from "@chakra-ui/core";
-import Layout from "../../../components/Layout";
+import Layout from "Components/Layout";
+import UnconfirmedAccountFound from "Components/UnconfirmedAccountFound";
+import ModelValidationSummary from "Components/ModelValidationSummary";
+import TryThisAlert from "Components/TryThisAlert";
 import LoginForm from "./components/LoginForm";
-import UnconfirmedAccountFound from "../../../components/UnconfirmedAccountFound";
-import ModelValidationSummary from "../../../components/ModelValidationSummary";
-import TryThisAlert from "../../../components/TryThisAlert";
 
 const Login = vm => {
   let failureAlert;

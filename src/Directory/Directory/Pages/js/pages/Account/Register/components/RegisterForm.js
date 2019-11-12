@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
 import { Button, Stack, Box, SimpleGrid } from "@chakra-ui/core";
-import valSchema from "../register-form-validation";
-import { hasErrors } from "../../../../components/ModelValidationSummary";
-import CommonFormikInput from "../../../../components/CommonFormikInput";
-import PasswordRequirementsInfo from "../../../../components/PasswordRequirementsInfo";
+import valSchema from "../validation/register-form";
+import { hasErrors } from "Services/modelstate-validation";
+import CommonFormikInput from "Components/CommonFormikInput";
+import PasswordRequirementsInfo from "Components/PasswordRequirementsInfo";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(

@@ -25,7 +25,9 @@ export default {
     alias: {
       react: "preact/compat",
       "react-dom/test-utils": "preact/test-utils",
-      "react-dom": "preact/compat"
+      "react-dom": "preact/compat",
+      Services: path.resolve(__dirname, "./services/"),
+      Components: path.resolve(__dirname, "./components/")
     }
   }
 };
