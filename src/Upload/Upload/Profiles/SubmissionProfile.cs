@@ -12,7 +12,7 @@ namespace Upload.Profiles
         /// <inheritdoc />
         public SubmissionProfile()
         {
-            CreateMap<Submission, SubmissionSummaryModel>()
+            CreateMap<Submission, SubmissionSummaryDto>()
                 .ForMember(
                     dest => dest.UploadStatus,
                     opts => opts.MapFrom(

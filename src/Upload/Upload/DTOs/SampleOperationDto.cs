@@ -1,6 +1,4 @@
-﻿using Upload.SubmissionApi.Models;
-
-namespace Upload.DTOs
+﻿namespace Upload.DTOs
 {
     /// <inheritdoc />
     /// <summary>
@@ -11,6 +9,6 @@ namespace Upload.DTOs
         /// <summary>
         /// The Sample identity model on which to operate.
         /// </summary>
-        public SampleSubmissionModel Sample { get; set; } = null!;
+        public SampleSubmissionDto Sample { get; set; } = null!;
     }
 }

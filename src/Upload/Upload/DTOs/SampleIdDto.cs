@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Upload.Common.Models
+namespace Upload.DTOs
 {
-    public class SampleIdModel
+    public class SampleIdDto
     {
         public DateTimeOffset SubmissionTimestamp { get; set; }
 

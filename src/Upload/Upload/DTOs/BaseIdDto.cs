@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Upload.Common.Models
 {
-    public class BaseIdModel
+    public class BaseIdDto
     {
         /// <summary>
         /// Foreign key column.

@@ -1,8 +1,6 @@
-﻿using Upload.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using Upload.Common.Types;
+using Upload.Common.DTO;
 
 namespace Upload.Common
 {
@@ -12,7 +10,7 @@ namespace Upload.Common
             Uri paginatedResourceUri,
             PaginationParams paging,
             int count, int total, ref T model)
-            where T : BasePaginatedModel
+            where T : BasePaginatedDto
         {
             //prep next/previous
             var nextOffset = paging.Offset + count;

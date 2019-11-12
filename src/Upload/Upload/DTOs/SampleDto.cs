@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Upload.Common.Types;
+using Upload.DTOs;
 
 namespace Upload.Common.Models
 {
-    public class SampleModel : SampleIdModel
+    public class SampleDto : SampleIdDto
     {
         /// <summary>
         /// Year of birth, in ISO-8601 YYYY or IETF RFC-3339 date-fullyear format, e.g. 1986

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Upload.Common.Models
+namespace Upload.Common.DTO
 {
-    public class BasePaginatedModel
+    public class BasePaginatedDto
     {
         public int Offset { get; set; }
 

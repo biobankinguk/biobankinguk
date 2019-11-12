@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Upload.Common.Models;
+using Upload.Common.DTO;
 
 namespace Upload.DTOs
 {
     /// <inheritdoc />
-    public class PaginatedErrorsDto : BasePaginatedModel
+    public class PaginatedErrorsDto : BasePaginatedDto
     {
         /// <summary>
         /// Collection of error models for the given paginated response DTO.

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Upload.Common.Models;
+using Upload.Common.DTO;
 
 namespace Common.Data.Upload
 {
@@ -24,7 +24,7 @@ namespace Common.Data.Upload
         /// An OMOP term representing the Diagnosis.
         /// </summary>
         [Required]
-        public virtual OmopTerm DiagnosisCode { get; set; } = null!;
+        public virtual OmopTermDto DiagnosisCode { get; set; } = null!;
 
         /// <summary>
         /// Foreign key column.

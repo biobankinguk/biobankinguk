@@ -2,7 +2,7 @@
 
 namespace Upload.Common.Models
 {
-    public class SubmissionSummaryModel
+    public class SubmissionSummaryDto
     {
         public int Id { get; set; }
         public int BiobankId { get; set; }

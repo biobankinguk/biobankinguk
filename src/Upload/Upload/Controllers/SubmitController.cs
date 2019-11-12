@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Upload.Common.Models;
-using Upload.SubmissionApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -89,10 +88,10 @@ namespace Upload.Controllers
             }
 
             var diagnosesUpdates = new List<DiagnosisDto>();
-            var samplesUpdates = new List<SampleModel>();
+            var samplesUpdates = new List<SampleDto>();
             var treatmentsUpdates = new List<TreatmentDto>();
             var diagnosesDeletes = new List<DiagnosisDto>();
-            var samplesDeletes = new List<SampleModel>();
+            var samplesDeletes = new List<SampleDto>();
             var treatmentsDeletes = new List<TreatmentDto>();
 
             var submission = await _submissionService.CreateSubmission(totalRecords, organisationId);
@@ -143,7 +142,7 @@ namespace Upload.Controllers
                 switch (sample.Op)
                 {
                     case Operation.Submit:
-                        var sampleModel = _mapper.Map<SampleSubmissionModel, SampleModel>(sample.Sample, opts =>
+                        var sampleModel = _mapper.Map<SampleSubmissionDto, SampleDto>(sample.Sample, opts =>
                             opts.AfterMap((src, dest) =>
                             {
                                 dest.SubmissionTimestamp = submission.SubmissionTimestamp;
@@ -163,7 +162,7 @@ namespace Upload.Controllers
                         break;
 
                     case Operation.Delete:
-                        samplesDeletes.Add(_mapper.Map<SampleSubmissionModel, SampleModel>(sample.Sample, opts =>
+                        samplesDeletes.Add(_mapper.Map<SampleSubmissionDto, SampleDto>(sample.Sample, opts =>
                             opts.AfterMap((src, dest) =>
                             {
                                 dest.SubmissionTimestamp = submission.SubmissionTimestamp;
@@ -171,7 +170,7 @@ namespace Upload.Controllers
                         break;
 
                     default:
-                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<SampleSubmissionModel, SampleModel>(sample.Sample), submission.Id, "Invalid operation specified.");
+                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<SampleSubmissionDto, SampleDto>(sample.Sample), submission.Id, "Invalid operation specified.");
                 }
 
             }
@@ -223,7 +222,7 @@ namespace Upload.Controllers
                 await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesUpdates);
 
                 await _queueWriteService.PushAsync("operations", JsonConvert.SerializeObject(
-                        new OperationsQueueItem
+                        new OperationsQueueDto
                         {
                             SubmissionId = submission.Id,
                             Operation = Operation.Submit,
@@ -242,7 +241,7 @@ namespace Upload.Controllers
 
             await _queueWriteService.PushAsync("operations",
                 JsonConvert.SerializeObject(
-                    new OperationsQueueItem
+                    new OperationsQueueDto
                     {
                         SubmissionId = submission.Id,
                         Operation = Operation.Delete,
@@ -261,7 +260,7 @@ namespace Upload.Controllers
 
             await _queueWriteService.PushAsync("operations",
                 JsonConvert.SerializeObject(
-                    new OperationsQueueItem
+                    new OperationsQueueDto
                     {
                         SubmissionId = submission.Id,
                         Operation = Operation.Submit,
@@ -280,7 +279,7 @@ namespace Upload.Controllers
 
             await _queueWriteService.PushAsync("operations",
                 JsonConvert.SerializeObject(
-                    new OperationsQueueItem
+                    new OperationsQueueDto
                     {
                         SubmissionId = submission.Id,
                         Operation = Operation.Delete,
@@ -299,7 +298,7 @@ namespace Upload.Controllers
 
             await _queueWriteService.PushAsync("operations",
                 JsonConvert.SerializeObject(
-                    new OperationsQueueItem
+                    new OperationsQueueDto
                     {
                         SubmissionId = submission.Id,
                         Operation = Operation.Submit,
@@ -318,7 +317,7 @@ namespace Upload.Controllers
 
             await _queueWriteService.PushAsync("operations",
                 JsonConvert.SerializeObject(
-                    new OperationsQueueItem
+                    new OperationsQueueDto
                     {
                         SubmissionId = submission.Id,
                         Operation = Operation.Delete,
@@ -330,7 +329,7 @@ namespace Upload.Controllers
             );
 
             // return the status object
-            return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
+            return Ok(_mapper.Map<SubmissionSummaryDto>(submission));
         }
 
         private async Task<BadRequestObjectResult> CancelSubmissionAndReturnBadRequest(object badEntity, int submissionId, string errorText)
@@ -372,7 +371,7 @@ namespace Upload.Controllers
                 // TODO make ontology/ontologyversion identifying properties of each entity then use reflection to get prop names from xIdModels, excluding submissionTimestamp and organisationId
                 case DiagnosisDto model:
                     return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.DateDiagnosed)}: {model.DateDiagnosed}, {nameof(model.DiagnosisCode)}: {model.DiagnosisCode} - ";
-                case SampleModel model:
+                case SampleDto model:
                     return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.Barcode)}: {model.Barcode}, {nameof(model.CollectionName)}: {model.CollectionName} - ";
                 case TreatmentDto model:
                     return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.DateTreated)}: {model.DateTreated}, {nameof(model.TreatmentCode)}: {model.TreatmentCode} - ";

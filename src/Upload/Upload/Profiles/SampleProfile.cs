@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Upload.SubmissionApi.Models;
 using Common.Data.Upload;
 using Upload.DTOs;
-using SampleModel = Upload.Common.Models.SampleModel;
+using SampleDto = Upload.Common.Models.SampleDto;
 
 namespace Upload.Profiles
 {
@@ -12,8 +11,8 @@ namespace Upload.Profiles
         /// <inheritdoc />
         public SampleProfile()
         {
-            CreateMap<SampleSubmissionModel, SampleModel>();
-            CreateMap<SampleOperationDto, SampleModel>();
+            CreateMap<SampleSubmissionDto, SampleDto>();
+            CreateMap<SampleOperationDto, SampleDto>();
 
             // base entities
             CreateMap<StagedSample, LiveSample>();

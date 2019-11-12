@@ -5,7 +5,7 @@ using Upload.Common.Types;
 
 namespace Upload.DTOs
 {
-    public class DiagnosisIdDto : BaseIdModel
+    public class DiagnosisIdDto : BaseIdDto
     {
         /// <summary>
         /// The date of the diagnosis.

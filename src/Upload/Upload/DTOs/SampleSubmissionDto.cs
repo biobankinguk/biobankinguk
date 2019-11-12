@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Upload.Common.Models;
 using Upload.Common.Types;
 
-namespace Upload.SubmissionApi.Models
+namespace Upload.DTOs
 {
     /// <inheritdoc />
-    public class SampleSubmissionModel : SampleIdModel
+    public class SampleSubmissionDto : SampleIdDto
     {
         /// <summary>
         /// Year of birth of the donor.

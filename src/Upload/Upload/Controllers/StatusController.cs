@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Upload.Common.Types;
 using Upload.Contracts;
+using Upload.Common.DTO;
+using Upload.DTOs;
 
 namespace Upload.Controllers
 {
@@ -43,7 +45,7 @@ namespace Upload.Controllers
         /// <param name="organisationId">Organisation ID to operate on.</param>
         /// <returns>A paginated list of submission summaries.</returns>
         [HttpGet("organisation/{organisationId}")]
-        [SwaggerResponse(200, Type = typeof(PaginatedSubmissionSummariesModel))]
+        [SwaggerResponse(200, Type = typeof(PaginatedSubmissionSummariesDto))]
         [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(400, "Offset exceeds the total records available.")]
         [SwaggerResponse(400, "The parameters 'Since' and 'N' are mutually exclusive.")]
@@ -66,15 +68,15 @@ namespace Upload.Controllers
                 return BadRequest($"'offset' exceeds total of {submissionCount} records"); //Is this really bad request?
 
             if (submissionCount == 0)
-                return Ok(new PaginatedSubmissionSummariesModel
+                return Ok(new PaginatedSubmissionSummariesDto
                 {
-                    Submissions = new List<SubmissionSummaryModel>()
+                    Submissions = new List<SubmissionSummaryDto>()
                 });
 
             // Prepare the model for return
-            var model = new PaginatedSubmissionSummariesModel
+            var model = new PaginatedSubmissionSummariesDto
             {
-                Submissions = _mapper.Map<List<SubmissionSummaryModel>>(submissions)
+                Submissions = _mapper.Map<List<SubmissionSummaryDto>>(submissions)
             };
 
             // Set all the paging bits
@@ -94,7 +96,7 @@ namespace Upload.Controllers
         /// <param name="submissionId">The id of the submission.</param>
         /// <returns>A summary of the specified submission</returns>
         [HttpGet("{submissionId}")]
-        [SwaggerResponse(200, Type = typeof(SubmissionSummaryModel))]
+        [SwaggerResponse(200, Type = typeof(SubmissionSummaryDto))]
         [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(404, "No submission found with the specified id.")]
         public async Task<IActionResult> Get(int submissionId)
@@ -106,7 +108,7 @@ namespace Upload.Controllers
             //     submission.OrganisationId.ToString()))
             //     return Forbid();
 
-            return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
+            return Ok(_mapper.Map<SubmissionSummaryDto>(submission));
         }
 
         #region Helpers
@@ -116,7 +118,7 @@ namespace Upload.Controllers
             int organisationId,
             SubmissionPaginationParams paging,
             int count, int total, ref T model)
-            where T : BasePaginatedModel
+            where T : BasePaginatedDto
         {
             //prep next/previous
             var nextOffset = paging.Offset + count;

@@ -1,9 +1,9 @@
-﻿namespace Upload.Common.Models
+﻿namespace Upload.Common.DTO
 {
     /// <summary>
     /// This will be populated by the OMOP cache
     /// </summary>
-    public class OmopTerm
+    public class OmopTermDto
     {
         public string Id { get; set; } = string.Empty;
 
