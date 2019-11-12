@@ -9,12 +9,7 @@ import LoginForm from "./components/LoginForm";
 const Login = vm => {
   let failureAlert;
   if (vm.AllowResend)
-    failureAlert = (
-      <UnconfirmedAccountFound
-        message="This account seems to be unconfirmed."
-        username={vm.Username}
-      />
-    );
+    failureAlert = <UnconfirmedAccountFound username={vm.Username} />;
   else failureAlert = <ModelValidationSummary errors={vm.ModelState} />;
 
   return (

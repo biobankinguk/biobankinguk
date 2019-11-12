@@ -8,12 +8,7 @@ import RegisterForm from "./components/RegisterForm";
 const Register = vm => {
   let failureAlert;
   if (vm.AllowResend)
-    failureAlert = (
-      <UnconfirmedAccountFound
-        message="This account already exists, but seems to be unconfirmed."
-        username={vm.Email}
-      />
-    );
+    failureAlert = <UnconfirmedAccountFound username={vm.Email} />;
   else failureAlert = <ModelValidationSummary errors={vm.ModelState} />;
 
   return (
