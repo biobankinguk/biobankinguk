@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.SubmissionApi.Services.Contracts;
 using Common.Data;
 using Microsoft.EntityFrameworkCore;
 using Upload;
 using Upload.Common.Types;
+using Upload.Contracts;
 
 namespace Upload.Services
 {
@@ -46,7 +46,7 @@ namespace Upload.Services
             // mark the open submissions as committed
             foreach (var submission in _db.Submissions
                 .Include(s => s.UploadStatus)
-                .Where(s => s.BiobankId == organisationId && s.UploadStatus == Statuses.Open))
+                .Where(s => s.OrganisationId == organisationId && s.UploadStatus == Statuses.Open))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
                 submission.UploadStatus = Statuses.Committed;

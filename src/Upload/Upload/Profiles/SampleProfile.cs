@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using Biobanks.SubmissionApi.Models;
+using Upload.SubmissionApi.Models;
 using Common.Data.Upload;
-using SampleModel = Biobanks.Common.Models.SampleModel;
+using Upload.DTOs;
+using SampleModel = Upload.Common.Models.SampleModel;
 
 namespace Upload.Profiles
 {
@@ -12,7 +13,7 @@ namespace Upload.Profiles
         public SampleProfile()
         {
             CreateMap<SampleSubmissionModel, SampleModel>();
-            CreateMap<SampleOperationModel, SampleModel>();
+            CreateMap<SampleOperationDto, SampleModel>();
 
             // base entities
             CreateMap<StagedSample, LiveSample>();

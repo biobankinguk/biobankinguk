@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using Biobanks.Common.Models;
+using Upload.Common.Models;
 using Common.Data.Upload;
 
 namespace Upload.Profiles

@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Biobanks.SubmissionApi.Models;
-using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Upload.Common;
 using Upload.Common.Types;
+using Upload.Contracts;
+using Upload.DTOs;
 
 namespace Upload.Controllers
 {
@@ -40,32 +40,32 @@ namespace Upload.Controllers
         /// <param name="paging">Pagination options, wrapped up from the query string.</param>
         /// <returns>A paginated list of errors.</returns>
         [HttpGet]
-        [SwaggerResponse(200, Type = typeof(PaginatedErrorsModel))]
+        [SwaggerResponse(200, Type = typeof(PaginatedErrorsDto))]
         [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(404, "No submission found with the specified id.")]
         [SwaggerResponse(400, "Offset exceeds the total records available.")]
         public async Task<IActionResult> ListErrors(int submissionId, [FromQuery]PaginationParams paging)
         {
-            var (subBiobankId, total, errors) = await _errors.List(submissionId, paging);
+            var (subOrganisationId, total, errors) = await _errors.List(submissionId, paging);
 
             // a few short circuit scenarios
             if (paging.Offset >= total && paging.Offset > 0)
                 return BadRequest($"'offset' exceeds total of {total} records"); //Is this really bad request?
 
-           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
-           //     subBiobankId.ToString()))
-           //     return Forbid();
+            // if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+            //     subOrganisationId.ToString()))
+            //     return Forbid();
 
             if (total == 0)
-                return Ok(new PaginatedErrorsModel()
+                return Ok(new PaginatedErrorsDto()
                 {
-                    Errors = new List<ErrorModel>()
+                    Errors = new List<ErrorDto>()
                 });
 
             // Prepare the return model
-            var model = new PaginatedErrorsModel
+            var model = new PaginatedErrorsDto
             {
-                Errors = _mapper.Map<ICollection<ErrorModel>>(errors)
+                Errors = _mapper.Map<ICollection<ErrorDto>>(errors)
             };
 
             // Set all the paging bits
@@ -85,7 +85,7 @@ namespace Upload.Controllers
         /// <param name="errorId">The id of the error.</param>
         /// <returns>A single error.</returns>
         [HttpGet("{errorId}")]
-        [SwaggerResponse(200, Type = typeof(ErrorModel))]
+        [SwaggerResponse(200, Type = typeof(ErrorDto))]
         [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(404, "No error found with the specified id matching the specified submission.")]
         public async Task<IActionResult> GetError(int submissionId, int errorId)
@@ -94,11 +94,11 @@ namespace Upload.Controllers
 
             if (error?.Submission.Id != submissionId) return NotFound();
 
-           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
-           //    error.Submission.BiobankId.ToString()))
+           // if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+           //    error.Submission.OrganisationId.ToString()))
            //     return Forbid();
 
-            return Ok(_mapper.Map<ErrorModel>(error));
+            return Ok(_mapper.Map<ErrorDto>(error));
         }
     }
 }

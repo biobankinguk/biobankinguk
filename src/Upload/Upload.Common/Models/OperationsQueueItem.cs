@@ -1,7 +1,7 @@
 ﻿using System;
 using Upload.Common.Types;
 
-namespace Biobanks.Common.Models
+namespace Upload.Common.Models
 {
     public class OperationsQueueItem
     {
@@ -12,6 +12,6 @@ namespace Biobanks.Common.Models
 
         public string BlobType { get; set; } = string.Empty;
 
-        public int BiobankId { get; set; }
+        public int OrganisationId { get; set; }
     }
 }

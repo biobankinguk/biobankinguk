@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Biobanks.Common.Models;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Upload.Common.Models;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Upload.Common.Types;
+using Upload.Contracts;
 
 namespace Upload.Controllers
 {
@@ -37,28 +37,28 @@ namespace Upload.Controllers
         }
 
         /// <summary>
-        /// List all submissions for the authenticated user's Biobank, paginated.
+        /// List all submissions for the authenticated user's Organisation, paginated.
         /// </summary>
         /// <param name="paging">Pagination options, wrapped up from the query string.</param>
-        /// <param name="biobankId">Biobank ID to operate on.</param>
+        /// <param name="organisationId">Organisation ID to operate on.</param>
         /// <returns>A paginated list of submission summaries.</returns>
-        [HttpGet("biobank/{biobankId}")]
+        [HttpGet("organisation/{organisationId}")]
         [SwaggerResponse(200, Type = typeof(PaginatedSubmissionSummariesModel))]
         [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(400, "Offset exceeds the total records available.")]
         [SwaggerResponse(400, "The parameters 'Since' and 'N' are mutually exclusive.")]
-        public async Task<IActionResult> List(int biobankId, [FromQuery]SubmissionPaginationParams paging)
+        public async Task<IActionResult> List(int organisationId, [FromQuery]SubmissionPaginationParams paging)
         {
-              //  if (!User.HasClaim(CustomClaimTypes.BiobankId,
-              //      biobankId.ToString()))
-              //      return Forbid();
+            //  if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+            //      organisationId.ToString()))
+            //      return Forbid();
 
             if (paging.N > 0 && paging.Since != null)
                 return BadRequest(
                     "the parameters 'since' and 'n' are mutually exclusive");
 
             // Try and fetch data
-            var submissions = await _submissions.List(biobankId, paging);
+            var submissions = await _submissions.List(organisationId, paging);
             var submissionCount = submissions.Count();
 
             // Possible short circuits
@@ -80,7 +80,7 @@ namespace Upload.Controllers
             // Set all the paging bits
             PaginateSubmissions(
                 new Uri(HttpContext.Request.GetEncodedUrl()),
-                biobankId,
+                organisationId,
                 paging,
                 model.Submissions.Count, submissionCount,
                 ref model);
@@ -102,9 +102,9 @@ namespace Upload.Controllers
             var submission = await _submissions.Get(submissionId);
             if (submission == null) return NotFound();
 
-           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
-           //     submission.BiobankId.ToString()))
-           //     return Forbid();
+            // if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+            //     submission.OrganisationId.ToString()))
+            //     return Forbid();
 
             return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
         }
@@ -113,7 +113,7 @@ namespace Upload.Controllers
 
         private static void PaginateSubmissions<T>(
             Uri paginatedResourceUri,
-            int biobankId,
+            int organisationId,
             SubmissionPaginationParams paging,
             int count, int total, ref T model)
             where T : BasePaginatedModel
@@ -136,7 +136,7 @@ namespace Upload.Controllers
             model.Next = nextOffset < total
                 ? GetPaginatedSubmissionsUri(
                     paginatedResourceUri,
-                    biobankId,
+                    organisationId,
                     new SubmissionPaginationParams
                     {
                         Offset = nextOffset,
@@ -148,7 +148,7 @@ namespace Upload.Controllers
             model.Previous = paging.Offset > 0
                 ? GetPaginatedSubmissionsUri(
                     paginatedResourceUri,
-                    biobankId,
+                    organisationId,
                     new SubmissionPaginationParams
                     {
                         Offset = previousOffset,
@@ -160,10 +160,10 @@ namespace Upload.Controllers
         }
 
         private static Uri GetPaginatedSubmissionsUri(
-            Uri paginatedResourceUri, int biobankId, SubmissionPaginationParams paging)
+            Uri paginatedResourceUri, int organisationId, SubmissionPaginationParams paging)
             => new Uri(new UriBuilder(paginatedResourceUri)
             {
-                Query = $"biobankId={biobankId}&offset={paging.Offset}&limit={paging.Limit}" +
+                Query = $"organisationId={organisationId}&offset={paging.Offset}&limit={paging.Limit}" +
                                 (paging.Since != null ? $"&since={paging.Since}" : "") +
                                 (paging.N > 0 ? $"&n={paging.N}" : "")
             }

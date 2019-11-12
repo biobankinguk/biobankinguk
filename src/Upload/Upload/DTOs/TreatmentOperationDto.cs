@@ -1,14 +1,14 @@
-﻿namespace Biobanks.SubmissionApi.Models
+﻿namespace Upload.DTOs
 {
     /// <inheritdoc />
     /// <summary>
     /// Represents a Treatment and the operation to be applied to it.
     /// </summary>
-    public class TreatmentOperationModel : BaseOperationModel
+    public class TreatmentOperationDto : BaseOperationDto
     {
         /// <summary>
         /// The Treatment identity model on which to operate.
         /// </summary>
-        public TreatmentSubmissionModel Treatment { get; set; } = null!;
+        public TreatmentSubmissionDto Treatment { get; set; } = null!;
     }
 }

@@ -10,7 +10,7 @@ namespace Common.Data.Upload
         /// <summary>
         /// Weak Foreign key to Biobank
         /// </summary>
-        public int BiobankId { get; set; }
+        public int OrganisationId { get; set; }
 
         public DateTime SubmissionTimestamp { get; set; } = DateTime.UtcNow;
 

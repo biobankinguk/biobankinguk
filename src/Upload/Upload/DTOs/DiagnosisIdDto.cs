@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Upload.Common.Models;
 using Upload.Common.Types;
 
-namespace Biobanks.Common.Models
+namespace Upload.DTOs
 {
-    public class DiagnosisIdModel : BaseIdModel
+    public class DiagnosisIdDto : BaseIdModel
     {
         /// <summary>
         /// The date of the diagnosis.

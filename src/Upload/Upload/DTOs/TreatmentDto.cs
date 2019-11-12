@@ -1,6 +1,6 @@
-﻿namespace Biobanks.Common.Models
+﻿namespace Upload.DTOs
 {
-    public class TreatmentModel : TreatmentIdModel
+    public class TreatmentDto : TreatmentIdDto
     {
         public string TreatmentLocation { get; set; } = string.Empty;
         public string TreatmentCodeOntology { get; set; } = string.Empty;

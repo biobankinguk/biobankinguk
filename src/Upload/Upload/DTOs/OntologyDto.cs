@@ -1,13 +1,12 @@
-﻿using Biobanks.SubmissionApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Upload.ViewModels
+namespace Upload.DTOs
 {
     /// <summary>
     /// Ontology - for examples, see https://www.ebi.ac.uk/ols/ontologies.
     /// </summary>
-    public class OntologyModel
+    public class OntologyDto
     {
         /// <summary>
         /// Internal id.
@@ -23,6 +22,6 @@ namespace Upload.ViewModels
         /// <summary>
         /// Versions available for this ontology.
         /// </summary>
-        public ICollection<OntologyVersionModel> OntologyVersions { get; set; } = new List<OntologyVersionModel>();
+        public ICollection<OntologyVersionDto> OntologyVersions { get; set; } = new List<OntologyVersionDto>();
     }
 }

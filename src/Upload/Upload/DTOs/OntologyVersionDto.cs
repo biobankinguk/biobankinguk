@@ -1,9 +1,9 @@
-﻿namespace Biobanks.SubmissionApi.Models
+﻿namespace Upload.DTOs
 {
     /// <summary>
     /// Ontology version.
     /// </summary>
-    public class OntologyVersionModel
+    public class OntologyVersionDto
     {
         /// <summary>
         /// Internal id.

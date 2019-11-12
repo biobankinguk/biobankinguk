@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.SubmissionApi.Services.Contracts;
 using Common.Data;
 using Upload.Common.Types;
+using Upload.Contracts;
 using Z.EntityFramework.Plus;
 
 namespace Upload.Services
@@ -33,7 +33,7 @@ namespace Upload.Services
             await _db.StagedTreatmentDeletes.Where(std => std.OrganisationId == organisationId).DeleteAsync();
 
             // mark the submissions as rejected
-            foreach (var submission in _db.Submissions.Where(s => s.BiobankId == organisationId))
+            foreach (var submission in _db.Submissions.Where(s => s.OrganisationId == organisationId))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
                 submission.UploadStatus = Statuses.Rejected;

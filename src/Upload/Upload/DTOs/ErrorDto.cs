@@ -1,9 +1,9 @@
-﻿namespace Biobanks.SubmissionApi.Models
+﻿namespace Upload.DTOs
 {
     /// <summary>
     /// ViewModel representing an individual error message and the identifying properties of the record it relates to.
     /// </summary>
-    public class ErrorModel
+    public class ErrorDto
     {
         /// <summary>
         /// Unique identifier of the error.

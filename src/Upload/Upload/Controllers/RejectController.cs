@@ -1,10 +1,7 @@
-﻿using Biobanks.SubmissionApi.Services.Contracts;
+﻿using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Upload.Contracts;
 
 namespace Upload.Controllers
 {
@@ -12,7 +9,7 @@ namespace Upload.Controllers
     /// <summary>
     /// This controller serves as a sub-controller for rejecting submissions.
     /// </summary>
-    [Route("{biobankId}/[controller]")]
+    [Route("{organisationId}/[controller]")]
     [ApiController]
     public class RejectController : Controller
     {
@@ -27,19 +24,18 @@ namespace Upload.Controllers
         /// <summary>
         /// Rejects all staged data changes.
         /// </summary>
-        /// <param name="biobankId">Biobank ID to operate on.</param>
+        /// <param name="organisationId">Organisation ID to operate on.</param>
         [HttpPost]
         [SwaggerResponse(204, Description = "The reject completed successfully.")]
         [SwaggerResponse(400, Description = "Organisation ID claim in bad format.")]
-        public IActionResult Post(int biobankId)
+        public IActionResult Post(int organisationId)
         {
-          //  if (!User.HasClaim(CustomClaimTypes.BiobankId,
-          //      biobankId.ToString()))
+          //  if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+          //      organisationId.ToString()))
           //      return Forbid();
 
             //Hangfire stuff
-            //TODO check if this is still suitable
-            //BackgroundJob.Enqueue(() => _service.RejectStagedData(biobankId));
+            BackgroundJob.Enqueue(() => _service.RejectStagedData(organisationId));
 
             return NoContent();
         }

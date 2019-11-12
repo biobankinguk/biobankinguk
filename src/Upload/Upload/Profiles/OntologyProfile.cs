@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Biobanks.SubmissionApi.Models;
 using Common.Data.ReferenceData;
 using Upload.Common.Data.Entities;
-using Upload.ViewModels;
+using Upload.DTOs;
 
 namespace Upload.Profiles
 {
@@ -12,8 +11,8 @@ namespace Upload.Profiles
         /// <inheritdoc />
         public OntologyProfile()
         {
-            CreateMap<Ontology, OntologyModel>();
-            CreateMap<OntologyVersion, OntologyVersionModel>();
+            CreateMap<Ontology, OntologyDto>();
+            CreateMap<OntologyVersion, OntologyVersionDto>();
         }
     }
 }

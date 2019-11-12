@@ -1,12 +1,11 @@
-﻿
-using Upload.Common.Types;
+﻿using Upload.Common.Types;
 
-namespace Biobanks.SubmissionApi.Models
+namespace Upload.DTOs
 {
     /// <summary>
-    /// Represents the core elements of a viewmodel which provides an entity operation type (e.g. submit, delete).
+    /// Represents the core elements of a DTO which provides an entity operation type (e.g. submit, delete).
     /// </summary>
-    public abstract class BaseOperationModel
+    public abstract class BaseOperationDto
     {
         /// <summary>
         /// Unique identifier of the entity on which to operate.

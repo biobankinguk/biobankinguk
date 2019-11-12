@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Models
+namespace Upload.Common.Models
 {
     public class BaseIdModel
     {

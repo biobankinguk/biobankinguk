@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Upload.Common.Types;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Upload.Contracts
 {
     /// <summary>
     /// Service for handling Submission Error information
@@ -16,7 +16,7 @@ namespace Biobanks.SubmissionApi.Services.Contracts
         /// <param name="submissionId">The ID of the Submission to list Errors for</param>
         /// <param name="paging">Pagination parameters</param>
         /// <returns>A list of Errors for the requested Submission</returns>
-        Task<(int biobankId, int total, IEnumerable<Error> errors)> List(
+        Task<(int organisationId, int total, IEnumerable<Error> errors)> List(
             int submissionId, PaginationParams paging);
 
         /// <summary>

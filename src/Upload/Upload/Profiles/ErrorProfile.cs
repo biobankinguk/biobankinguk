@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Biobanks.SubmissionApi.Models;
 using Common.Data.Upload;
+using Upload.DTOs;
 
 namespace Upload.Profiles
 {
@@ -10,7 +10,7 @@ namespace Upload.Profiles
         /// <inheritdoc />
         public ErrorProfile()
         {
-            CreateMap<Error, ErrorModel>();
+            CreateMap<Error, ErrorDto>();
         }
     }
 }

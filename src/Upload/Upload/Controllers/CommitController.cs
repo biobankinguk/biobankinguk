@@ -1,11 +1,11 @@
-﻿using Biobanks.SubmissionApi.Services.Contracts;
-using Hangfire;
+﻿using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Upload.Contracts;
 
 namespace Upload.Controllers
 {
@@ -13,7 +13,7 @@ namespace Upload.Controllers
     /// <summary>
     /// This controller serves as a sub-controller for committing submissions.
     /// </summary>
-    [Route("{biobankId}/[controller]")]
+    [Route("{organisationId}/[controller]")]
     [ApiController]
     public class CommitController : Controller
     {
@@ -36,29 +36,29 @@ namespace Upload.Controllers
         /// replace = all live data is deleted and replaced with the staged data.
         /// update = staged changes (deletions, inserts, udpates) are applied to the current live data.
         /// </param>
-        /// <param name="biobankId">Biobank ID to operate on.</param>
+        /// <param name="organisationId">Organisation ID to operate on.</param>
         [HttpPost]
         [SwaggerResponse(204, Description = "The commit completed successfully.")]
         [SwaggerResponse(400, Description = "Expected Type parameter to specify 'update' or 'replace'.")]
         [SwaggerResponse(400, Description = "Organisation ID claim in bad format.")]
         [SwaggerResponse(400, Description = "There are Open Submissions which have not been processed.")]
-        public async Task<IActionResult> Post(int biobankId, string type)
+        public async Task<IActionResult> Post(int organisationId, string type)
         {
             if (type == null)
                 return BadRequest("Expected Type parameter to specify 'update' or 'replace'");
 
-            //if (!User.HasClaim(CustomClaimTypes.BiobankId,
-           //     biobankId.ToString()))
+            //if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+           //     organisationId.ToString()))
             //    return Forbid();
 
-            var submissionsInProgress = await _submissionService.ListSubmissionsInProgress(biobankId);
+            var submissionsInProgress = await _submissionService.ListSubmissionsInProgress(organisationId);
             if (submissionsInProgress.Any())
             {
                 return BadRequest(JsonConvert.SerializeObject(submissionsInProgress));
             }
 
             //Hangfire stuff 
-            BackgroundJob.Enqueue(() => _commitService.CommitStagedData(type.Equals("replace", StringComparison.OrdinalIgnoreCase), biobankId));
+            BackgroundJob.Enqueue(() => _commitService.CommitStagedData(type.Equals("replace", StringComparison.OrdinalIgnoreCase), organisationId));
 
             return NoContent();
         }

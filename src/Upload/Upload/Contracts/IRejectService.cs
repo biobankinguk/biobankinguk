@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Upload.Contracts
 {
     /// <summary>
     /// Service for handling rejecting submissions.
@@ -8,9 +8,9 @@ namespace Biobanks.SubmissionApi.Services.Contracts
     public interface IRejectService
     {
         /// <summary>
-        /// Rejects the 'open' submissions for the biobank.
+        /// Rejects the 'open' submissions for the organisation.
         /// </summary>
-        /// <param name="organisationId">Unique identifier of the organisation (biobank) on which to operate.</param>
+        /// <param name="organisationId">Unique identifier of the organisation on which to operate.</param>
         Task RejectStagedData(int organisationId);
     }
 }

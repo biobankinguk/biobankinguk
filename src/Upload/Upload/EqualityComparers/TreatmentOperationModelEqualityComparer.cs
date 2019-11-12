@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using Biobanks.SubmissionApi.Models;
+using Upload.DTOs;
 
-namespace Biobanks.SubmissionApi.EqualityComparers
+namespace Upload.EqualityComparers
 {
     /// <inheritdoc />
-    public class TreatmentOperationModelEqualityComparer : IEqualityComparer<TreatmentOperationModel>
+    public class TreatmentOperationModelEqualityComparer : IEqualityComparer<TreatmentOperationDto>
     {
         /// <inheritdoc />
-        public bool Equals(TreatmentOperationModel x, TreatmentOperationModel y)
+        public bool Equals(TreatmentOperationDto x, TreatmentOperationDto y)
             => x.Treatment.IndividualReferenceId.Equals(y.Treatment.IndividualReferenceId, StringComparison.OrdinalIgnoreCase) &&
                x.Treatment.DateTreated == y.Treatment.DateTreated &&
                x.Treatment.TreatmentCode == y.Treatment.TreatmentCode;
 
         /// <inheritdoc />
-        public int GetHashCode(TreatmentOperationModel obj)
+        public int GetHashCode(TreatmentOperationDto obj)
             => (obj.Treatment.IndividualReferenceId +
                 obj.Treatment.DateTreated +
                 obj.Treatment.TreatmentCode)

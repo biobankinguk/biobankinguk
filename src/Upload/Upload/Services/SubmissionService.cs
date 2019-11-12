@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.SubmissionApi.Services.Contracts;
 using Common.Data;
 using Common.Data.Upload;
 using Microsoft.EntityFrameworkCore;
 using Upload.Common;
 using Upload.Common.Types;
+using Upload.Contracts;
 
 namespace Upload.Services
 {
@@ -31,13 +31,13 @@ namespace Upload.Services
                 .SingleOrDefaultAsync(x => x.Id == submissionId);
 
         /// <inheritdoc />
-        public async Task<IEnumerable<Submission>> List(int biobankId, SubmissionPaginationParams paging)
+        public async Task<IEnumerable<Submission>> List(int organisationId, SubmissionPaginationParams paging)
         {
             // we're gonna build up conditional stuff on this query, so store a basic one for now
             var query = _db.Submissions.AsNoTracking();
 
             var predicate = PredicateBuilder.True<Submission>();
-            predicate = predicate.And(x => x.BiobankId == biobankId); //always filter on bb id
+            predicate = predicate.And(x => x.OrganisationId == organisationId); //always filter on bb id
 
             DateTime? since = null; //so we can abuse since mechanics WITHOUT modifying the paging object
 
@@ -89,20 +89,20 @@ namespace Upload.Services
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<Submission>> ListSubmissionsInProgress(int biobankId)
+        public async Task<IEnumerable<Submission>> ListSubmissionsInProgress(int organisationId)
             => await _db.Submissions.Where(s =>
-                s.BiobankId == biobankId
+                s.OrganisationId == organisationId
                 && s.UploadStatus == Statuses.Open
                 && s.RecordsProcessed != s.TotalRecords)
                 .AsNoTracking()
                 .ToListAsync();
 
         /// <inheritdoc />
-        public async Task<Submission> CreateSubmission(int totalRecords, int biobankId)
+        public async Task<Submission> CreateSubmission(int totalRecords, int organisationId)
         {
             var sub = new Submission
             {
-                BiobankId = biobankId,
+                OrganisationId = organisationId,
                 TotalRecords = totalRecords,
                 UploadStatus = Statuses.Open
             };

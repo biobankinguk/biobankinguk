@@ -1,16 +1,14 @@
-﻿using Biobanks.Common.Models;
-
-namespace Biobanks.SubmissionApi.Models
+﻿namespace Upload.DTOs
 {
     /// <inheritdoc />
     /// <summary>
     /// Represents a Diagnosis and the operation to be applied to it.
     /// </summary>
-    public class DiagnosisOperationModel : BaseOperationModel
+    public class DiagnosisOperationDto : BaseOperationDto
     {
         /// <summary>
         /// The Diagnosis identity model on which to operate.
         /// </summary>
-        public DiagnosisIdModel Diagnosis { get; set; } = null!;
+        public DiagnosisIdDto Diagnosis { get; set; } = null!;
     }
 }

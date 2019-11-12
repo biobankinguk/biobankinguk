@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.SubmissionApi.Services.Contracts;
 using Common.Data;
 using Common.Data.Upload;
 using Microsoft.EntityFrameworkCore;
 using Upload.Common.Types;
+using Upload.Contracts;
 
 namespace Upload.Services
 {
@@ -21,13 +21,12 @@ namespace Upload.Services
         }
 
         /// <inheritdoc />
-        public async Task<(int biobankId, int total, IEnumerable<Error> errors)>
-            List(int submissionId, PaginationParams paging)
+        public async Task<(int organisationId, int total, IEnumerable<Error> errors)> List(int submissionId, PaginationParams paging)
         {
-            var biobankId = await _db.Submissions
+            var organisationId = await _db.Submissions
                 .AsNoTracking()
                 .Where(x => x.Id == submissionId)
-                .Select(x => x.BiobankId)
+                .Select(x => x.OrganisationId)
                 .SingleOrDefaultAsync();
 
             var errors = _db.Errors
@@ -35,7 +34,7 @@ namespace Upload.Services
                 .Where(x => x.SubmissionId == submissionId);
 
             return (
-                biobankId,
+                organisationId,
                 await errors.CountAsync(),
                 await errors.Skip(paging.Offset).Take(paging.Limit).ToListAsync());
         }

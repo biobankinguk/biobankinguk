@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Models;
 using Upload.Common.Types;
 
-namespace Biobanks.SubmissionApi.Models
+namespace Upload.DTOs
 {
     /// <inheritdoc />
-    public class TreatmentSubmissionModel : TreatmentIdModel
+    public class TreatmentSubmissionDto : TreatmentIdDto
     {
         /// <summary>
         /// The anatomical location where the treatment was performed.

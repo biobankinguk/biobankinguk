@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Biobanks.Common.Models;
-using Biobanks.SubmissionApi.EqualityComparers;
-using Biobanks.SubmissionApi.Models;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Upload.Common.Models;
+using Upload.SubmissionApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -15,13 +13,14 @@ using System.Threading.Tasks;
 using Upload.Common.Types;
 using Upload.Config;
 using Upload.Contracts;
+using Upload.DTOs;
 using Upload.EqualityComparers;
 
 namespace Upload.Controllers
 {
     /// <inheritdoc />
     /// <summary>
-    /// Controller for handling submissions of data for a biobank
+    /// Controller for handling submissions of data for a organisation
     /// </summary>
     [AllowAnonymous]
     [Route("[controller]")]
@@ -52,18 +51,18 @@ namespace Upload.Controllers
         /// Inserts or updates a sample.
         /// </summary>
         /// <param name="model">The sample model to be inserted to or updated in staging.</param>
-        /// <param name="biobankId">The ID of the biobank to operate on.</param>
+        /// <param name="organisationId">The ID of the organisation to operate on.</param>
         /// <returns>The created content.</returns>
-        [HttpPost("{biobankId}")]
+        [HttpPost("{organisationId}")]
         [SwaggerResponse(201)]
         [SwaggerResponse(400, "Request body expected.")]
         [SwaggerResponse(400, "Invalid request body provided.")]
-        [SwaggerResponse(403, "Access to post to the requested biobank denied.")]
+        [SwaggerResponse(403, "Access to post to the requested organisation denied.")]
         [SwaggerResponse(409, "Newer record exists.")]
-        public async Task<IActionResult> Post(int biobankId, [FromBody] SubmissionModel model)
+        public async Task<IActionResult> Post(int organisationId, [FromBody] SubmissionDto model)
         {
-           // if (!User.HasClaim(CustomClaimTypes.BiobankId,
-           //     biobankId.ToString()))
+           // if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+           //     organisationId.ToString()))
            //     return Forbid();
 
             // validate the model
@@ -71,9 +70,9 @@ namespace Upload.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             // initialise any null lists in the model
-            if (model.Diagnoses is null) model.Diagnoses = new List<DiagnosisOperationModel>();
-            if (model.Treatments is null) model.Treatments = new List<TreatmentOperationModel>();
-            if (model.Samples is null) model.Samples = new List<SampleOperationModel>();
+            if (model.Diagnoses is null) model.Diagnoses = new List<DiagnosisOperationDto>();
+            if (model.Treatments is null) model.Treatments = new List<TreatmentOperationDto>();
+            if (model.Samples is null) model.Samples = new List<SampleOperationDto>();
 
             var totalRecords = model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count;
 
@@ -89,14 +88,14 @@ namespace Upload.Controllers
                 return BadRequest($"This submission contains more than the maximum of {maxEntitiesPerSubmission} records allowed.");
             }
 
-            var diagnosesUpdates = new List<DiagnosisModel>();
+            var diagnosesUpdates = new List<DiagnosisDto>();
             var samplesUpdates = new List<SampleModel>();
-            var treatmentsUpdates = new List<TreatmentModel>();
-            var diagnosesDeletes = new List<DiagnosisModel>();
+            var treatmentsUpdates = new List<TreatmentDto>();
+            var diagnosesDeletes = new List<DiagnosisDto>();
             var samplesDeletes = new List<SampleModel>();
-            var treatmentsDeletes = new List<TreatmentModel>();
+            var treatmentsDeletes = new List<TreatmentDto>();
 
-            var submission = await _submissionService.CreateSubmission(totalRecords, biobankId);
+            var submission = await _submissionService.CreateSubmission(totalRecords, organisationId);
 
             // Validate diagnosis mandatory fields and add to submission
             foreach (var diagnosis in model.Diagnoses)
@@ -104,7 +103,7 @@ namespace Upload.Controllers
                 switch (diagnosis.Op)
                 {
                     case Operation.Submit:
-                        var diagnosisModel = _mapper.Map<DiagnosisIdModel, DiagnosisModel>(diagnosis.Diagnosis,
+                        var diagnosisModel = _mapper.Map<DiagnosisIdDto, DiagnosisDto>(diagnosis.Diagnosis,
                             opts =>
                                 opts.AfterMap((src, dest) =>
                                 {
@@ -124,7 +123,7 @@ namespace Upload.Controllers
                         break;
 
                     case Operation.Delete:
-                        diagnosesDeletes.Add(_mapper.Map<DiagnosisIdModel, DiagnosisModel>(diagnosis.Diagnosis,
+                        diagnosesDeletes.Add(_mapper.Map<DiagnosisIdDto, DiagnosisDto>(diagnosis.Diagnosis,
                             opts =>
                                 opts.AfterMap((src, dest) =>
                                 {
@@ -133,7 +132,7 @@ namespace Upload.Controllers
                         break;
 
                     default:
-                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<DiagnosisIdModel, DiagnosisModel>(diagnosis.Diagnosis), submission.Id, "Invalid operation specified.");
+                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<DiagnosisIdDto, DiagnosisDto>(diagnosis.Diagnosis), submission.Id, "Invalid operation specified.");
 
                 }
             }
@@ -183,7 +182,7 @@ namespace Upload.Controllers
                 switch (treatment.Op)
                 {
                     case Operation.Submit:
-                        var treatmentModel = _mapper.Map<TreatmentSubmissionModel, TreatmentModel>(treatment.Treatment,
+                        var treatmentModel = _mapper.Map<TreatmentSubmissionDto, TreatmentDto>(treatment.Treatment,
                             opts =>
                                 opts.AfterMap((src, dest) =>
                                 {
@@ -203,7 +202,7 @@ namespace Upload.Controllers
                         break;
 
                     case Operation.Delete:
-                        treatmentsDeletes.Add(_mapper.Map<TreatmentSubmissionModel, TreatmentModel>(treatment.Treatment,
+                        treatmentsDeletes.Add(_mapper.Map<TreatmentSubmissionDto, TreatmentDto>(treatment.Treatment,
                             opts =>
                                 opts.AfterMap((src, dest) =>
                                 {
@@ -212,7 +211,7 @@ namespace Upload.Controllers
                         break;
 
                     default:
-                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<TreatmentIdModel, TreatmentModel>(treatment.Treatment), submission.Id, "Invalid operation specified.");
+                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<TreatmentIdDto, TreatmentDto>(treatment.Treatment), submission.Id, "Invalid operation specified.");
                 }
 
             }
@@ -230,7 +229,7 @@ namespace Upload.Controllers
                             Operation = Operation.Submit,
                             BlobId = diagnosesUpdatesBlobId,
                             BlobType = updateDiagnosesBlobType,
-                            BiobankId = biobankId
+                            OrganisationId = organisationId
                         }
                     )
                 );
@@ -249,7 +248,7 @@ namespace Upload.Controllers
                         Operation = Operation.Delete,
                         BlobId = diagnosesDeletesBlobId,
                         BlobType = deleteDiagnosesBlobType,
-                        BiobankId = biobankId
+                        OrganisationId = organisationId
                     }
                 )
             );
@@ -268,7 +267,7 @@ namespace Upload.Controllers
                         Operation = Operation.Submit,
                         BlobId = samplesUpdatesBlobId,
                         BlobType = updateSampleBlobType,
-                        BiobankId = biobankId
+                        OrganisationId = organisationId
                     }
                 )
             );
@@ -287,7 +286,7 @@ namespace Upload.Controllers
                         Operation = Operation.Delete,
                         BlobId = samplesDeletesBlobId,
                         BlobType = deleteSampleBlobType,
-                        BiobankId = biobankId
+                        OrganisationId = organisationId
                     }
                 )
             );
@@ -306,7 +305,7 @@ namespace Upload.Controllers
                         Operation = Operation.Submit,
                         BlobId = treatmentsUpdatesBlobId,
                         BlobType = updateTreatmentBlobType,
-                        BiobankId = biobankId
+                        OrganisationId = organisationId
                     }
                 )
             );
@@ -325,7 +324,7 @@ namespace Upload.Controllers
                         Operation = Operation.Delete,
                         BlobId = treatmentsDeletesBlobId,
                         BlobType = deleteTreatmentBlobType,
-                        BiobankId = biobankId
+                        OrganisationId = organisationId
                     }
                 )
             );
@@ -340,7 +339,7 @@ namespace Upload.Controllers
             return BadRequest($"{IdPropertiesPrefix(badEntity)}{errorText}");
         }
 
-        private static bool SectionsWithDuplicates(SubmissionModel submission, out List<string> sections)
+        private static bool SectionsWithDuplicates(SubmissionDto submission, out List<string> sections)
         {
             sections = new List<string>();
 
@@ -348,15 +347,15 @@ namespace Upload.Controllers
             {
                 return models switch
                 {
-                    ICollection<DiagnosisOperationModel> _ => (IEqualityComparer<T>)new DiagnosisOperationModelEqualityComparer(),
-                    ICollection<TreatmentOperationModel> _ => (IEqualityComparer<T>)new TreatmentOperationModelEqualityComparer(),
-                    ICollection<SampleOperationModel> _ => (IEqualityComparer<T>)new SampleOperationModelEqualityComparer(),
+                    ICollection<DiagnosisOperationDto> _ => (IEqualityComparer<T>)new DiagnosisOperationModelEqualityComparer(),
+                    ICollection<TreatmentOperationDto> _ => (IEqualityComparer<T>)new TreatmentOperationModelEqualityComparer(),
+                    ICollection<SampleOperationDto> _ => (IEqualityComparer<T>)new SampleOperationModelEqualityComparer(),
                     _ => throw new InvalidOperationException(),
                 };
             }
 
             static bool NoDuplicates<T>(ICollection<T> models)
-                where T : BaseOperationModel
+                where T : BaseOperationDto
                 => models.Count == models.Distinct(GetComparer(models)).Count();
 
             if (!NoDuplicates(submission.Diagnoses)) sections.Add("Diagnosis");
@@ -371,11 +370,11 @@ namespace Upload.Controllers
             switch (entity)
             {
                 // TODO make ontology/ontologyversion identifying properties of each entity then use reflection to get prop names from xIdModels, excluding submissionTimestamp and organisationId
-                case DiagnosisModel model:
+                case DiagnosisDto model:
                     return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.DateDiagnosed)}: {model.DateDiagnosed}, {nameof(model.DiagnosisCode)}: {model.DiagnosisCode} - ";
                 case SampleModel model:
                     return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.Barcode)}: {model.Barcode}, {nameof(model.CollectionName)}: {model.CollectionName} - ";
-                case TreatmentModel model:
+                case TreatmentDto model:
                     return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.DateTreated)}: {model.DateTreated}, {nameof(model.TreatmentCode)}: {model.TreatmentCode} - ";
                 default:
                     throw new ArgumentException($"{nameof(entity)} is not a valid identity model.", nameof(entity));

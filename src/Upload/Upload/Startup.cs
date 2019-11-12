@@ -1,5 +1,4 @@
 using AutoMapper;
-using Biobanks.SubmissionApi.Services.Contracts;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
 using Common.Data;

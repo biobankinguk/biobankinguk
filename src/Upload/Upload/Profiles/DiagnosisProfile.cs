@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Biobanks.Common.Models;
-using Biobanks.SubmissionApi.Models;
 using Common.Data.Upload;
+using Upload.DTOs;
 
 namespace Upload.Profiles
 {
@@ -11,8 +10,8 @@ namespace Upload.Profiles
         /// <inheritdoc />
         public DiagnosisProfile()
         {
-            CreateMap<DiagnosisIdModel, DiagnosisModel>();
-            CreateMap<DiagnosisOperationModel, DiagnosisModel>();
+            CreateMap<DiagnosisIdDto, DiagnosisDto>();
+            CreateMap<DiagnosisOperationDto, DiagnosisDto>();
 
             // base entities
             CreateMap<StagedDiagnosis, LiveDiagnosis>();

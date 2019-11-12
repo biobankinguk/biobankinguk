@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Models
+namespace Upload.DTOs
 {
-    public class TreatmentIdModel
+    public class TreatmentIdDto
     {
         public DateTimeOffset SubmissionTimestamp { get; set; }
 

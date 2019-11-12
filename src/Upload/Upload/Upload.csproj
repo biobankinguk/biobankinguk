@@ -36,7 +36,6 @@
   <ItemGroup>
     <Folder Include="Contracts\" />
     <Folder Include="EqualityComparers\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Profiles\" />
     <Folder Include="Services\" />
   </ItemGroup>
