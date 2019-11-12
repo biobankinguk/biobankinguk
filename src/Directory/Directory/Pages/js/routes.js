@@ -7,7 +7,8 @@ import {
   Register,
   RegisterResult,
   ConfirmAccount,
-  ResendConfirm
+  ResendConfirm,
+  ForgotPassword
 } from "./pages/Account";
 
 // Here we map "page" components to keys
@@ -19,5 +20,6 @@ export default {
   Register: <Register />,
   RegisterResult: <RegisterResult />,
   Confirm: <ConfirmAccount />,
-  ConfirmResend: <ResendConfirm />
+  ConfirmResend: <ResendConfirm />,
+  ForgotPassword: <ForgotPassword />
 };
