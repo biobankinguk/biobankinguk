@@ -18,7 +18,7 @@ namespace Upload.Controllers
     /// </summary>
     [Route("status/{submissionId}/[controller]")]
     [ApiController]
-    public class ErrorController : Controller
+    public class ErrorController : ControllerBase
     {
         private readonly IErrorService _errors;
         private readonly IMapper _mapper;

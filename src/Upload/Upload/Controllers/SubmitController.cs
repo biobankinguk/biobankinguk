@@ -24,7 +24,7 @@ namespace Upload.Controllers
     [AllowAnonymous]
     [Route("[controller]")]
     [ApiController]
-    public class SubmitController : Controller
+    public class SubmitController : ControllerBase
     {
         private readonly ApiSettings _config;
         private readonly IMapper _mapper;

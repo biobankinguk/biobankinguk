@@ -11,7 +11,7 @@ namespace Upload.Controllers
     /// </summary>
     [Route("{organisationId}/[controller]")]
     [ApiController]
-    public class RejectController : Controller
+    public class RejectController : ControllerBase
     {
         private readonly IRejectService _service;
 

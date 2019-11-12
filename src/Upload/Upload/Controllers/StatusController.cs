@@ -20,7 +20,7 @@ namespace Upload.Controllers
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    public class StatusController : Controller
+    public class StatusController : ControllerBase
     {
         private readonly ISubmissionService _submissions;
 

@@ -378,7 +378,7 @@ namespace Upload.Common.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BiobankId")
+                    b.Property<int>("OrganisationId")
                         .HasColumnType("int");
 
                     b.Property<int>("RecordsProcessed")

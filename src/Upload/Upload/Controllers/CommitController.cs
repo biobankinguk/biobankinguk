@@ -15,7 +15,7 @@ namespace Upload.Controllers
     /// </summary>
     [Route("{organisationId}/[controller]")]
     [ApiController]
-    public class CommitController : Controller
+    public class CommitController : ControllerBase
     {
         private readonly ICommitService _commitService;
         private readonly ISubmissionService _submissionService;

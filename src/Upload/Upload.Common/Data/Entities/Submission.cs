@@ -8,7 +8,7 @@ namespace Common.Data.Upload
         public int Id { get; set; }
 
         /// <summary>
-        /// Weak Foreign key to Biobank
+        /// Weak Foreign key to Organisation
         /// </summary>
         public int OrganisationId { get; set; }
 
