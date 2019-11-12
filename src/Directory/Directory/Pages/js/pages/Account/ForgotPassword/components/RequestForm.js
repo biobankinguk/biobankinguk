@@ -9,7 +9,7 @@ import { postObjectAsFormData } from "js-forms";
 const RequestForm = ({ Email }) => {
   const { action, csrf } = useAspForm();
 
-  const handleSubmit = (actions, values) => {
+  const handleSubmit = (values, actions) => {
     postObjectAsFormData(action, {
       ...values,
       ...csrf

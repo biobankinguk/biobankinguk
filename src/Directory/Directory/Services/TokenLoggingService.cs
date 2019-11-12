@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Common.Data;
 
 namespace Directory.Services
 {
-    public enum TokenPurpose { AccountConfirmation }
+    public enum TokenPurpose { AccountConfirmation, PasswordReset }
 
     public enum TokenEvent { Issued, ValidationAttempted, ValidationSuccessful, ValidationFailed }
 
@@ -50,5 +50,11 @@ namespace Directory.Services
                 nameof(TokenPurpose.AccountConfirmation),
                 token, userId,
                 errors);
+
+        public async Task PasswordResetTokenIssued(string token, string userId)
+            => await LogEvent(
+                nameof(TokenEvent.Issued),
+                nameof(TokenPurpose.PasswordReset),
+                token, userId);
     }
 }

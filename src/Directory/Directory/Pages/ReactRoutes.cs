@@ -15,7 +15,7 @@ namespace Directory.Pages
         public const string ConfirmResend = "ConfirmResend";
 
         public const string ForgotPassword = "ForgotPassword";
-        public const string ForgotPassswordResult = "ForgotPasswordResult";
+        public const string ForgotPasswordResult = "ForgotPasswordResult";
         public const string ResetPassword = "ResetPassword";
         public const string ResetPasswordResult = "ResetPasswordResult";
     }

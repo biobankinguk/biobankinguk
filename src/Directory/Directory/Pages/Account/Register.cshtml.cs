@@ -70,7 +70,7 @@ namespace Directory.Pages.Account
                 {
                     UserName = Email,
                     Email = Email,
-                    Name = FullName! // [Required]
+                    Name = FullName
                 };
 
                 var result = await _users.CreateAsync(user, Password);
@@ -78,7 +78,7 @@ namespace Directory.Pages.Account
                 {
                     var code = await _users.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var confirmLink = Url.Page("/Account/Confirm",
+                    var link = Url.Page("/Account/Confirm",
                         pageHandler: null,
                         values: new { userId = user.Id, code },
                         protocol: Request.Scheme);
@@ -86,9 +86,9 @@ namespace Directory.Pages.Account
                     await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
 
                     await _accountEmail.SendAccountConfirmation(
-                        user.Email!, // [Required]
+                        user.Email,
                         user.Name,
-                        confirmLink);
+                        link);
 
                     Route = ReactRoutes.RegisterResult;
                 }
