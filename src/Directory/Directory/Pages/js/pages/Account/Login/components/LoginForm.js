@@ -1,18 +1,18 @@
 ﻿import React from "react";
 import { Formik, Form, Field } from "formik";
-import { postObjectAsFormData, constants } from "js-forms";
+import { postObjectAsFormData } from "js-forms";
 import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/login-form";
 import CommonFormikInput from "Components/CommonFormikInput";
+import { useAspForm } from "Hooks/aspnet-interop";
 
 const LoginForm = ({ Username }) => {
-  const aspForm = document.getElementById("asp-form");
-  const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
+  const { action, csrf } = useAspForm();
 
   const post = values => {
-    postObjectAsFormData(aspForm.action, {
+    postObjectAsFormData(action, {
       ...values,
-      [constants.aspNetCoreCsrf]: csrfToken
+      ...csrf
     });
   };
 

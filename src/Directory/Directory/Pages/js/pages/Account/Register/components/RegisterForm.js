@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-import { postObjectAsFormData, constants } from "js-forms";
+import { postObjectAsFormData } from "js-forms";
 import { Button, Stack, Box, SimpleGrid } from "@chakra-ui/core";
 import valSchema from "../validation/register-form";
 import { hasErrors } from "Services/modelstate-validation";
 import CommonFormikInput from "Components/CommonFormikInput";
 import PasswordRequirementsInfo from "Components/PasswordRequirementsInfo";
+import { useAspForm } from "Hooks/aspnet-interop";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(
@@ -17,13 +18,12 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const touchEmail = () => setHideEmailConfirm(false);
   const touchPassword = () => setHidePasswordConfirm(false);
 
-  const aspForm = document.getElementById("asp-form");
-  const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
+  const { action, csrf } = useAspForm();
 
   const handleSubmit = (values, actions) => {
-    postObjectAsFormData(aspForm.action, {
+    postObjectAsFormData(action, {
       ...values,
-      [constants.aspNetCoreCsrf]: csrfToken
+      ...csrf
     });
     actions.setSubmitting(false);
   };

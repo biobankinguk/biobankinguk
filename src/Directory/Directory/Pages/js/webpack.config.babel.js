@@ -27,7 +27,8 @@ export default {
       "react-dom/test-utils": "preact/test-utils",
       "react-dom": "preact/compat",
       Services: path.resolve(__dirname, "./services/"),
-      Components: path.resolve(__dirname, "./components/")
+      Components: path.resolve(__dirname, "./components/"),
+      Hooks: path.resolve(__dirname, "./hooks/")
     }
   }
 };
