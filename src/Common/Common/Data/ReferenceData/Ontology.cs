@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Upload.Common.Data.Entities;
 
 namespace Common.Data.ReferenceData
 {

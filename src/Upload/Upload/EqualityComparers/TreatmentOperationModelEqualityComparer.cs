@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Upload.DTO;
-using Upload.DTOs;
 
 namespace Upload.EqualityComparers
 {

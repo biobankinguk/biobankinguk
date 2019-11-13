@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Upload.Common.Data.Entities;
 using Upload.DTO;
-using Upload.DTOs;
 
 namespace Upload.Profiles
 {

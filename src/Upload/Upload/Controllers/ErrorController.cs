@@ -9,7 +9,6 @@ using Upload.Common;
 using Upload.Common.Types;
 using Upload.Contracts;
 using Upload.DTO;
-using Upload.DTOs;
 
 namespace Upload.Controllers
 {

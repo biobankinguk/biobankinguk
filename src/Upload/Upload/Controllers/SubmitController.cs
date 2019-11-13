@@ -12,7 +12,6 @@ using Upload.Common.Types;
 using Upload.Config;
 using Upload.Contracts;
 using Upload.DTO;
-using Upload.DTOs;
 using Upload.EqualityComparers;
 
 namespace Upload.Controllers

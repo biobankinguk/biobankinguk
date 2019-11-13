@@ -1,7 +1,6 @@
-﻿using Common.Data.ReferenceData;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Upload.Common.Data.Entities
+namespace Common.Data.ReferenceData
 {
     //TODO this might be removed when we transition fully over to OMOP. Currently being kept to preserve structure of migrated entities.
     public class OntologyVersion : BaseReferenceDatum

@@ -2,7 +2,7 @@
 using Upload.Common.DTO;
 using Upload.DTO;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     /// <inheritdoc />
     public class PaginatedErrorsDto : BasePaginatedDto
