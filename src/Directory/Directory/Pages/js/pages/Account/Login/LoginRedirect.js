@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/layouts/Clean";
 import BasicAlert from "@/components/BasicAlert";
 
 const LoginRedirect = ({ RedirectUrl }) => {

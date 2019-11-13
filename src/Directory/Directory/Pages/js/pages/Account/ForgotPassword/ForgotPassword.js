@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/layouts/Clean";
 import UnconfirmedAccountFound from "@/components/UnconfirmedAccountFound";
 import ModelValidationSummary from "@/components/ModelValidationSummary";
 import RequestForm from "./components/RequestForm";

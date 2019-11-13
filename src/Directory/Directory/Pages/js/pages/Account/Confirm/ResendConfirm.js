@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/layouts/Clean";
 import { hasErrors } from "@/services/modelstate-validation";
 import ConfirmationSent from "@/components/ConfirmationSent";
 import BasicAlert from "@/components/BasicAlert";

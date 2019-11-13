@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form } from "formik";
 import { postObjectAsFormData } from "js-forms";
 import { Text, Button, Flex } from "@chakra-ui/core";
-import Layout from "@/components/Layout";
+import Layout from "@/layouts/Clean";
 import { useAspForm } from "@/hooks/aspnet-interop";
 
 const ConfirmLogout = () => {

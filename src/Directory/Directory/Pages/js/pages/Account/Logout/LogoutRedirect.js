@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link } from "@chakra-ui/core";
-import Layout from "@/components/Layout";
+import Layout from "@/layouts/Clean";
 import BasicAlert from "@/components/BasicAlert";
 
 const LogoutRedirect = ({ PostLogoutRedirectUri, ClientName }) => {

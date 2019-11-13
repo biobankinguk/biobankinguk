@@ -5,7 +5,7 @@ import {
   Box,
   Link
 } from "@chakra-ui/core";
-import Layout from "@/components/Layout";
+import Layout from "@/layouts/Clean";
 import ResendConfirmationAlert from "@/components/ResendConfirmationAlert";
 import { hasErrors } from "@/services/modelstate-validation";
 import BasicAlert from "@/components/BasicAlert";
