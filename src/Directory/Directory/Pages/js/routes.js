@@ -1,24 +1,17 @@
-﻿import React, { cloneElement } from "react";
-import ReactDOM from "react-dom";
-import { ThemeProvider, CSSReset, theme } from "@chakra-ui/core";
-import ukcrcTheme from "../../../../theme/dist/theme";
-import merge from "lodash-es/merge";
-import { Global } from "@emotion/core";
-import Login from "../Account/pages/Login";
-import LoginRedirect from "../Account/pages/LoginRedirect";
-import ConfirmLogout from "../Account/pages/ConfirmLogout";
-import LogoutRedirect from "../Account/pages/LogoutRedirect";
-import Register from "../Account/pages/Register";
-import RegisterResult from "../Account/pages/RegisterResult";
-import ConfirmAccount from "../Account/pages/ConfirmAccount";
-import ResendConfirm from "../Account/pages/ResendConfirm";
+﻿import React from "react";
+import {
+  Login,
+  LoginRedirect,
+  ConfirmLogout,
+  LogoutRedirect,
+  Register,
+  RegisterResult,
+  ConfirmAccount,
+  ResendConfirm
+} from "./pages/Account";
 
-/*
- * Here we conditionally render small one page React apps
- * based on the server-side page loaded
- */
-
-const routeComponents = {
+// Here we map "page" components to keys
+export default {
   Login: <Login />,
   LoginRedirect: <LoginRedirect />,
   LogoutConfirm: <ConfirmLogout />,
@@ -28,29 +21,3 @@ const routeComponents = {
   Confirm: <ConfirmAccount />,
   ConfirmResend: <ResendConfirm />
 };
-
-/*
- * Below is where the actual React bootstrapping happens.
- * It shouldn't need touching often
- */
-
-const root = document.getElementById("react-app");
-
-if (root && root.dataset.route) {
-  const { route } = root.dataset;
-  if (routeComponents.hasOwnProperty(route)) {
-    merge(theme, ukcrcTheme);
-    ReactDOM.render(
-      <ThemeProvider theme={theme}>
-        <CSSReset />
-        <Global
-          styles={{
-            body: { backgroundColor: theme.colors.defaultBackground }
-          }}
-        />
-        {cloneElement(routeComponents[route], window.__TDCC__.ViewModel)}
-      </ThemeProvider>,
-      document.getElementById("react-app")
-    );
-  }
-}

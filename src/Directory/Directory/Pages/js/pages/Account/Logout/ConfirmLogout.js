@@ -1,8 +1,8 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import { postObjectAsFormData, constants } from "js-forms";
-import Layout from "../../Shared/Layout";
 import { Text, Button, Flex } from "@chakra-ui/core";
+import Layout from "Components/Layout";
 
 const ConfirmLogout = () => (
   <Layout heading="Logout">

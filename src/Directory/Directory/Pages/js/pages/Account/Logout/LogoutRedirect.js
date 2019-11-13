@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Layout from "../../Shared/Layout";
 import {
   Alert,
   AlertTitle,
@@ -7,6 +6,7 @@ import {
   AlertDescription,
   AlertIcon
 } from "@chakra-ui/core";
+import Layout from "Components/Layout";
 
 const LogoutRedirect = ({ PostLogoutRedirectUri, ClientName }) => {
   useEffect(() => {
