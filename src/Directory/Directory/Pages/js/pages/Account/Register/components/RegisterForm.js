@@ -1,24 +1,19 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData } from "js-forms";
-import { Button, Stack, Box, SimpleGrid } from "@chakra-ui/core";
+import { Button, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/register-form";
 import { hasErrors } from "@/services/modelstate-validation";
 import BasicInput from "@/components/forms/BasicInput";
-import PasswordRequirementsInfo from "@/components/PasswordRequirementsInfo";
 import { useAspForm } from "@/hooks/aspnet-interop";
 import EmailField from "@/components/forms/EmailField";
-import PasswordField from "@/components/forms/PasswordField";
+import SetPasswordFieldGroup from "@/components/forms/SetPasswordFieldGroup";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(
     !hasErrors(ModelState)
   );
-  const [hidePasswordConfirm, setHidePasswordConfirm] = useState(
-    !hasErrors(ModelState)
-  );
   const touchEmail = () => setHideEmailConfirm(false);
-  const touchPassword = () => setHidePasswordConfirm(false);
 
   const { action, csrf } = useAspForm();
 
@@ -75,28 +70,9 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
               </Field>
             </Box>
 
-            <SimpleGrid minChildWidth="300px">
-              <Stack spacing={3} flexGrow={1} flexBasis="50%">
-                <Box>
-                  <PasswordField onFocus={touchPassword} />
-                </Box>
-                <Box hidden={hidePasswordConfirm}>
-                  <Field name="PasswordConfirm">
-                    {rp => (
-                      <BasicInput
-                        {...rp}
-                        label="Confirm Password"
-                        placeholder="Password"
-                        isRequired
-                        isPassword
-                      />
-                    )}
-                  </Field>
-                </Box>
-              </Stack>
-
-              <PasswordRequirementsInfo m={2} flexBasis="40%" />
-            </SimpleGrid>
+            <Box>
+              <SetPasswordFieldGroup initialHidden={!hasErrors(ModelState)} />
+            </Box>
 
             <Button
               width="2xs"
