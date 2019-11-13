@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     /// <summary>
     /// Overall batch submission dto containing all permitted entities and operations.

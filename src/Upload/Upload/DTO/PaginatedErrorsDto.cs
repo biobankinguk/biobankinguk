@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Upload.Common.DTO;
+using Upload.DTO;
 
 namespace Upload.DTOs
 {

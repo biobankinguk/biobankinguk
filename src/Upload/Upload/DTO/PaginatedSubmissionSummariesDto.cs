@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Upload.Common.DTO;
-using Upload.Common.Models;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     public class PaginatedSubmissionSummariesDto : BasePaginatedDto
     {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Upload.Common.Types;
 using Upload.DTOs;
 
-namespace Upload.Common.Models
+namespace Upload.DTO
 {
     public class SampleDto : SampleIdDto
     {

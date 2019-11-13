@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Upload.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -12,6 +11,7 @@ using System.Threading.Tasks;
 using Upload.Common.Types;
 using Upload.Config;
 using Upload.Contracts;
+using Upload.DTO;
 using Upload.DTOs;
 using Upload.EqualityComparers;
 

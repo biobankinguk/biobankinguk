@@ -1,4 +1,4 @@
-﻿namespace Upload.DTOs
+﻿namespace Upload.DTO
 {
     /// <summary>
     /// ViewModel representing an individual error message and the identifying properties of the record it relates to.

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Upload.Common.Data.Entities;
-using Upload.DTOs;
-using SampleDto = Upload.Common.Models.SampleDto;
+using Upload.DTO;
 
 namespace Upload.Profiles
 {

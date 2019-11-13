@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Upload.Common.Models;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 using Upload.Common.Types;
 using Upload.Contracts;
 using Upload.Common.DTO;
-using Upload.DTOs;
+using Upload.DTO;
 
 namespace Upload.Controllers
 {

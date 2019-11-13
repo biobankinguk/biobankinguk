@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Upload.Common.Types;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     /// <inheritdoc />
     public class TreatmentSubmissionDto : TreatmentIdDto

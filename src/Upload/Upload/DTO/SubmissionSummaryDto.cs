@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Upload.Common.Models
+namespace Upload.DTO
 {
     public class SubmissionSummaryDto
     {

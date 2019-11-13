@@ -1,10 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
-    public class TreatmentIdDto
+    public class BaseIdDto
     {
+        /// <summary>
+        /// Foreign key column.
+        /// </summary>
+        [Required]
+        public int OrganisationId { get; set; }
+
+        [Required]
         public DateTimeOffset SubmissionTimestamp { get; set; }
 
         /// <summary>
@@ -12,10 +19,5 @@ namespace Upload.DTOs
         /// </summary>
         [Required]
         public string IndividualReferenceId { get; set; } = string.Empty;
-
-        public DateTime DateTreated { get; set; }
-
-        [Required]
-        public string TreatmentCode { get; set; } = string.Empty;
     }
 }

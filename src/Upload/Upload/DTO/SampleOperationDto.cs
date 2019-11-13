@@ -1,4 +1,4 @@
-﻿namespace Upload.DTOs
+﻿namespace Upload.DTO
 {
     /// <inheritdoc />
     /// <summary>

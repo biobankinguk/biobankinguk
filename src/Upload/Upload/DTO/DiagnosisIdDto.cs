@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Upload.Common.Models;
 using Upload.Common.Types;
+using Upload.DTO;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     public class DiagnosisIdDto : BaseIdDto
     {

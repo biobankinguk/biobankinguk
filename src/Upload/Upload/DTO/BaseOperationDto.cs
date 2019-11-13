@@ -1,6 +1,6 @@
 ﻿using Upload.Common.Types;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     /// <summary>
     /// Represents the core elements of a DTO which provides an entity operation type (e.g. submit, delete).

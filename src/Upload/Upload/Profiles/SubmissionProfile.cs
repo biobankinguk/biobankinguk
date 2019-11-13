@@ -2,7 +2,7 @@
 using System.Linq;
 using AutoMapper;
 using Upload.Common.Data.Entities;
-using Upload.Common.Models;
+using Upload.DTO;
 
 namespace Upload.Profiles
 {

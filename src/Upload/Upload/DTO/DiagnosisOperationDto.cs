@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     /// <inheritdoc />
     /// <summary>

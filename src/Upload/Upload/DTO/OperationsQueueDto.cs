@@ -1,7 +1,7 @@
 ﻿using System;
 using Upload.Common.Types;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     public class OperationsQueueDto
     {

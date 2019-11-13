@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Upload.DTOs
+namespace Upload.DTO
 {
     /// <summary>
     /// Ontology - for examples, see https://www.ebi.ac.uk/ols/ontologies.
