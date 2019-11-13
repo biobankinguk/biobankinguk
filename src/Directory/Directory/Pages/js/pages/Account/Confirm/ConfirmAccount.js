@@ -1,9 +1,5 @@
 import React from "react";
 import {
-  Alert,
-  Flex,
-  AlertIcon,
-  AlertTitle,
   AlertDescription,
   Text,
   Box,
@@ -12,35 +8,26 @@ import {
 import Layout from "@/components/Layout";
 import ResendConfirmationAlert from "@/components/ResendConfirmationAlert";
 import { hasErrors } from "@/services/modelstate-validation";
+import BasicAlert from "@/components/BasicAlert";
 
 const ConfirmAccount = ({ ModelState, Username }) => {
   let content;
   if (hasErrors(ModelState)) {
     content = (
       <>
-        <Alert status="error" variant="left-accent" flexDirection="column">
-          <Flex alignItems="center">
-            <AlertIcon />
-            <AlertTitle>
-              There seems to be a problem with this confirmation link.
-            </AlertTitle>
-          </Flex>
-          <AlertDescription>
-            Your user ID or account confirmation token is invalid, or has
-            expired.
-          </AlertDescription>
-        </Alert>
+        <BasicAlert
+          status="error"
+          title="There seems to be a problem with this confirmation link."
+        >
+          Your user ID or account confirmation token is invalid, or has expired.
+        </BasicAlert>
 
         <ResendConfirmationAlert username={Username} />
       </>
     );
   } else {
     content = (
-      <Alert status="success" variant="left-accent" flexDirection="column">
-        <Flex alignItems="center">
-          <AlertIcon />
-          <AlertTitle>Success!</AlertTitle>
-        </Flex>
+      <BasicAlert status="success" title="Success!" noChildWrapper>
         <AlertDescription flexDirection="column" textAlign="center">
           <Text>
             Account Confirmation was successful and your registration is now
@@ -52,7 +39,7 @@ const ConfirmAccount = ({ ModelState, Username }) => {
             </Link>
           </Box>
         </AlertDescription>
-      </Alert>
+      </BasicAlert>
     );
   }
 

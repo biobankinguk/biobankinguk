@@ -1,35 +1,22 @@
 import React from "react";
-import {
-  Alert,
-  Flex,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription
-} from "@chakra-ui/core";
 import { hasErrors } from "@/services/modelstate-validation";
+import BasicAlert from "./BasicAlert";
 
 const ModelValidationSummary = ({ errors }) => {
   if (hasErrors(errors, ""))
     return (
-      <Alert
+      <BasicAlert
         status="error"
         my={2}
-        p={2}
-        variant="left-accent"
-        flexDirection="column"
+        py={2}
+        title="There were some errors with your request"
       >
-        <Flex alignItems="center">
-          <AlertIcon />
-          <AlertTitle>There were some errors with your request</AlertTitle>
-        </Flex>
-        <AlertDescription>
-          <ul>
-            {errors[""].map(e => (
-              <li>{e}</li>
-            ))}
-          </ul>
-        </AlertDescription>
-      </Alert>
+        <ul>
+          {errors[""].map(e => (
+            <li>{e}</li>
+          ))}
+        </ul>
+      </BasicAlert>
     );
 
   return null;
