@@ -4,7 +4,7 @@ import { postObjectAsFormData } from "js-forms";
 import { Button, Stack, Box, SimpleGrid } from "@chakra-ui/core";
 import valSchema from "../validation/register-form";
 import { hasErrors } from "@/services/modelstate-validation";
-import CommonFormikInput from "@/components/CommonFormikInput";
+import BasicInput from "@/components/forms/BasicInput";
 import PasswordRequirementsInfo from "@/components/PasswordRequirementsInfo";
 import { useAspForm } from "@/hooks/aspnet-interop";
 
@@ -46,7 +46,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
             <Box>
               <Field name="FullName">
                 {rp => (
-                  <CommonFormikInput
+                  <BasicInput
                     {...rp}
                     label="Name"
                     placeholder="John Smith"
@@ -59,7 +59,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
             <Box>
               <Field name="Email">
                 {rp => (
-                  <CommonFormikInput
+                  <BasicInput
                     {...rp}
                     label="Email Address"
                     placeholder="john.smith@example.com"
@@ -73,7 +73,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
             <Box hidden={hideEmailConfirm}>
               <Field name="EmailConfirm">
                 {rp => (
-                  <CommonFormikInput
+                  <BasicInput
                     {...rp}
                     label="Confirm Email Address"
                     placeholder="john.smith@example.com"
@@ -88,7 +88,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
                 <Box>
                   <Field name="Password">
                     {rp => (
-                      <CommonFormikInput
+                      <BasicInput
                         {...rp}
                         label={rp.field.name}
                         placeholder={rp.field.name}
@@ -102,7 +102,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
                 <Box hidden={hidePasswordConfirm}>
                   <Field name="PasswordConfirm">
                     {rp => (
-                      <CommonFormikInput
+                      <BasicInput
                         {...rp}
                         label="Confirm Password"
                         placeholder="Password"

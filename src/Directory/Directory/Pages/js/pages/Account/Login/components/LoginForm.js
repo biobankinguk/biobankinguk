@@ -3,7 +3,7 @@ import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData } from "js-forms";
 import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/login-form";
-import CommonFormikInput from "@/components/CommonFormikInput";
+import BasicInput from "@/components/forms/BasicInput";
 import { useAspForm } from "@/hooks/aspnet-interop";
 
 const LoginForm = ({ Username }) => {
@@ -34,7 +34,7 @@ const LoginForm = ({ Username }) => {
             <Box>
               <Field name="Username">
                 {rp => (
-                  <CommonFormikInput
+                  <BasicInput
                     {...rp}
                     label="Email Address"
                     placeholder="john.smith@example.com"
@@ -47,7 +47,7 @@ const LoginForm = ({ Username }) => {
             <Box>
               <Field name="Password">
                 {rp => (
-                  <CommonFormikInput
+                  <BasicInput
                     {...rp}
                     label={rp.field.name}
                     placeholder={rp.field.name}
