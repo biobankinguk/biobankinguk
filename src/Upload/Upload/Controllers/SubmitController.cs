@@ -99,6 +99,9 @@ namespace Upload.Controllers
             // Validate diagnosis mandatory fields and add to submission
             foreach (var diagnosis in model.Diagnoses)
             {
+                if (diagnosis.Diagnosis is null)
+                    return await CancelSubmissionAndReturnBadRequest(diagnosis, submission.Id, "No Diagnosis Id Provided with this diagnosis.");
+
                 switch (diagnosis.Op)
                 {
                     case Operation.Submit:
