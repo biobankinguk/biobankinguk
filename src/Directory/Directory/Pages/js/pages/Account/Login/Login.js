@@ -5,32 +5,31 @@ import UnconfirmedAccountFound from "@/components/UnconfirmedAccountFound";
 import ModelValidationSummary from "@/components/ModelValidationSummary";
 import TryThisAlert from "@/components/TryThisAlert";
 import LoginForm from "./components/LoginForm";
+import ConditionalContent from "@/components/ConditionalContent";
 
-const Login = vm => {
-  let failureAlert;
-  if (vm.AllowResend)
-    failureAlert = <UnconfirmedAccountFound username={vm.Username} />;
-  else failureAlert = <ModelValidationSummary errors={vm.ModelState} />;
+const Login = vm => (
+  <Layout heading="Login">
+    <Flex flexDirection="column">
+      <TryThisAlert
+        my={2}
+        text="Don't have an account?"
+        linkText="Register one"
+        href="Register"
+      />
 
-  return (
-    <Layout heading="Login">
-      <Flex flexDirection="column">
-        <TryThisAlert
-          my={2}
-          text="Don't have an account?"
-          linkText="Register one"
-          href="Register"
-        />
+      <ConditionalContent
+        condition={vm.AllowResend}
+        trueRender={() => <UnconfirmedAccountFound username={vm.Username} />}
+        falseRender={() => <ModelValidationSummary errors={vm.ModelState} />}
+      />
 
-        {failureAlert}
-        <LoginForm {...vm} />
+      <LoginForm {...vm} />
 
-        <Link color="primary.500" href="ForgotPassword">
-          Forgot password?
-        </Link>
-      </Flex>
-    </Layout>
-  );
-};
+      <Link color="primary.500" href="ForgotPassword">
+        Forgot password?
+      </Link>
+    </Flex>
+  </Layout>
+);
 
 export default Login;

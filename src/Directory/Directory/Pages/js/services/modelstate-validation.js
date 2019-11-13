@@ -6,6 +6,6 @@ export const hasErrors = (state, ...fields) => {
 
   const fieldHasErrors = field => state[field] && state[field].length;
 
-  if (fields) return fields.some(fieldHasErrors);
+  if (fields.length) return fields.some(fieldHasErrors);
   return stateKeys.some(fieldHasErrors);
 };

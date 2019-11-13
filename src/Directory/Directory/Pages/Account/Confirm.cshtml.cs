@@ -80,7 +80,7 @@ namespace Directory.Pages.Account
             return Page();
         }
 
-        public async Task<IActionResult> OnGetResend(string username)
+        public async Task<IActionResult> OnGetResend(string? username)
         {
             Username = username;
 

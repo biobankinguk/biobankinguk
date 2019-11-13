@@ -1,33 +1,20 @@
 import React from "react";
 import { AlertDescription, Text, Box, Link } from "@chakra-ui/core";
-import ResendConfirmationAlert from "@/components/ResendConfirmationAlert";
 import { hasErrors } from "@/services/modelstate-validation";
 import BasicAlert from "@/components/BasicAlert";
 import LinkErrorAlert from "@/components/LinkErrorAlert";
 import ConditionalPage from "@/components/ConditionalPage";
 import Layout from "@/layouts/Clean";
 
-const ConfirmAccount = ({ ModelState, Username }) => (
+const ResetPasswordResult = ({ ModelState }) => (
   <ConditionalPage
-    layout={<Layout heading="Register" />}
-    condition={(() => {
-      const e = hasErrors(ModelState);
-      console.log(e);
-      return e;
-    })()}
-    trueRender={() => (
-      <>
-        <LinkErrorAlert linkType="account confirmation" />
-        <ResendConfirmationAlert username={Username} />
-      </>
-    )}
+    layout={<Layout heading="Reset Password" />}
+    condition={hasErrors(ModelState)}
+    trueRender={() => <LinkErrorAlert linkType="password reset" />}
     falseRender={() => (
       <BasicAlert status="success" title="Success!" noChildWrapper>
         <AlertDescription flexDirection="column" textAlign="center">
-          <Text>
-            Account Confirmation was successful and your registration is now
-            complete.
-          </Text>
+          <Text>Your new password has been successfully set!</Text>
           <Box mt={3}>
             <Link color="primary.500" href="/auth/login">
               Return home
@@ -39,4 +26,4 @@ const ConfirmAccount = ({ ModelState, Username }) => (
   />
 );
 
-export default ConfirmAccount;
+export default ResetPasswordResult;
