@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Common.Data.Upload;
+using Upload.Common.Data.Entities;
 using Upload.DTOs;
 
 namespace Upload.Profiles

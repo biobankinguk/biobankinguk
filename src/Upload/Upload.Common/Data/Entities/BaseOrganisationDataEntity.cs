@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Common.Data.Upload
+namespace Upload.Common.Data.Entities
 {
     /// <summary>
     /// Common properties for all data owned by organisations.

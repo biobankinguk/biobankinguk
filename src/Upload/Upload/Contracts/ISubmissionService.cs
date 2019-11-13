@@ -1,6 +1,6 @@
-﻿using Common.Data.Upload;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Upload.Common.Data.Entities;
 using Upload.Common.Types;
 
 namespace Upload.Contracts

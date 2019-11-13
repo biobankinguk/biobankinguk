@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Common.Data.Upload
+namespace Upload.Common.Data.Entities
 {
     /// <summary>
     /// So we can stage record ids to be deleted

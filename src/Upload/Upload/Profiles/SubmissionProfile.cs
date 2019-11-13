@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
+using Upload.Common.Data.Entities;
 using Upload.Common.Models;
-using Common.Data.Upload;
 
 namespace Upload.Profiles
 {

@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Common.Data;
 using Microsoft.EntityFrameworkCore;
 using Upload;
+using Upload.Common.Data;
 using Upload.Common.Types;
 using Upload.Contracts;
 

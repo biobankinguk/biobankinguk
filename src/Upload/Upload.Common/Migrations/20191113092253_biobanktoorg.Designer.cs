@@ -10,8 +10,8 @@ using Upload.Common.Data;
 namespace Upload.Common.Migrations
 {
     [DbContext(typeof(UploadContext))]
-    [Migration("20191101101316_Initial")]
-    partial class Initial
+    [Migration("20191113092253_biobanktoorg")]
+    partial class biobanktoorg
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,9 +29,11 @@ namespace Upload.Common.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Message")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RecordIdentifiers")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SubmissionId")
@@ -97,15 +99,18 @@ namespace Upload.Common.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CollectionName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("date");
 
                     b.Property<string>("ExtractionProcedureId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExtractionSiteId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ExtractionSiteOntologyVersionId")
@@ -123,6 +128,7 @@ namespace Upload.Common.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SampleContentId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SampleContentMethodId")
@@ -143,49 +149,9 @@ namespace Upload.Common.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrganisationId", "IndividualReferenceId", "Barcode", "CollectionName")
-                        .IsUnique()
-                        .HasFilter("[CollectionName] IS NOT NULL");
-
-                    b.ToTable("Samples");
-                });
-
-            modelBuilder.Entity("Common.Data.Upload.LiveTreatment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateTreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IndividualReferenceId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("SubmissionTimestamp")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("TreatmentCodeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TreatmentCodeOntologyVersionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TreatmentLocationId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganisationId", "IndividualReferenceId", "DateTreated", "TreatmentCodeId")
                         .IsUnique();
 
-                    b.ToTable("Treatments");
+                    b.ToTable("Samples");
                 });
 
             modelBuilder.Entity("Common.Data.Upload.StagedDiagnosis", b =>
@@ -254,15 +220,18 @@ namespace Upload.Common.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CollectionName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("date");
 
                     b.Property<string>("ExtractionProcedureId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExtractionSiteId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ExtractionSiteOntologyVersionId")
@@ -280,6 +249,7 @@ namespace Upload.Common.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SampleContentId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SampleContentMethodId")
@@ -300,8 +270,7 @@ namespace Upload.Common.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrganisationId", "IndividualReferenceId", "Barcode", "CollectionName")
-                        .IsUnique()
-                        .HasFilter("[CollectionName] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("StagedSamples");
                 });
@@ -319,7 +288,107 @@ namespace Upload.Common.Migrations
                     b.ToTable("StagedSampleDeletes");
                 });
 
-            modelBuilder.Entity("Common.Data.Upload.StagedTreatment", b =>
+            modelBuilder.Entity("Common.Data.Upload.StagedTreatmentDelete", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StagedTreatmentDeletes");
+                });
+
+            modelBuilder.Entity("Common.Data.Upload.Submission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecordsProcessed")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StatusChangeTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("SubmissionTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TotalRecords")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UploadStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Submissions");
+                });
+
+            modelBuilder.Entity("Upload.Common.DTO.OmopTermDto", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OmopTermDto");
+                });
+
+            modelBuilder.Entity("Upload.Common.Data.Entities.LiveTreatment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IndividualReferenceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("SubmissionTimestamp")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("TreatmentCodeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("TreatmentCodeOntologyVersionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TreatmentLocationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganisationId", "IndividualReferenceId", "DateTreated", "TreatmentCodeId")
+                        .IsUnique();
+
+                    b.ToTable("Treatments");
+                });
+
+            modelBuilder.Entity("Upload.Common.Data.Entities.StagedTreatment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -358,83 +427,6 @@ namespace Upload.Common.Migrations
                     b.ToTable("StagedTreatments");
                 });
 
-            modelBuilder.Entity("Common.Data.Upload.StagedTreatmentDelete", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StagedTreatmentDeletes");
-                });
-
-            modelBuilder.Entity("Common.Data.Upload.Submission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BiobankId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecordsProcessed")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StatusChangeTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SubmissionTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalRecords")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UploadStatusId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UploadStatusId");
-
-                    b.ToTable("Submissions");
-                });
-
-            modelBuilder.Entity("Common.Data.Upload.UploadStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UploadStatuses");
-                });
-
-            modelBuilder.Entity("Upload.Common.Models.OmopTerm", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OmopTerm");
-                });
-
             modelBuilder.Entity("Common.Data.Upload.Error", b =>
                 {
                     b.HasOne("Common.Data.Upload.Submission", "Submission")
@@ -446,7 +438,7 @@ namespace Upload.Common.Migrations
 
             modelBuilder.Entity("Common.Data.Upload.LiveDiagnosis", b =>
                 {
-                    b.HasOne("Upload.Common.Models.OmopTerm", "DiagnosisCode")
+                    b.HasOne("Upload.Common.DTO.OmopTermDto", "DiagnosisCode")
                         .WithMany()
                         .HasForeignKey("DiagnosisCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -455,18 +447,11 @@ namespace Upload.Common.Migrations
 
             modelBuilder.Entity("Common.Data.Upload.StagedDiagnosis", b =>
                 {
-                    b.HasOne("Upload.Common.Models.OmopTerm", "DiagnosisCode")
+                    b.HasOne("Upload.Common.DTO.OmopTermDto", "DiagnosisCode")
                         .WithMany()
                         .HasForeignKey("DiagnosisCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Common.Data.Upload.Submission", b =>
-                {
-                    b.HasOne("Common.Data.Upload.UploadStatus", "UploadStatus")
-                        .WithMany()
-                        .HasForeignKey("UploadStatusId");
                 });
 #pragma warning restore 612, 618
         }

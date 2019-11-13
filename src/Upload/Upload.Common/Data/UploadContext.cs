@@ -1,8 +1,7 @@
-﻿using Common.Data.Upload;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Upload.Common.Data.Entities;
 
-namespace Common.Data
+namespace Upload.Common.Data
 {
     public class UploadContext : DbContext
     {
@@ -81,6 +80,6 @@ namespace Common.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
-        }      
+        }
     }
 }

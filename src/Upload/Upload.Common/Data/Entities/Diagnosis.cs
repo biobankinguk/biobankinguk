@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Upload.Common.DTO;
 
-namespace Common.Data.Upload
+namespace Upload.Common.Data.Entities
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>

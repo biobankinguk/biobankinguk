@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Common.Data.Upload
+namespace Upload.Common.Data.Entities
 {
     public interface ISubmissionTimestamped
     {

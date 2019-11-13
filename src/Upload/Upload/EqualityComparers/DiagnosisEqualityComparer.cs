@@ -1,6 +1,6 @@
-﻿using Common.Data.Upload;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Upload.Common.Data.Entities;
 
 namespace Upload.EqualityComparers
 {

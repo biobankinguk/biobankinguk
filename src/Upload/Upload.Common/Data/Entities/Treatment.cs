@@ -1,5 +1,4 @@
-﻿using Common.Data.Upload;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Upload.Common.Data.Entities

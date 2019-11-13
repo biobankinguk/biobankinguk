@@ -1,7 +1,6 @@
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Common.Constants;
-using Common.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Upload.Azure;
+using Upload.Common.Data;
 using Upload.Config;
 using Upload.Contracts;
 using Upload.Profiles;

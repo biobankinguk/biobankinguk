@@ -1,4 +1,4 @@
-﻿namespace Common.Data.Upload
+﻿namespace Upload.Common.Data.Entities
 {
     public class Error
     {
