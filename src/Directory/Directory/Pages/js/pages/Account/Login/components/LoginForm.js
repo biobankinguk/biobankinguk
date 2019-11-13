@@ -1,11 +1,11 @@
 ﻿import React from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import { postObjectAsFormData } from "js-forms";
 import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/login-form";
-import BasicInput from "@/components/forms/BasicInput";
 import { useAspForm } from "@/hooks/aspnet-interop";
 import EmailField from "@/components/forms/EmailField";
+import PasswordField from "@/components/forms/PasswordField";
 
 const LoginForm = ({ Username }) => {
   const { action, csrf } = useAspForm();
@@ -37,17 +37,7 @@ const LoginForm = ({ Username }) => {
             </Box>
 
             <Box>
-              <Field name="Password">
-                {rp => (
-                  <BasicInput
-                    {...rp}
-                    label={rp.field.name}
-                    placeholder={rp.field.name}
-                    isRequired
-                    isPassword
-                  />
-                )}
-              </Field>
+              <PasswordField />
             </Box>
 
             <Flex justifyContent="space-between">

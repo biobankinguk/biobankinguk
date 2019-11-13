@@ -8,6 +8,7 @@ import BasicInput from "@/components/forms/BasicInput";
 import PasswordRequirementsInfo from "@/components/PasswordRequirementsInfo";
 import { useAspForm } from "@/hooks/aspnet-interop";
 import EmailField from "@/components/forms/EmailField";
+import PasswordField from "@/components/forms/PasswordField";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(
@@ -77,18 +78,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
             <SimpleGrid minChildWidth="300px">
               <Stack spacing={3} flexGrow={1} flexBasis="50%">
                 <Box>
-                  <Field name="Password">
-                    {rp => (
-                      <BasicInput
-                        {...rp}
-                        label={rp.field.name}
-                        placeholder={rp.field.name}
-                        isRequired
-                        isPassword
-                        onFocus={touchPassword}
-                      />
-                    )}
-                  </Field>
+                  <PasswordField onFocus={touchPassword} />
                 </Box>
                 <Box hidden={hidePasswordConfirm}>
                   <Field name="PasswordConfirm">
