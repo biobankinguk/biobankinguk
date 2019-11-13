@@ -1,26 +1,28 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import { Stack, Box, Button } from "@chakra-ui/core";
-import valSchema from "../validation/request-form";
+import valSchema from "../validation/reset-form";
 import { useAspForm } from "@/hooks/aspnet-interop";
 import { postObjectAsFormData } from "js-forms";
 import SetPasswordFieldGroup from "@/components/forms/SetPasswordFieldGroup";
 import { hasErrors } from "@/services/modelstate-validation";
 
-const ResetForm = ({ ModelState, Email }) => {
+const ResetForm = ({ ModelState, Code, UserId }) => {
   const { action, csrf } = useAspForm();
 
   const handleSubmit = (values, actions) => {
     postObjectAsFormData(action, {
       ...values,
-      ...csrf
+      ...csrf,
+      Code,
+      UserId
     });
     actions.setSubmitting(false);
   };
 
   return (
     <Formik
-      initialValues={{ Email }}
+      initialValues={{ Password: "", PasswordConfirm: "" }}
       onSubmit={handleSubmit}
       validationSchema={valSchema}
     >

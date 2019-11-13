@@ -56,5 +56,24 @@ namespace Directory.Services
                 nameof(TokenEvent.Issued),
                 nameof(TokenPurpose.PasswordReset),
                 token, userId);
+
+        public async Task PasswordResetTokenValidationAttempted(string token, string userId)
+            => await LogEvent(
+                nameof(TokenEvent.ValidationAttempted),
+                nameof(TokenPurpose.PasswordReset),
+                token, userId);
+
+        public async Task PasswordResetTokenValidationSuccessful(string token, string userId)
+            => await LogEvent(
+                nameof(TokenEvent.ValidationSuccessful),
+                nameof(TokenPurpose.PasswordReset),
+                token, userId);
+
+        public async Task PasswordResetTokenValidationFailed(string token, string userId, string? errors = null)
+            => await LogEvent(
+                nameof(TokenEvent.ValidationFailed),
+                nameof(TokenPurpose.PasswordReset),
+                token, userId,
+                errors);
     }
 }

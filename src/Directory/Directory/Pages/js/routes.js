@@ -22,6 +22,10 @@ const routes = route => {
       return import("./pages/Account/ForgotPassword/ForgotPassword");
     case "ForgotPasswordResult":
       return import("./pages/Account/ForgotPassword/ForgotPasswordResult");
+    case "ResetPassword":
+      return import("./pages/Account/ForgotPassword/ResetPassword");
+    case "ResetPasswordResult":
+      return import("./pages/Account/ForgotPassword/ResetPasswordResult");
     default:
       return null;
   }
