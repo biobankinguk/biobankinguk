@@ -2,8 +2,8 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import { Stack, Box, Button } from "@chakra-ui/core";
 import valSchema from "../validation/request-form";
-import CommonFormikInput from "Components/CommonFormikInput";
-import { useAspForm } from "Hooks/aspnet-interop";
+import CommonFormikInput from "@/components/CommonFormikInput";
+import { useAspForm } from "@/hooks/aspnet-interop";
 import { postObjectAsFormData } from "js-forms";
 
 const RequestForm = ({ Email }) => {

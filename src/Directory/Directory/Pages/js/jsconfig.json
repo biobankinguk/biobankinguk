@@ -2,9 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "Components/*": ["./components/*"],
-      "Services/*": ["./services/*"],
-      "Hooks/*": ["./hooks/*"]
+      "@/*": ["./*"]
     }
   },
   "exclude": ["node_modules", "dist", "bin", "ClientApp"]

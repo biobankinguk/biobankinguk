@@ -2,7 +2,7 @@
 import ReactDOM from "react-dom";
 import merge from "lodash-es/merge";
 import { theme } from "@chakra-ui/core";
-import ukcrcTheme from "../../../../theme/dist/theme";
+import ukcrcTheme from "Theme";
 import routes from "./routes";
 import App from "./App";
 

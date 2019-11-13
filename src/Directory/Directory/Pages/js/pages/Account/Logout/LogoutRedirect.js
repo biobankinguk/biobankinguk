@@ -6,7 +6,7 @@ import {
   AlertDescription,
   AlertIcon
 } from "@chakra-ui/core";
-import Layout from "Components/Layout";
+import Layout from "@/components/Layout";
 
 const LogoutRedirect = ({ PostLogoutRedirectUri, ClientName }) => {
   useEffect(() => {

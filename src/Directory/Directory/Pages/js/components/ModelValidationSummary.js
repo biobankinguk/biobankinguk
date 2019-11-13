@@ -6,7 +6,7 @@ import {
   AlertTitle,
   AlertDescription
 } from "@chakra-ui/core";
-import { hasErrors } from "Services/modelstate-validation";
+import { hasErrors } from "@/services/modelstate-validation";
 
 const ModelValidationSummary = ({ errors }) => {
   if (hasErrors(errors, ""))

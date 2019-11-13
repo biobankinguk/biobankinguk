@@ -6,9 +6,9 @@ import {
   AlertTitle,
   Flex
 } from "@chakra-ui/core";
-import Layout from "Components/Layout";
-import UnconfirmedAccountFound from "Components/UnconfirmedAccountFound";
-import ModelValidationSummary from "Components/ModelValidationSummary";
+import Layout from "@/components/Layout";
+import UnconfirmedAccountFound from "@/components/UnconfirmedAccountFound";
+import ModelValidationSummary from "@/components/ModelValidationSummary";
 import RequestForm from "./components/RequestForm";
 
 const ForgotPassword = vm => {

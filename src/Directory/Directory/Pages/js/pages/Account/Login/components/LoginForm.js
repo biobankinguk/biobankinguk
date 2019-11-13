@@ -3,8 +3,8 @@ import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData } from "js-forms";
 import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/login-form";
-import CommonFormikInput from "Components/CommonFormikInput";
-import { useAspForm } from "Hooks/aspnet-interop";
+import CommonFormikInput from "@/components/CommonFormikInput";
+import { useAspForm } from "@/hooks/aspnet-interop";
 
 const LoginForm = ({ Username }) => {
   const { action, csrf } = useAspForm();

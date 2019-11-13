@@ -2,8 +2,8 @@ import React from "react";
 import { Formik, Form } from "formik";
 import { postObjectAsFormData } from "js-forms";
 import { Text, Button, Flex } from "@chakra-ui/core";
-import Layout from "Components/Layout";
-import { useAspForm } from "Hooks/aspnet-interop";
+import Layout from "@/components/Layout";
+import { useAspForm } from "@/hooks/aspnet-interop";
 
 const ConfirmLogout = () => {
   const { action, csrf } = useAspForm();

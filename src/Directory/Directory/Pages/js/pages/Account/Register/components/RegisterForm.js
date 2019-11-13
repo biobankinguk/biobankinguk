@@ -3,10 +3,10 @@ import { Formik, Form, Field } from "formik";
 import { postObjectAsFormData } from "js-forms";
 import { Button, Stack, Box, SimpleGrid } from "@chakra-ui/core";
 import valSchema from "../validation/register-form";
-import { hasErrors } from "Services/modelstate-validation";
-import CommonFormikInput from "Components/CommonFormikInput";
-import PasswordRequirementsInfo from "Components/PasswordRequirementsInfo";
-import { useAspForm } from "Hooks/aspnet-interop";
+import { hasErrors } from "@/services/modelstate-validation";
+import CommonFormikInput from "@/components/CommonFormikInput";
+import PasswordRequirementsInfo from "@/components/PasswordRequirementsInfo";
+import { useAspForm } from "@/hooks/aspnet-interop";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(
