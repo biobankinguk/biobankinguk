@@ -218,7 +218,7 @@ namespace Upload.Controllers
 
             }
 
-            string updateDiagnosesBlobType = diagnosesUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get FullName of type for variable diagnosesUpdates.");
+            var updateDiagnosesBlobType = diagnosesUpdates.GetType().FullName ?? throw new ApplicationException($"Unable to get FullName of type for variable {nameof(diagnosesUpdates)}");
 
             // Send the diagnosis insert/updates up to queue
             var diagnosesUpdatesBlobId =
@@ -236,7 +236,7 @@ namespace Upload.Controllers
                     )
                 );
 
-            var deleteDiagnosesBlobType = diagnosesDeletes.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable diagnosesDeletes.");
+            var deleteDiagnosesBlobType = diagnosesDeletes.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(diagnosesDeletes)}.");
 
             // Send the diagnosis deletes up to queue
             var diagnosesDeletesBlobId =
@@ -255,7 +255,7 @@ namespace Upload.Controllers
                 )
             );
 
-            var updateSampleBlobType = samplesUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable samplesUpdates");
+            var updateSampleBlobType = samplesUpdates.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(samplesUpdates)}");
 
             // Send the sample insert/updates up to queue
             var samplesUpdatesBlobId =
@@ -274,7 +274,7 @@ namespace Upload.Controllers
                 )
             );
 
-            var deleteSampleBlobType = samplesDeletes.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable samplesDeletes");
+            var deleteSampleBlobType = samplesDeletes.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(samplesDeletes)}");
 
             // Send the sample deletes up to queue
             var samplesDeletesBlobId =
@@ -293,7 +293,7 @@ namespace Upload.Controllers
                 )
             );
 
-            var updateTreatmentBlobType = treatmentsUpdates.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable treatmentsUpdates");
+            var updateTreatmentBlobType = treatmentsUpdates.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(treatmentsUpdates)}");
 
             // Send the treatment insert/updates up to queue
             var treatmentsUpdatesBlobId =
@@ -312,7 +312,7 @@ namespace Upload.Controllers
                 )
             );
 
-            var deleteTreatmentBlobType = treatmentsDeletes.GetType().FullName ?? throw new ApplicationException("Unable to get Fullname of type for variable treatmentDeletes");
+            var deleteTreatmentBlobType = treatmentsDeletes.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(treatmentsDeletes)}");
 
             // Send the treatment deletes up to queue
             var treatmentsDeletesBlobId =
