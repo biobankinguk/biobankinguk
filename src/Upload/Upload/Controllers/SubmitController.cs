@@ -1,0 +1,385 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Upload.Common.Types;
+using Upload.Config;
+using Upload.Contracts;
+using Upload.DTO;
+using Upload.EqualityComparers;
+
+namespace Upload.Controllers
+{
+    /// <inheritdoc />
+    /// <summary>
+    /// Controller for handling submissions of data for a organisation
+    /// </summary>
+    [AllowAnonymous]
+    [Route("[controller]")]
+    [ApiController]
+    public class SubmitController : ControllerBase
+    {
+        private readonly ApiSettings _config;
+        private readonly IMapper _mapper;
+        private readonly ISubmissionService _submissionService;
+        private readonly IBlobWriteService _blobWriteService;
+        private readonly IQueueWriteService _queueWriteService;
+
+        /// <inheritdoc />
+        public SubmitController(IOptions<ApiSettings> options,
+            IMapper mapper,
+            ISubmissionService submissionService,
+            IBlobWriteService blobWriteService,
+            IQueueWriteService queueWriteService)
+        {
+            _config = options.Value;
+            _mapper = mapper;
+            _submissionService = submissionService;
+            _blobWriteService = blobWriteService;
+            _queueWriteService = queueWriteService;
+        }
+
+        /// <summary>
+        /// Inserts or updates a sample.
+        /// </summary>
+        /// <param name="model">The sample model to be inserted to or updated in staging.</param>
+        /// <param name="organisationId">The ID of the organisation to operate on.</param>
+        /// <returns>The created content.</returns>
+        [HttpPost("{organisationId}")]
+        [SwaggerResponse(201)]
+        [SwaggerResponse(400, "Request body expected.")]
+        [SwaggerResponse(400, "Invalid request body provided.")]
+        [SwaggerResponse(403, "Access to post to the requested organisation denied.")]
+        [SwaggerResponse(409, "Newer record exists.")]
+        public async Task<IActionResult> Post(int organisationId, [FromBody] SubmissionDto model)
+        {
+           // if (!User.HasClaim(CustomClaimTypes.OrganisationId,
+           //     organisationId.ToString()))
+           //     return Forbid();
+
+            // validate the model
+            if (model is null) return BadRequest("Request body expected.");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            // initialise any null lists in the model
+            if (model.Diagnoses is null) model.Diagnoses = new List<DiagnosisOperationDto>();
+            if (model.Treatments is null) model.Treatments = new List<TreatmentOperationDto>();
+            if (model.Samples is null) model.Samples = new List<SampleOperationDto>();
+
+            var totalRecords = model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count;
+
+            if (totalRecords <= 0) return BadRequest("At least one record must be included in a submission.");
+
+            if (SectionsWithDuplicates(model, out var sections))
+                return BadRequest(
+                    $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', sections)}");
+
+            var maxEntitiesPerSubmission = _config.EntitiesPerSubmission;
+            if (model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count > maxEntitiesPerSubmission)
+            {
+                return BadRequest($"This submission contains more than the maximum of {maxEntitiesPerSubmission} records allowed.");
+            }
+
+            var diagnosesUpdates = new List<DiagnosisDto>();
+            var samplesUpdates = new List<SampleDto>();
+            var treatmentsUpdates = new List<TreatmentDto>();
+            var diagnosesDeletes = new List<DiagnosisDto>();
+            var samplesDeletes = new List<SampleDto>();
+            var treatmentsDeletes = new List<TreatmentDto>();
+
+            var submission = await _submissionService.CreateSubmission(totalRecords, organisationId);
+
+            // Validate diagnosis mandatory fields and add to submission
+            foreach (var diagnosis in model.Diagnoses)
+            {
+                if (diagnosis.Diagnosis is null)
+                    return await CancelSubmissionAndReturnBadRequest(diagnosis, submission.Id, "No Diagnosis Id Provided with this diagnosis.");
+
+                switch (diagnosis.Op)
+                {
+                    case Operation.Submit:
+                        var diagnosisModel = _mapper.Map<DiagnosisIdDto, DiagnosisDto>(diagnosis.Diagnosis,
+                            opts =>
+                                opts.AfterMap((src, dest) =>
+                                {
+                                    dest.SubmissionTimestamp = submission.SubmissionTimestamp;
+                                }));
+
+                        if (string.IsNullOrEmpty(diagnosisModel.DiagnosisCode))
+                            return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCode value.");
+                        else if (string.IsNullOrEmpty(diagnosisModel.DiagnosisCodeOntology))
+                            return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntology value.");
+                        else if (string.IsNullOrEmpty(diagnosisModel.DiagnosisCodeOntologyVersion))
+                            return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntologyVersion value.");
+                        else if (diagnosisModel.DateDiagnosed == default || diagnosisModel.DateDiagnosed > DateTime.Now)
+                            return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DateDiagnosed value.");
+                        else
+                            diagnosesUpdates.Add(diagnosisModel);
+                        break;
+
+                    case Operation.Delete:
+                        diagnosesDeletes.Add(_mapper.Map<DiagnosisIdDto, DiagnosisDto>(diagnosis.Diagnosis,
+                            opts =>
+                                opts.AfterMap((src, dest) =>
+                                {
+                                    dest.SubmissionTimestamp = submission.SubmissionTimestamp;
+                                })));
+                        break;
+
+                    default:
+                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<DiagnosisIdDto, DiagnosisDto>(diagnosis.Diagnosis), submission.Id, "Invalid operation specified.");
+
+                }
+            }
+
+            // Validate sample mandatory fields and add to submission
+            foreach (var sample in model.Samples)
+            {
+                switch (sample.Op)
+                {
+                    case Operation.Submit:
+                        var sampleModel = _mapper.Map<SampleSubmissionDto, SampleDto>(sample.Sample, opts =>
+                            opts.AfterMap((src, dest) =>
+                            {
+                                dest.SubmissionTimestamp = submission.SubmissionTimestamp;
+                            }));
+
+                        if (string.IsNullOrEmpty(sampleModel.MaterialType))
+                            return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid MaterialType value.");
+                        else if (string.IsNullOrEmpty(sampleModel.StorageTemperature))
+                            return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
+                        else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
+                            return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
+                        else if (sampleModel.DateCreated == default || sampleModel.DateCreated > DateTime.Now)
+                            return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid DateCreated value.");
+
+                        else
+                            samplesUpdates.Add(sampleModel);
+                        break;
+
+                    case Operation.Delete:
+                        samplesDeletes.Add(_mapper.Map<SampleSubmissionDto, SampleDto>(sample.Sample, opts =>
+                            opts.AfterMap((src, dest) =>
+                            {
+                                dest.SubmissionTimestamp = submission.SubmissionTimestamp;
+                            })));
+                        break;
+
+                    default:
+                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<SampleSubmissionDto, SampleDto>(sample.Sample), submission.Id, "Invalid operation specified.");
+                }
+
+            }
+
+            // Validate treatment mandatory fields and add to submission
+            foreach (var treatment in model.Treatments)
+            {
+                switch (treatment.Op)
+                {
+                    case Operation.Submit:
+                        var treatmentModel = _mapper.Map<TreatmentSubmissionDto, TreatmentDto>(treatment.Treatment,
+                            opts =>
+                                opts.AfterMap((src, dest) =>
+                                {
+                                    dest.SubmissionTimestamp = submission.SubmissionTimestamp;
+                                }));
+
+                        if (string.IsNullOrEmpty(treatmentModel.TreatmentLocation))
+                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentLocation value.");
+                        else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntology))
+                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntology value.");
+                        else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntologyVersion))
+                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
+                        else if (treatmentModel.DateTreated == default || treatmentModel.DateTreated > DateTime.Now)
+                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid DateTreated value.");
+                        else
+                            treatmentsUpdates.Add(treatmentModel);
+                        break;
+
+                    case Operation.Delete:
+                        treatmentsDeletes.Add(_mapper.Map<TreatmentSubmissionDto, TreatmentDto>(treatment.Treatment,
+                            opts =>
+                                opts.AfterMap((src, dest) =>
+                                {
+                                    dest.SubmissionTimestamp = submission.SubmissionTimestamp;
+                                })));
+                        break;
+
+                    default:
+                        return await CancelSubmissionAndReturnBadRequest(_mapper.Map<TreatmentIdDto, TreatmentDto>(treatment.Treatment), submission.Id, "Invalid operation specified.");
+                }
+
+            }
+
+            var updateDiagnosesBlobType = diagnosesUpdates.GetType().FullName ?? throw new ApplicationException($"Unable to get FullName of type for variable {nameof(diagnosesUpdates)}");
+
+            // Send the diagnosis insert/updates up to queue
+            var diagnosesUpdatesBlobId =
+                await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesUpdates);
+
+                await _queueWriteService.PushAsync("operations", JsonConvert.SerializeObject(
+                        new OperationsQueueDto
+                        {
+                            SubmissionId = submission.Id,
+                            Operation = Operation.Submit,
+                            BlobId = diagnosesUpdatesBlobId,
+                            BlobType = updateDiagnosesBlobType,
+                            OrganisationId = organisationId
+                        }
+                    )
+                );
+
+            var deleteDiagnosesBlobType = diagnosesDeletes.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(diagnosesDeletes)}.");
+
+            // Send the diagnosis deletes up to queue
+            var diagnosesDeletesBlobId =
+                await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesDeletes);
+
+            await _queueWriteService.PushAsync("operations",
+                JsonConvert.SerializeObject(
+                    new OperationsQueueDto
+                    {
+                        SubmissionId = submission.Id,
+                        Operation = Operation.Delete,
+                        BlobId = diagnosesDeletesBlobId,
+                        BlobType = deleteDiagnosesBlobType,
+                        OrganisationId = organisationId
+                    }
+                )
+            );
+
+            var updateSampleBlobType = samplesUpdates.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(samplesUpdates)}");
+
+            // Send the sample insert/updates up to queue
+            var samplesUpdatesBlobId =
+                await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesUpdates);
+
+            await _queueWriteService.PushAsync("operations",
+                JsonConvert.SerializeObject(
+                    new OperationsQueueDto
+                    {
+                        SubmissionId = submission.Id,
+                        Operation = Operation.Submit,
+                        BlobId = samplesUpdatesBlobId,
+                        BlobType = updateSampleBlobType,
+                        OrganisationId = organisationId
+                    }
+                )
+            );
+
+            var deleteSampleBlobType = samplesDeletes.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(samplesDeletes)}");
+
+            // Send the sample deletes up to queue
+            var samplesDeletesBlobId =
+                await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesDeletes);
+
+            await _queueWriteService.PushAsync("operations",
+                JsonConvert.SerializeObject(
+                    new OperationsQueueDto
+                    {
+                        SubmissionId = submission.Id,
+                        Operation = Operation.Delete,
+                        BlobId = samplesDeletesBlobId,
+                        BlobType = deleteSampleBlobType,
+                        OrganisationId = organisationId
+                    }
+                )
+            );
+
+            var updateTreatmentBlobType = treatmentsUpdates.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(treatmentsUpdates)}");
+
+            // Send the treatment insert/updates up to queue
+            var treatmentsUpdatesBlobId =
+                await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsUpdates);
+
+            await _queueWriteService.PushAsync("operations",
+                JsonConvert.SerializeObject(
+                    new OperationsQueueDto
+                    {
+                        SubmissionId = submission.Id,
+                        Operation = Operation.Submit,
+                        BlobId = treatmentsUpdatesBlobId,
+                        BlobType = updateTreatmentBlobType,
+                        OrganisationId = organisationId
+                    }
+                )
+            );
+
+            var deleteTreatmentBlobType = treatmentsDeletes.GetType().FullName ?? throw new ApplicationException($"Unable to get Fullname of type for variable {nameof(treatmentsDeletes)}");
+
+            // Send the treatment deletes up to queue
+            var treatmentsDeletesBlobId =
+                await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsDeletes);
+
+            await _queueWriteService.PushAsync("operations",
+                JsonConvert.SerializeObject(
+                    new OperationsQueueDto
+                    {
+                        SubmissionId = submission.Id,
+                        Operation = Operation.Delete,
+                        BlobId = treatmentsDeletesBlobId,
+                        BlobType = deleteTreatmentBlobType,
+                        OrganisationId = organisationId
+                    }
+                )
+            );
+
+            // return the status object
+            return Ok(_mapper.Map<SubmissionSummaryDto>(submission));
+        }
+
+        private async Task<BadRequestObjectResult> CancelSubmissionAndReturnBadRequest(object badEntity, int submissionId, string errorText)
+        {
+            await _submissionService.DeleteSubmission(submissionId);
+            return BadRequest($"{IdPropertiesPrefix(badEntity)}{errorText}");
+        }
+
+        private static bool SectionsWithDuplicates(SubmissionDto submission, out List<string> sections)
+        {
+            sections = new List<string>();
+
+            static IEqualityComparer<T> GetComparer<T>(ICollection<T> models)
+            {
+                return models switch
+                {
+                    ICollection<DiagnosisOperationDto> _ => (IEqualityComparer<T>)new DiagnosisOperationModelEqualityComparer(),
+                    ICollection<TreatmentOperationDto> _ => (IEqualityComparer<T>)new TreatmentOperationModelEqualityComparer(),
+                    ICollection<SampleOperationDto> _ => (IEqualityComparer<T>)new SampleOperationModelEqualityComparer(),
+                    _ => throw new InvalidOperationException(),
+                };
+            }
+
+            static bool NoDuplicates<T>(ICollection<T> models)
+                where T : BaseOperationDto
+                => models.Count == models.Distinct(GetComparer(models)).Count();
+
+            if (!NoDuplicates(submission.Diagnoses)) sections.Add("Diagnosis");
+            if (!NoDuplicates(submission.Treatments)) sections.Add("Treatment");
+            if (!NoDuplicates(submission.Samples)) sections.Add("Sample");
+
+            return sections.Any();
+        }
+
+        private static string IdPropertiesPrefix(object entity)
+        {
+            switch (entity)
+            {
+                // TODO make ontology/ontologyversion identifying properties of each entity then use reflection to get prop names from xIdModels, excluding submissionTimestamp and organisationId
+                case DiagnosisDto model:
+                    return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.DateDiagnosed)}: {model.DateDiagnosed}, {nameof(model.DiagnosisCode)}: {model.DiagnosisCode} - ";
+                case SampleDto model:
+                    return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.Barcode)}: {model.Barcode}, {nameof(model.CollectionName)}: {model.CollectionName} - ";
+                case TreatmentDto model:
+                    return $"{nameof(model.IndividualReferenceId)}: {model.IndividualReferenceId}, {nameof(model.DateTreated)}: {model.DateTreated}, {nameof(model.TreatmentCode)}: {model.TreatmentCode} - ";
+                default:
+                    throw new ArgumentException($"{nameof(entity)} is not a valid identity model.", nameof(entity));
+            }
+        }
+    }
+}

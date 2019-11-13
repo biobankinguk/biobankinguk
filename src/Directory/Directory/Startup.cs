@@ -22,7 +22,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using UoN.AspNetCore.RazorViewRenderer;
-
 namespace Directory
 {
     public class Startup

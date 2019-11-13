@@ -1,0 +1,20 @@
+﻿using AutoMapper;
+using Upload.Common.Data.Entities;
+using Upload.DTO;
+
+namespace Upload.Profiles
+{
+    /// <inheritdoc />
+    public class SampleProfile : Profile
+    {
+        /// <inheritdoc />
+        public SampleProfile()
+        {
+            CreateMap<SampleSubmissionDto, SampleDto>();
+            CreateMap<SampleOperationDto, SampleDto>();
+
+            // base entities
+            CreateMap<StagedSample, LiveSample>();
+        }
+    }
+}
