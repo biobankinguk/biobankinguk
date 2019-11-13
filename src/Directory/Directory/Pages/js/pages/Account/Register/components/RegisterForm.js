@@ -7,6 +7,7 @@ import { hasErrors } from "@/services/modelstate-validation";
 import BasicInput from "@/components/forms/BasicInput";
 import PasswordRequirementsInfo from "@/components/PasswordRequirementsInfo";
 import { useAspForm } from "@/hooks/aspnet-interop";
+import EmailField from "@/components/forms/EmailField";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(
@@ -57,17 +58,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
             </Box>
 
             <Box>
-              <Field name="Email">
-                {rp => (
-                  <BasicInput
-                    {...rp}
-                    label="Email Address"
-                    placeholder="john.smith@example.com"
-                    isRequired
-                    onFocus={touchEmail}
-                  />
-                )}
-              </Field>
+              <EmailField onFocus={touchEmail} />
             </Box>
 
             <Box hidden={hideEmailConfirm}>

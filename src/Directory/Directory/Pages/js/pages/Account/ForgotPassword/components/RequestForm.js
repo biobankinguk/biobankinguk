@@ -1,10 +1,10 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
-import { Stack, Box, Button } from "@chakra-ui/core";
+import { Formik, Form } from "formik";
+import { Stack, Button, Box } from "@chakra-ui/core";
 import valSchema from "../validation/request-form";
-import BasicInput from "@/components/forms/BasicInput";
 import { useAspForm } from "@/hooks/aspnet-interop";
 import { postObjectAsFormData } from "js-forms";
+import EmailField from "@/components/forms/EmailField";
 
 const RequestForm = ({ Email }) => {
   const { action, csrf } = useAspForm();
@@ -27,16 +27,7 @@ const RequestForm = ({ Email }) => {
         <Form noValidate>
           <Stack spacing={3} my={3}>
             <Box>
-              <Field name="Email">
-                {rp => (
-                  <BasicInput
-                    {...rp}
-                    label="Email Address"
-                    placeholder="john.smith@example.com"
-                    isRequired
-                  />
-                )}
-              </Field>
+              <EmailField />
             </Box>
 
             <Button

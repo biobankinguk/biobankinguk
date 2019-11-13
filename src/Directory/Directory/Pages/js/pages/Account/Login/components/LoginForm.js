@@ -5,6 +5,7 @@ import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/login-form";
 import BasicInput from "@/components/forms/BasicInput";
 import { useAspForm } from "@/hooks/aspnet-interop";
+import EmailField from "@/components/forms/EmailField";
 
 const LoginForm = ({ Username }) => {
   const { action, csrf } = useAspForm();
@@ -32,16 +33,7 @@ const LoginForm = ({ Username }) => {
         <Form noValidate>
           <Stack spacing={3} my={3}>
             <Box>
-              <Field name="Username">
-                {rp => (
-                  <BasicInput
-                    {...rp}
-                    label="Email Address"
-                    placeholder="john.smith@example.com"
-                    isRequired
-                  />
-                )}
-              </Field>
+              <EmailField name="Username" />
             </Box>
 
             <Box>
