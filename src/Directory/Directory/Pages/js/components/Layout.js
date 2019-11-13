@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { Box, Flex, Image, Heading } from "@chakra-ui/core";
+import { Box, Flex, Image, Heading, Link } from "@chakra-ui/core";
 
 const Layout = ({ heading, children }) => (
   <Flex justifyContent="center" mt={[0, 16]}>
@@ -11,10 +11,12 @@ const Layout = ({ heading, children }) => (
         alignItems="center"
         flexDirection={["column", "row"]}
       >
-        <Image
-          src="/images/UKCRC_TDCC_logo.jpg"
-          alt="UKCRC Tissue Directory and Coordination Centre Logo"
-        />
+        <Link href="/">
+          <Image
+            src="/images/UKCRC_TDCC_logo.jpg"
+            alt="UKCRC Tissue Directory and Coordination Centre Logo"
+          />
+        </Link>
         <Heading ml={[0, 4]} mt={[2, 0]}>
           {heading}
         </Heading>

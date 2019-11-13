@@ -20,6 +20,8 @@ const routes = route => {
       return import("./pages/Account/Confirm/ResendConfirm");
     case "ForgotPassword":
       return import("./pages/Account/ForgotPassword/ForgotPassword");
+    case "ForgotPasswordResult":
+      return import("./pages/Account/ForgotPassword/ForgotPasswordResult");
     default:
       return null;
   }

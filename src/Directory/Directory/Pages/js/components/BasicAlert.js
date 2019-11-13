@@ -19,7 +19,7 @@ const BasicAlert = ({
     Title = (
       <Flex alignItems="center">
         {noIcon ? null : <AlertIcon />}
-        <AlertTitle>Almost there!</AlertTitle>
+        <AlertTitle>{title}</AlertTitle>
       </Flex>
     );
 
