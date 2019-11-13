@@ -1,12 +1,13 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import { Stack, Box, Button } from "@chakra-ui/core";
 import valSchema from "../validation/request-form";
-import BasicInput from "@/components/forms/BasicInput";
 import { useAspForm } from "@/hooks/aspnet-interop";
 import { postObjectAsFormData } from "js-forms";
+import SetPasswordFieldGroup from "@/components/forms/SetPasswordFieldGroup";
+import { hasErrors } from "@/services/modelstate-validation";
 
-const RequestForm = ({ Email }) => {
+const ResetForm = ({ ModelState, Email }) => {
   const { action, csrf } = useAspForm();
 
   const handleSubmit = (values, actions) => {
@@ -27,16 +28,7 @@ const RequestForm = ({ Email }) => {
         <Form noValidate>
           <Stack spacing={3} my={3}>
             <Box>
-              <Field name="Email">
-                {rp => (
-                  <BasicInput
-                    {...rp}
-                    label="Email Address"
-                    placeholder="john.smith@example.com"
-                    isRequired
-                  />
-                )}
-              </Field>
+              <SetPasswordFieldGroup initialHidden={!hasErrors(ModelState)} />
             </Box>
 
             <Button
@@ -54,4 +46,4 @@ const RequestForm = ({ Email }) => {
   );
 };
 
-export default RequestForm;
+export default ResetForm;

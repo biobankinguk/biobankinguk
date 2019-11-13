@@ -1,22 +1,16 @@
 import React from "react";
 import Layout from "@/layouts/Clean";
 import ModelValidationSummary from "@/components/ModelValidationSummary";
-import RequestForm from "./components/RequestForm";
 import BasicAlert from "@/components/BasicAlert";
+import ResetForm from "./components/ResetForm";
 
 const ForgotPassword = vm => {
   return (
     <Layout heading="Reset Password">
-      <BasicAlert
-        p={2}
-        title="Please enter the email address associated with your account."
-      >
-        If a matching account is found, a reset password link will be sent via
-        email.
-      </BasicAlert>
+      <BasicAlert p={2} title="Please enter a new password for your account." />
 
       <ModelValidationSummary errors={vm.ModelState} />
-      <RequestForm {...vm} />
+      <ResetForm {...vm} />
     </Layout>
   );
 };
