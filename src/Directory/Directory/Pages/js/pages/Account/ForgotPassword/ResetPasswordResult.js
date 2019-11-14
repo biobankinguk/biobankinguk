@@ -3,12 +3,12 @@ import { AlertDescription, Text, Box, Link } from "@chakra-ui/core";
 import { hasErrors } from "@/services/modelstate-validation";
 import BasicAlert from "@/components/BasicAlert";
 import LinkErrorAlert from "@/components/LinkErrorAlert";
-import ConditionalPage from "@/components/ConditionalPage";
 import Layout from "@/layouts/Clean";
+import ConditionalContent from "@/components/ConditionalContent";
 
 const ResetPasswordResult = ({ ModelState }) => (
-  <ConditionalPage
-    layout={<Layout heading="Reset Password" />}
+  <Layout heading="Reset Password">
+  <ConditionalContent
     condition={hasErrors(ModelState)}
     trueRender={() => <LinkErrorAlert linkType="password reset" />}
     falseRender={() => (
@@ -24,6 +24,7 @@ const ResetPasswordResult = ({ ModelState }) => (
       </BasicAlert>
     )}
   />
+  </Layout>
 );
 
 export default ResetPasswordResult;
