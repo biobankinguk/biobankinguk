@@ -71,7 +71,7 @@ namespace Directory.Pages.Account
                 var result = await _users.CreateAsync(user, Password);
                 if (result.Succeeded)
                 {
-                    await _tokens.SendAccountConfirmation(user, Request.Scheme);
+                    await _tokens.WithUrlHelper(Url).SendAccountConfirmation(user);
 
                     return Page(ReactRoutes.RegisterResult);
                 }

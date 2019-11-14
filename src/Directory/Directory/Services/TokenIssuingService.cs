@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Data.Identity;
@@ -17,66 +18,80 @@ namespace Directory.Services
         private readonly TokenLoggingService _tokenLog;
         private readonly AccountEmailService _accountEmail;
         private readonly DirectoryUserManager _users;
-        private readonly IUrlHelper _url;
 
         public TokenIssuingService(
             DirectoryUserManager users,
             TokenLoggingService tokenLog,
-            AccountEmailService accountEmail,
-            IUrlHelper url)
+            AccountEmailService accountEmail)
         {
             _tokenLog = tokenLog;
             _accountEmail = accountEmail;
             _users = users;
-            _url = url;
         }
+
+        public string Scheme { get; set; } = "https";
+        public IUrlHelper? Url { get; set; }
 
         /// <summary>
         /// Issue an AccountConfirmation token, log the issuing event and email the user a link.
         /// </summary>
         /// <param name="user">The user to issue the token for and send the email to.</param>
-        /// <param name="linkScheme">Should (probably) match the scheme of the request that called this.</param>
-        public async Task SendAccountConfirmation(DirectoryUser user, string linkScheme)
+        public async Task SendAccountConfirmation(DirectoryUser user)
         {
+            ValidateUrlHelper();
+
             var code = await _users.GenerateEmailConfirmationTokenAsync(user);
             await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
 
             await _accountEmail.SendAccountConfirmation(
                 user.Email,
                 user.Name,
-                link: _url.Page("/Account/Confirm",
+                link: Url.Page("/Account/Confirm",
                     pageHandler: null,
                     values: new
                     {
                         userId = user.Id,
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code))
                     },
-                    protocol: linkScheme));
+                    protocol: Scheme));
         }
 
         /// <summary>
         /// Issue a Password Reset token, log the issuing event and email the user a link.
         /// </summary>
         /// <param name="user">The user to issue the token for and send the email to.</param>
-        /// <param name="linkScheme">Should (probably) match the scheme of the request that called this.</param>
-        public async Task SendPasswordReset(DirectoryUser user, string linkScheme)
+        public async Task SendPasswordReset(DirectoryUser user)
         {
+            ValidateUrlHelper();
+
             var code = await _users.GeneratePasswordResetTokenAsync(user);
             await _tokenLog.PasswordResetTokenIssued(code, user.Id);
 
             await _accountEmail.SendPasswordReset(
                 user.Email,
                 user.Name,
-                link: _url.Page("/Account/ResetPassword",
-                pageHandler: null,
-                values: new
-                {
-                    userId = user.Id,
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code))
-                },
-                protocol: linkScheme));
+                link: Url.Page("/Account/ResetPassword",
+                    pageHandler: null,
+                    values: new
+                    {
+                        userId = user.Id,
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code))
+                    },
+                    protocol: Scheme));
         }
 
+        private void ValidateUrlHelper()
+        {
+            if (Url is null)
+                throw new InvalidOperationException(
+                    $@"{nameof(Url)} must be set to a valid {
+                        nameof(IUrlHelper)} for the calling context.");
+        }
 
+        public TokenIssuingService WithUrlHelper(IUrlHelper url)
+        {
+            Url = url;
+            return this;
+        }
     }
 }

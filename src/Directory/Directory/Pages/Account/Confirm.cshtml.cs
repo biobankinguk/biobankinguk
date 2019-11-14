@@ -80,7 +80,7 @@ namespace Directory.Pages.Account
             if (user is null)
                 return PageWithError("Invalid Username");
 
-            await _tokens.SendAccountConfirmation(user, Request.Scheme);
+            await _tokens.WithUrlHelper(Url).SendAccountConfirmation(user);
 
             return Page(ReactRoutes.ConfirmResend);
         }

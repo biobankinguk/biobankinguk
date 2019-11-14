@@ -44,7 +44,7 @@ namespace Directory.Pages.Account
                     return Page();
                 }
 
-                await _tokens.SendPasswordReset(user, Request.Scheme);
+                await _tokens.WithUrlHelper(Url).SendPasswordReset(user);
             }
 
             return Page(ReactRoutes.ForgotPasswordResult);
