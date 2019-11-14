@@ -1,6 +1,6 @@
 import React from "react";
-import Layout from "Components/Layout";
-import ConfirmationSent from "Components/ConfirmationSent";
+import Layout from "@/layouts/Clean";
+import ConfirmationSent from "@/components/ConfirmationSent";
 
 const RegisterResult = ({ Email }) => {
   return (

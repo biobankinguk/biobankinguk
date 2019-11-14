@@ -1,29 +1,24 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using System.Threading.Tasks;
 using Common.Data.Identity;
 using Directory.Auth.Identity;
 using Directory.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Directory.Pages.Account
 {
     public class RegisterModel : BaseReactModel
     {
         private readonly DirectoryUserManager _users;
-        private readonly TokenLoggingService _tokenLog;
-        private readonly AccountEmailService _accountEmail;
+        private readonly TokenIssuingService _tokens;
 
         public RegisterModel(
             DirectoryUserManager users,
-            TokenLoggingService tokenLog,
-            AccountEmailService accountEmail)
+            TokenIssuingService tokens)
             : base(ReactRoutes.Register)
         {
             _users = users;
-            _tokenLog = tokenLog;
-            _accountEmail = accountEmail;
+            _tokens = tokens;
         }
 
         [BindProperty]
@@ -70,38 +65,25 @@ namespace Directory.Pages.Account
                 {
                     UserName = Email,
                     Email = Email,
-                    Name = FullName! // [Required]
+                    Name = FullName
                 };
 
                 var result = await _users.CreateAsync(user, Password);
                 if (result.Succeeded)
                 {
-                    var code = await _users.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var confirmLink = Url.Page("/Account/Confirm",
-                        pageHandler: null,
-                        values: new { userId = user.Id, code },
-                        protocol: Request.Scheme);
+                    await _tokens.WithUrlHelper(Url).SendAccountConfirmation(user);
 
-                    await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
-
-                    await _accountEmail.SendAccountConfirmation(
-                        user.Email!, // [Required]
-                        user.Name,
-                        confirmLink);
-
-                    Route = ReactRoutes.RegisterResult;
+                    return Page(ReactRoutes.RegisterResult);
                 }
-                else
+
+                foreach (var error in result.Errors)
                 {
-                    foreach (var error in result.Errors)
+                    if (error.Code == "DuplicateEmail")
                     {
-                        if (error.Code == "DuplicateEmail") {
-                            var existingUser = await _users.FindByEmailAsync(Email);
-                            if(!existingUser.EmailConfirmed) AllowResend = true;
-                        }
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        var existingUser = await _users.FindByEmailAsync(Email);
+                        if (!existingUser.EmailConfirmed) AllowResend = true;
                     }
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 

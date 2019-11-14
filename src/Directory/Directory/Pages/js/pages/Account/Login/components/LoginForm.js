@@ -1,18 +1,19 @@
 ﻿import React from "react";
-import { Formik, Form, Field } from "formik";
-import { postObjectAsFormData, constants } from "js-forms";
+import { Formik, Form } from "formik";
+import { postObjectAsFormData } from "js-forms";
 import { Button, Flex, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/login-form";
-import CommonFormikInput from "Components/CommonFormikInput";
+import { useAspForm } from "@/hooks/aspnet-interop";
+import EmailField from "@/components/forms/EmailField";
+import PasswordField from "@/components/forms/PasswordField";
 
 const LoginForm = ({ Username }) => {
-  const aspForm = document.getElementById("asp-form");
-  const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
+  const { action, csrf } = useAspForm();
 
   const post = values => {
-    postObjectAsFormData(aspForm.action, {
+    postObjectAsFormData(action, {
       ...values,
-      [constants.aspNetCoreCsrf]: csrfToken
+      ...csrf
     });
   };
 
@@ -32,30 +33,11 @@ const LoginForm = ({ Username }) => {
         <Form noValidate>
           <Stack spacing={3} my={3}>
             <Box>
-              <Field name="Username">
-                {rp => (
-                  <CommonFormikInput
-                    {...rp}
-                    label="Email Address"
-                    placeholder="john.smith@example.com"
-                    isRequired
-                  />
-                )}
-              </Field>
+              <EmailField name="Username" />
             </Box>
 
             <Box>
-              <Field name="Password">
-                {rp => (
-                  <CommonFormikInput
-                    {...rp}
-                    label={rp.field.name}
-                    placeholder={rp.field.name}
-                    isRequired
-                    isPassword
-                  />
-                )}
-              </Field>
+              <PasswordField />
             </Box>
 
             <Flex justifyContent="space-between">

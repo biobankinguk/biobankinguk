@@ -2,7 +2,7 @@
 import ReactDOM from "react-dom";
 import merge from "lodash-es/merge";
 import { theme } from "@chakra-ui/core";
-import ukcrcTheme from "../../../../theme/dist/theme";
+import ukcrcTheme from "Theme";
 import routes from "./routes";
 import App from "./App";
 
@@ -14,11 +14,15 @@ const root = document.getElementById("react-app");
 
 if (root && root.dataset.route) {
   const { route } = root.dataset;
-  if (routes.hasOwnProperty(route)) {
-    merge(theme, ukcrcTheme);
-    ReactDOM.render(
-      <App theme={theme} page={routes[route]} />,
-      document.getElementById("react-app")
-    );
-  }
+  routes(route).then(({ default: page }) => {
+    if (page) {
+      merge(theme, ukcrcTheme);
+      ReactDOM.render(
+        <App theme={theme} page={page} />,
+        document.getElementById("react-app")
+      );
+    } else {
+      console.error(`No configured React route was found matching: ${route}`);
+    }
+  });
 }

@@ -18,7 +18,7 @@ import {
  *
  * @param {*} props render props from Formik Field, and additional props
  */
-const CommonFormikInput = ({
+const BasicInput = ({
   field,
   form: { errors, touched },
   label,
@@ -43,4 +43,4 @@ const CommonFormikInput = ({
   </FormControl>
 );
 
-export default CommonFormikInput;
+export default BasicInput;

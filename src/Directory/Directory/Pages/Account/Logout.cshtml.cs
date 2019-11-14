@@ -79,12 +79,11 @@ namespace Directory.Pages.Account
             // Here's where we'd trigger external signouts if there were any
 
             // Set Model props and return the Page
-            Route = ReactRoutes.LogoutRedirect;
             ClientName = GetClientName(logout);
             PostLogoutRedirectUri = logout?.PostLogoutRedirectUri;
             SignOutIframeUrl = logout?.SignOutIFrameUrl;
 
-            return Page();
+            return Page(ReactRoutes.LogoutRedirect);
         }
 
         private static string? GetClientName(LogoutRequest? logout)

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 using Directory.Views.Emails;
 
 namespace Directory.Services
@@ -12,12 +13,20 @@ namespace Directory.Services
             _emails = emails;
         }
 
-        public async Task SendAccountConfirmation(string to, string name, string confirmLink)
+        public async Task SendAccountConfirmation(string to, string name, string link)
             => await _emails.SendEmail(
                 to,
                 "UKCRC Tissue Directory Account Confirmation",
                 "Emails/AccountConfirmation",
-                new AccountConfirmationModel(name, confirmLink),
+                new AccountConfirmationModel(name, link),
+                name);
+
+        public async Task SendPasswordReset(string to, string name, string link)
+            => await _emails.SendEmail(
+                to,
+                "UKCRC Tissue Directory Password Reset",
+                "Emails/PasswordReset",
+                new PasswordResetModel(name, link),
                 name);
     }
 }

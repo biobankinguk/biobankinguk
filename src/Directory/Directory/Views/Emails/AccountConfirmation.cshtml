@@ -1,4 +1,4 @@
-﻿@model Directory.Views.Emails.AccountConfirmationModel
+@model Directory.Views.Emails.AccountConfirmationModel
 
 Dear @Html.Raw(Model.Name)
 
@@ -6,7 +6,6 @@ Thank you for registering an account at the UKCRC Tissue Directory.
 
 To complete your registration please confirm your email address, using the link below:
 
-@Html.Raw(Model.ConfirmLink)
+@Html.Raw(Model.Link)
 
-Regards,
-UKCRC Tissue Directory and Coordination Centre
+@(await Html.PartialAsync("_Signature"))

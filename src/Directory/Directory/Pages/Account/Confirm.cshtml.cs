@@ -7,7 +7,6 @@ using Directory.Auth.Identity;
 using Directory.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Directory.Pages.Account
@@ -17,21 +16,21 @@ namespace Directory.Pages.Account
         public string? Username { get; set; }
 
         private readonly DirectoryUserManager _users;
-        private readonly TokenLoggingService _tokenLog;
         private readonly SignInManager<DirectoryUser> _signIn;
-        private readonly AccountEmailService _accountEmail;
+        private readonly TokenIssuingService _tokens;
+        private readonly TokenLoggingService _tokenLog;
 
         public ConfirmModel(
             DirectoryUserManager users,
             SignInManager<DirectoryUser> signIn,
-            TokenLoggingService tokenLog,
-            AccountEmailService accountEmail)
+            TokenIssuingService tokens,
+            TokenLoggingService tokenLog)
             : base(ReactRoutes.Confirm)
         {
             _users = users;
-            _tokenLog = tokenLog;
             _signIn = signIn;
-            _accountEmail = accountEmail;
+            _tokens = tokens;
+            _tokenLog = tokenLog;
         }
 
         public async Task<IActionResult> OnGet(string? userId, string? code)
@@ -39,10 +38,9 @@ namespace Directory.Pages.Account
             var generalError = "The User ID or Token is invalid or has expired.";
 
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
-            {
-                ModelState.AddModelError(string.Empty, generalError);
-                return Page();
-            }
+                return PageWithError(generalError);
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
             await _tokenLog.AccountConfirmationTokenValidationAttempted(code, userId);
 
@@ -53,14 +51,10 @@ namespace Directory.Pages.Account
                     code, userId, JsonSerializer.Serialize(new[] {
                         new { Code = "InvalidUserId", Description = "Invalid User ID" }
                     }));
-
-                ModelState.AddModelError(string.Empty, generalError);
-                return Page();
+                return PageWithError(generalError);
             }
 
             Username = user.UserName;
-
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
             var result = await _users.ConfirmEmailAsync(user, code);
 
@@ -69,44 +63,26 @@ namespace Directory.Pages.Account
                 await _tokenLog.AccountConfirmationTokenValidationFailed(
                     code, userId, JsonSerializer.Serialize(result.Errors));
 
-                ModelState.AddModelError(string.Empty, generalError);
+                return PageWithError(generalError);
             }
-            else
-            {
-                await _signIn.SignInAsync(user, false);
-                await _tokenLog.AccountConfirmationTokenValidationSuccessful(code, userId);
-            }
+
+            await _signIn.SignInAsync(user, false);
+            await _tokenLog.AccountConfirmationTokenValidationSuccessful(code, userId);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnGetResend(string username)
+        public async Task<IActionResult> OnGetResend(string? username)
         {
             Username = username;
 
             var user = await _users.FindByEmailAsync(username);
             if (user is null)
-            {
-                ModelState.AddModelError(string.Empty, "Invalid Username");
-                return Page();
-            }
+                return PageWithError("Invalid Username");
 
-            var code = await _users.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var confirmLink = Url.Page("/Account/Confirm",
-                pageHandler: null,
-                values: new { userId = user.Id, code },
-                protocol: Request.Scheme);
+            await _tokens.WithUrlHelper(Url).SendAccountConfirmation(user);
 
-            await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
-
-            await _accountEmail.SendAccountConfirmation(
-                user.Email,
-                user.Name,
-                confirmLink);
-
-            Route = ReactRoutes.ConfirmResend;
-            return Page();
+            return Page(ReactRoutes.ConfirmResend);
         }
     }
 }

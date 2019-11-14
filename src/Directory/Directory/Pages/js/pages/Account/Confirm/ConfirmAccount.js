@@ -1,62 +1,39 @@
 import React from "react";
-import {
-  Alert,
-  Flex,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  Text,
-  Box,
-  Link
-} from "@chakra-ui/core";
-import Layout from "Components/Layout";
-import ResendConfirmationAlert from "Components/ResendConfirmationAlert";
-import { hasErrors } from "Services/modelstate-validation";
+import { AlertDescription, Text, Box, Link } from "@chakra-ui/core";
+import ResendConfirmationAlert from "@/components/ResendConfirmationAlert";
+import { hasErrors } from "@/services/modelstate-validation";
+import BasicAlert from "@/components/BasicAlert";
+import LinkErrorAlert from "@/components/LinkErrorAlert";
+import Layout from "@/layouts/Clean";
+import ConditionalContent from "@/components/ConditionalContent";
 
-const ConfirmAccount = ({ ModelState, Username }) => {
-  let content;
-  if (hasErrors(ModelState)) {
-    content = (
-      <>
-        <Alert status="error" variant="left-accent" flexDirection="column">
-          <Flex alignItems="center">
-            <AlertIcon />
-            <AlertTitle>
-              There seems to be a problem with this confirmation link.
-            </AlertTitle>
-          </Flex>
-          <AlertDescription>
-            Your user ID or account confirmation token is invalid, or has
-            expired.
+const ConfirmAccount = ({ ModelState, Username }) => (
+  <Layout heading="Register">
+    <ConditionalContent
+      condition={hasErrors(ModelState)}
+      trueRender={() => (
+        <>
+          <LinkErrorAlert linkType="account confirmation" />
+          <ResendConfirmationAlert username={Username} />
+        </>
+      )}
+      falseRender={() => (
+        <BasicAlert status="success" title="Success!" noChildWrapper>
+          <AlertDescription flexDirection="column" textAlign="center">
+            <Text>
+              Account Confirmation was successful and your registration is now
+              complete.
+            </Text>
+            <Box mt={3}>
+              <Link color="primary.500" href="/auth/login">
+                Return home
+              </Link>
+            </Box>
           </AlertDescription>
-        </Alert>
-
-        <ResendConfirmationAlert username={Username} />
-      </>
-    );
-  } else {
-    content = (
-      <Alert status="success" variant="left-accent" flexDirection="column">
-        <Flex alignItems="center">
-          <AlertIcon />
-          <AlertTitle>Success!</AlertTitle>
-        </Flex>
-        <AlertDescription flexDirection="column" textAlign="center">
-          <Text>
-            Account Confirmation was successful and your registration is now
-            complete.
-          </Text>
-          <Box mt={3}>
-            <Link color="primary.500" href="/auth/login">
-              Return home
-            </Link>
-          </Box>
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
-  return <Layout heading="Register">{content}</Layout>;
-};
+        </BasicAlert>
+      )}
+    />
+  </Layout>
+);
 
 export default ConfirmAccount;

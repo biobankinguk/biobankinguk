@@ -1,29 +1,26 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-import { postObjectAsFormData, constants } from "js-forms";
-import { Button, Stack, Box, SimpleGrid } from "@chakra-ui/core";
+import { postObjectAsFormData } from "js-forms";
+import { Button, Stack, Box } from "@chakra-ui/core";
 import valSchema from "../validation/register-form";
-import { hasErrors } from "Services/modelstate-validation";
-import CommonFormikInput from "Components/CommonFormikInput";
-import PasswordRequirementsInfo from "Components/PasswordRequirementsInfo";
+import { hasErrors } from "@/services/modelstate-validation";
+import BasicInput from "@/components/forms/BasicInput";
+import { useAspForm } from "@/hooks/aspnet-interop";
+import EmailField from "@/components/forms/EmailField";
+import SetPasswordFieldGroup from "@/components/forms/SetPasswordFieldGroup";
 
 const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
   const [hideEmailConfirm, setHideEmailConfirm] = useState(
     !hasErrors(ModelState)
   );
-  const [hidePasswordConfirm, setHidePasswordConfirm] = useState(
-    !hasErrors(ModelState)
-  );
   const touchEmail = () => setHideEmailConfirm(false);
-  const touchPassword = () => setHidePasswordConfirm(false);
 
-  const aspForm = document.getElementById("asp-form");
-  const csrfToken = aspForm.elements[constants.aspNetCoreCsrf].value;
+  const { action, csrf } = useAspForm();
 
   const handleSubmit = (values, actions) => {
-    postObjectAsFormData(aspForm.action, {
+    postObjectAsFormData(action, {
       ...values,
-      [constants.aspNetCoreCsrf]: csrfToken
+      ...csrf
     });
     actions.setSubmitting(false);
   };
@@ -46,7 +43,7 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
             <Box>
               <Field name="FullName">
                 {rp => (
-                  <CommonFormikInput
+                  <BasicInput
                     {...rp}
                     label="Name"
                     placeholder="John Smith"
@@ -57,23 +54,13 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
             </Box>
 
             <Box>
-              <Field name="Email">
-                {rp => (
-                  <CommonFormikInput
-                    {...rp}
-                    label="Email Address"
-                    placeholder="john.smith@example.com"
-                    isRequired
-                    onFocus={touchEmail}
-                  />
-                )}
-              </Field>
+              <EmailField onFocus={touchEmail} />
             </Box>
 
             <Box hidden={hideEmailConfirm}>
               <Field name="EmailConfirm">
                 {rp => (
-                  <CommonFormikInput
+                  <BasicInput
                     {...rp}
                     label="Confirm Email Address"
                     placeholder="john.smith@example.com"
@@ -83,39 +70,9 @@ const RegisterForm = ({ ModelState, FullName, Email, EmailConfirm }) => {
               </Field>
             </Box>
 
-            <SimpleGrid minChildWidth="300px">
-              <Stack spacing={3} flexGrow={1} flexBasis="50%">
-                <Box>
-                  <Field name="Password">
-                    {rp => (
-                      <CommonFormikInput
-                        {...rp}
-                        label={rp.field.name}
-                        placeholder={rp.field.name}
-                        isRequired
-                        isPassword
-                        onFocus={touchPassword}
-                      />
-                    )}
-                  </Field>
-                </Box>
-                <Box hidden={hidePasswordConfirm}>
-                  <Field name="PasswordConfirm">
-                    {rp => (
-                      <CommonFormikInput
-                        {...rp}
-                        label="Confirm Password"
-                        placeholder="Password"
-                        isRequired
-                        isPassword
-                      />
-                    )}
-                  </Field>
-                </Box>
-              </Stack>
-
-              <PasswordRequirementsInfo m={2} flexBasis="40%" />
-            </SimpleGrid>
+            <Box>
+              <SetPasswordFieldGroup initialHidden={!hasErrors(ModelState)} />
+            </Box>
 
             <Button
               width="2xs"

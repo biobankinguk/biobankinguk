@@ -100,6 +100,7 @@ namespace Directory
             services.AddTransient<IReferenceDataWriterService, ReferenceDataWriterService>();
             services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
             services.AddTransient<AccountEmailService>();
+            services.AddTransient<TokenIssuingService>();
             services.AddTransient<TokenLoggingService>();
 
             if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();

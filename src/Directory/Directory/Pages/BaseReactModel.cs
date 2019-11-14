@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -82,5 +82,41 @@ namespace Directory.Pages
                     return false; // no attribute conditions met
                 });
 
+        /// <summary>
+        /// Return this Razor Page with the Route property set
+        /// </summary>
+        /// <param name="route">The value to set the Route to</param>
+        public PageResult Page(string route)
+        {
+            Route = route;
+            return Page();
+        }
+
+        /// <summary>
+        /// Return this Razor Page with a keyless (`string.Empty`) ModelState error
+        /// </summary>
+        /// <param name="error">The error message to add to the ModelState</param>
+        public PageResult PageWithError(string error)
+            => PageWithError(string.Empty, error);
+
+        /// <summary>
+        /// Return this Razor Page with a keyed ModelState error
+        /// </summary>
+        /// <param name="key">The key to add the error to in the ModelState</param>
+        /// <param name="error">The error message to add to the ModelState</param>
+        public PageResult PageWithError(string key, string error)
+            => PageWithError(Route, key, error);
+
+        /// <summary>
+        /// Return this Razor Page with a keyed ModelState error and the Route property set.
+        /// </summary>
+        /// <param name="route">The value to set the Route to</param>
+        /// <param name="key">The key to add the error to in the ModelState</param>
+        /// <param name="error">The error message to add to the ModelState</param>
+        public PageResult PageWithError(string route, string key, string error)
+        {
+            ModelState.AddModelError(key, error);
+            return Page(route);
+        }
     }
 }

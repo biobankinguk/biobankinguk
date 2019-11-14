@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { AlertTitle, AlertDescription, Alert } from "@chakra-ui/core";
-import Layout from "Components/Layout";
+import Layout from "@/layouts/Clean";
+import BasicAlert from "@/components/BasicAlert";
 
 const LoginRedirect = ({ RedirectUrl }) => {
   useEffect(() => {
@@ -9,12 +9,9 @@ const LoginRedirect = ({ RedirectUrl }) => {
 
   return (
     <Layout heading="Login">
-      <Alert status="info" variant="left-accent" flexDirection="column">
-        <AlertTitle>You are now being returned to the application.</AlertTitle>
-        <AlertDescription>
-          Once complete, you may close this tab
-        </AlertDescription>
-      </Alert>
+      <BasicAlert title="You are now being returned to the application.">
+        Once complete, you may close this tab
+      </BasicAlert>
     </Layout>
   );
 };

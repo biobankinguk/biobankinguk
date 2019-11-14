@@ -1,12 +1,7 @@
 import React, { useEffect } from "react";
-import {
-  Alert,
-  AlertTitle,
-  Link,
-  AlertDescription,
-  AlertIcon
-} from "@chakra-ui/core";
-import Layout from "Components/Layout";
+import { Link } from "@chakra-ui/core";
+import Layout from "@/layouts/Clean";
+import BasicAlert from "@/components/BasicAlert";
 
 const LogoutRedirect = ({ PostLogoutRedirectUri, ClientName }) => {
   useEffect(() => {
@@ -15,18 +10,16 @@ const LogoutRedirect = ({ PostLogoutRedirectUri, ClientName }) => {
 
   return (
     <Layout heading="Logout">
-      <Alert status="info" variant="left-accent" flexDirection="column">
-        <AlertIcon />
-        <AlertTitle>You are now logged out.</AlertTitle>
+      <BasicAlert title="You are now logged out.">
         {!!PostLogoutRedirectUri ? (
-          <AlertDescription>
+          <>
             <Link color="primary.500" href={PostLogoutRedirectUri}>
               Click here
             </Link>{" "}
             to return to the {ClientName} application.
-          </AlertDescription>
+          </>
         ) : null}
-      </Alert>
+      </BasicAlert>
     </Layout>
   );
 };

@@ -1,16 +1,14 @@
 import React from "react";
-import { Box, Alert, Flex, AlertIcon, AlertTitle } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/core";
 import ResendConfirmationAlert from "./ResendConfirmationAlert";
+import BasicAlert from "./BasicAlert";
 
-const UnconfirmedAccountFound = ({ message, username }) => (
+const UnconfirmedAccountFound = ({
+  message = "This account already exists, but seems to be unconfirmed.",
+  username
+}) => (
   <Box>
-    <Alert status="error" variant="left-accent" flexDirection="column">
-      <Flex alignItems="center">
-        <AlertIcon />
-        <AlertTitle>{message}</AlertTitle>
-      </Flex>
-    </Alert>
-
+    <BasicAlert status="error" title={message} />
     <ResendConfirmationAlert username={username} />
   </Box>
 );
