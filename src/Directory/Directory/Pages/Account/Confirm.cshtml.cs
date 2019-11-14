@@ -16,21 +16,21 @@ namespace Directory.Pages.Account
         public string? Username { get; set; }
 
         private readonly DirectoryUserManager _users;
-        private readonly TokenLoggingService _tokenLog;
         private readonly SignInManager<DirectoryUser> _signIn;
-        private readonly AccountEmailService _accountEmail;
+        private readonly TokenIssuingService _tokens;
+        private readonly TokenLoggingService _tokenLog;
 
         public ConfirmModel(
             DirectoryUserManager users,
             SignInManager<DirectoryUser> signIn,
-            TokenLoggingService tokenLog,
-            AccountEmailService accountEmail)
+            TokenIssuingService tokens,
+            TokenLoggingService tokenLog)
             : base(ReactRoutes.Confirm)
         {
             _users = users;
-            _tokenLog = tokenLog;
             _signIn = signIn;
-            _accountEmail = accountEmail;
+            _tokens = tokens;
+            _tokenLog = tokenLog;
         }
 
         public async Task<IActionResult> OnGet(string? userId, string? code)
@@ -80,19 +80,7 @@ namespace Directory.Pages.Account
             if (user is null)
                 return PageWithError("Invalid Username");
 
-            var code = await _users.GenerateEmailConfirmationTokenAsync(user);
-            var urlCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var confirmLink = Url.Page("/Account/Confirm",
-                pageHandler: null,
-                values: new { userId = user.Id, code = urlCode },
-                protocol: Request.Scheme);
-
-            await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
-
-            await _accountEmail.SendAccountConfirmation(
-                user.Email,
-                user.Name,
-                confirmLink);
+            await _tokens.SendAccountConfirmation(user, Request.Scheme);
 
             return Page(ReactRoutes.ConfirmResend);
         }

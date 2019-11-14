@@ -1,29 +1,24 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using System.Threading.Tasks;
 using Common.Data.Identity;
 using Directory.Auth.Identity;
 using Directory.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Directory.Pages.Account
 {
     public class RegisterModel : BaseReactModel
     {
         private readonly DirectoryUserManager _users;
-        private readonly TokenLoggingService _tokenLog;
-        private readonly AccountEmailService _accountEmail;
+        private readonly TokenIssuingService _tokens;
 
         public RegisterModel(
             DirectoryUserManager users,
-            TokenLoggingService tokenLog,
-            AccountEmailService accountEmail)
+            TokenIssuingService tokens)
             : base(ReactRoutes.Register)
         {
             _users = users;
-            _tokenLog = tokenLog;
-            _accountEmail = accountEmail;
+            _tokens = tokens;
         }
 
         [BindProperty]
@@ -76,19 +71,7 @@ namespace Directory.Pages.Account
                 var result = await _users.CreateAsync(user, Password);
                 if (result.Succeeded)
                 {
-                    var code = await _users.GenerateEmailConfirmationTokenAsync(user);
-                    var urlCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var link = Url.Page("/Account/Confirm",
-                        pageHandler: null,
-                        values: new { userId = user.Id, code = urlCode },
-                        protocol: Request.Scheme);
-
-                    await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
-
-                    await _accountEmail.SendAccountConfirmation(
-                        user.Email,
-                        user.Name,
-                        link);
+                    await _tokens.SendAccountConfirmation(user, Request.Scheme);
 
                     return Page(ReactRoutes.RegisterResult);
                 }

@@ -18,18 +18,15 @@ namespace Directory.Pages.Account
         public bool AllowResend { get; set; }
 
         private readonly DirectoryUserManager _users;
-        private readonly TokenLoggingService _tokenLog;
-        private readonly AccountEmailService _accountEmail;
+        private readonly TokenIssuingService _tokens;
 
         public ForgotPasswordModel(
             DirectoryUserManager users,
-            TokenLoggingService tokenLog,
-            AccountEmailService accountEmail)
+            TokenIssuingService tokens)
             : base(ReactRoutes.ForgotPassword)
         {
             _users = users;
-            _tokenLog = tokenLog;
-            _accountEmail = accountEmail;
+            _tokens = tokens;
         }
 
         public async Task<IActionResult> OnPost()
@@ -47,19 +44,7 @@ namespace Directory.Pages.Account
                     return Page();
                 }
 
-                var code = await _users.GeneratePasswordResetTokenAsync(user);
-                var urlCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var link = Url.Page("/Account/ResetPassword",
-                    pageHandler: null,
-                    values: new { userId = user.Id, code = urlCode },
-                    protocol: Request.Scheme);
-
-                await _tokenLog.PasswordResetTokenIssued(code, user.Id);
-
-                await _accountEmail.SendPasswordReset(
-                    user.Email,
-                    user.Name,
-                    link);
+                await _tokens.SendPasswordReset(user, Request.Scheme);
             }
 
             return Page(ReactRoutes.ForgotPasswordResult);
