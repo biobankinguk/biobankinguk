@@ -11,12 +11,14 @@ const ResetForm = ({ ModelState, Code, UserId }) => {
   const { action, csrf } = useAspForm();
 
   const handleSubmit = (values, actions) => {
-    postObjectAsFormData(action, {
+    const obj = {
       ...values,
       ...csrf,
       Code,
       UserId
-    });
+    };
+
+    postObjectAsFormData(action, obj);
     actions.setSubmitting(false);
   };
 

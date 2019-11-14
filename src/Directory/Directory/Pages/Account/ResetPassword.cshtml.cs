@@ -14,9 +14,11 @@ namespace Directory.Pages.Account
 {
     public class ResetPasswordModel : BaseReactModel
     {
+        [BindProperty]
         [Required]
         public string Code { get; set; } = string.Empty;
 
+        [BindProperty]
         [Required]
         public string UserId { get; set; } = string.Empty;
 
@@ -47,17 +49,11 @@ namespace Directory.Pages.Account
 
         public IActionResult OnGet(string userId, string code)
         {
-            const string linkErrorKey = "Link";
-            const string generalError = "The User ID or Token is invalid or has expired.";
-
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
-            {
-                ModelState.AddModelError(linkErrorKey, generalError);
-                return Page();
-            }
+                return PageWithError("Link", "The User ID or Token is invalid or has expired.");
 
-            UserId = userId;
-            Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            UserId = userId; // This is how we get these to React
+            Code = code;     // For consistency
             return Page();
         }
 
@@ -68,59 +64,59 @@ namespace Directory.Pages.Account
             if (!ModelState.IsValid)
             {
                 // are the errors with the userid/code or the actual form submission?
+                var formErrors = !ModelState.Keys.All(
+                    x => new[]
+                    {
+                        nameof(Code), nameof(UserId)
+                    }
+                    .Contains(x));
 
-                if (ModelState.Keys.Any(x =>
-                    new[] { nameof(Code), nameof(UserId) }
-                    .Contains(x)))
-                {
-                    // head to the results page with a generic error
-                    ModelState.AddModelError(string.Empty, generalError);
-                    Route = ReactRoutes.ResetPasswordResult;
-                    return Page();
-                }
-
-                // Actual form field errors should go back to the form
-                return Page();
+                return formErrors
+                    ? Page() // Actual form field errors should go back to the form
+                    : PageWithError(ReactRoutes.ResetPasswordResult, string.Empty, generalError);
             }
 
             if (Password != PasswordConfirm) // Client side should catch this, but we should be on the safe side.
-            {
-                ModelState.AddModelError(string.Empty, "The passwords entered do not match.");
-                return Page();
-            }
+                return PageWithError("The passwords entered do not match.");
 
-            await _tokenLog.PasswordResetTokenValidationAttempted(Code, UserId);
+            // We need to keep the ViewModel storing the URL safe code, for any page returns that need it
+            var rawCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+
+            await _tokenLog.PasswordResetTokenValidationAttempted(rawCode, UserId);
 
             var user = await _users.FindByIdAsync(UserId);
             if (user is null)
             {
                 await _tokenLog.PasswordResetTokenValidationFailed(
-                    Code, UserId, JsonSerializer.Serialize(new[] {
+                    rawCode, UserId, JsonSerializer.Serialize(new[] {
                         new { Code = "InvalidUserId", Description = "Invalid User ID" }
                     }));
+                return PageWithError(ReactRoutes.ResetPasswordResult, string.Empty, generalError);
+            }
 
-                ModelState.AddModelError(string.Empty, generalError);
-                Route = ReactRoutes.ResetPasswordResult;
+            var result = await _users.ResetPasswordAsync(user, rawCode, Password);
+            if (!result.Succeeded)
+            {
+                await _tokenLog.PasswordResetTokenValidationFailed(
+                    rawCode, UserId, JsonSerializer.Serialize(result.Errors));
+
+                foreach (var error in result.Errors)
+                {
+                    if (error.Code == "InvalidToken") // Token only; User is already validated above
+                    {
+                        ModelState.ClearValidationState(string.Empty);
+                        return PageWithError(ReactRoutes.ResetPasswordResult, string.Empty, generalError);
+                    }
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
                 return Page();
             }
 
-            var result = await _users.ResetPasswordAsync(user, Code, Password);
+            await _signIn.SignInAsync(user, false);
+            await _tokenLog.PasswordResetTokenValidationSuccessful(rawCode, UserId);
 
-            if (result.Errors.Any())
-            {
-                await _tokenLog.PasswordResetTokenValidationFailed(
-                    Code, UserId, JsonSerializer.Serialize(result.Errors));
-
-                ModelState.AddModelError(string.Empty, generalError);
-            }
-            else
-            {
-                await _signIn.SignInAsync(user, false);
-                await _tokenLog.PasswordResetTokenValidationSuccessful(Code, UserId);
-            }
-
-            Route = ReactRoutes.ResetPasswordResult;
-            return Page();
+            return Page(ReactRoutes.ResetPasswordResult);
         }
     }
 }
