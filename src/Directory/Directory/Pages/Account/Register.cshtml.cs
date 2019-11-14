@@ -77,10 +77,10 @@ namespace Directory.Pages.Account
                 if (result.Succeeded)
                 {
                     var code = await _users.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var urlCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var link = Url.Page("/Account/Confirm",
                         pageHandler: null,
-                        values: new { userId = user.Id, code },
+                        values: new { userId = user.Id, code = urlCode },
                         protocol: Request.Scheme);
 
                     await _tokenLog.AccountConfirmationTokenIssued(code, user.Id);
@@ -90,18 +90,17 @@ namespace Directory.Pages.Account
                         user.Name,
                         link);
 
-                    Route = ReactRoutes.RegisterResult;
+                    return Page(ReactRoutes.RegisterResult);
                 }
-                else
+
+                foreach (var error in result.Errors)
                 {
-                    foreach (var error in result.Errors)
+                    if (error.Code == "DuplicateEmail")
                     {
-                        if (error.Code == "DuplicateEmail") {
-                            var existingUser = await _users.FindByEmailAsync(Email);
-                            if(!existingUser.EmailConfirmed) AllowResend = true;
-                        }
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        var existingUser = await _users.FindByEmailAsync(Email);
+                        if (!existingUser.EmailConfirmed) AllowResend = true;
                     }
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 

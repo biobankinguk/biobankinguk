@@ -48,10 +48,10 @@ namespace Directory.Pages.Account
                 }
 
                 var code = await _users.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var urlCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var link = Url.Page("/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { userId = user.Id, code },
+                    values: new { userId = user.Id, code = urlCode },
                     protocol: Request.Scheme);
 
                 await _tokenLog.PasswordResetTokenIssued(code, user.Id);
@@ -62,8 +62,7 @@ namespace Directory.Pages.Account
                     link);
             }
 
-            Route = ReactRoutes.ForgotPasswordResult;
-            return Page();
+            return Page(ReactRoutes.ForgotPasswordResult);
         }
     }
 }

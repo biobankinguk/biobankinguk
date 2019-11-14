@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Common.Data.Identity;
@@ -159,9 +159,8 @@ namespace Directory.Pages.Account
             {
                 // if the client is PKCE then we assume it's native, so this change in how to
                 // return the response is for better UX for the end user.
-                Route = ReactRoutes.LoginRedirect;
                 RedirectUrl = url;
-                return Page();
+                return Page(ReactRoutes.LoginRedirect);
             }
 
             // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
