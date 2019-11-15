@@ -1,19 +1,6 @@
 import { QueryParams } from "../constants/oidc";
 
 /**
- * Get the base URL of the App.
- *
- * Tries to get an absolute URL from the `<base />` element.
- * If that doesn't work, or the result is simply `/`,
- * falls back to `env.REACT_APP_BASE_URL_FALLBACK`.
- */
-export const getBaseUrl = () =>
-  document
-    .getElementsByTagName("base")[0]
-    .getAttribute("href")
-    .replace(/\/$/, "") || process.env.REACT_APP_BASE_URL_FALLBACK;
-
-/**
  * Get a return URL from the query string, or the passed `state`.
  * 
  * Also validates it as a local URL.
