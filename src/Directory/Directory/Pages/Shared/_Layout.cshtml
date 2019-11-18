@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -10,7 +10,11 @@
 
     @RenderBody()
 
-    <script src="~/dist/ie.js" nomodule defer></script>
-    <script src="~/dist/bundle.js" type="module"></script>
+    @* Conditionally load Babel's polyfill in non-module browsers (like IE) *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js" nomodule></script>
+    
+    @* Here's where we'd load a JS bundle if we had one that wasn't part of our React ClientApp *@
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
