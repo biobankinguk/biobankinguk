@@ -102,6 +102,7 @@ namespace Directory
             services.AddTransient<AccountEmailService>();
             services.AddTransient<TokenIssuingService>();
             services.AddTransient<TokenLoggingService>();
+            services.AddSingleton<SpaScriptService>();
 
             if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
             else services.AddTransient<IEmailSender, LocalDiskEmailSender>();
