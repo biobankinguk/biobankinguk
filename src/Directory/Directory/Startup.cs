@@ -133,7 +133,8 @@ namespace Directory
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            
+            if(!env.IsDevelopment()) app.UseSpaStaticFiles(); // In development we use Webpack Dev Server
 
             app.UseRouting();
 
