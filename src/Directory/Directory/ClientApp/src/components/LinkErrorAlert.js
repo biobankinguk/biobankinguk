@@ -1,5 +1,5 @@
 import React from "react";
-import BasicAlert from "@/components/BasicAlert";
+import BasicAlert from "./BasicAlert";
 
 const LinkErrorAlert = ({linkType}) => (
   <BasicAlert

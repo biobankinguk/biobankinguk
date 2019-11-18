@@ -1,5 +1,5 @@
 import React from "react";
-import { hasErrors } from "@/services/modelstate-validation";
+import { hasErrors } from "services/modelstate-validation";
 import BasicAlert from "./BasicAlert";
 
 const ModelValidationSummary = ({ errors }) => {

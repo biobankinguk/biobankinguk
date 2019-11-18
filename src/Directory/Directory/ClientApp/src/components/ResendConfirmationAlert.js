@@ -1,8 +1,7 @@
 import React from "react";
 import TryThisAlert from "./TryThisAlert";
-import appSettings from "../../../appsettings.json";
 
-const ResendConfirmationAlert = ({ username }) => (
+const ResendConfirmationAlert = ({ username, supportEmail }) => (
   <>
     <TryThisAlert
       text="Haven't received a link in your email?"
@@ -12,8 +11,8 @@ const ResendConfirmationAlert = ({ username }) => (
 
     <TryThisAlert
       text="Still having trouble? Contact"
-      linkText={appSettings.SupportEmail}
-      href={`mailto:${appSettings.SupportEmail}`}
+      linkText={supportEmail}
+      href={`mailto:${supportEmail}`}
     />
   </>
 );

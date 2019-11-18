@@ -1,9 +1,9 @@
 import React from "react";
-import { Results } from "../../constants/oidc";
+import { Results } from "constants/oidc";
 import { useAsync, IfPending, IfFulfilled, IfRejected } from "react-async";
-import authorizeService from "../../services/authorize-service";
+import authorizeService from "services/authorize-service";
 import GeneralError from "../GeneralError";
-import { getReturnUrl } from "../../services/dom-service";
+import { getReturnUrl } from "services/dom-service";
 
 export const CallbackTypes = {
   Login: "Login",

@@ -1,15 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import * as roots from "apps/root-ids";
 import * as serviceWorker from "./serviceWorker";
 
-ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+// Work out what which App we bootstrapping
+const razor = document.getElementById(roots.RAZOR);
+const spa = document.getElementById(roots.SPA);
+
+if (!!razor) import("apps/razor");
+if (!!spa) import("apps/spa");
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
