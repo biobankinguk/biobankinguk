@@ -102,6 +102,7 @@ namespace Directory
             services.AddTransient<AccountEmailService>();
             services.AddTransient<TokenIssuingService>();
             services.AddTransient<TokenLoggingService>();
+            services.AddSingleton<SpaScriptService>();
 
             if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
             else services.AddTransient<IEmailSender, LocalDiskEmailSender>();
@@ -133,7 +134,8 @@ namespace Directory
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            
+            if(!env.IsDevelopment()) app.UseSpaStaticFiles(); // In development we use Webpack Dev Server
 
             app.UseRouting();
 

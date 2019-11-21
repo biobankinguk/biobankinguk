@@ -18,5 +18,6 @@ export const Paths = {
   LoginCallback: `${local}/signin-oidc`,
   Logout: `${local}/logout`,
   LogoutCallback: `${local}/signout-callback-oidc`,
-  IdpRegister: `${idp}/Register`
+  IdpRegister: `${idp}/Register`,
+  Origin: window.location.origin
 };

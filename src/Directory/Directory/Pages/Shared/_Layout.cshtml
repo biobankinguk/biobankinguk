@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -10,7 +10,14 @@
 
     @RenderBody()
 
-    <script src="~/dist/ie.js" nomodule defer></script>
-    <script src="~/dist/bundle.js" type="module"></script>
+    @* Conditionally load Babel's polyfill in non-module browsers (like IE) *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js" nomodule></script>
+    
+
+    @* If we have a React PageModel then include the React App bootstrapping bits *@
+    @if(Model.GetType().IsSubclassOf(typeof(Directory.Pages.BaseReactModel)))
+    {
+        <partial name="_ReactRoute" />
+    }
 </body>
 </html>

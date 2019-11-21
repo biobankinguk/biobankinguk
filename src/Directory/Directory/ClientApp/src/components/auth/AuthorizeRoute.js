@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useAsync } from "react-async";
 import { Route, Redirect } from "react-router-dom";
-import authorizeService from "../../services/authorize-service";
-import { Paths, QueryParams } from "../../constants/oidc";
+import authorizeService from "services/authorize-service";
+import { Paths, QueryParams } from "constants/oidc";
 
 const AuthorizeRoute = ({ component: Component, ...rest }) => {
   const { data, isPending, reload } = useAsync(

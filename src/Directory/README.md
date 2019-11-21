@@ -18,8 +18,7 @@ Services provided by the App at this time:
 #### First time setup steps:
 
 1. Initialise the database
-2. Build the frontend
-3. Set Environment Configuration Settings
+2. Set Environment Configuration Settings
 
 Details for each step follow below.
 
@@ -44,57 +43,7 @@ Because of the solution structure (featuring the Data bits in a Common class lib
 - `dotnet ef migrations add <name> -s ../../Directory/Directory/Directory.csproj`
 - `dotnet ef database update -s ../../Directory/Directory/Directory.csproj`
 
-## 2. Build the frontend
-
-The Directory Web Project contains two distinct frontend areas, which both have `npm` build steps:
-
-### Razor Pages
-
-These are fairly minimal server side pages in the ASP.NET Core App, used exclusively for **Identity** interactions that shouldn't be in an external client, such as IdentityProvider **Login** and **Logout** routes.
-
-They are Razor Pages, but they actually each bootstrap a small React app for the page, to allow for component reuse with the main frontend. As such, the javascript bundle containing the React apps needs building, which done by `npm`.
-
-There are two build tasks - `dev` and `build`.
-
-- `dev` should mostly be used for local development.
-- `build` does an optimised production build, which is used in CI when producing actual releases.
-
-#### In Visual Studio:
-
-1. **Configure External Tools** so your `PATH` version of `npm` is prioritised over VS's own.
-1. Install the **NPM Task Runner** extension.
-
-VS should now run the `dev` task whenever you build the ASP.NET Core project.
-
-> ℹ You can run the `dev` or `build` tasks manually from **Task Runner Explorer** if you need to.
-
-#### On the command line:
-
-In the same directory as `Directory.csproj`
-
-1. `npm i`
-1. `npm run dev`
-
-### React Client App
-
-This is the actual frontend. It's a typical `create-react-app` based React application.
-
-In local development, ASP.NET Core's SPA tools will take care of building and HMR via a Webpack Dev server.
-
-In any other environment, the React App needs building before the .NET Core app is run or published.
-
-This is typically done in CI, but the process is as follows:
-
-#### On the command line:
-
-In the `ClientApp/` directory, **below** `Directory.csproj`:
-
-1. `npm i`
-1. `npm run build`
-
-Once the built files exist at `ClientApp/build/`, they will be included by `dotnet publish` and the resulting published App will serve the SPA correctly.
-
-## 3. Set Environment Configuration Settings
+## 2. Set Environment Configuration Settings
 
 There are a few configuration settings that are not in source control because they are considered secrets, or expected to change.
 
@@ -121,3 +70,57 @@ The settings which need configuring are as follows:
 | `SuperAdminSeedPassword` | A password used to seed the SuperAdmin user on first run. **Must not** be empty. | `test` |
 | `TrustedClients:upload-api:secret` | The Client Secret for the Upload API Client. | `test` |
 | `OutboundEmail:SendGridApiKey` | An API key for SendGrid. If populated, emails will be sent via SendGrid instead of the local debug service. | `<a SendGrid API key>` |
+
+# Architecture Overview
+
+In some ways this application is two (or three) apps.
+
+- The ASP.NET Core app itself is primarily a headless backend
+  - providing API endpoints, mainly for interaction with its backing database.
+- Minimal ASP.NET Core frontend
+  - Razor Pages for routing, server side request management
+  - React for UI, to allow reuse of code and build process with the main frontend client app
+- React SPA for the main frontend client app
+  - bootstrapped by Create React App
+  - hosted by the ASP.NET Core app
+  - codebase also contains the React frontend parts for the Razor Pages UI
+  - Code splitting is used to reduce bundle sizes based on which entry point (SPA or Razor) is used
+
+## Frontend
+
+### Razor Pages
+
+These are fairly minimal server side pages in the ASP.NET Core App, used exclusively for **Identity** interactions that preferably shouldn't be in an external client, such as IdentityProvider **Login** and **Logout** routes.
+
+They are Razor Pages, but they actually each bootstrap a small React app for the page, to allow for component reuse with the main frontend.
+
+The Razor Pages (and their PageModels) are in `Pages/` as per ASP.NET Core convention.
+
+The JavaScript source for these mini apps is kept with the rest of the React Client App source, and building and serving it is managed the same way.
+
+The main entrypoint is in `ClientApp/src/apps/razor`.
+
+### React Client App
+
+This is the actual frontend. It's a typical `create-react-app` based React application.
+
+The main entrypoint is in `ClientApp/src/apps/spa`.
+
+### Running and Building
+
+Because the code for both frontend "apps" lives together, the process of working with both is the same:
+
+In local development, ASP.NET Core's SPA tools will take care of building and HMR via a Webpack Dev server.
+
+In any other environment, the frontend bundle needs building before the ASP.NET Core app is run or published.
+
+This is typically done in CI, but the process is as follows:
+
+#### On the command line:
+
+In the `ClientApp/` directory, **below** `Directory.csproj`:
+
+1. `npm i`
+1. `npm run build`
+
+Once the built files exist at `ClientApp/build/`, they will be included by `dotnet publish` and the resulting published App will serve both the SPA and the JS files used by Razor Pages correctly.

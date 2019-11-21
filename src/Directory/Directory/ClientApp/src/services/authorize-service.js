@@ -1,5 +1,4 @@
 import { UserManager, WebStorageStateStore } from "oidc-client";
-import { getBaseUrl } from "./dom-service";
 import { ApplicationName, Paths, Results } from "../constants/oidc";
 
 const args = returnUrl => ({
@@ -8,13 +7,13 @@ const args = returnUrl => ({
 });
 
 const getClientConfig = () => ({
-  authority: process.env.REACT_APP_JWT_AUTHORITY,
+  authority: Paths.Origin,
   client_id: "directory-webapp",
-  redirect_uri: `${getBaseUrl()}${Paths.LoginCallback}`,
+  redirect_uri: `${Paths.Origin}${Paths.LoginCallback}`,
   response_type: "code",
   response_mode: "query",
   scope: "openid profile refdata",
-  post_logout_redirect_uri: `${getBaseUrl()}${Paths.LogoutCallback}`,
+  post_logout_redirect_uri: `${Paths.Origin}${Paths.LogoutCallback}`,
   automaticSilentRenew: true,
   includeIdTokenInSilentRenew: true,
   userStore: new WebStorageStateStore({

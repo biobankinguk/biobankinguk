@@ -1,9 +1,9 @@
 import React from "react";
 import { useAsync, IfPending, IfRejected, IfFulfilled } from "react-async";
-import { getReturnUrl } from "../../services/dom-service";
-import authorizeService from "../../services/authorize-service";
+import { getReturnUrl } from "services/dom-service";
+import authorizeService from "services/authorize-service";
 import GeneralError from "../GeneralError";
-import { Results } from "../../constants/oidc";
+import { Results } from "constants/oidc";
 
 // moving multiple async service calls out
 // into a single async function

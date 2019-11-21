@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import authorizeService from "../../services/authorize-service";
+import authorizeService from "services/authorize-service";
 
 /**
  * TODO: PoC only; REMOVE
