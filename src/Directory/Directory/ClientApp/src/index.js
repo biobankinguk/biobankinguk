@@ -1,7 +1,7 @@
 import * as roots from "apps/root-ids";
 import * as serviceWorker from "./serviceWorker";
 
-// Work out what which App we bootstrapping
+// Work out which App(s?) we bootstrapping
 const razor = document.getElementById(roots.RAZOR);
 const spa = document.getElementById(roots.SPA);
 
