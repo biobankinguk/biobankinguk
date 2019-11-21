@@ -1,4 +1,9 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) (CRA).
+
+It provides multiple route entrypoints to the React App within:
+
+- The main SPA, rendered from `public/index.html`
+- Individual multi-page apps rendered by Razor Pages in the parent ASP.NET Core app
 
 ## Available Scripts
 
@@ -6,11 +11,11 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+As per CRA, this will start the SPA on `localhost:3000`, but this is basically useless without the ASP.NET Core backend.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+In practice, the ASP.NET Core app will run this for you in `Development` environments to boot this React App.
+
+Supports hot reloading on file updates.
 
 ### `npm test`
 
@@ -24,6 +29,12 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
+
+The ASP.NET Core app **does not** run this command. It **must** be run as part of the build process **before** `dotnet publish`.
+
+This will ensure the production build files are present, at which point `dotnet publish` will include them in the production build of the ASP.NET Core app.
+
+This process should occur in CI as per `.azure/pipelines/directory.yml`.
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
@@ -44,6 +55,10 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 ### Code Splitting
+
+This app makes extensive use of code splitting around routes, particularly those rendered by Razor Pages.
+
+This ensures lean-ness of dependent JS loads on a given page.
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
 
