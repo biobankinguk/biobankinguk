@@ -4,15 +4,11 @@
     __TDCC__.ViewModel = @Html.Raw(Model.JsonViewModel);
 </script>
 
-<div id="react-app" data-route="@Model.Route"></div>
+<div id="razor-app-root" data-route="@Model.Route"></div>
 
-@section Scripts {
 
-    @* Inject the scripts from ClientApp's index.html, so we are running the same bundle as the SPA *@
+@* Inject the scripts from ClientApp's index.html, so we are running the same bundle as the SPA *@
 
-    @Html.Raw(
-        await SpaScripts.GetScripts(
-            new Uri($"{Context.Request.Scheme}://{Context.Request.Host}",
-            UriKind.Absolute)))
-
-}
+@Html.Raw(await SpaScripts.GetScripts(
+    new Uri($"{Context.Request.Scheme}://{Context.Request.Host}",
+    UriKind.Absolute)))

@@ -13,8 +13,11 @@
     @* Conditionally load Babel's polyfill in non-module browsers (like IE) *@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js" nomodule></script>
     
-    @* Here's where we'd load a JS bundle if we had one that wasn't part of our React ClientApp *@
 
-    @RenderSection("Scripts", required: false)
+    @* If we have a React PageModel then include the React App bootstrapping bits *@
+    @if(Model.GetType().IsSubclassOf(typeof(Directory.Pages.BaseReactModel)))
+    {
+        <partial name="_ReactRoute" />
+    }
 </body>
 </html>
