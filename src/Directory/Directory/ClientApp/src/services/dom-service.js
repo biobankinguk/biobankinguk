@@ -1,4 +1,4 @@
-import { QueryParams } from "../constants/oidc";
+import { QueryParams } from "constants/oidc";
 
 /**
  * Get a return URL from the query string, or the passed `state`.

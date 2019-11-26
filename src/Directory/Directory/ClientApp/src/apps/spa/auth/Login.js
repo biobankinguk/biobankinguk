@@ -1,36 +1,26 @@
 import React from "react";
 import { Results } from "constants/oidc";
 import { useAsync, IfPending, IfFulfilled, IfRejected } from "react-async";
-import authorizeService from "services/authorize-service";
-import GeneralError from "../GeneralError";
+import authorizeService from "auth/service";
+import GeneralError from "components/GeneralError";
 import { getReturnUrl } from "services/dom-service";
 
-export const CallbackTypes = {
-  Login: "Login",
-  Logout: "Logout"
-};
-
-const AuthCallback = ({ callbackType }) => {
-  const url = window.location.href;
-  const state = useAsync(
-    callbackType === CallbackTypes.Login
-      ? authorizeService.completeSignIn
-      : authorizeService.completeSignOut,
-    { url }
-  );
+const Login = () => {
+  const returnUrl = getReturnUrl();
+  const state = useAsync(authorizeService.signIn, { returnUrl });
 
   return (
     <>
       <IfPending state={state}>
-        <div>Completing {callbackType}...</div> {/* TODO: sexy */}
+        <div>Processing Login...</div> {/* TODO: sexy */}
       </IfPending>
       <IfFulfilled state={state}>
-        {({ status, state, message }) => {
+        {({ status, message }) => {
           switch (status) {
             case Results.Redirect:
-              throw new Error(`Invalid Auth Result for this flow: ${status}`);
+              break;
             case Results.Success:
-              window.location.replace(getReturnUrl(state));
+              window.location.replace(returnUrl);
               break;
             case Results.Fail:
               return <GeneralError message={message} />;
@@ -52,4 +42,4 @@ const AuthCallback = ({ callbackType }) => {
   );
 };
 
-export default AuthCallback;
+export default Login;

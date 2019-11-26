@@ -1,9 +1,9 @@
 import React from "react";
 import { Route, Switch, Link, useParams } from "react-router-dom";
-import AuthorizeRoute from "components/auth/AuthorizeRoute";
-import { Paths as AuthPaths } from "constants/oidc";
-import AuthRoutes from "components/auth/AuthRoutes";
-import ApiCall from "components/auth/ApiCallTest";
+import AuthorizeRoute from "components/AuthorizeRoute";
+import { Paths as AuthPaths } from "./auth/constants";
+import AuthRoutes from "apps/spa/auth/AuthRoutes";
+import ApiCall from "apps/spa/auth/ApiCallTest";
 
 // TODO: PoC only, remove
 const Protected = () => (

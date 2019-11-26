@@ -1,6 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import { Paths } from "constants/oidc";
+import { Paths } from "./constants";
 import Login from "./Login";
 import AuthCallback, { CallbackTypes } from "./AuthCallback";
 import Logout from "./Logout";

@@ -1,25 +1,13 @@
-import { UserManager, WebStorageStateStore } from "oidc-client";
-import { ApplicationName, Paths, Results } from "../constants/oidc";
+import { UserManager } from "oidc-client";
+import { Results } from "constants/oidc";
+import config from "apps/spa/auth/config";
 
 const args = returnUrl => ({
   useReplaceToNavigate: true,
   data: { returnUrl }
 });
 
-const getClientConfig = () => ({
-  authority: Paths.Origin,
-  client_id: "directory-webapp",
-  redirect_uri: `${Paths.Origin}${Paths.LoginCallback}`,
-  response_type: "code",
-  response_mode: "query",
-  scope: "openid profile refdata",
-  post_logout_redirect_uri: `${Paths.Origin}${Paths.LogoutCallback}`,
-  automaticSilentRenew: true,
-  includeIdTokenInSilentRenew: true,
-  userStore: new WebStorageStateStore({
-    prefix: ApplicationName
-  })
-});
+// TODO: accept config at runtime, support storing configured Paths in the service
 
 /**
  * A singleton service that abstracts OIDC client use
@@ -34,12 +22,14 @@ export class AuthorizeService {
 
   constructor() {
     if (this.userManager === undefined) {
-      this.userManager = new UserManager(getClientConfig());
+      this.userManager = new UserManager(config.oidc);
       this.userManager.events.addUserSignedOut(async () => {
         await this.userManager.removeUser();
         this.updateState(undefined);
       });
     }
+
+    this.unauthorised_uri = config.unauthorized_uri;
   }
 
   /**
