@@ -1,42 +1,28 @@
 import { UserManager } from "oidc-client";
 import { Results } from "constants/oidc";
-import config from "apps/spa/auth/config";
 
-const args = returnUrl => ({
-  useReplaceToNavigate: true,
-  data: { returnUrl }
-});
-
-// TODO: accept config at runtime, support storing configured Paths in the service
+const defaultArgs = { useReplaceToNavigate: true };
 
 /**
- * A singleton service that abstracts OIDC client use
+ * A service that abstracts OIDC client use
  * to authenticate and provide user helpers.
  *
- * Can be subscribed to to notify on user changes.
+ * Can be subscribed to to notify on user changes,
+ * though in React the provided Context and Hooks should be used instead.
  */
-export class AuthorizeService {
+export class AuthService {
   _callbacks = [];
   _nextSubscriptionId = 0;
   _user = null;
 
-  constructor() {
-    if (this.userManager === undefined) {
-      this.userManager = new UserManager(config.oidc);
-      this.userManager.events.addUserSignedOut(async () => {
-        await this.userManager.removeUser();
-        this.updateState(undefined);
-      });
-    }
+  constructor(config) {
+    this.userManager = new UserManager(config.oidc);
+    this.userManager.events.addUserSignedOut(async () => {
+      await this.userManager.removeUser();
+      this.updateState(undefined);
+    });
 
     this.unauthorised_uri = config.unauthorized_uri;
-  }
-
-  /**
-   * Get the initialised singleton instance of the service.
-   */
-  static get instance() {
-    return authorizeService;
   }
 
   /**
@@ -51,15 +37,18 @@ export class AuthorizeService {
   /**
    * Is the current user authenticated?
    */
-  isAuthenticated = async () => !!(await this.getUser());
+  isAuthenticated = async () => !!(await this.getUserProfile());
+
+  /**
+   * Get the stored user state
+   */
+  getUser = async () => this._user || (await this.userManager.getUser());
 
   /**
    * Get the current user profile.
    */
-  getUser = async () => {
-    if (this._user && this._user.profile) return this._user.profile;
-
-    const user = await this.userManager.getUser();
+  getUserProfile = async () => {
+    const user = await this.getUser();
     return user && user.profile;
   };
 
@@ -67,7 +56,7 @@ export class AuthorizeService {
    * Get an API access token via the current user.
    */
   getAccessToken = async () => {
-    const user = await this.userManager.getUser();
+    const user = await this.getUser();
     return user && user.access_token;
   };
 
@@ -79,7 +68,7 @@ export class AuthorizeService {
       // We try to see if we can authenticate the user silently.
       // This happens when the user is already logged in on the IdP
       // and is done using a hidden iframe on the client.
-      const silentUser = await this.userManager.signinSilent(args());
+      const silentUser = await this.userManager.signinSilent(defaultArgs);
       this.updateState(silentUser);
       return {
         status: Results.Success,
@@ -91,7 +80,10 @@ export class AuthorizeService {
 
       // Silent sign in failed; redirect to the IdP for traditional sign in flow
       try {
-        await this.userManager.signinRedirect(args(returnUrl));
+        await this.userManager.signinRedirect({
+          ...defaultArgs,
+          data: returnUrl
+        });
         return { status: Results.Redirect };
       } catch (signInError) {
         console.log("Sign In Error: ", signInError);
@@ -127,7 +119,10 @@ export class AuthorizeService {
   signOut = async ({ returnUrl }) => {
     // PopUp SignOut is an option here, but we don't do it.
     try {
-      await this.userManager.signoutRedirect(args(returnUrl));
+      await this.userManager.signoutRedirect({
+        ...defaultArgs,
+        data: returnUrl
+      });
       return { status: Results.Redirect };
     } catch (signOutError) {
       console.log("Sign Out Error: ", signOutError);
@@ -173,5 +168,4 @@ export class AuthorizeService {
   notifySubscribers = () => this._callbacks.forEach(cb => cb());
 }
 
-const authorizeService = new AuthorizeService(); // init the service (and by extension the OIDC UserManager)
-export default authorizeService;
+export default AuthService;
