@@ -31,6 +31,11 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="RefDataSeeding\SampleContentMethod.json" />
+    <None Remove="RefDataSeeding\TreatmentLocation.json" />
+  </ItemGroup>
+
 
 
 </Project>

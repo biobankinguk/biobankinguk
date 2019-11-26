@@ -23,10 +23,12 @@ namespace Common.MappingProfiles
             CreateMap<RefDataBaseDto, Funder>();
             CreateMap<SortedRefDataBaseDto, HtaStatus>();
             CreateMap<RefDataBaseDto, MacroscopicAssessment>();
+            CreateMap<RefDataBaseDto, SampleContentMethod>();
             CreateMap<SortedRefDataBaseDto, ServiceOffering>();
             CreateMap<SortedRefDataBaseDto, Sex>();
             CreateMap<SortedRefDataBaseDto, SopStatus>();
             CreateMap<SortedRefDataBaseDto, StorageTemperature>();
+            CreateMap<RefDataBaseDto, TreatmentLocation>();
             CreateMap<SortedRefDataBaseDto, AnnualStatisticGroup>();
             CreateMap<AnnualStatisticInboundDto, AnnualStatistic>();
             CreateMap<AnnualStatistic, AnnualStatisticOutboundDto>().
