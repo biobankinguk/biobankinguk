@@ -35,11 +35,11 @@ namespace Directory.Controllers.RefData
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var collectionPoint = await _readService.GetSampleContentMethod(id);
-            if (collectionPoint is null)
+            var sampleContentMethod = await _readService.GetSampleContentMethod(id);
+            if (sampleContentMethod is null)
                 return NotFound();
 
-            return Ok(collectionPoint);
+            return Ok(sampleContentMethod);
         }
 
         [SwaggerOperation("Creates a new Sample Content Method")]
