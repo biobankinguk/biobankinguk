@@ -156,8 +156,6 @@ const Conditional = ({ exclusive, expression, children }) => {
     }
   }
 
-  Children.forEach(children, c => {});
-
   return (matches.length && matches) || (defaults.length && defaults) || null;
 };
 
