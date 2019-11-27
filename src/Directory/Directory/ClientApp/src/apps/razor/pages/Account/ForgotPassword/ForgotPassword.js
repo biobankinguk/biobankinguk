@@ -4,7 +4,7 @@ import UnconfirmedAccountFound from "components/UnconfirmedAccountFound";
 import ModelValidationSummary from "components/ModelValidationSummary";
 import RequestForm from "./components/RequestForm";
 import BasicAlert from "components/BasicAlert";
-import ConditionalContent from "components/ConditionalContent";
+import Conditional from "components/Conditional";
 
 const ForgotPassword = vm => (
   <Layout heading="Forgot Password">
@@ -16,12 +16,11 @@ const ForgotPassword = vm => (
       email.
     </BasicAlert>
 
-    <ConditionalContent
-      condition={vm.AllowResend}
-      trueRender={() => <UnconfirmedAccountFound username={vm.Email} />}
-      falseRender={() => <ModelValidationSummary errors={vm.ModelState} />}
-    />
-    
+    <Conditional expression={vm.AllowResend}>
+      <UnconfirmedAccountFound username={vm.Email} />
+      <ModelValidationSummary default errors={vm.ModelState} />
+    </Conditional>
+
     <RequestForm {...vm} />
   </Layout>
 );

@@ -4,15 +4,14 @@ import { hasErrors } from "services/modelstate-validation";
 import BasicAlert from "components/BasicAlert";
 import LinkErrorAlert from "components/LinkErrorAlert";
 import Layout from "layouts/Clean";
-import ConditionalContent from "components/ConditionalContent";
+import Conditional from "components/Conditional";
 
 const ResetPasswordResult = ({ ModelState }) => (
   <Layout heading="Reset Password">
-  <ConditionalContent
-    condition={hasErrors(ModelState)}
-    trueRender={() => <LinkErrorAlert linkType="password reset" />}
-    falseRender={() => (
-      <BasicAlert status="success" title="Success!" noChildWrapper>
+    <Conditional expression={ModelState}>
+      <LinkErrorAlert condition={hasErrors} linkType="password reset" />
+
+      <BasicAlert default status="success" title="Success!" noChildWrapper>
         <AlertDescription flexDirection="column" textAlign="center">
           <Text>Your new password has been successfully set!</Text>
           <Box mt={3}>
@@ -22,8 +21,7 @@ const ResetPasswordResult = ({ ModelState }) => (
           </Box>
         </AlertDescription>
       </BasicAlert>
-    )}
-  />
+    </Conditional>
   </Layout>
 );
 
