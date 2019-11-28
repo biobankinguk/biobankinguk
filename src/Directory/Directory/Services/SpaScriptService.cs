@@ -33,11 +33,14 @@ namespace Directory.Services
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(scripts))
+                // TODO: a way of knowing when Webpack has rebuilt would be nice?
+                // for now we make this request EVERY Razor Page load for Dev environment...
+                if (string.IsNullOrWhiteSpace(scripts) || _env.IsDevelopment())
                     scripts = ParseHtmlForScripts(await ReadHtml(origin));
 
                 return scripts;
-            } catch (FileNotFoundException e)
+            }
+            catch (FileNotFoundException e)
             {
                 return $"<script>console.error(\"Unable to find SPA {e.FileName} in {_staticFilesPath}\");</script>";
             }
@@ -61,7 +64,7 @@ namespace Directory.Services
 
             var scripts = doc.DocumentNode.SelectNodes("//script[not(@nomodule)]");
             var sb = new StringBuilder();
-            foreach(var s in scripts)
+            foreach (var s in scripts)
             {
                 sb.Append(s.OuterHtml);
             }
