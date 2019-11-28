@@ -7,12 +7,10 @@ const defaultArgs = { useReplaceToNavigate: true };
  * A service that abstracts OIDC client use
  * to authenticate and provide user helpers.
  *
- * Can be subscribed to to notify on user changes,
- * though in React the provided Context and Hooks should be used instead.
+ * The provided Context and Hooks should be used
+ * to respond to state changes
  */
 export class AuthService {
-  _callbacks = [];
-  _nextSubscriptionId = 0;
   _user = null;
 
   constructor(config) {
@@ -26,39 +24,18 @@ export class AuthService {
   }
 
   /**
-   * Update the service state and notify subscribers.
+   * Update the service state.
+   * This update triggers Context effects
    * @param {*} user
    */
   updateState = user => {
     this._user = user;
-    this.notifySubscribers();
   };
-
-  /**
-   * Is the current user authenticated?
-   */
-  isAuthenticated = async () => !!(await this.getUserProfile());
 
   /**
    * Get the stored user state
    */
   getUser = async () => this._user || (await this.userManager.getUser());
-
-  /**
-   * Get the current user profile.
-   */
-  getUserProfile = async () => {
-    const user = await this.getUser();
-    return user && user.profile;
-  };
-
-  /**
-   * Get an API access token via the current user.
-   */
-  getAccessToken = async () => {
-    const user = await this.getUser();
-    return user && user.access_token;
-  };
 
   /**
    * Sign in via OIDC
@@ -82,7 +59,7 @@ export class AuthService {
       try {
         await this.userManager.signinRedirect({
           ...defaultArgs,
-          data: returnUrl
+          data: { returnUrl }
         });
         return { status: Results.Redirect };
       } catch (signInError) {
@@ -121,7 +98,7 @@ export class AuthService {
     try {
       await this.userManager.signoutRedirect({
         ...defaultArgs,
-        data: returnUrl
+        data: { returnUrl }
       });
       return { status: Results.Redirect };
     } catch (signOutError) {
@@ -146,26 +123,6 @@ export class AuthService {
       return { status: Results.Fail, error };
     }
   };
-
-  /*************************
-   * Subscription management
-   *************************/
-  subscribe = callback => {
-    this._callbacks.push({
-      callback,
-      id: this._nextSubscriptionId
-    });
-    return this._nextSubscriptionId++;
-  };
-
-  unsubscribe = id => {
-    this._callbacks = this._callbacks.reduce(
-      (callbacks, item) => (item.id !== id ? [...callbacks, item] : callbacks),
-      []
-    );
-  };
-
-  notifySubscribers = () => this._callbacks.forEach(cb => cb());
 }
 
 export default AuthService;

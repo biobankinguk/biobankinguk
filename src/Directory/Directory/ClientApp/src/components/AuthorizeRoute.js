@@ -1,36 +1,73 @@
-import React, { useEffect } from "react";
-import { useAsync } from "react-async";
-import { Route, Redirect } from "react-router-dom";
-import authorizeService from "auth/service";
+import React, { createElement } from "react";
+import { Redirect, Route } from "react-router-dom";
 import { QueryParams } from "constants/oidc";
+import { useAuth, useAuthService } from "auth";
+import Conditional, { False, True } from "./Conditional";
 
-const AuthorizeRoute = ({ component: Component, ...rest }) => {
-  const { data, isPending, reload } = useAsync(
-    authorizeService.isAuthenticated
-  );
+/**
+ * Build a URL with query string.
+ * @param {string} path The absolute or relative URL path
+ * @param {...string[]} [query] Query parameter arrays in the form `[param, value]`
+ */
+const buildQueryUrl = (path, ...query) =>
+  `${path}${query.reduce(
+    (queryString, q) =>
+      queryString + `${!queryString ? "?" : "&"}${q[0]}=${q[1]}`,
+    ""
+  )}`;
 
-  useEffect(() => {
-    const subId = authorizeService.subscribe(() => {
-      reload();
-    });
-    return () => authorizeService.unsubscribe(subId);
-  }, [reload]);
+/**
+ * Require an Authorised user.
+ *
+ * Unauthenticated users are sent to login by default, or an otherwise configured `fallback`
+ *
+ * This is a routing component that mixes Reach and React Router's APIs as follows:
+ *
+ * - `children` take priority and behave as Reach Router route children
+ *   - i.e. they should be components with a `path` prop.
+ *   - This allows protecting multiple routes by the same criteria under a parent route in one go
+ * - `component` is the next highest precedence, and specifies a single component to instantiate and render
+ * - `render` is lowest precedence and should be a function to execute
+ */
+const Authorize = ({ children, fallback, render, component, ...rest }) => {
+  const { unauthorised_uri } = useAuthService();
+  const auth = useAuth();
+  const { ready, isAuthenticated } = auth;
+  if (!ready) return null;
 
-  const redirectUrl = `${authorizeService.unauthorised_uri}?${
-    QueryParams.ReturnUrl
-  }=${encodeURI(window.location.href)}`;
+  const condition = isAuthenticated; // TODO: More complex conditions for authorisation later...
 
-  if (isPending) return <div>Loading...</div>; // TODO: make sexier
+  const redirectUrl = buildQueryUrl(unauthorised_uri, [
+    QueryParams.ReturnUrl,
+    encodeURI(window.location.href)
+  ]);
 
+  // React router version
   return (
     <Route
       {...rest}
-      render={p => {
-        if (data) return <Component {...p} />;
-        return <Redirect to={redirectUrl} />;
-      }}
+      render={p => (
+        <Conditional expression={condition}>
+          {createElement(component, p)}
+          <Redirect default to={redirectUrl} />
+        </Conditional>
+      )}
     />
   );
+
+  // reach router version
+  // return (
+  //   <Conditional expression={condition}>
+  //     <True>
+  //       {children ||
+  //         (component && createElement(component)) ||
+  //         (render && render()) ||
+  //         null}
+  //     </True>
+
+  //     <False>{fallback || <Redirect to={redirectUrl} />}</False>
+  //   </Conditional>
+  // );
 };
 
-export default AuthorizeRoute;
+export default Authorize;

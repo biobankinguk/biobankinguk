@@ -1,9 +1,9 @@
 import React from "react";
 import { Results } from "constants/oidc";
 import { useAsync, IfPending, IfFulfilled, IfRejected } from "react-async";
-import authorizeService from "auth/service";
 import GeneralError from "components/GeneralError";
 import { getReturnUrl } from "services/dom-service";
+import { useAuthService } from "auth";
 
 export const CallbackTypes = {
   Login: "Login",
@@ -12,10 +12,9 @@ export const CallbackTypes = {
 
 const AuthCallback = ({ callbackType }) => {
   const url = window.location.href;
+  const { completeSignIn, completeSignOut } = useAuthService();
   const state = useAsync(
-    callbackType === CallbackTypes.Login
-      ? authorizeService.completeSignIn
-      : authorizeService.completeSignOut,
+    callbackType === CallbackTypes.Login ? completeSignIn : completeSignOut,
     { url }
   );
 

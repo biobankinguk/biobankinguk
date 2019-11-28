@@ -1,13 +1,14 @@
 import React from "react";
 import { Results } from "constants/oidc";
 import { useAsync, IfPending, IfFulfilled, IfRejected } from "react-async";
-import authorizeService from "auth/service";
 import GeneralError from "components/GeneralError";
 import { getReturnUrl } from "services/dom-service";
+import { useAuthService } from "auth";
 
 const Login = () => {
   const returnUrl = getReturnUrl();
-  const state = useAsync(authorizeService.signIn, { returnUrl });
+  const { signIn } = useAuthService();
+  const state = useAsync(signIn, { returnUrl });
 
   return (
     <>
