@@ -288,5 +288,25 @@ namespace Directory.Services
 
         #endregion
 
+        #region SampleContentMethod
+
+        public async Task<ICollection<SampleContentMethod>> ListSampleContentMethods()
+            => await _context.SampleContentMethods.ToListAsync();
+
+        public async Task<SampleContentMethod> GetSampleContentMethod(int id)
+            => await _context.SampleContentMethods.FindAsync(id);
+
+        #endregion
+
+        #region TreatmentLocation
+
+        public async Task<ICollection<TreatmentLocation>> ListTreatmentLocations()
+            => await _context.TreatmentLocations.ToListAsync();
+
+        public async Task<TreatmentLocation> GetTreatmentLocation(int id)
+            => await _context.TreatmentLocations.FindAsync(id);
+
+        #endregion
+
     }
 }

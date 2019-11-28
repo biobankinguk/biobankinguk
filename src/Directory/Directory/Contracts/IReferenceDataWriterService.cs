@@ -81,5 +81,12 @@ namespace Directory.Contracts
         Task<StorageTemperature> CreateStorageTemperature(SortedRefDataBaseDto storageTemperature);
         Task<StorageTemperature> UpdateStorageTemperature(int id, SortedRefDataBaseDto storageTemperature);
         Task<bool> DeleteStorageTemperature(int id);
+        Task<SampleContentMethod> CreateSampleContentMethod(RefDataBaseDto sampleContentMethod);
+        Task<SampleContentMethod> UpdateSampleContentMethod(int id, RefDataBaseDto sampleContentMethod);
+        Task<bool> DeleteSampleContentMethod(int id);
+        Task<TreatmentLocation> CreateTreatmentLocation(RefDataBaseDto treatmentLocation);
+        Task<TreatmentLocation> UpdateTreatmentLocation(int id, RefDataBaseDto treatmentLocation);
+        Task<bool> DeleteTreatmentLocation(int id);
+
     }
 }
