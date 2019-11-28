@@ -2,7 +2,7 @@ import React from "react";
 import { Results } from "constants/oidc";
 import { useAsync, IfPending, IfFulfilled, IfRejected } from "react-async";
 import GeneralError from "components/GeneralError";
-import { getReturnUrl } from "services/dom-service";
+import { getReturnUrl, setTitle } from "services/dom-service";
 import { useAuthService } from "auth";
 
 export const CallbackTypes = {
@@ -17,6 +17,7 @@ const AuthCallback = ({ callbackType }) => {
     callbackType === CallbackTypes.Login ? completeSignIn : completeSignOut,
     { url }
   );
+  setTitle(callbackType);
 
   return (
     <>

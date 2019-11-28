@@ -1,9 +1,15 @@
+@{
+    var PageTitle = ViewBag.Title is null
+        ? string.Empty
+        : $"{ViewBag.Title} - ";
+}
+
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    <title>@PageTitle UKCRC Tissue Directory</title>
 </head>
 <body>
     <script>__TDCC__ = {};</script>
@@ -12,10 +18,10 @@
 
     @* Conditionally load Babel's polyfill in non-module browsers (like IE) *@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js" nomodule></script>
-    
+
 
     @* If we have a React PageModel then include the React App bootstrapping bits *@
-    @if(Model.GetType().IsSubclassOf(typeof(Directory.Pages.BaseReactModel)))
+    @if (Model.GetType().IsSubclassOf(typeof(Directory.Pages.BaseReactModel)))
     {
         <partial name="_ReactRoute" />
     }

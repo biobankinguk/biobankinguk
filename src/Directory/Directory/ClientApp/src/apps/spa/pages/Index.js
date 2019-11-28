@@ -2,9 +2,10 @@ import React from "react";
 import { Link } from "@reach/router";
 import ApiCall from "../auth/ApiCallTest";
 import { Paths as AuthPaths } from "../auth/constants";
+import { setTitle } from "services/dom-service";
 
 const Index = () => {
-  //   setTitle(null);
+  setTitle(null);
   return (
     <>
       <div>Hello World</div>

@@ -6,16 +6,21 @@ import config from "./auth/config";
 import Index from "./pages/Index";
 import Routes from "./routes";
 import ApiCall from "./auth/ApiCallTest";
+import { setTitle } from "services/dom-service";
 
 // TODO: PoC only, remove
-const Protected = () => (
-  <>
-    <div>Hello protected route.</div>
-    <ApiCall />
-    <Link to={AuthPaths.Logout(true)}>Logout</Link>
-  </>
-);
+const Protected = () => {
+  setTitle("Protected");
+  return (
+    <>
+      <div>Hello protected route.</div>
+      <ApiCall />
+      <Link to={AuthPaths.Logout(true)}>Logout</Link>
+    </>
+  );
+};
 const Greeter = ({ name }) => {
+  setTitle("Hello");
   return <div>Hello {name}</div>;
 };
 
