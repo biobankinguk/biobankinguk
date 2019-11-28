@@ -50,6 +50,8 @@ namespace Directory.Contracts
         Task<MaterialTypeGroup> GetMaterialTypeGroup(int id);
         Task<ICollection<OntologyTerm>> ListOntologyTerms();
         Task<OntologyTerm> GetOntologyTerm(string id);
+        Task<ICollection<SampleContentMethod>> ListSampleContentMethods();
+        Task<SampleContentMethod> GetSampleContentMethod(int id);
         Task<ICollection<ServiceOffering>> ListServiceOfferings();
         Task<ServiceOffering> GetServiceOffering(int id);
         Task<ICollection<Sex>> ListSexes();
@@ -58,5 +60,7 @@ namespace Directory.Contracts
         Task<SopStatus> GetSopStatus(int id);
         Task<ICollection<StorageTemperature>> ListStorageTemperatures();
         Task<StorageTemperature> GetStorageTemperature(int id);
+        Task<ICollection<TreatmentLocation>> ListTreatmentLocations();
+        Task<TreatmentLocation> GetTreatmentLocation(int id);
     }
 }

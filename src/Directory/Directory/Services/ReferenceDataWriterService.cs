@@ -646,8 +646,39 @@ namespace Directory.Services
 
         #endregion
 
+        #region SampleContentMethod
 
+        public async Task<SampleContentMethod> CreateSampleContentMethod(RefDataBaseDto sampleContentMethod)
+            => await CreateRefData(_mapper.Map<SampleContentMethod>(sampleContentMethod));
 
+        public async Task<SampleContentMethod> UpdateSampleContentMethod(int id, RefDataBaseDto sampleContentMethod)
+        {
+            var entity = _mapper.Map<SampleContentMethod>(sampleContentMethod);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
+
+        public async Task<bool> DeleteSampleContentMethod(int id)
+            => await DeleteRefData<SampleContentMethod>(id);
+
+        #endregion
+
+        #region TreatmentLocation
+
+        public async Task<TreatmentLocation> CreateTreatmentLocation(RefDataBaseDto treatmentLocation)
+            => await CreateRefData(_mapper.Map<TreatmentLocation>(treatmentLocation));
+
+        public async Task<TreatmentLocation> UpdateTreatmentLocation(int id, RefDataBaseDto treatmentLocation)
+        {
+            var entity = _mapper.Map<TreatmentLocation>(treatmentLocation);
+            entity.Id = id;
+            return await UpdateRefData(entity);
+        }
+
+        public async Task<bool> DeleteTreatmentLocation(int id)
+            => await DeleteRefData<TreatmentLocation>(id);
+
+        #endregion
     }
 }
 
