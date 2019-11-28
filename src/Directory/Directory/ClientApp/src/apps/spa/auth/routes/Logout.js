@@ -1,7 +1,7 @@
 import React from "react";
 import { useAsync, IfPending, IfRejected, IfFulfilled } from "react-async";
 import { getReturnUrl } from "services/dom-service";
-import GeneralError from "../../../components/GeneralError";
+import GeneralError from "../../../../components/GeneralError";
 import { Results } from "constants/oidc";
 import { useAuth, useAuthService } from "auth";
 

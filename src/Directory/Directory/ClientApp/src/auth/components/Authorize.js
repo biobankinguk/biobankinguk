@@ -1,8 +1,8 @@
 import React, { createElement } from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect } from "@reach/router";
 import { QueryParams } from "constants/oidc";
 import { useAuth, useAuthService } from "auth";
-import Conditional, { False, True } from "./Conditional";
+import Conditional, { False, True } from "components/Conditional";
 
 /**
  * Build a URL with query string.
@@ -29,7 +29,7 @@ const buildQueryUrl = (path, ...query) =>
  * - `component` is the next highest precedence, and specifies a single component to instantiate and render
  * - `render` is lowest precedence and should be a function to execute
  */
-const Authorize = ({ children, fallback, render, component, ...rest }) => {
+const Authorize = ({ children, fallback, render, component }) => {
   const { unauthorised_uri } = useAuthService();
   const auth = useAuth();
   const { ready, isAuthenticated } = auth;
@@ -42,32 +42,19 @@ const Authorize = ({ children, fallback, render, component, ...rest }) => {
     encodeURI(window.location.href)
   ]);
 
-  // React router version
-  return (
-    <Route
-      {...rest}
-      render={p => (
-        <Conditional expression={condition}>
-          {createElement(component, p)}
-          <Redirect default to={redirectUrl} />
-        </Conditional>
-      )}
-    />
-  );
-
   // reach router version
-  // return (
-  //   <Conditional expression={condition}>
-  //     <True>
-  //       {children ||
-  //         (component && createElement(component)) ||
-  //         (render && render()) ||
-  //         null}
-  //     </True>
+  return (
+    <Conditional expression={condition}>
+      <True>
+        {children ||
+          (component && createElement(component)) ||
+          (render && render()) ||
+          null}
+      </True>
 
-  //     <False>{fallback || <Redirect to={redirectUrl} />}</False>
-  //   </Conditional>
-  // );
+      <False>{fallback || <Redirect to={redirectUrl} />}</False>
+    </Conditional>
+  );
 };
 
 export default Authorize;

@@ -5,16 +5,16 @@ export default {
   oidc: {
     authority: Paths.Origin,
     client_id: "directory-webapp",
-    redirect_uri: `${Paths.Origin}${Paths.LoginCallback}`,
+    redirect_uri: `${Paths.Origin}${Paths.LoginCallback(true)}`,
     response_type: "code",
     response_mode: "query",
     scope: "openid profile refdata",
-    post_logout_redirect_uri: `${Paths.Origin}${Paths.LogoutCallback}`,
+    post_logout_redirect_uri: `${Paths.Origin}${Paths.LogoutCallback(true)}`,
     automaticSilentRenew: true,
     includeIdTokenInSilentRenew: true,
     userStore: new WebStorageStateStore({
       prefix: `${ApplicationName}.`
     })
   },
-  unauthorized_uri: Paths.Login
+  unauthorized_uri: Paths.Login(true)
 };
