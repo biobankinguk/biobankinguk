@@ -4,7 +4,7 @@ import UnconfirmedAccountFound from "components/UnconfirmedAccountFound";
 import ModelValidationSummary from "components/ModelValidationSummary";
 import TryThisAlert from "components/TryThisAlert";
 import RegisterForm from "./components/RegisterForm";
-import ConditionalContent from "components/ConditionalContent";
+import Conditional from "components/Conditional";
 
 const Register = vm => (
   <Layout heading="Register">
@@ -15,12 +15,11 @@ const Register = vm => (
       href="/auth/login"
     />
 
-    <ConditionalContent
-      condition={vm.AllowResend}
-      trueRender={() => <UnconfirmedAccountFound username={vm.Email} />}
-      falseRender={() => <ModelValidationSummary errors={vm.ModelState} />}
-    />
-    
+    <Conditional expression={vm.AllowResend}>
+      <UnconfirmedAccountFound username={vm.Email} />
+      <ModelValidationSummary default errors={vm.ModelState} />
+    </Conditional>
+
     <RegisterForm {...vm} />
   </Layout>
 );

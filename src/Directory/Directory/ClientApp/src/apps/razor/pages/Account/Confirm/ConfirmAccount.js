@@ -5,19 +5,20 @@ import { hasErrors } from "services/modelstate-validation";
 import BasicAlert from "components/BasicAlert";
 import LinkErrorAlert from "components/LinkErrorAlert";
 import Layout from "layouts/Clean";
-import ConditionalContent from "components/ConditionalContent";
+import Conditional, { Default, When } from "components/Conditional";
 
 const ConfirmAccount = ({ ModelState, Username, SupportEmail }) => (
   <Layout heading="Register">
-    <ConditionalContent
-      condition={hasErrors(ModelState)}
-      trueRender={() => (
-        <>
-          <LinkErrorAlert linkType="account confirmation" />
-          <ResendConfirmationAlert username={Username} supportEmail={SupportEmail} />
-        </>
-      )}
-      falseRender={() => (
+    <Conditional expression={ModelState}>
+      <When condition={hasErrors}>
+        <LinkErrorAlert linkType="account confirmation" />
+        <ResendConfirmationAlert
+          username={Username}
+          supportEmail={SupportEmail}
+        />
+      </When>
+
+      <Default>
         <BasicAlert status="success" title="Success!" noChildWrapper>
           <AlertDescription flexDirection="column" textAlign="center">
             <Text>
@@ -31,8 +32,8 @@ const ConfirmAccount = ({ ModelState, Username, SupportEmail }) => (
             </Box>
           </AlertDescription>
         </BasicAlert>
-      )}
-    />
+      </Default>
+    </Conditional>
   </Layout>
 );
 

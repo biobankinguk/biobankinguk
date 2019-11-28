@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import authorizeService from "services/authorize-service";
+import { useAuth } from "auth";
 
 /**
  * TODO: PoC only; REMOVE
  */
 
 const ApiCall = () => {
+  const { accessToken } = useAuth();
   const handleApiCallClick = async () => {
-    const token = await authorizeService.getAccessToken();
+    const token = accessToken;
     let result;
     try {
       const response = await fetch("/identity", {

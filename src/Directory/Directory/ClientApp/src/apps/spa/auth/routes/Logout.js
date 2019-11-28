@@ -1,18 +1,27 @@
 import React from "react";
+import { useAsync, IfPending, IfRejected, IfFulfilled } from "react-async";
+import { getReturnUrl, setTitle } from "services/dom-service";
+import GeneralError from "../../../../components/GeneralError";
 import { Results } from "constants/oidc";
-import { useAsync, IfPending, IfFulfilled, IfRejected } from "react-async";
-import authorizeService from "services/authorize-service";
-import GeneralError from "../GeneralError";
-import { getReturnUrl } from "services/dom-service";
+import { useAuth, useAuthService } from "auth";
 
-const Login = () => {
+// moving multiple async service calls out
+// into a single async function
+// greatly simplifies the react component
+const logout = async ({ returnUrl, isAuthenticated, signOut }) =>
+  isAuthenticated ? await signOut({ returnUrl }) : { status: Results.Success };
+
+const Logout = () => {
   const returnUrl = getReturnUrl();
-  const state = useAsync(authorizeService.signIn, { returnUrl });
+  const { signOut } = useAuthService();
+  const { isAuthenticated } = useAuth();
+  const state = useAsync(logout, { returnUrl, isAuthenticated, signOut });
+  setTitle("Logout");
 
   return (
     <>
       <IfPending state={state}>
-        <div>Processing Login...</div> {/* TODO: sexy */}
+        <div>Processing Logout...</div> {/* TODO: sexy */}
       </IfPending>
       <IfFulfilled state={state}>
         {({ status, message }) => {
@@ -42,4 +51,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Logout;
