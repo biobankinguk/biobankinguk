@@ -23,7 +23,21 @@ namespace Publications
     {
         [JsonProperty("id")]
         public string Id { get; set; }
+
         [JsonProperty("title")]
         public string Title { get; set; }
+
+        [JsonProperty("authorString")]
+        public string Authors { get; set; }
+
+        [JsonProperty("journalTitle")]
+        public string Journal { get; set; }
+
+        [JsonProperty("pubYear")]
+        public int Year { get; set; }
+
+        [JsonProperty("doi")]
+        public string Doi { get; set; }
+
     }
 }

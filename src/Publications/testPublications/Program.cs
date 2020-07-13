@@ -24,6 +24,10 @@ namespace Publications
             {
                 Console.WriteLine(item.Id);
                 Console.WriteLine(item.Title);
+                Console.WriteLine(item.Authors);
+                Console.WriteLine(item.Journal);
+                Console.WriteLine(item.Year);
+                Console.WriteLine(item.Doi);
                 Console.WriteLine();
             }
         }
