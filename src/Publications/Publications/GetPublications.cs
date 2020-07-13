@@ -16,8 +16,10 @@ namespace Publications
         private static readonly HttpClient client = new HttpClient();
         public async Task<RootObject> GetPublicationItems()
         {
+            string biobank = "AstraZeneca";
             //API endpoint
-            string response = await client.GetStringAsync("https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=RIO&resultType=lite&cursorMark=*&pageSize=1000&format=json");
+            string endpoint = $"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query={biobank}&resultType=lite&cursorMark=AoIIQFqUuSg0MDkzOTczMA==&pageSize=1000&format=json";
+            string response = await client.GetStringAsync(endpoint);
             //Deserialize JSON to object
             RootObject obj = JsonConvert.DeserializeObject<RootObject>(response);
 
