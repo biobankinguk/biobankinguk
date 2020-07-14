@@ -11,6 +11,10 @@ namespace Publications
     {
         [JsonProperty("resultList")]
         public Child Childs { get; set; }
+
+        [JsonProperty("nextCursorMark")] //To get next page mark
+        public string Cursor { get; set; }
+
     }
 
 
@@ -18,6 +22,7 @@ namespace Publications
     {
         [JsonProperty("result")]
         public List<Result> Results { get; set; }
+
     }
     public class Result
     {
@@ -40,4 +45,8 @@ namespace Publications
         public string Doi { get; set; }
 
     }
+
+ 
+
+
 }

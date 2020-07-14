@@ -18,9 +18,10 @@ namespace Publications
         {          
             //Instanitate new instance of getPublication class
             GetPublications getPublications = new GetPublications();
-            var obj = await getPublications.GetPublicationItems();
+            List<string> obj = await getPublications.GetPublicationItems();
             //Loop through child list to get result list values
-            foreach (var item in obj.Childs.Results)
+            
+            /*foreach (var item in obj.Childs.Results)
             {
                 Console.WriteLine(item.Id);
                 Console.WriteLine(item.Title);
@@ -29,7 +30,13 @@ namespace Publications
                 Console.WriteLine(item.Year);
                 Console.WriteLine(item.Doi);
                 Console.WriteLine();
+            } */
+
+            foreach (var item in obj)
+            {
+                Console.WriteLine(item);
             }
+            
         }
 
     }
