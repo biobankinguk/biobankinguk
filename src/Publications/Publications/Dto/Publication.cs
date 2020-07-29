@@ -6,25 +6,27 @@ using System.Text.Json.Serialization;
 
 namespace Publications
 {
-
-    public class RootObject
+    public class EPMCSearchResult
     {
-        [JsonProperty("resultList")]
-        public Child Childs { get; set; }
-
-        [JsonProperty("nextCursorMark")] //To get next page mark
+        [JsonProperty("nextCursorMark")]
         public string Cursor { get; set; }
 
+        [JsonProperty("resultList")]
+        public Results Results { get; set; }
+
+        public List<Publication> Publications
+        {
+            get { return Results.Publications; }
+        }
     }
 
-
-    public class Child
+    public class Results
     {
         [JsonProperty("result")]
-        public List<Result> Results { get; set; }
-
+        public List<Publication> Publications { get; set; }
     }
-    public class Result
+
+    public class Publication
     {
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -45,8 +47,4 @@ namespace Publications
         public string Doi { get; set; }
 
     }
-
- 
-
-
 }
