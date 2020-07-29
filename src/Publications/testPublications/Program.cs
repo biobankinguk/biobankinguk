@@ -8,6 +8,8 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Runtime.ExceptionServices;
 using Publications;
+using Publications.Services;
+
 
 namespace Publications
 {
@@ -15,30 +17,15 @@ namespace Publications
     {
 
         public static async Task Main(string[] args)
-        {          
-            //Instanitate new instance of getPublication class
-            GetPublications getPublications = new GetPublications();
-            List<string> obj = await getPublications.GetPublicationItems();
-            //Loop through child list to get result list values
-            
-            /*foreach (var item in obj.Childs.Results)
-            {
-                Console.WriteLine(item.Id);
-                Console.WriteLine(item.Title);
-                Console.WriteLine(item.Authors);
-                Console.WriteLine(item.Journal);
-                Console.WriteLine(item.Year);
-                Console.WriteLine(item.Doi);
-                Console.WriteLine();
-            } */
-
-            foreach (var item in obj)
-            {
-                Console.WriteLine(item);
-            }
-            
+        {
         }
 
+        public static async Task TestEMPCAsync()
+        {
+            EMPCWebService empcWebService = new EMPCWebService();
+            List<Publication> publications = await empcWebService.GetOrganisationPublications("CANDAS");
+            Console.WriteLine(publications.Count);
+        }
     }
 }
 
