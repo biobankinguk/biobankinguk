@@ -14,7 +14,7 @@ namespace Publications
         [JsonProperty("resultList")]
         public Results Results { get; set; }
 
-        public List<Publication> Publications
+        public List<PublicationDTO> Publications
         {
             get { return Results.Publications; }
         }
@@ -23,13 +23,13 @@ namespace Publications
     public class Results
     {
         [JsonProperty("result")]
-        public List<Publication> Publications { get; set; }
+        public List<PublicationDTO> Publications { get; set; }
     }
 
-    public class Publication
+    public class PublicationDTO
     {
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }

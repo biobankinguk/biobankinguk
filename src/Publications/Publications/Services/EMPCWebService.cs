@@ -26,14 +26,14 @@ namespace Publications
             };
         }
 
-        public async Task<Publication> GetPublicationById(int publicationId)
+        public async Task<PublicationDTO> GetPublicationById(int publicationId)
         {
             return (await Search($"{publicationId}")).Publications.FirstOrDefault();
         }
 
-        public async Task<List<Publication>> GetOrganisationPublications(string biobank)
+        public async Task<List<PublicationDTO>> GetOrganisationPublications(string biobank)
         {
-            List<Publication> publications = new List<Publication>();
+            List<PublicationDTO> publications = new List<PublicationDTO>();
             
             string query = $"ACK_FUND:\"{biobank}\"";
             string nextCursor = "*";

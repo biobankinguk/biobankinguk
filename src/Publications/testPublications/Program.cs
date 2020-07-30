@@ -23,7 +23,7 @@ namespace Publications
         public static async Task TestEMPCAsync()
         {
             EMPCWebService empcWebService = new EMPCWebService();
-            List<Publication> publications = await empcWebService.GetOrganisationPublications("CANDAS");
+            List<PublicationDTO> publications = await empcWebService.GetOrganisationPublications("CANDAS");
             Console.WriteLine(publications.Count);
         }
     }
