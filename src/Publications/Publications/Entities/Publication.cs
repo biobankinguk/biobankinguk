@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Publications.Models
+namespace Publications.Entities
 {
-    class Publication
-    {
-        public int Id { get; set; }
+    public class Publication
+    { 
+        [Key]
+        public int InternalId { get; set; }
+
+        public int PublicationId { get; set; }
+
+        public string Organisation { get; set; }
 
         public string Title { get; set; }
 
