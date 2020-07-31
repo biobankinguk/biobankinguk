@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Publications
 {
-     public class EMPCWebService : IEMPCService, IDisposable
+     public class EMPCWebService : IEPMCService, IDisposable
     {
 
         private readonly HttpClient _client;

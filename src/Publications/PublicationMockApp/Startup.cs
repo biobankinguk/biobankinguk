@@ -36,7 +36,7 @@ namespace PublicationsMockApp
 
             services.AddScoped<IPublicationService, PublicationService>();
             services.AddScoped<IBiobankService, BiobankWebService>();
-            services.AddScoped<IEMPCService, EMPCWebService>();
+            services.AddScoped<IEPMCService, EMPCWebService>();
 
             services.AddHostedService<FetchPublicationsService>();
 
