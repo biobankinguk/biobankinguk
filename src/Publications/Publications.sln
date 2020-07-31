@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Publications", "Publication
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testPublications", "testPublications\testPublications.csproj", "{E489E38B-3C1C-4039-A69B-30999D84196A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockWebApp", "MockWebApp\MockWebApp.csproj", "{B42B9ED2-1658-490B-83DE-1C19F8003158}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicationsMockApp", "MockWebApp\PublicationsMockApp.csproj", "{B42B9ED2-1658-490B-83DE-1C19F8003158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
