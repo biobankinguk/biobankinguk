@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Publications;
 using Publications.Services;
+using Publications.Services.Contracts;
 
 namespace PublicationsMockApp
 {
@@ -34,6 +35,8 @@ namespace PublicationsMockApp
             );
 
             services.AddScoped<IPublicationService, PublicationService>();
+            services.AddScoped<IBiobankService, BiobankWebService>();
+            services.AddScoped<IEMPCService, EMPCWebService>();
 
             services.AddHostedService<FetchPublicationsService>();
 

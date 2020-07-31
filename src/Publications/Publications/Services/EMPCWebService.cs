@@ -10,19 +10,21 @@ using System.Runtime.ExceptionServices;
 using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Linq;
+using Publications.Services.Contracts;
+using Microsoft.Extensions.Configuration;
 
 namespace Publications
 {
-     public class EMPCWebService : IDisposable
-     {
+     public class EMPCWebService : IEMPCService, IDisposable
+    {
 
         private readonly HttpClient _client;
         
-        public EMPCWebService()
+        public EMPCWebService(IConfiguration configuration)
         {
             _client = new HttpClient
             {
-                BaseAddress = new Uri("https://www.ebi.ac.uk/europepmc/")
+                BaseAddress = new Uri(configuration.GetConnectionString("EuropePMC"))
             };
         }
 

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Publications.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -6,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Publications.Services
 {
-    public class BiobankWebService : IDisposable
+    public class BiobankWebService : IBiobankService, IDisposable
     {
         private readonly HttpClient _client;
 
-        public BiobankWebService()
+        public BiobankWebService(IConfiguration configuration)
         {
             _client = new HttpClient
             {
-                BaseAddress = new Uri("https://biobankinguk-directory-test.azurewebsites.net/")
+                BaseAddress = new Uri(configuration.GetConnectionString("Directory"))
             };
         }
 

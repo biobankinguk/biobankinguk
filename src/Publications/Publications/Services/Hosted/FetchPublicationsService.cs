@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Publications;
 using Publications.Services;
+using Publications.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +31,8 @@ namespace Publications.Services
             {
                 // DI of required services
                 var publicationService = scope.ServiceProvider.GetRequiredService<IPublicationService>();
-                var biobankWebService = new BiobankWebService();
-                var epmcWebService = new EMPCWebService();
+                var biobankWebService = scope.ServiceProvider.GetRequiredService<IBiobankService>();
+                var epmcWebService = scope.ServiceProvider.GetRequiredService<IEMPCService>();
 
                 // Call directory for all active organisation
                 var biobanks = await biobankWebService.GetOrganisationNames();
