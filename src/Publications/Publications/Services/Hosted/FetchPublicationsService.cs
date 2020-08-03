@@ -32,7 +32,7 @@ namespace Publications.Services
                 // DI of required services
                 var publicationService = scope.ServiceProvider.GetRequiredService<IPublicationService>();
                 var biobankWebService = scope.ServiceProvider.GetRequiredService<IBiobankService>();
-                var epmcWebService = scope.ServiceProvider.GetRequiredService<IEMPCService>();
+                var epmcWebService = scope.ServiceProvider.GetRequiredService<IEPMCService>();
 
                 // Call directory for all active organisation
                 var biobanks = await biobankWebService.GetOrganisationNames();
