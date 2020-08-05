@@ -1,16 +1,10 @@
-using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Publications.Services;
 using Publications.Services.Contracts;
-using Publications;
-using Microsoft.Extensions.Configuration;
 
 namespace PublicationsAzureFunctions
 {
@@ -27,8 +21,11 @@ namespace PublicationsAzureFunctions
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
-            string biobank = "test";
+            //This string will be passed through the endpoint
+            string biobank = "CANDAS";
             var publications  = _epmc.GetOrganisationPublications(biobank);
+            
+
 
             return new OkObjectResult(publications);
         }
