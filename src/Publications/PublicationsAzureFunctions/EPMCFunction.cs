@@ -5,6 +5,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Publications.Services.Contracts;
+using System.Collections.Generic;
+using Publications.Services;
 
 namespace PublicationsAzureFunctions
 {
@@ -18,16 +20,16 @@ namespace PublicationsAzureFunctions
 
         [FunctionName("EPMCFunction")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetPublications/{biobank}")] 
+        HttpRequest req,
+            string biobank,
             ILogger log)
         {
-            //This string will be passed through the endpoint
-            string biobank = "CANDAS";
-            var publications  = _epmc.GetOrganisationPublications(biobank);
-            
+            //Consume API and load into DTO
+            Task<List<Publications.PublicationDTO>> publications = _epmc.GetOrganisationPublications(biobank);
 
-
-            return new OkObjectResult(publications);
+            //Trigger next function (Publications service) and pass DTO 
+            return new OkObjectResult($"Hello, {biobank}");
         }
     }
 }

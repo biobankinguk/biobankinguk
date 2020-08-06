@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Publications.Services.Contracts;
 using Publications;
+using Publications.Services;
 
 [assembly: FunctionsStartup(typeof(PublicationsAzureFunctions.Startup))]
 
@@ -16,8 +17,9 @@ namespace PublicationsAzureFunctions
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-
+            builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEPMCService, EMPCWebService>();
+            builder.Services.AddScoped<IPublicationService, PublicationService>();
 
         }
     }
