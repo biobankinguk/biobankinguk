@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200730094236_Inital.cs" />
+    <Compile Remove="Migrations\20200730094236_Inital.Designer.cs" />
+    <Compile Remove="Migrations\20200730094640_Inital.cs" />
+    <Compile Remove="Migrations\20200730094640_Inital.Designer.cs" />
+    <Compile Remove="Migrations\20200730095034_Inital.cs" />
+    <Compile Remove="Migrations\20200730095034_Inital.Designer.cs" />
+    <Compile Remove="Migrations\20200730095118_Inital.cs" />
+    <Compile Remove="Migrations\20200730095118_Inital.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>
