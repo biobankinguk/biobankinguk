@@ -24,7 +24,7 @@ namespace Publications
         {
             _client = new HttpClient
             {
-                BaseAddress = new Uri(configuration.GetConnectionString("EuropePMC"))
+                BaseAddress = new Uri(Environment.GetEnvironmentVariable("EuropePMC"))
             };
         }
 
