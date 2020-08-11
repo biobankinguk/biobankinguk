@@ -26,12 +26,13 @@ namespace PublicationsAzureFunctions
                 .Build();
             _configuration = config;
 
-            string SqlConnection = config["ConnectionStrings:Publications"];
+            var SqlConnection = Environment.GetEnvironmentVariable("sqldb_connection");
             builder.Services.AddDbContext<PublicationDbContext>(options =>
                 options.UseSqlServer(SqlConnection));
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEPMCService, EMPCWebService>();
             builder.Services.AddScoped<IPublicationService, PublicationService>();
+            builder.Services.AddScoped<IBiobankService, BiobankWebService>();
 
         }
 
