@@ -32,6 +32,7 @@ namespace PublicationsAzureFunctions
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEPMCService, EMPCWebService>();
             builder.Services.AddScoped<IPublicationService, PublicationService>();
+            builder.Services.AddScoped<IBiobankService, BiobankWebService>();
 
         }
 
