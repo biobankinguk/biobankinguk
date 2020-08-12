@@ -16,7 +16,7 @@ namespace PublicationsAzureFunctions
 
         public BatchFunction(FetchPublicationsService fetchPublicationsService)
         {
-            //_fetchPublicationService = fetchPublicationsService;
+            _fetchPublicationsService = fetchPublicationsService;
         }
 
         
@@ -28,10 +28,10 @@ namespace PublicationsAzureFunctions
 
             CancellationToken cancellationToken;
 
-            //fetchPublicationsService.StartAsync(cancellationToken);
+            _fetchPublicationsService.StartAsync(cancellationToken);
 
 
-            //fetchPublicationsService.StopAsync(cancellationToken);
+            _fetchPublicationsService.StopAsync(cancellationToken);
 
             
         }

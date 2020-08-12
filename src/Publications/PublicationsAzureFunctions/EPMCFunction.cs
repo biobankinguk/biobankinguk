@@ -28,16 +28,16 @@ namespace PublicationsAzureFunctions
             ILogger log)
         {
             log.LogInformation($"Fetching publications for {biobank}");
-            //Consume API and load into DTO
-            var publications = await _epmc.GetOrganisationPublications(biobank);
 
+            //Call GetOrganisationPublications method from service layer and load into DTO
+            var publications = await _epmc.GetOrganisationPublications(biobank);
+            
+            //Push DTO to Azure db
             await _publication.AddOrganisationPublications(biobank, publications);
 
-            log.LogInformation($"Fetched {publications.Count} for {biobank}");
+            log.LogInformation($"Fetched and stored {publications.Count} for {biobank}");
             
-            return new OkObjectResult($"Fetched {publications.Count} for {biobank}");
-
-    
+            return new OkObjectResult($"Fetched and stored {publications.Count} for {biobank}");
             
         }
     }

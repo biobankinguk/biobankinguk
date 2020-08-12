@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Text;
 using Publications.Services.Contracts;
@@ -21,15 +22,10 @@ namespace PublicationsAzureFunctions
         private IConfiguration _configuration;
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Environment.CurrentDirectory)
-                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .Build();
+            var config = builder.Services.BuildServiceProvider().GetService<IConfiguration>();
             _configuration = config;
 
-            //var SqlConnection = _configuration.GetConnectionString("sqldb_connection");
-            var SqlConnection = Environment.GetEnvironmentVariable("sqldb_connection");
+            var SqlConnection = _configuration.GetConnectionString("sqldb_connection");
             builder.Services.AddDbContext<PublicationDbContext>(options =>
                options.UseSqlServer(SqlConnection));
 
