@@ -12,15 +12,11 @@ namespace PublicationsAzureFunctions
 
     public class BatchFunction
     {
-        private readonly ILogger<FetchPublicationsService> _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IBiobankService _biobank;
+        private FetchPublicationsService _fetchPublicationsService;
 
-        public BatchFunction(ILogger<FetchPublicationsService> logger, IServiceScopeFactory scopeFactory, IBiobankService biobank)
+        public BatchFunction(FetchPublicationsService fetchPublicationsService)
         {
-            _logger = logger;
-            _scopeFactory = scopeFactory;
-            _biobank = biobank;
+            //_fetchPublicationService = fetchPublicationsService;
         }
 
         
@@ -30,18 +26,14 @@ namespace PublicationsAzureFunctions
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-
-            FetchPublicationsService fetchPublicationsService = new FetchPublicationsService(_logger, _scopeFactory);
             CancellationToken cancellationToken;
 
-            fetchPublicationsService.StartAsync(cancellationToken);
+            //fetchPublicationsService.StartAsync(cancellationToken);
 
 
-            fetchPublicationsService.StopAsync(cancellationToken);
+            //fetchPublicationsService.StopAsync(cancellationToken);
 
             
-
-
         }
     }
 }
