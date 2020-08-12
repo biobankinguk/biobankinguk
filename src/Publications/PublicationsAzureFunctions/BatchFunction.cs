@@ -6,6 +6,7 @@ using Publications.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Publications.Services.Contracts;
+using System.Threading.Tasks;
 
 namespace PublicationsAzureFunctions
 {
@@ -13,6 +14,7 @@ namespace PublicationsAzureFunctions
     public class BatchFunction
     {
         private FetchPublicationsService _fetchPublicationsService;
+        private readonly CancellationToken cancellationToken;
 
         public BatchFunction(FetchPublicationsService fetchPublicationsService)
         {
@@ -22,16 +24,15 @@ namespace PublicationsAzureFunctions
         
 
         [FunctionName("BatchFunction")]
-        public void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
+        public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-            CancellationToken cancellationToken;
+            //Pulls Biobanks from directory, gets publications from API and pushes to Azure DB
+            await _fetchPublicationsService.StartAsync(cancellationToken);
 
-            _fetchPublicationsService.StartAsync(cancellationToken);
-
-
-            _fetchPublicationsService.StopAsync(cancellationToken);
+            //Stop Async - Task Completed
+            await _fetchPublicationsService.StopAsync(cancellationToken);
 
             
         }
