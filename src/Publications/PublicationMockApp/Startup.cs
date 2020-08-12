@@ -34,6 +34,7 @@ namespace PublicationsMockApp
                 options.UseSqlServer(Configuration.GetConnectionString("Publications"))
             );
 
+
             services.AddScoped<IPublicationService, PublicationService>();
             services.AddScoped<IBiobankService, BiobankWebService>();
             services.AddScoped<IEPMCService, EMPCWebService>();
