@@ -16,7 +16,7 @@ namespace Publications.Services
         {
             _client = new HttpClient
             {
-                BaseAddress = new Uri(Environment.GetEnvironmentVariable("Directory"))
+                BaseAddress = new Uri(configuration.GetConnectionString("Directory"))
             };
         }
 
