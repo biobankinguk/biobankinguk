@@ -23,14 +23,14 @@ namespace PublicationsAzureFunctions
 
        
         [FunctionName("BatchFunction")]
+        //Configured to run every 24 hours
         public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-            //Pulls Biobanks from directory, gets publications from API and pushes to Azure DB
+            //Pulls Biobanks from directory (test), gets publications from API and pushes to Azure DB
             await _fetchPublicationsService.StartAsync(cancellationToken);
 
-            //Stop Async - Task Completed
             await _fetchPublicationsService.StopAsync(cancellationToken);
 
             log.LogInformation($"C# Timer trigger function executed successfully");
