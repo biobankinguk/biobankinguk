@@ -22,14 +22,13 @@ namespace PublicationsAzureFunctions
         private IConfiguration _configuration;
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            var config = builder.Services.BuildServiceProvider().GetService<IConfiguration>();
-            _configuration = config;
+            var config = builder.Services.BuildServiceProvider()
+                .GetService<IConfiguration>();
+                _configuration = config;
 
             var SqlConnection = _configuration.GetConnectionString("sqldb_connection");
             builder.Services.AddDbContext<PublicationDbContext>(options =>
                options.UseSqlServer(SqlConnection));
-
-
 
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEPMCService, EMPCWebService>();

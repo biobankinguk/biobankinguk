@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using Publications.Services.Contracts;
 using System.Collections.Generic;
 using Publications.Services;
+using Publications;
+using System.Linq;
 
 namespace PublicationsAzureFunctions
 {
@@ -15,6 +17,7 @@ namespace PublicationsAzureFunctions
         private readonly IEPMCService _epmc;
         private IPublicationService _publication;
         public EPMCFunction(IEPMCService empc, IPublicationService publication)
+
         {
             _epmc = empc;
             _publication = publication;
@@ -22,23 +25,32 @@ namespace PublicationsAzureFunctions
 
         [FunctionName("EPMCFunction")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GetPublications/{biobank}")] 
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GetPublications/{biobank}")]
         HttpRequest req,
             string biobank,
             ILogger log)
         {
             log.LogInformation($"Fetching publications for {biobank}");
-
             //Call GetOrganisationPublications method from service layer and load into DTO
-            var publications = await _epmc.GetOrganisationPublications(biobank);
-            
-            //Push DTO to Azure db
-            await _publication.AddOrganisationPublications(biobank, publications);
+            List<PublicationDTO> publications = await _epmc.GetOrganisationPublications(biobank);
 
-            log.LogInformation($"Fetched and stored {publications.Count} for {biobank}");
-            
-            return new OkObjectResult($"Fetched and stored {publications.Count} for {biobank}");
-            
+            //Check if any publications were pulled from API
+            if (publications?.Any() !=true)
+            {
+                log.LogInformation($"Publications for given biobank not found");
+                return new BadRequestResult();
+            }
+            else
+            {
+                //Push DTO to Azure db
+                await _publication.AddOrganisationPublications(biobank, publications);
+
+                log.LogInformation($"Fetched and stored {publications.Count} for {biobank}");
+
+                return new OkResult();
+            }
+
+
         }
     }
 }

@@ -21,8 +21,7 @@ namespace PublicationsAzureFunctions
             _fetchPublicationsService = fetchPublicationsService;
         }
 
-        
-
+       
         [FunctionName("BatchFunction")]
         public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
         {
@@ -34,7 +33,10 @@ namespace PublicationsAzureFunctions
             //Stop Async - Task Completed
             await _fetchPublicationsService.StopAsync(cancellationToken);
 
-            
+            log.LogInformation($"C# Timer trigger function executed successfully");
+
+
+
         }
     }
 }
