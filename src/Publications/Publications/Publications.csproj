@@ -13,10 +13,18 @@
     <Compile Remove="Migrations\20200730095034_Inital.Designer.cs" />
     <Compile Remove="Migrations\20200730095118_Inital.cs" />
     <Compile Remove="Migrations\20200730095118_Inital.Designer.cs" />
+    <Compile Remove="Migrations\20200811101136_testAzure.cs" />
+    <Compile Remove="Migrations\20200811101136_testAzure.Designer.cs" />
+    <Compile Remove="Migrations\20200811121721_testAzure.cs" />
+    <Compile Remove="Migrations\20200811121721_testAzure.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />

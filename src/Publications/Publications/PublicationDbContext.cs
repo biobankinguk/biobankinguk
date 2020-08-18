@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 using Publications.Entities;
 using System;
 using System.Collections.Generic;
@@ -30,3 +31,4 @@ namespace Publications
         }
     }
 }
+
