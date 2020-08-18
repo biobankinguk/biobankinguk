@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Publications.Entities;
 using System;
@@ -11,17 +12,23 @@ namespace Publications
 {
     public class PublicationDbContext : DbContext
     {
-        
-        public PublicationDbContext() : base()
-        { }
+        public PublicationDbContext() : base() { }
 
-        public PublicationDbContext(DbContextOptions<PublicationDbContext> options) : base(options)
-        { }
+        public PublicationDbContext(DbContextOptions<PublicationDbContext> options) : base(options) { }
 
         public DbSet<Publication> Publications { get; set; }
+    }
 
-       
+    // Ideally this shouldnt be in the class library
+    public class PublicationDbContextFactory : IDesignTimeDbContextFactory<PublicationDbContext>
+    {
+        public PublicationDbContext CreateDbContext(string[] args)
+        {
+            var options = new DbContextOptionsBuilder<PublicationDbContext>();
+            options.UseSqlServer(Environment.GetEnvironmentVariable("sqldb_connection"));
 
+            return new PublicationDbContext(options.Options);
+        }
     }
 }
 
