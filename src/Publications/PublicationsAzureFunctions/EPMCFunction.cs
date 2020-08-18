@@ -42,8 +42,6 @@ namespace PublicationsAzureFunctions
             }
             else
             {
-                //Push DTO to Azure db
-                await _publication.AddOrganisationPublications(biobank, publications);
 
                 log.LogInformation($"Fetched and stored {publications.Count} for {biobank}");
 
