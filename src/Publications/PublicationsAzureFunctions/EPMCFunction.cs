@@ -47,7 +47,7 @@ namespace PublicationsAzureFunctions
 
                 log.LogInformation($"Fetched and stored {publications.Count} for {biobank}");
 
-                return new OkResult();
+                return new OkObjectResult(publications);
             }
 
 

@@ -26,6 +26,8 @@ namespace PublicationsAzureFunctions
                 .GetService<IConfiguration>();
                 _configuration = config;
 
+
+
             var SqlConnection = _configuration.GetConnectionString("sqldb_connection");
             builder.Services.AddDbContext<PublicationDbContext>(options =>
                options.UseSqlServer(SqlConnection));
