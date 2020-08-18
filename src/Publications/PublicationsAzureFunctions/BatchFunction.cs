@@ -6,40 +6,35 @@ using Publications.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Publications.Services.Contracts;
+using System.Threading.Tasks;
 
 namespace PublicationsAzureFunctions
 {
 
     public class BatchFunction
     {
-        private readonly ILogger<FetchPublicationsService> _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IBiobankService _biobank;
+        private FetchPublicationsService _fetchPublicationsService;
+        private readonly CancellationToken cancellationToken;
 
-        public BatchFunction(ILogger<FetchPublicationsService> logger, IServiceScopeFactory scopeFactory, IBiobankService biobank)
+        public BatchFunction(FetchPublicationsService fetchPublicationsService)
         {
-            _logger = logger;
-            _scopeFactory = scopeFactory;
-            _biobank = biobank;
+            _fetchPublicationsService = fetchPublicationsService;
         }
 
-        
-
+       
         [FunctionName("BatchFunction")]
-        public void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
+        //Configured to run every 24 hours
+        public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
+            //Pulls Biobanks from directory (test), gets publications from API and pushes to Azure DB
+            await _fetchPublicationsService.StartAsync(cancellationToken);
 
-            FetchPublicationsService fetchPublicationsService = new FetchPublicationsService(_logger, _scopeFactory);
-            CancellationToken cancellationToken;
+            await _fetchPublicationsService.StopAsync(cancellationToken);
 
-            fetchPublicationsService.StartAsync(cancellationToken);
+            log.LogInformation($"C# Timer trigger function executed successfully");
 
-
-            fetchPublicationsService.StopAsync(cancellationToken);
-
-            
 
 
         }
