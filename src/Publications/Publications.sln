@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Publications", "Publications\Publications.csproj", "{19EEBCDD-7496-4422-9DBC-E166098BBBFD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicationsMockApp", "PublicationMockApp\PublicationsMockApp.csproj", "{519F8EB3-A818-42AF-991E-CBDFC9D5AA62}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicationsAzureFunctions", "PublicationsAzureFunctions\PublicationsAzureFunctions.csproj", "{2B31D82E-E7E1-4509-BA0B-1BF83412ABDE}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{19EEBCDD-7496-4422-9DBC-E166098BBBFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19EEBCDD-7496-4422-9DBC-E166098BBBFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19EEBCDD-7496-4422-9DBC-E166098BBBFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{519F8EB3-A818-42AF-991E-CBDFC9D5AA62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{519F8EB3-A818-42AF-991E-CBDFC9D5AA62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{519F8EB3-A818-42AF-991E-CBDFC9D5AA62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{519F8EB3-A818-42AF-991E-CBDFC9D5AA62}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B31D82E-E7E1-4509-BA0B-1BF83412ABDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B31D82E-E7E1-4509-BA0B-1BF83412ABDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B31D82E-E7E1-4509-BA0B-1BF83412ABDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
