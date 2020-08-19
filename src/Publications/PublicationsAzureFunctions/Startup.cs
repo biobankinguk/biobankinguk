@@ -33,7 +33,7 @@ namespace PublicationsAzureFunctions
                options.UseSqlServer(SqlConnection));
 
             builder.Services.AddHttpClient();
-            builder.Services.AddScoped<IEPMCService, EMPCWebService>();
+            builder.Services.AddScoped<IEpmcService, EpmcWebService>();
             builder.Services.AddScoped<IPublicationService, PublicationService>();
             builder.Services.AddScoped<IBiobankService, BiobankWebService>();
             builder.Services.AddTransient<FetchPublicationsService>();

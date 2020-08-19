@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Publications.Services.Contracts
 {
-    public interface IEPMCService
+    public interface IEpmcService
     {
-        Task<PublicationDTO> GetPublicationById(int publicationId);
+        Task<PublicationDto> GetPublicationById(int publicationId);
 
-        Task<List<PublicationDTO>> GetOrganisationPublications(string biobank);
+        Task<List<PublicationDto>> GetOrganisationPublications(string biobank);
     }
 }

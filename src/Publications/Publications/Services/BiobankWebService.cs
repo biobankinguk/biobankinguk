@@ -12,12 +12,10 @@ namespace Publications.Services
     {
         private readonly HttpClient _client;
 
-        public BiobankWebService(IConfiguration configuration)
+        public BiobankWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            _client = new HttpClient
-            {
-                BaseAddress = new Uri(configuration.GetConnectionString("Directory"))
-            };
+            _client = httpClientFactory.CreateClient();
+            _client.BaseAddress = new Uri(configuration.GetConnectionString("Directory"));
         }
 
         public async Task<List<string>> GetOrganisationNames()

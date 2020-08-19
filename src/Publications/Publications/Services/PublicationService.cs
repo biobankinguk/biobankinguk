@@ -21,9 +21,9 @@ namespace Publications.Services
             _ctx = ctx;
         }
 
-        public async Task AddOrganisationPublications(string organisationName, IEnumerable<PublicationDTO> publications)
+        public async Task AddOrganisationPublications(string organisationName, IEnumerable<PublicationDto> publications)
         {
-            var existingPublications = _ctx.Publications.Where(x => x.Organisation.Equals(organisationName));
+            var existingPublications = _ctx.Publications.Where(x => x.Organisation == organisationName);
 
             var fetchedPublications = publications.Select(x => new Publication()
             {
@@ -63,11 +63,11 @@ namespace Publications.Services
             await _ctx.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<PublicationDTO>> GetOrganisationPublications(string organisationName)
+        public async Task<IEnumerable<PublicationDto>> GetOrganisationPublications(string organisationName)
         {
             return await _ctx.Publications
                 .Where(x => x.Organisation.Equals(organisationName))
-                .Select(x => new PublicationDTO()
+                .Select(x => new PublicationDto()
                 {
                     Id = x.PublicationId,
                     Title = x.Title,

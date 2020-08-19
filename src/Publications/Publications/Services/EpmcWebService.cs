@@ -15,27 +15,25 @@ using Microsoft.Extensions.Configuration;
 
 namespace Publications
 {
-     public class EMPCWebService : IEPMCService, IDisposable
+     public class EpmcWebService : IEpmcService, IDisposable
     {
 
         private readonly HttpClient _client;
         
-        public EMPCWebService(IConfiguration configuration)
+        public EpmcWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            _client = new HttpClient
-            {
-                BaseAddress = new Uri(configuration.GetConnectionString("EuropePMC"))
-            };
+            _client = httpClientFactory.CreateClient();
+            _client.BaseAddress = new Uri(configuration.GetConnectionString("EuropePMC"));
         }
 
-        public async Task<PublicationDTO> GetPublicationById(int publicationId)
+        public async Task<PublicationDto> GetPublicationById(int publicationId)
         {
             return (await Search($"{publicationId}")).Publications.FirstOrDefault();
         }
 
-        public async Task<List<PublicationDTO>> GetOrganisationPublications(string biobank)
+        public async Task<List<PublicationDto>> GetOrganisationPublications(string biobank)
         {
-            List<PublicationDTO> publications = new List<PublicationDTO>();
+            var publications = new List<PublicationDto>();
             
             string query = $"ACK_FUND:\"{biobank}\"";
             string nextCursor = "*";
@@ -44,7 +42,7 @@ namespace Publications
             //API Pagination loop - will stop once current cursor and next cursor are equal (no more records)
             do
             {
-                EPMCSearchResult result = await Search(query, nextCursor);
+                var result = await Search(query, nextCursor);
 
                 // Collect publications from paged result
                 publications.AddRange(result.Publications);
@@ -58,7 +56,7 @@ namespace Publications
             return publications;
         }
 
-        private async Task<EPMCSearchResult> Search(string query, string cursorMark="*")
+        private async Task<EpmcSearchResult> Search(string query, string cursorMark="*")
         {
             // Parse query parameters
             var parameters = new Dictionary<string, string>()
@@ -74,7 +72,7 @@ namespace Publications
             string response = await _client.GetStringAsync(endpoint);
             
             // Parse JSON result
-            EPMCSearchResult result = JsonConvert.DeserializeObject<EPMCSearchResult>(response);
+            var result = JsonConvert.DeserializeObject<EpmcSearchResult>(response);
 
             return result;
         }

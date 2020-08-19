@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Publications
 {
-    public class EPMCSearchResult
+    public class EpmcSearchResult
     {
         [JsonProperty("nextCursorMark")]
         public string Cursor { get; set; }
@@ -14,24 +14,19 @@ namespace Publications
         [JsonProperty("resultList")]
         public Results Results { get; set; }
 
-        public List<PublicationDTO> Publications
-        {
-            get { return Results.Publications; }
-        }
+        public List<PublicationDto> Publications => Results.Publications;
     }
 
     public class Results
     {
         [JsonProperty("result")]
-        public List<PublicationDTO> Publications { get; set; }
+        public List<PublicationDto> Publications { get; set; }
     }
 
-    public class PublicationDTO
+    public class PublicationDto
     {
-        [JsonProperty("id")]
         public int Id { get; set; }
 
-        [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonProperty("authorString")]
@@ -43,7 +38,6 @@ namespace Publications
         [JsonProperty("pubYear")]
         public int Year { get; set; }
 
-        [JsonProperty("doi")]
         public string Doi { get; set; }
 
     }
