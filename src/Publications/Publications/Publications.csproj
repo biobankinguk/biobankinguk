@@ -5,25 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200730094236_Inital.cs" />
-    <Compile Remove="Migrations\20200730094236_Inital.Designer.cs" />
-    <Compile Remove="Migrations\20200730094640_Inital.cs" />
-    <Compile Remove="Migrations\20200730094640_Inital.Designer.cs" />
-    <Compile Remove="Migrations\20200730095034_Inital.cs" />
-    <Compile Remove="Migrations\20200730095034_Inital.Designer.cs" />
-    <Compile Remove="Migrations\20200730095118_Inital.cs" />
-    <Compile Remove="Migrations\20200730095118_Inital.Designer.cs" />
-    <Compile Remove="Migrations\20200811101136_testAzure.cs" />
-    <Compile Remove="Migrations\20200811101136_testAzure.Designer.cs" />
-    <Compile Remove="Migrations\20200811121721_testAzure.cs" />
-    <Compile Remove="Migrations\20200811121721_testAzure.Designer.cs" />
-    <Compile Remove="Migrations\20200814100414_testinggg.cs" />
-    <Compile Remove="Migrations\20200814100414_testinggg.Designer.cs" />
-    <Compile Remove="Migrations\20200817091834_testingParser.cs" />
-    <Compile Remove="Migrations\20200817091834_testingParser.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MatthiWare.CommandLineParser" Version="0.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6">
