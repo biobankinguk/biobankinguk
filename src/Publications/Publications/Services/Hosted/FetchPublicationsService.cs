@@ -15,38 +15,41 @@ namespace Publications.Services
 {
     public class FetchPublicationsService : IHostedService
     {
+        private readonly IPublicationService _publicationService;
+        private readonly IBiobankService _biobankWebService;
+        private readonly IEpmcService _epmcWebService;
 
         private readonly ILogger<FetchPublicationsService> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public FetchPublicationsService(ILogger<FetchPublicationsService> logger, IServiceScopeFactory scopeFactory)
+        public FetchPublicationsService(IPublicationService publicationService,
+            IBiobankService biobankWebService,
+            IEpmcService epmcWebService,
+            ILogger<FetchPublicationsService> logger, 
+            IServiceScopeFactory scopeFactory)
         {
+            _publicationService = publicationService;
+            _biobankWebService = biobankWebService;
+            _epmcWebService = epmcWebService;
+
             _logger = logger;
             _scopeFactory = scopeFactory;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            using (var scope = _scopeFactory.CreateScope())
+            // Call directory for all active organisation
+            var biobanks = await _biobankWebService.GetOrganisationNames();
+
+            _logger.LogInformation($"Fetching publications for {biobanks.Count()} organisations");
+
+            // Fetch and store all publications for each organisation
+            foreach (var biobank in biobanks)
             {
-                // DI of required services
-                var publicationService = scope.ServiceProvider.GetRequiredService<IPublicationService>();
-                var biobankWebService = scope.ServiceProvider.GetRequiredService<IBiobankService>();
-                var epmcWebService = scope.ServiceProvider.GetRequiredService<IEpmcService>();
+                var publications = await _epmcWebService.GetOrganisationPublications(biobank);
+                await _publicationService.AddOrganisationPublications(biobank, publications);
 
-                // Call directory for all active organisation
-                var biobanks = await biobankWebService.GetOrganisationNames();
-
-                _logger.LogInformation($"Fetching publications for {biobanks.Count()} organisations");
-
-                // Fetch and store all publications for each organisation
-                foreach (var biobank in biobanks)
-                {
-                    var publications = await epmcWebService.GetOrganisationPublications(biobank);
-                    await publicationService.AddOrganisationPublications(biobank, publications);
-
-                    _logger.LogInformation($"Fetched {publications.Count()} publications for {biobank}");
-                }
+                _logger.LogInformation($"Fetched {publications.Count()} publications for {biobank}");
             }
         }
 
