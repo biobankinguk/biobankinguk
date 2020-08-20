@@ -10,12 +10,13 @@ namespace Publications.Migrations
                 name: "Publications",
                 columns: table => new
                 {
-                    InternalId = table.Column<int>(nullable: false).Annotation("SqlServer:Identity", "1, 1"),
+                    InternalId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     PublicationId = table.Column<int>(nullable: false),
-                    Organisation = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
+                    Organisation = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
                     Authors = table.Column<string>(nullable: true),
-                    Journal = table.Column<string>(nullable: true),
+                    Journal = table.Column<string>(nullable: false),
                     Year = table.Column<int>(nullable: false),
                     DOI = table.Column<string>(nullable: true)
                 },
