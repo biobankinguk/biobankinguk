@@ -26,14 +26,14 @@ namespace Analytics.Services
         private readonly IGenericEFRepository<OrganisationAnalytic> _organisationAnalyticRepository;
         private readonly IGenericEFRepository<DirectoryAnalyticEvent> _directoryAnalyticEventRepository;
         private readonly IGenericEFRepository<DirectoryAnalyticMetric> _directoryAnalyticMetricRepository;
-
+        
         //fix hardcoded string, use relative path pecified in config or ENV? 
-        //also where to store api_key json file?
+        //also where to store api_key json file? 
         public GoogleAnalyticsReadService(IGenericEFRepository<OrganisationAnalytic> organisationAnalyticRepository,
                                           IGenericEFRepository<DirectoryAnalyticEvent> directoryAnalyticEventRepository,
                                           IGenericEFRepository<DirectoryAnalyticMetric> directoryAnalyticMetricRepository,
-                                          //IBiobankReadService biobankReadService,
-                                          string apikeyfile = "C:\\Users\\Shakirudeen\\source\\repos\\biobanks.directory\\Biobanks\\Services\\client_secret.json")
+                                          IBiobankReadService biobankReadService,
+                                          string apikeyfile = "C:\\Users\\Shakirudeen\\source\\repos\\biobankinguk\\src\\Analytics\\Analytics\\Services\\client_secret.json")
         {
             this.credentials = GoogleCredential.FromFile(apikeyfile)
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
@@ -47,7 +47,7 @@ namespace Analytics.Services
             this._organisationAnalyticRepository = organisationAnalyticRepository;
             this._directoryAnalyticEventRepository = directoryAnalyticEventRepository;
             this._directoryAnalyticMetricRepository = directoryAnalyticMetricRepository;
-            //this._biobankReadService = biobankReadService;
+            this._biobankReadService = biobankReadService;
         }
 
         #region GoogleAnalytics API - Data Download
