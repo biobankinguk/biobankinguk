@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Publications;
 
 namespace Publications.Migrations
 {
     [DbContext(typeof(PublicationDbContext))]
-    partial class PublicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200820085416_PublicationRequiredFields")]
+    partial class PublicationRequiredFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

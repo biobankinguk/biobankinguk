@@ -12,12 +12,15 @@ namespace Publications.Entities
 
         public int PublicationId { get; set; }
 
+        [Required]
         public string Organisation { get; set; }
 
+        [Required]
         public string Title { get; set; }
 
         public string Authors { get; set; }
 
+        [Required]
         public string Journal { get; set; }
 
         public int Year { get; set; }
