@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace AnalyticsAzureFunctions
 {
-    public static class Function1
+    public static class UpdateBiobankData
     {
-        [FunctionName("Function1")]
+        [FunctionName("UpdateBiobankData")]
         public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
