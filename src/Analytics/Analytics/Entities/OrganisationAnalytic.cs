@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Analytics.Entities
+namespace Analytics.Data.Entities
 {
     public class OrganisationAnalytic
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Analytics.Entities
+namespace Analytics.Data.Entities
 {
     public class DirectoryAnalyticEvent
     {

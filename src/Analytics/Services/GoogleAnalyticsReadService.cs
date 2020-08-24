@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-using Analytics.Repositories;
-using Analytics.Entities;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.AnalyticsReporting.v4;
 using Google.Apis.AnalyticsReporting.v4.Data;
-using System.Threading.Tasks;
 using System.Globalization;
-using System.Linq;
+using Analytics.Services.Dto;
+using Analytics.Services.Contracts;
+using Analytics.Data.Repositories;
+using Analytics.Data.Entities;
+using System.Threading;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace Analytics.Services
 {
     // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
-    public class GoogleAnalyticsReadService : IGoogleAnalyticsReadService
+    public class GoogleAnalyticsReadService : IGoogleAnalyticsReadService, IHostedService
     {
         private const string VIEW_ID = "117031909"; //should be specified in config or ENV?
         private readonly string DATE_FORMAT = "yyyy-MM-dd";
@@ -22,18 +27,21 @@ namespace Analytics.Services
 
         private readonly GoogleCredential credentials;
         private readonly AnalyticsReportingService analytics;
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly ILogger<GoogleAnalyticsReadService> _logger;
+        private readonly IBiobankWebService _biobankWebService;
         private readonly IGenericEFRepository<OrganisationAnalytic> _organisationAnalyticRepository;
         private readonly IGenericEFRepository<DirectoryAnalyticEvent> _directoryAnalyticEventRepository;
         private readonly IGenericEFRepository<DirectoryAnalyticMetric> _directoryAnalyticMetricRepository;
-        
+
         //fix hardcoded string, use relative path pecified in config or ENV? 
-        //also where to store api_key json file? 
+        //also where to store api_key json file?
         public GoogleAnalyticsReadService(IGenericEFRepository<OrganisationAnalytic> organisationAnalyticRepository,
                                           IGenericEFRepository<DirectoryAnalyticEvent> directoryAnalyticEventRepository,
                                           IGenericEFRepository<DirectoryAnalyticMetric> directoryAnalyticMetricRepository,
-                                          IBiobankReadService biobankReadService,
-                                          string apikeyfile = "C:\\Users\\Shakirudeen\\source\\repos\\biobankinguk\\src\\Analytics\\Analytics\\Services\\client_secret.json")
+                                          IBiobankWebService biobankWebService,
+                                          ILogger<GoogleAnalyticsReadService> logger,
+                                          string apikeyfile = "C:\\Users\\Shakirudeen\\source\\repos\\biobankinguk\\src\\Analytics\\Services\\client_secret.json")
+            
         {
             this.credentials = GoogleCredential.FromFile(apikeyfile)
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
@@ -47,7 +55,8 @@ namespace Analytics.Services
             this._organisationAnalyticRepository = organisationAnalyticRepository;
             this._directoryAnalyticEventRepository = directoryAnalyticEventRepository;
             this._directoryAnalyticMetricRepository = directoryAnalyticMetricRepository;
-            this._biobankReadService = biobankReadService;
+            this._biobankWebService = biobankWebService;
+            this._logger = logger;
         }
 
         #region GoogleAnalytics API - Data Download
@@ -245,11 +254,10 @@ namespace Analytics.Services
 
         public async Task DownloadBiobankDataById(string biobankId, IList<DateRange> dateRanges)
         {
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(biobankId);
             var metrics = GetBiobankMetrics();
             var dimensions = GetBiobankDimensions();
             var segments = GetNottLoughSegment();
-            var dimensionFilters = GetBiobankDimensionFilters(bb.OrganisationExternalId);
+            var dimensionFilters = GetBiobankDimensionFilters(biobankId);
             var reportRequest = ConstructRequest(metrics, dimensions, segments, dateRanges, dimensionFilters);
 
             var reportResponse = GetReports(reportRequest);
@@ -279,11 +287,11 @@ namespace Analytics.Services
             var dimensions = GetBiobankDimensions();
             var segments = GetNottLoughSegment();
 
-            var biobanks = await _biobankReadService.ListBiobanksAsync();
+            var biobanks = await _biobankWebService.GetOrganisationExternalIds();
 
-            foreach (Organisation bb in biobanks)
-            { //should be re-written to compile all requests into one list and run GetReports once
-                var dimensionFilters = GetBiobankDimensionFilters(bb.OrganisationExternalId);
+            foreach (var biobankId in biobanks)
+            { //replicated as in biobank.analytics python script but should be re-written to compile all requests into one list and run GetReports once
+                var dimensionFilters = GetBiobankDimensionFilters(biobankId);
                 var reportRequest = ConstructRequest(metrics, dimensions, segments, dateRanges, dimensionFilters);
 
                 var reportResponse = GetReports(reportRequest);
@@ -301,11 +309,11 @@ namespace Analytics.Services
                         Hostname = bbd.Dimensions[5],
                         City = bbd.Dimensions[6],
                         Counts = int.Parse(bbd.Metrics[0].Values[0]),
-                        OrganisationExternalId = bb.OrganisationExternalId
+                        OrganisationExternalId = biobankId
                     });
                 }
                 await _organisationAnalyticRepository.SaveChangesAsync();
-                //Thread.Sleep(3000); 
+                _logger.LogInformation($"Fetched analytics for data for {biobankId}");
             }
         }
 
@@ -359,6 +367,290 @@ namespace Analytics.Services
                 });
             }
             await _directoryAnalyticMetricRepository.SaveChangesAsync();
+            _logger.LogInformation($"Fetched event and metric data for analytics");
+        }
+
+        #endregion
+
+        public DateRange GetRelevantPeriod(int year, int endQuarter, int reportPeriod)
+        {
+            int monthsPerQuarter = 3;
+            int month = endQuarter * monthsPerQuarter;
+            int lastDayofQuarter = DateTime.DaysInMonth(year, month);
+
+            DateTime endDate = new DateTime(year, month, lastDayofQuarter);
+            //get start date by subtracting report period (specified in quarters) from end date
+            var startDate = endDate.AddMonths(-reportPeriod * monthsPerQuarter);
+
+            return new DateRange { StartDate = startDate.ToString(DATE_FORMAT), EndDate = endDate.ToString(DATE_FORMAT) };
+        }
+
+
+        public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData()
+            => (await _organisationAnalyticRepository.ListAsync());
+
+        public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData(DateRange dateRange)
+        {
+            var startDate = DateTime.Parse(dateRange.StartDate);
+            var endDate = DateTime.Parse(dateRange.EndDate);
+
+            return await _organisationAnalyticRepository.ListAsync(
+                false,
+                x => x.Date >= startDate &&
+                x.Date <= endDate);
+        }
+
+        public async Task<IEnumerable<DirectoryAnalyticEvent>> GetDirectoryEventData(DateRange dateRange)
+        {
+            var startDate = DateTime.Parse(dateRange.StartDate);
+            var endDate = DateTime.Parse(dateRange.EndDate);
+
+            return await _directoryAnalyticEventRepository.ListAsync(
+                false,
+                x => x.Date >= startDate &&
+                x.Date <= endDate);
+        }
+
+        public async Task<IEnumerable<DirectoryAnalyticMetric>> GetDirectoryMetricData(DateRange dateRange)
+        {
+            var startDate = DateTime.Parse(dateRange.StartDate);
+            var endDate = DateTime.Parse(dateRange.EndDate);
+
+            return await _directoryAnalyticMetricRepository.ListAsync(
+                false,
+                x => x.Date >= startDate &&
+                x.Date <= endDate);
+        }
+
+        public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId)
+            => (await _organisationAnalyticRepository.ListAsync(false, x => x.OrganisationExternalId == biobankId));
+
+        public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId, DateRange dateRange)
+        {
+            var startDate = DateTime.Parse(dateRange.StartDate);
+            var endDate = DateTime.Parse(dateRange.EndDate);
+
+            return await _organisationAnalyticRepository.ListAsync(
+                false,
+                x => x.OrganisationExternalId == biobankId &&
+                x.Date >= startDate &&
+                x.Date <= endDate);
+        }
+
+        public IEnumerable<OrganisationAnalytic> FilterByPagePath(IEnumerable<OrganisationAnalytic> biobankData, string path)
+            => biobankData.Where(x => x.PagePath.Contains(path));//.ToList();
+
+        public IEnumerable<OrganisationAnalytic> FilterByHost(IEnumerable<OrganisationAnalytic> biobankData)
+            => biobankData.Where(x => x.Hostname.Contains("Analytics.biobankinguk.org"));
+
+        public IEnumerable<DirectoryAnalyticEvent> FilterByHost(IEnumerable<DirectoryAnalyticEvent> eventData)
+            => eventData.Where(x => x.Hostname.Contains("Analytics.biobankinguk.org"));
+
+        public IEnumerable<DirectoryAnalyticEvent> FilterByEvent(IEnumerable<DirectoryAnalyticEvent> eventData, string strEvent)
+            => eventData.Where(x => x.EventAction == strEvent);
+
+        public string GetQuarter(DateTime date)
+            => date.Year + "Q" + ((date.Month + 2) / 3);
+
+
+        public IEnumerable<QuarterlySummary> GetSummary(IEnumerable<OrganisationAnalytic> biobankData)
+            => biobankData.GroupBy(
+                x => new { bb = x.OrganisationExternalId, q = GetQuarter(x.Date) },
+                x => x.Counts,
+                (key, group) => new QuarterlySummary
+                {
+                    Biobank = key.bb,
+                    Quarter = key.q,
+                    Count = group.Sum(),
+                });
+
+        public IEnumerable<QuarterlySummary> GetSummary(IEnumerable<DirectoryAnalyticEvent> eventData)
+            => eventData.GroupBy(
+                x => new { bb = x.Biobank, q = GetQuarter(x.Date) },
+                x => x.Counts,
+                (key, group) => new QuarterlySummary
+                {
+                    Biobank = key.bb,
+                    Quarter = key.q,
+                    Count = group.Sum(),
+                });
+
+        public IEnumerable<QuarterlySummary> GetRankings(IEnumerable<QuarterlySummary> summary)
+            => summary.GroupBy(
+                    x => x.Biobank,
+                    x => x.Count,
+                    (key, group) => new QuarterlySummary
+                    {
+                        Biobank = key,
+                        Quarter = "Total",
+                        Total = group.Sum()
+                    }).OrderByDescending(y => y.Total);
+
+        public (IList<string>, IList<QuarterlyCountsDTO>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary,
+                                        IEnumerable<QuarterlySummary> ranking, string biobankId, int numOfTopBiobanks)
+        {
+            //Get Top Biobanks
+            var getTopBiobanks = ranking.Take(numOfTopBiobanks);
+
+            //if biobank isnt in top biobanks, append to list
+            if (getTopBiobanks.Where(x => x.Biobank == biobankId).Count() == 0)
+            {
+                var bbRanking = ranking.Where(x => x.Biobank == biobankId);
+                if (bbRanking.Count() > 0)
+                    getTopBiobanks.Append(bbRanking.First());
+                else
+                    getTopBiobanks = getTopBiobanks.Append(new QuarterlySummary
+                    {
+                        Biobank = biobankId,
+                        Quarter = "Total",
+                        Total = 0,
+                        Count = 0
+                    });
+            }
+
+            // build table
+            List<QuarterlyCountsDTO> profileQuarters = new List<QuarterlyCountsDTO>();
+            var quarterLabels = summary.GroupBy(x => x.Quarter).OrderBy(x => x.Key).Select(x => x.Key).ToList();
+
+            foreach (var bb in getTopBiobanks) //loop through top few biobanks
+            {
+                List<int> qcount = new List<int>();
+                var quarterCount = summary.Where(x => x.Biobank == bb.Biobank)
+                    .OrderBy(y => y.Quarter).Select(z => new { z.Count, z.Quarter });
+
+                foreach (var ql in quarterLabels) //done using a loop to fill in '0's for quarters with no data
+                    qcount.Add(quarterCount.Where(x => x.Quarter == ql).Select(x => x.Count).FirstOrDefault());
+
+
+                profileQuarters.Add(new QuarterlyCountsDTO
+                {
+                    BiobankId = bb.Biobank,
+                    Total = bb.Total,
+                    QuarterCount = qcount
+                });
+            }
+
+            return (quarterLabels, profileQuarters);
+        }
+
+        public (IList<int>, IList<double>) GetQuarterlyAverages(IEnumerable<QuarterlySummary> summary, string biobankId)
+        {
+            List<double> bbAvg = new List<double>();
+            List<int> bbVal = new List<int>();
+
+            var bbCount = Convert.ToDouble(summary.GroupBy(x => x.Biobank).Select(x => x.Key).Count());
+
+            var quarterLabels = summary.GroupBy(x => x.Quarter).OrderBy(x => x.Key).Select(x => x.Key).ToList();
+            var quarterCount = summary.Where(x => x.Biobank == biobankId)
+                    .OrderBy(y => y.Quarter).Select(z => new { z.Quarter, z.Count });
+
+            foreach (var ql in quarterLabels)
+            {   //done using a loop to fill in '0's for quarters with no data
+                //Sum/count used insted of Average() for same reason
+                bbAvg.Add(summary.Where(x => x.Quarter == ql).Select(x => x.Count).DefaultIfEmpty().Sum() / bbCount);
+                bbVal.Add(quarterCount.Where(x => x.Quarter == ql).Select(x => x.Count).FirstOrDefault());
+            }
+
+            return (bbVal, bbAvg); //or maybe IList<(int,double)>?
+        }
+
+        public string GetViewRoute(string pagePath)
+        {
+            if (pagePath.Contains("/Search/Collection"))
+                return "Search Existing Samples Query";
+            else if (pagePath.Contains("/Search/Capabilities"))
+                return "Require Samples Collected Query";
+            else if (pagePath.Contains("/Profile/Biobank/"))
+                return "UKCRC-TDCC Biobanks A-Z";
+            else if (pagePath.Contains("/biobanks-a-z/"))
+                return "UKCRC-TDCC Biobanks A-Z";
+            else if (pagePath.Contains("/Profile/Network"))
+                return "Biobank Network Profile Pages";
+            else if ((pagePath.Contains("/Biobank/") && !pagePath.Contains("/Profile/Biobank/"))
+                    || pagePath.Contains("/ADAC/") || pagePath.Contains("/Account/") || pagePath.Contains("/Register/"))
+                return "Account & Backend Management";
+            else
+                return "Other";
+        }
+
+        public (IList<string>, IList<int>) GetPageRoutes(IEnumerable<OrganisationAnalytic> biobankData)
+        {
+            var query = biobankData.GroupBy(
+                x => GetViewRoute(x.PreviousPagePath),
+                x => x.Counts,
+                (key, group) => (key, group.Sum())).OrderByDescending(x => x.Item2).ToList();
+
+            return (query.Select(x => x.key).ToList(), query.Select(x => x.Item2).ToList());
+        }
+
+        public string GetSearchType(string pagePath)
+        {
+            if (pagePath.Contains("diagnosis="))
+                return "Diagnosis";
+            else if (pagePath.Contains("selectedFacets="))
+                return "Filters";
+            else
+                return "No specific search";
+        }
+
+        public string GetSearchTerm(string pagePath)
+        {
+            if (pagePath.Contains("diagnosis="))
+                return pagePath.Split(new[] { "diagnosis=" }, StringSplitOptions.None)[1]
+                    .Split('&').FirstOrDefault();
+            else if (pagePath.Contains("selectedFacets="))
+                return "Filter";
+            else
+                return "Other";
+        }
+
+        public string[] GetSearchFilters(string pagePath)
+        {
+            if (pagePath.Contains("selectedFacets="))
+                return pagePath.Split(new[] { "selectedFacets=" }, StringSplitOptions.None)[1]
+                    .Replace('"', ' ').Replace('[', ' ').Replace(']', ' ').Split(',');
+            else
+                return new[] { "" };
+        }
+
+        public (IList<string>, IList<int>) GetSearchBreakdown(IEnumerable<OrganisationAnalytic> biobankData, Func<string, string> getSearchFunc)
+        {
+            var query = biobankData.GroupBy(
+                x => getSearchFunc(x.PagePath),
+                x => x.Counts,
+                (key, group) => (key, group.Sum())).OrderByDescending(x => x.Item2).ToList();
+
+            return (query.Select(x => x.key).ToList(), query.Select(x => x.Item2).ToList());
+        }
+
+        public (List<string>, List<int>) GetSearchFilters(IEnumerable<OrganisationAnalytic> biobankData)
+        {
+            List<string> filters = new List<string>();
+            List<int> filterCount = new List<int>();
+
+            foreach (var bb in biobankData)
+            {
+                var fterms = GetSearchFilters(bb.PagePath);
+                foreach (var term in fterms)
+                {
+                    var sterm = term.Split('_').LastOrDefault().TrimStart(' ').TrimEnd(' ');
+                    if (sterm == "")
+                        continue;
+
+                    if (!filters.Contains(sterm))
+                    {
+
+                        filters.Add(sterm);
+                        filterCount.Add(1);
+                    }
+                    else
+                    {
+                        filterCount[filters.IndexOf(sterm)] += 1;
+                    }
+                }
+            }
+            return (filters, filterCount);
+
         }
 
         //typically performed quatertly. Should be hit by scheduler
@@ -369,7 +661,7 @@ namespace Analytics.Services
             var lastMetricEntry = await GetLatestEventEntry();
 
             //get most recent of all, assuming directory and biobank analytics data are always updated together
-            //or seperate update functions can be written for each and then updated from respective latest entry.
+            //consider using myTimer.ScheduleStatus.LastUpdated from Azure function
             var lastentry = new[] { lastBiobankEntry, lastEventEntry, lastMetricEntry }.Max();
 
             // If no previous analtytics record
@@ -393,20 +685,31 @@ namespace Analytics.Services
             }
         }
 
-        #endregion
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            // Call directory for all active organisation
+            var biobanks = await _biobankWebService.GetOrganisationNames();
+
+            _logger.LogInformation($"Fetching analytics for {biobanks.Count()} organisations");
+
+            // Fetch and store all publications for each organisation
+            await UpdateAnalyticsData();
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
         //#######################TEST FUNCTIONS####################################
 
         public async Task SeedTestAnalyticsData()
         {
 
-            //var dateRange = new[] { new DateRange { StartDate = "2020-06-25", EndDate = "2020-07-01" } }; //short test, small data
-            var dateRange = new[] { new DateRange { StartDate = "2018-06-30", EndDate = "2020-07-31" } }; //big data
+            var dateRange = new[] { new DateRange { StartDate = "2020-06-25", EndDate = "2020-07-01" } }; //short test, small data
+            //var dateRange = new[] { new DateRange { StartDate = "2018-06-30", EndDate = "2020-07-31" } }; //big data
             await DownloadAllBiobankData(dateRange);
             await DownloadDirectoryData(dateRange);
         }
 
-        public async Task RunTest(string biobankId)
+        public async Task RunTest()
             => await SeedTestAnalyticsData();
 
 
@@ -435,5 +738,9 @@ namespace Analytics.Services
             return response;
         }
 
+
+
+
+        
     }
 }

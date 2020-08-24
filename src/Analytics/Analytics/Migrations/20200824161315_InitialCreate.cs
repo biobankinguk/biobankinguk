@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Analytics.Migrations
+namespace Analytics.Data.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -71,20 +71,6 @@ namespace Analytics.Migrations
                 {
                     table.PrimaryKey("PK_OrganisationAnalytics", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "Organisations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    OrganisationExternalId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Organisations", x => x.Id);
-                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -97,9 +83,6 @@ namespace Analytics.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrganisationAnalytics");
-
-            migrationBuilder.DropTable(
-                name: "Organisations");
         }
     }
 }
