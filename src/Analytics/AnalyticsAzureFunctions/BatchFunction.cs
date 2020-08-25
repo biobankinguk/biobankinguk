@@ -23,8 +23,8 @@ namespace AnalyticsAzureFunctions
 
        
         [FunctionName("BatchFunction")]
-        //Configured to run every quarter (3 months)
-        public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
+        //Configured to run every quarter (At 00:00 on the 1st day in every 3rd month)
+        public async Task Run([TimerTrigger("0 0 0 1 */3 *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
