@@ -3,6 +3,7 @@ using Analytics.Services.Dto;
 using Google.Apis.AnalyticsReporting.v4.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Analytics.Services.Contracts
@@ -54,9 +55,8 @@ namespace Analytics.Services.Contracts
         (IList<string>, IList<QuarterlyCountsDTO>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary, IEnumerable<QuarterlySummary> ranking, string biobankId, int numOfTopBiobanks);
         string GetViewRoute(string pagePath);
         (string, IList<SegmentFilterClause>) NottLoughSegmentClause();
-        Task RunTest();
-        Task SeedTestAnalyticsData();
-        GetReportsResponse TestAPI();
+        Task StartAsync(CancellationToken cancellationToken);
+        Task StopAsync(CancellationToken cancellationToken);
         Task UpdateAnalyticsData();
     }
 }

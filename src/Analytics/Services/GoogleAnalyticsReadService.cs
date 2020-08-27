@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
+using System.Threading;
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.AnalyticsReporting.v4;
 using Google.Apis.AnalyticsReporting.v4.Data;
-using System.Globalization;
+
 using Analytics.Services.Dto;
 using Analytics.Services.Contracts;
 using Analytics.Data.Repositories;
 using Analytics.Data.Entities;
-using System.Threading;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 
 namespace Analytics.Services
 {
     // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
-    public class GoogleAnalyticsReadService : IGoogleAnalyticsReadService, IHostedService
+    public class GoogleAnalyticsReadService : IHostedService, IGoogleAnalyticsReadService
     {
-        private const string VIEW_ID = "117031909"; //should be specified in config or ENV?
+        private readonly string VIEW_ID;
         private readonly string DATE_FORMAT = "yyyy-MM-dd";
         private readonly string START_DATE = "2016-01-01"; //specified in DATE_FORMAT
 
@@ -33,17 +35,17 @@ namespace Analytics.Services
         private readonly IGenericEFRepository<DirectoryAnalyticEvent> _directoryAnalyticEventRepository;
         private readonly IGenericEFRepository<DirectoryAnalyticMetric> _directoryAnalyticMetricRepository;
 
-        //fix hardcoded string, use relative path pecified in config or ENV? 
-        //also where to store api_key json file?
         public GoogleAnalyticsReadService(IGenericEFRepository<OrganisationAnalytic> organisationAnalyticRepository,
                                           IGenericEFRepository<DirectoryAnalyticEvent> directoryAnalyticEventRepository,
                                           IGenericEFRepository<DirectoryAnalyticMetric> directoryAnalyticMetricRepository,
                                           IBiobankWebService biobankWebService,
-                                          ILogger<GoogleAnalyticsReadService> logger,
-                                          string apikeyfile = "C:\\Users\\Shakirudeen\\source\\repos\\biobankinguk\\src\\Analytics\\Services\\client_secret.json")
-            
+                                          ILogger<GoogleAnalyticsReadService> logger)
+
         {
-            this.credentials = GoogleCredential.FromFile(apikeyfile)
+            var apikey = Environment.GetEnvironmentVariable("analytics_apikey");
+            this.VIEW_ID = Environment.GetEnvironmentVariable("analytics_viewid");
+
+            this.credentials = GoogleCredential.FromJson(apikey)
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
 
             this.analytics = new AnalyticsReportingService(
@@ -231,7 +233,7 @@ namespace Analytics.Services
             return request.Execute();
         }
 
-        //or use function overloading to keep same name but pass in repository?
+        //or use function overloading or pass in type F<T>()?
         public async Task<DateTime> GetLatestBiobankEntry()
             => (await _organisationAnalyticRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTime.MinValue).Max();
 
@@ -290,7 +292,7 @@ namespace Analytics.Services
             var biobanks = await _biobankWebService.GetOrganisationExternalIds();
 
             foreach (var biobankId in biobanks)
-            { //replicated as in biobank.analytics python script but should be re-written to compile all requests into one list and run GetReports once
+            { //TODO: replicated as in biobank.analytics python script but should be re-written to compile all requests into one list and run GetReports once
                 var dimensionFilters = GetBiobankDimensionFilters(biobankId);
                 var reportRequest = ConstructRequest(metrics, dimensions, segments, dateRanges, dimensionFilters);
 
@@ -441,10 +443,10 @@ namespace Analytics.Services
             => biobankData.Where(x => x.PagePath.Contains(path));//.ToList();
 
         public IEnumerable<OrganisationAnalytic> FilterByHost(IEnumerable<OrganisationAnalytic> biobankData)
-            => biobankData.Where(x => x.Hostname.Contains("Analytics.biobankinguk.org"));
+            => biobankData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
 
         public IEnumerable<DirectoryAnalyticEvent> FilterByHost(IEnumerable<DirectoryAnalyticEvent> eventData)
-            => eventData.Where(x => x.Hostname.Contains("Analytics.biobankinguk.org"));
+            => eventData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
 
         public IEnumerable<DirectoryAnalyticEvent> FilterByEvent(IEnumerable<DirectoryAnalyticEvent> eventData, string strEvent)
             => eventData.Where(x => x.EventAction == strEvent);
@@ -692,55 +694,11 @@ namespace Analytics.Services
 
             _logger.LogInformation($"Fetching analytics for {biobanks.Count()} organisations");
 
-            // Fetch and store all publications for each organisation
+            // Fetch and store analytics data for each organisation
             await UpdateAnalyticsData();
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-        //#######################TEST FUNCTIONS####################################
-
-        public async Task SeedTestAnalyticsData()
-        {
-
-            var dateRange = new[] { new DateRange { StartDate = "2020-06-25", EndDate = "2020-07-01" } }; //short test, small data
-            //var dateRange = new[] { new DateRange { StartDate = "2018-06-30", EndDate = "2020-07-31" } }; //big data
-            await DownloadAllBiobankData(dateRange);
-            await DownloadDirectoryData(dateRange);
-        }
-
-        public async Task RunTest()
-            => await SeedTestAnalyticsData();
-
-
-        //Simple method to test Analytics reporting API
-        public GetReportsResponse TestAPI()
-        {
-            Console.WriteLine("Analytics API - Service Account");
-            Console.WriteLine("==========================");
-            GetReportsResponse response;
-
-            using (analytics)
-            {
-                var request = analytics.Reports.BatchGet(new GetReportsRequest
-                {
-                    ReportRequests = new[] {
-                        new ReportRequest{
-                            DateRanges = new[] { new DateRange{ StartDate = "2020-06-25", EndDate = "2020-07-01" }},
-                            Dimensions = new[] { new Dimension{ Name = "ga:date" }},
-                            Metrics = new[] { new Metric{ Expression = "ga:sessions", Alias = "Sessions"}},
-                            ViewId = "117031909"
-                        }
-                    }
-                });
-                response = request.Execute();
-            }
-            return response;
-        }
-
-
-
-
-        
     }
 }

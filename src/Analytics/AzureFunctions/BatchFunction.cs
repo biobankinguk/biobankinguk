@@ -13,10 +13,10 @@ namespace AnalyticsAzureFunctions
 
     public class BatchFunction
     {
-        private GoogleAnalyticsReadService _googleAnalyticsReadService;
+        private IGoogleAnalyticsReadService _googleAnalyticsReadService;
         private readonly CancellationToken cancellationToken;
 
-        public BatchFunction(GoogleAnalyticsReadService googleAnalyticsReadService)
+        public BatchFunction(IGoogleAnalyticsReadService googleAnalyticsReadService)
         {
             _googleAnalyticsReadService = googleAnalyticsReadService;
         }
@@ -24,7 +24,7 @@ namespace AnalyticsAzureFunctions
        
         [FunctionName("BatchFunction")]
         //Configured to run every quarter (At 00:00 on the 1st day in every 3rd month)
-        public async Task Run([TimerTrigger("0 0 0 1 */3 *", RunOnStartup = true)]TimerInfo myTimer, ILogger log) //remove runonstartup before deploying
+        public async Task Run([TimerTrigger("0 0 0 1 */3 *", RunOnStartup = false)]TimerInfo myTimer, ILogger log) //remove runonstartup before deploying
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 

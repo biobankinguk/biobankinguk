@@ -7,10 +7,9 @@ namespace Analytics.Services.Contracts
 {
     public interface IAnalyticsReportGenerator
     {
-        Task<BiobankAnalyticReportDTO> GetBiobankReport(string biobankId, int year, int quarter, int period);
+        Task<OrganisationAnalyticReportDTO> GetBiobankReport(string biobankId, int year, int quarter, int period);
         ContactRequestsDTO GetContactRequests(string biobankId, IEnumerable<DirectoryAnalyticEvent> eventData);
         ProfilePageViewsDTO GetProfilePageViews(string biobankId, IEnumerable<OrganisationAnalytic> biobankData);
         SearchActivityDTO GetSearchActivity(string biobankId, IEnumerable<OrganisationAnalytic> biobankData);
-        Task<BiobankAnalyticReportDTO> RunTest(string biobankId);
     }
 }

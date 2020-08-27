@@ -12,8 +12,6 @@ namespace Analytics.Data.Repositories
         private readonly AnalyticsDbContext _context;
         private readonly DbSet<TEntity> _dbSet;
 
-        private bool _isDisposed = false;
-
         public GenericEFRepository(AnalyticsDbContext context)
         {
             _context = context;

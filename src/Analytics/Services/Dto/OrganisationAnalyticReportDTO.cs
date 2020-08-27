@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace Analytics.Services.Dto
 {
-    public class BiobankAnalyticReportDTO
+    public class OrganisationAnalyticReportDTO
     {
-        public string Name { get; set; }
         public string ExternalId { get; set; }
-        public string Logo { get; set; }
         public int Year { get; set; }
         public int EndQuarter { get; set; }
         public int ReportPeriod { get; set; }
         public int NumOfTopBiobanks { get; set; }
-        public ProfileStatusDTO BiobankStatus { get; set; }
         public ProfilePageViewsDTO ProfilePageViews { get; set; }
         public SearchActivityDTO SearchActivity { get; set; }
         public ContactRequestsDTO ContactRequests { get; set; }

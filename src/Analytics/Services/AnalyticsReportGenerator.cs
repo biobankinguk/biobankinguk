@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Analytics.Services.Contracts;
 using System.Threading.Tasks;
 using Analytics.Services.Dto;
@@ -83,7 +82,7 @@ namespace Analytics.Services
             };
         }
 
-        public async Task<BiobankAnalyticReportDTO> GetBiobankReport(string biobankId, int year, int quarter, int period)
+        public async Task<OrganisationAnalyticReportDTO> GetBiobankReport(string biobankId, int year, int quarter, int period)
         {
             var reportRange = _googleAnalyticsReadService.GetRelevantPeriod(year, quarter, period);
             var biobankData = await _googleAnalyticsReadService.GetAllBiobankData(reportRange);
@@ -99,30 +98,18 @@ namespace Analytics.Services
             var contactRequests = GetContactRequests(biobankId, eventData);
 
 
-            return new BiobankAnalyticReportDTO
+            return new OrganisationAnalyticReportDTO
             {
-                //Name = bb.Name,
                 ExternalId = biobankId,
-                //Logo = bb.Logo,
                 Year = year,
                 EndQuarter = quarter,
                 ReportPeriod = period,
                 NumOfTopBiobanks = numOfTopBiobanks, //maybe get this from api call too
-                //BiobankStatus = profileStatus,
                 ProfilePageViews = pageViews,
                 SearchActivity = searchActivity,
                 ContactRequests = contactRequests,
                 Error = new ErrorStatusDTO { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
             };
         }
-
-        //Test report generation
-        public async Task<BiobankAnalyticReportDTO> RunTest(string biobankId)
-        {
-            //await _googleAnalyticsReadService.SeedTestAnalyticsData(); //seed/update table
-            //return await GetBiobankReport(biobankId, 2020, 3, 2); //short test, small data
-            return await GetBiobankReport(biobankId, 2020, 3, 10); //big data
-        }
-
     }
 }
