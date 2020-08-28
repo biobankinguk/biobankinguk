@@ -7,7 +7,9 @@ The publication service is utilised by the Directory to gain quick access to pot
 
 Due to the volume of articles hosted by EPMC, this aggregator hosts its own subset of article metadata, to then be queried by the Directory in real-time.
 
-![](./readme/project-diagram.png)
+<p align="center">
+  <img src="./readme/project-diagram.png" width="48%" />
+</p>
 
 Ultimately, the aggregator sites between the Directory and EPMC API - retrieving and caching relevant data.
 
@@ -35,37 +37,49 @@ It is recommended the Directory services are created within their own resource g
 ### Azure Function App
 Next we need create an Azure Function App. It needs to target a `.NET Core 3.1` stack. Name the function app to something sensible and ensure it is part of the created resource group.
 
-![](./readme/azure-create-functions-app.png)
+<p align="center">
+  <img src="./readme/azure-create-functions-app.png" width="48%" />
+</p>
 
 ### SQL Database
 The service also requires a SQL database to be created. It is highly recommended you use a Severless plan to minimise cost.
 
-![](./readme/azure-create-sql-database.png)
+<p align="center">
+  <img src="./readme/azure-create-sql-database.png" width="48%" />
+</p>
 
 ### Key Vault
 The service also uses Azure Key Vault to store and share database credentials. This creates a centralized store for the credentials and prevents them being stored in plain text.
 
-![](./readme/azure-create-key-vault.png)
+<p align="center">
+  <img src="./readme/azure-create-key-vault.png" width="60%" />
+</p>
 
 ### Final Environment
 
 With all the resources created, you should have a total of 6 resources for 3 services.
 
-![](./readme/azure-environment.png)
+<p align="center">
+  <img src="./readme/azure-environment.png" width="60%" />
+</p>
 
 ## Configuring Azure Resources
 
 ### Key Vault
 Key Vault works by authorizing apps and users access. To configure key vault correctly, you must authorize both DevOps `[GET, LIST]` and the Azure Function App `[GET]` with the respective secrets permissions.
 
-![](./readme/azure-key-vault-policy.png)
+<p align="center">
+  <img src="./readme/azure-key-vault-policy.png" width="75%" />
+</p>
 
 This can be configured under `Access Policy`.
 
 ### Azure Function App
 The function app uses App Settings to configure the URLs of the apis it relies upon. The App Settings can be updated within the Function App under `Settings > Configuration`.
 
-![](./readme/azure-function-settings.png)
+<p align="center">
+  <img src="./readme/azure-function-settings.png" width="60%" />
+</p>
 
 The Function App requires two URLs
 ```yml
@@ -89,7 +103,9 @@ Each resource name can be found via the Azure Portal.
 
 Further, a pipeline variable `azureSubscription` needs to be created in order to link the pipeline to the Azure subscription 
 
-![](./readme/devops-pipeline-variables.png)
+<p align="center">
+  <img src="./readme/devops-pipeline-variables.png" width="48%" />
+</p>
 
 At this point the pipeline should be ran to build and deploy the service to Azure.
 
