@@ -15,7 +15,7 @@ namespace Publications.Services
         public BiobankWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
-            _client.BaseAddress = new Uri(configuration.GetConnectionString("Directory"));
+            _client.BaseAddress = new Uri(configuration["DirectoryUrl"]);
         }
 
         public async Task<List<string>> GetOrganisationNames()

@@ -23,7 +23,7 @@ namespace Publications
         public EpmcWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
-            _client.BaseAddress = new Uri(configuration.GetConnectionString("EuropePMC"));
+            _client.BaseAddress = new Uri(configuration["EpmcApiUrl"]);
         }
 
         public async Task<PublicationDto> GetPublicationById(int publicationId)
