@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace PublicationsAzureFunctions
 {
-
     public class BatchFunction
     {
         private FetchPublicationsService _fetchPublicationsService;
@@ -21,9 +20,8 @@ namespace PublicationsAzureFunctions
             _fetchPublicationsService = fetchPublicationsService;
         }
 
-       
-        [FunctionName("BatchFunction")]
         //Configured to run every 24 hours
+        [FunctionName("BatchFunction")]
         public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
