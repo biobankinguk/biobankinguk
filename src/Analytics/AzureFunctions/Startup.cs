@@ -24,16 +24,16 @@ namespace Analytics.AnalyticsAzureFunctions
             var sqlConnection = _configuration.GetConnectionString("analyticsdb_connection");
 
             builder.Services.AddDbContext<AnalyticsDbContext>(options =>
-               options.UseSqlServer(sqlConnection));
+               options.UseSqlServer(sqlConnection, options => options.EnableRetryOnFailure()));
 
             //Depedency Injection
             builder.Services.AddHttpClient();
-            builder.Services.AddScoped<IBiobankWebService, BiobankWebService>();
-            builder.Services.AddScoped<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>();
             builder.Services.AddScoped<IAnalyticsReportGenerator, AnalyticsReportGenerator>();
-            builder.Services.AddScoped<IGenericEFRepository<OrganisationAnalytic>, GenericEFRepository<OrganisationAnalytic>>();
-            builder.Services.AddScoped<IGenericEFRepository<DirectoryAnalyticEvent>, GenericEFRepository<DirectoryAnalyticEvent>>();
-            builder.Services.AddScoped<IGenericEFRepository<DirectoryAnalyticMetric>, GenericEFRepository<DirectoryAnalyticMetric>>();
+            builder.Services.AddTransient<IBiobankWebService, BiobankWebService>();
+            builder.Services.AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>();
+            builder.Services.AddTransient<IGenericEFRepository<OrganisationAnalytic>, GenericEFRepository<OrganisationAnalytic>>();
+            builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticEvent>, GenericEFRepository<DirectoryAnalyticEvent>>();
+            builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticMetric>, GenericEFRepository<DirectoryAnalyticMetric>>();
 
         }
 

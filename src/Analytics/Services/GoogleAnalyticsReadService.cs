@@ -17,6 +17,8 @@ using Analytics.Data.Entities;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
 
 namespace Analytics.Services
 {
@@ -39,10 +41,11 @@ namespace Analytics.Services
                                           IGenericEFRepository<DirectoryAnalyticEvent> directoryAnalyticEventRepository,
                                           IGenericEFRepository<DirectoryAnalyticMetric> directoryAnalyticMetricRepository,
                                           IBiobankWebService biobankWebService,
-                                          ILogger<GoogleAnalyticsReadService> logger)
+                                          ILogger<GoogleAnalyticsReadService> logger,
+                                          IConfiguration configuration)
 
         {
-            var apikey = Environment.GetEnvironmentVariable("analytics_apikey");
+            var apikey   = Environment.GetEnvironmentVariable("analytics_apikey");
             this.VIEW_ID = Environment.GetEnvironmentVariable("analytics_viewid");
 
             this.credentials = GoogleCredential.FromJson(apikey)
