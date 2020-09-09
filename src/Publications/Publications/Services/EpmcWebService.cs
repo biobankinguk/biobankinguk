@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Publications
 {
-     public class EpmcWebService : IEpmcService, IDisposable
+     public class EpmcWebService : IEpmcService
     {
 
         private readonly HttpClient _client;
@@ -23,7 +23,7 @@ namespace Publications
         public EpmcWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
-            _client.BaseAddress = new Uri(configuration.GetConnectionString("EuropePMC"));
+            _client.BaseAddress = new Uri(configuration["EpmcApiUrl"]);
         }
 
         public async Task<PublicationDto> GetPublicationById(int publicationId)
@@ -77,9 +77,5 @@ namespace Publications
             return result;
         }
 
-        public void Dispose()
-        {
-            _client.Dispose();
-        }
     }
 }

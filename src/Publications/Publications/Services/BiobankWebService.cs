@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Publications.Services
 {
-    public class BiobankWebService : IBiobankService, IDisposable
+    public class BiobankWebService : IBiobankService
     {
         private readonly HttpClient _client;
 
         public BiobankWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
-            _client.BaseAddress = new Uri(configuration.GetConnectionString("Directory"));
+            _client.BaseAddress = new Uri(configuration["DirectoryUrl"]);
         }
 
         public async Task<List<string>> GetOrganisationNames()
@@ -26,9 +26,5 @@ namespace Publications.Services
             return result;
         }
 
-        public void Dispose()
-        {
-            _client.Dispose();
-        }
     }
 }
