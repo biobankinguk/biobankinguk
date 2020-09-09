@@ -7,7 +7,7 @@ namespace Analytics.Data.Entities
     public class OrganisationAnalytic
     {
         public int Id { get; set; }
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
         public string PagePath { get; set; }
         public string PreviousPagePath { get; set; }
         public string Segment { get; set; }

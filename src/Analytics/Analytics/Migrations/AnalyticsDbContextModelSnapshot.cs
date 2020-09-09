@@ -35,8 +35,8 @@ namespace Analytics.Data.Migrations
                     b.Property<int>("Counts")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("EventAction")
                         .HasColumnType("nvarchar(max)");
@@ -74,8 +74,8 @@ namespace Analytics.Data.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Hostname")
                         .HasColumnType("nvarchar(max)");
@@ -116,8 +116,8 @@ namespace Analytics.Data.Migrations
                     b.Property<int>("Counts")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Hostname")
                         .HasColumnType("nvarchar(max)");

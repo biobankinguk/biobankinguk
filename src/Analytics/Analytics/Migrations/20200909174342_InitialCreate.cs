@@ -13,7 +13,7 @@ namespace Analytics.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(nullable: false),
+                    Date = table.Column<DateTimeOffset>(nullable: false),
                     EventCategory = table.Column<string>(nullable: true),
                     EventAction = table.Column<string>(nullable: true),
                     Biobank = table.Column<string>(nullable: true),
@@ -34,7 +34,7 @@ namespace Analytics.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(nullable: false),
+                    Date = table.Column<DateTimeOffset>(nullable: false),
                     PagePath = table.Column<string>(nullable: true),
                     PagePathLevel1 = table.Column<string>(nullable: true),
                     Segment = table.Column<string>(nullable: true),
@@ -57,7 +57,7 @@ namespace Analytics.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(nullable: false),
+                    Date = table.Column<DateTimeOffset>(nullable: false),
                     PagePath = table.Column<string>(nullable: true),
                     PreviousPagePath = table.Column<string>(nullable: true),
                     Segment = table.Column<string>(nullable: true),

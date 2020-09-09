@@ -21,7 +21,7 @@ namespace Analytics.Data
                 var options = new DbContextOptionsBuilder<AnalyticsDbContext>();
 
                 // Connection string passed from environment variable as EF doesn't (yet) support supplying it as a CLI parameter
-                options.UseSqlServer(Environment.GetEnvironmentVariable("analyticsdb_connection"));
+                options.UseSqlServer(Environment.GetEnvironmentVariable("analyticsdb_connection"), options => options.EnableRetryOnFailure());
                 
                 return new AnalyticsDbContext(options.Options);
             }

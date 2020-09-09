@@ -237,24 +237,24 @@ namespace Analytics.Services
         }
 
         //or use function overloading or pass in type F<T>()?
-        public async Task<DateTime> GetLatestBiobankEntry()
-            => (await _organisationAnalyticRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTime.MinValue).Max();
+        public async Task<DateTimeOffset> GetLatestBiobankEntry()
+            => (await _organisationAnalyticRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
-        public async Task<DateTime> GetLatestEventEntry()
-            => (await _directoryAnalyticEventRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTime.MinValue).Max();
+        public async Task<DateTimeOffset> GetLatestEventEntry()
+            => (await _directoryAnalyticEventRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
-        public async Task<DateTime> GetLatestMetricEntry()
-            => (await _directoryAnalyticMetricRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTime.MinValue).Max();
+        public async Task<DateTimeOffset> GetLatestMetricEntry()
+            => (await _directoryAnalyticMetricRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
 
-        public DateTime ConvertToDateTime(string inputDateTime, string format)
+        public DateTimeOffset ConvertToDateTime(string inputDateTime, string format)
         {
-            var status = DateTime.TryParseExact(inputDateTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime outputDateTime);
+            var status = DateTimeOffset.TryParseExact(inputDateTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset outputDateTime);
 
             if (status)
                 return outputDateTime;
             else //outputDateTime is MinValue by default anyways, if statement only for good measures
-                return DateTime.MinValue;
+                return DateTimeOffset.MinValue;
         }
 
         public async Task DownloadBiobankDataById(string biobankId, IList<DateRange> dateRanges)
@@ -383,7 +383,7 @@ namespace Analytics.Services
             int month = endQuarter * monthsPerQuarter;
             int lastDayofQuarter = DateTime.DaysInMonth(year, month);
 
-            DateTime endDate = new DateTime(year, month, lastDayofQuarter);
+            DateTimeOffset endDate = new DateTimeOffset(year, month, lastDayofQuarter,0,0,0,TimeSpan.Zero);
             //get start date by subtracting report period (specified in quarters) from end date
             var startDate = endDate.AddMonths(-reportPeriod * monthsPerQuarter);
 
@@ -396,8 +396,8 @@ namespace Analytics.Services
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData(DateRange dateRange)
         {
-            var startDate = DateTime.Parse(dateRange.StartDate);
-            var endDate = DateTime.Parse(dateRange.EndDate);
+            var startDate = DateTimeOffset.Parse(dateRange.StartDate);
+            var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
             return await _organisationAnalyticRepository.ListAsync(
                 false,
@@ -407,8 +407,8 @@ namespace Analytics.Services
 
         public async Task<IEnumerable<DirectoryAnalyticEvent>> GetDirectoryEventData(DateRange dateRange)
         {
-            var startDate = DateTime.Parse(dateRange.StartDate);
-            var endDate = DateTime.Parse(dateRange.EndDate);
+            var startDate = DateTimeOffset.Parse(dateRange.StartDate);
+            var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
             return await _directoryAnalyticEventRepository.ListAsync(
                 false,
@@ -418,8 +418,8 @@ namespace Analytics.Services
 
         public async Task<IEnumerable<DirectoryAnalyticMetric>> GetDirectoryMetricData(DateRange dateRange)
         {
-            var startDate = DateTime.Parse(dateRange.StartDate);
-            var endDate = DateTime.Parse(dateRange.EndDate);
+            var startDate = DateTimeOffset.Parse(dateRange.StartDate);
+            var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
             return await _directoryAnalyticMetricRepository.ListAsync(
                 false,
@@ -432,8 +432,8 @@ namespace Analytics.Services
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId, DateRange dateRange)
         {
-            var startDate = DateTime.Parse(dateRange.StartDate);
-            var endDate = DateTime.Parse(dateRange.EndDate);
+            var startDate = DateTimeOffset.Parse(dateRange.StartDate);
+            var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
             return await _organisationAnalyticRepository.ListAsync(
                 false,
@@ -454,7 +454,7 @@ namespace Analytics.Services
         public IEnumerable<DirectoryAnalyticEvent> FilterByEvent(IEnumerable<DirectoryAnalyticEvent> eventData, string strEvent)
             => eventData.Where(x => x.EventAction == strEvent);
 
-        public string GetQuarter(DateTime date)
+        public string GetQuarter(DateTimeOffset date)
             => date.Year + "Q" + ((date.Month + 2) / 3);
 
 
@@ -670,16 +670,16 @@ namespace Analytics.Services
             var lastentry = new[] { lastBiobankEntry, lastEventEntry, lastMetricEntry }.Max();
 
             // If no previous analtytics record
-            if (lastentry == DateTime.MinValue)
+            if (lastentry == DateTimeOffset.MinValue)
             {
-                var dateRange = new[] { new DateRange { StartDate = START_DATE, EndDate = DateTime.Now.ToString(DATE_FORMAT) } };
+                var dateRange = new[] { new DateRange { StartDate = START_DATE, EndDate = DateTimeOffset.Now.ToString(DATE_FORMAT) } };
                 await DownloadAllBiobankData(dateRange);
                 await DownloadDirectoryData(dateRange);
             }
             // If last entry is in the past
-            else if (lastentry > DateTime.MinValue && lastentry < DateTime.Now)
+            else if (lastentry > DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
             {
-                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(DATE_FORMAT), EndDate = DateTime.Now.ToString(DATE_FORMAT) } };
+                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(DATE_FORMAT), EndDate = DateTimeOffset.Now.ToString(DATE_FORMAT) } };
                 await DownloadAllBiobankData(dateRange);
                 await DownloadDirectoryData(dateRange);
             }

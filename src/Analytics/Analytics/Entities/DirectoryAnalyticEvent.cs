@@ -9,7 +9,7 @@ namespace Analytics.Data.Entities
     public class DirectoryAnalyticEvent
     {
         public int Id { get; set; }
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
         public string EventCategory { get; set; }
         public string EventAction { get; set; }
         public string Biobank { get; set; } 

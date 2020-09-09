@@ -15,7 +15,7 @@ namespace Analytics.Services.Contracts
         IList<DimensionFilterClause> ConstructDimensionFilter(IList<DimensionFilter> filters, string filterOperator = "AND");
         IList<ReportRequest> ConstructRequest(IList<Metric> metrics, IList<Dimension> dimensions, IList<Segment> segments, IList<DateRange> dateRanges, IList<DimensionFilterClause> dimensionfilterclauses = null, int pagesize = 100000);
         IList<Segment> ConstructSegment(string name, IList<SegmentFilterClause> segmentFilterClauses);
-        DateTime ConvertToDateTime(string inputDateTime, string format);
+        DateTimeOffset ConvertToDateTime(string inputDateTime, string format);
         Task DownloadAllBiobankData(IList<DateRange> dateRanges);
         Task DownloadBiobankDataById(string biobankId, IList<DateRange> dateRanges);
         Task DownloadDirectoryData(IList<DateRange> dateRanges);
@@ -36,12 +36,12 @@ namespace Analytics.Services.Contracts
         Task<IEnumerable<DirectoryAnalyticMetric>> GetDirectoryMetricData(DateRange dateRange);
         IList<Dimension> GetDirectoryMetricDimensions();
         IList<Metric> GetDirectoryMetricMetrics();
-        Task<DateTime> GetLatestBiobankEntry();
-        Task<DateTime> GetLatestEventEntry();
-        Task<DateTime> GetLatestMetricEntry();
+        Task<DateTimeOffset> GetLatestBiobankEntry();
+        Task<DateTimeOffset> GetLatestEventEntry();
+        Task<DateTimeOffset> GetLatestMetricEntry();
         IList<Segment> GetNottLoughSegment();
         (IList<string>, IList<int>) GetPageRoutes(IEnumerable<OrganisationAnalytic> biobankData);
-        string GetQuarter(DateTime date);
+        string GetQuarter(DateTimeOffset date);
         (IList<int>, IList<double>) GetQuarterlyAverages(IEnumerable<QuarterlySummary> summary, string biobankId);
         IEnumerable<QuarterlySummary> GetRankings(IEnumerable<QuarterlySummary> summary);
         DateRange GetRelevantPeriod(int year, int endQuarter, int reportPeriod);

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Analytics.Data.Migrations
 {
     [DbContext(typeof(AnalyticsDbContext))]
-    [Migration("20200824161315_InitialCreate")]
+    [Migration("20200909174342_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,8 +37,8 @@ namespace Analytics.Data.Migrations
                     b.Property<int>("Counts")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("EventAction")
                         .HasColumnType("nvarchar(max)");
@@ -76,8 +76,8 @@ namespace Analytics.Data.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Hostname")
                         .HasColumnType("nvarchar(max)");
@@ -118,8 +118,8 @@ namespace Analytics.Data.Migrations
                     b.Property<int>("Counts")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Hostname")
                         .HasColumnType("nvarchar(max)");
