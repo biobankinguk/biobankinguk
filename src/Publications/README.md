@@ -66,6 +66,8 @@ With all the resources created, you should have a total of 6 resources for 3 ser
 ## Configuring Azure Resources
 
 ### Key Vault
+The Key Vault is used to store the database credentials. These need to be added as Vault `secrets` via the Azure portal with the keys `sqldb-username` and `sqldb-password`.
+
 Key Vault works by authorizing apps and users access. To configure key vault correctly, you must authorize both DevOps `[GET, LIST]` and the Azure Function App `[GET]` with the respective secrets permissions.
 
 <p align="center">
