@@ -17,9 +17,8 @@ namespace Analytics.AnalyticsAzureFunctions
         private IConfiguration _configuration;
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            var config = builder.Services.BuildServiceProvider()
+            _configuration = builder.Services.BuildServiceProvider()
                 .GetService<IConfiguration>();
-                _configuration = config;
 
             var sqlConnection = _configuration.GetConnectionString("analyticsdb_connection");
 

@@ -3,12 +3,13 @@ using Analytics.Services.Dto;
 using Google.Apis.AnalyticsReporting.v4.Data;
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using Analytics.Services.Helpers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Analytics.Services.Contracts
 {
-    public interface IGoogleAnalyticsReadService
+    public interface IGoogleAnalyticsReadService : IHostedService
     {
         IList<DimensionFilter> BiobankDimensionFilter(IList<string> biobankIDs);
         IList<DimensionFilterClause> ConstructDimensionFilter(IList<DimensionFilter> filters, string filterOperator = "AND");
@@ -52,11 +53,9 @@ namespace Analytics.Services.Contracts
         string GetSearchType(string pagePath);
         IEnumerable<QuarterlySummary> GetSummary(IEnumerable<DirectoryAnalyticEvent> eventData);
         IEnumerable<QuarterlySummary> GetSummary(IEnumerable<OrganisationAnalytic> biobankData);
-        (IList<string>, IList<QuarterlyCountsDTO>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary, IEnumerable<QuarterlySummary> ranking, string biobankId, int numOfTopBiobanks);
+        (IList<string>, IList<QuarterlyCountsDto>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary, IEnumerable<QuarterlySummary> ranking, string biobankId, int numOfTopBiobanks);
         string GetViewRoute(string pagePath);
         (string, IList<SegmentFilterClause>) NottLoughSegmentClause();
-        Task StartAsync(CancellationToken cancellationToken);
-        Task StopAsync(CancellationToken cancellationToken);
         Task UpdateAnalyticsData();
     }
 }

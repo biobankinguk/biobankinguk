@@ -8,7 +8,7 @@ namespace Analytics.Services
 {
     public class AnalyticsReportGenerator : IAnalyticsReportGenerator
     {
-        private readonly int numOfTopBiobanks = 10;
+        private const int numOfTopBiobanks = 10;
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
         public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService)
@@ -16,7 +16,7 @@ namespace Analytics.Services
             _googleAnalyticsReadService = googleAnalyticsReadService;
         }
 
-        public ProfilePageViewsDTO GetProfilePageViews(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
         {
             var profileData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Profile/");
             var summary = _googleAnalyticsReadService.GetSummary(profileData);
@@ -25,7 +25,7 @@ namespace Analytics.Services
             (var viewsPerQuarter, var viewsAvgs) = _googleAnalyticsReadService.GetQuarterlyAverages(summary, biobankId);
             (var pageRoutes, var routeCount) = _googleAnalyticsReadService.GetPageRoutes(profileData.Where(x => x.OrganisationExternalId == biobankId));
 
-            return new ProfilePageViewsDTO
+            return new ProfilePageViewsDto
             {
                 QuarterLabels = quarterLabels,
                 ProfileQuarters = topPageViews,
@@ -36,7 +36,7 @@ namespace Analytics.Services
             };
         }
 
-        public SearchActivityDTO GetSearchActivity(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        public SearchActivityDto GetSearchActivity(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
         {
             var searchData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Search/");
             var bbSearchData = searchData.Where(x => x.OrganisationExternalId == biobankId);
@@ -50,7 +50,7 @@ namespace Analytics.Services
                                                _googleAnalyticsReadService.GetSearchType(x.PagePath) == "Diagnosis"), _googleAnalyticsReadService.GetSearchTerm);
             (var searchFilterLabels, var searchFilterCount) = _googleAnalyticsReadService.GetSearchFilters(bbSearchData);
 
-            return new SearchActivityDTO
+            return new SearchActivityDto
             {
                 QuarterLabels = quarterLabels,
                 SearchQuarters = topSearches,
@@ -65,7 +65,7 @@ namespace Analytics.Services
             };
         }
 
-        public ContactRequestsDTO GetContactRequests(string biobankId, IEnumerable<Data.Entities.DirectoryAnalyticEvent> eventData)
+        public ContactRequestsDto GetContactRequests(string biobankId, IEnumerable<Data.Entities.DirectoryAnalyticEvent> eventData)
         {
             var contactData = _googleAnalyticsReadService.FilterByEvent(eventData, "Add Contact to List");
             var summary = _googleAnalyticsReadService.GetSummary(contactData);
@@ -73,7 +73,7 @@ namespace Analytics.Services
             (var quarterLabels, var topContactRequests) = _googleAnalyticsReadService.GetTopBiobanks(summary, ranking, biobankId, numOfTopBiobanks);
             (var requestsPerQuarter, var requestsAvgs) = _googleAnalyticsReadService.GetQuarterlyAverages(summary, biobankId);
 
-            return new ContactRequestsDTO
+            return new ContactRequestsDto
             {
                 QuarterLabels = quarterLabels,
                 ContactQuarters = topContactRequests,
@@ -82,7 +82,7 @@ namespace Analytics.Services
             };
         }
 
-        public async Task<OrganisationAnalyticReportDTO> GetBiobankReport(string biobankId, int year, int quarter, int period)
+        public async Task<OrganisationAnalyticReportDto> GetBiobankReport(string biobankId, int year, int quarter, int period)
         {
             var reportRange = _googleAnalyticsReadService.GetRelevantPeriod(year, quarter, period);
             var biobankData = await _googleAnalyticsReadService.GetAllBiobankData(reportRange);
@@ -98,7 +98,7 @@ namespace Analytics.Services
             var contactRequests = GetContactRequests(biobankId, eventData);
 
 
-            return new OrganisationAnalyticReportDTO
+            return new OrganisationAnalyticReportDto
             {
                 ExternalId = biobankId,
                 Year = year,
@@ -108,7 +108,7 @@ namespace Analytics.Services
                 ProfilePageViews = pageViews,
                 SearchActivity = searchActivity,
                 ContactRequests = contactRequests,
-                Error = new ErrorStatusDTO { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
+                Error = new ErrorStatusDto { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
             };
         }
     }

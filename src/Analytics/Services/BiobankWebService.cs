@@ -8,14 +8,14 @@ using Analytics.Services.Contracts;
 
 namespace Analytics.Services
 {
-    public class BiobankWebService : IDisposable, IBiobankWebService
+    public class BiobankWebService : IBiobankWebService
     {
         private readonly HttpClient _client;
 
         public BiobankWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
-            _client.BaseAddress = new Uri(configuration.GetConnectionString("Directory"));
+            _client.BaseAddress = new Uri(configuration["DirectoryUrl"]);
 
         }
 
@@ -33,11 +33,6 @@ namespace Analytics.Services
             var result = JsonConvert.DeserializeObject<List<string>>(response);
 
             return result;
-        }
-
-        public void Dispose()
-        {
-            _client.Dispose();
         }
     }
 }

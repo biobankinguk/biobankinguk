@@ -18,7 +18,7 @@ using Analytics.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using System.Configuration;
+using Analytics.Services.Helpers;
 
 namespace Analytics.Services
 {
@@ -491,7 +491,7 @@ namespace Analytics.Services
                         Total = group.Sum()
                     }).OrderByDescending(y => y.Total);
 
-        public (IList<string>, IList<QuarterlyCountsDTO>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary,
+        public (IList<string>, IList<QuarterlyCountsDto>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary,
                                         IEnumerable<QuarterlySummary> ranking, string biobankId, int numOfTopBiobanks)
         {
             //Get Top Biobanks
@@ -514,7 +514,7 @@ namespace Analytics.Services
             }
 
             // build table
-            List<QuarterlyCountsDTO> profileQuarters = new List<QuarterlyCountsDTO>();
+            List<QuarterlyCountsDto> profileQuarters = new List<QuarterlyCountsDto>();
             var quarterLabels = summary.GroupBy(x => x.Quarter).OrderBy(x => x.Key).Select(x => x.Key).ToList();
 
             foreach (var bb in getTopBiobanks) //loop through top few biobanks
@@ -527,7 +527,7 @@ namespace Analytics.Services
                     qcount.Add(quarterCount.Where(x => x.Quarter == ql).Select(x => x.Count).FirstOrDefault());
 
 
-                profileQuarters.Add(new QuarterlyCountsDTO
+                profileQuarters.Add(new QuarterlyCountsDto
                 {
                     BiobankId = bb.Biobank,
                     Total = bb.Total,

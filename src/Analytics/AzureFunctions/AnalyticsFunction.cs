@@ -5,8 +5,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Analytics.Services.Contracts;
-using Analytics.Services.Dto;
-using System.Linq;
 
 namespace Analytics.AnalyticsAzureFunctions
 {
@@ -31,7 +29,7 @@ namespace Analytics.AnalyticsAzureFunctions
             log.LogInformation($"Fetching publications for {biobankId}");
 
             //Call GetBiobankReport method from service layer and load into DTO
-            OrganisationAnalyticReportDTO report = await _analyticsReportGenerator.GetBiobankReport(biobankId,year,endQuarter,reportPeriod);
+            var report = await _analyticsReportGenerator.GetBiobankReport(biobankId,year,endQuarter,reportPeriod);
 
             log.LogInformation($"Organisation report generated");
             return new OkObjectResult(report);
