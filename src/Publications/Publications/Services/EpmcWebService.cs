@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Publications
 {
-     public class EpmcWebService : IEpmcService, IDisposable
+     public class EpmcWebService : IEpmcService
     {
 
         private readonly HttpClient _client;
@@ -77,9 +77,5 @@ namespace Publications
             return result;
         }
 
-        public void Dispose()
-        {
-            _client.Dispose();
-        }
     }
 }

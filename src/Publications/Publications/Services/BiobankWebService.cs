@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Publications.Services
 {
-    public class BiobankWebService : IBiobankService, IDisposable
+    public class BiobankWebService : IBiobankService
     {
         private readonly HttpClient _client;
 
@@ -26,9 +26,5 @@ namespace Publications.Services
             return result;
         }
 
-        public void Dispose()
-        {
-            _client.Dispose();
-        }
     }
 }
