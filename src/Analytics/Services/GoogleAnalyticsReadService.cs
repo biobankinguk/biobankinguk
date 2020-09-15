@@ -45,8 +45,8 @@ namespace Analytics.Services
                                           IConfiguration configuration)
 
         {
-            var apikey   = Environment.GetEnvironmentVariable("analytics_apikey");
-            this.VIEW_ID = Environment.GetEnvironmentVariable("analytics_viewid");
+            var apikey   = Environment.GetEnvironmentVariable("analytics-apikey");
+            this.VIEW_ID = Environment.GetEnvironmentVariable("analytics-viewid");
 
             this.credentials = GoogleCredential.FromJson(apikey)
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
