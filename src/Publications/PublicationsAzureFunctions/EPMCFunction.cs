@@ -14,13 +14,11 @@ namespace PublicationsAzureFunctions
 {
     public class EpmcFunction
     {
-        private readonly IEpmcService _epmc;
-        private IPublicationService _publication;
+        private IPublicationService _publicationService;
 
-        public EpmcFunction(IEpmcService epmc, IPublicationService publication)
+        public EpmcFunction(IPublicationService publicationService)
         {
-            _epmc = epmc;
-            _publication = publication;
+            _publicationService = publicationService;
         }
 
         [FunctionName("EPMCFunction")]
@@ -32,7 +30,7 @@ namespace PublicationsAzureFunctions
             log.LogInformation($"Fetching publications for {biobank}");
 
             //Call GetOrganisationPublications method from service layer and load into DTO
-            List<PublicationDto> publications = await _epmc.GetOrganisationPublications(biobank);
+            IEnumerable<PublicationDto> publications = await _publicationService.GetOrganisationPublications(biobank);
 
             //Check if any publications were pulled from API
             if (publications?.Any() !=true)
@@ -42,7 +40,7 @@ namespace PublicationsAzureFunctions
             }
             else
             {
-                log.LogInformation($"Fetched and stored {publications.Count} for {biobank}");
+                log.LogInformation($"Fetched and stored {publications.Count()} for {biobank}");
                 return new OkObjectResult(publications);
             }
         }
