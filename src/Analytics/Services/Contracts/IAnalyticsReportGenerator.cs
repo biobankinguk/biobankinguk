@@ -11,5 +11,7 @@ namespace Analytics.Services.Contracts
         ContactRequestsDto GetContactRequests(string biobankId, IEnumerable<DirectoryAnalyticEvent> eventData);
         ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<OrganisationAnalytic> biobankData);
         SearchActivityDto GetSearchActivity(string biobankId, IEnumerable<OrganisationAnalytic> biobankData);
+
+        Task<DirectoryAnalyticReportDto> GetDirectoryReport(int year, int quarter, int period);
     }
 }

@@ -111,5 +111,18 @@ namespace Analytics.Services
                 Error = new ErrorStatusDto { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
             };
         }
+
+        public async Task<DirectoryAnalyticReportDto> GetDirectoryReport(int year, int quarter, int period)
+        {
+            return new DirectoryAnalyticReportDto
+            {
+                Year = year,
+                EndQuarter = quarter,
+                ReportPeriod = period,
+                NumOfTopBiobanks = numOfTopBiobanks, //maybe get this from api call too
+
+                Error = new ErrorStatusDto { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
+            };
+        }
     }
 }
