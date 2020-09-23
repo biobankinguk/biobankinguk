@@ -22,7 +22,9 @@ namespace Analytics.Services.Contracts
         IEnumerable<DirectoryAnalyticEvent> FilterByEvent(IEnumerable<DirectoryAnalyticEvent> eventData, string strEvent);
         IEnumerable<DirectoryAnalyticEvent> FilterByHost(IEnumerable<DirectoryAnalyticEvent> eventData);
         IEnumerable<OrganisationAnalytic> FilterByHost(IEnumerable<OrganisationAnalytic> biobankData);
+        IEnumerable<DirectoryAnalyticMetric> FilterByHost(IEnumerable<DirectoryAnalyticMetric> metricData);
         IEnumerable<OrganisationAnalytic> FilterByPagePath(IEnumerable<OrganisationAnalytic> biobankData, string path);
+        IEnumerable<DirectoryAnalyticMetric> FilterByPagePath(IEnumerable<DirectoryAnalyticMetric> metricData, string path);
         Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData();
         Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData(DateRange dateRange);
         Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId);
@@ -53,9 +55,16 @@ namespace Analytics.Services.Contracts
         string GetSearchType(string pagePath);
         IEnumerable<QuarterlySummary> GetSummary(IEnumerable<DirectoryAnalyticEvent> eventData);
         IEnumerable<QuarterlySummary> GetSummary(IEnumerable<OrganisationAnalytic> biobankData);
+        IEnumerable<QuarterlySummary> GetSummary(IEnumerable<DirectoryAnalyticMetric> metricData, Func<DirectoryAnalyticMetric, int> elementSelector);
         (IList<string>, IList<QuarterlyCountsDto>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary, IEnumerable<QuarterlySummary> ranking, string biobankId, int numOfTopBiobanks);
         string GetViewRoute(string pagePath);
         (string, IList<SegmentFilterClause>) NottLoughSegmentClause();
         Task UpdateAnalyticsData();
+        IEnumerable<DirectoryAnalyticMetric> ApplySessionMulitplication(IEnumerable<DirectoryAnalyticMetric> metricData);
+        (List<string>, List<int>) GetSessionNumber(IEnumerable<DirectoryAnalyticMetric> sessionData);
+        (List<string>, List<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector);
+
+        //REMOVE TEST FUNC
+        Task SeedTestData();
     }
 }

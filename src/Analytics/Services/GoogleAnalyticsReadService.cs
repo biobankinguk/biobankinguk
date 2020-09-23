@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Analytics.Services.Helpers;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Analytics.Services
 {
@@ -445,11 +446,17 @@ namespace Analytics.Services
         public IEnumerable<OrganisationAnalytic> FilterByPagePath(IEnumerable<OrganisationAnalytic> biobankData, string path)
             => biobankData.Where(x => x.PagePath.Contains(path));//.ToList();
 
+        public IEnumerable<DirectoryAnalyticMetric> FilterByPagePath(IEnumerable<DirectoryAnalyticMetric> metricData, string path)
+            => metricData.Where(x => x.PagePath.Contains(path));//.ToList();
+
         public IEnumerable<OrganisationAnalytic> FilterByHost(IEnumerable<OrganisationAnalytic> biobankData)
             => biobankData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
 
         public IEnumerable<DirectoryAnalyticEvent> FilterByHost(IEnumerable<DirectoryAnalyticEvent> eventData)
             => eventData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
+
+        public IEnumerable<DirectoryAnalyticMetric> FilterByHost(IEnumerable<DirectoryAnalyticMetric> metricData)
+            => metricData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
 
         public IEnumerable<DirectoryAnalyticEvent> FilterByEvent(IEnumerable<DirectoryAnalyticEvent> eventData, string strEvent)
             => eventData.Where(x => x.EventAction == strEvent);
@@ -479,6 +486,17 @@ namespace Analytics.Services
                     Quarter = key.q,
                     Count = group.Sum(),
                 });
+
+        public IEnumerable<QuarterlySummary> GetSummary(IEnumerable<DirectoryAnalyticMetric> metricData, Func<DirectoryAnalyticMetric, int> elementSelector)
+            => metricData.GroupBy(
+                x => GetQuarter(x.Date),
+                elementSelector,
+                (key, group) => new QuarterlySummary
+                {
+                    Biobank = "Directory",
+                    Quarter = key,
+                    Count = group.Sum(),
+                }).OrderBy(x=>x.Quarter);
 
         public IEnumerable<QuarterlySummary> GetRankings(IEnumerable<QuarterlySummary> summary)
             => summary.GroupBy(
@@ -658,6 +676,57 @@ namespace Analytics.Services
 
         }
 
+        public IEnumerable<DirectoryAnalyticMetric> ApplySessionMulitplication(IEnumerable<DirectoryAnalyticMetric> metricData)
+        {
+            var multipliledMetricData = metricData.Select(x => new DirectoryAnalyticMetric
+            {
+                BounceRate = x.BounceRate * x.Sessions,
+                AvgSessionDuration = x.AvgSessionDuration * x.Sessions,
+                PercentNewSessions = x.PercentNewSessions * x.Sessions,
+
+                City = x.City,
+                Date = x.Date,
+                Hostname = x.Hostname,
+                Id = x.Id,
+                PagePath = x.PagePath,
+                PagePathLevel1 = x.PagePathLevel1,
+                Segment = x.Segment,
+                Sessions = x.Sessions,
+                Source = x.Source
+
+            });
+
+            return multipliledMetricData;
+        }
+
+        public (List<string>, List<int>) GetSessionNumber(IEnumerable<DirectoryAnalyticMetric> sessionData)
+        {
+            var sessionSummary = GetSummary(sessionData, x => x.Sessions);
+            var quarterLabels = sessionSummary.Select(x => x.Quarter).ToList();
+            var quarterCounts = sessionSummary.Select(x => x.Count).ToList();
+            return (quarterLabels, quarterCounts);
+
+        }
+
+        public (List<string>, List<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector)
+        {
+            var sessionSummary = GetSummary(sessionData, x => x.Sessions);
+            var elementSummary = GetSummary(sessionData, elementSelector);
+
+            var quarterLabels = elementSummary.Select(x => x.Quarter).ToList();
+            List<double> weightedAvg = new List<double>();
+
+            foreach (var item in elementSummary)
+            {
+                var denom = Convert.ToDouble(sessionSummary.Where(x => x.Quarter == item.Quarter).Select(x => x.Count).FirstOrDefault());
+                if (denom > 0)
+                    weightedAvg.Add(item.Count / denom);
+                else
+                    weightedAvg.Add(item.Count);
+            }
+            return (quarterLabels, weightedAvg);
+        }
+
         //typically performed quatertly. Should be hit by scheduler
         public async Task UpdateAnalyticsData()
         {
@@ -702,6 +771,15 @@ namespace Analytics.Services
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+
+        //Test Functions
+        public async Task SeedTestData()
+        {
+            var dateRange = new[] { new DateRange { StartDate = "2020-06-25", EndDate = DateTimeOffset.Now.ToString("2020-07-01") } };
+            await DownloadAllBiobankData(dateRange);
+            await DownloadDirectoryData(dateRange);
+        }
 
     }
 }
