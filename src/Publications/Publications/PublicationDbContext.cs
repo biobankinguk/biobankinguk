@@ -27,7 +27,7 @@ namespace Publications
             var options = new DbContextOptionsBuilder<PublicationDbContext>();
 
             // Connection string passed from environment variable as EF doesn't (yet) support supplying it as a CLI parameter
-            options.UseSqlServer(Environment.GetEnvironmentVariable("sqldb_connection"));
+            options.UseSqlServer(Environment.GetEnvironmentVariable("sqldb_connection"), options => options.EnableRetryOnFailure());
 
             return new PublicationDbContext(options.Options);
         }
