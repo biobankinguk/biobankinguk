@@ -10,7 +10,8 @@ namespace Publications.Entities
         [Key]
         public int InternalId { get; set; }
 
-        public int PublicationId { get; set; }
+        [Required]
+        public string PublicationId { get; set; }
 
         [Required]
         public string Organisation { get; set; }
@@ -20,7 +21,6 @@ namespace Publications.Entities
 
         public string Authors { get; set; }
 
-        [Required]
         public string Journal { get; set; }
 
         public int Year { get; set; }
