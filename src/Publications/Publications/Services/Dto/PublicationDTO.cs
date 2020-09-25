@@ -25,7 +25,7 @@ namespace Publications
 
     public class PublicationDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Title { get; set; }
 
