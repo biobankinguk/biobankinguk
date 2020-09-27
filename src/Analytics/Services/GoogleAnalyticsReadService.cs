@@ -237,7 +237,7 @@ namespace Analytics.Services
             return request.Execute();
         }
 
-        //or use function overloading or pass in type F<T>()?
+        //or use function overloading or dynamic?
         public async Task<DateTimeOffset> GetLatestBiobankEntry()
             => (await _organisationAnalyticRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 

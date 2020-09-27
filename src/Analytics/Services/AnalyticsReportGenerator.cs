@@ -161,6 +161,27 @@ namespace Analytics.Services
             };
         }
 
+        public SearchCharacteristicDto GetSearchCharacteristics(IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        {
+            var searchData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Search/");
+
+            (var searchTypeLabels, var searchTypeCount) = _googleAnalyticsReadService.GetSearchBreakdown(searchData,
+                                               _googleAnalyticsReadService.GetSearchType);
+            (var searchTermLabels, var searchTermCount) = _googleAnalyticsReadService.GetSearchBreakdown(searchData.Where(x =>
+                                               _googleAnalyticsReadService.GetSearchType(x.PagePath) == "Diagnosis"), _googleAnalyticsReadService.GetSearchTerm);
+            (var searchFilterLabels, var searchFilterCount) = _googleAnalyticsReadService.GetSearchFilters(searchData);
+
+            return new SearchCharacteristicDto {
+                SearchTypeLabels = searchTypeLabels,
+                SearchTypeCount = searchTypeCount,
+                SearchTermLabels = searchTermLabels,
+                SearchTermCount = searchTermCount,
+                SearchFilterLabels = searchFilterLabels,
+                SearchFilterCount = searchFilterCount
+            };
+        }
+
+
         public async Task<DirectoryAnalyticReportDto> GetDirectoryReport(int year, int quarter, int period)
         {
 
@@ -179,6 +200,7 @@ namespace Analytics.Services
 
             var sessionStats = GetSessionStats(metricData);
             var sessionSearchStats = GetSessionSearchStats(metricData);
+            var searchCharacteristics = GetSearchCharacteristics(biobankData);
 
             return new DirectoryAnalyticReportDto
             {
@@ -189,6 +211,7 @@ namespace Analytics.Services
 
                 SessionStats = sessionStats,
                 SessionSearchStats = sessionSearchStats,
+                SearchCharacteristics = searchCharacteristics,
 
                 Error = new ErrorStatusDto { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
             };
