@@ -13,12 +13,14 @@ namespace Analytics.Services.Dto
         public SessionStatDto SessionStats { get; set; }
         public SessionStatDto SessionSearchStats { get; set; }
         public SearchCharacteristicDto SearchCharacteristics { get; set; }
+        public EventStatDto EventStats { get; set; }
 
         public ErrorStatusDto Error { get; set; }
     }
 
     public partial class SessionStatDto
     {
+        //use class for label count pair?
         public List<string>  SessionNumberLabels { get; set; }
         public List<int>    SessionNumberCount { get; set; }
         public List<string> AvgBounceRateLabels { get; set; }
@@ -37,5 +39,15 @@ namespace Analytics.Services.Dto
         public IList<int> SearchTermCount { get; set; }
         public IList<String> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
+    }
+
+    public partial class EventStatDto
+    {
+        public List<string> ContactNumberLabels { get; set; }
+        public List<int> ContactNumberCount { get; set; } 
+        public List<string> FilteredContactLabels { get; set; }
+        public List<int> FilteredContactCount { get; set; }
+        public List<string> FilteredMailToLabels { get; set; }
+        public List<int> FilteredMailToCount { get; set; }
     }
 }

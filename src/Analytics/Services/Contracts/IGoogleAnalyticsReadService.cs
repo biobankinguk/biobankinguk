@@ -61,8 +61,10 @@ namespace Analytics.Services.Contracts
         (string, IList<SegmentFilterClause>) NottLoughSegmentClause();
         Task UpdateAnalyticsData();
         IEnumerable<DirectoryAnalyticMetric> ApplySessionMulitplication(IEnumerable<DirectoryAnalyticMetric> metricData);
-        (List<string>, List<int>) GetSessionNumber(IEnumerable<DirectoryAnalyticMetric> sessionData);
+        (List<string>, List<int>) GetSessionCount(IEnumerable<DirectoryAnalyticMetric> sessionData);
+        (List<string>, List<int>) GetContactCount(IEnumerable<DirectoryAnalyticEvent> eventData);
         (List<string>, List<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector);
+        (List<string>, List<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold);
 
         //REMOVE TEST FUNC
         Task SeedTestData();

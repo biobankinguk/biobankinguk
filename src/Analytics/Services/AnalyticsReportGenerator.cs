@@ -10,6 +10,7 @@ namespace Analytics.Services
     public class AnalyticsReportGenerator : IAnalyticsReportGenerator
     {
         private const int numOfTopBiobanks = 10;
+        private const int eventThreshold = 30;
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
         public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService)
@@ -117,7 +118,7 @@ namespace Analytics.Services
         {
             var sessionData = _googleAnalyticsReadService.ApplySessionMulitplication(metricData);
 
-            (var sessionNumberLabels, var sessionNumberCount) = _googleAnalyticsReadService.GetSessionNumber(sessionData);
+            (var sessionNumberLabels, var sessionNumberCount) = _googleAnalyticsReadService.GetSessionCount(sessionData);
             (var avgBounceRateLabels, var avgBounceRateCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x=>x.BounceRate);
             (var avgNewSessionLabels, var avgNewSessionCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.PercentNewSessions);
             (var avgSessionDurationLabels, var avgSessionDurationVals) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.AvgSessionDuration);
@@ -140,8 +141,9 @@ namespace Analytics.Services
         {
             var searchData = _googleAnalyticsReadService.FilterByPagePath(metricData, "/Search/");
             var sessionData = _googleAnalyticsReadService.ApplySessionMulitplication(searchData);
-            
-            (var sessionNumberLabels, var sessionNumberCount) = _googleAnalyticsReadService.GetSessionNumber(sessionData);
+
+            var sessionSummary = _googleAnalyticsReadService.GetSummary(sessionData, x => x.Sessions);
+            (var sessionNumberLabels, var sessionNumberCount) = _googleAnalyticsReadService.GetSessionCount(sessionData);
             (var avgBounceRateLabels, var avgBounceRateCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.BounceRate);
             (var avgNewSessionLabels, var avgNewSessionCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.PercentNewSessions);
             (var avgSessionDurationLabels, var avgSessionDurationVals) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.AvgSessionDuration);
@@ -181,6 +183,24 @@ namespace Analytics.Services
             };
         }
 
+        public EventStatDto GetEventStats(IEnumerable<Data.Entities.DirectoryAnalyticEvent> eventData)
+        {
+            var contactData = _googleAnalyticsReadService.FilterByEvent(eventData, "Add Contact to List");
+            var mailtoData = _googleAnalyticsReadService.FilterByEvent(eventData, "Mailto clicked");
+            (var contactNumberLabels, var contactNumberCount) = _googleAnalyticsReadService.GetContactCount(contactData);
+            (var filteredContactLabels, var filteredContactCount) = _googleAnalyticsReadService.GetFilteredEventCount(contactData, eventThreshold);
+            (var filteredMailtoLabels, var filteredMailtoCount) = _googleAnalyticsReadService.GetFilteredEventCount(mailtoData, eventThreshold);
+
+            return new EventStatDto { 
+                ContactNumberLabels = contactNumberLabels,
+                ContactNumberCount = contactNumberCount,
+                FilteredContactLabels = filteredContactLabels,
+                FilteredContactCount = filteredContactCount,
+                FilteredMailToLabels = filteredMailtoLabels,
+                FilteredMailToCount = filteredMailtoCount
+            };
+        }
+
 
         public async Task<DirectoryAnalyticReportDto> GetDirectoryReport(int year, int quarter, int period)
         {
@@ -201,6 +221,7 @@ namespace Analytics.Services
             var sessionStats = GetSessionStats(metricData);
             var sessionSearchStats = GetSessionSearchStats(metricData);
             var searchCharacteristics = GetSearchCharacteristics(biobankData);
+            var eventStats = GetEventStats(eventData);
 
             return new DirectoryAnalyticReportDto
             {
@@ -212,6 +233,7 @@ namespace Analytics.Services
                 SessionStats = sessionStats,
                 SessionSearchStats = sessionSearchStats,
                 SearchCharacteristics = searchCharacteristics,
+                EventStats = eventStats,
 
                 Error = new ErrorStatusDto { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
             };

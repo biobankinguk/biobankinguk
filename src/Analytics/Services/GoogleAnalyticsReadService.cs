@@ -699,13 +699,28 @@ namespace Analytics.Services
             return multipliledMetricData;
         }
 
-        public (List<string>, List<int>) GetSessionNumber(IEnumerable<DirectoryAnalyticMetric> sessionData)
+        public (List<string>, List<int>) GetSessionCount(IEnumerable<DirectoryAnalyticMetric> sessionData)
         {
             var sessionSummary = GetSummary(sessionData, x => x.Sessions);
             var quarterLabels = sessionSummary.Select(x => x.Quarter).ToList();
             var quarterCounts = sessionSummary.Select(x => x.Count).ToList();
             return (quarterLabels, quarterCounts);
+        }
 
+        public (List<string>, List<int>) GetContactCount(IEnumerable<DirectoryAnalyticEvent> eventData)
+        {
+            var eventSummary = eventData.GroupBy(
+                x => GetQuarter(x.Date),
+                x=> x.Counts,
+                (key, group) => new QuarterlySummary
+                {
+                    Biobank = "Directory",
+                    Quarter = key,
+                    Count = group.Sum(),
+                }).OrderBy(x => x.Quarter);
+            var quarterLabels = eventSummary.Select(x => x.Quarter).ToList();
+            var quarterCounts = eventSummary.Select(x => x.Count).ToList();
+            return (quarterLabels, quarterCounts);
         }
 
         public (List<string>, List<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector)
@@ -725,6 +740,32 @@ namespace Analytics.Services
                     weightedAvg.Add(item.Count);
             }
             return (quarterLabels, weightedAvg);
+        }
+
+        public (List<string>, List<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold)
+        {
+            var eventsPerCityPerDay = eventData.GroupBy(
+                x => new { city = x.City, date = x.Date.Date},
+                x => x.Counts,
+                (key, group) => new
+                {
+                    City = key.city,
+                    Date = key.date,
+                    Count = group.Sum(),
+                });
+
+            var summary = eventsPerCityPerDay
+                .Where(x=>x.Count <= threshold).GroupBy(
+                x => GetQuarter(x.Date),
+                x => x.Count,
+                (key, group) => new QuarterlySummary
+                {
+                    Biobank = "Directory",
+                    Quarter = key,
+                    Count = group.Sum(),
+                }).OrderBy(x => x.Quarter);
+
+            return (summary.Select(x => x.Quarter).ToList(), summary.Select(x => x.Count).ToList());
         }
 
         //typically performed quatertly. Should be hit by scheduler
