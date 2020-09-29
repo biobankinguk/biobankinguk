@@ -646,7 +646,7 @@ namespace Analytics.Services
             return (query.Select(x => x.key).ToList(), query.Select(x => x.Item2).ToList());
         }
 
-        public (List<string>, List<int>) GetSearchFilters(IEnumerable<OrganisationAnalytic> biobankData)
+        public (IList<string>, IList<int>) GetSearchFilters(IEnumerable<OrganisationAnalytic> biobankData)
         {
             List<string> filters = new List<string>();
             List<int> filterCount = new List<int>();
@@ -699,7 +699,7 @@ namespace Analytics.Services
             return multipliledMetricData;
         }
 
-        public (List<string>, List<int>) GetSessionCount(IEnumerable<DirectoryAnalyticMetric> sessionData)
+        public (IList<string>, IList<int>) GetSessionCount(IEnumerable<DirectoryAnalyticMetric> sessionData)
         {
             var sessionSummary = GetSummary(sessionData, x => x.Sessions);
             var quarterLabels = sessionSummary.Select(x => x.Quarter).ToList();
@@ -707,7 +707,7 @@ namespace Analytics.Services
             return (quarterLabels, quarterCounts);
         }
 
-        public (List<string>, List<int>) GetContactCount(IEnumerable<DirectoryAnalyticEvent> eventData)
+        public (IList<string>, IList<int>) GetContactCount(IEnumerable<DirectoryAnalyticEvent> eventData)
         {
             var eventSummary = eventData.GroupBy(
                 x => GetQuarter(x.Date),
@@ -723,7 +723,7 @@ namespace Analytics.Services
             return (quarterLabels, quarterCounts);
         }
 
-        public (List<string>, List<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector)
+        public (IList<string>, IList<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector)
         {
             var sessionSummary = GetSummary(sessionData, x => x.Sessions);
             var elementSummary = GetSummary(sessionData, elementSelector);
@@ -742,7 +742,7 @@ namespace Analytics.Services
             return (quarterLabels, weightedAvg);
         }
 
-        public (List<string>, List<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold)
+        public (IList<string>, IList<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold)
         {
             var eventsPerCityPerDay = eventData.GroupBy(
                 x => new { city = x.City, date = x.Date.Date},
@@ -766,6 +766,29 @@ namespace Analytics.Services
                 }).OrderBy(x => x.Quarter);
 
             return (summary.Select(x => x.Quarter).ToList(), summary.Select(x => x.Count).ToList());
+        }
+
+        public IList<SourceCountDto> GetPageSources(IEnumerable<OrganisationAnalytic> biobankData, int numOfTopSources)
+        {
+            var totalCount = biobankData.Count();
+            var sources = biobankData.GroupBy(
+                x => x.Source,
+                x => x.Counts,
+                (key, group) => new SourceCountDto
+                {
+                    Source = key,
+                    Count = group.Count(),
+                    Percentage = (group.Count()/Convert.ToDouble(totalCount))*100
+                }).OrderByDescending(x=>x.Count).Take(numOfTopSources);
+
+            sources = sources.Append(new SourceCountDto
+            {
+                Source = "Others",
+                Count = totalCount - sources.Select(x => x.Count).Sum(),
+                Percentage = 100.0 - sources.Select(x => x.Percentage).Sum()
+            });
+
+            return sources.ToList();
         }
 
         //typically performed quatertly. Should be hit by scheduler

@@ -14,6 +14,7 @@ namespace Analytics.Services.Dto
         public SessionStatDto SessionSearchStats { get; set; }
         public SearchCharacteristicDto SearchCharacteristics { get; set; }
         public EventStatDto EventStats { get; set; }
+        public ProfilePageStatDto ProfilePageStats { get; set; }
 
         public ErrorStatusDto Error { get; set; }
     }
@@ -21,14 +22,14 @@ namespace Analytics.Services.Dto
     public partial class SessionStatDto
     {
         //use class for label count pair?
-        public List<string>  SessionNumberLabels { get; set; }
-        public List<int>    SessionNumberCount { get; set; }
-        public List<string> AvgBounceRateLabels { get; set; }
-        public List<double> AvgBounceRateCount { get; set; }
-        public List<string> AvgNewSessionLabels { get; set; }
-        public List<double> AvgNewSessionCount { get; set; }
-        public List<string> AvgSessionDurationLabels { get; set; }
-        public List<string> AvgSessionDurationCount { get; set; }
+        public IList<string>  SessionNumberLabels { get; set; }
+        public IList<int>    SessionNumberCount { get; set; }
+        public IList<string> AvgBounceRateLabels { get; set; }
+        public IList<double> AvgBounceRateCount { get; set; }
+        public IList<string> AvgNewSessionLabels { get; set; }
+        public IList<double> AvgNewSessionCount { get; set; }
+        public IList<string> AvgSessionDurationLabels { get; set; }
+        public IList<string> AvgSessionDurationCount { get; set; }
     }
 
     public partial class SearchCharacteristicDto
@@ -43,11 +44,25 @@ namespace Analytics.Services.Dto
 
     public partial class EventStatDto
     {
-        public List<string> ContactNumberLabels { get; set; }
-        public List<int> ContactNumberCount { get; set; } 
-        public List<string> FilteredContactLabels { get; set; }
-        public List<int> FilteredContactCount { get; set; }
-        public List<string> FilteredMailToLabels { get; set; }
-        public List<int> FilteredMailToCount { get; set; }
+        public IList<string> ContactNumberLabels { get; set; }
+        public IList<int> ContactNumberCount { get; set; } 
+        public IList<string> FilteredContactLabels { get; set; }
+        public IList<int> FilteredContactCount { get; set; }
+        public IList<string> FilteredMailToLabels { get; set; }
+        public IList<int> FilteredMailToCount { get; set; }
+    }
+
+    public partial class ProfilePageStatDto
+    {
+        public IList<SourceCountDto> ProfileSources{ get; set; }
+        public IList<String> PageRouteLabels { get; set; }
+        public IList<int> RouteCount { get; set; }
+    }
+
+    public class SourceCountDto
+    {
+        public string Source { get; set; }
+        public int Count { get; set; }
+        public double Percentage { get; set; }
     }
 }

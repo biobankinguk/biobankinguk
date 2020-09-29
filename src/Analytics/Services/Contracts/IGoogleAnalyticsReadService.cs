@@ -49,7 +49,7 @@ namespace Analytics.Services.Contracts
         DateRange GetRelevantPeriod(int year, int endQuarter, int reportPeriod);
         GetReportsResponse GetReports(IList<ReportRequest> reportRequests);
         (IList<string>, IList<int>) GetSearchBreakdown(IEnumerable<OrganisationAnalytic> biobankData, Func<string, string> getSearchFunc);
-        (List<string>, List<int>) GetSearchFilters(IEnumerable<OrganisationAnalytic> biobankData);
+        (IList<string>, IList<int>) GetSearchFilters(IEnumerable<OrganisationAnalytic> biobankData);
         string[] GetSearchFilters(string pagePath);
         string GetSearchTerm(string pagePath);
         string GetSearchType(string pagePath);
@@ -61,10 +61,11 @@ namespace Analytics.Services.Contracts
         (string, IList<SegmentFilterClause>) NottLoughSegmentClause();
         Task UpdateAnalyticsData();
         IEnumerable<DirectoryAnalyticMetric> ApplySessionMulitplication(IEnumerable<DirectoryAnalyticMetric> metricData);
-        (List<string>, List<int>) GetSessionCount(IEnumerable<DirectoryAnalyticMetric> sessionData);
-        (List<string>, List<int>) GetContactCount(IEnumerable<DirectoryAnalyticEvent> eventData);
-        (List<string>, List<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector);
-        (List<string>, List<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold);
+        (IList<string>, IList<int>) GetSessionCount(IEnumerable<DirectoryAnalyticMetric> sessionData);
+        (IList<string>, IList<int>) GetContactCount(IEnumerable<DirectoryAnalyticEvent> eventData);
+        (IList<string>, IList<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector);
+        (IList<string>, IList<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold);
+        IList<SourceCountDto> GetPageSources(IEnumerable<OrganisationAnalytic> biobankData, int numOfTopSources);
 
         //REMOVE TEST FUNC
         Task SeedTestData();

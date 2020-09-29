@@ -201,6 +201,22 @@ namespace Analytics.Services
             };
         }
 
+        public ProfilePageStatDto GetProfilePageStats(IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        {
+            var profileData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Profile/");
+
+            var profileSources = _googleAnalyticsReadService.GetPageSources(profileData, numOfTopBiobanks);
+            (var pageRoutes, var routeCount) = _googleAnalyticsReadService.GetPageRoutes(profileData);
+            
+
+            return new ProfilePageStatDto
+            {
+                ProfileSources = profileSources,
+                PageRouteLabels = pageRoutes,
+                RouteCount = routeCount
+            };
+        }
+
 
         public async Task<DirectoryAnalyticReportDto> GetDirectoryReport(int year, int quarter, int period)
         {
@@ -222,6 +238,7 @@ namespace Analytics.Services
             var sessionSearchStats = GetSessionSearchStats(metricData);
             var searchCharacteristics = GetSearchCharacteristics(biobankData);
             var eventStats = GetEventStats(eventData);
+            var profilePageStats = GetProfilePageStats(biobankData);
 
             return new DirectoryAnalyticReportDto
             {
@@ -234,6 +251,7 @@ namespace Analytics.Services
                 SessionSearchStats = sessionSearchStats,
                 SearchCharacteristics = searchCharacteristics,
                 EventStats = eventStats,
+                ProfilePageStats = profilePageStats,
 
                 Error = new ErrorStatusDto { ErrorCode = 0, ErrorMessage = "Report Generated Successfully" }
             };
