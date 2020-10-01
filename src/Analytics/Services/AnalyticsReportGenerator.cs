@@ -9,13 +9,20 @@ namespace Analytics.Services
 {
     public class AnalyticsReportGenerator : IAnalyticsReportGenerator
     {
-        private const int numOfTopBiobanks = 10;
-        private const int eventThreshold = 30;
+        private readonly int numOfTopBiobanks; //default: 10
+        private readonly int eventThreshold; //default: 30
+        private readonly bool filterByHost; //default: true
+        private readonly string hostname;
+
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
         public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService)
         {
             _googleAnalyticsReadService = googleAnalyticsReadService;
+            this.numOfTopBiobanks = Convert.ToInt32(Environment.GetEnvironmentVariable("metric-threshold"));
+            this.eventThreshold = Convert.ToInt32(Environment.GetEnvironmentVariable("event-threshold"));
+            this.filterByHost = Convert.ToBoolean(Environment.GetEnvironmentVariable("filterby-host"));
+            this.hostname = Environment.GetEnvironmentVariable("directory-hostname");
         }
 
         public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
@@ -91,8 +98,11 @@ namespace Analytics.Services
             var eventData = await _googleAnalyticsReadService.GetDirectoryEventData(reportRange);
 
             //filter by host
-            biobankData = _googleAnalyticsReadService.FilterByHost(biobankData);
-            eventData = _googleAnalyticsReadService.FilterByHost(eventData);
+            if (filterByHost == true && !String.IsNullOrEmpty(hostname))
+            {
+                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData,hostname);
+                eventData = _googleAnalyticsReadService.FilterByHost(eventData, hostname);
+            }
 
             //var profileStatus = await GetProfileStatus(biobankId);
             var pageViews = GetProfilePageViews(biobankId, biobankData);
@@ -121,8 +131,8 @@ namespace Analytics.Services
             (var sessionNumberLabels, var sessionNumberCount) = _googleAnalyticsReadService.GetSessionCount(sessionData);
             (var avgBounceRateLabels, var avgBounceRateCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x=>x.BounceRate);
             (var avgNewSessionLabels, var avgNewSessionCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.PercentNewSessions);
-            (var avgSessionDurationLabels, var avgSessionDurationVals) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.AvgSessionDuration);
-            var avgSessionDurationCount = avgSessionDurationVals.Select(x => $"{(int)(x / 60)}m {Convert.ToInt32(x % 60)}s").ToList();
+            (var avgSessionDurationLabels, var avgSessionDurationCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.AvgSessionDuration);
+           // var avgSessionDurationCountLabel = avgSessionDurationCount.Select(x => $"{(int)(x / 60)}m {Convert.ToInt32(x % 60)}s").ToList(); //do in frontend
             
             return new SessionStatDto {
                 SessionNumberLabels = sessionNumberLabels,
@@ -132,7 +142,7 @@ namespace Analytics.Services
                 AvgNewSessionLabels = avgNewSessionLabels,
                 AvgNewSessionCount = avgNewSessionCount,
                 AvgSessionDurationLabels = avgSessionDurationLabels,
-                AvgSessionDurationCount = avgSessionDurationCount
+                AvgSessionDurationCount = avgSessionDurationCount,
 
             };
         }
@@ -146,8 +156,7 @@ namespace Analytics.Services
             (var sessionNumberLabels, var sessionNumberCount) = _googleAnalyticsReadService.GetSessionCount(sessionData);
             (var avgBounceRateLabels, var avgBounceRateCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.BounceRate);
             (var avgNewSessionLabels, var avgNewSessionCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.PercentNewSessions);
-            (var avgSessionDurationLabels, var avgSessionDurationVals) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.AvgSessionDuration);
-            var avgSessionDurationCount = avgSessionDurationVals.Select(x => $"{(int)(x / 60)}m {Convert.ToInt32(x % 60)}s").ToList();
+            (var avgSessionDurationLabels, var avgSessionDurationCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.AvgSessionDuration);
 
             return new SessionStatDto
             {
@@ -158,8 +167,7 @@ namespace Analytics.Services
                 AvgNewSessionLabels = avgNewSessionLabels,
                 AvgNewSessionCount = avgNewSessionCount,
                 AvgSessionDurationLabels = avgSessionDurationLabels,
-                AvgSessionDurationCount = avgSessionDurationCount
-
+                AvgSessionDurationCount = avgSessionDurationCount,
             };
         }
 
@@ -230,9 +238,12 @@ namespace Analytics.Services
             var metricData = await _googleAnalyticsReadService.GetDirectoryMetricData(reportRange);
 
             //filter by host
-            biobankData = _googleAnalyticsReadService.FilterByHost(biobankData);
-            eventData = _googleAnalyticsReadService.FilterByHost(eventData);
-            metricData = _googleAnalyticsReadService.FilterByHost(metricData);
+            if (filterByHost == true && !String.IsNullOrEmpty(hostname))
+            {
+                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData, hostname);
+                eventData = _googleAnalyticsReadService.FilterByHost(eventData, hostname);
+                metricData = _googleAnalyticsReadService.FilterByHost(metricData, hostname);
+            }
 
             var sessionStats = GetSessionStats(metricData);
             var sessionSearchStats = GetSessionSearchStats(metricData);
@@ -245,7 +256,8 @@ namespace Analytics.Services
                 Year = year,
                 EndQuarter = quarter,
                 ReportPeriod = period,
-                NumOfTopBiobanks = numOfTopBiobanks, //maybe get this from api call too
+                NumOfTopBiobanks = numOfTopBiobanks, //maybe get this from api call too or config/env vars
+                EventsPerCityThreshold = eventThreshold, //maybe get this from api call too or config/env vars
 
                 SessionStats = sessionStats,
                 SessionSearchStats = sessionSearchStats,

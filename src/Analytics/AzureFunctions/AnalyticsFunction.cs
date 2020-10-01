@@ -26,7 +26,7 @@ namespace Analytics.AnalyticsAzureFunctions
             int reportPeriod,
             ILogger log)
         {
-            log.LogInformation($"Fetching publications for {biobankId}");
+            log.LogInformation($"Fetching analytics for {biobankId}");
 
             //Call GetBiobankReport method from service layer and load into DTO
             var report = await _analyticsReportGenerator.GetBiobankReport(biobankId,year,endQuarter,reportPeriod);

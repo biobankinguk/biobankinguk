@@ -9,6 +9,7 @@ namespace Analytics.Services.Dto
         public int EndQuarter { get; set; }
         public int ReportPeriod { get; set; }
         public int NumOfTopBiobanks { get; set; }
+        public int EventsPerCityThreshold { get; set; }
 
         public SessionStatDto SessionStats { get; set; }
         public SessionStatDto SessionSearchStats { get; set; }
@@ -29,7 +30,7 @@ namespace Analytics.Services.Dto
         public IList<string> AvgNewSessionLabels { get; set; }
         public IList<double> AvgNewSessionCount { get; set; }
         public IList<string> AvgSessionDurationLabels { get; set; }
-        public IList<string> AvgSessionDurationCount { get; set; }
+        public IList<double> AvgSessionDurationCount { get; set; }
     }
 
     public partial class SearchCharacteristicDto

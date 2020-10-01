@@ -27,8 +27,8 @@ namespace Analytics.Services
     public class GoogleAnalyticsReadService : IHostedService, IGoogleAnalyticsReadService
     {
         private readonly string VIEW_ID;
+        private readonly string START_DATE; //default: "2016-01-01"; //specified in DATE_FORMAT
         private readonly string DATE_FORMAT = "yyyy-MM-dd";
-        private readonly string START_DATE = "2016-01-01"; //specified in DATE_FORMAT
 
         private readonly GoogleCredential credentials;
         private readonly AnalyticsReportingService analytics;
@@ -48,6 +48,7 @@ namespace Analytics.Services
         {
             var apikey   = Environment.GetEnvironmentVariable("analytics-apikey");
             this.VIEW_ID = Environment.GetEnvironmentVariable("analytics-viewid");
+            this.START_DATE = Environment.GetEnvironmentVariable("start-date");
 
             this.credentials = GoogleCredential.FromJson(apikey)
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
@@ -449,14 +450,14 @@ namespace Analytics.Services
         public IEnumerable<DirectoryAnalyticMetric> FilterByPagePath(IEnumerable<DirectoryAnalyticMetric> metricData, string path)
             => metricData.Where(x => x.PagePath.Contains(path));//.ToList();
 
-        public IEnumerable<OrganisationAnalytic> FilterByHost(IEnumerable<OrganisationAnalytic> biobankData)
-            => biobankData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
+        public IEnumerable<OrganisationAnalytic> FilterByHost(IEnumerable<OrganisationAnalytic> biobankData, string hostname)
+            => biobankData.Where(x => x.Hostname.Contains(hostname));
 
-        public IEnumerable<DirectoryAnalyticEvent> FilterByHost(IEnumerable<DirectoryAnalyticEvent> eventData)
-            => eventData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
+        public IEnumerable<DirectoryAnalyticEvent> FilterByHost(IEnumerable<DirectoryAnalyticEvent> eventData, string hostname)
+            => eventData.Where(x => x.Hostname.Contains(hostname));
 
-        public IEnumerable<DirectoryAnalyticMetric> FilterByHost(IEnumerable<DirectoryAnalyticMetric> metricData)
-            => metricData.Where(x => x.Hostname.Contains("directory.biobankinguk.org"));
+        public IEnumerable<DirectoryAnalyticMetric> FilterByHost(IEnumerable<DirectoryAnalyticMetric> metricData, string hostname)
+            => metricData.Where(x => x.Hostname.Contains(hostname));
 
         public IEnumerable<DirectoryAnalyticEvent> FilterByEvent(IEnumerable<DirectoryAnalyticEvent> eventData, string strEvent)
             => eventData.Where(x => x.EventAction == strEvent);
@@ -823,6 +824,7 @@ namespace Analytics.Services
             }
         }
 
+        //function is run everytime BatchFunction triggers
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // Call directory for all active organisation
