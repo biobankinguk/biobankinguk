@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Analytics.Services.Dto;
 using System.Linq;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace Analytics.Services
 {
@@ -13,16 +14,18 @@ namespace Analytics.Services
         private readonly int _eventThreshold; //default: 30
         private readonly bool _filterByHost; //default: true
         private readonly string _hostname;
+        private readonly IConfiguration _config;
 
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
-        public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService)
+        public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService, IConfiguration configuration)
         {
+            _config = configuration;
             _googleAnalyticsReadService = googleAnalyticsReadService;
-            _numOfTopBiobanks = Convert.ToInt32(Environment.GetEnvironmentVariable("metric-threshold"));
-            _eventThreshold = Convert.ToInt32(Environment.GetEnvironmentVariable("event-threshold"));
-            _filterByHost = Convert.ToBoolean(Environment.GetEnvironmentVariable("filterby-host"));
-            _hostname = Environment.GetEnvironmentVariable("directory-hostname");
+            _numOfTopBiobanks = _config.GetValue<int>("metric-threshold", 10);
+            _eventThreshold = _config.GetValue<int>("event-threshold", 30); 
+            _filterByHost = _config.GetValue<bool>("filterby-host", true); 
+            _hostname = _config.GetValue<string>("directory-hostname",""); 
         }
 
         public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
