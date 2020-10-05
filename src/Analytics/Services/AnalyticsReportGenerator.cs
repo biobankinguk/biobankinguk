@@ -9,20 +9,20 @@ namespace Analytics.Services
 {
     public class AnalyticsReportGenerator : IAnalyticsReportGenerator
     {
-        private readonly int numOfTopBiobanks; //default: 10
-        private readonly int eventThreshold; //default: 30
-        private readonly bool filterByHost; //default: true
-        private readonly string hostname;
+        private readonly int _numOfTopBiobanks; //default: 10
+        private readonly int _eventThreshold; //default: 30
+        private readonly bool _filterByHost; //default: true
+        private readonly string _hostname;
 
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
         public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService)
         {
             _googleAnalyticsReadService = googleAnalyticsReadService;
-            this.numOfTopBiobanks = Convert.ToInt32(Environment.GetEnvironmentVariable("metric-threshold"));
-            this.eventThreshold = Convert.ToInt32(Environment.GetEnvironmentVariable("event-threshold"));
-            this.filterByHost = Convert.ToBoolean(Environment.GetEnvironmentVariable("filterby-host"));
-            this.hostname = Environment.GetEnvironmentVariable("directory-hostname");
+            _numOfTopBiobanks = Convert.ToInt32(Environment.GetEnvironmentVariable("metric-threshold"));
+            _eventThreshold = Convert.ToInt32(Environment.GetEnvironmentVariable("event-threshold"));
+            _filterByHost = Convert.ToBoolean(Environment.GetEnvironmentVariable("filterby-host"));
+            _hostname = Environment.GetEnvironmentVariable("directory-hostname");
         }
 
         public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
@@ -30,7 +30,7 @@ namespace Analytics.Services
             var profileData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Profile/");
             var summary = _googleAnalyticsReadService.GetSummary(profileData);
             var ranking = _googleAnalyticsReadService.GetRankings(summary);
-            (var quarterLabels, var topPageViews) = _googleAnalyticsReadService.GetTopBiobanks(summary, ranking, biobankId, numOfTopBiobanks);
+            (var quarterLabels, var topPageViews) = _googleAnalyticsReadService.GetTopBiobanks(summary, ranking, biobankId, _numOfTopBiobanks);
             (var viewsPerQuarter, var viewsAvgs) = _googleAnalyticsReadService.GetQuarterlyAverages(summary, biobankId);
             (var pageRoutes, var routeCount) = _googleAnalyticsReadService.GetPageRoutes(profileData.Where(x => x.OrganisationExternalId == biobankId));
 
@@ -51,7 +51,7 @@ namespace Analytics.Services
             var bbSearchData = searchData.Where(x => x.OrganisationExternalId == biobankId);
             var summary = _googleAnalyticsReadService.GetSummary(searchData);
             var ranking = _googleAnalyticsReadService.GetRankings(summary);
-            (var quarterLabels, var topSearches) = _googleAnalyticsReadService.GetTopBiobanks(summary, ranking, biobankId, numOfTopBiobanks);
+            (var quarterLabels, var topSearches) = _googleAnalyticsReadService.GetTopBiobanks(summary, ranking, biobankId, _numOfTopBiobanks);
             (var searchPerQuarter, var searchAvgs) = _googleAnalyticsReadService.GetQuarterlyAverages(summary, biobankId);
             (var searchTypeLabels, var searchTypeCount) = _googleAnalyticsReadService.GetSearchBreakdown(bbSearchData,
                                                _googleAnalyticsReadService.GetSearchType);
@@ -79,7 +79,7 @@ namespace Analytics.Services
             var contactData = _googleAnalyticsReadService.FilterByEvent(eventData, "Add Contact to List");
             var summary = _googleAnalyticsReadService.GetSummary(contactData);
             var ranking = _googleAnalyticsReadService.GetRankings(summary);
-            (var quarterLabels, var topContactRequests) = _googleAnalyticsReadService.GetTopBiobanks(summary, ranking, biobankId, numOfTopBiobanks);
+            (var quarterLabels, var topContactRequests) = _googleAnalyticsReadService.GetTopBiobanks(summary, ranking, biobankId, _numOfTopBiobanks);
             (var requestsPerQuarter, var requestsAvgs) = _googleAnalyticsReadService.GetQuarterlyAverages(summary, biobankId);
 
             return new ContactRequestsDto
@@ -98,10 +98,10 @@ namespace Analytics.Services
             var eventData = await _googleAnalyticsReadService.GetDirectoryEventData(reportRange);
 
             //filter by host
-            if (filterByHost == true && !String.IsNullOrEmpty(hostname))
+            if (_filterByHost == true && !String.IsNullOrEmpty(_hostname))
             {
-                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData,hostname);
-                eventData = _googleAnalyticsReadService.FilterByHost(eventData, hostname);
+                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData,_hostname);
+                eventData = _googleAnalyticsReadService.FilterByHost(eventData, _hostname);
             }
 
             //var profileStatus = await GetProfileStatus(biobankId);
@@ -116,7 +116,7 @@ namespace Analytics.Services
                 Year = year,
                 EndQuarter = quarter,
                 ReportPeriod = period,
-                NumOfTopBiobanks = numOfTopBiobanks, //maybe get this from api call too
+                NumOfTopBiobanks = _numOfTopBiobanks, //maybe get this from api call too
                 ProfilePageViews = pageViews,
                 SearchActivity = searchActivity,
                 ContactRequests = contactRequests,
@@ -196,8 +196,8 @@ namespace Analytics.Services
             var contactData = _googleAnalyticsReadService.FilterByEvent(eventData, "Add Contact to List");
             var mailtoData = _googleAnalyticsReadService.FilterByEvent(eventData, "Mailto clicked");
             (var contactNumberLabels, var contactNumberCount) = _googleAnalyticsReadService.GetContactCount(contactData);
-            (var filteredContactLabels, var filteredContactCount) = _googleAnalyticsReadService.GetFilteredEventCount(contactData, eventThreshold);
-            (var filteredMailtoLabels, var filteredMailtoCount) = _googleAnalyticsReadService.GetFilteredEventCount(mailtoData, eventThreshold);
+            (var filteredContactLabels, var filteredContactCount) = _googleAnalyticsReadService.GetFilteredEventCount(contactData, _eventThreshold);
+            (var filteredMailtoLabels, var filteredMailtoCount) = _googleAnalyticsReadService.GetFilteredEventCount(mailtoData, _eventThreshold);
 
             return new EventStatDto { 
                 ContactNumberLabels = contactNumberLabels,
@@ -213,7 +213,7 @@ namespace Analytics.Services
         {
             var profileData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Profile/");
 
-            var profileSources = _googleAnalyticsReadService.GetPageSources(profileData, numOfTopBiobanks);
+            var profileSources = _googleAnalyticsReadService.GetPageSources(profileData, _numOfTopBiobanks);
             (var pageRoutes, var routeCount) = _googleAnalyticsReadService.GetPageRoutes(profileData);
             
 
@@ -228,21 +228,17 @@ namespace Analytics.Services
 
         public async Task<DirectoryAnalyticReportDto> GetDirectoryReport(int year, int quarter, int period)
         {
-
-            //TODO: REMOVE seed test data
-            //await _googleAnalyticsReadService.SeedTestData();
-
             var reportRange = _googleAnalyticsReadService.GetRelevantPeriod(year, quarter, period);
             var biobankData = await _googleAnalyticsReadService.GetAllBiobankData(reportRange);
             var eventData = await _googleAnalyticsReadService.GetDirectoryEventData(reportRange);
             var metricData = await _googleAnalyticsReadService.GetDirectoryMetricData(reportRange);
 
             //filter by host
-            if (filterByHost == true && !String.IsNullOrEmpty(hostname))
+            if (_filterByHost == true && !String.IsNullOrEmpty(_hostname))
             {
-                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData, hostname);
-                eventData = _googleAnalyticsReadService.FilterByHost(eventData, hostname);
-                metricData = _googleAnalyticsReadService.FilterByHost(metricData, hostname);
+                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData, _hostname);
+                eventData = _googleAnalyticsReadService.FilterByHost(eventData, _hostname);
+                metricData = _googleAnalyticsReadService.FilterByHost(metricData, _hostname);
             }
 
             var sessionStats = GetSessionStats(metricData);
@@ -256,8 +252,8 @@ namespace Analytics.Services
                 Year = year,
                 EndQuarter = quarter,
                 ReportPeriod = period,
-                NumOfTopBiobanks = numOfTopBiobanks, //maybe get this from api call too or config/env vars
-                EventsPerCityThreshold = eventThreshold, //maybe get this from api call too or config/env vars
+                NumOfTopBiobanks = _numOfTopBiobanks, //maybe get this from api call instead of config/env vars?
+                EventsPerCityThreshold = _eventThreshold, //maybe get this from api call instead of config/env vars?
 
                 SessionStats = sessionStats,
                 SessionSearchStats = sessionSearchStats,

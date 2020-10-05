@@ -66,8 +66,5 @@ namespace Analytics.Services.Contracts
         (IList<string>, IList<double>) GetWeightedAverage(IEnumerable<DirectoryAnalyticMetric> sessionData, Func<DirectoryAnalyticMetric, int> elementSelector);
         (IList<string>, IList<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold);
         IList<SourceCountDto> GetPageSources(IEnumerable<OrganisationAnalytic> biobankData, int numOfTopSources);
-
-        //REMOVE TEST FUNC
-        Task SeedTestData();
     }
 }

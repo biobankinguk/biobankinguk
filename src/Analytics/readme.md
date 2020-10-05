@@ -37,7 +37,7 @@ apikey :  string # can be found for example from the azure function's portal,
 ``` 
 
 
-## configuration
+## Configuration
 Definition of App configs:
 ```
 "analytics-apikey": JSON, # json object in Google Analytics key file, see section above 
@@ -55,6 +55,6 @@ Definition of App configs:
 
 
 # Further misc comments on the pipeline
--Code adapted from 'biobanks.analytics' repo in python. See for more information
+- Code adapted from 'biobanks.analytics' Azure DevOps repo (written in python). See for more information (relevant UoN people should have access)
 
 - when running EF migrations, the username and password should be filled/passed into "analyticsdb_connection" (as you'd have for a normal connection string) and passed as an env variable. This is expected by AnalyticsDbContext.cs during creation.

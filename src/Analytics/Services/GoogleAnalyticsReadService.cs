@@ -838,14 +838,5 @@ namespace Analytics.Services
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-
-        //Test Functions
-        public async Task SeedTestData()
-        {
-            var dateRange = new[] { new DateRange { StartDate = "2020-06-25", EndDate = DateTimeOffset.Now.ToString("2020-07-01") } };
-            await DownloadAllBiobankData(dateRange);
-            await DownloadDirectoryData(dateRange);
-        }
-
     }
 }
