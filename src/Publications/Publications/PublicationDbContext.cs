@@ -1,3 +1,4 @@
+using Directory.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ namespace Publications
         public PublicationDbContext(DbContextOptions<PublicationDbContext> options) : base(options) { }
 
         public DbSet<Publication> Publications { get; set; }
+        public DbSet<Organisation> Organisations { get; set; }
     }
 
     /*  Required for DesignTime creation of the context. Used for running EF migrations in CLI and devops pipelines. */

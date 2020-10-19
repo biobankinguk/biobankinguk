@@ -9,6 +9,6 @@ namespace Publications.Services
     {
         Task<IEnumerable<PublicationDto>> GetOrganisationPublications(string organisationName);
 
-        Task AddOrganisationPublications(string organisationName, IEnumerable<PublicationDto> publications);
+        Task AddOrganisationPublications(int organisationId, IEnumerable<PublicationDto> publications);
     }
 }

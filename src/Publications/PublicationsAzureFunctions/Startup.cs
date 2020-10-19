@@ -12,6 +12,8 @@ using Publications;
 using Publications.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.SqlServer;
+using Directory.Data.Repositories;
+using Directory.Data.Entities;
 
 [assembly: FunctionsStartup(typeof(PublicationsAzureFunctions.Startup))]
 
@@ -28,10 +30,10 @@ namespace PublicationsAzureFunctions
 
             // Populate connection string with credentials
             var sqlConnection = _configuration.GetConnectionString("sqldb-connection");
-            var sqlUsername = _configuration.GetValue("sqldb-username", "");
-            var sqlPassword = _configuration.GetValue("sqldb-password", "");
+            //var sqlUsername = _configuration.GetValue("sqldb-username", "");
+            //var sqlPassword = _configuration.GetValue("sqldb-password", "");
 
-            sqlConnection = String.Format(sqlConnection, sqlUsername, sqlPassword);
+            //sqlConnection = String.Format(sqlConnection, sqlUsername, sqlPassword);
 
             // Register DbContext
             builder.Services.AddDbContext<PublicationDbContext>(options =>
@@ -41,7 +43,8 @@ namespace PublicationsAzureFunctions
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEpmcService, EpmcWebService>();
             builder.Services.AddScoped<IPublicationService, PublicationService>();
-            builder.Services.AddScoped<IBiobankService, BiobankWebService>();
+            builder.Services.AddScoped<IBiobankReadService, BiobankReadService>();
+            builder.Services.AddScoped<IGenericEFRepository<Organisation>, GenericEFRepository<Organisation>>();
             builder.Services.AddTransient<FetchPublicationsService>();
         }
     }
