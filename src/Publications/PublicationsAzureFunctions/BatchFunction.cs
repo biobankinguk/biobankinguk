@@ -22,7 +22,7 @@ namespace PublicationsAzureFunctions
 
         //Configured to run every 24 hours
         [FunctionName("BatchFunction")]
-        public async Task Run([TimerTrigger("0 0 0 * * *", RunOnStartup =true)]TimerInfo myTimer, ILogger log)
+        public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
