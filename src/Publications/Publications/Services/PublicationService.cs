@@ -21,7 +21,6 @@ namespace Publications.Services
             _ctx = ctx;
         }
 
-        //TODO: Use IGeneric Repository
         public async Task AddOrganisationPublications(int organisationId, IEnumerable<PublicationDto> publications)
         {
             var existingPublications = _ctx.Publications.Where(x => x.OrganisationId == organisationId);

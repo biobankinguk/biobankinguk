@@ -1,5 +1,5 @@
 ﻿using Directory.Data.Entities;
-using Directory.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Publications.Services.Contracts;
@@ -13,22 +13,21 @@ namespace Publications.Services
 {
     public class BiobankReadService : IBiobankReadService
     {
-        private readonly IGenericEFRepository<Organisation> _organisationRepository;
+        private PublicationDbContext _ctx;
 
         public BiobankReadService(
-            IGenericEFRepository<Organisation> organisationRepository)
+            PublicationDbContext ctx)
         {
-            _organisationRepository = organisationRepository;
+            _ctx = ctx;
         }
 
-        public async Task<IEnumerable<Organisation>> ListBiobanksAsync(string wildcard = "",
+        public async Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "",
                 bool includeSuspended = true)
-            => await _organisationRepository.ListAsync(
-                false,
+            => await _ctx.Organisations.Where(
                 x => x.Name.Contains(wildcard) &&
-                (includeSuspended || x.IsSuspended == false));
+                (includeSuspended || x.IsSuspended == false)).ToListAsync();
 
-        public async Task<List<string>> GetOrganisationNames()
+        public async Task<IList<string>> GetOrganisationNames()
             => (await ListBiobanksAsync()).Select(x => x.Name).ToList();
 
     }

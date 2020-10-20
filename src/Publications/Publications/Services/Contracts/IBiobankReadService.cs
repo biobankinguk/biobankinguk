@@ -6,7 +6,7 @@ namespace Publications.Services.Contracts
 {
     public interface IBiobankReadService
     {
-        Task<List<string>> GetOrganisationNames();
-        Task<IEnumerable<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true);
+        Task<IList<string>> GetOrganisationNames();
+        Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true);
     }
 }
