@@ -1,0 +1,10 @@
+{
+  //Order is important; it determines id
+  "Organisation": [
+    "TestBiobank",
+    "TestBiobank2",
+    "TestBiobank3",
+    "TestBiobank4",
+    "InteractiveSoftware"
+  ]
+}
