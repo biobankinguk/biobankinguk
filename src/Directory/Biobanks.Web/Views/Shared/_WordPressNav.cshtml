@@ -1,0 +1,16 @@
+@using Biobanks.Web.ApiClientModels
+@model IEnumerable<WordPressNavItem>
+
+@foreach (var menuItem in Model)
+{
+	if (menuItem.Children?.Count() > 0)
+	{
+		@* Dropdown Menu Item *@
+		@Html.Partial("_WordpressNavDropDown", menuItem);
+	}
+	else
+	{
+		@* Regular Menu Item *@
+		@Html.Partial("_WordpressNavMenuItem", menuItem);
+	}
+}

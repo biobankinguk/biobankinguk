@@ -1,0 +1,32 @@
+﻿@model Biobanks.Web.Models.Biobank.AbstractCRUDWithAssociatedDataModel
+
+<div class="col-sm-offset-1 col-sm-10">
+    <h4>Associated data <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-associateddata"></span></h4>
+</div>
+
+<div class="row">
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Data type</th>
+                        <th colspan="4">Provision time (months)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Groups.Count(); i++)
+                    {
+                        <tr><td colspan="5" class="info">@Html.Raw(Model.Groups[i].Name)</td></tr>
+                        for (int j = 0; j < Model.Groups[i].Types.Count(); j++)
+                        {
+                          @Html.EditorFor(x => Model.Groups[i].Types[j])               
+                        }
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>

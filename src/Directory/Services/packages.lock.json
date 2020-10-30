@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "dependencies": {
+    ".NETFramework,Version=v4.7.2": {
+      "AutoMapper": {
+        "type": "Direct",
+        "requested": "[10.0.0, )",
+        "resolved": "10.0.0",
+        "contentHash": "T09NoqMZBqw0/JEauXulxnmmerl0Zj03e0r6VCcJ0LURWBIaYxZPPoiDv8bHf5Y4x2xcXJp4JPXoCaeOMJfHEA=="
+      },
+      "Castle.Core": {
+        "type": "Direct",
+        "requested": "[4.4.1, )",
+        "resolved": "4.4.1",
+        "contentHash": "zanbjWC0Y05gbx4eGXkzVycOQqVOFVeCjVsDSyuao9P4mtN1w3WxxTo193NGC7j3o2u3AJRswaoC6hEbnGACnQ=="
+      },
+      "ExcelDataReader.DataSet": {
+        "type": "Direct",
+        "requested": "[3.6.0, )",
+        "resolved": "3.6.0",
+        "contentHash": "miW3sWmPXnLM38YadRIfnhL4W4QZajpS6Q/OqsOpFJU5ct8h+M/fMpbGMm5INtsMP0Y1k0WK0stIfSW3RP31Xg==",
+        "dependencies": {
+          "ExcelDataReader": "3.6.0"
+        }
+      },
+      "Hangfire": {
+        "type": "Direct",
+        "requested": "[1.7.11, )",
+        "resolved": "1.7.11",
+        "contentHash": "nLQ9BsLdv0RCLwUjtd2cG9okTlOsf1KiJqQx9x1IAU1FXozDEQint2XGgPYcz4azFGEfprBGYLWKcCtzjo72iA==",
+        "dependencies": {
+          "Hangfire.Core": "[1.7.11]",
+          "Hangfire.SqlServer": "[1.7.11]",
+          "Microsoft.Owin.Host.SystemWeb": "3.0.0"
+        }
+      },
+      "ImageResizer": {
+        "type": "Direct",
+        "requested": "[4.2.5, )",
+        "resolved": "4.2.5",
+        "contentHash": "pqNwRZFTEV6h+ZoHvNolnbIMHEu7xWw+z35l8ldlk7qb+Pw5hiNEY5cHg0JsmcXoYGJBo+mOP7KVj57lkb4GtA=="
+      },
+      "Postal.Mvc5": {
+        "type": "Direct",
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "le4HMYmokyyVHOlnRoqKhkO/oCr+3wmO4nDdve59EXREkNagkaIy7jsNs5aSDHV3obT/hS8X7SJLHBzt8hAAMg==",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "5.1.2",
+          "RazorEngine": "3.4.1"
+        }
+      },
+      "SendGrid": {
+        "type": "Direct",
+        "requested": "[9.17.0, )",
+        "resolved": "9.17.0",
+        "contentHash": "9s5YdEP/7o0PgHmmaRYfu4zsg2IneAV9ljR++bn+FPmtTg8702RAjpaa9Vrc5ofNZrsNlcZ7j0AgvXc63GXNeg==",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        }
+      },
+      "Elasticsearch.Net": {
+        "type": "Transitive",
+        "resolved": "7.8.1",
+        "contentHash": "vGHlxY72LH8/DcKb/QDpvrIelQIUFxNnXa+HmS/ifX7M7dgwmTpA2i4SagQ65gg7oi088cteUuDl4fKIystg7Q==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.6.0",
+          "System.Buffers": "4.5.0",
+          "System.Diagnostics.DiagnosticSource": "4.5.1"
+        }
+      },
+      "EntityFramework": {
+        "type": "Transitive",
+        "resolved": "6.4.4",
+        "contentHash": "yj1+/4tci7Panu3jKDHYizxwVm0Jvm7b7m057b5h4u8NUHGCR8WIWirBTw+8EptRffwftIWPBeIRGNKD1ewEMQ=="
+      },
+      "ExcelDataReader": {
+        "type": "Transitive",
+        "resolved": "3.6.0",
+        "contentHash": "eXyxTwG7EEWpgQX3juZ2KcndqTqm/ydx9GXS2lUiMJU54U4h5eXdygRtVgINv0t60ezPWEb+lL7uM7Q+wm5BBA=="
+      },
+      "Hangfire.Core": {
+        "type": "Transitive",
+        "resolved": "1.7.11",
+        "contentHash": "/v+INBYRJJzMt5CPi+qFRsikYjbwUweBwLKGPc9PnDjD1o8MhQ5Ggx2/EOhavkQRwFgBRk5y3jCiD1HKR/WBPw==",
+        "dependencies": {
+          "Newtonsoft.Json": "5.0.1",
+          "Owin": "1.0.0"
+        }
+      },
+      "Hangfire.SqlServer": {
+        "type": "Transitive",
+        "resolved": "1.7.11",
+        "contentHash": "JoW+UgVOwmB2ZNlt0+gt/FdHfzm79ZtjCFIKv9Zt3tO/aOJ6tHLLG8WTLevUi5PFy94NvPLEzsMvEd6dx0tTbQ==",
+        "dependencies": {
+          "Hangfire.Core": "[1.7.11]"
+        }
+      },
+      "Microsoft.AspNet.Identity.Core": {
+        "type": "Transitive",
+        "resolved": "2.2.3",
+        "contentHash": "Mv5FpoaxspE8hlWLE4r1IdZtovg/OyFgVRhxQbx47J4sqdLImN1hnM1lnwCj+/wLmqtqFk/RYMoZ5GAcwm/00g=="
+      },
+      "Microsoft.AspNet.Identity.EntityFramework": {
+        "type": "Transitive",
+        "resolved": "2.2.3",
+        "contentHash": "dt4XZChjw3a6jE66Yd6LkF9omspxi0A9lJpwBZz8Wl1sabOS6dlLP1OOTVuUjtPaoAshjoIzvS6DFRQdPyq55g==",
+        "dependencies": {
+          "EntityFramework": "6.1.0",
+          "Microsoft.AspNet.Identity.Core": "2.2.3"
+        }
+      },
+      "Microsoft.AspNet.Identity.Owin": {
+        "type": "Transitive",
+        "resolved": "2.2.3",
+        "contentHash": "gNr7dQGE23hAtWmSZVmKPJ+DKBw/obh68Ub7M5cCUiRNAqg6+6Jb3T7en4Fuw8R/8H5/sIsecrfT3MbK2/FzEg==",
+        "dependencies": {
+          "Microsoft.AspNet.Identity.Core": "2.2.3",
+          "Microsoft.Owin.Security": "3.0.1",
+          "Microsoft.Owin.Security.Cookies": "3.0.1",
+          "Microsoft.Owin.Security.OAuth": "3.0.1"
+        }
+      },
+      "Microsoft.AspNet.Mvc": {
+        "type": "Transitive",
+        "resolved": "5.1.2",
+        "contentHash": "Ca4JK3k25lzSdVBBWeOKF2YTbt02ehiBmwGU+ySFrx0vZyBc3s9n3l33OZz+MFO1titA8hs0baITlPX3uy49Kg==",
+        "dependencies": {
+          "Microsoft.AspNet.Razor": "[3.1.2, 3.2.0)",
+          "Microsoft.AspNet.WebPages": "[3.1.2, 3.2.0)"
+        }
+      },
+      "Microsoft.AspNet.Razor": {
+        "type": "Transitive",
+        "resolved": "3.1.2",
+        "contentHash": "3KNsIk7cSJUNnlo451QY5X1ysszf4B7XDFjrO0ezQzXLWiQ1BW+xYuV26EuFyr5j8c0EKJPPEf98A6ABu8cPLQ=="
+      },
+      "Microsoft.AspNet.WebPages": {
+        "type": "Transitive",
+        "resolved": "3.1.2",
+        "contentHash": "EIMUfOfNQCq8sM1G9AdW6aOZ1s5vdLNSYj26SAAUz0rqERl6n8MP7ONsJmOy6mCJhhupapN/R5O8JupCMsA/ng==",
+        "dependencies": {
+          "Microsoft.AspNet.Razor": "[3.1.2, 3.2.0)",
+          "Microsoft.Web.Infrastructure": "1.0.0"
+        }
+      },
+      "Microsoft.CSharp": {
+        "type": "Transitive",
+        "resolved": "4.7.0",
+        "contentHash": "pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA=="
+      },
+      "Microsoft.Owin": {
+        "type": "Transitive",
+        "resolved": "3.0.1",
+        "contentHash": "64yZsGN9uRnXNVAyAT4F6KWmdDUJ6yX4uqzxKTdGANKH1oMt0IKZ7THRRa3mXIOo8iSu4tq/DCBUycUY9pXZzw==",
+        "dependencies": {
+          "Owin": "1.0.0"
+        }
+      },
+      "Microsoft.Owin.Host.SystemWeb": {
+        "type": "Transitive",
+        "resolved": "3.0.0",
+        "contentHash": "MK7tSToRPgLgPpBXczM7bq1Z93yvPTuwkYwHMRKnwLwXX1+4phK/JqyAGPoHKIxZLiMOmY6J+KEDCRtJq7HiSg==",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.0",
+          "Owin": "1.0.0"
+        }
+      },
+      "Microsoft.Owin.Security": {
+        "type": "Transitive",
+        "resolved": "3.0.1",
+        "contentHash": "LPoUxaTKzmjs97wDCTtBIoRwp30Jkq9UFnoj+EfMFJv+XxjcvHE/D573LRomA568WhvXoI2cUiwhZFvqfbLMVg==",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Owin": "1.0.0"
+        }
+      },
+      "Microsoft.Owin.Security.Cookies": {
+        "type": "Transitive",
+        "resolved": "3.0.1",
+        "contentHash": "l2GRNvO4oyxfpmWtfUYvN3fA4jWduE84UCNqWTj6yhYDSE76wI+W022qTTEMr0VoCDiJ0GGYdvAjQm3xbSsB9Q==",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Microsoft.Owin.Security": "3.0.1",
+          "Owin": "1.0.0"
+        }
+      },
+      "Microsoft.Owin.Security.OAuth": {
+        "type": "Transitive",
+        "resolved": "3.0.1",
+        "contentHash": "wttlhNSijhsrF7iwxYzxhTr8AYxXI6qoiw3b6dhVhqXOYCDp8OQ5yhHFtWlst+65l7VHduXassspZ974rtLMaw==",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Microsoft.Owin.Security": "3.0.1",
+          "Newtonsoft.Json": "6.0.4",
+          "Owin": "1.0.0"
+        }
+      },
+      "Microsoft.Web.Infrastructure": {
+        "type": "Transitive",
+        "resolved": "1.0.0",
+        "contentHash": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg=="
+      },
+      "NEST": {
+        "type": "Transitive",
+        "resolved": "7.8.1",
+        "contentHash": "GVpHMDeVGMxHy0EVzJpPanT7g88kMGV9zUsO/l0P2ZnhDJ1rxEsd0ElkjR2O5vBwp7WuPgNssSUSP9qVc94ybw==",
+        "dependencies": {
+          "Elasticsearch.Net": "7.8.1"
+        }
+      },
+      "Newtonsoft.Json": {
+        "type": "Transitive",
+        "resolved": "12.0.3",
+        "contentHash": "6mgjfnRB4jKMlzHSl+VD+oUc1IebOZabkbyWj2RiTgWwYPPuaK1H97G1sHqGwPlS5npiF5Q0OrxN1wni2n5QWg=="
+      },
+      "Owin": {
+        "type": "Transitive",
+        "resolved": "1.0.0",
+        "contentHash": "OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw=="
+      },
+      "RazorEngine": {
+        "type": "Transitive",
+        "resolved": "3.4.1",
+        "contentHash": "9e/X1RPpru2ipBXE5K90XFLyeB29hWMS0hU73WoTx1T3+JhxU6RgViJqLx76roPZPNVWOVp6qGUclsP30TjFWw==",
+        "dependencies": {
+          "Microsoft.AspNet.Razor": "3.0.0"
+        }
+      },
+      "System.Buffers": {
+        "type": "Transitive",
+        "resolved": "4.5.0",
+        "contentHash": "pL2ChpaRRWI/p4LXyy4RgeWlYF2sgfj/pnVMvBqwNFr5cXg7CXNnWZWxrOONLg8VGdFB8oB+EG2Qw4MLgTOe+A=="
+      },
+      "System.Diagnostics.DiagnosticSource": {
+        "type": "Transitive",
+        "resolved": "4.5.1",
+        "contentHash": "zCno/m44ymWhgLFh7tELDG9587q0l/EynPM0m4KgLaWQbz/TEKvNRX2YT5ip2qXW/uayifQ2ZqbnErsKJ4lYrQ=="
+      },
+      "System.Runtime.Caching": {
+        "type": "Transitive",
+        "resolved": "4.7.0",
+        "contentHash": "NdvNRjTPxYvIEhXQszT9L9vJhdQoX6AQ0AlhjTU+5NqFQVuacJTfhPVAvtGWNA2OJCqRiR/okBcZgMwI6MqcZg=="
+      },
+      "Biobanks.Directory.Data": {
+        "type": "Project",
+        "dependencies": {
+          "Biobanks.Directory.Entity": "1.0.0",
+          "EntityFramework": "6.4.4",
+          "Newtonsoft.Json": "12.0.3",
+          "System.Runtime.Caching": "4.7.0"
+        }
+      },
+      "Biobanks.Directory.Entity": {
+        "type": "Project",
+        "dependencies": {
+          "EntityFramework": "6.4.4"
+        }
+      },
+      "Biobanks.Directory.Identity": {
+        "type": "Project",
+        "dependencies": {
+          "Biobanks.Directory.Data": "1.0.0",
+          "Biobanks.Directory.Entity": "1.0.0",
+          "EntityFramework": "6.4.4",
+          "Microsoft.AspNet.Identity.Core": "2.2.3",
+          "Microsoft.AspNet.Identity.EntityFramework": "2.2.3",
+          "Microsoft.AspNet.Identity.Owin": "2.2.3",
+          "Microsoft.CSharp": "4.7.0",
+          "Newtonsoft.Json": "12.0.3"
+        }
+      },
+      "Biobanks.Directory.Search": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "NEST": "7.8.1",
+          "Newtonsoft.Json": "12.0.3"
+        }
+      }
+    }
+  }
+}

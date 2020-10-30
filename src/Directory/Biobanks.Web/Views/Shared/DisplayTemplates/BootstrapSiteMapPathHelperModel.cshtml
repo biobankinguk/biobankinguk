@@ -1,0 +1,55 @@
+﻿@using System.Linq
+@using Directory.Data.Constants;
+@using Biobanks.Web.Utilities
+@model MvcSiteMapProvider.Web.Html.Models.SiteMapPathHelperModel
+
+@if (Model.Nodes.Count > 1)
+{
+    <nav role="navigation">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="breadcrumb">
+                        @foreach (var node in Model.Nodes)
+                        {
+                            if (node.Title == "ActiveOrganisationName")
+                            {
+                                var organisationTypeName = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]) == (int)ActiveOrganisationType.Biobank ? "Biobank" : "Network";
+                                <li>@Html.ActionLink(Session[SessionKeys.ActiveOrganisationName].ToString(), "Edit", organisationTypeName)</li>
+                            }
+                            else
+                            {
+                                if (node != Model.Nodes.Last())
+                                {
+                                    var url = node.IsClickable ? node.Url : "#";
+                                    <li><a href="@node.Url">@node.Title</a><span class="divider"></span></li>
+                                }
+                                else
+                                {
+
+                                    switch (node.Title)
+                                    {
+                                        case "Preservation Types":
+                                            <li class="active">@App.Config[ConfigKey.PreservationTypeName]</li>
+                                            break;
+                                        case "Donor Counts":
+                                            <li class="active">@App.Config[ConfigKey.DonorCountName]</li>
+                                            break;
+                                        case "Macroscopic Assessments":
+                                            <li class="active">@App.Config[ConfigKey.MacroscopicAssessmentName]</li>
+                                            break;
+                                        default:
+                                            <li class="active">@node.Title</li>
+                                            break;
+
+                                    }
+
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+}

@@ -1,0 +1,67 @@
+﻿@using System.Linq
+@using System.Web.Optimization
+@model Biobanks.Web.Models.Network.NetworkBiobanksModel
+
+@{
+    ViewBag.Title = "Network biobanks";
+}
+
+@Html.Partial("_NetworkTabs", "Biobanks")
+
+<h3>Biobanks in your Network @Html.ActionLink("Add a new Biobank", "AddBiobank", null, new { @class = "btn btn-success pull-right" })</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br/>
+        @if (Model.Biobanks.Any())
+        {
+            <table id="network-biobanks" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Biobank</th>
+                    <th>Admins</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                @foreach (var biobank in Model.Biobanks)
+                {
+                    <tr>
+                        <td class="">
+                            @biobank.Name
+
+                            <a href="@Url.Action("DeleteBiobank", new {biobankId = biobank.BiobankId, biobankName = biobank.Name})"
+                               class="pull-right confirm-delete"
+                               data-biobank-name="@biobank.Name">
+                                <span class="fa fa-trash"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <ul class="list-unstyled">
+                                @foreach (var admin in biobank.Admins)
+                                {
+                                    <li><span class="fa fa-user labelled-icon"></span>@admin</li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are no Biobanks in your Network yet.
+                @Html.ActionLink("Add a new Biobank now", "AddBiobank")
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/bootbox")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/network/biobanks")
+}

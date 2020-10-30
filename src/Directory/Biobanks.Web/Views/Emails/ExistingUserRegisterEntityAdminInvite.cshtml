@@ -1,0 +1,32 @@
+﻿@using System.Configuration
+@using Biobanks.Web.HtmlHelpers
+@{
+	var directoryName = @ConfigurationManager.AppSettings["DirectoryName"];
+
+	// Format Email Header {"<Name>" <Address>}
+	var emailFrom = String.Format(@"""{0}"" {1}",
+		ConfigurationManager.AppSettings["EmailFromName"],
+		ConfigurationManager.AppSettings["EmailFromAddress"]
+		);
+
+	// Format Email Subject
+	var emailSubject = Html.IsProductionEnvironment()
+		? $"{directoryName} {ViewBag.Entity} Administration"
+		: $"{directoryName} {ViewBag.Entity} Administration  (Environment: {Html.EnvironmentName()})";
+}
+
+Content-Type: text/plain; charset=utf-8
+To: @ViewBag.To
+From: @emailFrom
+Subject: @emailSubject
+
+Dear @Html.Raw(ViewBag.Name)
+
+You've been invited to become an admin for @Html.Raw(ViewBag.Entity) at the @directoryName.
+
+Please use this link below to login and manage @Html.Raw(ViewBag.Entity):
+
+@Html.Raw(ViewBag.Link)
+
+Regards,
+@ConfigurationManager.AppSettings["EmailSignature"]

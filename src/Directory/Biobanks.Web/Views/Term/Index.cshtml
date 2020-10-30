@@ -1,0 +1,59 @@
+﻿@using System.Web.Optimization
+@using Biobanks.Web.HtmlHelpers
+@using System.Configuration
+@model Biobanks.Web.Models.Shared.TermPageModel
+
+@{
+    ViewBag.Title = "Terms";
+}
+<br />
+<a>
+    <img src="@Url.Content("~/Content/images/snomed_brand_master_CMYK-768x226.png")" class="logo" width="300" />
+</a>
+<p>
+    <br />
+    <br />
+    @Html.Markdown(Model.TermpageContentModel.PageInfo)
+</p>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br />
+        <table id="disease-terms" class="table table-striped table-fixed">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Other Terms</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var diagnosisModel in Model.DiagnosesModel)
+                {
+                    foreach (var diagnosis in diagnosisModel.Diagnoses)
+                    {
+                        if (diagnosis.CollectionCapabilityCount > 0)
+                        {
+                            <tr class="@(diagnosis.CollectionCapabilityCount > 0 ? "info" : "")">
+                                <td>
+                                    <div class="wrappable-td">@Html.DisplayFor(x => diagnosis.Description)</div>
+                                </td>
+                                <td>@Html.DisplayFor(x => diagnosis.OtherTerms)</td>
+                                <td><a href="@Url.Action("Collections", "Search", new {diagnosis = diagnosis.Description})"><center>Search</center></a></td>
+                            </tr>
+                        }
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/term/diseasetable")
+}

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+
+  <mvcSiteMapNode title="Home" controller="Home" action="Index">
+    <mvcSiteMapNode title="ActiveOrganisationName" url="#">
+      <mvcSiteMapNode title="Collections" controller="Biobank" action="Collections">
+        <mvcSiteMapNode title="Add collection" controller="Biobank" action="AddCollection"/>
+        <mvcSiteMapNode title="Edit collection" controller="Biobank" action="EditCollection" preservedRouteParameters="id"/>
+        <mvcSiteMapNode title="Collection" controller="Biobank" action="Collection" preservedRouteParameters="id">
+          <mvcSiteMapNode title="Add sample set" controller="Biobank" action="AddSampleSet" preservedRouteParameters="id"/>
+          <mvcSiteMapNode title="Copy sample set" controller="Biobank" action="CopySampleSet" preservedRouteParameters="id"/>
+          <mvcSiteMapNode title="Sample set" controller="Biobank" action="SampleSet" preservedRouteParameters="id">
+            <mvcSiteMapNode title="Edit sample set" controller="Biobank" action="EditSampleSet" preservedRouteParameters="id"/>
+          </mvcSiteMapNode>
+        </mvcSiteMapNode>
+      </mvcSiteMapNode>
+
+      <mvcSiteMapNode title="Capabilities" controller="Biobank" action="Capabilities">
+        <mvcSiteMapNode title="Add capability" controller="Biobank" action="AddCapability"/>
+        <mvcSiteMapNode title="Capability" controller="Biobank" action="Capability" preservedRouteParameters="id">
+          <mvcSiteMapNode title="Edit capability" controller="Biobank" action="EditCapability" preservedRouteParameters="id"/>
+        </mvcSiteMapNode>
+      </mvcSiteMapNode>
+
+      <mvcSiteMapNode title="Publications" controller="Biobank" action="Publications" />
+
+      <mvcSiteMapNode title="Sample resource details" controller="Biobank" action="Index">
+        <mvcSiteMapNode title="Edit sample resource details" controller="Biobank" action="Edit"/>
+      </mvcSiteMapNode>
+      <mvcSiteMapNode title="Admins" controller="Biobank" action="Admins"/>
+      <mvcSiteMapNode title="Funders" controller="Biobank" action="Funders"/>
+      <mvcSiteMapNode title="Annual stats" controller="Biobank" action="AnnualStats"/>
+      <mvcSiteMapNode title="Analytics" controller="Biobank" action="Analytics"/>
+
+      <mvcSiteMapNode title="Network details" controller="Network" action="Index">
+        <mvcSiteMapNode title="Edit network details" controller="Network" action="Edit"/>
+      </mvcSiteMapNode>
+      <mvcSiteMapNode title="Network admins" controller="Network" action="Admins"/>
+      <mvcSiteMapNode title="Biobanks in your network" controller="Network" action="Biobanks">
+        <mvcSiteMapNode title="Add a biobank to your network" controller="Network" action="AddBiobank"/>
+      </mvcSiteMapNode>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Contact Biobanks" controller="Home" action="Contact"/>
+    <mvcSiteMapNode title="Cookie policy" controller="Home" action="Cookies"/>
+
+    <mvcSiteMapNode title="Collection search" controller="Search" action="Collections"/>
+    <mvcSiteMapNode title="Capability search" controller="Search" action="Capabilities"/>
+
+    <mvcSiteMapNode title="Login" controller="Account" action="Login"/>
+    <mvcSiteMapNode title="Forgot password" controller="Account" action="ForgotPassword"/>
+    <mvcSiteMapNode title="Set a new password" controller="Account" action="ResetPassword"/>
+
+    <mvcSiteMapNode title="Register a new sample resource" controller="Register" action="Biobank"/>
+    <mvcSiteMapNode title="Register a new network" controller="Register" action="Network"/>
+
+    <mvcSiteMapNode title="Account details" controller="Account" action="Index">
+      <mvcSiteMapNode title="Edit account details" controller="Account" action="Edit"/>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Requests" controller="ADAC" action="Requests"/>
+    <mvcSiteMapNode title="Request history" controller="ADAC" action="Historical"/>
+    <mvcSiteMapNode title="Biobanks" controller="ADAC" action="Biobanks"/>
+    <mvcSiteMapNode title="Biobank Activity" controller="ADAC" action="BiobankActivity"/>
+    <mvcSiteMapNode title="Networks" controller="ADAC" action="Networks"/>
+    <mvcSiteMapNode title="Disease statuses" controller="ADAC" action="DiseaseStatuses"/>
+    <mvcSiteMapNode title="Funders" controller="ADAC" action="Funders"/>
+    
+    <!-- ADAC Reference Data -->
+    <mvcSiteMapNode title="Access Conditions" controller="ADAC" action="AccessConditions"/>
+    <mvcSiteMapNode title="Age Ranges" controller="ADAC" action="AgeRanges"/>
+    <mvcSiteMapNode title="Annual Statistics" controller="ADAC" action="AnnualStatistics"/>
+    <mvcSiteMapNode title="Annual Statistic Groups" controller="ADAC" action="AnnualStatisticGroups"/>
+    <mvcSiteMapNode title="Associated Data Types" controller="ADAC" action="AssociatedDataTypes"/>
+	  <mvcSiteMapNode title="Registration Reasons" controller="ADAC" action="RegistrationReason"/>
+    <mvcSiteMapNode title="Counties" controller="ADAC" action="County"/>
+    <mvcSiteMapNode title="Countries" controller="ADAC" action="Country"/>
+    <mvcSiteMapNode title="Collection Percentages" controller="ADAC" action="CollectionPercentages"/>
+    <mvcSiteMapNode title="Collection Points" controller="ADAC" action="CollectionPoints"/>
+    <mvcSiteMapNode title="Donor Counts" controller="ADAC" action="DonorCounts"/>
+    <mvcSiteMapNode title="Hta Statuses" controller="ADAC" action="HtaStatus"/>
+    <mvcSiteMapNode title="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
+    <mvcSiteMapNode title="Material Types" controller="ADAC" action="MaterialTypes"/>
+    <mvcSiteMapNode title="Preservation Types" controller="ADAC" action="PreservationTypes"/>
+    <mvcSiteMapNode title="Sample Collection Modes" controller="ADAC" action="SampleCollectionModes"/>
+    <mvcSiteMapNode title="Sexes" controller="ADAC" action="Sexes"/>
+    <mvcSiteMapNode title="Service Offerings" controller="ADAC" action="ServiceOffering"/>
+    <mvcSiteMapNode title="Sop Status" controller="ADAC" action="SopStatus"/>
+	  <mvcSiteMapNode title="Consent Restrictions" controller="ADAC" action="ConsentRestriction"/>
+	  <mvcSiteMapNode title="Collection Statuses" controller="ADAC" action="CollectionStatus"/>
+	  <mvcSiteMapNode title="Collection Types" controller="ADAC" action="CollectionType"/>
+	  <mvcSiteMapNode title="Associated Data Procurement Time Frame" controller="ADAC" action="AssociatedDataProcurementTimeFrame"/>
+    <mvcSiteMapNode title="Edit homepage" controller="ADAC" action="EditContent" preservedRouteParameters="id"/>
+    <mvcSiteMapNode title="Message of the day" controller="ADAC" action="EditMotd"/>
+    
+    <!-- Site Configuration -->
+    <mvcSiteMapNode title="Homepage Configuration" controller="ADAC" action="HomepageConfig"/>
+    <mvcSiteMapNode title="Term Page Configuration" controller="ADAC" action="TermpageConfig"/>
+    <mvcSiteMapNode title="Register Biobank Configuration" controller="ADAC" action="RegisterBiobankConfig"/>
+    <mvcSiteMapNode title="Register Network Configuration" controller="ADAC" action="RegisterNetworkConfig"/>
+    <mvcSiteMapNode title="Theme Configuration" controller="ADAC" action="ThemeConfig"/>
+    <mvcSiteMapNode title="Site Configuration" controller="ADAC" action="SiteConfig"/>
+    <mvcSiteMapNode title="Sample Resource Configuration" controller="ADAC" action="SampleResourceConfig"/>
+    
+  </mvcSiteMapNode>
+</mvcSiteMap>

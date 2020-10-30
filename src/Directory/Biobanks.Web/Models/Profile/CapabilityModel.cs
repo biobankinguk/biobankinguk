@@ -1,0 +1,11 @@
+namespace Biobanks.Web.Models.Profile
+{
+    public class CapabilityModel
+    {
+        public int Id { get; set; }
+
+        public string Diagnosis { get; set; }
+
+        public string Protocols { get; set; }
+    }
+}

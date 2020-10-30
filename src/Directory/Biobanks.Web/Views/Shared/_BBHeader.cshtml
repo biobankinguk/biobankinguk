@@ -1,0 +1,213 @@
+@using Directory.Identity.Constants
+@using Newtonsoft.Json
+@using System.Configuration
+@using System.Collections.Generic
+@using Biobanks.Web.Extensions
+
+<!-- START Display Upgrade Message for IE 10 or Less -->
+<!-- [if lte IE 9]>
+<div style="background: #000; text-align: center; position: absolute; top: 0px; width: 100%; color: #FFF;">This website may not be compatible with your outdated Internet Explorer version. <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie" target="_blank" style="color: #fff; text-decoration: underline;">Please upgrade here.</a></div>
+<![endif]-->
+<script>
+	// IF THE BROWSER IS INTERNET EXPLORER 10
+	if (navigator.appVersion.indexOf("MSIE 10") !== -1) {
+		document.write(
+			'<div style = "background: #000; text-align: center; position: absolute; top: 0px; width: 100%; color: #FFF;">' +
+			'This website may not be compatible with your outdated Internet Explorer version. ' +
+			'<a href = "http://windows.microsoft.com/en-us/internet-explorer/download-ie" target = "_blank" style = "color: #fff; text-decoration: underline;">' +
+			'Please upgrade here.</a></div>');
+	}
+	// ]]></script>
+<!-- END Display Upgrade Message for IE 10 or Less -->
+
+<nav class="navbar navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header row">
+
+			<!-- Header Logo -->
+			<div class="navbar-logo col-md-2 col-lg-2">
+				<a href="/">
+					<img src="@Url.Blob("Content-HeaderLogo")" alt="Header Logo" />
+				</a>
+			</div>
+
+			<!-- Collapsed Menu Buttons -->
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+
+			<!-- Navigation -->
+			<div class="navbar-collapse-container">
+				<div class="navbar-collapse collapse" id="myNavbar">
+
+					<!-- Wordpress Links -->
+					<ul class="nav navbar-nav" id="wordpressNav"
+						data-wordpress-ajax-url="@Url.Action("FetchWordPressNavAjax", "Home")">
+					</ul>
+
+					<!-- User Actions -->
+					<ul class="nav navbar-nav navbar-user-actions">
+						<li class="fill"></li>
+
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+								directory options <div class="contact-counter"></div><span class="caret"></span>
+							</a>
+
+                            <ul class="dropdown-menu">
+                                @if (CurrentUser.Identity.IsAuthenticated)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Account")">
+                                            <span class="fa fa-user labelled-icon"></span>My Account
+                                        </a>
+                                    </li>
+
+                                    <!-- ADAC -->
+                                    if (CurrentUser.IsInRole(Role.ADAC.ToString()))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "ADAC")">
+                                                <span class="fa fa-user labelled-icon"></span>Centre Admin
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <!-- Biobanks -->
+                                    if (ViewBag.UserBiobankRequests != null)
+                                    {
+                                        var biobanks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserBiobankRequests);
+
+                                        foreach (var biobank in biobanks)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = true })">
+                                                    <span class="fa fa-book labelled-icon"></span>@((string)biobank.Value)
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                    if (ViewBag.UserBiobanks != null)
+                                    {
+                                        var biobanks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserBiobanks);
+
+                                        foreach (var biobank in biobanks)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = false })">
+                                                    <span class="fa fa-book labelled-icon"></span>@((string)biobank.Value)
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+
+                                    <!-- Networks -->
+                                    if (ViewBag.UserNetworkRequests != null)
+                                    {
+                                        var networks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserNetworkRequests);
+
+                                        foreach (var network in networks)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = true })">
+                                                    <span class="fa fa-exchange labelled-icon"></span>@((string)network.Value)
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                    if (ViewBag.UserNetworks != null)
+                                    {
+                                        var networks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserNetworks);
+
+                                        foreach (var network in networks)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = false })">
+                                                    <span class="fa fa-exchange labelled-icon"></span>@((string)network.Value)
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+
+                                    <!-- Register Biobank -->
+                                    <li>
+                                        <a href="@Url.Action("Biobank", "Register")"><span class="fa fa-clipboard labelled-icon"></span>Register</a>
+                                    </li>
+
+                                    <!-- Contact List -->
+                                    <li>
+                                        <a href="#" id="ContactCounter">
+                                            <span class="fa fa-envelope-o labelled-icon"></span>Contact List
+                                        </a>
+                                    </li>
+
+                                    <!-- Logout -->
+                                    <li>
+                                        <a href="@Url.Action("Logout", "Account")"><span class="fa fa-sign-in labelled-icon red"></span>Logout</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <!-- Contact List -->
+                                    <li>
+                                        <a href="#" id="ContactCounter">
+                                            <span class="fa fa-envelope-o labelled-icon"></span>Contact List
+                                        </a>
+                                    </li>
+
+                                    <!-- Login -->
+                                    <li>
+                                        <a href="@Url.Action("Login", "Account")"><span class="fa fa-sign-in labelled-icon green"></span>Login</a>
+                                    </li>
+                                    <!-- Register Biobank -->
+                                    <li>
+                                        <a href="@Url.Action("Biobank", "Register")"><span class="fa fa-clipboard labelled-icon green"></span>Register</a>
+                                    </li>
+                                }
+                            </ul>
+						</li>
+					</ul>
+				</div>
+				<div class="fill"></div>
+			</div>
+
+			<!-- Social Media Links -->
+			<div class="navbar-social-media col-md-3 col-lg-2">
+
+				<!-- Social Media -->
+				<ul class="social-media-list">
+					<li>
+						<a href="https://twitter.com/FINDdx" target="_blank">
+							<i class="icon-twitter-sign"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://www.facebook.com/FIND-224648950882126/?ref=hl" target="_blank">
+							<i class="icon-facebook-sign"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://www.instagram.com/finddiagnostics/" target="_blank">
+							<i class="icon-instagram"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://www.linkedin.com/company/finddx" target="_blank">
+							<i class="icon-linkedin-sign"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://www.youtube.com/user/FINDdiagnostics" target="_blank">
+							<i class="icon-youtube-play"></i>
+						</a>
+					</li>
+				</ul>
+
+				<!-- Contact -->
+				<a class="link-contact" href="https://www.finddx.org/calls-for-partners/">Calls for partners</a>
+			</div>
+		</div>
+	</div>
+</nav>

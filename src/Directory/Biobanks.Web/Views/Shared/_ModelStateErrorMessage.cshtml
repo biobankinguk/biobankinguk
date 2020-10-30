@@ -1,0 +1,9 @@
+﻿@using System.Linq
+@model string
+
+@if (ViewData.ModelState[Model] != null && 
+    ViewData.ModelState[Model].Errors != null && 
+    ViewData.ModelState[Model].Errors.Any())
+{
+    <div class="alert alert-danger">@ViewData.ModelState[Model].Errors.First().ErrorMessage</div>
+}

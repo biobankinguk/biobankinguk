@@ -1,0 +1,13 @@
+@using Biobanks.Web.ApiClientModels
+@model WordPressNavItem
+
+@{
+	// Parse Style CSS Classes
+	var styles = string.Join(" ", Model.StyleClasses);
+}
+	
+<li class="@styles">
+	<a href="@Model.Url">
+		@Html.Raw(Model.Title.ToLower())
+	</a>
+</li>

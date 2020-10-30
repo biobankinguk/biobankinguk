@@ -1,0 +1,116 @@
+﻿@using System.Web.Optimization
+@using Directory.Data.Constants
+@using Biobanks.Web.Extensions
+@model Biobanks.Web.Models.ADAC.ThemeConfigModel
+@{
+	ViewBag.Title = "Theme Config";
+}
+
+@Html.Partial("_ADACTabs", (string)ViewBag.Title)
+
+<h3>
+	Theme Configuration
+	<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<br />
+
+		<form id="theme-config-form" class="form-horizontal" method="post" enctype="multipart/form-data">
+			<input type="submit" id="submit-form" class="hidden" formaction="./SaveThemeConfig" />
+
+			<div class="row">
+				<div class="col-md-12">
+
+					<!-- Header Logo  -->
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Header Logo</label>
+
+						<div class="col-sm-3">
+							<div class="padded-logo bordered-logo">
+								<img id="headerLogo" class="preview-img logo-img"
+									 src="@Url.Blob(Model.HeaderLogoName)"
+									 data-src="@Url.Content("~/Content/images/NoLogo.png")" />
+							</div>
+
+							<!-- Image Controls -->
+							<div class="img-controls flex-between">
+								<input name="HeaderLogo" class="hidden img-upload" type="file" data-preview="headerLogo" />
+								<button class="select-img btn btn-success" type="button">Select</button>
+							</div>
+						</div>
+					</div>
+
+					<br />
+
+					<!-- Splash Background  -->
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Splash Background</label>
+
+						<div class="col-sm-3">
+							<div class="padded-logo bordered-logo">
+								<img id="splashBackground" class="preview-img logo-img"
+									 src="@Url.Blob(Model.SplashBackgroundName)"
+									 data-src="@Url.Content("~/Content/images/NoLogo.png")" />
+							</div>
+
+							<!-- Image Controls -->
+							<div class="img-controls flex-between">
+								<input name="SplashBackground" class="hidden img-upload" type="file" data-preview="splashBackground" />
+								<button class="select-img btn btn-success" type="button">Select</button>
+							</div>
+						</div>
+					</div>
+
+					<br />
+
+					<!-- Footer Logo -->
+					<div class="form-group form-inline">
+						<label class="col-sm-2 control-label">Footer Logos</label>
+
+						<!-- Upto 3 Footer Logos -->
+						@for (int i = 0; i < 3; i++)
+						{
+							<div class="col-sm-3">
+								<div class="padded-logo bordered-logo">
+									<img id="footerLogo-@i" class="preview-img logo-img"
+										 src="@Url.Blob(Model.FooterLogoNames.ElementAtOrDefault(i))"
+										 data-src="@Url.Content("~/Content/images/NoLogo.png")" />
+								</div>
+
+								<!-- Image Controls -->
+								<div class="img-controls flex-between">
+									<input name="FooterLogos[@i]" class="hidden img-upload" type="file" data-preview="footerLogo-@i" />
+									<button class="select-img btn btn-success" type="button">Select</button>
+
+									<input name="RemoveFooterLogos[@i]" class="img-remove" type="hidden" value="False" />
+									<button class="remove-img btn btn-default" type="button">Remove</button>
+								</div>
+							</div>
+						}
+					</div>
+
+					<br />
+
+					<!-- CSS Themes -->
+					<div class="form-group">
+						<label class="col-sm-2 control-label">CSS Theme</label>
+
+						<div class="col-sm-10">
+							<!-- Select CSS -->
+							<input name="CssTheme" class="hidden css-upload" type="file" />
+							<button class="select-css btn btn-success" type="button">Select Css Theme</button>
+							<span class="css-filename btn btn-default disabled">No File Chosen</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@section FooterScripts
+{
+	@Scripts.Render("~/bundles/adac/theme-config")
+}

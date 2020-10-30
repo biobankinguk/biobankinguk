@@ -1,0 +1,50 @@
+/* Preview Panel */
+.mdd_preview {
+	margin-top: 10px;
+	padding-bottom: 10px;
+	border: 1px solid rgb(204, 204, 204);
+	border-radius: 4px;
+	background-color: white;
+}
+
+	.mdd_preview:before {
+		content: "Preview";
+		display: block;
+		padding: 5px 15px;
+		color: #000;
+		background: #DDD;
+	}
+
+	.mdd_preview > * {
+		margin-left: 15px;
+	}
+
+/* Replace Icons With FontAwesome */
+div.mdd_toolbar a.mdd_button {
+	color: #000000;
+	text-decoration: none;
+	background-image: unset;
+}
+
+	div.mdd_toolbar a.mdd_button:before {
+		padding-left: 3px;
+		font-family: FontAwesome;
+	}
+
+	div.mdd_toolbar a.mdd_button:hover {
+		color: #337ab7;
+	}
+
+#mdd_redo:before	{ content: "\f01e" } 
+#mdd_undo:before	{ content: "\f0e2" }
+#mdd_heading:before { content: "\f1dc" }
+#mdd_code:before	{ content: "\f121" }
+#mdd_bold:before	{ content: "\f032" }
+#mdd_italic:before	{ content: "\f033" }
+#mdd_ullist:before	{ content: "\f0ca" }
+#mdd_ollist:before	{ content: "\f0cb" } 
+#mdd_indent:before	{ content: "\f03c" }
+#mdd_outdent:before { content: "\f03b" }
+#mdd_link:before	{ content: "\f0c1" }
+#mdd_img:before		{ content: "\f1c5" }
+#mdd_hr:before		{ content: "\f07e" }

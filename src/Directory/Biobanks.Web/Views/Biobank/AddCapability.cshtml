@@ -1,0 +1,27 @@
+﻿@using System.Web.Optimization
+@model Biobanks.Web.Models.Biobank.AddCapabilityModel
+@{
+    ViewBag.Title = "Add capability";
+}
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/collection-and-capability-crud")
+    @Scripts.Render("~/bundles/help-buttons")
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("AddCapability", "Biobank", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Partial("_CapabilitySharedFields", Model)
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 text-center">
+            @Html.ActionLink("Cancel", "Capabilities", null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">Create capability</button>
+        </div>
+    </div>
+}

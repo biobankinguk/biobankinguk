@@ -1,0 +1,38 @@
+﻿@using System.Configuration
+@using Biobanks.Web.HtmlHelpers
+@using Biobanks.Web.Extensions
+
+<div class="container">
+
+    @* Logos *@
+    <section>
+        <div class="row">
+            <div id="footerLogos" class="col-sm-12 footer-logos">
+            </div>
+        </div>
+    </section>
+
+    @* Privacy notice links *@
+    <nav>
+        <div class="row">
+            <div class="col-sm-12">
+                <a href="@ConfigurationManager.AppSettings["PrivacyPolicyUrl"]">Privacy Policy</a> |
+                @Html.ActionLink("Cookies Policy", "Cookies", "Home")
+            </div>
+        </div>
+    </nav>
+
+    @* Copyright etc. *@
+    <section>
+        <div class="row">
+            <div class="col-sm-12">
+                &copy; @DateTime.Now.Year @ConfigurationManager.AppSettings["SiteCopyright"]
+                
+                @if (Html.IsDebug()) //don't display version on production, since it's really for test
+                {
+                    <span class="pull-right">Version: @Html.InformationalVersion()</span>
+                }
+            </div>
+        </div>
+    </section>
+</div>

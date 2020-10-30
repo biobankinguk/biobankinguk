@@ -1,0 +1,44 @@
+@using Biobanks.Web.ApiClientModels
+@model WordPressNavItem
+@{
+	var isSubMenu = (bool?)ViewData["SubMenu"] ?? false;
+}
+@* Dropdown menu is recursive when needing to add submenus *@
+@if (isSubMenu)
+{
+	<li class="dropdown dropdown-submenu">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown-submenu">@Model.Title<span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			@foreach (var menuItem in Model.Children)
+			{
+				if (menuItem.Children?.Count() > 0)
+				{
+					@Html.Partial("_WordpressNavDropDown", menuItem, new ViewDataDictionary { { "SubMenu", true } });
+				}
+				else
+				{
+					@Html.Partial("_WordpressNavMenuItem", menuItem);
+				}
+			}
+		</ul>
+	</li>
+}
+else
+{
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown">@Model.Title<span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			@foreach (var menuItem in Model.Children)
+			{
+				if (menuItem.Children?.Count() > 0)
+				{
+					@Html.Partial("_WordpressNavDropDown", menuItem, new ViewDataDictionary { { "SubMenu", true } });
+				}
+				else
+				{
+					@Html.Partial("_WordpressNavMenuItem", menuItem);
+				}
+			}
+		</ul>
+	</li>
+}

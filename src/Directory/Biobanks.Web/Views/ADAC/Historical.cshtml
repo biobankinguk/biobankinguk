@@ -1,0 +1,85 @@
+@using System.Linq
+@using System.Web.Optimization
+@model Biobanks.Web.Models.ADAC.HistoricalModel
+
+@{
+    ViewBag.Title = "ADAC Admin";
+}
+
+@Html.Partial("_ADACTabs", "Historical")
+
+<h3>Request History</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        @if (@Model.HistoricalRequests.Any())
+        {
+            <table id="adac-request-history" class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Requesting Org Name</th>
+                    <th>Action</th>
+                    <th>Date & Time</th>
+                    <th>Profile</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var request in Model.HistoricalRequests)
+                {
+                    <tr class="@Html.Raw(request.Action == "Accepted" ? "success" : "danger")">
+                        <td>
+                            @request.UserName
+                        </td>
+                        <td>
+                            @request.UserEmail
+                        </td>
+                        <td>
+                            @request.EntityName
+                        </td>
+                        <td>
+                            @request.Action
+                        </td>
+                        <td>
+                            @request.Date
+                        </td>
+                        <td>
+                            @* TODO: works for biobanks but not for networks as we don't need this
+                                right now and can fix with DB normalisation in Core rewrite *@
+                            @if (!string.IsNullOrWhiteSpace(request.ResultingOrgExternalId))
+                            {
+                                @Html.ActionLink("View Profile", "Biobank", "Profile", new { id = request.ResultingOrgExternalId }, null)
+                            }
+                        </td>
+                        <td>
+                            @if (request.Action == "Accepted" && !request.UserEmailConfirmed)
+                            {
+                                <a class="resend-confirm pull-right"
+                                   href="@Url.Action("ResendConfirmLink", "Account", new {userEmail = request.UserEmail, onBehalf = true, returnUrl = Request.RawUrl})"
+                                   data-admin-name="@request.UserName"
+                                   data-admin-email="@request.UserEmail">
+                                    <span class="fa fa-repeat labelled-icon"></span>Resend
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There is no historical request data available yet.
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/adac/historical")
+}

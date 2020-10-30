@@ -1,0 +1,17 @@
+﻿@using Biobanks.Web.HtmlHelpers
+@model dynamic
+
+@{
+    ViewBag.Title = "SuperUser Dashboard";
+}
+
+<br />
+
+@Html.Partial("_SuperUserTabs", "Info")
+
+<h2>
+    Biobanks
+    <small>Version: @Html.InformationalVersion()</small>
+</h2>
+
+<a href="/hangfire" class="btn btn-primary">Hangfire dashboard</a>
