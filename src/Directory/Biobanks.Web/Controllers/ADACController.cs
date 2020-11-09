@@ -27,6 +27,9 @@ using Biobanks.Web.Models.Search;
 using Directory.Services;
 using Microsoft.Ajax.Utilities;
 using Hangfire.States;
+using System.Net.Http;
+using System.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace Biobanks.Web.Controllers
 {
@@ -45,6 +48,7 @@ namespace Biobanks.Web.Controllers
 
         private readonly IMapper _mapper;
         private readonly ITokenLoggingService _tokenLog;
+        private readonly HttpClient _client;
 
         public ADACController(
             IBiobankReadService biobankReadService,
@@ -66,6 +70,12 @@ namespace Biobanks.Web.Controllers
             _searchProvider = searchProvider;
             _mapper = mapper;
             _tokenLog = tokenLog;
+
+            //Http client for RefData Apis
+            _client = new HttpClient()
+            {
+                BaseAddress = new Uri(ConfigurationManager.AppSettings["RefDataApiUrl"])
+            };
         }
 
         // GET: ADACAdmin
@@ -750,121 +760,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Access Conditions
         public async Task<ActionResult> AccessConditions()
         {
-            var models = (await _biobankReadService.ListAccessConditionsAsync())
-                .Select(x =>
-                    Task.Run(async () => new ReadAccessConditionsModel
-                    {
-                        Id = x.AccessConditionId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                        AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.AccessConditionId),
-                    }
-                    )
-                    .Result
-                )
-                .ToList();
-
-            return View(new AccessConditionsModel
+            var endpoint = "api/AccessConditions/AccessConditions";
+            try
             {
-                AccessConditions = models
-            });
-        }
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-        [HttpPost]
-        public async Task<JsonResult> AddAccessConditionAjax(AccessConditionModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidAccessConditionDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Access condition descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var access = new AccessCondition
-            {
-                AccessConditionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddAccessConditionAsync(access);
-            await _biobankWriteService.UpdateAccessConditionAsync(access, true);
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddAccessConditionSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAccessConditionAjax(AccessConditionModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidAccessConditionDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another access condition. Access condition descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAccessConditionInUse(model.Id))
-            {
-                return Json(new
+                var result = JsonConvert.DeserializeObject<IList<ReadAccessConditionsModel>>(contents);
+                return View(new AccessConditionsModel
                 {
-                    success = false,
-                    errors = new[] { "This access condition is currently in use and cannot be edited." }
+                    AccessConditions = result
                 });
             }
-
-            var access = new AccessCondition
+            catch (Exception)
             {
-                AccessConditionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.UpdateAccessConditionAsync(access);
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditAccessConditionSuccess?name={model.Description}"
-            });
+                return View(new AccessConditionsModel { AccessConditions = new List<ReadAccessConditionsModel> { } });
+            }
         }
+
 
         public async Task<ActionResult> DeleteAccessCondition(AccessConditionModel model)
         {
-            if (await _biobankReadService.IsAccessConditionInUse(model.Id))
+            var endpoint = "api/AccessConditions/DeleteAccessCondition";
+            try
             {
-                SetTemporaryFeedbackMessage($"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.",
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
+                return RedirectToAction("AccessConditions");
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
                     FeedbackMessageType.Danger);
+
                 return RedirectToAction("AccessConditions");
             }
 
-            await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
-            {
-                AccessConditionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The access condition \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AccessConditions");
         }
 
         public ActionResult AddAccessConditionSuccess(string name)
