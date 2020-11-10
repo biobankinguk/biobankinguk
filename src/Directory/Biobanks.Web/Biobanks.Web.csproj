@@ -446,6 +446,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Compile Include="ApiControllers\AccessConditionsController.cs" />
+    <Compile Include="ApiControllers\AgeRangesController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\BlobController.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
@@ -1050,7 +1051,9 @@
     <Content Include="Views\Register\RegisterConfirmation.cshtml" />
     <Content Include="Views\Emails\NewUserRegisterEntityAccepted.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\AgeRanges\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{f087cd21-d746-4f63-84b1-9038e471e258}</Project>

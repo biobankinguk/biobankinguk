@@ -61,7 +61,7 @@ function AdacAgeRangeViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}AgeRangeAjax`;
+        var url = `/api/AgeRanges/${action}AgeRangeAjax`;
 
         console.log($(e.target).serialize());
 
@@ -130,7 +130,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditAgeRangeAjax?sortOnly=true",
+        $.post("/api/AgeRanges/EditAgeRangeAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('age-range-id'),
                 description: $(triggerRow.node).data('age-range-desc'),
