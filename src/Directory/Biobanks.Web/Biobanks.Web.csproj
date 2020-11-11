@@ -447,6 +447,7 @@
     <Content Include="Global.asax" />
     <Compile Include="ApiControllers\AccessConditionsController.cs" />
     <Compile Include="ApiControllers\AgeRangesController.cs" />
+    <Compile Include="ApiControllers\AssociatedDataProcurementTimeFrameController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\BlobController.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
@@ -1053,6 +1054,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\AgeRanges\" />
+    <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">

@@ -57,7 +57,7 @@ function AdacAssociatedDataProcurementTimeFrameViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}AssociatedDataProcurementTimeFrameAjax`;
+        var url = `/api/AssociatedDataProcurementTimeFrame/${action}AssociatedDataProcurementTimeFrameAjax`;
 
         console.log($(e.target).serialize());
 
@@ -69,7 +69,13 @@ function AdacAssociatedDataProcurementTimeFrameViewModel() {
 
             if (data.success) {
                 _this.hideModal();
-                window.location.replace(data.redirect);
+                if (data.msg != null) {
+                    window.feedbackMessage(data.msg, data.type);
+                }
+                else {
+                    window.location.replace(data.redirect);
+                }
+                
             }
             else {
                 if (Array.isArray(data.errors)) {
@@ -154,7 +160,7 @@ $(function () {
             var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
             //AJAX Update
-            $.post("EditAssociatedDataProcurementTimeFrameAjax?sortOnly=true",
+            $.post("/api/AssociatedDataProcurementTimeFrame/EditAssociatedDataProcurementTimeFrameAjax?sortOnly=true",
                 {
                     id: $(triggerRow.node).data('procurement-id'),
                     description: $(triggerRow.node).data('procurement-desc'),
