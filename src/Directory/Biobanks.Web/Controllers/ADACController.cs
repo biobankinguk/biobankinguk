@@ -960,128 +960,57 @@ namespace Biobanks.Web.Controllers
         #region RefData: AnnualStatistics
         public async Task<ActionResult> AnnualStatistics()
         {
-            var groups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
-                .Select(x => new AnnualStatisticGroupModel
+            var endpoint = "api/AnnualStatistics/AnnualStatistics";
+            try
+            {
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+                return View(new AnnualStatisticsModel
                 {
-                    AnnualStatisticGroupId = x.AnnualStatisticGroupId,
-                    Name = x.Name,
-                })
-                .ToList();
-
-            var models = (await _biobankReadService.ListAnnualStatisticsAsync())
-                .Select(x =>
-                    Task.Run(async () => new AnnualStatisticModel
-                    {
-                        Id = x.AnnualStatisticId,
-                        Name = x.Name,
-                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.AnnualStatisticId),
-                        AnnualStatisticGroupId = x.AnnualStatisticGroupId,
-                        AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new AnnualStatisticsModel
-            {
-                AnnualStatistics = models,
-                AnnualStatisticGroups = groups
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAnnualStatisticAjax(AnnualStatisticModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
-            {
-                ModelState.AddModelError("AnnualStatistics", "That name is already in use. Annual statistics names must be unique.");
+                    //AnnualStatistics = JsonConvert.DeserializeObject<IList<AnnualStatisticModel>>(result["AnnualStatistics"].ToString());
+                    AnnualStatistics = result["AnnualStatistics"].ToObject<IList<AnnualStatisticModel>>(),
+                    AnnualStatisticGroups = result["AnnualStatisticGroups"].ToObject<IList<AnnualStatisticGroupModel>>()
+                });
             }
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var annualStatistic = new AnnualStatistic
-            {
-                AnnualStatisticId = model.Id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.AddAnnualStatisticAsync(annualStatistic);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"AddAnnualStatisticSuccess?name={model.Name}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAnnualStatisticAjax(AnnualStatisticModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
-            {
-                ModelState.AddModelError("AnnualStatistics", "That annual statistic already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAnnualStatisticInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This annual statistic is currently in use and cannot be edited." }
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new AnnualStatisticsModel { 
+                    AnnualStatistics = new List<AnnualStatisticModel> { },
+                    AnnualStatisticGroups = new List<AnnualStatisticGroupModel> { }
                 });
             }
 
-            var annualStatistics = new AnnualStatistic
-            {
-                AnnualStatisticId = model.Id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.UpdateAnnualStatisticAsync(annualStatistics);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"EditAnnualStatisticSuccess?name={model.Name}"
-            });
         }
 
         public async Task<ActionResult> DeleteAnnualStatistic(AnnualStatisticModel model)
         {
-            if (await _biobankReadService.IsAnnualStatisticInUse(model.Id))
+            var endpoint = "api/AnnualStatistics/DeleteAnnualStatistic";
+            try
             {
-                SetTemporaryFeedbackMessage($"The annual statistic \"{model.Name}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("AnnualStatistics");
             }
-
-            var annualStatistic = new AnnualStatistic
+            catch (Exception)
             {
-                AnnualStatisticId = model.Id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            };
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            await _biobankWriteService.DeleteAnnualStatisticAsync(annualStatistic);
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The annual statistics type \"{model.Name}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AnnualStatistics");
+                return RedirectToAction("AnnualStatistics");
+            }
         }
 
         public ActionResult AddAnnualStatisticSuccess(string name)
