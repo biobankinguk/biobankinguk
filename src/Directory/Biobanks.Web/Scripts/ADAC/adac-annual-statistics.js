@@ -66,7 +66,7 @@ function AdacAnnualStatisticViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}AnnualStatisticAjax`;
+        var url = `/api/AnnualStatistics/${action}AnnualStatisticAjax`;
 
         console.log($(e.target).serialize());
 
