@@ -799,6 +799,8 @@ namespace Biobanks.Web.Controllers
             }
             catch (Exception)
             {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
                 return View(new AccessConditionsModel { AccessConditions = new List<ReadAccessConditionsModel> { } });
             }
         }
@@ -862,6 +864,8 @@ namespace Biobanks.Web.Controllers
             }
             catch (Exception)
             {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
                 return View(new AgeRangesModel { AgeRanges = new List<AgeRangeModel> { } });
             }
             
@@ -908,100 +912,53 @@ namespace Biobanks.Web.Controllers
         #region RefData: AssociatedDataProcurementTimeFrame
         public async Task<ActionResult> AssociatedDataProcurementTimeFrame()
         {
-            return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel
+            var endpoint = "api/AssociatedDataProcurementTimeFrame/AssociatedDataProcurementTimeFrame";
+            try
             {
-                AssociatedDataProcurementTimeFrameModels = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
+                var result = JsonConvert.DeserializeObject<IList<ReadAssociatedDataProcurementTimeFrameModel>>(contents);
+                return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel
                 {
-                    Id = x.AssociatedDataProcurementTimeframeId,
-                    Description = x.Description,
-                    DisplayName = x.DisplayValue,
-                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.AssociatedDataProcurementTimeframeId),
-                    SortOrder = x.SortOrder
-                }).Result)
-
-                    .ToList()
-            });
+                    AssociatedDataProcurementTimeFrameModels = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel { 
+                    AssociatedDataProcurementTimeFrameModels = new List<ReadAssociatedDataProcurementTimeFrameModel> { } });
+            }
         }
 
         public async Task<ActionResult> DeleteAssociatedDataProcurementTimeFrame(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
         {
-            //Validate min amount of time frames
-            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-            if (timeFrames.Count() <= 2)
+            var endpoint = "api/AssociatedDataProcurementTimeFrame/DeleteAssociatedDataProcurementTimeFrame";
+            try
             {
-                SetTemporaryFeedbackMessage($"A minimum amount of 2 time frames are allowed.", FeedbackMessageType.Warning);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("AssociatedDataProcurementTimeFrame");
             }
-
-            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id))
+            catch (Exception)
             {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data procurement time frame \"{model.Description}\" is currently in use, and cannot be deleted.",
+                SetTemporaryFeedbackMessage($"Something went wrong!",
                     FeedbackMessageType.Danger);
+
                 return RedirectToAction("AssociatedDataProcurementTimeFrame");
             }
 
-            await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
-            {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAssociatedDataProcurementTimeFrameAjax(Models.Shared.AssociatedDataProcurementTimeFrameModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That Associated Data Procurement Time Frame already exists!");
-            }
-
-            if (model.DisplayName == null)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field is required.");
-            }
-
-            if (model.DisplayName.Length > 10)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field allows a maximum of 10 characters.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
-            {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description,
-                DisplayValue = model.DisplayName,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditAssociatedDataProcurementTimeFrameSuccess?name={model.Description}"
-            });
         }
 
         public ActionResult EditAssociatedDataProcurementTimeFrameSuccess(string name)
@@ -1012,61 +969,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAssociatedDataProcurementTimeFrameAjax(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
-        {
-            // Validate model
-            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-            if (timeFrames.Count() >= 5)
-            {
-                SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
-                return Json(new
-                {
-                    success = true,
-                    redirect = $"AssociatedDataProcurementTimeFrame"
-                });
-            }
-
-            if (await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That description is already in use. Associated Data Procurement Time Frame descriptions must be unique.");
-            }
-
-            if (model.DisplayName == null)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field is required.");
-            }
-
-            if (model.DisplayName.Length > 10)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field allows a maximum of 10 characters.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var procurement = new AssociatedDataProcurementTimeframe
-            {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                DisplayValue = model.DisplayName
-            };
-
-            await _biobankWriteService.AddAssociatedDataProcurementTimeFrameAsync(procurement);
-            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(procurement, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddAssociatedDataProcurementTimeFrameSuccess?name={model.Description}"
-            });
         }
         public ActionResult AddAssociatedDataProcurementTimeFrameSuccess(string name)
         {
