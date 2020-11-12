@@ -1197,125 +1197,60 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Percentages
         public async Task<ActionResult> CollectionPercentages()
         {
-            var models = (await _biobankReadService.ListCollectionPercentagesAsync())
-                .Select(x =>
-                    Task.Run(async () => new CollectionPercentageModel()
-                    {
-                        Id = x.CollectionPercentageId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                        LowerBound = x.LowerBound,
-                        UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.CollectionPercentageId)
-                    })
-                    .Result
-                )
-                .ToList();
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent") == true)
+            var endpoint = "api/CollectionPercentages/CollectionPercentages";
+            try
             {
-                return View(new CollectionPercentagesModel()
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JsonConvert.DeserializeObject<IList<CollectionPercentageModel>>(contents);
+                if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent") == true)
                 {
-                    CollectionPercentages = models
-                });
+                    return View(new CollectionPercentagesModel()
+                    {
+                        CollectionPercentages = result
+                    });
+                }
+                else
+                {
+                    return RedirectToAction("LockedRef");
+                }
             }
-            else
+            catch (Exception)
             {
-                return RedirectToAction("LockedRef");
-            }
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionPercentageAjax(CollectionPercentageModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPercentage", "That description is already in use. Collection percentage descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new CollectionPercentagesModel { CollectionPercentages = new List<CollectionPercentageModel> { } });
             }
 
-            var percentage = new CollectionPercentage
-            {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound,
-            };
-
-            await _biobankWriteService.AddCollectionPercentageAsync(percentage);
-            await _biobankWriteService.UpdateCollectionPercentageAsync(percentage, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddCollectionPercentageSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionPercentageAjax(CollectionPercentageModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPercentage", "That collection percentage already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
-            {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditCollectionPercentageSuccess?name={model.Description}"
-            });
+            
         }
 
         public async Task<ActionResult> DeleteCollectionPercentage(CollectionPercentageModel model)
         {
-            if (await _biobankReadService.IsCollectionPercentageInUse(model.Id))
+            var endpoint = "api/CollectionPercentages/DeleteCollectionPercentage";
+            try
             {
-                SetTemporaryFeedbackMessage($"The collection percentage \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionPercentage");
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
+                return RedirectToAction("CollectionPercentages");
             }
-
-            await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
+            catch (Exception)
             {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = 0,
-                UpperBound = 1
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            // Success
-            SetTemporaryFeedbackMessage($"The collection percentage  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPercentages");
+                return RedirectToAction("CollectionPercentages");
+            }
         }
 
         public ActionResult AddCollectionPercentageSuccess(string name)

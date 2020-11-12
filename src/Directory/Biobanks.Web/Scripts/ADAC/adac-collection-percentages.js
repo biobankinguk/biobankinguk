@@ -65,7 +65,7 @@ function AdacCollectionPercentageViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}CollectionPercentageAjax`;
+        var url = `/api/CollectionPercentages/${action}CollectionPercentageAjax`;
 
         console.log($(e.target).serialize());
 
@@ -134,7 +134,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditCollectionPercentageAjax?sortOnly=true",
+        $.post("/api/CollectionPercentages/EditCollectionPercentageAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('collection-percentage-id'),
                 description: $(triggerRow.node).data('collection-percentage-desc'),
