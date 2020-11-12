@@ -61,7 +61,7 @@ function AdacPreservationTypeViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}PreservationTypeAjax`;
+        var url = `/api/PreservationTypes/${action}PreservationTypeAjax`;
 
         console.log($(e.target).serialize());
 
@@ -159,7 +159,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditPreservationTypeAjax?sortOnly=true",
+        $.post("/api/PreservationTypes/EditPreservationTypeAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('preservation-id'),
                 description: $(triggerRow.node).data('preservation-desc'),

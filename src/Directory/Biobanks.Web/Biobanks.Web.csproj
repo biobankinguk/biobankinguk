@@ -434,6 +434,7 @@
     <Compile Include="ApiControllers\DiseaseStatusesController.cs" />
     <Compile Include="ApiControllers\DonorCountsController.cs" />
     <Compile Include="ApiControllers\MaterialTypesController.cs" />
+    <Compile Include="ApiControllers\PreservationTypesController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
@@ -1056,6 +1057,7 @@
     <Folder Include="Views\DiseaseStatuses\" />
     <Folder Include="Views\DonorCounts\" />
     <Folder Include="Views\MaterialTypes\" />
+    <Folder Include="Views\PreservationType\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">
