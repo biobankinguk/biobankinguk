@@ -1772,78 +1772,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Consent Restrictions
         public async Task<ActionResult> ConsentRestriction()
         {
-            return View(new Models.ADAC.ConsentRestrictionModel
+            var endpoint = "api/ConsentRestrictions/ConsentRestriction";
+            try
             {
-                ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                Task.Run(async () => new ReadConsentRestrictionModel
+                var result = JsonConvert.DeserializeObject<IList<ReadConsentRestrictionModel>>(contents);
+                return View(new Models.ADAC.ConsentRestrictionModel
                 {
-                    Id = x.ConsentRestrictionId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.ConsentRestrictionId),
-                    SortOrder = x.SortOrder
-                }).Result)
-
-                    .ToList()
-            });
+                    ConsentRestrictions = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new AccessConditionsModel { AccessConditions = new List<ReadAccessConditionsModel> { } });
+            }
         }
 
         public async Task<ActionResult> DeleteConsentRestriction(Models.Shared.ConsentRestrictionModel model)
         {
-            if (await _biobankReadService.IsConsentRestrictionInUse(model.Id))
+            var endpoint = "api/ConsentRestrictions/DeleteConsentRestriction";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The consent restriction \"{model.Description}\" is currently in use, and cannot be deleted.",
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
+                return RedirectToAction("ConsentRestrictions");
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
                     FeedbackMessageType.Danger);
-                return RedirectToAction("ConsentRestriction");
+
+                return RedirectToAction("ConsentRestrictions");
             }
-
-            await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
-            {
-                ConsentRestrictionId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The consent restriction \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ConsentRestriction");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditConsentRestrictionAjax(Models.Shared.ConsentRestrictionModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidConsentRestrictionDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("ConsentRestriction", "That consent restriction already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsConsentRestrictionInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
-            {
-                ConsentRestrictionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditConsentRestrictionSuccess(string name)
@@ -1854,34 +1827,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("ConsentRestriction");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddConsentRestrictionAjax(Models.Shared.ConsentRestrictionModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Consent restriction descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddConsentRestrictionAsync(new ConsentRestriction
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddConsentRestrictionSuccess(string name)
