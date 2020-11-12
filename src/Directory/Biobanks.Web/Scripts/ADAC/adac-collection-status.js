@@ -149,7 +149,7 @@ $(function () {
             var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
             //AJAX Update
-            $.post("EditCollectionStatusAjax?sortOnly=true",
+            $.post("/api/CollectionStatus/EditCollectionStatusAjax?sortOnly=true",
                 {
                     id: $(triggerRow.node).data('collection-status-id'),
                     description: $(triggerRow.node).data('collection-status-desc'),
