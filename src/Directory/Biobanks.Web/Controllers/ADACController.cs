@@ -1269,110 +1269,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Points
         public async Task<ActionResult> CollectionPoints()
         {
-            var models = (await _biobankReadService.ListCollectionPointsAsync())
-                .Select(x =>
-                    Task.Run(async () => new CollectionPointModel()
-                    {
-                        Id = x.CollectionPointId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new CollectionPointsModel()
+            var endpoint = "api/CollectionPoints/CollectionPoints";
+            try
             {
-                CollectionPoints = models
-            });
-        }
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionPointAjax(CollectionPointModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCollectionPointDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPoints", "That description is already in use. collection point descriptions must be unique.");
+                var result = JsonConvert.DeserializeObject<IList<CollectionPointModel>>(contents);
+                return View(new CollectionPointsModel()
+                {
+                    CollectionPoints = result
+                });
             }
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                return JsonModelInvalidResponse(ModelState);
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new CollectionPointsModel { CollectionPoints = new List<CollectionPointModel> { } });
             }
-
-            var points = new CollectionPoint
-            {
-                CollectionPointId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddCollectionPointAsync(points);
-            await _biobankWriteService.UpdateCollectionPointAsync(points, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddCollectionPointSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionPointAjax(CollectionPointModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionPointDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPoints", "That collection point already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionPointAsync(new CollectionPoint
-            {
-                CollectionPointId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditCollectionPointSuccess?name={model.Description}"
-            });
         }
 
         public async Task<ActionResult> DeleteCollectionPoint(CollectionPointModel model)
         {
-            if (await _biobankReadService.IsCollectionPointInUse(model.Id))
+            var endpoint = "api/CollectionPoints/DeleteCollectionPoint";
+            try
             {
-                SetTemporaryFeedbackMessage($"The collection point \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("CollectionPoints");
             }
-
-            await _biobankWriteService.DeleteCollectionPointAsync(new CollectionPoint
+            catch (Exception)
             {
-                CollectionPointId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            // Success
-            SetTemporaryFeedbackMessage($"The collection point  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPoints");
+                return RedirectToAction("CollectionPoints");
+            }
         }
 
         public ActionResult AddCollectionPointSuccess(string name)
