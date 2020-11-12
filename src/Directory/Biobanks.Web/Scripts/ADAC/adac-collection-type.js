@@ -148,7 +148,7 @@ $(function () {
             var triggerIndex = edit.triggerRow[0][0];
             var triggerRow = diff.filter(row => row.oldPosition == triggerIndex)[0];
             //AJAX Update
-            $.post("EditCollectionTypeAjax?sortOnly=true",
+            $.post("/api/CollectionType/EditCollectionTypeAjax?sortOnly=true",
                 {
                     id: $(triggerRow.node).data('collection-type-id'),
                     description: $(triggerRow.node).data('collection-type-desc'),
