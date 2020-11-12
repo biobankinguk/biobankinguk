@@ -1332,25 +1332,25 @@ namespace Biobanks.Web.Controllers
         #region RefData: Donor Counts
         public async Task<ActionResult> DonorCounts()
         {
-            var models = (await _biobankReadService.ListDonorCountsAsync(true))
-                .Select(x =>
-                    Task.Run(async () => new DonorCountModel()
-                    {
-                        Id = x.DonorCountId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                        LowerBound = x.LowerBound,
-                        UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.DonorCountId)
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new DonorCountsModel()
+            var endpoint = "api/DonorCounts/DonorCounts";
+            try
             {
-                DonorCounts = models
-            });
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JsonConvert.DeserializeObject<IList<DonorCountModel>>(contents);
+                return View(new DonorCountsModel()
+                {
+                    DonorCounts = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new DonorCountsModel { DonorCounts = new List<DonorCountModel> { } });
+            }
         }
 
         [HttpPost]
@@ -1434,27 +1434,28 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteDonorCount(DonorCountModel model)
         {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
-
-            if (await _biobankReadService.IsDonorCountInUse(model.Id))
+            var endpoint = "api/DonorCounts/DeleteDonorCount";
+            try
             {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("DonorCount");
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
+                return RedirectToAction("DonorCounts");
             }
-
-            await _biobankWriteService.DeleteDonorCountAsync(new DonorCount
+            catch (Exception)
             {
-                DonorCountId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = 0,
-                UpperBound = 1
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("DonorCounts");
+                return RedirectToAction("DonorCounts");
+            }
         }
 
         public ActionResult AddDonorCountSuccess(string name, string referencename)

@@ -65,7 +65,7 @@ function AdacDonorCountViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}DonorCountAjax`;
+        var url = `/api/DonorCounts/${action}DonorCountAjax`;
 
         // Make AJAX Call
         $.post(url, $(e.target).serialize(), function (data) {
@@ -163,7 +163,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditDonorCountAjax?sortOnly=true",
+        $.post("/api/DonorCounts/EditDonorCountAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('donor-count-id'),
                 description: $(triggerRow.node).data('donor-count-desc'),
