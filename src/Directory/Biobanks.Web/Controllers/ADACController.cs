@@ -1700,71 +1700,52 @@ namespace Biobanks.Web.Controllers
         #region RefData: Associated Data Type Groups
         public async Task<ActionResult> AssociatedDataTypeGroups()
         {
-            return View(new AssociatedDataTypesGroupModel
+            var endpoint = "api/AssociatedDataTypeGroups/AssociatedDataTypeGroups";
+            try
             {
-                AssociatedDataTypeGroups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                    Task.Run(async () => new ReadAssociatedDataTypeGroupModel
-                    {
-                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                        Name = x.Description,
-                        AssociatedDataTypeGroupCount = await _biobankReadService.GetAssociatedDataTypeGroupCount(x.AssociatedDataTypeGroupId)
-                    }).Result)
-
-                    .ToList()
-            });
+                var result = JsonConvert.DeserializeObject<IList<ReadAssociatedDataTypeGroupModel>>(contents);
+                return View(new AssociatedDataTypesGroupModel
+                {
+                    AssociatedDataTypeGroups = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new AssociatedDataTypesGroupModel { AssociatedDataTypeGroups = new List<ReadAssociatedDataTypeGroupModel> { } });
+            }
         }
         public async Task<ActionResult> DeleteAssociatedDataTypeGroup(AssociatedDataTypeGroupModel model)
         {
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(model.AssociatedDataTypeGroupId))
+            var endpoint = "api/AssociatedDataTypeGroups/DeleteAssociatedDataTypeGroup";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data type group \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("AssociatedDataTypeGroups");
             }
-
-            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
+            catch (Exception)
             {
-                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data type group \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypeGroups");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAssociatedDataTypeGroupAjax(AssociatedDataTypeGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAssociatedDataTypeGroupNameAsync(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Associated Data Type Group names must be unique.");
+                return RedirectToAction("AssociatedDataTypeGroups");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
-            {
-                Description = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
-
+       
         public ActionResult AddAssociatedDataTypeGroupSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
@@ -1775,43 +1756,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("AssociatedDataTypeGroups");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> EditAssociatedDataTypeGroupAjax(AssociatedDataTypeGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAssociatedDataTypeGroupNameAsync(model.AssociatedDataTypeGroupId, model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use by another asscoiated data type group. Associated Data Type Group names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(model.AssociatedDataTypeGroupId))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This associated data type group is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
-            {
-                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
-        }
-
+  
         public ActionResult EditAssociatedDataTypeGroupSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
