@@ -61,7 +61,7 @@ function AdacCollectionPointViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}CollectionPointAjax`;
+        var url = `/api/CollectionPoints/${action}CollectionPointAjax`;
 
         console.log($(e.target).serialize());
 
@@ -130,7 +130,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditCollectionPointAjax?sortOnly=true",
+        $.post("/api/CollectionPoints/EditCollectionPointAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('collection-point-id'),
                 description: $(triggerRow.node).data('collection-point-desc'),

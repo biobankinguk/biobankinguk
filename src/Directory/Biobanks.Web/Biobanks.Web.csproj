@@ -450,6 +450,7 @@
     <Compile Include="ApiControllers\AnnualStatisticsController.cs" />
     <Compile Include="ApiControllers\AssociatedDataProcurementTimeFrameController.cs" />
     <Compile Include="ApiControllers\CollectionPercentagesController.cs" />
+    <Compile Include="ApiControllers\CollectionPointsController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusesController.cs" />
     <Compile Include="ApiControllers\MaterialTypesController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
@@ -1061,6 +1062,7 @@
     <Folder Include="Views\AnnualStatistics\" />
     <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
     <Folder Include="Views\CollectionPercentages\" />
+    <Folder Include="Views\CollectionPoints\" />
     <Folder Include="Views\DiseaseStatuses\" />
     <Folder Include="Views\MaterialTypes\" />
   </ItemGroup>
