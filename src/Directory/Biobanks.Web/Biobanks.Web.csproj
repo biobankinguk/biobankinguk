@@ -452,6 +452,7 @@
     <Compile Include="ApiControllers\CollectionPercentagesController.cs" />
     <Compile Include="ApiControllers\CollectionPointsController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusesController.cs" />
+    <Compile Include="ApiControllers\DonorCountsController.cs" />
     <Compile Include="ApiControllers\MaterialTypesController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\BlobController.cs" />
@@ -1064,6 +1065,7 @@
     <Folder Include="Views\CollectionPercentages\" />
     <Folder Include="Views\CollectionPoints\" />
     <Folder Include="Views\DiseaseStatuses\" />
+    <Folder Include="Views\DonorCounts\" />
     <Folder Include="Views\MaterialTypes\" />
   </ItemGroup>
   <ItemGroup>
