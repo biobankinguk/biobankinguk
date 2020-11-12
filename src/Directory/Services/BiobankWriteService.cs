@@ -1499,7 +1499,7 @@ namespace Directory.Services
         #region RefData: Material Type
         public async Task DeleteMaterialTypeAsync(MaterialType materialType)
         {
-            await _materialTypeRepository.DeleteAsync(materialType);
+            await _materialTypeRepository.DeleteAsync(materialType.MaterialTypeId);
             await _materialTypeRepository.SaveChangesAsync();
         }
 

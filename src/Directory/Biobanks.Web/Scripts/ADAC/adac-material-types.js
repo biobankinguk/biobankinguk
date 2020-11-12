@@ -59,7 +59,7 @@ function AdacMaterialTypeViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}MaterialTypeAjax`;
+      var url = `/api/MaterialTypes/${action}MaterialTypeAjax`;
 
         // Make AJAX Call
         $.post(url, $(e.target).serialize(), function (data) {
@@ -177,7 +177,7 @@ $(function () {
         console.log(triggerRow);
 
         //AJAX Update
-        $.post("EditMaterialTypeAjax?sortOnly=true",
+        $.post("/api/MaterialTypes/EditMaterialTypeAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('material-type-id'),
                 description: $(triggerRow.node).data('material-type-desc'),
