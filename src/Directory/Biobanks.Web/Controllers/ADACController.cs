@@ -1102,84 +1102,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View(new DiagnosesModel
+            var endpoint = "api/DiseaseStatuses/DiseaseStatuses";
+            try
             {
-                Diagnoses = (await _biobankReadService.ListDiagnosesAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                    Task.Run(async () => new ReadDiagnosisModel
-                    {
-                        Id = x.DiagnosisId,
-                        SnomedIdentifier = x.SnomedIdentifier,
-                        Description = x.Description,
-                        CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
-                        OtherTerms = x.OtherTerms
-                    }).Result)
-
-                    .ToList()
-            });
+                var result = JsonConvert.DeserializeObject<IList<ReadDiagnosisModel>>(contents);
+                return View(new DiagnosesModel
+                {
+                    Diagnoses = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new DiagnosesModel { Diagnoses = new List<ReadDiagnosisModel> { } });
+            }
         }
 
         public async Task<ActionResult> DeleteDiseaseStatus(DiagnosisModel model)
         {
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
+            var endpoint = "api/DiseaseStatuses/DeleteDiseaseStatus";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("DiseaseStatuses");
             }
-
-            await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
+            catch (Exception)
             {
-                DiagnosisId = model.Id,
-                Description = model.Description
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditDiseaseStatusAjax(DiagnosisModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another disease status. Disease status descriptions must be unique.");
+                return RedirectToAction("DiseaseStatuses");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This disease status is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateDiagnosisAsync(new Diagnosis
-            {
-                DiagnosisId = model.Id,
-                SnomedIdentifier = model.SnomedIdentifier,
-                Description = model.Description,
-                OtherTerms = model.OtherTerms
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditDiseaseStatusSuccess(string name)
@@ -1190,35 +1157,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("DiseaseStatuses");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddDiseaseStatusAjax(DiagnosisModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddDiagnosisAsync(new Diagnosis
-            {
-                Description = model.Description,
-                SnomedIdentifier = model.SnomedIdentifier,
-                OtherTerms = model.OtherTerms
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddDiseaseStatusSuccess(string name)
