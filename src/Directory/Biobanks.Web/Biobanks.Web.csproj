@@ -428,6 +428,7 @@
     <Compile Include="ApiControllers\AgeRangesController.cs" />
     <Compile Include="ApiControllers\AnnualStatisticsController.cs" />
     <Compile Include="ApiControllers\AssociatedDataProcurementTimeFrameController.cs" />
+    <Compile Include="ApiControllers\AssociatedDataTypesController.cs" />
     <Compile Include="ApiControllers\CollectionPercentagesController.cs" />
     <Compile Include="ApiControllers\CollectionPointsController.cs" />
     <Compile Include="ApiControllers\CollectionTypeController.cs" />
@@ -1051,6 +1052,7 @@
     <Folder Include="Views\AgeRanges\" />
     <Folder Include="Views\AnnualStatistics\" />
     <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
+    <Folder Include="Views\AssociatedDataTypes\" />
     <Folder Include="Views\CollectionPercentages\" />
     <Folder Include="Views\CollectionPoints\" />
     <Folder Include="Views\CollectionType\" />

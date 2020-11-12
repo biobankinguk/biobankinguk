@@ -68,7 +68,7 @@ function AdacAssociatedDataTypeViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}AssociatedDataTypeAjax`;
+        var url = `/api/AssociatedDataType/${action}AssociatedDataTypeAjax`;
 
         console.log($(e.target).serialize());
 
