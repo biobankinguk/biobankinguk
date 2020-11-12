@@ -25,6 +25,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         // GET: AssociatedDataTypes;
+        [HttpGet]
         public async Task<IHttpActionResult> AssociatedDataTypes()
         {
             var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
@@ -56,6 +57,7 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
+        [HttpPost]
         public async Task<IHttpActionResult> DeleteAssociatedDataType(AssociatedDataTypeModel model)
         {
             if (await _biobankReadService.IsAssociatedDataTypeInUse(model.Id))
