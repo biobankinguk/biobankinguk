@@ -149,7 +149,7 @@ $(function () {
             var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
             //AJAX Update
-            $.post("EditConsentRestrictionAjax?sortOnly=true",
+            $.post("/api/ConsentRestrictions/EditConsentRestrictionAjax?sortOnly=true",
                 {
                     id: $(triggerRow.node).data('restriction-id'),
                     description: $(triggerRow.node).data('restriction-desc'),

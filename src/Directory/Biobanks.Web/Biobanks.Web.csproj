@@ -433,6 +433,7 @@
     <Compile Include="ApiControllers\CollectionPercentagesController.cs" />
     <Compile Include="ApiControllers\CollectionPointsController.cs" />
     <Compile Include="ApiControllers\CollectionTypeController.cs" />
+    <Compile Include="ApiControllers\ConsentRestrictionsController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusesController.cs" />
     <Compile Include="ApiControllers\DonorCountsController.cs" />
     <Compile Include="ApiControllers\MaterialTypesController.cs" />
@@ -1058,6 +1059,7 @@
     <Folder Include="Views\CollectionPercentages\" />
     <Folder Include="Views\CollectionPoints\" />
     <Folder Include="Views\CollectionType\" />
+    <Folder Include="Views\ConsentRestrictions\" />
     <Folder Include="Views\DiseaseStatuses\" />
     <Folder Include="Views\DonorCounts\" />
     <Folder Include="Views\MaterialTypes\" />
