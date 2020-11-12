@@ -24,6 +24,7 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
         // GET: ConsentRestrictions
+        [HttpGet]
         public async Task<IList> ConsentRestriction()
         {
             var model = (await _biobankReadService.ListConsentRestrictionsAsync())
@@ -42,6 +43,7 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
+        [HttpPost]
         public async Task<IHttpActionResult> DeleteConsentRestriction(Models.Shared.ConsentRestrictionModel model)
         {
             if (await _biobankReadService.IsConsentRestrictionInUse(model.Id))

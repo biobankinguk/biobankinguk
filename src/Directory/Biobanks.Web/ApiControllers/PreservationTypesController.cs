@@ -125,6 +125,7 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
+        [HttpPost]
         public async Task<IHttpActionResult> DeletePreservationType(PreservationTypeModel model)
         {
             //Getting the name of the reference type as stored in the config

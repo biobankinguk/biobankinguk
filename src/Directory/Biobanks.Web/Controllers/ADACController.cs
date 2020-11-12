@@ -1676,7 +1676,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteAssociatedDataType(AssociatedDataTypeModel model)
         {
-            var endpoint = "api/eAssociatedDataTypes/DeleteeAssociatedDataType";
+            var endpoint = "api/AssociatedDataTypes/DeleteAssociatedDataType";
             try
             {
                 //Make request
@@ -1832,14 +1832,14 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage(result["msg"].ToString(),
                     (FeedbackMessageType)int.Parse(result["type"].ToString()));
 
-                return RedirectToAction("ConsentRestrictions");
+                return RedirectToAction("ConsentRestriction");
             }
             catch (Exception)
             {
                 SetTemporaryFeedbackMessage($"Something went wrong!",
                     FeedbackMessageType.Danger);
 
-                return RedirectToAction("ConsentRestrictions");
+                return RedirectToAction("ConsentRestriction");
             }
         }
 

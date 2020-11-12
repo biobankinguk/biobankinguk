@@ -25,6 +25,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         // GET: CollectionStatus
+        [HttpGet]
         public async Task<IList> CollectionStatus()
         {
             var model = (await _biobankReadService.ListCollectionStatusesAsync())
@@ -43,6 +44,7 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
+        [HttpPost]
         public async Task<IHttpActionResult> DeleteCollectionStatus(Models.Shared.CollectionStatusModel model)
         {
             if (await _biobankReadService.IsCollectionStatusInUse(model.Id))
@@ -99,16 +101,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description
-            });
-        }
-
-        public IHttpActionResult EditCollectionStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-            return Json(new
-            {
-                msg = $"The collection status \"{name}\" has been edited successfully.",
-                type = FeedbackMessageType.Success
             });
         }
 
