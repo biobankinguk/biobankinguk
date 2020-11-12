@@ -1867,78 +1867,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Status
         public async Task<ActionResult> CollectionStatus()
         {
-            return View(new Models.ADAC.CollectionStatusModel
+            var endpoint = "api/CollectionStatus/CollectionStatus";
+            try
             {
-                CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                Task.Run(async () => new ReadCollectionStatusModel
+                var result = JsonConvert.DeserializeObject<IList<ReadCollectionStatusModel>>(contents);
+                return View(new Models.ADAC.CollectionStatusModel
                 {
-                    Id = x.CollectionStatusId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.CollectionStatusId),
-                    SortOrder = x.SortOrder
-                }).Result)
-
-                    .ToList()
-            });
+                    CollectionStatuses = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new Models.ADAC.CollectionStatusModel { CollectionStatuses = new List<ReadCollectionStatusModel> { } });
+            }
         }
 
         public async Task<ActionResult> DeleteCollectionStatus(Models.Shared.CollectionStatusModel model)
         {
-            if (await _biobankReadService.IsCollectionStatusInUse(model.Id))
+            var endpoint = "api/CollectionStatus/DeleteCollectionStatus";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The collection status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("CollectionStatus");
             }
-
-            await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
+            catch (Exception)
             {
-                CollectionStatusId = model.Id,
-                Description = model.Description
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The collection status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionStatus");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionStatusAjax(Models.Shared.CollectionStatusModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionStatus", "That collection status already exists!");
+                return RedirectToAction("CollectionStatus");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsCollectionStatusInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionStatusAsync(new CollectionStatus
-            {
-                CollectionStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditCollectionStatusSuccess(string name)
@@ -1949,34 +1922,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("CollectionStatus");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionStatusAjax(Models.Shared.CollectionStatusModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Collection status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddCollectionStatusAsync(new CollectionStatus
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddCollectionStatusSuccess(string name)
