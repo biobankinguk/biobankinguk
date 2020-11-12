@@ -449,6 +449,7 @@
     <Compile Include="ApiControllers\AgeRangesController.cs" />
     <Compile Include="ApiControllers\AnnualStatisticsController.cs" />
     <Compile Include="ApiControllers\AssociatedDataProcurementTimeFrameController.cs" />
+    <Compile Include="ApiControllers\MaterialTypesController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\BlobController.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
@@ -1057,6 +1058,7 @@
     <Folder Include="Views\AgeRanges\" />
     <Folder Include="Views\AnnualStatistics\" />
     <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
+    <Folder Include="Views\MaterialTypes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">

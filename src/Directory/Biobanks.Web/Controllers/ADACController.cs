@@ -1030,109 +1030,52 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Types
         public async Task<ActionResult> MaterialTypes()
         {
-            return View(new MaterialTypesModel
+            var endpoint = "api/MaterialTypes/MaterialTypes";
+            try
             {
-                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                    Task.Run(async () => new ReadMaterialTypeModel
-                    {
-                        Id = x.MaterialTypeId,
-                        Description = x.Description,
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.MaterialTypeId),
-                        SortOrder = x.SortOrder
-                    }).Result)
-
-                    .ToList()
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddMaterialTypeAjax(MaterialTypeModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
+                var result = JsonConvert.DeserializeObject<IList<ReadMaterialTypeModel>>(contents);
+                return View(new MaterialTypesModel
+                {
+                    MaterialTypes = result
+                });
+            }
+            catch (Exception)
             {
-                ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new MaterialTypesModel { MaterialTypes = new List<ReadMaterialTypeModel> { } });
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddMaterialTypeAsync(new MaterialType
-            {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddMaterialTypeSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditMaterialTypeAjax(MaterialTypeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("MaterialType", "That description is already in use. Material types must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = false;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
-            {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditMaterialTypeSuccess?name={model.Description}"
-            });
         }
 
         public async Task<ActionResult> DeleteMaterialType(MaterialTypeModel model)
         {
-            if (await _biobankReadService.IsMaterialTypeInUse(model.Id))
+            var endpoint = "api/MaterialTypes/DeleteMaterialType";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The material type \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("MaterialTypes");
             }
-
-            await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
+            catch (Exception)
             {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The material type \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("MaterialTypes");
+                return RedirectToAction("MaterialTypes");
+            }
         }
 
         public ActionResult EditMaterialTypeSuccess(string name)
