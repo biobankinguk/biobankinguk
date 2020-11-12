@@ -1451,78 +1451,53 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> CollectionType()
         {
-            return View(new Models.ADAC.CollectionTypeModel
+            var endpoint = "api/CollectionType/CollectionType";
+            try
             {
-                CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                Task.Run(async () => new ReadCollectionTypeModel
+                var result = JsonConvert.DeserializeObject<IList<ReadCollectionTypeModel>>(contents);
+                return View(new Models.ADAC.CollectionTypeModel
                 {
-                    Id = x.CollectionTypeId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.CollectionTypeId),
-                    SortOrder = x.SortOrder
-                }).Result)
+                    CollectionTypes = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new Models.ADAC.CollectionTypeModel { CollectionTypes = new List<ReadCollectionTypeModel> { } });
+            }
 
-                    .ToList()
-            });
         }
 
         public async Task<ActionResult> DeleteCollectionType(Models.Shared.CollectionTypeModel model)
         {
-            if (await _biobankReadService.IsCollectionTypeInUse(model.Id))
+            var endpoint = "api/CollectionType/DeleteCollectionType";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The collection type \"{model.Description}\" is currently in use, and cannot be deleted.",
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
+                return RedirectToAction("CollectionType");
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
                     FeedbackMessageType.Danger);
+
                 return RedirectToAction("CollectionType");
             }
 
-            await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
-            {
-                CollectionTypeId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The collection type \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionType");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionTypeAjax(Models.Shared.CollectionTypeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionType", "That collection type already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsCollectionTypeInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
-            {
-                CollectionTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditCollectionTypeSuccess(string name)
@@ -1533,34 +1508,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("CollectionType");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionTypeAjax(Models.Shared.CollectionTypeModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Collection types descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddCollectionTypeAsync(new CollectionType
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddCollectionTypeSuccess(string name)
