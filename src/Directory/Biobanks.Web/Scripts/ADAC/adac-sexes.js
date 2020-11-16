@@ -59,7 +59,7 @@ function AdacSexViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}SexAjax`;
+        var url = `/api/Sexes/${action}SexAjax`;
 
         // Make AJAX Call
         $.post(url, $(e.target).serialize(), function (data) {
@@ -175,7 +175,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditSexAjax?sortOnly=true",
+        $.post("/api/Sexes/EditSexAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('sexes-id'),
                 description: $(triggerRow.node).data('sexes-desc'),
