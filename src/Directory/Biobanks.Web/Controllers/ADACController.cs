@@ -1914,80 +1914,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Annual Statistic Groups
         public async Task<ActionResult> AnnualStatisticGroups()
         {
-            return View(new AnnualStatisticGroupsModel
+            var endpoint = "api/AnnualStatisticGroups/AnnualStatisticGroups";
+            try
             {
-                AnnualStatisticGroups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                    Task.Run(async () => new ReadAnnualStatisticGroupModel
-                    {
-                        AnnualStatisticGroupId = x.AnnualStatisticGroupId,
-                        Name = x.Name,
-                        AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.AnnualStatisticGroupId)
-                    }).Result)
-
-                    .ToList()
-            });
+                var result = JsonConvert.DeserializeObject<IList<ReadAnnualStatisticGroupModel>>(contents);
+                return View(new AnnualStatisticGroupsModel
+                {
+                    AnnualStatisticGroups = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new AnnualStatisticGroupsModel { AnnualStatisticGroups = new List<ReadAnnualStatisticGroupModel> { } });
+            }
         }
 
         public async Task<ActionResult> DeleteAnnualStatisticGroup(AnnualStatisticGroupModel model)
         {
-            if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
+            var endpoint = "api/AnnualStatisticGroups/DeleteAnnualStatisticGroup";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The annual statistic group \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("AnnualStatisticGroups");
             }
-
-            await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
+            catch (Exception)
             {
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The annual statistic group \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AnnualStatisticGroups");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAnnualStatisticGroupAjax(AnnualStatisticGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAnnualStatisticGroupNameAsync(model.AnnualStatisticGroupId, model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use by another annual statistic group. Annual Statistic Group names must be unique.");
+                return RedirectToAction("AnnualStatisticGroups");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This annual statistic group is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateAnnualStatisticGroupAsync(new AnnualStatisticGroup
-            {
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult EditAnnualStatisticGroupSuccess(string name)
@@ -1998,33 +1969,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("AnnualStatisticGroups");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAnnualStatisticGroupAjax(AnnualStatisticGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAnnualStatisticGroupNameAsync(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Annual Statistic Group names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddAnnualStatisticGroupAsync(new AnnualStatisticGroup
-            {
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult AddAnnualStatisticGroupSuccess(string name)
@@ -2042,110 +1986,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sample Collection Mode
         public async Task<ActionResult> SampleCollectionModes()
         {
-            var models = (await _biobankReadService.ListSampleCollectionModeAsync())
-                .Select(x =>
-                    Task.Run(async () => new SampleCollectionModeModel
-                    {
-                        Id = x.SampleCollectionModeId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.SampleCollectionModeId)
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new SampleCollectionModesModel()
+            var endpoint = "api/SampleCollectionModes/SampleCollectionModes";
+            try
             {
-                SampleCollectionModes = models
-            });
-        }
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-        [HttpPost]
-        public async Task<JsonResult> AddSampleCollectionModeAjax(SampleCollectionModeModel model)
-        {
-            //// Validate model
-            if (await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
-            {
-                ModelState.AddModelError("SampleCollectionModes", "That description is already in use. Sample collection modes must be unique.");
+                var result = JsonConvert.DeserializeObject<IList<SampleCollectionModeModel>>(contents);
+                return View(new SampleCollectionModesModel
+                {
+                    SampleCollectionModes = result
+                });
             }
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                return JsonModelInvalidResponse(ModelState);
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new SampleCollectionModesModel { SampleCollectionModes = new List<SampleCollectionModeModel> { } });
             }
-
-            var mode = new SampleCollectionMode
-            {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddSampleCollectionModeAsync(mode);
-            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddSampleCollectionModeSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditSampleCollectionModeAjax(SampleCollectionModeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
-            {
-                ModelState.AddModelError("SampleCollectionModes", "That sample collection modes already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var mode = new SampleCollectionMode
-            {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode);
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditSampleCollectionModeSuccess?name={model.Description}"
-            });
         }
 
         public async Task<ActionResult> DeleteSampleCollectionMode(SampleCollectionModeModel model)
         {
-            if (await _biobankReadService.IsSampleCollectionModeInUse(model.Id))
+            var endpoint = "api/SampleCollectionModes/DeleteSampleCollectionMode";
+            try
             {
-                SetTemporaryFeedbackMessage($"The sample collection mode \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("SampleCollectionModes");
             }
-
-            var mode = new SampleCollectionMode
+            catch (Exception)
             {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            await _biobankWriteService.DeleteSampleCollectionModeAsync(mode);
-
-            // Success
-            SetTemporaryFeedbackMessage($"The sample colelction mode  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SampleCollectionModes");
+                return RedirectToAction("SampleCollectionModes");
+            }
         }
 
         public ActionResult AddSampleCollectionModeSuccess(string name)
@@ -2164,110 +2049,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sexes
         public async Task<ActionResult> Sexes()
         {
-            return View(new SexesModel
+            var endpoint = "api/Sexes/Sexes";
+            try
             {
-                Sexes = (await _biobankReadService.ListSexesAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                    Task.Run(async () => new ReadSexModel
-                    {
-                        Id = x.SexId,
-                        Description = x.Description,
-                        SexCount = await _biobankReadService.GetSexCount(x.SexId),
-                        SortOrder = x.SortOrder
-                    }).Result)
-
-                    .ToList()
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddSexAjax(SexModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSexDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Sex descriptions must be unique.");
+                var result = JsonConvert.DeserializeObject<IList<ReadSexModel>>(contents);
+                return View(new SexesModel
+                {
+                    Sexes = result
+                });
             }
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                return JsonModelInvalidResponse(ModelState);
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new SexesModel { Sexes = new List<ReadSexModel> { } });
             }
-
-            await _biobankWriteService.AddSexAsync(new Sex
-            {
-                SexId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddSexSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditSexAjax(SexModel model, bool sortOnly = false)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSexDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another material type. Sex descriptions must be unique.");
-            }
-
-            if (await _biobankReadService.IsSexInUse(model.Id))
-            {
-                ModelState.AddModelError("Description", "This sex is currently in use and cannot be edited.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.UpdateSexAsync(new Sex
-            {
-                SexId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditSexSuccess?name={model.Description}"
-            });
         }
 
         public async Task<ActionResult> DeleteSex(SexModel model)
         {
-            if (await _biobankReadService.IsSexInUse(model.Id))
+            var endpoint = "api/Sexes/DeleteSex";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The sex \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("Sexes");
             }
-
-            await _biobankWriteService.DeleteSexAsync(new Sex
+            catch (Exception)
             {
-                SexId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The sex \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Sexes");
+                return RedirectToAction("Sexes");
+            }
         }
 
         public ActionResult AddSexSuccess(string name)
@@ -2286,54 +2112,25 @@ namespace Biobanks.Web.Controllers
         #region RefData: Country
         public async Task<ActionResult> Country()
         {
-            return View(new Models.ADAC.CountryModel
+            var endpoint = "api/Country/Country";
+            try
             {
-                Countries = (await _biobankReadService.ListCountriesAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                    Task.Run(async () => new ReadCountryModel
-                    {
-                        Id = x.CountryId,
-                        Name = x.Name,
-                        CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.CountryId)
-                    }).Result)
-
-                    .ToList()
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCountryAjax(Models.Shared.CountryModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCountryNameAsync(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Country names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return Json(new
+                var result = JsonConvert.DeserializeObject<IList<ReadCountryModel>>(contents);
+                return View(new Models.ADAC.CountryModel
                 {
-                    success = false,
-                    errors = ModelState.Values
-                        .Where(x => x.Errors.Count > 0)
-                        .SelectMany(x => x.Errors)
-                        .Select(x => x.ErrorMessage).ToList()
+                    Countries = result
                 });
             }
-
-            await _biobankWriteService.AddCountryAsync(new Country
+            catch (Exception)
             {
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new Models.ADAC.CountryModel { Countries = new List<ReadCountryModel> { } });
+            }
         }
 
         public ActionResult AddCountrySuccess(string name)
@@ -2344,50 +2141,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("Country");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCountryAjax(Models.Shared.CountryModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCountryNameAsync(model.Id, model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use by another country. Country names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = ModelState.Values
-                        .Where(x => x.Errors.Count > 0)
-                        .SelectMany(x => x.Errors)
-                        .Select(x => x.ErrorMessage).ToList()
-                });
-            }
-
-            if (await _biobankReadService.IsCountryInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This country is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateCountryAsync(new Country
-            {
-                CountryId = model.Id,
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult EditCountrySuccess(string name)
@@ -2402,25 +2155,28 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteCountry(Models.Shared.CountryModel model)
         {
-            if (await _biobankReadService.IsCountryInUse(model.Id))
+            var endpoint = "api/Country/DeleteCountry";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The country \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("Country");
             }
-
-            await _biobankWriteService.DeleteCountryAsync(new Country
+            catch (Exception)
             {
-                CountryId = model.Id,
-                Name = model.Name
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The country \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Country");
+                return RedirectToAction("Country");
+            }
         }
         #endregion
 
@@ -2429,28 +2185,22 @@ namespace Biobanks.Web.Controllers
         {
             if (await _biobankReadService.GetSiteConfigStatus("site.display.counties") == true)
             {
-                var countries = await _biobankReadService.ListCountriesAsync();
+                var endpoint = "api/County/County";
+                try
+                {
+                    //Make request
+                    var response = await _client.GetAsync(endpoint);
+                    var contents = await response.Content.ReadAsStringAsync();
 
-                return View(
-                    new CountiesModel
-                    {
-                        Counties = countries.ToDictionary(
-                            x => x.Name,
-                            x => x.Counties.Select(county =>
-                                Task.Run(async () =>
-                                    new CountyModel
-                                    {
-                                        Id = county.CountyId,
-                                        CountryId = x.CountryId,
-                                        Name = county.Name,
-                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.CountyId)
-                                    }
-                                 )
-                                .Result
-                            )
-                        )
-                    }
-                );
+                    var result = JsonConvert.DeserializeObject<CountiesModel>(contents);
+                    return View(result);
+                }
+                catch (Exception)
+                {
+                    SetTemporaryFeedbackMessage($"Something went wrong!",
+                        FeedbackMessageType.Danger);
+                    return View(new CountiesModel { });
+                }
             }
             else
             {
@@ -2458,99 +2208,30 @@ namespace Biobanks.Web.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<JsonResult> AddCountyAjax(CountyModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCountyAsync(model.Name))
-            {
-                ModelState.AddModelError("County", "That name is already in use. County names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var county = new County
-            {
-                CountyId = model.Id,
-                CountryId = model.CountryId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.AddCountyAsync(county);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"AddCountySuccess?name={model.Name}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCountyAjax(CountyModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCountyAsync(model.Name))
-            {
-                ModelState.AddModelError("County", "That county already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsCountyInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This county is currently in use and cannot be edited." }
-                });
-            }
-
-            var county = new County
-            {
-                CountyId = model.Id,
-                CountryId = model.CountryId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.UpdateCountyAsync(county);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"EditCountySuccess?name={model.Name}"
-            });
-        }
-
         public async Task<ActionResult> DeleteCounty(CountyModel model)
         {
-            if (await _biobankReadService.IsCountyInUse(model.Id))
+            var endpoint = "api/County/DeleteCounty";
+            try
             {
-                SetTemporaryFeedbackMessage($"The county \"{model.Name}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("Country");
             }
-
-            var county = new County
+            catch (Exception)
             {
-                CountyId = model.Id,
-                CountryId = model.CountryId,
-                Name = model.Name
-            };
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            await _biobankWriteService.DeleteCountyAsync(county);
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The county type \"{model.Name}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("County");
+                return RedirectToAction("Country");
+            }
         }
 
         public ActionResult AddCountySuccess(string name)
@@ -2570,110 +2251,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sop Status
         public async Task<ActionResult> SopStatus()
         {
-            var models = (await _biobankReadService.ListSopStatusesAsync())
-                .Select(x =>
-                    Task.Run(async () => new SopStatusModel()
-                    {
-                        Id = x.SopStatusId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new SopStatusesModel()
+            var endpoint = "api/SopStatus/SopStatus";
+            try
             {
-                SopStatuses = models
-            });
-        }
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-        [HttpPost]
-        public async Task<JsonResult> AddSopStatusAjax(SopStatusModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidSopStatusAsync(model.Description))
-            {
-                ModelState.AddModelError("SopStatus", "That description is already in use. Sop status descriptions must be unique.");
+                var result = JsonConvert.DeserializeObject<IList<SopStatusModel>>(contents);
+                return View(new SopStatusesModel
+                {
+                    SopStatuses = result
+                });
             }
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                return JsonModelInvalidResponse(ModelState);
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new SopStatusesModel { SopStatuses = new List<SopStatusModel> { } });
             }
-
-            var status = new SopStatus
-            {
-                SopStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddSopStatusAsync(status);
-            await _biobankWriteService.UpdateSopStatusAsync(status, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddSopStatusSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditSopStatusAjax(SopStatusModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidSopStatusAsync(model.Description))
-            {
-                ModelState.AddModelError("SopStatus", "That sop status already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateSopStatusAsync(new SopStatus
-            {
-                SopStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditSopStatusSuccess?name={model.Description}"
-            });
         }
 
         public async Task<ActionResult> DeleteSopStatus(SopStatusModel model)
         {
-            if (await _biobankReadService.IsSopStatusInUse(model.Id))
+            var endpoint = "api/SopStatus/DeleteSopStatus";
+            try
             {
-                SetTemporaryFeedbackMessage($"The sop status \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("SopStatus");
             }
-
-            await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
+            catch (Exception)
             {
-                SopStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            // Success
-            SetTemporaryFeedbackMessage($"The sop status  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SopStatus");
+                return RedirectToAction("SopStatus");
+            }
         }
 
         public ActionResult AddSopStatusSuccess(string name)
@@ -2692,80 +2314,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Registration Reason
         public async Task<ActionResult> RegistrationReason()
         {
-            return View(new Models.ADAC.RegistrationReasonModel
+            var endpoint = "api/RegistrationReason/RegistrationReason";
+            try
             {
-                RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                Task.Run(async () => new ReadRegistrationReasonModel
+                var result = JsonConvert.DeserializeObject<IList<ReadRegistrationReasonModel>>(contents);
+                return View(new Models.ADAC.RegistrationReasonModel
                 {
-                    Id = x.RegistrationReasonId,
-                    Description = x.Description,
-                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.RegistrationReasonId),
-                }).Result)
-
-                    .ToList()
-            });
+                    RegistrationReasons = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new Models.ADAC.RegistrationReasonModel { RegistrationReasons = new List<ReadRegistrationReasonModel> { } });
+            }
         }
 
         public async Task<ActionResult> DeleteRegistrationReason(Models.Shared.RegistrationReasonModel model)
         {
-            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
+            var endpoint = "api/RegistrationReason/DeleteRegistrationReason";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The registration reason \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("RegistrationReason");
             }
-
-            await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
+            catch (Exception)
             {
-                RegistrationReasonId = model.Id,
-                Description = model.Description
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The registration reason \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("RegistrationReason");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditRegistrationReasonAjax(Models.Shared.RegistrationReasonModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another registration reason. Registration reason descriptions must be unique.");
+                return RedirectToAction("RegistrationReason");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This registration reason is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateRegistrationReasonAsync(new RegistrationReason
-            {
-                RegistrationReasonId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditRegistrationReasonSuccess(string name)
@@ -2776,33 +2369,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("RegistrationReason");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddRegistrationReasonAjax(Models.Shared.RegistrationReasonModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Registration reason descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddRegistrationReasonAsync(new RegistrationReason
-            {
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddRegistrationReasonSuccess(string name)
@@ -2819,126 +2385,51 @@ namespace Biobanks.Web.Controllers
         #region RefData: Macroscopic Assessment
         public async Task<ActionResult> MacroscopicAssessments()
         {
-            var models = (await _biobankReadService.ListMacroscopicAssessmentsAsync())
-                .Select(x =>
-                    Task.Run(async () => new MacroscopicAssessmentModel()
-                    {
-                        Id = x.MacroscopicAssessmentId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetMacroscopicAssessmentUsageCount(x.MacroscopicAssessmentId)
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new MacroscopicAssessmentsModel()
+            var endpoint = "api/MacroscopicAssessments/MacroscopicAssessments";
+            try
             {
-                MacroscopicAssessments = models
-            });
-        }
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-        [HttpPost]
-        public async Task<JsonResult> AddMacroscopicAssessmentAjax(MacroscopicAssessmentModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
-
-            // Validate model
-            if (await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
-            {
-                ModelState.AddModelError("MacroscopicAssessments", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
+                var result = JsonConvert.DeserializeObject<IList<MacroscopicAssessmentModel>>(contents);
+                return View(new MacroscopicAssessmentsModel
+                {
+                    MacroscopicAssessments = result
+                });
             }
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                return JsonModelInvalidResponse(ModelState);
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new MacroscopicAssessmentsModel { MacroscopicAssessments = new List<MacroscopicAssessmentModel> { } });
             }
-
-            var assessment = new MacroscopicAssessment
-            {
-                MacroscopicAssessmentId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddMacroscopicAssessmentAsync(assessment);
-            await _biobankWriteService.UpdateMacroscopicAssessmentAsync(assessment, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddMacroscopicAssessmentSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditMacroscopicAssessmentAjax(MacroscopicAssessmentModel model, bool sortOnly = false)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
-
-            //// Validate model
-            if (!sortOnly && await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
-            {
-                ModelState.AddModelError("MacroscopicAssessments", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
-            {
-                MacroscopicAssessmentId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditMacroscopicAssessmentSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
-            });
         }
 
         public async Task<ActionResult> DeleteMacroscopicAssessment(MacroscopicAssessmentModel model)
         {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
-
-            if (await _biobankReadService.IsMacroscopicAssessmentInUse(model.Id))
+            var endpoint = "api/MacroscopicAssessments/DeleteMacroscopicAssessment";
+            try
             {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("MacroscopicAssessments");
             }
-
-            if ((await _biobankReadService.ListMacroscopicAssessmentsAsync()).Count() <= 1)
+            catch (Exception)
             {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently the last entry and cannot be deleted", FeedbackMessageType.Danger);
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+
                 return RedirectToAction("MacroscopicAssessments");
             }
-
-            await _biobankWriteService.DeleteMacroscopicAssessmentAsync(new MacroscopicAssessment
-            {
-                MacroscopicAssessmentId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("MacroscopicAssessments");
         }
 
         public ActionResult AddMacroscopicAssessmentSuccess(string name, string referencename)
@@ -2959,85 +2450,57 @@ namespace Biobanks.Web.Controllers
         {
             if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.EnableHTA) == true)
             {
-                return View(new Models.ADAC.HtaStatusModel
+                var endpoint = "api/HtaStatus/HtaStatus";
+                try
                 {
-                    HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
-                        .Select(x =>
+                    //Make request
+                    var response = await _client.GetAsync(endpoint);
+                    var contents = await response.Content.ReadAsStringAsync();
 
-                    Task.Run(async () => new ReadHtaStatusModel
+                    var result = JsonConvert.DeserializeObject<IList<ReadHtaStatusModel>>(contents);
+                    return View(new Models.ADAC.HtaStatusModel
                     {
-                        Id = x.HtaStatusId,
-                        Description = x.Description,
-                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.HtaStatusId),
-                        SortOrder = x.SortOrder
-                    }).Result)
-
-                        .ToList()
-                });
+                        HtaStatuses = result
+                    });
+                }
+                catch (Exception)
+                {
+                    SetTemporaryFeedbackMessage($"Something went wrong!",
+                        FeedbackMessageType.Danger);
+                    return View(new Models.ADAC.HtaStatusModel { HtaStatuses = new List<ReadHtaStatusModel> { } });
+                }
             }
             else
             {
                 return RedirectToAction("LockedRef");
             }
-
         }
 
 
         public async Task<ActionResult> DeleteHtaStatus(Models.Shared.HtaStatusModel model)
         {
-            if (await _biobankReadService.IsHtaStatusInUse(model.Id))
+            var endpoint = "api/HtaStatus/DeleteHtaStatus";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The hta status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("HtaStatus");
             }
-
-            await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
+            catch (Exception)
             {
-                HtaStatusId = model.Id,
-                Description = model.Description
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The hta status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("HtaStatus");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditHtaStatusAjax(Models.Shared.HtaStatusModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("HtaStatus", "That hta status already exists!");
+                return RedirectToAction("HtaStatus");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsHtaStatusInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
-            {
-                HtaStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditHtaStatusSuccess(string name)
@@ -3048,34 +2511,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("HtaStatus");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddHtaStatusAjax(Models.Shared.HtaStatusModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Hta status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddHtaStatusAsync(new HtaStatus
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddHtaStatusSuccess(string name)
@@ -3094,77 +2529,50 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> ServiceOffering()
         {
-            return View(new Models.ADAC.ServiceOfferingModel
+            var endpoint = "api/ServiceOfferings/ServiceOffering";
+            try
             {
-                ServiceOfferings = (await _biobankReadService.ListServiceOfferingsAsync())
-                    .Select(x =>
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
 
-                Task.Run(async () => new ReadServiceOfferingModel
+                var result = JsonConvert.DeserializeObject<IList<ReadServiceOfferingModel>>(contents);
+                return View(new Models.ADAC.ServiceOfferingModel
                 {
-                    Id = x.ServiceId,
-                    Name = x.Name,
-                    OrganisationCount = await _biobankReadService.GetServiceOfferingOrganisationCount(x.ServiceId),
-                    SortOrder = x.SortOrder
-                }).Result)
-
-                    .ToList()
-            });
+                    ServiceOfferings = result
+                });
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+                return View(new Models.ADAC.ServiceOfferingModel { ServiceOfferings = new List<ReadServiceOfferingModel> { } });
+            }
         }
         public async Task<ActionResult> DeleteServiceOffering(Models.Shared.ServiceOfferingModel model)
         {
-            if (await _biobankReadService.IsServiceOfferingInUse(model.Id))
+            var endpoint = "api/ServiceOfferings/DeleteServiceOffering";
+            try
             {
-                SetTemporaryFeedbackMessage(
-                    $"The service offering \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
                 return RedirectToAction("ServiceOffering");
             }
-
-            await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
+            catch (Exception)
             {
-                ServiceId = model.Id,
-                Name = model.Name
-            });
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
 
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The service offering \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ServiceOffering");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditServiceOfferingAjax(Models.Shared.ServiceOfferingModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidServiceOfferingName(model.Name))
-            {
-                ModelState.AddModelError("ServiceOffering", "That service offering already exists!");
+                return RedirectToAction("ServiceOffering");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsServiceOfferingInUse(model.Id);
-
-            // Update Service Offering
-            await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
-            {
-                ServiceId = model.Id,
-                Name = model.Name,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult EditServiceOfferingSuccess(string name)
@@ -3175,34 +2583,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("ServiceOffering");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddServiceOfferingAjax(Models.Shared.ServiceOfferingModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidServiceOfferingName(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Service offering names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-
-            await _biobankWriteService.AddServiceOfferingAsync(new ServiceOffering
-            {
-                Name = model.Name,
-                SortOrder = model.SortOrder
-            });
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult AddServiceOfferingSuccess(string name)

@@ -66,7 +66,7 @@ function AdacCountyViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}CountyAjax`;
+        var url = `/api/County/${action}CountyAjax`;
 
         console.log($(e.target).serialize());
 

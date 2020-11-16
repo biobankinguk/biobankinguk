@@ -61,7 +61,7 @@ function AdacCollectionModeViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}SampleCollectionModeAjax`;
+        var url = `/api/SampleCollectionModes/${action}SampleCollectionModeAjax`;
 
         console.log($(e.target).serialize());
 
@@ -130,7 +130,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditSampleCollectionModeAjax?sortOnly=true",
+        $.post("/api/SampleCollectionModes/EditSampleCollectionModeAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('collection-mode-id'),
                 description: $(triggerRow.node).data('collection-mode-desc'),

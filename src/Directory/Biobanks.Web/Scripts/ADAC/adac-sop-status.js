@@ -61,7 +61,7 @@ function AdacSopStatusViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}SopStatusAjax`;
+        var url = `/api/SopStatus/${action}SopStatusAjax`;
 
         console.log($(e.target).serialize());
 
@@ -130,7 +130,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
         
         //AJAX Update
-        $.post("EditSopStatusAjax?sortOnly=true",
+        $.post("/api/SopStatus/EditSopStatusAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('sop-status-id'),
                 description: $(triggerRow.node).data('sop-status-desc'),

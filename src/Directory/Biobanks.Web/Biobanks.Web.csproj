@@ -447,6 +447,7 @@
     <Content Include="Global.asax" />
     <Compile Include="ApiControllers\AccessConditionsController.cs" />
     <Compile Include="ApiControllers\AgeRangesController.cs" />
+    <Compile Include="ApiControllers\AnnualStatisticGroupsController.cs" />
     <Compile Include="ApiControllers\AnnualStatisticsController.cs" />
     <Compile Include="ApiControllers\AssociatedDataProcurementTimeFrameController.cs" />
     <Compile Include="ApiControllers\AssociatedDataTypeGroupsController.cs" />
@@ -456,10 +457,19 @@
     <Compile Include="ApiControllers\CollectionStatusController.cs" />
     <Compile Include="ApiControllers\CollectionTypeController.cs" />
     <Compile Include="ApiControllers\ConsentRestrictionsController.cs" />
+    <Compile Include="ApiControllers\CountryController.cs" />
+    <Compile Include="ApiControllers\CountyController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusesController.cs" />
     <Compile Include="ApiControllers\DonorCountsController.cs" />
+    <Compile Include="ApiControllers\HtaStatusController.cs" />
+    <Compile Include="ApiControllers\MacroscopicAssessmentsController.cs" />
     <Compile Include="ApiControllers\MaterialTypesController.cs" />
     <Compile Include="ApiControllers\PreservationTypesController.cs" />
+    <Compile Include="ApiControllers\RegistrationReasonController.cs" />
+    <Compile Include="ApiControllers\SampleCollectionModesController.cs" />
+    <Compile Include="ApiControllers\ServiceOfferingsController.cs" />
+    <Compile Include="ApiControllers\SexesController.cs" />
+    <Compile Include="ApiControllers\SopStatusController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\BlobController.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
@@ -1066,6 +1076,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\AgeRanges\" />
+    <Folder Include="Views\AnnualStatisticGroups\" />
     <Folder Include="Views\AnnualStatistics\" />
     <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
     <Folder Include="Views\AssociatedDataTypeGroups\" />
@@ -1075,10 +1086,19 @@
     <Folder Include="Views\CollectionStatus\" />
     <Folder Include="Views\CollectionType\" />
     <Folder Include="Views\ConsentRestrictions\" />
+    <Folder Include="Views\Country\" />
+    <Folder Include="Views\County\" />
     <Folder Include="Views\DiseaseStatuses\" />
     <Folder Include="Views\DonorCounts\" />
+    <Folder Include="Views\HtaStatus\" />
+    <Folder Include="Views\MacroscopicAssessment\" />
     <Folder Include="Views\MaterialTypes\" />
     <Folder Include="Views\PreservationType\" />
+    <Folder Include="Views\RegistrationReason\" />
+    <Folder Include="Views\SampleCollectionModes\" />
+    <Folder Include="Views\ServiceOfferings\" />
+    <Folder Include="Views\Sexes\" />
+    <Folder Include="Views\SopStatus\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">

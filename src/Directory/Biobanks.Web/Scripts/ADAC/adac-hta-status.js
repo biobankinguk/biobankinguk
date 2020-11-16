@@ -149,7 +149,7 @@ $(function () {
             var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
             //AJAX Update
-            $.post("EditHtaStatusAjax?sortOnly=true",
+            $.post("/api/HtaStatus/EditHtaStatusAjax?sortOnly=true",
                 {
                     id: $(triggerRow.node).data('hta-id'),
                     description: $(triggerRow.node).data('hta-desc'),
