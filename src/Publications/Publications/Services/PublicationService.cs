@@ -62,21 +62,5 @@ namespace Publications.Services
 
             await _ctx.SaveChangesAsync();
         }
-
-        public async Task<IEnumerable<PublicationDto>> GetOrganisationPublications(string organisationName)
-        {
-            return await _ctx.Publications
-                .Where(x => x.Organisation.Name.Equals(organisationName))
-                .Select(x => new PublicationDto()
-                {
-                    Id = x.PublicationId,
-                    Title = x.Title,
-                    Authors = x.Authors,
-                    Journal = x.Journal,
-                    Year = x.Year,
-                    Doi = x.DOI
-                })
-                .ToListAsync();
-        }
     }
 }

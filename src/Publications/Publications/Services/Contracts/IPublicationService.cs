@@ -7,8 +7,6 @@ namespace Publications.Services
 {
     public interface IPublicationService
     {
-        Task<IEnumerable<PublicationDto>> GetOrganisationPublications(string organisationName);
-
         Task AddOrganisationPublications(int organisationId, IEnumerable<PublicationDto> publications);
     }
 }
