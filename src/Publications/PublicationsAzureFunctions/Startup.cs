@@ -12,6 +12,7 @@ using Publications;
 using Publications.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.SqlServer;
+using Directory.Data.Entities;
 
 [assembly: FunctionsStartup(typeof(PublicationsAzureFunctions.Startup))]
 
@@ -41,7 +42,7 @@ namespace PublicationsAzureFunctions
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEpmcService, EpmcWebService>();
             builder.Services.AddScoped<IPublicationService, PublicationService>();
-            builder.Services.AddScoped<IBiobankService, BiobankWebService>();
+            builder.Services.AddScoped<IBiobankReadService, BiobankReadService>();
             builder.Services.AddTransient<FetchPublicationsService>();
         }
     }
