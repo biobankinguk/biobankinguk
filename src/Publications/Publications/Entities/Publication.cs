@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Directory.Data.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Publications.Entities
 {
     public class Publication
     { 
         [Key]
-        public int InternalId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string PublicationId { get; set; }
 
         [Required]
-        public string Organisation { get; set; }
+        public int OrganisationId { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -26,5 +24,10 @@ namespace Publications.Entities
         public int Year { get; set; }
 
         public string DOI { get; set; }
+
+        public bool? Accepted { get; set; }
+
+        public virtual Organisation Organisation { get; set; }
+
     }
 }

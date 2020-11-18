@@ -16,20 +16,20 @@ namespace Publications.Services
     public class FetchPublicationsService : IHostedService
     {
         private readonly IPublicationService _publicationService;
-        private readonly IBiobankService _biobankWebService;
+        private readonly IBiobankReadService _biobankReadService;
         private readonly IEpmcService _epmcWebService;
 
         private readonly ILogger<FetchPublicationsService> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
 
         public FetchPublicationsService(IPublicationService publicationService,
-            IBiobankService biobankWebService,
+            IBiobankReadService biobankReadService,
             IEpmcService epmcWebService,
             ILogger<FetchPublicationsService> logger, 
             IServiceScopeFactory scopeFactory)
         {
             _publicationService = publicationService;
-            _biobankWebService = biobankWebService;
+            _biobankReadService = biobankReadService;
             _epmcWebService = epmcWebService;
 
             _logger = logger;
@@ -39,15 +39,15 @@ namespace Publications.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // Call directory for all active organisation
-            var biobanks = await _biobankWebService.GetOrganisationNames();
+            var biobanks = await _biobankReadService.ListBiobanksAsync();
 
             _logger.LogInformation($"Fetching publications for {biobanks.Count()} organisations");
 
             // Fetch and store all publications for each organisation
             foreach (var biobank in biobanks)
             {
-                var publications = await _epmcWebService.GetOrganisationPublications(biobank);
-                await _publicationService.AddOrganisationPublications(biobank, publications);
+                var publications = await _epmcWebService.GetOrganisationPublications(biobank.Name);
+                await _publicationService.AddOrganisationPublications(biobank.OrganisationId, publications);
 
                 _logger.LogInformation($"Fetched {publications.Count()} publications for {biobank}");
             }
