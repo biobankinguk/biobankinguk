@@ -56,7 +56,7 @@ namespace Directory.Services.Contracts
 
         Task<NetworkRegisterRequest> AddNetworkRegisterRequestAsync(NetworkRegisterRequest request);
         Task DeleteNetworkRegisterRequestAsync(NetworkRegisterRequest request);
-        Task<bool> AddBiobankToNetworkAsync(int biobankId, int networkId, string biobankExternalID);
+        Task<bool> AddBiobankToNetworkAsync(int biobankId, int networkId, string biobankExternalID, bool approve);
         Task RemoveBiobankFromNetworkAsync(int biobankId, int networkId);
 
         Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request);
