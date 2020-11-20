@@ -1,0 +1,225 @@
+﻿@using Directory.Data.Constants;
+@model string
+
+<div class="row">
+	<div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li role="presentation"
+                class="@(Model == "Requests" ? "active" : "true")">
+                @Html.ActionLink("Requests", "Requests")
+            </li>
+
+            <li role="presentation"
+                class="@(Model == "Historical" ? "active" : "true")">
+                @Html.ActionLink("Historical", "Historical")
+            </li>
+
+            <li role="presentation"
+                class="@(Model == "Biobanks" ? "active" : "true")">
+                @Html.ActionLink("Biobanks", "Biobanks")
+            </li>
+
+            <li role="presentation"
+                class="@(Model == "BiobankActivity" ? "active" : "true")">
+                @Html.ActionLink("Biobank Activity", "BiobankActivity")
+            </li>
+
+            <li role="presentation"
+                class="@(Model == "Networks" ? "active" : "true")">
+                @Html.ActionLink("Networks", "Networks")
+            </li>
+
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle enabled" data-toggle="dropdown">
+                    Reference Data
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu refdata-menu">
+                    <li role="presentation"
+                        class="@(Model == "Access Conditions" ? "active" : "true")">
+                        @Html.ActionLink("Access Conditions", "AccessConditions")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Age Ranges" ? "active" : "true")">
+                        @Html.ActionLink("Age Ranges", "AgeRanges")
+                    </li>
+
+
+                    <li role="presentation"
+                        class="@(Model == "Annual Statistics" ? "active" : "true")">
+                        @Html.ActionLink("Annual Statistics", "AnnualStatistics")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Annual Statistic Groups" ? "active" : "true")">
+                        @Html.ActionLink("Annual Statistic Groups", "AnnualStatisticGroups")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Associated Data Types" ? "active" : "true")">
+                        @Html.ActionLink("Associated Data Types", "AssociatedDataTypes")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Associated Data Type Groups" ? "active" : "true")">
+                        @Html.ActionLink("Associated Data Type Groups", "AssociatedDataTypeGroups")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Associated Data Procurement Time Frames" ? "active" : "true")">
+                        @Html.ActionLink("Associated Data Procurement Time Frames", "AssociatedDataProcurementTimeFrame")
+                    </li>
+
+                    @if (App.Config[ConfigKey.ShowPreservationPercentage] != "false")
+                    {
+                        <li role="presentation"
+                            class="@(Model == "Collection Percentages" ? "active" : "true")">
+                            @Html.ActionLink("Collection Percentages", "CollectionPercentages")
+                        </li>
+                    }
+
+                    <li role="presentation"
+                        class="@(Model == "Collection Points" ? "active" : "true")">
+                        @Html.ActionLink("Collection Points", "CollectionPoints")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Consent restrictions" ? "active" : "true")">
+                        @Html.ActionLink("Consent Restrictions", "ConsentRestriction")
+                    </li>
+                    <li role="presentation"
+                        class="@(Model == "Donor Counts" ? "active" : "true")">
+                        @Html.ActionLink($"{@App.Config[ConfigKey.DonorCountName]}", "DonorCounts")
+                    </li>
+                    <li role="presentation"
+                        class="@(Model == "Collection statuses" ? "active" : "true")">
+                        @Html.ActionLink("Collection Statuses", "CollectionStatus")
+                    </li>
+                    <li role="presentation"
+                        class="@(Model == "Collection types" ? "active" : "true")">
+                        @Html.ActionLink("Collection Types", "CollectionType")
+                    </li>
+                    <li role="presentation"
+                        class="@(Model == "Countries" ? "active" : "true")">
+                        @Html.ActionLink("Countries", "Country")
+                    </li>
+
+                    @if (App.Config[ConfigKey.ShowCounties] != "false")
+                    {
+                        <li role="presentation"
+                            class="@(Model == "Counties" ? "active" : "true")">
+                            @Html.ActionLink("Counties", "County")
+                        </li>
+                    }
+
+                    <li role="presentation"
+                        class="@(Model == "Disease statuses" ? "active" : "true")">
+                        @Html.ActionLink("Disease statuses", "DiseaseStatuses")
+                    </li>
+
+                    @if (App.Config[ConfigKey.EnableHTA] != "false")
+                    {
+                        <li role="presentation"
+                            class="@(Model == "Hta statuses" ? "active" : "true")">
+                            @Html.ActionLink("Hta Statuses", "HtaStatus")
+                        </li>
+                    }
+
+                    <li role="presentation"
+                        class="@(Model == "Macroscopic Assessments" ? "active" : "true")">
+                        @Html.ActionLink($"{@App.Config[ConfigKey.MacroscopicAssessmentName]}", "MacroscopicAssessments")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Material Types" ? "active" : "true")">
+                        @Html.ActionLink("Material Types", "MaterialTypes")
+                    </li>
+
+					<li role="presentation"
+						class="@(Model == "Preservation Types" ? "active" : "true")">
+						@Html.ActionLink($"{@App.Config[ConfigKey.PreservationTypeName]}", "PreservationTypes")
+					</li>
+
+                    <li role="presentation"
+                        class="@(Model == "Registration Reasons" ? "active" : "true")">
+                        @Html.ActionLink("Registration Reasons", "RegistrationReason")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Sample Collection Modes" ? "active" : "true")">
+                        @Html.ActionLink("Sample Collection Modes", "SampleCollectionModes")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Service Offerings" ? "active" : "true")">
+                        @Html.ActionLink("Service Offerings", "ServiceOffering")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Sexes" ? "active" : "true")">
+                        @Html.ActionLink("Sexes", "Sexes")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Sop Status" ? "active" : "true")">
+                        @Html.ActionLink("Sop Status", "SopStatus")
+                    </li>
+
+
+                </ul>
+            </li>
+
+            <li role="presentation"
+                class="@(Model == "Funders" ? "active" : "true")">
+                @Html.ActionLink("Funders", "Funders")
+            </li>
+
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle enabled" data-toggle="dropdown">
+                    Site Config <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu refdata-menu">
+                    <li role="presentation"
+                        class="@(Model == "Site Config" ? "active" : "true")">
+                        @Html.ActionLink("Site Config", "SiteConfig")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Homepage Config" ? "active" : "true")">
+                        @Html.ActionLink("Homepage Config", "HomepageConfig")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Term Page Config" ? "active" : "true")">
+                        @Html.ActionLink("Term Page Config", "TermpageConfig")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Register " + App.Config[ConfigKey.SampleResourceName] + " Config" ? "active" : "true")">
+                        @Html.ActionLink("Register Biobank Config", "RegisterBiobankConfig")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == "Register Network Config" ? "active" : "true")">
+                        @Html.ActionLink("Register Network Config", "RegisterNetworkConfig")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == App.Config[ConfigKey.SampleResourceName] + " Config" ? "active" : "true")">
+                        @Html.ActionLink((string)App.Config[ConfigKey.SampleResourceName] + " Config", "SampleResourceConfig")
+                    </li>
+                </ul>
+            </li>
+
+            @if (App.Config[ConfigKey.DisplayAnalytics] != "false")
+            {
+                <li role="presentation"
+                    class="@(Model == "Analytics" ? "active" : "true")">
+                    @Html.ActionLink("Analytics", "Analytics")
+                </li>
+            }
+
+            </ul>
+    </div>
+</div>

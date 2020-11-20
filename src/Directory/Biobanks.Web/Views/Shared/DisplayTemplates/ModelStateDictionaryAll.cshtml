@@ -1,0 +1,16 @@
+﻿
+@using System.Linq
+@using System.Web
+@model ModelStateDictionary
+
+<div class="@( Model.IsValid ? "validation-summary-valid" : "validation-summary-errors") alert alert-danger"
+     data-valmsg-summary="true">
+    @foreach (var modelError in
+        Model.SelectMany(keyValuePair => keyValuePair.Value.Errors))
+    {
+        <p>
+            <span class="fa fa-exclamation-triangle"></span>
+            @Html.Raw(HttpUtility.HtmlDecode(modelError.ErrorMessage))
+        </p>
+    }
+</div>

@@ -1,0 +1,70 @@
+﻿@using System.Web.Optimization
+@using Biobanks.Web.Models.Home
+@model HomepageContentModel
+@{
+	ViewBag.Title = "Homepage Config";
+}
+
+@Html.Partial("_ADACTabs", (string)ViewBag.Title)
+
+<h3>
+	Homepage Configuration
+
+	<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+	<label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
+</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<br />
+
+		<form id="homepage-config-form" class="form-horizontal" method="post">
+			<input type="submit" id="submit-form" class="hidden" formaction="./SaveHomepageConfig"/>
+			<input type="submit" id="preview-form" class="hidden" formaction="./HomepageConfigPreview" />
+
+			<div class="row">
+				<div class="col-md-12">
+
+					<a class="icon-button"></a>
+
+					<!-- Title -->
+					<div class="form-group">
+						<label class="col-md-2 control-label">Title</label>
+						<div class="col-md-10">
+							<input type="text" id="Title" name="Title" class="form-control" value="@Model.Title">
+						</div>
+					</div>
+
+					<!-- Search Title -->
+					<div class="form-group">
+						<label class="col-md-2 control-label">Search Title</label>
+						<div class="col-md-10">
+							<input type="text" id="SearchTitle" name="SearchTitle" class="form-control" value="@Model.SearchTitle">
+						</div>
+					</div>
+
+					<!-- Resource Registration  -->
+					<div class="form-group">
+						<label class="col-md-2 control-label">Resource Registration</label>
+						<div class="col-md-10">
+							<textarea cols=50 rows=8 id="ResourceRegistration" name="ResourceRegistration" class="form-control mdd_editor">@Model.ResourceRegistration</textarea>
+						</div>
+					</div>
+
+					<!-- Network Registration  -->
+					<div class="form-group">
+						<label class="col-md-2 control-label">Network Registration</label>
+						<div class="col-md-10">
+							<textarea cols=50 rows=8 id="NetworkRegistration" name="NetworkRegistration" class="form-control mdd_editor">@Model.NetworkRegistration</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@section FooterScripts
+{
+	@Scripts.Render("~/bundles/markdowndeep")
+}

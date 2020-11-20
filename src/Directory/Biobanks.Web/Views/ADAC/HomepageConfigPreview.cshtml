@@ -1,0 +1,36 @@
+﻿@using System.Web.Optimization
+@using Biobanks.Web.Models.Home
+@model HomepageContentModel
+
+
+<style>
+	.navbar-fixed-top {
+		top: 50px;
+	}
+	.top-padding {
+		margin-top: 50px;
+	}
+</style>
+<div class="preview-message">
+	<h4>
+		Homepage Preview
+	</h4>
+	<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+	<label id="preview-button" for="edit-form" class="btn btn-primary pull-right pull-right-space">Edit</label>
+
+	@using (Html.BeginForm("SaveHomepageConfig", "ADAC",  Model, FormMethod.Post))
+	{
+		<input id="submit-form" type="submit" class="hidden" />
+	}
+	@using (Html.BeginForm("HomepageConfig", "ADAC", Model, FormMethod.Post))
+	{
+		<input id="edit-form" type="submit" class="hidden" />
+	}
+</div>
+
+@RenderPage("~/Views/Home/Index.cshtml", Model)
+
+@* RenderPage adds a container we don't want *@
+<script>
+	document.querySelector("section > .container").classList.remove("container");
+</script>

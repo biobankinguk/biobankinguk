@@ -1,0 +1,2 @@
+Glyphicons Halflings 1.9.2 is licensed as part of the Bootstrap project.
+https://glyphicons.com/old/license.html#old-halflings-bootstrap

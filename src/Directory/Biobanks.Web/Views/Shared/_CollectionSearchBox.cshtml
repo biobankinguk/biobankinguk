@@ -1,0 +1,17 @@
+﻿@model string
+
+@using (Html.BeginForm("Collections", "Search", null, FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div id="bloodhound" class="form-group">
+                <div class="input-group">
+                    @Html.TextBox("Diagnosis", Model, new { @class = "form-control diagnosis-search", autocomplete = "off", placeholder = "Enter a disease status or \"Fit and well\" for healthy donors" })
+                    <span class="input-group-btn">
+                        <button class="submit btn btn-primary">Search Collections</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,69 @@
+﻿
+@model Biobanks.Web.Models.Biobank.BiobankFundersModel
+
+@using System.Web.Optimization
+@{
+    ViewBag.Title = "Funders";
+}
+
+@Html.Partial("_BiobankTabs", "Funders")
+
+<h3>Funders <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalAddBiobankFunder" data-bind="click: openAddFunderDialog">Add new funder</a></h3>
+
+<span id="BiobankId" data-biobank-id="@Model.BiobankId"></span>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br />
+        @if (Model.Funders.Any())
+        {
+            <table id="biobank-funders" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                @foreach (var funder in Model.Funders)
+                {
+                    <tr>
+                        <td>
+                            <span class="fa fa-user labelled-icon"></span>
+                            @funder.Name
+                        </td>
+                        <td>
+                            <div class="pull-right">
+                                <a href="@Url.Action("DeleteFunder", new {funderId = funder.FunderId, funderName = funder.Name})"
+                                   class="confirm-delete"
+                                   data-funder-name="@funder.Name">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are no funders here yet.
+                <a href="#" data-toggle="modal" data-target="#modalAddBiobankFunder" data-bind="click: openAddFunderDialog">Add a funder now</a>
+            </div>
+        }
+    </div>
+</div>
+
+<div id="modalAddBiobankFunder" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddBiobankFunder_Label"></div>
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/bootbox")
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/biobank/funders")
+}

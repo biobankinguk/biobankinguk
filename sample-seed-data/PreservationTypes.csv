@@ -1,0 +1,10 @@
+PreservationTypeId,Description,SortOrder
+1,Room temperature,1
+2,2 °C to 10 °C,2
+3,-18 °C to -35 °C,3
+4,-60 °C to -85 °C,4
+5,Liquid nitrogen,6
+6,Paraffin,7
+7,Under -85 °C,5
+8,Resin (EM),8
+9,Resin (LM),9

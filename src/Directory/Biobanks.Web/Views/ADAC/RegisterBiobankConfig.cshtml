@@ -1,0 +1,39 @@
+﻿@using System.Web.Optimization
+@using Biobanks.Web.Models.Home
+@using Directory.Data.Constants
+@{
+    ViewBag.Title = "Register " + App.Config[ConfigKey.SampleResourceName] + " Config";
+}
+
+@Html.Partial("_ADACTabs", (string)ViewBag.Title)
+
+<h3>
+	Register @App.Config[ConfigKey.SampleResourceName] Configuration
+
+	<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<br />
+
+		<form id="register-config-form" class="form-horizontal" method="post">
+			<input type="submit" id="submit-form" class="hidden" formaction="./SaveRegisterBiobankConfig"/>
+
+			<div class="row">
+				<div class="col-md-12">
+
+					<a class="icon-button"></a>
+
+					<!-- Description -->
+					<div class="form-group">
+						<label class="col-md-2 control-label">Title</label>
+						<div class="col-md-10">
+							<input type="text" id="Description" name="Description" class="form-control" value="@App.Config[ConfigKey.RegisterBiobankDescription]">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

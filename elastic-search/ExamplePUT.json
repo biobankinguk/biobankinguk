@@ -1,0 +1,29 @@
+﻿{
+  "id": 1,
+  "diagnosis": "Benign neoplasm of brain",
+  "biobankId": 1,
+  "biobank": "Test Biobank",
+  "network": "Test Network",
+  "associatedData": [
+    {
+      "text": "Clinical Records"
+    },
+    {
+      "text": "Primary Care Records"
+    }
+  ],
+  "collectionPoint": "Pre-diagnosis",
+  "collectionStatus": "In Progress",
+  "consentRestriction": "Commercial Restriction",
+  "hta": "Pre HTA",
+  "ageRange": "Young Child (2 - 6 years)",
+  "donorCount": "101-500",
+  "gender": "Female",
+  "materialPreversationDetails": [
+    {
+      "materialType": "Core Biopsy",
+      "preservationType": "2 °C to 10 °C",
+      "macroscopicAssessment": "Non-affected"
+    }
+  ]
+}
