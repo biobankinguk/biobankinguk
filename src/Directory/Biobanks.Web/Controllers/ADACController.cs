@@ -847,109 +847,50 @@ namespace Biobanks.Web.Controllers
         #region RefData: Age Ranges
         public async Task<ActionResult> AgeRanges()
         {
-            var models = (await _biobankReadService.ListAgeRangesAsync())
-                .Select(x =>
-                    Task.Run(async () => new AgeRangeModel()
-                    {
-                        Id = x.AgeRangeId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.AgeRangeId)
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new AgeRangesModel
+            var endpoint = "api/AgeRanges/AgeRanges";
+            try
             {
-                AgeRanges = models
-            });
+                //Make request
+                var response = await _client.GetAsync(endpoint);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JsonConvert.DeserializeObject<IList<AgeRangeModel>>(contents);
+                return View(new AgeRangesModel
+                {
+                    AgeRanges = result
+                });
+            }
+            catch (Exception)
+            {
+                return View(new AgeRangesModel { AgeRanges = new List<AgeRangeModel> { } });
+            }
+            
         }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAgeRangeAjax(AgeRangeModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
-            {
-                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // Add new Age Range
-            var range = new AgeRange
-            {
-                AgeRangeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddAgeRangeAsync(range);
-            await _biobankWriteService.UpdateAgeRangeAsync(range, true); // Ensure sortOrder is correct
-
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddAgeRangeSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAgeRangeAjax(AgeRangeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidAgeRangeAsync(model.Description))
-            {
-                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateAgeRangeAsync(new AgeRange
-            {
-                AgeRangeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditAgeRangeSuccess?name={model.Description}"
-            });
-        }
-
         public async Task<ActionResult> DeleteAgeRange(AgeRangeModel model)
         {
-            if (await _biobankReadService.IsAgeRangeInUse(model.Id))
+            var endpoint = "api/AgeRanges/DeleteAgeRange";
+            try
             {
-                SetTemporaryFeedbackMessage($"The age range \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                //Make request
+                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var contents = await response.Content.ReadAsStringAsync();
+
+                var result = JObject.Parse(contents);
+
+                //Everything went A-OK!
+                SetTemporaryFeedbackMessage(result["msg"].ToString(),
+                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
+
+                return RedirectToAction("AgeRanges");
+            }
+            catch (Exception)
+            {
+                SetTemporaryFeedbackMessage($"Something went wrong!",
+                    FeedbackMessageType.Danger);
+
                 return RedirectToAction("AgeRanges");
             }
 
-            await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
-            {
-                AgeRangeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            SetTemporaryFeedbackMessage($"The age range  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AgeRanges");
         }
 
         public ActionResult AddAgeRangeSuccess(string name)

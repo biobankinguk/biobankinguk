@@ -425,6 +425,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Compile Include="ApiControllers\AccessConditionsController.cs" />
+    <Compile Include="ApiControllers\AgeRangesController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
@@ -1038,6 +1039,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\" />
+    <Folder Include="Views\AgeRanges\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">
