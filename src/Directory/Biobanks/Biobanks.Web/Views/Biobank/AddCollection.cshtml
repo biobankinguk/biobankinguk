@@ -1,0 +1,29 @@
+﻿@using System.Web.Optimization
+@model Biobanks.Web.Models.Biobank.AddCollectionModel
+@{
+    ViewBag.Title = "Add collection";
+}
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/collection-and-capability-crud")
+    @Scripts.Render("~/bundles/help-buttons")
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.Partial("_DataProtectionAlert")
+
+@using (Html.BeginForm("AddCollection", "Biobank", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Partial("_CollectionSharedFields", Model)
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 text-center">
+            @Html.ActionLink("Cancel", "Collections", null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">Create collection</button>
+        </div>
+    </div>
+}

@@ -1,0 +1,1142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2763058F-FB55-47BF-B9B5-F39A2E733BD2}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Biobanks.Web</RootNamespace>
+    <AssemblyName>Biobanks.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort>44300</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
+    <TargetFrameworkProfile />
+    <Use64BitIISExpress />
+    <ApplicationInsightsResourceId>/subscriptions/72748e69-677a-4b7c-a2fb-97632e5e2d23/resourcegroups/biobankinguk-directory-test/providers/microsoft.insights/components/biobankinguk-directory-test</ApplicationInsightsResourceId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.4.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.AspNet.SystemWeb, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Facilities.AspNet.SystemWeb.5.0.1\lib\net45\Castle.Facilities.AspNet.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.5.0.1\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonServiceLocator, Version=2.0.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.5\lib\net48\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="DataAnnotationsExtensions, Version=5.0.1.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DataAnnotationsExtensions.5.0.1.27\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="DataAnnotationsExtensions.ClientValidation, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DataAnnotationsExtensions.MVC.5.0.0.0\lib\net45\DataAnnotationsExtensions.ClientValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.Core, Version=1.7.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Core.1.7.11\lib\net46\Hangfire.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.SqlServer, Version=1.7.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.SqlServer.1.7.11\lib\net45\Hangfire.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.Windsor, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Windsor.2.0.1\lib\net45\Hangfire.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageResizer, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageResizer.4.2.5\lib\net45\ImageResizer.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkdownDeep, Version=1.5.4615.26275, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MarkdownDeep.Full.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.14.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.14.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights.TraceListener, Version=2.14.0.17971, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.TraceListener.2.14.0\lib\net45\Microsoft.ApplicationInsights.TraceListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.TelemetryCorrelation, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.TelemetryCorrelation.1.0.7\lib\net45\Microsoft.AspNet.TelemetryCorrelation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniProfiler, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniProfiler.4.2.1\lib\net461\MiniProfiler.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniProfiler.EF6, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniProfiler.EF6.4.2.1\lib\net461\MiniProfiler.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniProfiler.Mvc5, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniProfiler.Mvc5.4.2.1\lib\net461\MiniProfiler.Mvc5.dll</HintPath>
+    </Reference>
+    <Reference Include="MiniProfiler.Shared, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniProfiler.Shared.4.2.1\lib\net461\MiniProfiler.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcSiteMapProvider, Version=4.6.26.0, Culture=neutral, PublicKeyToken=1923abe4657913cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.6.26\lib\net45\MvcSiteMapProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcSiteMapProvider.WebActivator, Version=4.6.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSiteMapProvider.MVC5.4.6.26\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Postal, Version=1.0.0.0, Culture=neutral, PublicKeyToken=45719375b8b4d528, processorArchitecture=MSIL">
+      <HintPath>..\packages\Postal.Mvc5.1.2.0\lib\net45\Postal.dll</HintPath>
+    </Reference>
+    <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.7\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-slider.min.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\cookieconsent.css" />
+    <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
+    <Content Include="Content\DataTables\css\autoFill.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.dataTables.css" />
+    <Content Include="Content\DataTables\css\autoFill.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.foundation.css" />
+    <Content Include="Content\DataTables\css\autoFill.foundation.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.jqueryui.css" />
+    <Content Include="Content\DataTables\css\autoFill.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap4.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap4.min.css" />
+    <Content Include="Content\DataTables\css\buttons.dataTables.css" />
+    <Content Include="Content\DataTables\css\buttons.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\buttons.foundation.css" />
+    <Content Include="Content\DataTables\css\buttons.foundation.min.css" />
+    <Content Include="Content\DataTables\css\buttons.jqueryui.css" />
+    <Content Include="Content\DataTables\css\buttons.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.bootstrap.css" />
+    <Content Include="Content\DataTables\css\colReorder.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.dataTables.css" />
+    <Content Include="Content\DataTables\css\colReorder.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.foundation.css" />
+    <Content Include="Content\DataTables\css\colReorder.foundation.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.jqueryui.css" />
+    <Content Include="Content\DataTables\css\colReorder.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap4.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap4.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.foundation.css" />
+    <Content Include="Content\DataTables\css\dataTables.foundation.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.jqueryui.css" />
+    <Content Include="Content\DataTables\css\dataTables.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.material.css" />
+    <Content Include="Content\DataTables\css\dataTables.material.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.semanticui.css" />
+    <Content Include="Content\DataTables\css\dataTables.semanticui.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.uikit.css" />
+    <Content Include="Content\DataTables\css\dataTables.uikit.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.bootstrap.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.dataTables.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.foundation.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.foundation.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.jqueryui.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.bootstrap.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.dataTables.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.foundation.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.foundation.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.jqueryui.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\DataTables\css\keyTable.bootstrap.css" />
+    <Content Include="Content\DataTables\css\keyTable.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.dataTables.css" />
+    <Content Include="Content\DataTables\css\keyTable.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.foundation.css" />
+    <Content Include="Content\DataTables\css\keyTable.foundation.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.jqueryui.css" />
+    <Content Include="Content\DataTables\css\keyTable.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\responsive.bootstrap.css" />
+    <Content Include="Content\DataTables\css\responsive.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\responsive.dataTables.css" />
+    <Content Include="Content\DataTables\css\responsive.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\responsive.foundation.css" />
+    <Content Include="Content\DataTables\css\responsive.foundation.min.css" />
+    <Content Include="Content\DataTables\css\responsive.jqueryui.css" />
+    <Content Include="Content\DataTables\css\responsive.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.bootstrap.css" />
+    <Content Include="Content\DataTables\css\rowReorder.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.dataTables.css" />
+    <Content Include="Content\DataTables\css\rowReorder.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.foundation.css" />
+    <Content Include="Content\DataTables\css\rowReorder.foundation.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.jqueryui.css" />
+    <Content Include="Content\DataTables\css\rowReorder.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\scroller.bootstrap.css" />
+    <Content Include="Content\DataTables\css\scroller.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\scroller.dataTables.css" />
+    <Content Include="Content\DataTables\css\scroller.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\scroller.foundation.css" />
+    <Content Include="Content\DataTables\css\scroller.foundation.min.css" />
+    <Content Include="Content\DataTables\css\scroller.jqueryui.css" />
+    <Content Include="Content\DataTables\css\scroller.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\select.bootstrap.css" />
+    <Content Include="Content\DataTables\css\select.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\select.dataTables.css" />
+    <Content Include="Content\DataTables\css\select.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\select.foundation.css" />
+    <Content Include="Content\DataTables\css\select.foundation.min.css" />
+    <Content Include="Content\DataTables\css\select.jqueryui.css" />
+    <Content Include="Content\DataTables\css\select.jqueryui.min.css" />
+    <Content Include="Content\DataTables\images\details_close.png" />
+    <Content Include="Content\DataTables\images\details_open.png" />
+    <Content Include="Content\DataTables\images\sort_asc.png" />
+    <Content Include="Content\DataTables\images\sort_asc_disabled.png" />
+    <Content Include="Content\DataTables\images\sort_both.png" />
+    <Content Include="Content\DataTables\images\sort_desc.png" />
+    <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
+    <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\images\NoLogo.png" />
+    <Content Include="Content\images\NoLogoPublic.png" />
+    <Content Include="Content\images\splash_background.jpg" />
+    <Content Include="Content\images\term_logo.png" />
+    <Content Include="Content\Site\mdd_styles.css" />
+    <Content Include="Content\Site\nav.css" />
+    <Content Include="Content\Site\Site.css" />
+    <Content Include="Content\typeahead.css" />
+    <Content Include="Error\error.html" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Compile Include="App_Start\ProfilerConfig.cs" />
+    <Compile Include="Controllers\FooterController.cs" />
+    <Compile Include="Controllers\HeaderController.cs" />
+    <Compile Include="Extensions\DictionaryExtension.cs" />
+    <Compile Include="Models\Biobank\AcceptanceModel.cs" />
+    <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
+    <Compile Include="Models\Footer\FooterModel.cs" />
+    <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
+    <Compile Include="Models\Header\HeaderModel.cs" />
+    <Compile Include="Models\Header\HeaderItemModel.cs" />
+    <Compile Include="Models\Home\HompageContentModel.cs" />
+    <Content Include="Scripts\ADAC\adac-sample-resource-config.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\DataTables\css\mixins.scss" />
+    <Content Include="Content\DataTables\css\common.scss" />
+    <Content Include="App_Config\footer.json" />
+    <Content Include="App_Config\header.json" />
+    <None Include="Scripts\jquery-2.2.2.intellisense.js" />
+    <Content Include="Scripts\bootbox.js" />
+    <Content Include="Scripts\bootbox.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
+    <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\autoFill.foundation.js" />
+    <Content Include="Scripts\DataTables\autoFill.foundation.min.js" />
+    <Content Include="Scripts\DataTables\autoFill.jqueryui.js" />
+    <Content Include="Scripts\DataTables\autoFill.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap4.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap4.min.js" />
+    <Content Include="Scripts\DataTables\buttons.colVis.js" />
+    <Content Include="Scripts\DataTables\buttons.colVis.min.js" />
+    <Content Include="Scripts\DataTables\buttons.flash.js" />
+    <Content Include="Scripts\DataTables\buttons.flash.min.js" />
+    <Content Include="Scripts\DataTables\buttons.foundation.js" />
+    <Content Include="Scripts\DataTables\buttons.foundation.min.js" />
+    <Content Include="Scripts\DataTables\buttons.html5.js" />
+    <Content Include="Scripts\DataTables\buttons.html5.min.js" />
+    <Content Include="Scripts\DataTables\buttons.jqueryui.js" />
+    <Content Include="Scripts\DataTables\buttons.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\buttons.print.js" />
+    <Content Include="Scripts\DataTables\buttons.print.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.autoFill.js" />
+    <Content Include="Scripts\DataTables\dataTables.autoFill.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap4.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap4.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.buttons.js" />
+    <Content Include="Scripts\DataTables\dataTables.buttons.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.colReorder.js" />
+    <Content Include="Scripts\DataTables\dataTables.colReorder.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedColumns.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedColumns.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedHeader.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedHeader.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.foundation.js" />
+    <Content Include="Scripts\DataTables\dataTables.foundation.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.jqueryui.js" />
+    <Content Include="Scripts\DataTables\dataTables.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.keyTable.js" />
+    <Content Include="Scripts\DataTables\dataTables.keyTable.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.material.js" />
+    <Content Include="Scripts\DataTables\dataTables.material.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.responsive.js" />
+    <Content Include="Scripts\DataTables\dataTables.responsive.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.rowReorder.js" />
+    <Content Include="Scripts\DataTables\dataTables.rowReorder.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.scroller.js" />
+    <Content Include="Scripts\DataTables\dataTables.scroller.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.select.js" />
+    <Content Include="Scripts\DataTables\dataTables.select.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.semanticui.js" />
+    <Content Include="Scripts\DataTables\dataTables.semanticui.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.uikit.js" />
+    <Content Include="Scripts\DataTables\dataTables.uikit.min.js" />
+    <Content Include="Scripts\DataTables\jquery.dataTables.js" />
+    <Content Include="Scripts\DataTables\jquery.dataTables.min.js" />
+    <Content Include="Scripts\DataTables\responsive.bootstrap.js" />
+    <Content Include="Scripts\DataTables\responsive.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\responsive.foundation.js" />
+    <Content Include="Scripts\DataTables\responsive.foundation.min.js" />
+    <Content Include="Scripts\DataTables\responsive.jqueryui.js" />
+    <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
+    <Content Include="Scripts\jquery-2.2.2.js" />
+    <Content Include="Scripts\jquery-2.2.2.min.js" />
+    <Content Include="Scripts\jquery.cookie-1.4.1.min.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-3.4.0.debug.js" />
+    <Content Include="Scripts\knockout-3.4.0.js" />
+    <Content Include="Scripts\knockout.mapping-latest.debug.js" />
+    <Content Include="Scripts\knockout.mapping-latest.js" />
+    <Content Include="Scripts\knockout.validation.js" />
+    <Content Include="Scripts\knockout.validation.min.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\Shared\mdd-editor.js" />
+    <Content Include="Scripts\ADAC\adac-associated-data-type-group.js" />
+    <Content Include="Scripts\ADAC\adac-collection-points.js" />
+    <Content Include="Scripts\ADAC\adac-analytics-directoryreport.js" />
+    <Content Include="Scripts\ADAC\adac-sop-status.js" />
+    <Content Include="Scripts\ADAC\adac-annual-statistics.js" />
+    <Content Include="Scripts\ADAC\adac-county.js" />
+    <Content Include="Scripts\ADAC\adac-associated-data-procurement-time-frame.js" />
+    <Content Include="Scripts\ADAC\adac-biobankactivity.js" />
+    <Content Include="Scripts\ADAC\adac-collection-type.js" />
+    <Content Include="Scripts\ADAC\adac-consent-restriction.js" />
+    <Content Include="Scripts\ADAC\adac-country.js" />
+    <Content Include="Scripts\ADAC\adac-deletebiobank.js" />
+    <Content Include="Scripts\ADAC\adac-associated-data-types.js" />
+    <Content Include="Scripts\ADAC\adac-collection-percentages.js" />
+    <Content Include="Scripts\ADAC\adac-collection-status.js" />
+    <Content Include="Scripts\ADAC\adac-age-ranges.js" />
+    <Content Include="Scripts\ADAC\adac-donor-counts.js" />
+    <Content Include="Scripts\ADAC\adac-hta-status.js" />
+    <Content Include="Scripts\ADAC\adac-macro-assessments.js" />
+    <Content Include="Scripts\ADAC\adac-sample-collection-modes.js" />
+    <Content Include="Scripts\ADAC\adac-access-conditions.js" />
+    <Content Include="Scripts\ADAC\adac-preservation-types.js" />
+    <Content Include="Scripts\ADAC\adac-registration-reasons.js" />
+    <Content Include="Scripts\ADAC\adac-service-offering.js" />
+    <Content Include="Scripts\ADAC\adac-site-config.js" />
+    <Content Include="Scripts\ADAC\adac-annual-statistic-group.js" />
+    <Content Include="Scripts\ADAC\adac-disease-statuses.js" />
+    <Content Include="Scripts\ADAC\adac-funders.js" />
+    <Content Include="Scripts\ADAC\adac-material-types.js" />
+    <Content Include="Scripts\ADAC\adac-sexes.js" />
+    <Content Include="Scripts\Biobank\admins-viewmodel.js" />
+    <Content Include="Scripts\Biobank\analytics-biobankreport.js" />
+    <Content Include="Scripts\Biobank\publications.js" />
+    <Content Include="Scripts\Biobank\funder-viewmodel.js" />
+    <Content Include="Scripts\Biobank\funders-viewmodel.js" />
+    <Content Include="Scripts\Home\home-contactlist.js" />
+    <Content Include="Scripts\plotly-latest.min.js" />
+    <Content Include="Scripts\Profile\publications.js" />
+    <Content Include="Scripts\Term\diseasetable.js" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="App_Config\navigation.json" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Scripts\MarkdownDeep\MarkdownDeep License.txt" />
+    <Content Include="Scripts\MarkdownDeep\MarkdownDeep Quick Reference.txt" />
+    <Content Include="Scripts\MarkdownDeep\MarkdownDeepLib.min.js" />
+    <Content Include="Scripts\MarkdownDeep\mdd_ajax_loader.gif" />
+    <Content Include="Scripts\MarkdownDeep\mdd_gripper.png" />
+    <Content Include="Scripts\MarkdownDeep\mdd_help.htm" />
+    <Content Include="Scripts\MarkdownDeep\mdd_modal_background.png" />
+    <Content Include="Scripts\MarkdownDeep\mdd_styles.css" />
+    <Content Include="Scripts\MarkdownDeep\mdd_toolbar.png" />
+    <Content Include="Scripts\Network\admins-viewmodel.js" />
+    <Content Include="Scripts\Shared\registerentity-admin-viewmodel.js" />
+    <Content Include="Views\Emails\ExternalNetworkNonMemberInformation.cshtml" />
+    <Content Include="Views\Biobank\EditorTemplates\OrganisationRegistrationReasonModel.cshtml" />
+    <Content Include="Views\Profile\Biobanks.cshtml" />
+    <Content Include="Views\Emails\DirectoryAdminNewRegisterRequestNotification.cshtml" />
+    <Content Include="ApplicationInsights.config" />
+    <Content Include="Connected Services\Application Insights\ConnectedService.json" />
+    <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\biobankinguk-directory-test - Web Deploy.pubxml" />
+    <Content Include="Views\Term\Index.cshtml" />
+    <Content Include="Views\ADAC\MaterialTypes.cshtml" />
+    <Content Include="Views\Biobank\Publications.cshtml" />
+    <Content Include="Views\Emails\EmailContactList.cshtml" />
+    <Content Include="Views\Profile\_ProfileTabs.cshtml" />
+    <Content Include="Views\Profile\Publications.cshtml" />
+    <Content Include="Views\ADAC\AssociatedDataTypes.cshtml" />
+    <Content Include="Views\ADAC\ConsentRestriction.cshtml" />
+    <Content Include="Views\ADAC\Sexes.cshtml" />
+    <Content Include="Views\ADAC\PreservationTypes.cshtml" />
+    <Content Include="Views\ADAC\CollectionPoints.cshtml" />
+    <Content Include="Views\ADAC\CollectionPercentages.cshtml" />
+    <Content Include="Views\ADAC\AgeRanges.cshtml" />
+    <Content Include="Views\ADAC\AnnualStatisticGroups.cshtml" />
+    <Content Include="Views\ADAC\Country.cshtml" />
+    <Content Include="Views\ADAC\SiteConfig.cshtml" />
+    <Content Include="Views\ADAC\ServiceOffering.cshtml" />
+    <Content Include="Views\Biobank\Analytics.cshtml" />
+    <Content Include="Views\ADAC\DonorCounts.cshtml" />
+    <Content Include="Views\ADAC\MacroscopicAssessments.cshtml" />
+    <Content Include="Views\ADAC\AssociatedDataProcurementTimeFrame.cshtml" />
+    <Content Include="Views\ADAC\CollectionType.cshtml" />
+    <Content Include="Views\ADAC\AccessConditions.cshtml" />
+    <Content Include="Views\ADAC\SopStatus.cshtml" />
+    <Content Include="Views\ADAC\County.cshtml" />
+    <Content Include="Views\ADAC\SampleCollectionModes.cshtml" />
+    <Content Include="Views\ADAC\HtaStatus.cshtml" />
+    <Content Include="Views\ADAC\AnnualStatistics.cshtml" />
+    <Content Include="Views\ADAC\RegistrationReason.cshtml" />
+    <Content Include="Views\ADAC\CollectionStatus.cshtml" />
+    <Content Include="Views\ADAC\LockedRef.cshtml" />
+    <Content Include="Views\ADAC\HomepageConfig.cshtml" />
+    <Content Include="Views\ADAC\HomepageConfigPreview.cshtml" />
+    <Content Include="Views\ADAC\AssociatedDataTypeGroups.cshtml" />
+    <Content Include="Views\ADAC\Analytics.cshtml" />
+    <Content Include="Views\ADAC\SampleResourceConfig.cshtml" />
+    <Content Include="Views\ADAC\RegisterBiobankConfig.cshtml" />
+    <Content Include="Views\ADAC\RegisterNetworkConfig.cshtml" />
+    <Content Include="Views\ADAC\TermpageConfig.cshtml" />
+    <Content Include="Views\ADAC\TermpageConfigPreview.cshtml" />
+    <Content Include="Views\Header\_NavItem.cshtml" />
+    <Content Include="Views\Header\_NavMenu.cshtml" />
+    <Content Include="Views\Header\_NavDropdown.cshtml" />
+    <Content Include="Views\Header\_NavItemBasic.cshtml" />
+    <Content Include="Views\Header\_NavItemLogin.cshtml" />
+    <Content Include="Views\Header\_NavItemLogout.cshtml" />
+    <Content Include="Views\Header\_NavItemContact.cshtml" />
+    <Content Include="Views\Header\_NavItemRegisterBiobank.cshtml" />
+    <Content Include="Views\Header\_NavItemRegisterNetwork.cshtml" />
+    <Content Include="Views\Header\_NavItemAccount.cshtml" />
+    <Content Include="Views\Header\_NavItemBiobanks.cshtml" />
+    <Content Include="Views\Header\_NavItemAdac.cshtml" />
+    <Content Include="Views\Header\_NavItemNetworks.cshtml" />
+    <Content Include="Views\Biobank\NetworkAcceptance.cshtml" />
+    <Content Include="Scripts\jquery-2.2.2.min.map" />
+    <Content Include="Scripts\knockout.validation.min.js.map" />
+    <Content Include="Views\Emails\_ViewStart.cshtml" />
+    <Content Include="Views\Emails\NewBiobankNetworkRegistrationNotification.cshtml" />
+    <Content Include="Scripts\ADAC\adac-deletefunder.js" />
+    <Content Include="Scripts\ADAC\adac-historical.js" />
+    <Content Include="Scripts\ADAC\adac-requests.js" />
+    <Content Include="Scripts\ADAC\adac-networks.js" />
+    <Content Include="Scripts\ADAC\adac-biobanks.js" />
+    <Content Include="Scripts\Biobank\annualstats.js" />
+    <Content Include="Scripts\Biobank\associated-data-highlight.js" />
+    <Content Include="Scripts\Account\reset-password.js" />
+    <Content Include="Scripts\Biobank\capabilities.js" />
+    <Content Include="Scripts\Biobank\collections.js" />
+    <Content Include="Scripts\Biobank\collection.js" />
+    <Content Include="Scripts\Biobank\details-logo.js" />
+    <Content Include="Scripts\Biobank\funders-type-ahead.js" />
+    <Content Include="Scripts\Biobank\help-popups.js" />
+    <Content Include="Scripts\Biobank\sampleset.js" />
+    <Content Include="Scripts\bootstrap-session-timeout\bootstrap-session-timeout.js" />
+    <Content Include="Scripts\bootstrap-slider-knockout-binding.js" />
+    <Content Include="Scripts\bootstrap-slider.min.js" />
+    <Content Include="Mvc.sitemap" />
+    <Content Include="Scripts\Biobank\collection-sample-sets.js" />
+    <Content Include="Scripts\Contact\contact-button.js" />
+    <Content Include="Scripts\cookieconsent\cookieconsent.min.js" />
+    <Content Include="Scripts\DataTables\datetime-moment.js" />
+    <Content Include="Scripts\Home\unified-search-helptext.js" />
+    <None Include="Properties\PublishProfiles\Live.pubxml" />
+    <Content Include="Scripts\ko.bindingHandlers.dataTable.js" />
+    <Content Include="Scripts\Profile\biobank.js" />
+    <Content Include="Scripts\Search\facet-groups.js" />
+    <Content Include="Scripts\Shared\associated-data-admin.js" />
+    <Content Include="Scripts\Shared\search-diagnosis-type-ahead.js" />
+    <Content Include="Scripts\Shared\diagnosis-type-ahead.js" />
+    <Content Include="Scripts\jquery.pwstrength.bootstrap\pwstrength-bootstrap-1.2.9.min.map" />
+    <Content Include="Scripts\bootstrap.fix.jquery.validate.js" />
+    <Content Include="Scripts\jquery.pwstrength.bootstrap\pwstrength-bootstrap-1.2.9.js" />
+    <Content Include="Scripts\jquery.pwstrength.bootstrap\pwstrength-bootstrap-1.2.9.min.js" />
+    <Content Include="Scripts\Network\details-logo.js" />
+    <Content Include="Scripts\setup.bootbox.form.confirm.js" />
+    <Content Include="Scripts\Shared\feedback-message.js" />
+    <Content Include="Scripts\typeahead.bundle.js" />
+    <Content Include="Views\Biobank\AnnualStats.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.ascx" />
+    <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.ascx" />
+    <Content Include="Views\Shared\DisplayTemplates\MetaRobotsHelperModel.ascx" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapHelperModel.ascx" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModel.ascx" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModelList.ascx" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapPathHelperModel.ascx" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.ascx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Shared\GlobalErrors.cshtml" />
+    <Content Include="Views\Biobank\Collections.cshtml" />
+    <Content Include="Views\Biobank\AddCollection.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
+    <Content Include="Views\Biobank\EditorTemplates\AssociatedDataModel.cshtml" />
+    <Content Include="Views\Shared\_FeedbackMessage.cshtml" />
+    <Content Include="Views\Biobank\Collection.cshtml" />
+    <Content Include="Views\Biobank\AddSampleSet.cshtml" />
+    <Content Include="Views\Biobank\Capabilities.cshtml" />
+    <Content Include="Views\Biobank\AddCapability.cshtml" />
+    <Content Include="Views\Biobank\EditCapability.cshtml" />
+    <Content Include="Views\ADAC\Biobanks.cshtml" />
+    <Content Include="Views\ADAC\Networks.cshtml" />
+    <Content Include="Views\ADAC\Requests.cshtml" />
+    <Content Include="Views\Biobank\EditCollection.cshtml" />
+    <Content Include="Views\Biobank\_CollectionSharedFields.cshtml" />
+    <Content Include="Views\Biobank\_SampleSetSharedFields.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\InviteRegisterEntityAdminModel.cshtml" />
+    <Content Include="Views\Emails\NewUserRegisterEntityAdminInvite.cshtml" />
+    <Content Include="Views\Register\Network.cshtml" />
+    <Content Include="Views\Network\_ModalInviteAdmin.cshtml" />
+    <Content Include="Views\Network\Biobanks.cshtml" />
+    <Content Include="Views\Network\AddBiobank.cshtml" />
+    <Content Include="Views\Biobank\EditSampleSet.cshtml" />
+    <Content Include="Views\Biobank\_CapabilitySharedFields.cshtml" />
+    <Content Include="Views\Biobank\_AssociatedData.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapPathHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\BootstrapSiteMapPathHelperModel.cshtml" />
+    <Content Include="Views\ADAC\Historical.cshtml" />
+    <Content Include="Views\Biobank\Capability.cshtml" />
+    <Content Include="Views\Emails\RegisterEntityDeclined.cshtml" />
+    <Content Include="Views\Emails\ExistingUserRegisterEntityAdminInvite.cshtml" />
+    <Content Include="Views\Emails\ExistingUserRegisterEntityAccepted.cshtml" />
+    <Content Include="Views\Biobank\SampleSet.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModelList.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MetaRobotsHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.cshtml" />
+    <Content Include="Views\Emails\ResendConfirm.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Account\EditorTemplates\AccountDetailsModel.cshtml" />
+    <Content Include="Views\Network\Index.cshtml" />
+    <Content Include="Views\Network\Edit.cshtml" />
+    <Content Include="Views\Network\Admins.cshtml" />
+    <Content Include="Views\Biobank\Index.cshtml" />
+    <Content Include="Views\Biobank\_BiobankTabs.cshtml" />
+    <Content Include="Views\Network\_NetworkTabs.cshtml" />
+    <Content Include="Views\Biobank\Edit.cshtml" />
+    <Content Include="Views\Biobank\EditorTemplates\OrganisationServiceModel.cshtml" />
+    <Content Include="Views\Biobank\_ModalInviteAdmin.cshtml" />
+    <Content Include="Views\Biobank\Admins.cshtml" />
+    <Content Include="Views\Shared\_ModelStateErrorMessage.cshtml" />
+    <Content Include="Views\Search\Collections.cshtml" />
+    <Content Include="Views\Profile\Biobank.cshtml" />
+    <Content Include="Views\Profile\Network.cshtml" />
+    <Content Include="Views\Shared\_DataProtectionAlert.cshtml" />
+    <Content Include="Views\Search\CollectionsDetail.cshtml" />
+    <Content Include="Views\ADAC\DiseaseStatuses.cshtml" />
+    <Content Include="Views\ADAC\_ADACTabs.cshtml" />
+    <Content Include="Views\Shared\_CollectionSearchBox.cshtml" />
+    <Content Include="Views\Home\Cookies.cshtml" />
+    <Content Include="Views\Shared\_CapabilitySearchBox.cshtml" />
+    <Content Include="Views\Search\Capabilities.cshtml" />
+    <Content Include="Views\Search\NoResults.cshtml" />
+    <Content Include="Views\Search\_Facets.cshtml" />
+    <Content Include="Views\Search\CapabilitiesDetail.cshtml" />
+    <Content Include="Views\Biobank\CopySampleSet.cshtml" />
+    <Content Include="Views\SuperUser\SearchIndex.cshtml" />
+    <Content Include="Views\Error\CSRFToken.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ConsentRestrictionModel.cshtml" />
+    <Content Include="Views\Biobank\Funders.cshtml" />
+    <Content Include="Views\Biobank\_ModalAddFunder.cshtml" />
+    <Content Include="Views\ADAC\BiobankActivity.cshtml" />
+    <Content Include="Views\ADAC\DeleteBiobank.cshtml" />
+    <Content Include="Views\ADAC\Funders.cshtml" />
+    <Content Include="Views\ADAC\DeleteFunder.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Shared\_BBFooter.cshtml" />
+    <Content Include="Views\Home\_UnifiedSearchBox.cshtml" />
+    <Content Include="Views\Shared\_ContactButton.cshtml" />
+    <Content Include="Views\SuperUser\Index.cshtml" />
+    <Content Include="Views\SuperUser\_SuperUserTabs.cshtml" />
+    <Content Include="Views\Shared\_SuspendedWarning.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\AddFunderModel.cshtml" />
+    <Content Include="Views\Home\Privacy.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApiControllers\BiobankIdsController.cs" />
+    <Compile Include="ApiControllers\BiobanksController.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\TermController.cs" />
+    <Compile Include="Filters\SiteConfigAttribute.cs" />
+    <Compile Include="Filters\UserAuthenticateAttribute.cs" />
+    <Compile Include="HtmlHelpers\EnvironmentHelper.cs" />
+    <Compile Include="Models\ADAC\AnnualStatisticGroupsModel.cs" />
+    <Compile Include="Models\ADAC\AssociatedDataTypesGroupModel.cs" />
+    <Compile Include="Models\ADAC\DirectoryAnalyticReport.cs" />
+    <Compile Include="Models\ADAC\CollectionTypeModel.cs" />
+    <Compile Include="Models\ADAC\ReadAssociatedDataTypeGroupModel.cs" />
+    <Compile Include="Models\ADAC\SampleCollectionModesModel.cs" />
+    <Compile Include="Models\ADAC\AccessConditionsModel.cs" />
+    <Compile Include="Models\ADAC\CountyModel.cs" />
+    <Compile Include="Models\ADAC\HtaStatusModel.cs" />
+    <Compile Include="Models\ADAC\CollectionStatusModel.cs" />
+    <Compile Include="Models\ADAC\AssociatedDataProcurementTimeFrameModel.cs" />
+    <Compile Include="Models\ADAC\MaterialTypesModel.cs" />
+    <Compile Include="Models\ADAC\CollectionPercentagesModel.cs" />
+    <Compile Include="Models\ADAC\DonorCountsModel.cs" />
+    <Compile Include="Models\ADAC\CollectionPointsModel.cs" />
+    <Compile Include="Models\ADAC\AgeRangesModel.cs" />
+    <Compile Include="Models\ADAC\MacroscopicAssessmentsModel.cs" />
+    <Compile Include="Models\ADAC\SopStatusesModel.cs" />
+    <Compile Include="Models\ADAC\AnnualStatisticsModel.cs" />
+    <Compile Include="Models\ADAC\ReadAnnualStatisticGroupModel.cs" />
+    <Compile Include="Models\ADAC\ReadHtaStatusModel.cs" />
+    <Compile Include="Models\ADAC\ReadAccessConditionsModel.cs" />
+    <Compile Include="Models\ADAC\ReadCollectionStatusModel.cs" />
+    <Compile Include="Models\ADAC\ReadCollectionTypeModel.cs" />
+    <Compile Include="Models\ADAC\ReadMaterialTypeModel.cs" />
+    <Compile Include="Models\ADAC\AssociatedDataTypesModel.cs" />
+    <Compile Include="Models\ADAC\PreservationTypesModel.cs" />
+    <Compile Include="Models\ADAC\ConsentRestrictionModel.cs" />
+    <Compile Include="Models\ADAC\ReadConsentRestrictionModel.cs" />
+    <Compile Include="Models\ADAC\ReadRegistrationReasonModel.cs" />
+    <Compile Include="Models\ADAC\ReadServiceOfferingModel.cs" />
+    <Compile Include="Models\ADAC\CountryModel.cs" />
+    <Compile Include="Models\ADAC\ReadCountryModel.cs" />
+    <Compile Include="Models\ADAC\ReadSexModel.cs" />
+    <Compile Include="Models\ADAC\RegistrationReasonModel.cs" />
+    <Compile Include="Models\ADAC\ServiceOfferingModel.cs" />
+    <Compile Include="Models\ADAC\SexesModel.cs" />
+    <Compile Include="Models\Biobank\AssociatedDataGroupModel.cs" />
+    <Compile Include="Models\Biobank\BiobankAnalyticReport.cs" />
+    <Compile Include="Models\Biobank\BiobankPublicationsModel.cs" />
+    <Compile Include="Models\Header\NavItemModel.cs" />
+    <Compile Include="Models\Search\TermpageContentModel.cs" />
+    <Compile Include="Models\Shared\AccessConditionModel.cs" />
+    <Compile Include="Models\Shared\AnnualStatisticGroupModel.cs" />
+    <Compile Include="Models\Shared\AssociatedDataTypeGroupModel.cs" />
+    <Compile Include="Models\Shared\CollectionTypeModel.cs" />
+    <Compile Include="Models\Shared\ErrorStatusModel.cs" />
+    <Compile Include="Models\Shared\HtaStatusModel.cs" />
+    <Compile Include="Models\Shared\CollectionStatusModel.cs" />
+    <Compile Include="Models\Shared\MaterialTypeModel.cs" />
+    <Compile Include="Models\Profile\BiobankPublicationsModel.cs" />
+    <Compile Include="Models\Shared\ConsentRestrictionModel.cs" />
+    <Compile Include="Models\Shared\AssociatedDataProcurementTimeFrameModel.cs" />
+    <Compile Include="Models\Shared\CountryModel.cs" />
+    <Compile Include="Models\Shared\RegistrationReasonModel.cs" />
+    <Compile Include="Models\Shared\ServiceOfferingModel.cs" />
+    <Compile Include="Models\Shared\SexModel.cs" />
+    <Compile Include="Models\Shared\SiteConfigModel.cs" />
+    <Compile Include="Models\Shared\TermPageModel.cs" />
+    <Compile Include="Results\JsonpResult.cs" />
+    <Compile Include="App_Start\AutoMapperConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Filters\UserAuthorizeAttribute.cs" />
+    <Compile Include="AutoMapper\BaseSearchModelTypeConverter.cs" />
+    <Compile Include="Controllers\ADACController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\SuperUserController.cs" />
+    <Compile Include="Filters\AiHandleErrorAttribute.cs" />
+    <Compile Include="Extensions\ControllerExtensions.cs" />
+    <Compile Include="Extensions\HttpPostedFilebaseExtensions.cs" />
+    <Compile Include="Extensions\IPrincipalExtensions.cs" />
+    <Compile Include="Filters\HangfireAuthorisationFilter.cs" />
+    <Compile Include="Filters\OrganisationsRoleAttribute.cs" />
+    <Compile Include="Filters\SuspendedWarningAttribute.cs" />
+    <Compile Include="Filters\VerifyRecaptchaAttribute.cs" />
+    <Compile Include="HtmlHelpers\IsDebugHelper.cs" />
+    <Compile Include="HtmlHelpers\MarkdownHelper.cs" />
+    <Compile Include="HtmlHelpers\VersionHelper.cs" />
+    <Compile Include="Results\HttpForbiddenResult.cs" />
+    <Compile Include="Models\ADAC\DiagnosesModel.cs" />
+    <Compile Include="HangfireJobActivator\HangfireWindsorJobActivator.cs" />
+    <Compile Include="Models\ADAC\BiobankActivityModel.cs" />
+    <Compile Include="Models\ADAC\ReadDiagnosisModel.cs" />
+    <Compile Include="Models\ADAC\ReadAssociatedDataProcurementTimeFrameModel.cs" />
+    <Compile Include="Models\Biobank\AnnualStatModel.cs" />
+    <Compile Include="Models\Biobank\BiobankAnnualStatsModel.cs" />
+    <Compile Include="Models\Biobank\BiobankFundersModel.cs" />
+    <Compile Include="Models\Home\NetworkNonMemberContactModel.cs" />
+    <Compile Include="Models\Search\NoResultsModel.cs" />
+    <Compile Include="Models\Shared\AddFunderModel.cs" />
+    <Compile Include="Models\Shared\FunderModel.cs" />
+    <Compile Include="Models\Shared\MotdModel.cs" />
+    <Compile Include="Models\Shared\OrganisationRegistrationReasonModel.cs" />
+    <Compile Include="Models\SuperUser\SearchIndexModel.cs" />
+    <Compile Include="Models\Biobank\CopySampleSetModel.cs" />
+    <Compile Include="Models\Home\ContactModel.cs" />
+    <Compile Include="Models\Profile\BiobankMemberModel.cs" />
+    <Compile Include="Models\Profile\NetworkModel.cs" />
+    <Compile Include="Models\Biobank\BiobankAdminsModel.cs" />
+    <Compile Include="Controllers\BiobankController.cs" />
+    <Compile Include="Controllers\ApplicationBaseController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\LogoController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NetworkController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Filters\AuthorizeAttribute.cs" />
+    <Compile Include="Filters\AuthoriseToAdministerCapability.cs" />
+    <Compile Include="Filters\AuthoriseToAdministerCollection.cs" />
+    <Compile Include="Filters\AuthoriseToAdministerSampleSet.cs" />
+    <Compile Include="Filters\BiobanksAuthenticateAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Account\AccountDetailsModel.cs" />
+    <Compile Include="Models\ADAC\BiobankRequestModel.cs" />
+    <Compile Include="Models\ADAC\HistoricalRequestModel.cs" />
+    <Compile Include="Models\ADAC\NetworkModel.cs" />
+    <Compile Include="Models\ADAC\NetworkRequestModel.cs" />
+    <Compile Include="Models\ADAC\NetworksModel.cs" />
+    <Compile Include="Models\ADAC\RequestsModel.cs" />
+    <Compile Include="Models\ADAC\HistoricalModel.cs" />
+    <Compile Include="Models\Biobank\AbstractCRUDCapabilityModel.cs" />
+    <Compile Include="Models\Biobank\AbstractCRUDWithAssociatedDataModel.cs" />
+    <Compile Include="Models\Biobank\AssociatedDataSummaryModel.cs" />
+    <Compile Include="Models\Biobank\CapabilityModel.cs" />
+    <Compile Include="Models\Biobank\EditCapabilityModel.cs" />
+    <Compile Include="Models\ADAC\BiobankModel.cs" />
+    <Compile Include="Models\ADAC\BiobanksModel.cs" />
+    <Compile Include="Models\Biobank\AddCapabilityModel.cs" />
+    <Compile Include="Models\Biobank\BiobankCapabilitiesModel.cs" />
+    <Compile Include="Models\Biobank\ReferenceDataModel.cs" />
+    <Compile Include="Models\Biobank\SampleSetModel.cs" />
+    <Compile Include="Models\Biobank\BiobankDetailsModel.cs" />
+    <Compile Include="Models\Network\AddBiobankToNetworkModel.cs" />
+    <Compile Include="Models\Network\NetworkAdminsModel.cs" />
+    <Compile Include="Models\Network\NetworkBiobankModel.cs" />
+    <Compile Include="Models\Network\NetworkBiobanksModel.cs" />
+    <Compile Include="Models\Network\NetworkDetailsModel.cs" />
+    <Compile Include="Models\Profile\BiobankModel.cs" />
+    <Compile Include="Models\Profile\CapabilityModel.cs" />
+    <Compile Include="Models\Profile\CollectionModel.cs" />
+    <Compile Include="Models\Search\BaseSearchModel.cs" />
+    <Compile Include="Models\Search\DetailedCapabilitySearchCapabilityModel.cs" />
+    <Compile Include="Models\Search\DetailedCapabilitySearchModel.cs" />
+    <Compile Include="Models\Search\DetailedCollectionSearchCollectionModel.cs" />
+    <Compile Include="Models\Search\DetailedCollectionSearchModel.cs" />
+    <Compile Include="Models\Search\DetailedCollectionSearchMPDModel.cs" />
+    <Compile Include="Models\Search\DetailedCollectionSearchSampleSetModel.cs" />
+    <Compile Include="Models\Search\FacetsModel.cs" />
+    <Compile Include="Models\Shared\NetworkMemberModel.cs" />
+    <Compile Include="Models\Shared\InviteRegisterEntityAdminModel.cs" />
+    <Compile Include="Models\Biobank\AbstractCRUDCollectionModel.cs" />
+    <Compile Include="Models\Biobank\AddCollectionModel.cs" />
+    <Compile Include="Models\Biobank\AbstractCRUDSampleSetModel.cs" />
+    <Compile Include="Models\Biobank\AddSampleSetModel.cs" />
+    <Compile Include="Models\Biobank\AssociatedDataModel.cs" />
+    <Compile Include="Models\Biobank\BiobankCollectionsModel.cs" />
+    <Compile Include="Models\Biobank\CollectionModel.cs" />
+    <Compile Include="Models\Shared\DiagnosisModel.cs" />
+    <Compile Include="Models\Biobank\EditCollectionModel.cs" />
+    <Compile Include="Models\Register\RegisterEntityModel.cs" />
+    <Compile Include="Models\Account\ForgotPasswordModel.cs" />
+    <Compile Include="Models\Account\LoginModel.cs" />
+    <Compile Include="Models\Account\ResetPasswordModel.cs" />
+    <Compile Include="Models\Biobank\EditSampleSetModel.cs" />
+    <Compile Include="Models\ModelErrors.cs" />
+    <Compile Include="Models\Search\BiobankSearchSummaryModel.cs" />
+    <Compile Include="Models\Search\SearchFacetModel.cs" />
+    <Compile Include="Models\Search\SelectedFacetModel.cs" />
+    <Compile Include="Models\Shared\RegisterEntityAdminModel.cs" />
+    <Compile Include="Models\Shared\OrganisationServiceModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Results\UnauthorizedResult.cs" />
+    <Compile Include="Results\BiobankSuspendedResult.cs" />
+    <Compile Include="Results\MissingClaimTypeResult.cs" />
+    <Compile Include="SchemaModels\PostalAddressSchemaModel.cs" />
+    <Compile Include="SchemaModels\NetworkSchemaModel.cs" />
+    <Compile Include="SchemaModels\SampleResourceSchemaModel.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\FeedbackMessage.cs" />
+    <Compile Include="Utilities\SessionHelper.cs" />
+    <Compile Include="Utilities\SessionKeys.cs" />
+    <Compile Include="Views\ApplicationBaseViewPage.cs" />
+    <Compile Include="Windsor\WindsorActionFilterHelper.cs" />
+    <Compile Include="Windsor\WindsorActionInvoker.cs" />
+    <Compile Include="Windsor\WindsorCompositionRoot.cs" />
+    <Compile Include="Windsor\WindsorControllerFactory.cs" />
+    <Compile Include="Windsor\WindsorInstaller.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_ContainerLayout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\EditorTemplates\LoginModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\ModelStateDictionaryGlobalOnly.cshtml" />
+    <Content Include="Views\Register\Biobank.cshtml" />
+    <Content Include="Views\Register\EditorTemplates\RegisterEntityModel.cshtml" />
+    <Content Include="Views\Emails\Web.config" />
+    <Content Include="Views\Shared\DisplayTemplates\ModelStateDictionaryAll.cshtml" />
+    <Content Include="Views\Shared\_BBHeader.cshtml" />
+    <Content Include="Views\Emails\PasswordReset.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\EditorTemplates\ResetPasswordModel.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Upload.cshtml" />
+    <Content Include="Views\Register\RegisterConfirmation.cshtml" />
+    <Content Include="Views\Emails\NewUserRegisterEntityAccepted.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\css\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{f087cd21-d746-4f63-84b1-9038e471e258}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entity\Entity.csproj">
+      <Project>{010998f1-7e90-4866-ae10-b6b73122c103}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Identity\Identity.csproj">
+      <Project>{68b365e5-3acb-4353-b09d-539154287278}</Project>
+      <Name>Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Search\Search.csproj">
+      <Project>{a0b448d5-603b-4488-9fb8-73dee25d47f7}</Project>
+      <Name>Search</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Services.csproj">
+      <Project>{6705a522-fcf9-4fe4-a9ae-57a28ec49886}</Project>
+      <Name>Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\Network\biobanks-type-ahead.js" />
+    <Content Include="Scripts\Network\network-biobanks.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Development|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>15416</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44300</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.Web.2.14.0\build\Microsoft.ApplicationInsights.Web.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.Web.2.14.0\build\Microsoft.ApplicationInsights.Web.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.Web.2.14.0\build\Microsoft.ApplicationInsights.Web.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.Web.2.14.0\build\Microsoft.ApplicationInsights.Web.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

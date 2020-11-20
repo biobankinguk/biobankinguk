@@ -1,0 +1,486 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Directory.Search.Legacy;
+using Directory.Services.Extensions;
+using Directory.Services.Contracts;
+using Castle.Core.Internal;
+using Hangfire;
+using Newtonsoft.Json;
+using Directory.Search.Dto.PartialDocuments;
+using Directory.Search.Dto.Documents;
+using System.Configuration;
+using System.Net.Http;
+
+namespace Directory.Services
+{
+    public class BiobankIndexService : IBiobankIndexService
+    {
+        private const int BulkIndexChunkSize = 100;
+
+        private readonly IBiobankReadService _biobankReadService;
+        private readonly IIndexProvider _indexProvider;
+        private readonly ISearchProvider _searchProvider;
+
+        public BiobankIndexService(
+            IBiobankReadService biobankReadService,
+            IIndexProvider indexProvider,
+            ISearchProvider searchProvider)
+        {
+            _biobankReadService = biobankReadService;
+            _indexProvider = indexProvider;
+            _searchProvider = searchProvider;
+        }
+
+        public async Task<string> GetClusterHealth()
+        {
+            var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+
+            if (string.IsNullOrEmpty(searchBase))
+                return null;
+
+            using (var client = new HttpClient())
+            {
+                // Proxy Call To ElasticSearch Instance
+                var response = await client.GetStringAsync($"{searchBase}/_cluster/health");
+                var clusterHealth = JsonConvert.DeserializeAnonymousType(response, new
+                {
+                    Status = string.Empty
+                });
+
+                return clusterHealth.Status;
+            }
+        }
+
+        public async Task IndexSampleSet(int sampleSetId)
+        {
+            // Get the entire sample set object from the database.
+            var createdSampleSet = await _biobankReadService.GetSampleSetByIdForIndexingAsync(sampleSetId);
+
+            // Queue up a job to add the sample set to the search index.
+            BackgroundJob.Enqueue(() => _indexProvider.IndexCollectionSearchDocument(
+                createdSampleSet.SampleSetId,
+                createdSampleSet.ToCollectionSearchDocument()));
+        }
+
+        public async Task IndexCapability(int capabilityId)
+        {
+            // Get the entire capability object from the database.
+            var createdCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
+
+            // Get the donor counts.
+            var donorCounts = (await _biobankReadService.ListDonorCountsAsync()).ToList();
+
+            // Set up the capability search document.
+            var capabilitySearchDocument = createdCapability.ToCapabilitySearchDocument(donorCounts);
+
+            // Queue up a job to add the sample set to the search index.
+            BackgroundJob.Enqueue(() => _indexProvider.IndexCapabilitySearchDocument(
+                createdCapability.DiagnosisCapabilityId,
+                capabilitySearchDocument));
+        }
+
+        public async Task UpdateSampleSetDetails(int sampleSetId)
+        {
+            // Get the entire sample set object from the database.
+            var updatedSampleSet = await _biobankReadService.GetSampleSetByIdForIndexingAsync(sampleSetId);
+
+            // Queue up a job to update the sample set in the search index.
+            BackgroundJob.Enqueue(() => _indexProvider.UpdateCollectionSearchDocument(
+                updatedSampleSet.SampleSetId,
+                new PartialSampleSet
+                {
+                    Sex = updatedSampleSet.Sex.Description,
+                    AgeRange = updatedSampleSet.AgeRange.Description,
+                    AgeRangeMetadata = JsonConvert.SerializeObject(new
+                    {
+                        Name = updatedSampleSet.AgeRange.Description,
+                        updatedSampleSet.AgeRange.SortOrder
+                    }),
+                    DonorCount = updatedSampleSet.DonorCount.Description,
+                    DonorCountMetadata = JsonConvert.SerializeObject(new
+                    {
+                        Name = updatedSampleSet.DonorCount.Description,
+                        updatedSampleSet.DonorCount.SortOrder
+                    }),
+                    MaterialPreservationDetails = updatedSampleSet.MaterialDetails
+                        .Select(x => new MaterialPreservationDetailDocument
+                        {
+                            MaterialType = x.MaterialType.Description,
+                            PreservationType = x.PreservationType.Description,
+                            PreservationTypeMetadata = JsonConvert.SerializeObject(new
+                            {
+                                Name = x.PreservationType.Description,
+                                x.PreservationType.SortOrder
+                            }),
+                            MacroscopicAssessment = x.MacroscopicAssessment.Description,
+                            PercentageOfSampleSet = x.CollectionPercentage.Description
+                        }),
+                    SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
+                        updatedSampleSet.DonorCount.Description, 
+                        updatedSampleSet.AgeRange.Description,
+                        updatedSampleSet.Sex.Description,
+                        updatedSampleSet.MaterialDetails)
+                }));
+        }
+
+        public async Task UpdateCapabilityDetails(int capabilityId)
+        {
+            // Get the entire capability object from the database.
+            var updatedCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
+
+            // Get the donor counts and get expectations from them
+            var donorExpectation = DiagnosisCapabilityExtensions.GetAnnualDonorExpectationRange(
+                        await _biobankReadService.ListDonorCountsAsync(),
+                        updatedCapability.AnnualDonorExpectation);
+
+            //Prep metadata for the facet value
+            var donorExpectationMetadata = JsonConvert.SerializeObject(new
+            {
+                Name = donorExpectation.Key,
+                SortOrder = donorExpectation.Value
+            });
+
+            // Queue up a job to update the capability in the search index.
+
+
+            BackgroundJob.Enqueue(() => _indexProvider.UpdateCapabilitySearchDocument(
+                updatedCapability.DiagnosisCapabilityId,
+                new PartialCapability
+                {
+                    Diagnosis = updatedCapability.Diagnosis.Description,
+                    Protocols = updatedCapability.SampleCollectionMode.Description,
+                    AnnualDonorExpectation = donorExpectation.Key,
+                    AnnualDonorExpectationMetadata = donorExpectationMetadata,
+                    AssociatedData = updatedCapability.AssociatedData.Select(ad => new AssociatedDataDocument
+                    {
+                        Text = ad.AssociatedDataType.Description,
+                        Timeframe = ad.AssociatedDataProcurementTimeframe.Description,
+                        TimeframeMetadata = JsonConvert.SerializeObject(new
+                        {
+                            Name = ad.AssociatedDataProcurementTimeframe.Description,
+                            ad.AssociatedDataProcurementTimeframe.SortOrder
+                        })
+                    })
+                }));
+        }
+
+        public void DeleteSampleSet(int sampleSetId)
+        {
+            // Queue up a job to remove the sample set from the search index.
+            BackgroundJob.Enqueue(() => _indexProvider.DeleteCollectionSearchDocument(sampleSetId));
+        }
+
+        public void DeleteCapability(int capabilityId)
+        {
+            // Queue up a job to remove the capability from the search index.
+            BackgroundJob.Enqueue(() => _indexProvider.DeleteCapabilitySearchDocument(capabilityId));
+        }
+
+        public async Task UpdateCollectionDetails(int collectionId)
+        {
+            // Get the collection out of the database.
+            var collection = await _biobankReadService.GetCollectionByIdForIndexingAsync(collectionId);
+
+            // Update all search documents that are relevant to this collection.
+            foreach (var sampleSet in collection.SampleSets)
+            {
+                // Queue up a job to update the search document.
+                BackgroundJob.Enqueue(() =>
+                    _indexProvider.UpdateCollectionSearchDocument(
+                        sampleSet.SampleSetId,
+                        new PartialCollection
+                        {
+                            Diagnosis = collection.Diagnosis.Description,
+                            CollectionTitle = collection.Title,
+                            StartYear = collection.StartDate.Year.ToString(),
+                            CollectionPoint = collection.CollectionPoint.Description,
+                            CollectionStatus = collection.CollectionStatus.Description,
+                            ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
+                            HTA = collection.HtaStatus != null ? collection.HtaStatus.Description : "not recorded",
+                            AccessCondition = collection.AccessCondition.Description,
+                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Description : string.Empty,
+                            AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
+                            {
+                                Text = ad.AssociatedDataType.Description,
+                                Timeframe = ad.AssociatedDataProcurementTimeframe.Description,
+                                TimeframeMetadata = JsonConvert.SerializeObject(new
+                                {
+                                    Name = ad.AssociatedDataProcurementTimeframe.Description,
+                                    ad.AssociatedDataProcurementTimeframe.SortOrder
+                                })
+                            })
+                        }));
+            }
+        }
+
+        public async Task UpdateBiobankDetails(int biobankId)
+        {
+            // Get the biobank from the database.
+            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
+
+            var partialBiobank = new PartialBiobank
+            {
+                Biobank = biobank.Name,
+                BiobankServices = biobank.OrganisationServiceOfferings.Select(x => new BiobankServiceDocument
+                {
+                    Name = x.ServiceOffering.Name
+                })
+            };
+
+            // Update all collection search documents that are relevant to this biobank.
+            foreach (var sampleSet in biobank.Collections.SelectMany(c => c.SampleSets))
+            {
+                // Queue up a job to update the search document.
+                BackgroundJob.Enqueue(() =>
+                    _indexProvider.UpdateCollectionSearchDocument(
+                        sampleSet.SampleSetId,
+                        partialBiobank));
+            }
+
+            // Update all capability search documents that are relevant to this biobank.
+            foreach (var capability in biobank.DiagnosisCapabilities)
+            {
+                // Queue up a job to update the search document.
+                BackgroundJob.Enqueue(() =>
+                    _indexProvider.UpdateCapabilitySearchDocument(
+                        capability.DiagnosisCapabilityId,
+                        partialBiobank));
+            }
+        }
+
+        public async Task UpdateNetwork(int networkId)
+        {
+            // For all biobanks attached to this network.
+            foreach (var biobank in await _biobankReadService.GetBiobanksByNetworkIdForIndexingAsync(networkId))
+            {
+                // Build the list of network documents.
+                var networkDocuments = biobank.OrganisationNetworks
+                    .Select(on => on.Network)
+                    .Select(n => new NetworkDocument
+                    {
+                        Name = n.Name
+                    });
+
+                // Update all search documents that are relevant to this biobank.
+                foreach (var sampleSet in biobank.Collections.SelectMany(c => c.SampleSets))
+                {
+                   // Queue up a job to update the search document.
+                   BackgroundJob.Enqueue(() =>
+                       _indexProvider.UpdateCollectionSearchDocument(
+                           sampleSet.SampleSetId,
+                           new PartialNetworks
+                           {
+                               Networks = networkDocuments
+                           }));
+                }
+
+                // Update all search documents that are relevant to this biobank.
+                foreach (var capability in biobank.DiagnosisCapabilities)
+                {
+                    // Queue up a job to update the search document.
+                    BackgroundJob.Enqueue(() =>
+                        _indexProvider.UpdateCapabilitySearchDocument(
+                            capability.DiagnosisCapabilityId,
+                            new PartialNetworks
+                            {
+                                Networks = networkDocuments
+                            }));
+                }
+            }
+        }
+
+        public async Task JoinOrLeaveNetwork(int biobankId)
+        {
+            // Get the biobank from the database.
+            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
+
+            // Update all search documents that are relevant to this biobank.
+            foreach (var sampleSet in biobank.Collections.SelectMany(c => c.SampleSets))
+            {
+                // Build the list of network documents.
+                var networkDocuments = biobank.OrganisationNetworks
+                    .Select(on => on.Network)
+                    .Select(n => new NetworkDocument
+                    {
+                        Name = n.Name
+                    });
+
+                // Queue up a job to update the search document.
+                BackgroundJob.Enqueue(() =>
+                    _indexProvider.UpdateCollectionSearchDocument(
+                        sampleSet.SampleSetId,
+                        new PartialNetworks
+                        {
+                            Networks = networkDocuments
+                        }));
+            }
+        }
+
+        public async Task BulkIndexBiobank(int biobankId)
+        {
+            //Get the biobank, complete with collections, samplesets, capabilities
+            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
+
+            //Index samplesets
+            await
+                BulkIndexSampleSets(
+                    biobank.Collections
+                        .SelectMany(x => x.SampleSets)
+                        .Select(x => x.SampleSetId)
+                        .ToList());
+
+            //Index capabilities
+            await
+                BulkIndexCapabilities(
+                    biobank.DiagnosisCapabilities
+                        .Select(x => x.DiagnosisCapabilityId)
+                        .ToList());
+        }
+
+        public async Task BulkIndexSampleSets(IList<int> sampleSetIds)
+        {
+            if (sampleSetIds.IsNullOrEmpty()) return;
+
+            var chunkCount = GetChunkCount(sampleSetIds, BulkIndexChunkSize);
+            var remainingIdCount = sampleSetIds.Count() % BulkIndexChunkSize;
+
+            for (var i = 0; i < chunkCount; i++)
+            {
+                var chunkSampleSets = await _biobankReadService
+                    .GetSampleSetsByIdsForIndexingAsync(sampleSetIds
+                        .Skip(i * BulkIndexChunkSize)
+                        .Take(BulkIndexChunkSize));
+
+                BackgroundJob.Enqueue(
+                    () => _indexProvider.BulkIndexCollectionSearchDocuments(chunkSampleSets
+                        .Select(x => x.ToCollectionSearchDocument())));
+            }
+
+            var remainingSampleSets = await _biobankReadService
+                .GetSampleSetsByIdsForIndexingAsync(sampleSetIds
+                    .Skip(chunkCount * BulkIndexChunkSize)
+                    .Take(remainingIdCount));
+
+            BackgroundJob.Enqueue(
+                () => _indexProvider.BulkIndexCollectionSearchDocuments(remainingSampleSets
+                    .Select(x => x.ToCollectionSearchDocument())));
+        }
+
+        public async Task BulkIndexCapabilities(IList<int> capabilityIds)
+        {
+            if (capabilityIds.IsNullOrEmpty()) return;
+
+            // Get the number of chunks of X records that we need to index.
+            var chunkCount = GetChunkCount(capabilityIds, BulkIndexChunkSize);
+            // Get the count of records that don't fit inside the neat chunks.
+            var remainingIdCount = capabilityIds.Count() % BulkIndexChunkSize;
+
+            // Get the donor counts.
+            var donorCounts = (await _biobankReadService.ListDonorCountsAsync()).ToList();
+
+            for (var i = 0; i < chunkCount; i++)
+            {
+                var chunkSampleSets = await _biobankReadService
+                    .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
+                        .Skip(i * BulkIndexChunkSize)
+                        .Take(BulkIndexChunkSize));
+
+                BackgroundJob.Enqueue(
+                    () => _indexProvider.BulkIndexCapabilitySearchDocuments(chunkSampleSets
+                        .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
+            }
+
+            var remainingSampleSets = await _biobankReadService
+                .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
+                    .Skip(chunkCount * BulkIndexChunkSize)
+                    .Take(remainingIdCount));
+
+            BackgroundJob.Enqueue(
+                () => _indexProvider.BulkIndexCapabilitySearchDocuments(remainingSampleSets
+                    .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
+        }
+
+        public async Task BulkDeleteBiobank(int biobankId)
+        {
+            //Get the biobank, complete with collections, samplesets, capabilities
+            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
+
+            //Remove samplesets from the index
+            BulkDeleteSampleSets(
+                    biobank.Collections
+                        .SelectMany(x => x.SampleSets)
+                        .Select(x => x.SampleSetId)
+                        .ToList());
+
+            //Remove capabilities from the index
+            BulkDeleteCapabilities(
+                    biobank.DiagnosisCapabilities
+                        .Select(x => x.DiagnosisCapabilityId)
+                        .ToList());
+        }
+
+        public void BulkDeleteSampleSets(IList<int> sampleSetIds)
+        {
+            if (sampleSetIds.IsNullOrEmpty()) return;
+
+            var chunkCount = GetChunkCount(sampleSetIds, BulkIndexChunkSize);
+            var remainingIdCount = sampleSetIds.Count() % BulkIndexChunkSize;
+
+            for (var i = 0; i < chunkCount; i++)
+            {
+                var chunkSampleSets = sampleSetIds
+                        .Skip(i * BulkIndexChunkSize)
+                        .Take(BulkIndexChunkSize);
+
+                BackgroundJob.Enqueue(
+                    () => _indexProvider.BulkDeleteCollectionSearchDocuments(chunkSampleSets));
+            }
+
+            var remainingSampleSets = sampleSetIds
+                    .Skip(chunkCount * BulkIndexChunkSize)
+                    .Take(remainingIdCount);
+
+            BackgroundJob.Enqueue(
+                () => _indexProvider.BulkDeleteCollectionSearchDocuments(remainingSampleSets));
+        }
+
+        public void BulkDeleteCapabilities(IList<int> capabilityIds)
+        {
+            if (capabilityIds.IsNullOrEmpty()) return;
+
+            // Get the number of chunks of X records that we need to index.
+            var chunkCount = GetChunkCount(capabilityIds, BulkIndexChunkSize);
+            // Get the count of records that don't fit inside the neat chunks.
+            var remainingIdCount = capabilityIds.Count() % BulkIndexChunkSize;
+
+            for (var i = 0; i < chunkCount; i++)
+            {
+                var chunkSampleSets = capabilityIds
+                        .Skip(i * BulkIndexChunkSize)
+                        .Take(BulkIndexChunkSize);
+
+                BackgroundJob.Enqueue(
+                    () => _indexProvider.BulkDeleteCapabilitySearchDocuments(chunkSampleSets));
+            }
+
+            var remainingSampleSets = capabilityIds
+                    .Skip(chunkCount * BulkIndexChunkSize)
+                    .Take(remainingIdCount);
+
+            BackgroundJob.Enqueue(
+                () => _indexProvider.BulkDeleteCapabilitySearchDocuments(remainingSampleSets));
+        }
+
+        public async Task ClearIndex()
+        {
+            //Bulk delete every item in the index, by type
+            BulkDeleteSampleSets(await _searchProvider.GetAllSampleSetIds());
+            BulkDeleteCapabilities(await _searchProvider.GetAllCapabilityIds());
+        }
+
+        private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
+            => (int) Math.Floor((double) (intList.Count() / chunkSize));
+    }
+}

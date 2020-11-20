@@ -1,0 +1,51 @@
+﻿@using System.Web.Optimization
+@using Biobanks.Web.Models.Search
+@using Castle.Core.Internal
+@model BaseSearchModel
+@{
+    ViewBag.Title = "Search Results";
+}
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/search")
+}
+
+<h2 class="search">@ViewBag.Title: <small>@Model.Diagnosis</small></h2>
+
+<div class="row">
+    @Html.Partial("_Facets", new FacetsModel
+    {
+        Action = Request.RequestContext.RouteData.Values["action"].ToString(),
+        Diagnosis = Model.Diagnosis,
+        Facets = Model.Facets,
+        SelectedFacets = Model.SelectedFacets
+    })
+    <div class="col-sm-8">
+        @if (!Model.Biobanks.IsNullOrEmpty())
+            {
+                foreach (var biobank in Model.Biobanks)
+                {
+                <a href="@Url.Action("CapabilitiesDetail", "Search",
+                        new
+                        {
+                            biobankExternalId = biobank.ExternalId,
+                            diagnosis = Model.Diagnosis,
+                            selectedFacets = Request.QueryString["selectedFacets"]
+                        })" class="detailed-search-link">
+                    <div class="well well-hover">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h4 class="no-link-style">@biobank.Name</h4>
+                                <p>Click for more details...</p>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                @Html.Partial("_ContactButton", biobank.ExternalId)
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</div>

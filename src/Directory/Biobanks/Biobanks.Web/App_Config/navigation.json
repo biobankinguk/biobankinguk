@@ -1,0 +1,32 @@
+[
+	{
+		"title": "directory options",
+		"child_items": [
+			{
+				"action": "contact"
+			},
+			{
+				"action": "account"
+			},
+			{
+				"action": "adac"
+			},
+			{
+				"action": "biobanks"
+			},
+			{
+				"action": "networks"
+			},
+			{
+				"action": "login"
+			},
+			{
+				"title": "Register",
+				"action": "register_biobank"
+			},
+			{
+				"action": "logout"
+			}
+		]
+	}
+]

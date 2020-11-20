@@ -1,0 +1,14 @@
+﻿@using Biobanks.Web.Models.Header
+@model IEnumerable<NavItemModel>
+
+@foreach (var item in Model)
+{
+	if (item.Children?.Count() > 0)
+	{
+		Html.RenderPartial("_NavDropdown", item);
+	}
+	else
+	{
+		Html.RenderPartial("_NavItem", item);
+	}
+}

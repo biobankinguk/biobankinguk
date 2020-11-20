@@ -1,0 +1,55 @@
+﻿@using System.Configuration
+@using Biobanks.Web.HtmlHelpers
+@using Biobanks.Web.Models.Footer
+@model FooterModel
+
+<div class="container">
+
+	@* Logos *@
+	<section>
+		<div class="row">
+			<div class="col-sm-12 footer-logos">
+				@foreach (var logo in Model.Logos.Children)
+				{
+					if (!string.IsNullOrEmpty(logo.Src))
+					{
+						<a href="@logo.Url"><img src="@Url.Content(logo.Src)" alt="@logo.Title" /></a>
+					}
+				}
+			</div>
+		</div>
+	</section>
+
+	@* Footer Links *@
+	<section>
+		<div class="row">
+			<div class="col-sm-12">
+				@foreach (var link in Model.Links.Children)
+				{
+					if (link.Equals(Model.Links.Children.Last()))
+					{
+						<a href=@link.Url>@link.Title</a>
+					}
+					else
+					{
+						<a href=@link.Url>@link.Title</a><span> | </span> 
+					}
+				}
+			</div>
+		</div>
+	</section>
+
+	@* Copyright and Versioning *@
+	<section>
+		<div class="row">
+			<div class="col-sm-12">
+				&copy; @DateTime.Now.Year @Model.Links.Title
+
+				@if (Html.IsDebug()) //don't display version on production, since it's really for test
+				{
+					<span class="pull-right">Version: @Html.InformationalVersion()</span>
+				}
+			</div>
+		</div>
+	</section>
+</div>

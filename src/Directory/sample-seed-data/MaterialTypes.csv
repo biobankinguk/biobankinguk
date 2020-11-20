@@ -1,0 +1,27 @@
+MaterialTypeId,Description,SortOrder
+1,cDNA/mRNA,4
+3,Core biopsy,5
+4,DNA,6
+5,Faeces,8
+6,microRNA,10
+7,Pathogen,12
+8,Peripheral blood cells,13
+9,Plasma,14
+10,PM tissue,15
+11,RNA,17
+12,Saliva,18
+13,Serum,19
+14,Tissue,23
+15,Urine,24
+16,Whole blood,25
+17,Embryo,7
+18,Bone marrow,1
+19,Primary cells,16
+20,Swabs,20
+21,Mucus,11
+22,Blood Spots,1
+23,Cancer cell lines,2
+24,Immortalized cell lines,9
+25,Synovial fluid,21
+26,Tears,22
+51,Cerebrospinal fluid,3
