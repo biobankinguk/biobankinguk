@@ -26,6 +26,7 @@ mono_crash.*
 [Rr]eleases/
 x64/
 x86/
+build/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
@@ -69,6 +70,7 @@ StyleCopReport.xml
 # Files built by Visual Studio
 *_i.c
 *_p.c
+*_i.h
 *_h.h
 *.ilk
 *.meta
@@ -226,6 +228,7 @@ _pkginfo.txt
 
 # Others
 ClientBin/
+[Ss]tyle[Cc]op.*
 ~$*
 *~
 *.dbmdl
@@ -233,6 +236,7 @@ ClientBin/
 *.jfm
 *.pfx
 *.publishsettings
+node_modules/
 orleans.codegen.cs
 
 # Including strong name files can present a security risk

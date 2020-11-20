@@ -25,13 +25,13 @@ Essential steps to get started locally:
 1. Seed the database Reference Data
    1. Copy the data you want to seed to a `data/` folder relative to the `DataSeed` application exe
       - CSV's named the same as the tables.
-      - See `sample-seed-data/` for samples)
+      - See `/sample-seed-data` for samples)
    1. Run the DataSeed application
       - If you just run it from Visual Studio, everything should be fine for a local dev environment
-      - For further details, it has its own `README` in `Biobanks/DataSeed/README.md`
+      - For further details, it has its own `README` in `./DataSeed/README.md`
 1. Add yourself as a user
-    - run the `add-user.sql` script
-    - for local dev use you probably want the roles: `SuperUser`, and `ADAC`
+    - Run the `add-user.sql` script
+    - For local dev use you probably want the roles: `SuperUser`, and `ADAC`
       - being a `SuperUser` doesn't automatically put you in the `ADAC` role too. Sorry.
     - When you run the app, use the `Forgot password` functionality to set your password.
 
@@ -41,16 +41,20 @@ To use Search functionality:
 
 1. Setup a local Elastic Search instance (see notes below, Docker recommended)
 
-## This repository
+## Local development
 
-The significant contents of this repository are as follows:
+You'll need an Elastic Search 7.x instance running locally.
 
-- `Biobanks` - the ASP.NET Solution is contained within. This is the heart of the project
-- `elastic-search` - Elastic Search paraphernalia that isn't part of the Directory Web Project e.g.
-  - Docker Compose files for running development Elastic Search instances
-  - json payloads for configuring the indexes used by the Directory
-  - sample json query payloads
-- `remote-typeahead` - an out of date example of using the typeahead search against the Directory's search endpoints from an external site. Has its own `README.md`
+Notes follow:
+
+- `docker-compose up` inside the `elastic-search/` directory will provide a suitable dev search server.
+- payloads for index configuration and example queries are also in the `elastic-search/` directory.
+
+Alternatively, if Docker is not installed, ElasticSearch can be installed locally (which means installing Java and going through the same setup followed on the other environments)
+
+Kibana et al are unnecessary for local development - Postman or similar can be used to hit the ES REST API.
+
+Interacting with the Elastic Search REST API is documented in `elastic-search/README.md`
 
 ## Notes on Database Migrations
 
@@ -113,46 +117,4 @@ If the basic `EmailService` is used, it will behave differently based on the `Sy
 
 The default on-disk solution is the easiest for local development, as there is no delay and no receiving mailbox required.
 
-## Environments
 
-Actual specific details (e.g. server names, credentials etc) on the environments are documented elsewhere (speak to **Jon Couldridge** or **Craig Place** at the time of writing).
-
-Here is an overview of what the environments look like
-
-### TODO: Update when we commit to deploying updated Search
-
-### Production
-
-- Windows VM with IIS for hosting the ASP.NET WebApp
-  - `System.Net` mail via the UoN SMTP Server (whitelisted)
-- Linux VM with
-  - Elastic Search 2.x
-  - Kibana 4.x
-    - Marvel
-    - Sense
-  - `uilapesl01`
-
-### Test
-
-TBD in Azure
-
-### WHO
-
-We run an instance of the application for the World Health Organisation.
-
-Environment details TBD.
-
-### Local development
-
-You'll need an Elastic Search 7.x instance running locally.
-
-Notes follow:
-
-- `docker-compose up` inside the `elastic-search/` directory will provide a suitable dev search server.
-- payloads for index configuration and example queries are also in the `elastic-search/` directory.
-
-Alternatively, if Docker is not installed, ElasticSearch can be installed locally (which means installing Java and going through the same setup followed on the other environments)
-
-Kibana et al are unnecessary for local development - Postman or similar can be used to hit the ES REST API.
-
-Interacting with the Elastic Search REST API is documented in `elastic-search/README.md`
