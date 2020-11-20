@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Biobanks.Web.Models.Biobank
+{
+    public class CollectionModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Diagnosis { get; set; }
+        public DateTime StartDate { get; set; }
+        public string AccessCondition { get; set; }
+        public string CollectionType { get; set; }
+        public bool FromApi { get; set; }
+
+        public IEnumerable<AssociatedDataSummaryModel> AssociatedData { get; set; }
+
+        public IEnumerable<CollectionSampleSetSummaryModel> SampleSets { get; set; }
+    }
+
+    public class CollectionSampleSetSummaryModel
+    {
+        public int Id { get; set; }
+        public string Sex { get; set; }
+        public string Age { get; set; }
+        public string MaterialTypes { get; set; }
+        public string PreservationTypes { get; set; }
+    }
+}

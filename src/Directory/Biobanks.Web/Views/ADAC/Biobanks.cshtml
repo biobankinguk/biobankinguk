@@ -1,0 +1,120 @@
+@using System.Linq
+@using System.Web.Optimization
+@model Biobanks.Web.Models.ADAC.BiobanksModel
+
+@{
+    ViewBag.Title = "ADAC Admin";
+}
+
+@Html.Partial("_ADACTabs", "Biobanks")
+
+<h3>Biobanks @Html.ActionLink("Invite a new biobank", "AdacBiobank", "Register", null, new { @class = "btn btn-success pull-right" })</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br/>
+        @if (@Model.Biobanks.Any())
+        {
+            <table id="adac-biobanks" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Biobank</th>
+                    <th>Contact Email</th>
+                    <th>Status</th>
+                    <th>Admins</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                @foreach (var biobank in Model.Biobanks)
+                {
+                    <tr class="@(biobank.IsSuspended ? "danger" : "")">
+                        <td class="vtop">
+                            @Html.ActionLink(@biobank.Name, "Biobank", "Profile", new { id=@biobank.BiobankExternalId }, null)
+                        </td>
+                        <td class="vtop">
+                            <a href="mailto:@biobank.ContactEmail">@biobank.ContactEmail</a>
+                        </td>
+                        <td class="vtop">
+                            @(biobank.IsSuspended ? Html.Raw("Suspended") : Html.Raw("Active"))
+                        </td>
+                        <td>
+                            <ul class="list-unstyled">
+                                @foreach (var admin in biobank.Admins)
+                                {
+                                    <li>
+                                        <span class="fa fa-user labelled-icon"></span>@admin.UserEmail
+                                        @if (!admin.EmailConfirmed)
+                                        {
+                                            <a href="@Url.Action(
+                                                         "ResendConfirmLink", "Account",
+                                                         new
+                                                         {
+                                                             userEmail = admin.UserEmail,
+                                                             onBehalf = true,
+                                                             returnUrl = Request.RawUrl
+                                                         })"
+                                               class="resend-confirm pull-right"
+                                               data-admin-name="@admin.UserFullName"
+                                               data-admin-email="@admin.UserEmail">
+                                                <span class="fa fa-repeat labelled-icon"></span>Resend Invite
+                                            </a>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                        <td>
+                            @if (biobank.IsSuspended)
+                            {
+                                <a href="@Url.Action(
+                                             "UnsuspendBiobank", "ADAC",
+                                             new
+                                             {
+                                                 id = biobank.BiobankId
+                                             })"
+                                   class="unsuspend-confirm pull-right"
+                                   data-biobank-name="@biobank.Name">
+                                    <span class="fa fa-check-square-o labelled-icon"></span>Unsuspend
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action(
+                                             "SuspendBiobank", "ADAC",
+                                             new
+                                             {
+                                                 id = biobank.BiobankId
+                                             })"
+                                   class="suspend-confirm pull-right"
+                                   data-biobank-name="@biobank.Name">
+                                    <span class="fa fa-ban labelled-icon"></span>Suspend
+                                </a>
+                            }
+                        </td>
+                        <td>
+                            @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new {id = biobank.BiobankId}, new {@class = "btn btn-danger"})
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are currently no Biobanks in the directory.
+                @Html.ActionLink("Invite a new Biobank now", "AdacBiobank", "Register")
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/adac/biobanks")
+}

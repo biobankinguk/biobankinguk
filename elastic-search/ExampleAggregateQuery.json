@@ -1,0 +1,63 @@
+﻿//GET collections/_search
+{
+  "size": 0,
+  "query": {
+      "match": {
+        "diagnosis": "Benign neoplasm of brain"
+      }
+  },
+  "aggs": {
+    "biobanks": {
+      "terms": { "field": "biobank" },
+      "aggs": {
+        "biobankExternalIds": {
+          "terms": {
+            "field": "biobankExternalId"
+          }
+        },
+        "collectionIds": {
+          "cardinality": {
+            "field": "collectionId"
+          }
+        },
+        "sampleSetSummaries": {
+          "terms": {
+            "field": "sampleSetSummary"
+          }
+        }
+      }
+    },
+    "collectionPoints": {
+      "terms": { "field": "collectionPoint" },
+      "aggs": {
+        "biobankCount": {
+          "cardinality": {
+            "field": "biobankId"
+          }
+        }
+      }
+    },
+    "associatedDataRoot": {
+      "nested": {
+        "path": "associatedData"
+      },
+      "aggs": {
+        "associatedData": {
+          "terms": { "field": "associatedData.text" },
+          "aggs": {
+            "toTop": {
+              "reverse_nested": {}, 
+              "aggs": {
+                "biobankCount": {
+                  "cardinality": {
+                    "field": "biobankId"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

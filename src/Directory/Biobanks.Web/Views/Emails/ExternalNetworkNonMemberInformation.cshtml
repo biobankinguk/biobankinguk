@@ -1,0 +1,39 @@
+﻿@using System.Configuration
+@using Directory.Data.Constants
+@using Biobanks.Web.HtmlHelpers
+@{
+	var directoryName = @ConfigurationManager.AppSettings["DirectoryName"];
+
+	// Format Email Header {"<Name>" <Address>}
+	var emailFrom = String.Format(@"""{0}"" {1}",
+		ConfigurationManager.AppSettings["EmailFromName"],
+		ConfigurationManager.AppSettings["EmailFromAddress"]
+		);
+
+	// Format Email Subject
+	var emailSubject = Html.IsProductionEnvironment()
+		? $"{directoryName} External Network Contact"
+		: $"{directoryName} External Network Contact (Environment: {Html.EnvironmentName()})";
+}
+
+Content-Type: text/plain; charset=utf-8
+To: @ViewBag.To
+From: @emailFrom
+Subject: @emailSubject
+
+Dear @ViewBag.BiobankName,
+
+Your @App.Config[ConfigKey.SampleResourceName] was selected during a recent search by a user. They have selected to contact you via the @ViewBag.NetworkName system. You do not appear to be part of this system. We believe there is a request waiting for you.
+
+You are in no obligation to do anything. If you want to create an account with them, please email @ViewBag.NetworkContactEmail and quote this reference @ViewBag.BiobankAnonymousIdentifier. This will ensure once you have created an account it will associate you to the pending request.
+
+This email in no way constitutes an endorsement or recommendation by @ConfigurationManager.AppSettings["LegalEntity"] of the content or services provided through them.
+
+We strongly recommend you undertake your own research and due diligence before using the services on any website or platform.
+
+@ConfigurationManager.AppSettings["LegalEntity"] is (to the extent permitted by law) in no way responsible or liable for any loss or damage, direct or consequential, resulting from your use of services or information provided by the providers of these linked websites.
+
+Please contact us at @ConfigurationManager.AppSettings["EmailContactAddress"] if you require any further clarification.
+
+Regards,
+@ConfigurationManager.AppSettings["EmailSignature"]

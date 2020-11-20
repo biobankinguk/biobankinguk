@@ -1,0 +1,133 @@
+﻿@using Directory.Data.Constants
+@model Biobanks.Web.Models.Search.DetailedCollectionSearchModel
+@{
+    ViewBag.Title = $"Collection Search Results in {Model.BiobankName}";
+    ViewBag.SuppressDefaultFeedbackMessage = true;
+    ViewBag.SuppressFormErrorAlert = true;
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="breadcrumb">
+            <li><a href="/">Home</a><span class="divider"></span></li>
+            <li><a href="@Url.Action("Collections", "Search", new {Model.Diagnosis, Model.SelectedFacets})">Search</a><span class="divider"></span></li>
+            <li class="active">Search Detail</li>
+        </ul>
+    </div>
+
+    @* override the default positioning, so we can have this below the custom breadcrumbs *@
+    <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+        @Html.Partial("_FeedbackMessage")
+    </section>
+    <br/>
+</div>
+
+<div class="row">
+    <div class="col-sm-8">
+        <h2>
+            @Html.ActionLink(Model.BiobankName, "Biobank", "Profile", new { id = Model.BiobankExternalId }, null)
+        </h2>
+    </div>
+    <div class="col-sm-4">
+        <span class="pull-right">@Html.Partial("_ContactButton", Model.BiobankExternalId)</span>
+    </div>
+</div>
+
+
+@foreach (var collection in Model.Collections)
+{
+    <div class="well results-well">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>@collection.Diagnosis</h3>
+                @if (!string.IsNullOrEmpty(collection.CollectionTitle))
+                {
+                    <h4>@collection.CollectionTitle</h4>
+                }
+            </div>
+            <div class="col-sm-6">
+                <h3 class="text-right">Year Started: @collection.StartYear</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 truncate">
+                <p>@collection.Description</p>
+            </div>
+            <dl class="col-sm-8 dl-inverse">
+                <dt>Access:</dt>
+                <dd>@collection.AccessCondition</dd>
+                <dt>Type:</dt>
+                <dd>@collection.CollectionType</dd>
+                <dt>Status:</dt>
+                <dd>@collection.CollectionStatus</dd>
+                <dt>Collection point:</dt>
+                <dd>@collection.CollectionPoint</dd>
+                <dt>Consent restrictions:</dt>
+                @if (collection.ConsentRestrictions != null && collection.ConsentRestrictions.Any())
+                {
+                    <dd>
+                        @Html.Raw(string.Join(", ", collection.ConsentRestrictions.OrderBy(x => x)))
+                    </dd>
+                }
+                else
+                {
+                    <dd>
+                        No restrictions
+                    </dd>
+                }
+            </dl>
+        </div>
+
+        @foreach (var sampleSet in collection.SampleSets)
+        {
+            <br/>
+            <br/>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h4>@sampleSet.Sex</h4>
+                    <h4>@sampleSet.AgeRange</h4>
+                    <h4>@sampleSet.DonorCount donors</h4>
+                </div>
+                <div class="col-sm-8">
+                    <table class="table table-condensed">
+                        <thead>
+							<tr>
+								<th>Material Type</th>
+								<th>@App.Config[ConfigKey.PreservationTypeName]</th>
+                                <th> @App.Config[ConfigKey.MacroscopicAssessmentName] </th>
+                                
+                                @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
+								{
+									<th>% of Sample Set</th>
+								}
+							</tr>
+                        </thead>
+                        <tbody>
+                            @if (sampleSet.MaterialPreservationDetails.Any())
+                            {
+                                foreach (var mpd in sampleSet.MaterialPreservationDetails)
+                                {
+							        <tr>
+								        <td>@mpd.MaterialType</td>
+								        <td>@mpd.PreservationType</td>
+								        <td>@mpd.MacroscopicAssessment</td>
+
+								        @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
+										{
+									        <td>@mpd.PercentageOfSampleSet</td>
+										}
+								    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="text-center">There are no material preservation details for this sample set</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+}
