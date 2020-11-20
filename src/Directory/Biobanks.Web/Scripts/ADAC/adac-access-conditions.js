@@ -61,7 +61,7 @@ function AdacAccessConditionViewModel() {
 
         // Get Action Type
         var action = _this.modal.mode().toLowerCase();
-        var url = `${action}AccessConditionAjax`;
+        var url = `/api/AccessConditions/${action}AccessConditionAjax`;
 
         // Make AJAX Call
         $.post(url, $(e.target).serialize(), function (data) {
@@ -128,7 +128,7 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditAccessConditionAjax?sortOnly=true",
+        $.post("/api/AccessConditions/EditAccessConditionAjax?sortOnly=true",
             {
                 id: $(triggerRow.node).data('access-condition-id'),
                 description: $(triggerRow.node).data('access-condition-desc'),
