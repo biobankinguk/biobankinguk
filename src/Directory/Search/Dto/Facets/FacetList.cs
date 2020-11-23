@@ -65,13 +65,13 @@ namespace Directory.Search.Dto.Facets
                 Name = "Access Conditions",
                 CollapsedByDefault = false,
                 SortOrder = 8
-            //},
-            //new FacetGroup
-            //{
-            //    Id = FacetGroupId.Location,
-            //    Name = "Location",
-            //    CollapsedByDefault = false,
-            //    SortOrder = 9
+            },
+            new FacetGroup
+            {
+                Id = FacetGroupId.Location,
+                Name = "Location",
+                CollapsedByDefault = false,
+                SortOrder = 9
             }
         };
 
@@ -316,17 +316,17 @@ namespace Directory.Search.Dto.Facets
                     SearchType.Capability
                 },
                 HasMetadata = true
-            //},
-            //new FacetDetail(FacetGroupId.Location)
-            //{
-            //    Label = "Country",
-            //    Name = "country",
-            //    Slug = "ctry",
-            //    NestedAggregation = false,
-            //    SearchTypes = new List<SearchType>
-            //    {
-            //        SearchType.Collection
-            //    }
+            },
+            new FacetDetail(FacetGroupId.Location)
+            {
+                Label = "Country",
+                Name = "country",
+                Slug = "ctry",
+                NestedAggregation = false,
+                SearchTypes = new List<SearchType>
+                {
+                    SearchType.Collection
+                }
             }
         };
 

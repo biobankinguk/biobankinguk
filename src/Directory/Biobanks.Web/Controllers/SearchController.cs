@@ -265,6 +265,12 @@ namespace Biobanks.Web.Controllers
 
         private static IEnumerable<SelectedFacet> BuildSearchFacets(IEnumerable<string> facetIds)
         {
+            var xx = facetIds.Select(x => new SelectedFacet
+            {
+                Name = FacetList.GetFacetName(GetFacetSlug(x)),
+                Value = GetFacetValue(x)
+            });
+
             return facetIds.Select(x => new SelectedFacet
             {
                 Name = FacetList.GetFacetName(GetFacetSlug(x)),

@@ -137,9 +137,9 @@
       },
       "sampleSetSummary": {
         "type": "keyword"
-      //},
-      //"country": {
-      //  "type": "keyword"
+      },
+      "country": {
+        "type": "keyword"
       }
     }
   }
