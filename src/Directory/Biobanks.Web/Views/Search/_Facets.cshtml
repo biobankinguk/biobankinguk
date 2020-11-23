@@ -10,9 +10,9 @@
 <div class="col-sm-4">
     @if (!Model.Facets.IsNullOrEmpty())
     {
-        var restrictionFacets = (IEnumerable<SearchFacetModel>)HttpContext.Current.Session["restrictionFacets"];
+        @*var restrictionFacets = (IEnumerable<SearchFacetModel>)HttpContext.Current.Session["restrictionFacets"];*@
 
-        foreach (var facet in restrictionFacets)
+        foreach (var facet in Model.Facets)
         {
             if (currentGroup != facet.GroupName)
             {
