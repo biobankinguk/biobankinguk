@@ -90,12 +90,12 @@ namespace Directory.Search.Dto.Facets
                 Label = "Annual Donor Expectation",
                 Name = "annualDonorExpectation",
                 Slug = "ande"
-            //},
-            // new FacetDetailSummary
-            //{
-            //    Label = "County",
-            //    Name = "county",
-            //    Slug = "county"
+            },
+             new FacetDetailSummary
+            {
+                Label = "Country",
+                Name = "country",
+                Slug = "ctry"
             }
         };
 
