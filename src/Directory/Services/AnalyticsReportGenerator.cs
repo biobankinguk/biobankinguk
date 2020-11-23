@@ -13,21 +13,26 @@ namespace Directory.Services
 {
     public class AnalyticsReportGenerator : IDisposable, IAnalyticsReportGenerator
     {
-        /* Service for reading from the seperate analytics service - ie. The Azure Function App
-       */
+        private readonly string _analyticsUrl = ConfigurationManager.AppSettings["AnalyticsServiceUrl"] ?? "";
+        private readonly string _analyticsKey = ConfigurationManager.AppSettings["AnalyticsFunctionKey"] ?? "";
+
+        // Service for reading from the seperate analytics service - ie. The Azure Function App
         private readonly HttpClient _client;
         private readonly IBiobankReadService _biobankReadService;
 
         public AnalyticsReportGenerator(IBiobankReadService biobankReadService)
         {
             _biobankReadService = biobankReadService;
-            _client = new HttpClient()
-            {
-                BaseAddress = new Uri(ConfigurationManager.AppSettings["AnalyticsServiceUrl"])
-            };
+            _client = new HttpClient();
 
-            // Add auth key (Host Key) via request header
-            _client.DefaultRequestHeaders.Add("x-functions-key", ConfigurationManager.AppSettings["AnalyticsFunctionKey"]);
+            if (!string.IsNullOrEmpty(_analyticsUrl))
+            {
+                _client.BaseAddress = new Uri(_analyticsUrl);
+            }
+            if (!string.IsNullOrEmpty(_analyticsKey))
+            {
+                _client.DefaultRequestHeaders.Add("x-functions-key", _analyticsKey);
+            }
         }
 
         public async Task<ProfileStatusDTO> GetProfileStatus(string biobankId)
@@ -181,7 +186,7 @@ namespace Directory.Services
             }
         }
 
-            public void Dispose()
+        public void Dispose()
         {
             _client.Dispose();
         }
