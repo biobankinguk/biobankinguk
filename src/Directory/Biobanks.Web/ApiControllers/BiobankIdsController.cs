@@ -9,7 +9,7 @@ using System.Web.Http;
 
 namespace Biobanks.Web.ApiControllers
 {
-    public class BiobankIdsController : ApiController
+    public class BiobankIdsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
 

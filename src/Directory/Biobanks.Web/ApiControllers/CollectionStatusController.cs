@@ -12,7 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
-    public class CollectionStatusController : ApiController
+    public class CollectionStatusController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -129,19 +129,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description
-            });
-        }
-
-
-        private IHttpActionResult JsonModelInvalidResponse(ModelStateDictionary state)
-        {
-            return Json(new
-            {
-                success = false,
-                errors = state.Values
-                    .Where(x => x.Errors.Count > 0)
-                    .SelectMany(x => x.Errors)
-                    .Select(x => x.ErrorMessage).ToList()
             });
         }
     }

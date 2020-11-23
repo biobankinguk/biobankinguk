@@ -13,7 +13,7 @@ using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
-    public class MacroscopicAssessmentsController : ApiController
+    public class MacroscopicAssessmentsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -155,18 +155,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 msg = $"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
-            });
-        }
-
-        private IHttpActionResult JsonModelInvalidResponse(ModelStateDictionary state)
-        {
-            return Json(new
-            {
-                success = false,
-                errors = state.Values
-                    .Where(x => x.Errors.Count > 0)
-                    .SelectMany(x => x.Errors)
-                    .Select(x => x.ErrorMessage).ToList()
             });
         }
     }

@@ -13,7 +13,7 @@ using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
-    public class HtaStatusController : ApiController
+    public class HtaStatusController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -131,18 +131,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description
-            });
-        }
-
-        private IHttpActionResult JsonModelInvalidResponse(ModelStateDictionary state)
-        {
-            return Json(new
-            {
-                success = false,
-                errors = state.Values
-                    .Where(x => x.Errors.Count > 0)
-                    .SelectMany(x => x.Errors)
-                    .Select(x => x.ErrorMessage).ToList()
             });
         }
     }

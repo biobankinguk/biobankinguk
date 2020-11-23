@@ -12,7 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
-    public class CollectionPointsController : ApiController
+    public class CollectionPointsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -134,18 +134,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 msg = $"The collection point  \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
-            });
-        }
-
-        private IHttpActionResult JsonModelInvalidResponse(ModelStateDictionary state)
-        {
-            return Json(new
-            {
-                success = false,
-                errors = state.Values
-                    .Where(x => x.Errors.Count > 0)
-                    .SelectMany(x => x.Errors)
-                    .Select(x => x.ErrorMessage).ToList()
             });
         }
     }

@@ -12,7 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
-    public class AssociatedDataTypesController : ApiController
+    public class AssociatedDataTypesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -156,18 +156,6 @@ namespace Biobanks.Web.ApiControllers
                 success = true,
                 name = model.Name,
                 redirect = $"AddAssociatedDataTypeSuccess?name={model.Name}"
-            });
-        }
-
-        private IHttpActionResult JsonModelInvalidResponse(ModelStateDictionary state)
-        {
-            return Json(new
-            {
-                success = false,
-                errors = state.Values
-                    .Where(x => x.Errors.Count > 0)
-                    .SelectMany(x => x.Errors)
-                    .Select(x => x.ErrorMessage).ToList()
             });
         }
     }

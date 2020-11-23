@@ -12,7 +12,7 @@ using Directory.Entity.Data;
 
 namespace Biobanks.Web.ApiControllers
 {
-    public class AnnualStatisticsController : ApiController
+    public class AnnualStatisticsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -157,18 +157,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 msg = $"The annual statistics type \"{model.Name}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
-            });
-        }
-
-        private IHttpActionResult JsonModelInvalidResponse(ModelStateDictionary state)
-        {
-            return Json(new
-            {
-                success = false,
-                errors = state.Values
-                    .Where(x => x.Errors.Count > 0)
-                    .SelectMany(x => x.Errors)
-                    .Select(x => x.ErrorMessage).ToList()
             });
         }
     }
