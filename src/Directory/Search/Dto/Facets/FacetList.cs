@@ -327,6 +327,17 @@ namespace Directory.Search.Dto.Facets
                 {
                     SearchType.Collection
                 }
+            },
+            new FacetDetail(FacetGroupId.Location)
+            {
+                Label = "County",
+                Name = "county",
+                Slug = "cty",
+                NestedAggregation = false,
+                SearchTypes = new List<SearchType>
+                {
+                    SearchType.Collection
+                }
             }
         };
 

@@ -532,7 +532,8 @@ namespace Directory.Services
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
                 x => x.MaterialDetails.Select(y => y.PreservationType),
-                x => x.Collection.Organisation.Country
+                x => x.Collection.Organisation.Country,
+                x => x.Collection.Organisation.County
             );
 
         public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
@@ -571,7 +572,8 @@ namespace Directory.Services
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
                 x => x.MaterialDetails.Select(y => y.PreservationType),
-                x => x.Collection.Organisation.Country
+                x => x.Collection.Organisation.Country,
+                x => x.Collection.Organisation.County
             );
 
         public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(
@@ -820,7 +822,8 @@ namespace Directory.Services
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
                 x => x.MaterialDetails.Select(y => y.PreservationType),
-                x => x.Collection.Organisation.Country
+                x => x.Collection.Organisation.Country,
+                x => x.Collection.Organisation.County
             )).FirstOrDefault();
 
         public bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId)

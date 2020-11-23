@@ -96,6 +96,12 @@ namespace Directory.Search.Dto.Facets
                 Label = "Country",
                 Name = "country",
                 Slug = "ctry"
+            },
+             new FacetDetailSummary
+            {
+                Label = "County",
+                Name = "county",
+                Slug = "cty"
             }
         };
 

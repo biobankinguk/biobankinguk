@@ -140,6 +140,9 @@
       },
       "country": {
         "type": "keyword"
+      },
+      "county": {
+        "type": "keyword"
       }
     }
   }

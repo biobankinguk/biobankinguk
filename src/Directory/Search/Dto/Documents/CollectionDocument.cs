@@ -77,5 +77,8 @@ namespace Directory.Search.Dto.Documents
 
         [Keyword(Name = "country")]
         public string Country { get; set; }
+
+        [Keyword(Name = "county")]
+        public string County { get; set; }
     }
 }
