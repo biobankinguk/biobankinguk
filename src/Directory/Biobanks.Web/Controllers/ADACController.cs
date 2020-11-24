@@ -4341,6 +4341,32 @@ namespace Biobanks.Web.Controllers
         }
 
         #endregion
+        #region About Page Config
+        public ActionResult AboutpageConfig() => View(new AboutModel 
+        {
+            BodyText = Config.Get(ConfigKey.AboutBodyText, "")
+        });
+
+        [HttpPost]
+        public ActionResult AboutpageConfig(AboutModel aboutpage)
+            => View(aboutpage);
+
+        [HttpPost]
+        public async Task<ActionResult> SaveAboutpageConfig(AboutModel aboutpage)
+        {
+            await _biobankWriteService.UpdateSiteConfigsAsync(
+                new List<Config>
+                {
+                    new Config { Key = ConfigKey.AboutBodyText, Value = aboutpage.BodyText },
+                }
+            );
+
+            // Invalidate current config (Refreshed in SiteConfigAttribute filter)
+            HttpContext.Application["Config"] = null;
+            SetTemporaryFeedbackMessage("About page body text saved successfully.", FeedbackMessageType.Success);
+            return Redirect("AboutpageConfig");
+        }
+        #endregion
 
         //Method for updating specific Reference Terms Names via Config
         public async Task<JsonResult> UpdateReferenceTermName(string newReferenceTermKey, string newReferenceTermName)
