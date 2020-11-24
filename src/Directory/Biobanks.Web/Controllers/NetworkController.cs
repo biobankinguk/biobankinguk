@@ -608,7 +608,7 @@ namespace Biobanks.Web.Controllers
 
             //Get all emails from admins and store in list
             var networkAdmins = await GetAdminsAsync(networkId, false);
-            List<String> networkEmails = new List<string>();
+            var networkEmails = new List<string>();
             foreach (var admin in networkAdmins)
             {
                 if (admin.EmailConfirmed == true)
@@ -628,7 +628,7 @@ namespace Biobanks.Web.Controllers
                         UserEmail = bbAdmin.Email,
                         EmailConfirmed = bbAdmin.EmailConfirmed
                     }).ToList();
-            List<String> biobankEmails = new List<string>();
+            var biobankEmails = new List<string>();
             foreach (var admin in biobankAdmins)
             {
                 if (admin.EmailConfirmed == true)
