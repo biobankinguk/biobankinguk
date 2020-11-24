@@ -15,19 +15,15 @@ namespace Directory.Search.Elastic
         protected static QueryContainer[] BuildSearchQueries<T>(string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
             where T : BaseDocument
         {
-            // Create new container for our search queries.
-            var queries = new List<QueryContainer>
-            {
-                // Add the query for the root diagnosis search.
-                string.IsNullOrWhiteSpace(diagnosis)
+            var diagnosisQuery = string.IsNullOrWhiteSpace(diagnosis)
                     ? Query<T>.MatchAll()
-                    : Query<T>.Term(p => p.Diagnosis, diagnosis.ToLower())
-            };
+                    : Query<T>.Term(p => p.Diagnosis, diagnosis.ToLower());
 
-            // If there are no selected facets then just return the original query.
-            return selectedFacets == null ? queries.ToArray()
-                // Otherwise add the selected facets to the queries.
-                : AddFacetsToQueryList(queries, selectedFacets).ToArray();
+            var facetQueries = selectedFacets != null
+                    ? BuildFacetQueries(selectedFacets)
+                    : Enumerable.Empty<QueryContainer>();
+
+            return facetQueries.Prepend(diagnosisQuery).ToArray();
         }
 
         protected static QueryContainer[] BuildSearchQueries<T>(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
@@ -43,27 +39,43 @@ namespace Directory.Search.Elastic
             return queryList.ToArray();
         }
 
-        private static List<QueryContainer> AddFacetsToQueryList(List<QueryContainer> queries, IEnumerable<SelectedFacet> selectedFacets)
+        private static IEnumerable<QueryContainer> BuildFacetQueries(IEnumerable<SelectedFacet> selectedFacets)
         {
-            var facetDetails = FacetList.GetFacetDetails().ToList();
+            var facetDetails = FacetList.GetFacetDetails();
 
-            foreach (var selectedFacet in selectedFacets)
-            {
-                var currentFacetDetail = facetDetails.FirstOrDefault(x => x.Name == selectedFacet.Name);
+            return selectedFacets
+                .Where(f =>
+                    facetDetails.Any(d => d.Name == f.Name)
+                )
+                .Select(f =>
+                {
+                    var facetDetail = facetDetails.First(d => d.Name == f.Name);
 
-                if (currentFacetDetail == null)
-                    continue;
+                    // Nested Facets
+                    if (facetDetail.NestedAggregation)
+                    {
+                        var query = Query<CollectionDocument>.Nested(n =>
+                                n.Path(facetDetail.NestedAggregationPath).Query(nq =>
+                                    nq.Term(
+                                        $"{facetDetail.NestedAggregationPath}.{facetDetail.NestedAggregationFieldName}",
+                                        f.Value)
+                                    )
+                                );
 
-                queries.Add(currentFacetDetail.NestedAggregation
-                    ? Query<CollectionDocument>.Nested(n => // TODO why is this typed and is it a problem for capabilities?
-                        n.Path(currentFacetDetail.NestedAggregationPath).Query(nq =>
-                            nq.Term(
-                                $"{currentFacetDetail.NestedAggregationPath}.{currentFacetDetail.NestedAggregationFieldName}",
-                                selectedFacet.Value)))
-                    : Query<CollectionDocument>.Term(selectedFacet.Name, selectedFacet.Value));
-            }
+                        // Consent Restrictions Work Opposite (NOT Facet) - Except for No Restrictions
+                        if (f.Name == "consentRestrictions" && f.Value != "No restrictions")
+                        {
+                            query = !query;
+                        }
 
-            return queries;
+                        return query;
+                    }
+                    // Non-Nested Facets
+                    else
+                    {
+                        return Query<CollectionDocument>.Term(f.Name, f.Value);
+                    }
+                });
         }
 
         #endregion
