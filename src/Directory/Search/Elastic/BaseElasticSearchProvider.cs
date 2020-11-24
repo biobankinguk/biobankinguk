@@ -60,7 +60,7 @@ namespace Directory.Search.Elastic
                             nq.Term(
                                 $"{currentFacetDetail.NestedAggregationPath}.{currentFacetDetail.NestedAggregationFieldName}",
                                 selectedFacet.Value)))
-                    : !Query<CollectionDocument>.Term(selectedFacet.Name, selectedFacet.Value));
+                    : Query<CollectionDocument>.Term(selectedFacet.Name, selectedFacet.Value));
             }
 
             return queries;
