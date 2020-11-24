@@ -75,7 +75,10 @@ namespace Directory.Search.Dto.Documents
         [Keyword(Name = "sampleSetSummary")]
         public string SampleSetSummary { get; set; }
 
-        //[Keyword(Name = "country")]
-        //public string Country { get; set; }
+        [Keyword(Name = "country")]
+        public string Country { get; set; }
+
+        [Keyword(Name = "county")]
+        public string County { get; set; }
     }
 }
