@@ -44,10 +44,17 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> About()
         {
-            return View(new AboutModel
+            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
             {
-                BodyText = Config.Get(ConfigKey.AboutBodyText, "")
-            });
+                return View(new AboutModel
+                {
+                    BodyText = Config.Get(ConfigKey.AboutBodyText, "")
+                });
+            }
+            else
+            {
+                return HttpNotFound();
+            }
         }
 
         public ActionResult Cookies() => View();

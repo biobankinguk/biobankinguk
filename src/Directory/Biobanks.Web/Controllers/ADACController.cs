@@ -4342,14 +4342,33 @@ namespace Biobanks.Web.Controllers
 
         #endregion
         #region About Page Config
-        public ActionResult AboutpageConfig() => View(new AboutModel 
+        public async Task<ActionResult> AboutpageConfig()
         {
-            BodyText = Config.Get(ConfigKey.AboutBodyText, "")
-        });
+            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
+            {
+                return View(new AboutModel
+                {
+                    BodyText = Config.Get(ConfigKey.AboutBodyText, "")
+                });
+            }
+            else
+            {
+                return RedirectToAction("LockedRef");
+            }
+        }
 
         [HttpPost]
-        public ActionResult AboutpageConfig(AboutModel aboutpage)
-            => View(aboutpage);
+        public async Task<ActionResult> AboutpageConfig(AboutModel aboutpage)
+        {
+            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
+            {
+                return View(aboutpage);
+            }
+            else
+            {
+                return RedirectToAction("LockedRef");
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult> SaveAboutpageConfig(AboutModel aboutpage)

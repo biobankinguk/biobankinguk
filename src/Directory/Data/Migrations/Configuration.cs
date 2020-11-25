@@ -258,7 +258,16 @@ namespace Directory.Data.Migrations
                         // Aboutpage Config
                         new Config {
                             Key = "site.aboutpage.bodytext",
-                            Value = @"##About Us"},
+                            Value = @"##About Us"
+                        },
+                        new Config
+                        {
+                            Key = "site.display.aboutpage",
+                            Value = "true",
+                            Name = "Display About Page",
+                            Description = "Enable/Disable About page",
+                            ReadOnly = false
+                        },
                     };
 
             context.Configs
