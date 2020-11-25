@@ -258,7 +258,7 @@ namespace Directory.Data.Migrations
                         // Aboutpage Config
                         new Config {
                             Key = "site.aboutpage.bodytext",
-                            Value = @" "},
+                            Value = @"##About Us"},
                     };
 
             context.Configs
