@@ -258,11 +258,7 @@ namespace Directory.Data.Migrations
                         // Aboutpage Config
                         new Config {
                             Key = "site.aboutpage.bodytext",
-                            Value = @"##About Us
-The Foundation for Innovative New Diagnostics(FIND), a non - profit global health organization, supports activities and projects to improve diagnosis of infectious diseases in low - and middle - income countries(LMICs).FIND, acting at arm's length to offer visibility to existing biological resources for a wider audience, has created the FIND Virtual Biobank Directory (VBD). Funded by Unitaid, the VBD is a directory of searchable information on collections hosted by FIND but also those hosted by other organizations or networks worldwide. The VBD is an open-access, free of charge tool, which allows users and sample owners to interact and discuss without FIND’s intervention, unless explicitly invited to do so by either party.
-
-Some of the disease areas that are in the scope of the FIND VBD are: COVID - 19, NTDs(Buruli ulcer, Chagas disease, chikungunya fever, cutaneous leishmaniasis, human African trypanosomiasis, visceral leishmaniasis, schistosomiasis), Tuberculosis, Malaria, Hepatitis C, HIV, Fever(Dengue, Ebola hemorrhagic fever, Lassa fever, Typhoid fever, West Nile fever, Yellow fever), Zika virus.",
-                        },
+                            Value = @" "},
                     };
 
             context.Configs

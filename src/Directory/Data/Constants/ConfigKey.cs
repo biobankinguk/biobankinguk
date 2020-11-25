@@ -46,7 +46,6 @@ namespace Directory.Data.Constants
         public const string SampleResourceName = "site.sampleresource.name";
 
         // Editable About Page
-        public const string AboutpageTitle = "site.aboutpage.title";
         public const string AboutBodyText = "site.aboutpage.bodytext";
 
     }
