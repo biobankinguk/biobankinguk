@@ -39,7 +39,7 @@ namespace Analytics.AnalyticsAzureFunctions
             builder.Services.AddTransient<IGenericEFRepository<OrganisationAnalytic>, GenericEFRepository<OrganisationAnalytic>>();
             builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticEvent>, GenericEFRepository<DirectoryAnalyticEvent>>();
             builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticMetric>, GenericEFRepository<DirectoryAnalyticMetric>>();
-
+            builder.Services.AddTransient<IGenericEFRepository<Organisation>, GenericEFRepository<Organisation>>();
         }
 
     }

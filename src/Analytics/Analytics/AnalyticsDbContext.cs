@@ -10,6 +10,7 @@ namespace Analytics.Data
         public DbSet<OrganisationAnalytic> OrganisationAnalytics { get; set; }
         public DbSet<DirectoryAnalyticMetric> DirectoryAnalyticMetrics { get; set; }
         public DbSet<DirectoryAnalyticEvent> DirectoryAnalyticEvents { get; set; }
+        public DbSet<Organisation> Organisations { get; set; }
 
         public AnalyticsDbContext(DbContextOptions<AnalyticsDbContext> options) : base(options) { }
 
