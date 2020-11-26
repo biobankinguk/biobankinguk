@@ -141,7 +141,7 @@ namespace Directory.Search.Elastic
                     .ToList();
         }
 
-        private static Facet ExtractFacet(string aggregateName,
+        protected static Facet ExtractFacet(string aggregateName,
             MultiBucketAggregate<KeyedBucket<string>> aggregate,
             MultiBucketAggregate<KeyedBucket<string>> metadataAggregate)
         {
@@ -177,7 +177,7 @@ namespace Directory.Search.Elastic
             };
         }
 
-        private static Facet ExtractReverseNestedFacet(string aggregateName,
+        protected static Facet ExtractReverseNestedFacet(string aggregateName,
             MultiBucketAggregate<KeyedBucket<string>> aggregate,
             MultiBucketAggregate<KeyedBucket<string>> metadataAggregate)
         {
@@ -204,7 +204,7 @@ namespace Directory.Search.Elastic
                         {
                             Name = x.Key,
                             SortOrder = metadata?.SortOrder ?? string.Empty,
-                            Value = x.ReverseNested("toTop").Cardinality("biobankCount").Value
+                            Value = x.ReverseNested("toTop")?.Cardinality("biobankCount").Value
                         };
                     }).ToList(),
                 GroupOrder = facetGroup?.SortOrder ?? 0,

@@ -3,125 +3,125 @@
 @using Newtonsoft.Json
 @using Directory.Data.Constants
 @model FacetsModel
-@{
-    var currentGroup = "";
-}
 
 <div class="col-sm-4">
-    @if (!Model.Facets.IsNullOrEmpty())
-    {
-        @*var restrictionFacets = (IEnumerable<SearchFacetModel>)HttpContext.Current.Session["restrictionFacets"];*@
+	@if (!Model.Facets.IsNullOrEmpty())
+	{
+		foreach (var facetGroup in Model.Facets.GroupBy(x => x.GroupName))
+		{
 
-        foreach (var facet in Model.Facets)
-        {
-            if (currentGroup != facet.GroupName)
-            {
-                if (!string.IsNullOrEmpty(currentGroup))
-                {
-                    @* Close panel *@
-                    @Html.Raw("</div></div></div>")
-                }
+			// Facet Group Data
+			var firstFacet = facetGroup.First();
 
-                currentGroup = facet.GroupName;
+			var facetGroupNameId = $"FacetGroup{firstFacet.GroupNameWithoutSpaces}";
+			var facetGroupIconId = $"FacetGroupIcon{firstFacet.GroupNameWithoutSpaces}";
 
-                var facetGroupNameId = $"FacetGroup{facet.GroupNameWithoutSpaces}";
-                var facetGroupIconId = $"FacetGroupIcon{facet.GroupNameWithoutSpaces}";
+			var facetGroupCollapsedCookieValue = Request.Cookies[$"{facetGroupNameId}Collapsed"]?.Value;
 
-                var facetGroupCollapsedCookieValue = Request.Cookies[$"{facetGroupNameId}Collapsed"]?.Value;
+			var facetGroupCollapsed = facetGroupCollapsedCookieValue != null
+				? Convert.ToBoolean(facetGroupCollapsedCookieValue)
+				: firstFacet.GroupCollapsedByDefault;
 
-                var facetGroupCollapsed = facetGroupCollapsedCookieValue != null
-                    ? Convert.ToBoolean(facetGroupCollapsedCookieValue)
-                    : facet.GroupCollapsedByDefault;
+			var groupSelectedCount = facetGroup.Count(
+				y => Model.SelectedFacets.Any(sf => y.FacetValues.Select(fv => fv.FacetId).Contains(sf)));
 
-                @* Open panel and place header. *@
-                @Html.Raw("<div class=\"panel panel-default\">")
 
-                <div class="panel-heading facet-group-header" role="button" data-toggle="collapse" data-target="#@(facetGroupNameId)"
-                     aria-expanded="@((!facetGroupCollapsed).ToString())" aria-controls="@facetGroupNameId">
+			@* Facet Group Panel *@
+			<div class="panel panel-default">
+				
+				@* Panel Header *@
+				<div class="panel-heading facet-group-header" role="button" 
+					 data-toggle="collapse" 
+					 data-target="#@(facetGroupNameId)"
+					 aria-expanded="@((!facetGroupCollapsed).ToString())" 
+					 aria-controls="@facetGroupNameId">
 
-                    @facet.GroupName
+					@firstFacet.GroupName
 
-                    @{
-                        var groupSelectedCount = Model.Facets
-                            .Where(x => x.GroupName == currentGroup)
-                            .Count(y => Model.SelectedFacets.Any(sf => y.FacetValues.Select(fv => fv.FacetId).Contains(sf)));
-                    }
+					<span id="@facetGroupIconId" class="facet-group-icon fa @Html.Raw(facetGroupCollapsed ? "fa-plus-square" : "fa-minus-square") pull-right"></span>
 
-                    <span id="@facetGroupIconId" class="facet-group-icon fa @Html.Raw(facetGroupCollapsed ? "fa-plus-square" : "fa-minus-square") pull-right"></span>
+					@if (groupSelectedCount > 0)
+					{
+						<span class="badge facet-group-badge pull-right">@groupSelectedCount in use</span>
+					}
+				</div>
 
-                    @if (groupSelectedCount > 0)
-                    {
-                        <span class="badge facet-group-badge pull-right">@groupSelectedCount in use</span>
-                    }
-                </div>
+				@* Panel Body *@
+				<div id="@facetGroupNameId" class="panel-body facet-group @(facetGroupCollapsed ? "collapse" : "collapse in")" data-icon-id="@facetGroupIconId">
+					<div class="collapse-panel-body">
 
-                @* Open panel body. *@
-                @Html.Raw($"<div id=\"{facetGroupNameId}\" class=\"panel-body facet-group {(facetGroupCollapsed ? "collapse" : "collapse in")}\" data-icon-id=\"{facetGroupIconId}\">")
-                @Html.Raw("<div class=\"collapse-panel-body\">")
-            }
+						@* Facets *@
+						@foreach (var facet in facetGroup)
+						{
+							var facetName = "";
 
-            <div class="facet-container">
-                <p class="facet-header">
+							switch (facet.Name)
+							{
+								case "Macroscopic Assessment":
+									facetName = App.Config[ConfigKey.MacroscopicAssessmentName]; break;
+								case "Preservation Type": 
+									facetName = App.Config[ConfigKey.PreservationTypeName]; break;
+								case "Donor Count": 
+									facetName = App.Config[ConfigKey.DonorCountName]; break;
+								default: 
+									facetName = facet.Name;  break;
+							}
 
-                    @switch (facet.Name)
-                    {
-                        case "Preservation Type":
-                            <strong>@App.Config[ConfigKey.PreservationTypeName]</strong>
-                            break;
-                        case "Donor Count":
-                            <strong>@App.Config[ConfigKey.DonorCountName]</strong>
-                            break;
-                        case "Macroscopic Assessment":
-                            <strong>@App.Config[ConfigKey.MacroscopicAssessmentName]</strong>
-                            break;
-                        default:
-                            <strong>@facet.Name</strong>
-                            break;
-                    }
+							<div class="facet-container">
+								<p class="facet-header">
+									<strong>@facetName</strong>
+								</p>
 
-                </p>
+								<ul class="facet-list fa-ul">
+									@foreach (var facetValue in facet.FacetValues)
+									{
+										// Consent Restriction Edgecase
+										var facetValueName = facetValue.FacetValue;
 
-                <ul class="facet-list fa-ul">
-                    @foreach (var facetValue in facet.FacetValues)
-                    {
-                        if (!Model.FacetSelected(facetValue.FacetId))
-                        {
-                            <li>
-                                <a href="@Url.Action(Model.Action, "Search", new
-                                         {
-                                             diagnosis = Model.Diagnosis,
-                                             selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
-                                             {
-                                                 facetValue.FacetId
-                                             }))
-                                         })">
-                                    <span class="fa fa-circle-o"></span>
-                                    @facetValue.FacetValue
-                                </a>
-                                <span class="facet-count">(@facetValue.Count)</span>
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a href="@Url.Action(Model.Action, "Search", new
-                                         {
-                                             diagnosis = Model.Diagnosis,
-                                             selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
-                                                 x => x != facetValue.FacetId))
-                                         })">
-                                    <span class="fa fa-check-circle"></span>
-                                    @facetValue.FacetValue
-                                </a>
-                                (@facetValue.Count)
-                            </li>
-                        }
-                    }
-                </ul>
-            </div>
+										if (facet.IndexedName == "consentRestrictions" && facetValueName != "No restrictions")
+										{
+											facetValueName = $"No {facetValueName}";
+										}
 
-        }
-
-        @Html.Raw("</div></div></div>")
-    }
+										if (!Model.FacetSelected(facetValue.FacetId))
+										{
+											<li>
+												<a href="@Url.Action(Model.Action, "Search", new
+														 {
+															 diagnosis = Model.Diagnosis,
+															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
+															 {
+																 facetValue.FacetId
+															 }))
+														 })">
+													<span class="fa fa-circle-o"></span>
+													@facetValueName
+												</a>
+												<span class="facet-count">(@facetValue.Count)</span>
+											</li>
+										}
+										else
+										{
+											<li>
+												<a href="@Url.Action(Model.Action, "Search", new
+														 {
+															 diagnosis = Model.Diagnosis,
+															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
+																 x => x != facetValue.FacetId))
+														 })">
+													<span class="fa fa-check-circle"></span>
+													@facetValueName
+												</a>
+												(@facetValue.Count)
+											</li>
+										}
+									}
+								</ul>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		}
+	}
 </div>
