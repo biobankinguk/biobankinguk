@@ -42,6 +42,21 @@ namespace Biobanks.Web.Controllers
             });
         }
 
+        public async Task<ActionResult> About()
+        {
+            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
+            {
+                return View(new AboutModel
+                {
+                    BodyText = Config.Get(ConfigKey.AboutBodyText, "")
+                });
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+        }
+
         public ActionResult Cookies() => View();
 
         public ActionResult Privacy() => View();

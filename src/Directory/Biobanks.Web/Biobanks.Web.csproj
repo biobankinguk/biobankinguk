@@ -434,6 +434,7 @@
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
     <Compile Include="Models\Header\HeaderModel.cs" />
     <Compile Include="Models\Header\HeaderItemModel.cs" />
+    <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
     <Content Include="Scripts\ADAC\adac-sample-resource-config.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -802,6 +803,9 @@
     <Content Include="Views\Shared\_SuspendedWarning.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\AddFunderModel.cshtml" />
     <Content Include="Views\Home\Privacy.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
+    <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
