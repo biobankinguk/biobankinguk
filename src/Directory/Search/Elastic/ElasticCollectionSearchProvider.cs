@@ -157,7 +157,7 @@ namespace Directory.Search.Elastic
                 ExternalId = x.Terms("biobankExternalIds").Buckets.First().Key,
                 CollectionCount = x.Cardinality("collectionIds").Value,
                 SampleSetSummaries = x.Terms("sampleSetSummaries").Buckets.Select(y => y.Key)
-            }).ToList();
+            });
         }
 
         private static BiobankCollectionResult ExtractBiobankCollectionDetailSearchResults(IList<CollectionDocument> searchResult)

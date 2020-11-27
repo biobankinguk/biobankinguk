@@ -7,15 +7,15 @@
 <div class="col-sm-4">
 	@if (!Model.Facets.IsNullOrEmpty())
 	{
+		var facets = Model.Facets;
 
-		@*// TODO: Implement Once Feature Enabled
-		//Do not display County facet if config is turned off
-		if (facet.Name.EqualsText("County") && App.Config[ConfigKey.ShowCounties] == "false")
+		// Hide County Facet
+		if (App.Config[ConfigKey.ShowCounties] == "false")
 		{
-			continue;
-		}*@
+			facets = facets.Where(x => x.Name != "County");
+		}
 
-		foreach (var facetGroup in Model.Facets.GroupBy(x => x.GroupName))
+		foreach (var facetGroup in facets.GroupBy(x => x.GroupName))
 		{
 
 			// Facet Group Data
