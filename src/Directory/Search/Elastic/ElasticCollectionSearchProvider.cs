@@ -92,7 +92,9 @@ namespace Directory.Search.Elastic
 
             // Collect Search Facets
             var searchFacets = ExtractFacets(searchResult);
-            var facets = AddConsentRestrictionsFacet(searchFacets, biobanks.Count()); // Consent Restriction Facet Opt-Out Edge Case
+            var consentFacet = ExtractConsentRestrictionFacet(searchResult);
+
+            var facets = searchFacets.Where(x => x.Name != "consentRestrictions").Append(consentFacet);
 
             return new DirectorySearchResult
             {
@@ -230,13 +232,9 @@ namespace Directory.Search.Elastic
         }
 
         #endregion
-    
-        private IEnumerable<Facet> AddConsentRestrictionsFacet(IEnumerable<Facet> resultFacets, int resultsCount)
+        private Facet ExtractConsentRestrictionFacet(ISearchResponse<CollectionDocument> searchResponse)
         {
-            /*  Since the Consent Restrictions facet is Opt-Out (MUST_NOT) rather than Opt-In (MUST) facet, the
-             *  facet details are not returned via the search results, as none of the search results will contain
-             *  that facet. Therefore the facet details are manually gathered via a secondary request. */
-
+            // Not All Facet Values Will Be Present As Facet Is Opt-Out, So We Gather Them Via Second Query
             var facetDetail = FacetList.GetFacetDetail("consentRestrictions");
 
             var searchResult = _client.Search<CollectionDocument>(s => s
@@ -247,31 +245,26 @@ namespace Directory.Search.Elastic
                                     .Terms(facetDetail.Name, t => t
                                     .Field(f => f.ConsentRestrictions.Suffix(facetDetail.NestedAggregationFieldName))
                                 )
-                            )
+                             )
                         )
                     )
                 );
 
-            var consentResult = searchResult.Aggregations.Nested(facetDetail.Name).Terms(facetDetail.Name);
-            var consentFacet = ExtractReverseNestedFacet(facetDetail.Name, consentResult, null);
+            var facetResult = searchResult.Aggregations.Nested(facetDetail.Name).Terms(facetDetail.Name);
+            var totalRestrictions = ExtractReverseNestedFacet(facetDetail.Name, facetResult, null); // All Values
 
-            // Incomplete Consent Facet From Search Results
-            var searchFacetValues = resultFacets.Where(x => x.Name == facetDetail.Name).First().Values;
-
-            // Merge Consent Facet Values
-            consentFacet.Values = consentFacet.Values.Select(fv =>
+            // Since Opt-Out We Need To Calculate The Cardinailty Manually 
+            var collections = searchResponse.Documents;
+       
+            foreach (var facetValue in totalRestrictions.Values)
             {
-                var searchFacetValue = searchFacetValues.Where(x => x.Name == fv.Name).FirstOrDefault();
+                facetValue.Value = collections
+                    .Where(x => !x.ConsentRestrictions.Select(y => y.Description).Contains(facetValue.Name))
+                    .GroupBy(x => x.BiobankId)
+                    .Count();
+            }
 
-                fv.Value = searchFacetValue?.Value ?? resultsCount;
-
-                return fv;
-            });
-
-            // Combine All Facets
-            var facets = resultFacets.Where(f => f.Name != "consentRestrictions").Append(consentFacet);
-
-            return facets;
+            return totalRestrictions;
         }
     }
 }
