@@ -20,20 +20,20 @@ namespace Analytics.Services
             _ctx = ctx;
         }
 
-        public async Task<IEnumerable<string>> GetOrganisationNames()
+        public async Task<IList<string>> GetOrganisationNames()
         {
-            return (await ListBiobanksAsync()).Select(x => x.Name);
+            return (await ListBiobanksAsync()).Select(x => x.Name).ToList();
         }
 
-        public async Task<IEnumerable<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true)
+        public async Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true)
         {
             return await _ctx.Organisations.Where(x => x.Name.Contains(wildcard) && (includeSuspended || x.IsSuspended == false)).ToListAsync();
         }
 
 
-        public async Task<IEnumerable<string>> GetOrganisationExternalIds()
+        public async Task<IList<string>> GetOrganisationExternalIds()
         {
-            return (await ListBiobanksAsync()).Select(x => x.OrganisationExternalId);
+            return (await ListBiobanksAsync()).Select(x => x.OrganisationExternalId).ToList();
         }
 
     }
