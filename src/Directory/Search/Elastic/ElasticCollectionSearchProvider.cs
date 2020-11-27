@@ -46,8 +46,6 @@ namespace Directory.Search.Elastic
                 settings.BasicAuthentication(username, password);
             }
 
-            settings.DisableDirectStreaming(); // Debug
-
             _client = new ElasticClient(settings);
         }
 
