@@ -92,7 +92,7 @@ namespace Directory.Search.Elastic
 
             // Collect Search Facets
             var searchFacets = ExtractFacets(searchResult);
-            var consentFacet = ExtractConsentRestrictionFacet(searchResult);
+            var consentFacet = ExtractConsentRestrictionFacet(searchResult, searchFacets);
 
             var facets = searchFacets.Where(x => x.Name != "consentRestrictions").Append(consentFacet);
 
@@ -232,7 +232,7 @@ namespace Directory.Search.Elastic
         }
 
         #endregion
-        private Facet ExtractConsentRestrictionFacet(ISearchResponse<CollectionDocument> searchResponse)
+        private Facet ExtractConsentRestrictionFacet(ISearchResponse<CollectionDocument> searchResponse, IEnumerable<Facet> searchFacets)
         {
             // Not All Facet Values Will Be Present As Facet Is Opt-Out, So We Gather Them Via Second Query
             var facetDetail = FacetList.GetFacetDetail("consentRestrictions");
@@ -255,11 +255,13 @@ namespace Directory.Search.Elastic
 
             // Since Opt-Out We Need To Calculate The Cardinailty Manually 
             var collections = searchResponse.Documents;
-       
+
             foreach (var facetValue in totalRestrictions.Values)
             {
+                var isNoRestrictions = (facetValue.Name == "No restrictions"); // Edge Case Where Opt-In (Hence XOR)
+
                 facetValue.Value = collections
-                    .Where(x => !x.ConsentRestrictions.Select(y => y.Description).Contains(facetValue.Name))
+                    .Where(x => isNoRestrictions ^ !x.ConsentRestrictions.Select(y => y.Description).Contains(facetValue.Name))
                     .GroupBy(x => x.BiobankId)
                     .Count();
             }
