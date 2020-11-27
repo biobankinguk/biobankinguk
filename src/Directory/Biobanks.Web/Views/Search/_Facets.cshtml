@@ -7,6 +7,14 @@
 <div class="col-sm-4">
 	@if (!Model.Facets.IsNullOrEmpty())
 	{
+
+		@*// TODO: Implement Once Feature Enabled
+		//Do not display County facet if config is turned off
+		if (facet.Name.EqualsText("County") && App.Config[ConfigKey.ShowCounties] == "false")
+		{
+			continue;
+		}*@
+
 		foreach (var facetGroup in Model.Facets.GroupBy(x => x.GroupName))
 		{
 
