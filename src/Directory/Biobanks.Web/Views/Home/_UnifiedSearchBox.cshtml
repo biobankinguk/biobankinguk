@@ -1,5 +1,6 @@
 ﻿@using System.Configuration
 @using Biobanks.Web.Models.Home
+@using Directory.Data.Constants
 @model HomepageContentModel
 @using (Html.BeginForm("Unified", "Search", null, FormMethod.Get))
 {
@@ -23,7 +24,7 @@
                         <input type="radio" name="searchRadio" id="Collections" value="Collections" checked="checked"> Access existing samples
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="searchRadio" id="Capabilities" value="Capabilities"> Require samples collected
+                        <input type="radio" name="searchRadio" id="Capabilities" value="Capabilities"> @App.Config[ConfigKey.HomepageSearchRadioSamplesCollected]
                     </label>
                 </fieldset>
             </div>
