@@ -4256,8 +4256,7 @@ namespace Biobanks.Web.Controllers
 
             // Invalidate current config (Refreshed in SiteConfigAttribute filter)
             HttpContext.Application["Config"] = null;
-            var sampleResource = await _biobankReadService.GetSiteConfigValue(ConfigKey.SampleResourceName);
-            SetTemporaryFeedbackMessage("Register " + sampleResource + " Configuration saved successfully.", FeedbackMessageType.Success);
+            SetTemporaryFeedbackMessage("Register configuration saved successfully.", FeedbackMessageType.Success);
             return Redirect("RegisterBiobankConfig");
         }
         #endregion
