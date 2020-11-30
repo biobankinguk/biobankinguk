@@ -176,6 +176,14 @@ namespace Directory.Data.Migrations
                                     ####Sample resource or Network?
                                     If you are unsure about whether to register a resource or network then [please get in touch](https://www.biobankinguk.org/contact-us/).",
                         },
+                        new Config
+                        {
+                            Key = "site.homepage.searchradiosamplescollected",
+                                                        Value = "Sample Resource",
+                            Name = "Require samples collected",
+                            Description = "Set require samples collected text",
+                            ReadOnly = false,
+                        },
 
                         // Register
                         new Config

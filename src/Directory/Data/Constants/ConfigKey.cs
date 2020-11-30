@@ -26,6 +26,7 @@ namespace Directory.Data.Constants
         public const string HomepageSearchTitle = "site.homepage.searchtitle";
         public const string HomepageResourceRegistration = "site.homepage.resourceregistration";
         public const string HomepageNetworkRegistration = "site.homepage.networkregistration";
+        public const string HomepageSearchRadioSamplesCollected = "site.homepage.searchradiosamplescollected";
 
         // Editable Register
         public const string RegisterBiobankDescription = "site.register.biobank.description";
