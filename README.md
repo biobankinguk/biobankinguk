@@ -15,10 +15,10 @@ The `src/` folder contains roughly project or app categorised folders, which als
 ## Directory structure:
 
 - `.azure/pipelines/` - Azure Pipelines configurations for conditionally building the different applications and libraries in the repo
-- `elastic-search` - Configurational scripts to setup the required elastic search instance
-- `sample-seed-data` - Reference data for the Directory
-- `scripts` - Various scripts for Directory management
-- `sql` - Various SQL scripts used to add/repair database records
+- `elastic-search/` - Configurational scripts to setup the required elastic search instance
+- `sample-seed-data/` - Reference data for the Directory
+- `scripts/` - Various scripts for Directory management
+- `sql/` - Various SQL scripts used to add/repair database records
 - `src/` - Projects Source Code
 
 | Folder | Description | `README` |
