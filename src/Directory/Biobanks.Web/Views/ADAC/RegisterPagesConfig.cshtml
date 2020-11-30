@@ -3,7 +3,7 @@
 @using Directory.Data.Constants
 @model Biobanks.Web.Models.ADAC.RegisterConfigModel
 @{
-    ViewBag.Title = "Register " + App.Config[ConfigKey.SampleResourceName] + " Config";
+    ViewBag.Title = "Register Pages Config";
 }
 
 @Html.Partial("_ADACTabs", (string)ViewBag.Title)
@@ -19,7 +19,7 @@
 		<br />
 
 		<form id="register-config-form" class="form-horizontal" method="post">
-			<input type="submit" id="submit-form" class="hidden" formaction="./SaveRegisterBiobankConfig"/>
+			<input type="submit" id="submit-form" class="hidden" formaction="./SaveRegisterPagesConfig"/>
 
 			<div class="row">
                 <div class="col-md-12">
