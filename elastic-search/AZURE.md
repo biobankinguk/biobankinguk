@@ -89,7 +89,7 @@ To populate the index with existing Directory data, a user with `SuperUser` priv
 
 ## Securing The Elastic Search Instance
 
-There are many approaches to securing the Elastic Search instance and its Virtual Machine from malicous users. This guide takes the approach of securing the Elastic Search instance behind private Azure Virtual Network and Network Security Group (firewall).
+There are many approaches to securing the Elastic Search instance and its Virtual Machine from malicious users. This guide takes the approach of securing the Elastic Search instance behind private Azure Virtual Network and Network Security Group (firewall).
 
 Therefore, when not being configured, the temporary firewall rule and public IP address must be removed from the virtual machine. This prevents any external access (from the internet) to the elastic search instance. This is esepcially important as the elastic search instance itself has no configured authentication mechanism. 
 
