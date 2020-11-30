@@ -6,15 +6,16 @@ The below guide explains how to deploy and setup an Elastic Search instance on a
 
 The virtual machine should be created using [Bitnami's Elastic Search VM Image](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/bitnami.elastic-search). This image is pre-configured to run an Elastic Search instance. Being certified by Bitnami, the image is guarenteed to "always up-to-date, secure, and built to work right out of the box".
 
-You most likely will want to have the instance running on the pre-configured `Standard_B1ms` instance size, with default disk options. 
+
+For a test environment, you most likely will want to have the instance running on the pre-configured `Standard_B1ms` instance size, with default disk options. For higher loads (greater volume of search queries and/or index sizes) you may required a higher spec instance, or a cluster of mutliple instances (not covered in this guide).
 
     It is highly recommended the instance is secured via an SSH key pair.
 
 The VM will need to be connected to a Virtual Network - if one does not exist, one will be created for the Virtual Machine. The VM instance can be kept within the default subnet of the virtual network.
 
-A public IP address will also be initally required.
+The virtual machine will also required a public IP address initally, so that the elastic search instance can be configured via your local machine.
 
-On creation of the Virtual Machine, the Azure Portal will provide the SSH private key. This should be kept in secure location.
+On creation of the Virtual Machine, the Azure Portal will provide the SSH private key (unless the instance is password protected). This should be kept in secure location.
 
 ## Configuring Elastic Search
 
@@ -27,13 +28,15 @@ To be able to connect to the instance via the script, a temporary firewall rule 
 | 9200 | TCP      | `<your-ip>` | Any         | 
 
 \
-Once this rule has been applied the `confiugre-search.ps1` script can be edited, such that the `$base` variable is properly set.
+Once this rule has been applied the `configure-search.ps1` script can be edited, such that the `$base` variable is properly set.
 
 ```Powershell
 $base = "http://<vm-public-ip>:9200"
 ```
 
-The script can then be ran, confirming the indices have been properly created.
+Running the script will confirm the creation of two indicies - `collections` and `capabilties`. 
+
+More information about the powershell script can be found via its dedicated [README]().
 
 ## Configuring The Virtual Network
 
@@ -47,6 +50,8 @@ The App Service needs to be connected to the same Virtual Network as the Elastic
 
 However, an App Service cannot be added to the default subnet of a virtual network. Hence, a secondary subnet must be created. A new subnet can be created under the virtual network resource.
 
+[🔗 Microsoft Docs: Add, change, or delete a virtual network subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet#add-a-subnet)
+
 Once the App Service is on the virtual network, it needs to be configured such that it uses the virtual network's internal DNS server and routes all of its traffic through the virtual network. This is done by setting the two configuration values for the App Service
 
 ```
@@ -58,7 +63,9 @@ To test the virtual network is configured correctly, we can ping the Elastic Sea
 
 `tcpping <elastic-search-private-ip>:9200`
 
-However, since the private IP address of the Virtual Machine is dynamic, it is much better to connect to the Elastic Search instance via it's internal hostname. This hostname is resolved by the V-Net's DNS server.
+However, since the private IP address of the Virtual Machine is dynamic, it is much better to connect to the Elastic Search instance via it's internal hostname. 
+
+The internal hostname of the virtual machine is based on the virtual machine's resource name, and is resolved by the DNS server on the virtual network.
 
 `tcpping <elastic-search-name>.internal.cloudapp.net:9200` 
 
@@ -70,7 +77,9 @@ ElasticSearchUrl=http://<elastic-search-name>.internal.cloudapp.net:9200`
 
 ## Populating The Elastic Search Instance
 
-To populate the index with existing Directory data, a user with `SuperUser` privalleges can trigger a re-indexing of data via the `SuperUser` portal on the Directory.
+Populating the elastic search indices is the final configurational step. This takes the existing data from the Directory, and pushing it onto the elastic search instance to be properly indexed.
+
+To populate the index with existing Directory data, a user with `SuperUser` privalleges can trigger a re-indexing of data via the `/SuperUser` portal on the Directory.
 
 ## Securing The Elastic Search Instance
 
@@ -85,3 +94,5 @@ By default, the Bitnami VM image is configured with the Elastic Search instance 
 If you find the instance is not running, it can be started with same script with the command
 
 `sudo /opt/bitnami/ctlscript.sh start`
+
+[🔗 Further documentation can be found via Bitnami](https://docs.bitnami.com/azure/apps/elasticsearch/)
