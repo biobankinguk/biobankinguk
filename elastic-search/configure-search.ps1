@@ -1,4 +1,5 @@
 ### Configuration ###
+$is_creation = $true ## Creates If True, Deletes If False
 $base = "http://localhost:9200"
 $index_folder = "./directory index setup"
 
@@ -23,15 +24,19 @@ function ReadIndexPayload { Param ([string]$index)
     Write-Output (Get-Content "$index_folder/$index.json");
 }
 
-
 # Setup Elastic Search
 Foreach ($index in "capabilities", "collections")
 {
-    #DeleteSearchIndex $index;
-    CreateSearchIndex $index (ReadIndexPayload $index);
+    if ($is_creation)
+    {
+        CreateSearchIndex $index (ReadIndexPayload $index);
+    }
+    else
+    {
+        DeleteSearchIndex $index;
+    }
 }
 
-#DeleteSearchIndex "biobanks"
 PreventIndexReplication;
 
 echo ""
