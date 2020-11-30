@@ -4,7 +4,7 @@ The below guide explains how to deploy and setup an Elastic Search instance on a
 
 ## Creating The Virtual Machine
 
-The virtual machine should be created using [Bitnami's Elastic Search VM Image](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/bitnami.elastic-search). This image is pre-configured to run an Elastic Search instance. Being certified by Bitnami, the image is guarenteed to "always up-to-date, secure, and built to work right out of the box".
+The virtual machine should be created using [Bitnami's Elastic Search VM Image](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/bitnami.elastic-search). This image is pre-configured to run an Elastic Search instance. Being certified by Bitnami, the image is guarenteed to be "always up-to-date, secure, and built to work right out of the box".
 
 
 For a test environment, you most likely will want to have the instance running on the pre-configured `Standard_B1ms` instance size, with default disk options. For higher loads (greater volume of search queries and/or index sizes) you may required a higher spec instance, or a cluster of mutliple instances (not covered in this guide).
@@ -42,7 +42,7 @@ Since the elastic search index is brand new, we only need to use the `-create` f
 ./configure-search.ps1 -url [elastic-search-url] -dir "./directory index setup" -create
 ```
 
-More information about the powershell script can be found via its dedicated [README]().
+More information about the powershell script can be found via its dedicated [README](./README.md).
 
 ## Configuring The Virtual Network
 
@@ -89,7 +89,11 @@ To populate the index with existing Directory data, a user with `SuperUser` priv
 
 ## Securing The Elastic Search Instance
 
-To secure the elastic search instance, it is recommened that the temporary firewall rule and public IP address is removed from the virtual machine. This prevents any external access to the elastic search instance.
+There are many approaches to securing the Elastic Search instance and its Virtual Machine from malicous users. This guide takes the approach of securing the Elastic Search instance behind private Azure Virtual Network and Network Security Group (firewall).
+
+Therefore, when not being configured, the temporary firewall rule and public IP address must be removed from the virtual machine. This prevents any external access (from the internet) to the elastic search instance. This is esepcially important as the elastic search instance itself has no configured authentication mechanism. 
+
+**The elastic search instance should only be open to an external machine when it needs to be managed via its REST API (port 9200) or via an SSH session (port 22).**
 
 ## Troubleshooting
 
