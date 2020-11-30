@@ -40,6 +40,7 @@ namespace Biobanks.Web.Controllers
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
             });
         }
 

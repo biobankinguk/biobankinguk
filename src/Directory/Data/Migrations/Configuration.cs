@@ -179,9 +179,15 @@ namespace Directory.Data.Migrations
                         new Config
                         {
                             Key = "site.homepage.searchradiosamplescollected",
-                                                        Value = "Require samples collected",
-                            Name = "Require samples collected",
+                            Value = "Require samples collected",
                             Description = "Set require samples collected text",
+                            ReadOnly = false,
+                        },
+                        new Config
+                        {
+                            Key = "site.homepage.searchradioaccesssamples",
+                            Value = "Access existing samples",
+                            Description = "Set access existing samples text",
                             ReadOnly = false,
                         },
 
