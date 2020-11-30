@@ -4233,15 +4233,24 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region Register Biobank Config
-        public ActionResult RegisterBiobankConfig() => View();
+        public async Task<ActionResult> RegisterBiobankConfig()
+        {
+            return View(new RegisterConfigModel
+            {
+                BiobankDescription = Config.Get(ConfigKey.RegisterBiobankDescription, ""),
+                NetworkDescription = Config.Get(ConfigKey.RegisterNetworkDescription, ""),
+            });
+        }
+
 
         [HttpPost]
-        public async Task<ActionResult> SaveRegisterBiobankConfig(string description)
+        public async Task<ActionResult> SaveRegisterBiobankConfig(RegisterConfigModel registerConfigModel)
         {
             await _biobankWriteService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
-                    new Config { Key = ConfigKey.RegisterBiobankDescription, Value = description },
+                    new Config { Key = ConfigKey.RegisterBiobankDescription, Value = registerConfigModel.BiobankDescription ?? "" },
+                    new Config { Key = ConfigKey.RegisterNetworkDescription, Value = registerConfigModel.NetworkDescription ?? "" },
                 }
             );
 
