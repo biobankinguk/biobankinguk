@@ -28,13 +28,19 @@ To be able to connect to the instance via the script, a temporary firewall rule 
 | 9200 | TCP      | `<your-ip>` | Any         | 
 
 \
-Once this rule has been applied the `configure-search.ps1` script can be edited, such that the `$base` variable is properly set.
+Once this rule has been applied the `configure-search.ps1` script can be ran - its basic usage is
 
-```Powershell
-$base = "http://<vm-public-ip>:9200"
+```bash
+./configure-search.ps1 -url [elastic-search-url] -dir [json config folder] <-delete> <-create>
 ```
 
-Running the script will confirm the creation of two indicies - `collections` and `capabilties`. 
+The `./directory index setup` folder contains the index definitons used by the Directory. 
+
+Since the elastic search index is brand new, we only need to use the `-create` flag when calling the script. 
+
+```
+./configure-search.ps1 -url [elastic-search-url] -dir "./directory index setup" -create
+```
 
 More information about the powershell script can be found via its dedicated [README]().
 
