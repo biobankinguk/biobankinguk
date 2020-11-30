@@ -209,11 +209,6 @@
                     </li>
 
                     <li role="presentation"
-                        class="@(Model == "Register Network Config" ? "active" : "true")">
-                        @Html.ActionLink("Register Network Config", "RegisterNetworkConfig")
-                    </li>
-
-                    <li role="presentation"
                         class="@(Model == App.Config[ConfigKey.SampleResourceName] + " Config" ? "active" : "true")">
                         @Html.ActionLink((string)App.Config[ConfigKey.SampleResourceName] + " Config", "SampleResourceConfig")
                     </li>

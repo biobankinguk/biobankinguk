@@ -4232,7 +4232,7 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
-        #region Register Biobank Config
+        #region Register Biobank and Network Pages Config
         public async Task<ActionResult> RegisterBiobankConfig()
         {
             return View(new RegisterConfigModel
@@ -4261,27 +4261,6 @@ namespace Biobanks.Web.Controllers
         }
         #endregion
 
-        #region Register Network Config
-        public ActionResult RegisterNetworkConfig() => View();
-
-        [HttpPost]
-        public async Task<ActionResult> SaveRegisterNetworkConfig(string description)
-        {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
-                new List<Config>
-                {
-                    new Config { Key = ConfigKey.RegisterNetworkDescription, Value = description },
-                }
-            );
-
-            // Invalidate current config (Refreshed in SiteConfigAttribute filter)
-            HttpContext.Application["Config"] = null;
-
-            SetTemporaryFeedbackMessage("Register Network Configuration saved successfully.", FeedbackMessageType.Success);
-
-            return Redirect("RegisterNetworkConfig");
-        }
-        #endregion
 
         #region Site Config
         public async Task<ActionResult> SiteConfig()
