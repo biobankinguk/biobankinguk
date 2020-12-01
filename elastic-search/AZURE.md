@@ -54,6 +54,8 @@ The virtual machine should already be connected to a virtual network at the time
 
 The App Service needs to be connected to the same Virtual Network as the Elastic Search instance in order to connect to it. For an App Service, this is known as `V-Net Integration` which can be found under the Networking menu for the App Service in the Azure Portal.
 
+**Note:** *Your App Service plan must be a Standard, Premium or Premium V2 plan to be able to use V-Net Integration. If you are not using one of these App Service plans, this guide is not for you. Instead, you will have to secure your elastic search instance via its [own authentication scheme](https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html)*
+
 However, an App Service cannot be added to the default subnet of a virtual network. Hence, a secondary subnet must be created. A new subnet can be created under the virtual network resource.
 
 [🔗 Microsoft Docs: Add, change, or delete a virtual network subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet#add-a-subnet)
