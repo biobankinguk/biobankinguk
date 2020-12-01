@@ -7,6 +7,7 @@ namespace Biobanks.Web.Models.ADAC
 {
     public class RegisterConfigModel
     {
+        public string BiobankTitle { get; set; }
         public string BiobankDescription { get; set; }
         public string NetworkDescription { get; set; }
     }

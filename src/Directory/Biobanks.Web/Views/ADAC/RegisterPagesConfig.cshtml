@@ -8,8 +8,14 @@
 
 @Html.Partial("_ADACTabs", (string)ViewBag.Title)
 
+<style>
+   .networkTitle {
+      padding-top: 25px;
+    }
+</style>
+
 <h3>
-	Register @App.Config[ConfigKey.SampleResourceName] and Network Configuration
+	Register @App.Config[ConfigKey.SampleResourceName] Configuration
 
 	<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
 </h3>
@@ -28,14 +34,18 @@
 
                     <!-- Biobank Description -->
                     <div class="form-group">
-                        <label class="col-md-2 control-label">@App.Config[ConfigKey.SampleResourceName] Title</label>
+                        <label class="col-md-2 control-label">@App.Config[ConfigKey.SampleResourceName] Description</label>
                         <div class="col-md-10">
                             <input type="text" id="BiobankDescription" name="BiobankDescription" class="form-control" value="@Model.BiobankDescription">
                         </div>
                     </div>
+                    <h3 class="networkTitle">
+                        Register Network Configuration
+                    </h3>
+
                     <!-- Network Description -->
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Network Title</label>
+                        <label class="col-md-2 control-label">Network Description</label>
                         <div class="col-md-10">
                             <input type="text" id="NetworkDescription" name="NetworkDescription" class="form-control" value="@Model.NetworkDescription">
                         </div>
@@ -45,4 +55,5 @@
 		</form>
 	</div>
 </div>
+
 
