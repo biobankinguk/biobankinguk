@@ -32,6 +32,13 @@
 
                     <a class="icon-button"></a>
 
+                    <!-- Biobank Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Register @App.Config[ConfigKey.SampleResourceName] Page title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="BiobankTitle" name="BiobankTitle" class="form-control" value="@Model.BiobankTitle">
+                        </div>
+                    </div>
                     <!-- Biobank Description -->
                     <div class="form-group">
                         <label class="col-md-2 control-label">@App.Config[ConfigKey.SampleResourceName] Description</label>
@@ -43,6 +50,13 @@
                         Register Network Configuration
                     </h3>
 
+                    <!-- Network Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Register Network Page title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="NetworkTitle" name="NetworkTitle" class="form-control" value="@Model.NetworkTitle">
+                        </div>
+                    </div>
                     <!-- Network Description -->
                     <div class="form-group">
                         <label class="col-md-2 control-label">Network Description</label>

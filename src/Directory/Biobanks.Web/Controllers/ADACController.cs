@@ -4237,7 +4237,9 @@ namespace Biobanks.Web.Controllers
         {
             return View(new RegisterConfigModel
             {
+                BiobankTitle = Config.Get(ConfigKey.RegisterBiobankTitle, ""),
                 BiobankDescription = Config.Get(ConfigKey.RegisterBiobankDescription, ""),
+                NetworkTitle = Config.Get(ConfigKey.RegisterNetworkTitle, ""),
                 NetworkDescription = Config.Get(ConfigKey.RegisterNetworkDescription, ""),
             });
         }
@@ -4249,7 +4251,9 @@ namespace Biobanks.Web.Controllers
             await _biobankWriteService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
+                    new Config { Key = ConfigKey.RegisterBiobankTitle, Value = registerConfigModel.BiobankTitle ?? ""},
                     new Config { Key = ConfigKey.RegisterBiobankDescription, Value = registerConfigModel.BiobankDescription ?? "" },
+                    new Config { Key = ConfigKey.RegisterNetworkTitle, Value = registerConfigModel.NetworkTitle ?? ""},
                     new Config { Key = ConfigKey.RegisterNetworkDescription, Value = registerConfigModel.NetworkDescription ?? "" },
                 }
             );

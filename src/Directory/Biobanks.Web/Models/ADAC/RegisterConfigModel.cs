@@ -9,6 +9,7 @@ namespace Biobanks.Web.Models.ADAC
     {
         public string BiobankTitle { get; set; }
         public string BiobankDescription { get; set; }
+        public string NetworkTitle { get; set; }
         public string NetworkDescription { get; set; }
     }
 }
