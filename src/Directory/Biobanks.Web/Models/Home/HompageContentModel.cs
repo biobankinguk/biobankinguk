@@ -9,6 +9,10 @@ namespace Biobanks.Web.Models.Home
 
         public string SearchTitle { get; set; }
 
+        public string RequireSamplesCollected { get; set; }
+
+        public string AccessExistingSamples { get; set; }
+
         public string NetworkRegistration { get; set; }
 
         public string ResourceRegistration { get; set; }
