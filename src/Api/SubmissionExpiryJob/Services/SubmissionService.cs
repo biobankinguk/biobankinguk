@@ -22,13 +22,19 @@ namespace Biobanks.SubmissionExpiryJob.Services
         }
 
         public async Task<IEnumerable<int>> GetOrganisationsWithExpiringSubmissions()
-        => await _db.Submissions.GroupBy(s => s.BiobankId).Select(grp => new
-            {
-                biobankid = grp.Key,
-                lastUpdatedSubmission = grp.OrderByDescending(x => x.StatusChangeTimestamp).FirstOrDefault(lastUpdate =>
-                    DateTime.Now
-                        .Subtract(TimeSpan.FromDays(_settings.ExpiryDays)) > lastUpdate.StatusChangeTimestamp)
-            }).Select(s => s.biobankid).ToListAsync();
+        {
+            return await _db.Submissions
+                .GroupBy(s => s.BiobankId)
+                .Select(grp => new
+                {
+                    biobankid = grp.Key,
+                    lastUpdatedSubmission = grp.OrderByDescending(x => x.StatusChangeTimestamp)
+                        .FirstOrDefault(lastUpdate =>
+                            DateTime.Now.Subtract(TimeSpan.FromDays(_settings.ExpiryDays)) > lastUpdate.StatusChangeTimestamp)
+                })
+                .Select(s => s.biobankid)
+                .ToListAsync();
+        }
 
         public async Task ExpireSubmissions(int organisationId)
         {
