@@ -47,15 +47,14 @@ namespace Analytics.Services
             _config = configuration;
             _viewId = _config.GetValue<string>("analytics-viewid", "");
             _startDate = _config.GetValue<string>("start-date", "2016-01-01");
-            var apikey = _config.GetValue<string>("analytics-apikey", "{}");
 
-            _credentials = GoogleCredential.FromJson(apikey)
+            _credentials = GoogleCredential.FromJson(_config.GetValue<string>("analytics-apikey", "{}"))
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
 
             _analytics = new AnalyticsReportingService(
                 new BaseClientService.Initializer
                 {
-                    HttpClientInitializer = this._credentials,
+                    HttpClientInitializer = _credentials,
                     ApplicationName = "Google Analytics API v4 Biobanks"
                 });
             _biobankWebService = biobankWebService;
