@@ -63,12 +63,6 @@ namespace Biobanks.Web.Controllers
             // Build up the rest of the model from the search results.
             _mapper.Map(searchResults, model);
 
-            //if search with no restrictions then store full list of facets for use on results page
-            if (selectedFacets == null)
-            {
-                HttpContext.Session.Add("restrictionFacets", model.Facets);
-            }
-
             //Handle no results
             if (!model.Biobanks.Any())
                 return await NoResults(new NoResultsModel

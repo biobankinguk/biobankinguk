@@ -95,7 +95,8 @@ namespace Directory.Services.Extensions
                     sampleSet.AgeRange.Description,
                     sampleSet.Sex.Description,
                     sampleSet.MaterialDetails),
-                //Country = sampleSet.Collection.Organisation.Country.Name
+                Country = sampleSet.Collection.Organisation.Country.Name,
+                County = sampleSet.Collection.Organisation.County?.Name ?? "Not Provided"
             };
         }
 

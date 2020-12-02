@@ -454,12 +454,14 @@
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
+    <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
     <Compile Include="Models\Header\HeaderModel.cs" />
     <Compile Include="Models\Header\HeaderItemModel.cs" />
+    <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
     <Content Include="Scripts\ADAC\adac-sample-resource-config.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -666,8 +668,7 @@
     <Content Include="Views\ADAC\AssociatedDataTypeGroups.cshtml" />
     <Content Include="Views\ADAC\Analytics.cshtml" />
     <Content Include="Views\ADAC\SampleResourceConfig.cshtml" />
-    <Content Include="Views\ADAC\RegisterBiobankConfig.cshtml" />
-    <Content Include="Views\ADAC\RegisterNetworkConfig.cshtml" />
+    <Content Include="Views\ADAC\RegisterPagesConfig.cshtml" />
     <Content Include="Views\ADAC\TermpageConfig.cshtml" />
     <Content Include="Views\ADAC\TermpageConfigPreview.cshtml" />
     <Content Include="Views\Header\_NavItem.cshtml" />
@@ -828,6 +829,9 @@
     <Content Include="Views\Shared\_SuspendedWarning.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\AddFunderModel.cshtml" />
     <Content Include="Views\Home\Privacy.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
+    <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

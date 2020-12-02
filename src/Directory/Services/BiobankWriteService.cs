@@ -610,7 +610,7 @@ namespace Directory.Services
             await _networkRegisterRequestRepository.SaveChangesAsync();
         }
 
-        public async Task<bool> AddBiobankToNetworkAsync(int biobankId, int networkId, string biobankExternalID)
+        public async Task<bool> AddBiobankToNetworkAsync(int biobankId, int networkId, string biobankExternalID, bool approve)
         {
             var bb = await _organisationRepository.GetByIdAsync(biobankId);
 
@@ -622,6 +622,10 @@ namespace Directory.Services
                 OrganisationId = biobankId,
                 ExternalID = biobankExternalID
             };
+            if (approve)
+            {
+                no.ApprovedDate = DateTime.Now;
+            }
 
             try
             {

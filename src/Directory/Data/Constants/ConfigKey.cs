@@ -13,6 +13,7 @@ namespace Directory.Data.Constants
         public const string DisplayLiveChat = "site.display.livechat";
         public const string DisplayAnalytics = "site.display.analytics";
         public const string DisplayPublications = "site.display.publications";
+        public const string DisplayAboutPage = "site.display.aboutpage";
 
         public const string FundersFreeText = "site.display.funders.freetext";
 
@@ -25,10 +26,15 @@ namespace Directory.Data.Constants
         public const string HomepageSearchTitle = "site.homepage.searchtitle";
         public const string HomepageResourceRegistration = "site.homepage.resourceregistration";
         public const string HomepageNetworkRegistration = "site.homepage.networkregistration";
+        public const string HomepageSearchRadioSamplesCollected = "site.homepage.searchradiosamplescollected";
+        public const string HomepageSearchRadioAccessSamples = "site.homepage.searchradioaccesssamples";
 
         // Editable Register
+        public const string RegisterBiobankTitle = "site.register.biobank.title";
         public const string RegisterBiobankDescription = "site.register.biobank.description";
+        public const string RegisterNetworkTitle = "site.register.network.title";
         public const string RegisterNetworkDescription = "site.register.network.description";
+
         //Editable Termspage
         public const string TermpageInfo = "site.termpage.pageinfo";
 
@@ -44,6 +50,9 @@ namespace Directory.Data.Constants
         public const string EthicsFieldName = "site.sampleresource.ethics.name";
         public const string EthicsFieldIsCheckbox = "site.sampleresource.ethics.type";
         public const string SampleResourceName = "site.sampleresource.name";
+
+        // Editable About Page
+        public const string AboutBodyText = "site.aboutpage.bodytext";
 
     }
 }

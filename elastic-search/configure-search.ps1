@@ -1,6 +1,6 @@
 ### Configuration ###
 $base = "http://localhost:9200"
-$index_folder = "./biobanks.directory/elastic-search/directory index setup"
+$index_folder = "./directory index setup"
 
 ## Functions
 function CreateSearchIndex { Param ([string]$index, [string]$payload)

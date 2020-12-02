@@ -39,7 +39,24 @@ namespace Biobanks.Web.Controllers
                 SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
+                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
             });
+        }
+
+        public async Task<ActionResult> About()
+        {
+            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
+            {
+                return View(new AboutModel
+                {
+                    BodyText = Config.Get(ConfigKey.AboutBodyText, "")
+                });
+            }
+            else
+            {
+                return HttpNotFound();
+            }
         }
 
         public ActionResult Cookies() => View();

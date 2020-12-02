@@ -606,6 +606,39 @@ namespace Biobanks.Web.Controllers
             var networkId = SessionHelper.GetNetworkId(Session);
             var network = await _biobankReadService.GetNetworkByIdAsync(networkId);
 
+            //Get all emails from admins and store in list
+            var networkAdmins = await GetAdminsAsync(networkId, false);
+            var networkEmails = new List<string>();
+            foreach (var admin in networkAdmins)
+            {
+                if (admin.EmailConfirmed == true)
+                {
+                    networkEmails.Add(admin.UserEmail);
+                }
+
+            }
+            //Add network contact email
+            networkEmails.Add(network.Email);
+            var biobankAdmins =
+                (await _biobankReadService.ListBiobankAdminsAsync(biobank.OrganisationId))
+                    .Select(bbAdmin => new RegisterEntityAdminModel
+                    {
+                        UserId = bbAdmin.Id,
+                        UserFullName = bbAdmin.Name,
+                        UserEmail = bbAdmin.Email,
+                        EmailConfirmed = bbAdmin.EmailConfirmed
+                    }).ToList();
+            var biobankEmails = new List<string>();
+            foreach (var admin in biobankAdmins)
+            {
+                if (admin.EmailConfirmed == true)
+                {
+                    biobankEmails.Add(admin.UserEmail);
+                }
+            }
+            biobankEmails.Add(biobank.ContactEmail);
+
+
             Config trustedBiobanks = await _biobankReadService.GetSiteConfig(ConfigKey.TrustBiobanks);
 
             if (biobank == null)
@@ -622,14 +655,27 @@ namespace Biobanks.Web.Controllers
 
             try
             {
-                var result =
+                var result = false;
+                var approved = false;
+                if (trustedBiobanks.Value == "true" && networkEmails.Any(biobankEmails.Contains))
+                {
+                    result =
                     await
                         _biobankWriteService.AddBiobankToNetworkAsync(biobank.OrganisationId,
-                            SessionHelper.GetNetworkId(Session), model.BiobankExternalID);
+                            SessionHelper.GetNetworkId(Session), model.BiobankExternalID, true);
+                    approved = true;
+                }
+                else
+                {
+                    result =
+                    await
+                        _biobankWriteService.AddBiobankToNetworkAsync(biobank.OrganisationId,
+                    SessionHelper.GetNetworkId(Session), model.BiobankExternalID, false);
+                }
 
                 if (result)
                 {
-                    if (trustedBiobanks.Value == "true")
+                    if (trustedBiobanks.Value == "true" && !approved)
                     {
                         //Send notification email to biobank
                         await _emailService.SendNewBiobankRegistrationNotification(
