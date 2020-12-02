@@ -7,6 +7,7 @@ using Biobanks.Common.Types;
 using Biobanks.SubmissionExpiryJob.Services.Contracts;
 using Biobanks.SubmissionExpiryJob.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.SubmissionExpiryJob.Services
 {
@@ -15,10 +16,10 @@ namespace Biobanks.SubmissionExpiryJob.Services
         private readonly SubmissionsDbContext _db;
         private readonly SettingsModel _settings;
 
-        public SubmissionService(SubmissionsDbContext db, SettingsModel settings)
+        public SubmissionService(SubmissionsDbContext db, IOptions<SettingsModel> settings)
         {
             _db = db;
-            _settings = settings;
+            _settings = settings.Value;
         }
 
         public async Task<IEnumerable<int>> GetOrganisationsWithExpiringSubmissions()
