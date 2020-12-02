@@ -10,53 +10,56 @@ using Google.Apis.Services;
 using Google.Apis.AnalyticsReporting.v4;
 using Google.Apis.AnalyticsReporting.v4.Data;
 
+using Analytics.Data;
 using Analytics.Services.Dto;
 using Analytics.Services.Contracts;
 using Analytics.Data.Entities;
+using Analytics.Services.Helpers;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
-using Analytics.Services.Helpers;
-using System.Security.Cryptography.X509Certificates;
-using Analytics.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Analytics.Services
 {
     // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
     public class GoogleAnalyticsReadService : IHostedService, IGoogleAnalyticsReadService
     {
-        private readonly string VIEW_ID;
-        private readonly string START_DATE; //default: "2016-01-01"; //specified in DATE_FORMAT
-        private readonly string DATE_FORMAT = "yyyy-MM-dd";
+        private readonly string _viewId;
+        private readonly string _startDate; //default: "2016-01-01"; //specified in _dateFormat
+        private readonly string _dateFormat = "yyyy-MM-dd";
+        private readonly IConfiguration _config;
 
-        private readonly GoogleCredential credentials;
-        private readonly AnalyticsReportingService analytics;
+        private AnalyticsDbContext _ctx;
+        private readonly GoogleCredential _credentials;
+        private readonly AnalyticsReportingService _analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
         private readonly IBiobankWebService _biobankWebService;
-        private AnalyticsDbContext _ctx;
-        
+
         public GoogleAnalyticsReadService(AnalyticsDbContext ctx,
                                           IBiobankWebService biobankWebService,
-                                          ILogger<GoogleAnalyticsReadService> logger)
+                                          ILogger<GoogleAnalyticsReadService> logger,
+                                          IConfiguration configuration)
 
         {
             _ctx = ctx;
-            var apikey   = Environment.GetEnvironmentVariable("analytics-apikey");
-            this.VIEW_ID = Environment.GetEnvironmentVariable("analytics-viewid");
-            this.START_DATE = Environment.GetEnvironmentVariable("start-date");
+            _config = configuration;
+            _viewId = _config.GetValue<string>("analytics-viewid", "");
+            _startDate = _config.GetValue<string>("start-date", "2016-01-01");
+            var apikey = _config.GetValue<string>("analytics-apikey", "{}");
 
-            this.credentials = GoogleCredential.FromJson(apikey)
+            _credentials = GoogleCredential.FromJson(apikey)
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
 
-            this.analytics = new AnalyticsReportingService(
+            _analytics = new AnalyticsReportingService(
                 new BaseClientService.Initializer
                 {
-                    HttpClientInitializer = this.credentials,
+                    HttpClientInitializer = this._credentials,
                     ApplicationName = "Google Analytics API v4 Biobanks"
                 });
-            this._biobankWebService = biobankWebService;
-            this._logger = logger;
+            _biobankWebService = biobankWebService;
+            _logger = logger;
         }
 
         #region GoogleAnalytics API - Data Download
@@ -137,7 +140,7 @@ namespace Analytics.Services
         { 
             var request = new ReportRequest
             {
-                ViewId = VIEW_ID,
+                ViewId = _viewId,
                 DateRanges = dateRanges,
                 Dimensions = dimensions,
                 Metrics = metrics,
@@ -223,7 +226,7 @@ namespace Analytics.Services
 
         public GetReportsResponse GetReports(IList<ReportRequest> reportRequests)
         {
-            var request = analytics.Reports.BatchGet(new GetReportsRequest
+            var request = _analytics.Reports.BatchGet(new GetReportsRequest
             {
                 ReportRequests = reportRequests
             });
@@ -382,7 +385,7 @@ namespace Analytics.Services
             //get start date by subtracting report period (specified in quarters) from end date
             var startDate = endDate.AddMonths(-reportPeriod * monthsPerQuarter);
 
-            return new DateRange { StartDate = startDate.ToString(DATE_FORMAT), EndDate = endDate.ToString(DATE_FORMAT) };
+            return new DateRange { StartDate = startDate.ToString(_dateFormat), EndDate = endDate.ToString(_dateFormat) };
         }
 
 
@@ -795,14 +798,14 @@ namespace Analytics.Services
             // If no previous analtytics record
             if (lastentry == DateTimeOffset.MinValue)
             {
-                var dateRange = new[] { new DateRange { StartDate = START_DATE, EndDate = DateTimeOffset.Now.ToString(DATE_FORMAT) } };
+                var dateRange = new[] { new DateRange { StartDate = _startDate, EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
                 await DownloadAllBiobankData(dateRange);
                 await DownloadDirectoryData(dateRange);
             }
             // If last entry is in the past
             else if (lastentry > DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
             {
-                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(DATE_FORMAT), EndDate = DateTimeOffset.Now.ToString(DATE_FORMAT) } };
+                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(_dateFormat), EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
                 await DownloadAllBiobankData(dateRange);
                 await DownloadDirectoryData(dateRange);
             }
