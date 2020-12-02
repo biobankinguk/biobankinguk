@@ -1,4 +1,8 @@
+using Biobanks.Common.Data;
+using Biobanks.SubmissionExpiryJob.Services;
+using Biobanks.SubmissionExpiryJob.Services.Contracts;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,23 +19,14 @@ namespace Biobanks.SubmissionExpiryJob
             _configuration = builder.Services.BuildServiceProvider()
                 .GetService<IConfiguration>();
 
-            // Populate connection string with credentials
-            //var sqlConnection = _configuration.GetConnectionString("sqldb-connection");
-            //var sqlUsername = _configuration.GetValue("sqldb-username", "");
-            //var sqlPassword = _configuration.GetValue("sqldb-password", "");
+            var sqlConnection = _configuration.GetConnectionString("sqldb-connection");
 
-            //sqlConnection = String.Format(sqlConnection, sqlUsername, sqlPassword);
+            // Register DbContext
+            builder.Services.AddDbContext<SubmissionsDbContext>(options =>
+               options.UseSqlServer(sqlConnection));
 
-            //// Register DbContext
-            //builder.Services.AddDbContext<PublicationDbContext>(options =>
-            //   options.UseSqlServer(sqlConnection));
-
-            //// DI
-            //builder.Services.AddHttpClient();
-            //builder.Services.AddScoped<IEpmcService, EpmcWebService>();
-            //builder.Services.AddScoped<IPublicationService, PublicationService>();
-            //builder.Services.AddScoped<IBiobankReadService, BiobankReadService>();
-            //builder.Services.AddTransient<FetchPublicationsService>();
+            // DI
+            builder.Services.AddScoped<ISubmissionService, SubmissionService>();
         }
     }
 }
