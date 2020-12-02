@@ -20,13 +20,7 @@ namespace Analytics.AnalyticsAzureFunctions
             _configuration = builder.Services.BuildServiceProvider()
                 .GetService<IConfiguration>();
 
-            // Populate connection string with credentials
             var sqlConnection = _configuration.GetConnectionString("sqldb-connection");
-            var sqlUsername = _configuration.GetValue("sqldb-username", "");
-            var sqlPassword = _configuration.GetValue("sqldb-password", "");
-
-            sqlConnection = String.Format(sqlConnection, sqlUsername, sqlPassword);
-
             builder.Services.AddDbContext<AnalyticsDbContext>(options =>
                options.UseSqlServer(sqlConnection, options => options.EnableRetryOnFailure()));
 
