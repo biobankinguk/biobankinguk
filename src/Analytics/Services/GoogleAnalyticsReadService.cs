@@ -12,14 +12,14 @@ using Google.Apis.AnalyticsReporting.v4.Data;
 
 using Analytics.Services.Dto;
 using Analytics.Services.Contracts;
-using Analytics.Data.Repositories;
 using Analytics.Data.Entities;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using Analytics.Services.Helpers;
 using System.Security.Cryptography.X509Certificates;
+using Analytics.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Analytics.Services
 {
@@ -34,18 +34,14 @@ namespace Analytics.Services
         private readonly AnalyticsReportingService analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
         private readonly IBiobankWebService _biobankWebService;
-        private readonly IGenericEFRepository<OrganisationAnalytic> _organisationAnalyticRepository;
-        private readonly IGenericEFRepository<DirectoryAnalyticEvent> _directoryAnalyticEventRepository;
-        private readonly IGenericEFRepository<DirectoryAnalyticMetric> _directoryAnalyticMetricRepository;
-
-        public GoogleAnalyticsReadService(IGenericEFRepository<OrganisationAnalytic> organisationAnalyticRepository,
-                                          IGenericEFRepository<DirectoryAnalyticEvent> directoryAnalyticEventRepository,
-                                          IGenericEFRepository<DirectoryAnalyticMetric> directoryAnalyticMetricRepository,
+        private AnalyticsDbContext _ctx;
+        
+        public GoogleAnalyticsReadService(AnalyticsDbContext ctx,
                                           IBiobankWebService biobankWebService,
-                                          ILogger<GoogleAnalyticsReadService> logger,
-                                          IConfiguration configuration)
+                                          ILogger<GoogleAnalyticsReadService> logger)
 
         {
+            _ctx = ctx;
             var apikey   = Environment.GetEnvironmentVariable("analytics-apikey");
             this.VIEW_ID = Environment.GetEnvironmentVariable("analytics-viewid");
             this.START_DATE = Environment.GetEnvironmentVariable("start-date");
@@ -59,9 +55,6 @@ namespace Analytics.Services
                     HttpClientInitializer = this.credentials,
                     ApplicationName = "Google Analytics API v4 Biobanks"
                 });
-            this._organisationAnalyticRepository = organisationAnalyticRepository;
-            this._directoryAnalyticEventRepository = directoryAnalyticEventRepository;
-            this._directoryAnalyticMetricRepository = directoryAnalyticMetricRepository;
             this._biobankWebService = biobankWebService;
             this._logger = logger;
         }
@@ -141,7 +134,7 @@ namespace Analytics.Services
 
         public IList<ReportRequest> ConstructRequest(IList<Metric> metrics, IList<Dimension> dimensions, IList<Segment> segments, IList<DateRange> dateRanges,
                                               IList<DimensionFilterClause> dimensionfilterclauses = null, int pagesize = 100000)
-        {
+        { 
             var request = new ReportRequest
             {
                 ViewId = VIEW_ID,
@@ -240,13 +233,13 @@ namespace Analytics.Services
 
         //or use function overloading or dynamic?
         public async Task<DateTimeOffset> GetLatestBiobankEntry()
-            => (await _organisationAnalyticRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await  _ctx.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestEventEntry()
-            => (await _directoryAnalyticEventRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _ctx.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestMetricEntry()
-            => (await _directoryAnalyticMetricRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _ctx.DirectoryAnalyticMetrics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
 
         public DateTimeOffset ConvertToDateTime(string inputDateTime, string format)
@@ -272,7 +265,7 @@ namespace Analytics.Services
 
             foreach (ReportRow bbd in biobankData)
             {
-                _organisationAnalyticRepository.Insert(new OrganisationAnalytic
+                 _ctx.OrganisationAnalytics.Add(new OrganisationAnalytic
                 {
                     Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                     PagePath = bbd.Dimensions[1],
@@ -285,7 +278,7 @@ namespace Analytics.Services
                     OrganisationExternalId = biobankId
                 });
             }
-            await _organisationAnalyticRepository.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
         }
 
         public async Task DownloadAllBiobankData(IList<DateRange> dateRanges)
@@ -306,7 +299,7 @@ namespace Analytics.Services
 
                 foreach (ReportRow bbd in biobankData)
                 {
-                    _organisationAnalyticRepository.Insert(new OrganisationAnalytic
+                     _ctx.OrganisationAnalytics.Add(new OrganisationAnalytic
                     {
                         Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                         PagePath = bbd.Dimensions[1],
@@ -319,7 +312,7 @@ namespace Analytics.Services
                         OrganisationExternalId = biobankId
                     });
                 }
-                await _organisationAnalyticRepository.SaveChangesAsync();
+                await  _ctx.SaveChangesAsync();
                 _logger.LogInformation($"Fetched analytics for data for {biobankId}");
             }
         }
@@ -341,7 +334,7 @@ namespace Analytics.Services
 
             foreach (ReportRow events in eventData)
             {
-                _directoryAnalyticEventRepository.Insert(new DirectoryAnalyticEvent
+                _ctx.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
                 {
                     Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
                     EventCategory = events.Dimensions[1],
@@ -354,11 +347,11 @@ namespace Analytics.Services
                     Counts = int.Parse(events.Metrics[0].Values[0]),
                 });
             }
-            await _directoryAnalyticEventRepository.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
 
             foreach (ReportRow metric in metricData)
             {
-                _directoryAnalyticMetricRepository.Insert(new DirectoryAnalyticMetric
+                _ctx.DirectoryAnalyticMetrics.Add(new DirectoryAnalyticMetric
                 {
                     Date = ConvertToDateTime(metric.Dimensions[0], "yyyyMMdd"),
                     PagePath = metric.Dimensions[1],
@@ -373,7 +366,7 @@ namespace Analytics.Services
                     AvgSessionDuration = Convert.ToInt32(double.Parse(metric.Metrics[0].Values[3])),
                 });
             }
-            await _directoryAnalyticMetricRepository.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
             _logger.LogInformation($"Fetched event and metric data for analytics");
         }
 
@@ -394,17 +387,16 @@ namespace Analytics.Services
 
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData()
-            => (await _organisationAnalyticRepository.ListAsync());
+            => await _ctx.OrganisationAnalytics.ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData(DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _organisationAnalyticRepository.ListAsync(
-                false,
+            return await _ctx.OrganisationAnalytics.Where(
                 x => x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<DirectoryAnalyticEvent>> GetDirectoryEventData(DateRange dateRange)
@@ -412,10 +404,9 @@ namespace Analytics.Services
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _directoryAnalyticEventRepository.ListAsync(
-                false,
+            return await _ctx.DirectoryAnalyticEvents.Where(
                 x => x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<DirectoryAnalyticMetric>> GetDirectoryMetricData(DateRange dateRange)
@@ -423,25 +414,23 @@ namespace Analytics.Services
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _directoryAnalyticMetricRepository.ListAsync(
-                false,
+            return await _ctx.DirectoryAnalyticMetrics.Where(
                 x => x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId)
-            => (await _organisationAnalyticRepository.ListAsync(false, x => x.OrganisationExternalId == biobankId));
+            => await _ctx.OrganisationAnalytics.Where( x => x.OrganisationExternalId == biobankId).ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId, DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _organisationAnalyticRepository.ListAsync(
-                false,
+            return await _ctx.OrganisationAnalytics.Where(
                 x => x.OrganisationExternalId == biobankId &&
                 x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public IEnumerable<OrganisationAnalytic> FilterByPagePath(IEnumerable<OrganisationAnalytic> biobankData, string path)

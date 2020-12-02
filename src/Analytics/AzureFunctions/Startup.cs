@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Analytics.Services.Contracts;
 using Analytics.Services;
 using Analytics.Data;
-using Analytics.Data.Repositories;
 using Analytics.Data.Entities;
 using System;
 
@@ -36,9 +35,6 @@ namespace Analytics.AnalyticsAzureFunctions
             builder.Services.AddScoped<IAnalyticsReportGenerator, AnalyticsReportGenerator>();
             builder.Services.AddTransient<IBiobankWebService, BiobankWebService>();
             builder.Services.AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>();
-            builder.Services.AddTransient<IGenericEFRepository<OrganisationAnalytic>, GenericEFRepository<OrganisationAnalytic>>();
-            builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticEvent>, GenericEFRepository<DirectoryAnalyticEvent>>();
-            builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticMetric>, GenericEFRepository<DirectoryAnalyticMetric>>();
         }
 
     }
