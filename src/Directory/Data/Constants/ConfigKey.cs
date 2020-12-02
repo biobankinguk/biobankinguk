@@ -30,8 +30,11 @@ namespace Directory.Data.Constants
         public const string HomepageSearchRadioAccessSamples = "site.homepage.searchradioaccesssamples";
 
         // Editable Register
+        public const string RegisterBiobankTitle = "site.register.biobank.title";
         public const string RegisterBiobankDescription = "site.register.biobank.description";
+        public const string RegisterNetworkTitle = "site.register.network.title";
         public const string RegisterNetworkDescription = "site.register.network.description";
+
         //Editable Termspage
         public const string TermpageInfo = "site.termpage.pageinfo";
 
