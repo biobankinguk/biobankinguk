@@ -17,8 +17,15 @@ namespace Biobanks.SubmissionExpiryJob
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            _configuration = builder.Services.BuildServiceProvider()
-                .GetService<IConfiguration>();
+            _configuration = builder.Services.BuildServiceProvider().GetService<IConfiguration>();
+
+            // Application Insights Telemtry
+            var appInsightsKey = _configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
+
+            if (!string.IsNullOrEmpty(appInsightsKey))
+            {
+                builder.Services.AddApplicationInsightsTelemetry(appInsightsKey);
+            }
 
             // Settings From Configuration
             builder.Services.Configure<SettingsModel>(options =>
@@ -28,12 +35,12 @@ namespace Biobanks.SubmissionExpiryJob
 
             // Register DbContext
             builder.Services.AddDbContext<SubmissionsDbContext>(options =>
-                    options.UseSqlServer(
-                        _configuration.GetConnectionString("sqldb-connection")
-                    )
-                );
+                options.UseSqlServer(
+                    _configuration.GetConnectionString("DefaultConnection")
+                )
+            );
 
-            // DI
+            // Dependency Injection
             builder.Services.AddScoped<ISubmissionService, SubmissionService>();
         }
     }
