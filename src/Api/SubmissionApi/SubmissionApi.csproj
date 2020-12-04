@@ -7,6 +7,7 @@
     <RootNamespace>Biobanks.SubmissionApi</RootNamespace>
     <AssemblyName>SubmissionApi</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
+	 <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
   <ItemGroup>
