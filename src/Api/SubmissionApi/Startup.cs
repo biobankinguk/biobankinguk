@@ -51,7 +51,7 @@ namespace Biobanks.SubmissionApi
         /// <param name="services">Collection of services to be configured.</param>
         /// <returns></returns>
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -102,12 +102,6 @@ namespace Biobanks.SubmissionApi
 
             services.AddAutoMapper();
 
-            var autofac = new ContainerBuilder();
-
-            autofac.Register(
-                    (c, p) => CloudStorageAccount.Parse(Configuration.GetConnectionString("AzureQueueConnectionString")))
-                .AsSelf();
-
             // Synchronous I/O is disabled by default in .NET Core 3
             services.Configure<IISServerOptions>(opts =>
             {
@@ -136,8 +130,16 @@ namespace Biobanks.SubmissionApi
             services.AddTransient<IStorageTemperatureService, StorageTemperatureService>();
             services.AddTransient<ITreatmentLocationService, TreatmentLocationService>();
 
-            autofac.Populate(services); //load the basic services into autofac's container
-            return new AutofacServiceProvider(autofac.Build());
+            //autofac.Populate(services); //load the basic services into autofac's container
+            //return new AutofacServiceProvider(autofac.Build());
+            services.AddOptions();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(
+                    (c, p) => CloudStorageAccount.Parse(Configuration.GetConnectionString("AzureQueueConnectionString")))
+                .AsSelf();
         }
 
         /// <summary>
