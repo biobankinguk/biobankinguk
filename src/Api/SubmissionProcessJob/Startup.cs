@@ -74,7 +74,7 @@ namespace Biobanks.SubmissionProcessJob
             // Cloud Services
             builder.Services.AddTransient(s =>
                 CloudStorageAccount.Parse(
-                    _configuration.GetConnectionString("")
+                    _configuration.GetConnectionString("AzureQueueConnection")
                 )
             );
 

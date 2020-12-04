@@ -54,9 +54,8 @@ namespace Biobanks.SubmissionProcessJob
             _mapper = mapper;
         }
 
-
         [FunctionName("SubmissionProcessFunction")]
-        public async Task Run([QueueTrigger("myqueue-items")] CloudQueueMessage incomingMessage, ILogger log)
+        public async Task Run([QueueTrigger("operations")] CloudQueueMessage incomingMessage, ILogger log)
         {
             const string storageContainer = "submission-payload";
             var message = JsonConvert.DeserializeObject<OperationsQueueItem>(incomingMessage.AsString);
