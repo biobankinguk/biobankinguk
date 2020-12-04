@@ -58,11 +58,12 @@ namespace Biobanks.SubmissionApi
                 opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
 
-            services.AddMvc(opts =>
+            services.AddRazorPages();
+            services.AddControllersWithViews(opts =>
             {
                 opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
             })
-                .AddJsonOptions(opts =>
+                .AddNewtonsoftJson(opts =>
                     opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
 
             // JWT Auth
@@ -182,7 +183,10 @@ namespace Biobanks.SubmissionApi
 
             app.UseRouting();
 
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
 
             // Hangfire
             app.UseHangfireServer();
