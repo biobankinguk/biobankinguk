@@ -41,15 +41,16 @@ namespace Biobanks.SubmissionProcessJob
             //    {
             //        b.SetMinimumLevel(LogLevel.Debug);
             //        b.AddConsole();
-
-            //                    // If this key exists in any config, use it to enable App Insights
-            //                    var appInsightsKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
-            //        if (!string.IsNullOrEmpty(appInsightsKey))
-            //        {
-            //            b.AddApplicationInsights(o => o.InstrumentationKey = appInsightsKey);
-            //        }
             //    })
 
+            // Application Insights Telemtry
+            var appInsightsKey = _configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
+
+            if (!string.IsNullOrEmpty(appInsightsKey))
+            {
+                builder.Services.AddApplicationInsightsTelemetry(appInsightsKey);
+            }
+            
 
             // In-Memory Cache - Manually Called As Not Called By A Parent Service
             builder.Services.AddMemoryCache();
