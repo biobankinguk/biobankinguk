@@ -27,6 +27,10 @@ namespace Biobanks.SubmissionApi
             WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
                 .ConfigureServices(services => services.AddAutofac())
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .ConfigureKestrel((context, opts) =>
+                {
+                    opts.AllowSynchronousIO = true;
+                });
     }
 }

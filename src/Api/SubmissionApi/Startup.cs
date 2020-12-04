@@ -108,6 +108,12 @@ namespace Biobanks.SubmissionApi
                     (c, p) => CloudStorageAccount.Parse(Configuration.GetConnectionString("AzureQueueConnectionString")))
                 .AsSelf();
 
+            // Synchronous I/O is disabled by default in .NET Core 3
+            services.Configure<IISServerOptions>(opts =>
+            {
+                opts.AllowSynchronousIO = true;
+            });
+            
             services.AddTransient<ISubmissionService, SubmissionService>();
             services.AddTransient<IErrorService, ErrorService>();
             services.AddTransient<IBlobWriteService, AzureBlobWriteService>();
