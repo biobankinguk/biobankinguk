@@ -22,27 +22,6 @@ namespace Biobanks.SubmissionProcessJob
         {
             _configuration = builder.Services.BuildServiceProvider().GetService<IConfiguration>();
 
-            // TODO: Implement These Configuration Options
-            //var builder = new HostBuilder()
-            //    .UseEnvironment(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
-            //    .ConfigureWebJobs(b =>
-            //    {
-            //        b.AddAzureStorageCoreServices()
-            //            .AddAzureStorage(q => q.BatchSize = 1)
-            //            .AddServiceBus()
-            //            .AddEventHubs();
-            //    })
-            //    .ConfigureAppConfiguration(b =>
-            //    {
-            //                    // Adding command line as a configuration source
-            //                    b.AddCommandLine(args);
-            //    })
-            //    .ConfigureLogging((context, b) =>
-            //    {
-            //        b.SetMinimumLevel(LogLevel.Debug);
-            //        b.AddConsole();
-            //    })
-
             // Application Insights Telemtry
             var appInsightsKey = _configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
 
@@ -51,7 +30,6 @@ namespace Biobanks.SubmissionProcessJob
                 builder.Services.AddApplicationInsightsTelemetry(appInsightsKey);
             }
             
-
             // In-Memory Cache - Manually Called As Not Called By A Parent Service
             builder.Services.AddMemoryCache();
 
