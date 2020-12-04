@@ -187,11 +187,16 @@ namespace Biobanks.SubmissionApi
                 c.SupportedSubmitMethods(); // don't allow "try it out" as the token auth doesn't work
             });
 
+            app.UseRouting();
+
             app.UseAuthentication();
 
             app.UseAuthorization();
 
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             // Hangfire
             app.UseHangfireServer();
