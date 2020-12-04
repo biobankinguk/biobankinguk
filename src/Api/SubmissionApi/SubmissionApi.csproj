@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <DocumentationFile>swagger.xml</DocumentationFile>
     <VersionPrefix>3.0</VersionPrefix>
     <RootNamespace>Biobanks.SubmissionApi</RootNamespace>
