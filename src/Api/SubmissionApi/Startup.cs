@@ -65,7 +65,7 @@ namespace Biobanks.SubmissionApi
             })
                 .AddJsonOptions(opts =>
                     opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // JWT Auth
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
