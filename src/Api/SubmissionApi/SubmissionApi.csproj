@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
 	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <DocumentationFile>swagger.xml</DocumentationFile>
-    <VersionPrefix>2.1.2</VersionPrefix>
+    <VersionPrefix>2.2</VersionPrefix>
     <RootNamespace>Biobanks.SubmissionApi</RootNamespace>
     <AssemblyName>SubmissionApi</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
