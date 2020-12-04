@@ -59,10 +59,10 @@ namespace Biobanks.SubmissionApi
                 opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
 
-            services.AddRazorPages();
-            services.AddControllersWithViews(opts =>
+            services.AddMvc(opts =>
             {
                 opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
+                opts.EnableEndpointRouting = false;
             })
                 .AddNewtonsoftJson(opts =>
                     opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
@@ -113,6 +113,9 @@ namespace Biobanks.SubmissionApi
             {
                 opts.AllowSynchronousIO = true;
             });
+
+            // disable output fortmat buffering
+            services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true);
             
             services.AddTransient<ISubmissionService, SubmissionService>();
             services.AddTransient<IErrorService, ErrorService>();
@@ -185,15 +188,10 @@ namespace Biobanks.SubmissionApi
             });
 
             app.UseAuthentication();
-            
-            app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-            });
+            app.UseMvc();
 
             // Hangfire
             app.UseHangfireServer();
