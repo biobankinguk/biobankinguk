@@ -1,6 +1,7 @@
 ﻿using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Biobanks.SubmissionApi
 {
@@ -15,7 +16,7 @@ namespace Biobanks.SubmissionApi
         /// <param name="args">Command-line arguments - not currently used.</param>
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
         /// <summary>
@@ -23,14 +24,17 @@ namespace Biobanks.SubmissionApi
         /// </summary>
         /// <param name="args">Command-line arguments - not currently used.</param>
         /// <returns></returns>
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseApplicationInsights()
-                .ConfigureServices(services => services.AddAutofac())
-                .UseStartup<Startup>()
-                .ConfigureKestrel((context, opts) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    opts.AllowSynchronousIO = true;
+                    webBuilder.UseApplicationInsights();
+                    webBuilder.ConfigureServices(services => services.AddAutofac());
+                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel((context, opts) =>
+                    {
+                        opts.AllowSynchronousIO = true;
+                    });
                 });
     }
 }
