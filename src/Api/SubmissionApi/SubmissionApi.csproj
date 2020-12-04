@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <DocumentationFile>swagger.xml</DocumentationFile>
     <VersionPrefix>2.1.2</VersionPrefix>
     <RootNamespace>Biobanks.SubmissionApi</RootNamespace>
