@@ -15,7 +15,6 @@ using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -64,8 +63,7 @@ namespace Biobanks.SubmissionApi
                 opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
             })
                 .AddJsonOptions(opts =>
-                    opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                    opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
 
             // JWT Auth
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -136,7 +134,7 @@ namespace Biobanks.SubmissionApi
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // first migrate the database
             using (var serviceScope = app.ApplicationServices
@@ -179,6 +177,10 @@ namespace Biobanks.SubmissionApi
             });
 
             app.UseAuthentication();
+
+            app.UseAuthorization();
+
+            app.UseRouting();
 
             app.UseMvc();
 
