@@ -22,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
@@ -177,10 +178,21 @@ namespace Biobanks.SubmissionApi
             app.UseStatusCodePages();
 
             app.UseVersion();
-
+            /*
             app.UseSwagger(c =>
                 c.PreSerializeFilters.Add((swagger, request) =>
                     swagger.Host = request.Host.Value));
+            */
+
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                {
+                    swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } };
+                });
+            });
+
+
 
             app.UseSwaggerUI(c =>
             {
