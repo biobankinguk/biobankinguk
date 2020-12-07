@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityProvider", "Identit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubmissionJob", "SubmissionJob\SubmissionJob.csproj", "{3027943B-B5AC-46A0-8663-E677DE81C0AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubmissionProcessJob", "SubmissionProcessJob\SubmissionProcessJob.csproj", "{7C828BE5-E520-4725-B382-450D3B775FCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubmissionStagingJob", "SubmissionStagingJob\SubmissionStagingJob.csproj", "{7C828BE5-E520-4725-B382-450D3B775FCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
