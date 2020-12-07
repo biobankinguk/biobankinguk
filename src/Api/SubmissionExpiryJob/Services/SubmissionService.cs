@@ -50,7 +50,7 @@ namespace Biobanks.SubmissionExpiryJob.Services
             foreach (var submission in _db.Submissions.Where(s => s.BiobankId == organisationId))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.Status = await _db.Statuses.FirstOrDefaultAsync(s => s.Value == Statuses.Rejected);
+                submission.Status = await _db.Statuses.FirstOrDefaultAsync(s => s.Value == Statuses.Expired);
             }
 
             await _db.SaveChangesAsync();
