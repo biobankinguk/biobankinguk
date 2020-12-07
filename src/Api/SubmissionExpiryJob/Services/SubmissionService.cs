@@ -8,6 +8,7 @@ using Biobanks.SubmissionExpiryJob.Services.Contracts;
 using Biobanks.SubmissionExpiryJob.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Z.EntityFramework.Plus;
 
 namespace Biobanks.SubmissionExpiryJob.Services
 {
@@ -24,21 +25,28 @@ namespace Biobanks.SubmissionExpiryJob.Services
 
         public async Task<IEnumerable<int>> GetOrganisationsWithExpiringSubmissions()
         {
+            var expiry = DateTime.Now.Subtract(TimeSpan.FromDays(_settings.ExpiryDays));
+
             return await _db.Submissions
-                .GroupBy(s => s.BiobankId)
-                .Select(grp => new
-                {
-                    biobankid = grp.Key,
-                    lastUpdatedSubmission = grp.OrderByDescending(x => x.StatusChangeTimestamp)
-                        .FirstOrDefault(lastUpdate =>
-                            DateTime.Now.Subtract(TimeSpan.FromDays(_settings.ExpiryDays)) > lastUpdate.StatusChangeTimestamp)
-                })
-                .Select(s => s.biobankid)
-                .ToListAsync();
-        }
+                    .Where(s => s.StatusChangeTimestamp < expiry)
+                    .Select(s => s.BiobankId)
+                    .Distinct()
+                    .ToListAsync();
+        } 
 
         public async Task ExpireSubmissions(int organisationId)
         {
+            // Remove All of Submitted Data
+            await _db.StagedDiagnoses.Where(sd => sd.OrganisationId == organisationId).DeleteAsync();
+            await _db.StagedSamples.Where(ss => ss.OrganisationId == organisationId).DeleteAsync();
+            await _db.StagedTreatments.Where(st => st.OrganisationId == organisationId).DeleteAsync();
+
+            // Remove All of Submitted Deletes
+            await _db.StagedDiagnosisDeletes.Where(sdd => sdd.OrganisationId == organisationId).DeleteAsync();
+            await _db.StagedSampleDeletes.Where(ssd => ssd.OrganisationId == organisationId).DeleteAsync();
+            await _db.StagedTreatmentDeletes.Where(std => std.OrganisationId == organisationId).DeleteAsync();
+
+            // Mark Submissions As Rejected
             foreach (var submission in _db.Submissions.Where(s => s.BiobankId == organisationId))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
