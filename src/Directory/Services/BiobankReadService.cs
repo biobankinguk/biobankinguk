@@ -622,7 +622,6 @@ namespace Directory.Services
             return (await _organisationRegisterRequestRepository.ListAsync(
                 false,
                 x => x.OrganisationName == name &&
-                     x.DeclinedDate == null &&
                      x.OrganisationTypeId == type.OrganisationTypeId)).FirstOrDefault();
         }
 
