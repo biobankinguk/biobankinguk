@@ -23,6 +23,6 @@ namespace Biobanks.Common.Data.Entities.ReferenceData
         /// <summary>
         /// Join entities for Material Type Groups that this type is a member of.
         /// </summary>
-        public ICollection<MaterialTypeMaterialTypeGroup> MaterialTypeMaterialTypeGroups { get; set; }
+        public ICollection<MaterialTypeGroup> MaterialTypeGroups { get; set; }
     }
 }

@@ -94,13 +94,6 @@ namespace Biobanks.Common.Data
                     x.CollectionName
                 }).IsUnique();
 
-            //Join entity keys
-            model.Entity<MaterialTypeMaterialTypeGroup>()
-                .HasKey(x => new
-                {
-                    x.MaterialTypeId,
-                    x.MaterialTypeGroupId
-                });
         }
 
         public SubmissionsDbContext(DbContextOptions options) : base(options) { }

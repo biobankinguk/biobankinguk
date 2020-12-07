@@ -109,7 +109,7 @@ namespace Biobanks.SubmissionJob.Services
 
             //check if extracted sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeMaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.ExtractedSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             // Validate SNOMED-CT term
@@ -131,7 +131,7 @@ namespace Biobanks.SubmissionJob.Services
         {
             //check if extracted sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeMaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.ExtractedSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             // Validate SNOMED-CT term
@@ -153,7 +153,7 @@ namespace Biobanks.SubmissionJob.Services
         {
             //check if tissue sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeMaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.TissueSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.TissueSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             // Validate SNOMED-CT term
@@ -201,7 +201,7 @@ namespace Biobanks.SubmissionJob.Services
 
             //check if extracted sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeMaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.ExtractedSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             var result = await _refDataReadService.GetSampleContentMethod(dto.SampleContentMethod);

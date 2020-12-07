@@ -21,16 +21,16 @@ namespace Biobanks.SubmissionApi.Services
         /// <inheritdoc />
         public async Task<IEnumerable<MaterialTypeGroup>> List()
             => await _db.MaterialTypeGroups
-                .Include(mtg => mtg.MaterialTypeMaterialTypeGroups)
-                .ThenInclude(mtmtg => mtmtg.MaterialType)
+                .Include(mtg => mtg.MaterialTypes)
+                .ThenInclude(mtmtg => mtmtg.MaterialTypeGroups)
                 .AsNoTracking()
                 .ToListAsync();
 
         /// <inheritdoc />
         public async Task<MaterialTypeGroup> Get(int materialTypeGroupId)
             => await _db.MaterialTypeGroups
-                .Include(mtg => mtg.MaterialTypeMaterialTypeGroups)
-                .ThenInclude(mtmtg => mtmtg.MaterialType)
+                .Include(mtg => mtg.MaterialTypes)
+                .ThenInclude(mtmtg => mtmtg.MaterialTypeGroups)
                 .FirstOrDefaultAsync(mtg => mtg.Id == materialTypeGroupId);
 
         /// <inheritdoc />

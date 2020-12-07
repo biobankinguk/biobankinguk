@@ -24,16 +24,16 @@ namespace Biobanks.SubmissionApi.Services
         /// <inheritdoc />
         public async Task<IEnumerable<MaterialType>> List()
             => await _db.MaterialTypes
-                .Include(mt => mt.MaterialTypeMaterialTypeGroups)
-                .ThenInclude(mtmtg => mtmtg.MaterialTypeGroup)
+                .Include(mt => mt.MaterialTypeGroups)
+                .ThenInclude(mtmtg => mtmtg.MaterialTypes)
                 .AsNoTracking()
                 .ToListAsync();
 
         /// <inheritdoc />
         public async Task<MaterialType> Get(int materialTypeId)
             => await _db.MaterialTypes
-                .Include(mt => mt.MaterialTypeMaterialTypeGroups)
-                .ThenInclude(mtmtg => mtmtg.MaterialTypeGroup)
+                .Include(mt => mt.MaterialTypeGroups)
+                .ThenInclude(mtmtg => mtmtg.MaterialTypes)
                 .FirstOrDefaultAsync(mt => mt.Id == materialTypeId);
 
         /// <inheritdoc />
@@ -61,14 +61,15 @@ namespace Biobanks.SubmissionApi.Services
 
                     if (materialTypeGroupDbEntity == null) continue;
 
-                    if (materialTypeGroupDbEntity.MaterialTypeMaterialTypeGroups == null)
-                        materialTypeGroupDbEntity.MaterialTypeMaterialTypeGroups =
-                            new List<MaterialTypeMaterialTypeGroup>();
+                    if (materialTypeGroupDbEntity.MaterialTypes == null)
+                        materialTypeGroupDbEntity.MaterialTypes =
+                            new List<MaterialType>();
 
-                    materialTypeGroupDbEntity?.MaterialTypeMaterialTypeGroups.Add(new MaterialTypeMaterialTypeGroup
+                    materialTypeGroupDbEntity?.MaterialTypes.Add(new MaterialType
                     {
-                        MaterialType = materialTypeDbEntity,
-                        MaterialTypeGroup = materialTypeGroupDbEntity
+                        Id = materialTypeDbEntity.Id,
+                        Value = materialTypeDbEntity.Value,
+                        MaterialTypeGroups = materialTypeDbEntity.MaterialTypeGroups
                     });
                 }
 
