@@ -1,0 +1,79 @@
+﻿@using System.Web.Optimization
+@using Biobanks.Web.Models.Home
+@using Directory.Data.Constants
+@model Biobanks.Web.Models.ADAC.RegisterConfigModel
+@{
+    ViewBag.Title = "Register Pages Config";
+}
+
+@Html.Partial("_ADACTabs", (string)ViewBag.Title)
+
+<style>
+    .networkTitle {
+        padding-top: 20px;
+        padding-bottom: 15px;
+    }
+</style>
+
+<h3>
+    Register @App.Config[ConfigKey.SampleResourceName] Configuration
+
+    <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <br />
+
+        <form id="register-config-form" class="form-horizontal" method="post">
+            <input type="submit" id="submit-form" class="hidden" formaction="./SaveRegisterPagesConfig" />
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <a class="icon-button"></a>
+
+                    <!-- Biobank Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Register @App.Config[ConfigKey.SampleResourceName] page title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="BiobankTitle" name="BiobankTitle" class="form-control" value="@Model.BiobankTitle">
+                        </div>
+                    </div>
+                    <!-- Biobank Description -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">@App.Config[ConfigKey.SampleResourceName] description</label>
+                        <div class="col-md-10">
+                            <textarea cols=50 rows=8 id="BiobankDescription" name="BiobankDescription" class="form-control mdd_editor">@Model.BiobankDescription</textarea>
+                        </div>
+                    </div>
+                    <h3 class="networkTitle">
+                        Register Network Configuration
+                    </h3>
+
+                    <!-- Network Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Register Network page title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="NetworkTitle" name="NetworkTitle" class="form-control" value="@Model.NetworkTitle">
+                        </div>
+                    </div>
+                    <!-- Network Description -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Network description</label>
+                        <div class="col-md-10">
+                            <textarea cols=50 rows=8 id="NetworkDescription" name="NetworkDescription" class="form-control mdd_editor">@Model.NetworkDescription</textarea>
+                        </div>
+                    </div>
+
+      
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/markdowndeep")
+}
