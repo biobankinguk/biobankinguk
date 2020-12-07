@@ -87,7 +87,7 @@ namespace Biobanks.SubmissionApi
             services.AddSwaggerGen(opts =>
             {
                 opts.SwaggerDoc("v1",
-                    new Info
+                    new Microsoft.OpenApi.Models.OpenApiInfo
                     {
                         Title = "UKCRC Tissue Directory API",
                         Version = "v1"
