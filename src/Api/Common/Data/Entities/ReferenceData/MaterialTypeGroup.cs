@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Data.Entities.JoinEntities;
 
 namespace Biobanks.Common.Data.Entities.ReferenceData
 {

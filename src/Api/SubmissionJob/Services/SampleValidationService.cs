@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Data.Entities.JoinEntities;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionJob.Config;

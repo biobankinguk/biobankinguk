@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common.Data;
-using Biobanks.Common.Data.Entities.JoinEntities;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Services.Contracts;

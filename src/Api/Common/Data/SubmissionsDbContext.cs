@@ -1,5 +1,4 @@
 ﻿using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Data.Entities.JoinEntities;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 
