@@ -30,7 +30,7 @@ namespace Biobanks.SubmissionExpiryJob
             // Settings From Configuration
             builder.Services.Configure<SettingsModel>(options =>
             {
-                options.ExpiryDays = _configuration.GetValue<int>("expiryDays", 0);
+                options.ExpiryDays = _configuration.GetValue<int>("expiryDays", 30);
             });
 
             // Register DbContext
