@@ -113,7 +113,7 @@ namespace Biobanks.SubmissionApi.Controllers
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntology value.");
                         else if (string.IsNullOrEmpty(diagnosisModel.DiagnosisCodeOntologyVersion))
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntologyVersion value.");
-                        else if (diagnosisModel.DateDiagnosed == default(DateTime))
+                        else if (diagnosisModel.DateDiagnosed == null)
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DateDiagnosed value.");
                         else
                             diagnosesUpdates.Add(diagnosisModel);
@@ -152,7 +152,7 @@ namespace Biobanks.SubmissionApi.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
                         else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
-                        else if (sampleModel.DateCreated == default(DateTime))
+                        else if (sampleModel.DateCreated == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid DateCreated value.");
 
                         else
@@ -192,7 +192,7 @@ namespace Biobanks.SubmissionApi.Controllers
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntology value.");
                         else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntologyVersion))
                         return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
-                        else if (treatmentModel.DateTreated == default(DateTime))
+                        else if (treatmentModel.DateTreated == null)
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid DateTreated value.");
                         else
                             treatmentsUpdates.Add(treatmentModel);

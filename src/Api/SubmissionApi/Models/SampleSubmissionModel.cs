@@ -34,7 +34,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The date the sample was donated/taken.
         /// </summary>
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         /// <summary>
         /// The biological sex of the donor.
