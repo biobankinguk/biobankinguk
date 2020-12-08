@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common.Data;
 using Biobanks.Common.Types;
+using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.SubmissionAzureFunction.Services
@@ -15,9 +17,10 @@ namespace Biobanks.SubmissionAzureFunction.Services
         private readonly SubmissionsDbContext _db;
         private readonly int _expiryDays = 0;
 
-        public SubmissionExpiryService(SubmissionsDbContext db)
+        public SubmissionExpiryService(SubmissionsDbContext db, IOptions<ConfigModel> config)
         {
             _db = db;
+            _expiryDays = config.Value.ExpiryDays;
         }
 
         public async Task<IEnumerable<int>> GetOrganisationsWithExpiringSubmissions()

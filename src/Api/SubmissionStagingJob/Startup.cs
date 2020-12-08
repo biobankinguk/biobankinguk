@@ -1,5 +1,6 @@
 using AutoMapper;
 using Biobanks.Common.Data;
+using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.MappingProfiles;
 using Biobanks.SubmissionAzureFunction.Services;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
@@ -28,7 +29,13 @@ namespace Biobanks.SubmissionAzureFunction
             {
                 builder.Services.AddApplicationInsightsTelemetry(appInsightsKey);
             }
-            
+
+            // Configuration
+            builder.Services.Configure<ConfigModel>(config =>
+            {
+                config.ExpiryDays = _configuration.GetValue<int>("expiryDays", 30);
+            });
+
             // In-Memory Cache - Manually Called As Not Called By A Parent Service
             builder.Services.AddMemoryCache();
 
