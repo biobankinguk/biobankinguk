@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Biobanks.Common.Contracts;
 
-namespace Biobanks.SubmissionStagingJob.Dtos
+namespace Biobanks.SubmissionAzureFunction.Dtos
 {
     public class TreatmentIdDto : ISubmissionTimestamped, IOrganisationOwnedDto
     {

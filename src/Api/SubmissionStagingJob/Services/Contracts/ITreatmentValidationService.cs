@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Biobanks.Common.Data.Entities;
-using Biobanks.SubmissionStagingJob.Dtos;
+using Biobanks.SubmissionAzureFunction.Dtos;
 
-namespace Biobanks.SubmissionStagingJob.Services.Contracts
+namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
     public interface ITreatmentValidationService
     {

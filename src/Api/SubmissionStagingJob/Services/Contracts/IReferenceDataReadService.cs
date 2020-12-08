@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Biobanks.Common.Data.Entities.ReferenceData;
 
-namespace Biobanks.SubmissionStagingJob.Services.Contracts
+namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
     public interface IReferenceDataReadService
     {

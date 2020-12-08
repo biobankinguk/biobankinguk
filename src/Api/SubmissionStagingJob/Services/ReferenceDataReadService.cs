@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.Common.Types;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Biobanks.SubmissionJob.Services
+namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class ReferenceDataReadService : IReferenceDataReadService
     {

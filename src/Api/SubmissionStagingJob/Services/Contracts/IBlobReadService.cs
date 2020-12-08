@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Biobanks.SubmissionStagingJob.Services.Contracts
+namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
     /// <summary>
     /// Service for reading from blob storage providers.

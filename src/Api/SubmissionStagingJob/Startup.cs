@@ -1,19 +1,17 @@
 using AutoMapper;
 using Biobanks.Common.Data;
-using Biobanks.SubmissionJob.MappingProfiles;
-using Biobanks.SubmissionJob.Services;
-using Biobanks.SubmissionStagingJob.MappingProfiles;
-using Biobanks.SubmissionStagingJob.Services;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.MappingProfiles;
+using Biobanks.SubmissionAzureFunction.Services;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
 
-[assembly: FunctionsStartup(typeof(Biobanks.SubmissionStagingJob.Startup))]
+[assembly: FunctionsStartup(typeof(Biobanks.SubmissionAzureFunction.Startup))]
 
-namespace Biobanks.SubmissionStagingJob
+namespace Biobanks.SubmissionAzureFunction
 {
     class Startup : FunctionsStartup
     {

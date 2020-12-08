@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.SubmissionStagingJob.Services.Contracts
+namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
     public interface ISubmissionExpiryService
     {

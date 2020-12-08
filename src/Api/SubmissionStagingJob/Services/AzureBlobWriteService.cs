@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace Biobanks.SubmissionJob.Services
+namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class AzureBlobWriteService : IBlobWriteService
     {

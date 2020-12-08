@@ -7,10 +7,10 @@ using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Types;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.SubmissionJob.Services
+namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class SubmissionStatusService : ISubmissionStatusService
     {

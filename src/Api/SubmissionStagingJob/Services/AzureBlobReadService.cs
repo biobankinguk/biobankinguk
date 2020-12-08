@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace Biobanks.SubmissionJob.Services
+namespace Biobanks.SubmissionAzureFunction.Services
 {
     /// <inheritdoc />
     public class AzureBlobReadService : IBlobReadService

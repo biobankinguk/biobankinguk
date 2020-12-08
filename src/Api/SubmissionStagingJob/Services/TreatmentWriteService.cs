@@ -7,12 +7,12 @@ using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Extensions;
-using Biobanks.SubmissionStagingJob.Dtos;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.Dtos;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace Biobanks.SubmissionJob.Services
+namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class TreatmentWriteService : ITreatmentWriteService
     {

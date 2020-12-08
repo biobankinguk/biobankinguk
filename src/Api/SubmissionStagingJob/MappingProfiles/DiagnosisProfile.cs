@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Models;
-using Biobanks.SubmissionStagingJob.Dtos;
+using Biobanks.SubmissionAzureFunction.Dtos;
 
-namespace Biobanks.SubmissionJob.MappingProfiles
+namespace Biobanks.SubmissionAzureFunction.MappingProfiles
 {
     public class DiagnosisProfile : Profile
     {

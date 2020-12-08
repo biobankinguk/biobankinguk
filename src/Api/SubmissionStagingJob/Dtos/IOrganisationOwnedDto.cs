@@ -1,4 +1,4 @@
-﻿namespace Biobanks.SubmissionStagingJob.Dtos
+﻿namespace Biobanks.SubmissionAzureFunction.Dtos
 {
     public interface IOrganisationOwnedDto
     {

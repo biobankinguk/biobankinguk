@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common.Data.Entities;
-using Biobanks.SubmissionStagingJob.Config;
-using Biobanks.SubmissionStagingJob.Dtos;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.Config;
+using Biobanks.SubmissionAzureFunction.Dtos;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 
-namespace Biobanks.SubmissionJob.Services
+namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class DiagnosisValidationService : IDiagnosisValidationService
     {

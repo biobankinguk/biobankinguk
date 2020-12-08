@@ -6,15 +6,15 @@ using AutoMapper;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Models;
 using Biobanks.Common.Types;
-using Biobanks.SubmissionStagingJob.Dtos;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionAzureFunction.Dtos;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
-namespace Biobanks.SubmissionStagingJob
+namespace Biobanks.SubmissionAzureFunction
 {
     public class SubmissionStagingFunction
     {

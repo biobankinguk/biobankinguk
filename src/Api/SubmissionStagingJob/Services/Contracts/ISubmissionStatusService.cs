@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Types;
 
-namespace Biobanks.SubmissionStagingJob.Services.Contracts
+namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
     public interface ISubmissionStatusService
     {

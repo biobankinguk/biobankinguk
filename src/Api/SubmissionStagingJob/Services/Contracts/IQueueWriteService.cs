@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Queue;
 
-namespace Biobanks.SubmissionStagingJob.Services.Contracts
+namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
     public interface IQueueWriteService
     {

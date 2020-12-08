@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.SubmissionStagingJob.Dtos
+namespace Biobanks.SubmissionAzureFunction.Dtos
 {
     public class SampleDto : SampleIdDto
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.SubmissionStagingJob.Dtos;
+using Biobanks.SubmissionAzureFunction.Dtos;
 
-namespace Biobanks.SubmissionStagingJob.Services.Contracts
+namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
     public interface ISampleWriteService
     {

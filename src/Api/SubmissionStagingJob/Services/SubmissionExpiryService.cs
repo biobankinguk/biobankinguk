@@ -4,28 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common.Data;
 using Biobanks.Common.Types;
-using Biobanks.SubmissionStagingJob.Services.Contracts;
-using Biobanks.SubmissionStagingJob.Settings;
+using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.SubmissionStagingJob.Services
+namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class SubmissionExpiryService : ISubmissionExpiryService
     {
         private readonly SubmissionsDbContext _db;
-        private readonly SettingsModel _settings;
+        private readonly int _expiryDays = 0;
 
-        public SubmissionExpiryService(SubmissionsDbContext db, IOptions<SettingsModel> settings)
+        public SubmissionExpiryService(SubmissionsDbContext db)
         {
             _db = db;
-            _settings = settings.Value;
         }
 
         public async Task<IEnumerable<int>> GetOrganisationsWithExpiringSubmissions()
         {
-            var expiry = DateTime.Now.Subtract(TimeSpan.FromDays(_settings.ExpiryDays));
+            var expiry = DateTime.Now.Subtract(TimeSpan.FromDays(_expiryDays));
 
             return await _db.Submissions
                 .GroupBy(s => s.BiobankId)

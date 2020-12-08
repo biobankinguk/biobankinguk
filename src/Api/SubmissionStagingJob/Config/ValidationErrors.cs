@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Biobanks.SubmissionStagingJob.Config
+namespace Biobanks.SubmissionAzureFunction.Config
 {
     public static class ValidationErrors
     {
