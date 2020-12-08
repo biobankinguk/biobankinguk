@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubmissionApi", "Submission
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityProvider", "IdentityProvider\IdentityProvider.csproj", "{38805BC6-18F7-4809-BFF5-773D73CB74AD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubmissionStagingJob", "SubmissionStagingJob\SubmissionStagingJob.csproj", "{7C828BE5-E520-4725-B382-450D3B775FCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubmissionAzureFunction", "SubmissionStagingJob\SubmissionAzureFunction.csproj", "{7C828BE5-E520-4725-B382-450D3B775FCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
