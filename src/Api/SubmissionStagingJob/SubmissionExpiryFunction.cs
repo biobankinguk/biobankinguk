@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using Biobanks.SubmissionExpiryJob.Services.Contracts;
+using Biobanks.SubmissionStagingJob.Services.Contracts;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.SubmissionExpiryJob
+namespace Biobanks.SubmissionStagingJob
 {
     public class SubmissionExpiryFunction
     {

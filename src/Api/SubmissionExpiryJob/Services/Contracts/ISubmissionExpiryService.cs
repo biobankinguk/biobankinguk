@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.SubmissionExpiryJob.Services.Contracts
 {
-    public interface ISubmissionService
+    public interface ISubmissionExpiryService
     {
         /// <summary>
         /// Returns a list of Organisation IDs which have expiring submissions. 

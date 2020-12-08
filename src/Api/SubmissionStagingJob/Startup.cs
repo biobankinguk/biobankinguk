@@ -3,6 +3,7 @@ using Biobanks.Common.Data;
 using Biobanks.SubmissionJob.MappingProfiles;
 using Biobanks.SubmissionJob.Services;
 using Biobanks.SubmissionStagingJob.MappingProfiles;
+using Biobanks.SubmissionStagingJob.Services;
 using Biobanks.SubmissionStagingJob.Services.Contracts;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +73,7 @@ namespace Biobanks.SubmissionStagingJob
 
             // Submission Services
             builder.Services.AddTransient<ISubmissionStatusService, SubmissionStatusService>();
+            builder.Services.AddTransient<ISubmissionExpiryService, SubmissionExpiryService>();
         }
     }
 }

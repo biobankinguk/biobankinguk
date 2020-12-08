@@ -41,7 +41,7 @@ namespace Biobanks.SubmissionExpiryJob
             );
 
             // Dependency Injection
-            builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+            builder.Services.AddScoped<ISubmissionExpiryService, SubmissionExpiryService>();
         }
     }
 }

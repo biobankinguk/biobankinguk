@@ -4,20 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common.Data;
 using Biobanks.Common.Types;
-using Biobanks.SubmissionExpiryJob.Services.Contracts;
-using Biobanks.SubmissionExpiryJob.Settings;
+using Biobanks.SubmissionStagingJob.Services.Contracts;
+using Biobanks.SubmissionStagingJob.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.SubmissionExpiryJob.Services
+namespace Biobanks.SubmissionStagingJob.Services
 {
-    public class SubmissionService : ISubmissionService
+    public class SubmissionExpiryService : ISubmissionExpiryService
     {
         private readonly SubmissionsDbContext _db;
         private readonly SettingsModel _settings;
 
-        public SubmissionService(SubmissionsDbContext db, IOptions<SettingsModel> settings)
+        public SubmissionExpiryService(SubmissionsDbContext db, IOptions<SettingsModel> settings)
         {
             _db = db;
             _settings = settings.Value;
