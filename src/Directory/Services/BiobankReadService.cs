@@ -614,6 +614,16 @@ namespace Directory.Services
                     })
                 .ToDictionary(x => x.id, x => x.description);
 
+        public async Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByOrganisationNameAsync(string name)
+        {
+            var type = await GetBiobankOrganisationTypeAsync();
+
+            return (await _organisationRegisterRequestRepository.ListAsync(
+                false,
+                x => x.OrganisationName == name &&
+                     x.OrganisationTypeId == type.OrganisationTypeId)).FirstOrDefault();
+        }
+
         public async Task<bool> BiobankRegisterRequestExists(string name)
         {
             //We consider declined requests to not exist

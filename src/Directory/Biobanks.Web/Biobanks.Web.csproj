@@ -814,8 +814,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiControllers\BiobankIdsController.cs" />
-    <Compile Include="ApiControllers\BiobanksController.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\TermController.cs" />
     <Compile Include="Filters\SiteConfigAttribute.cs" />
