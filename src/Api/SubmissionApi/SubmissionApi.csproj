@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp5.0</TargetFramework>
     <DocumentationFile>swagger.xml</DocumentationFile>
-    <VersionPrefix>3.0</VersionPrefix>
+	  <Version>3.0.0-alpha.1</Version>
     <RootNamespace>Biobanks.SubmissionApi</RootNamespace>
     <AssemblyName>SubmissionApi</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
