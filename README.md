@@ -15,15 +15,21 @@ The `src/` folder contains roughly project or app categorised folders, which als
 ## Directory structure:
 
 - `.azure/pipelines/` - Azure Pipelines configurations for conditionally building the different applications and libraries in the repo
-- `src/` - actual source code:
+- `elastic-search/` - Configurational scripts to setup the required elastic search instance
+- `sample-seed-data/` - Reference data for the Directory
+- `scripts/` - Various scripts for Directory management
+- `sql/` - Various SQL scripts used to add/repair database records
+- `src/` - Projects Source Code
 
 | Folder | Description | `README` |
 | - | - | - |
-| `Common/` | Class libraries containing code shared between some or all of the other apps | |
-| `Directory/` | The new Directory app (sometimes called "Core"; contains core functionality such as identity services) | ✔ |
-| `Upload/` | The new Upload API (the Submission API and its process dependencies such as WebJobs) | |
-| `RefDataLoader/` | a console app for seeding a new **Directory** installation with initial Reference Data. | |
-| `theme/` | Shared Theme spec for use in any frontend projects. | ✔ |
+| `Analytics/` | .Net Core 3.1 Azure Function generating Google Analytics reports for the Directory | ✔ 
+| `Directory/` | ASP.NET 4.8 Web App - The core functionality of biobankinguk.org | ✔ 
+| `Publications/` | .Net Core 3.1 Azure Function which fetches and stores relevant metadata on articles published by Directory users on EuropePMC | ✔ 
+
+# License
+
+Source code in this repository is licensed under the MIT license, unless otherwise specified. Content licenses and attributions are retained adjacent to and in reference to the relevant content where required by the license.
 
 # Contribute
 

@@ -8,6 +8,7 @@ using Directory.Entity.Data;
 using Newtonsoft.Json;
 using System.Data.Entity.Migrations;
 using Directory.Data.Transforms.Url;
+using Directory.Data.Constants;
 
 namespace Directory.Data.Migrations
 {
@@ -176,12 +177,36 @@ namespace Directory.Data.Migrations
                                     ####Sample resource or Network?
                                     If you are unsure about whether to register a resource or network then [please get in touch](https://www.biobankinguk.org/contact-us/).",
                         },
+                        new Config
+                        {
+                            Key = "site.homepage.searchradiosamplescollected",
+                            Value = "Require samples collected",
+                            Description = "Set require samples collected text",
+                            ReadOnly = false,
+                        },
+                        new Config
+                        {
+                            Key = "site.homepage.searchradioaccesssamples",
+                            Value = "Access existing samples",
+                            Description = "Set access existing samples text",
+                            ReadOnly = false,
+                        },
 
-                        // Register
+                        /** Register Page Config **/
+                        new Config
+                        {
+                            Key = "site.register.biobank.title",
+                            Value = "Register a new sample resource"
+        },
                         new Config
                         {
                             Key = "site.register.biobank.description",
                             Value = "If you have a collection of tissue samples or the ability to collect samples for researchers then you can add an overview to our database by registering below.",
+                        },
+                        new Config
+                        {
+                            Key = "site.register.network.title",
+                            Value = "Register a new network"
                         },
                         new Config
                         {

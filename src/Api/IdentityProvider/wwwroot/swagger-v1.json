@@ -1,0 +1,51 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the Identity Provider for the UKCRC Tissue Directory API. It serves one purpose: to take credentials via Basic Auth (over HTTPS), and return an Identity JWT if authentication is successful. This JWT can then be used for authorisation purposes.",
+    "version": "v1",
+    "title": "UKCRC Tissue Directory Identity Provider"
+  },
+  "tags": [
+    {
+      "name": "identity",
+      "description": "Request an Identity JWT for a set of credentials"
+    }
+  ],
+  "paths": {
+    "/identity": {
+      "get": {
+        "tags": [
+          "identity"
+        ],
+        "summary": "Request an Identity JWT for a set of credentials",
+        "description": "",
+        "operationId": "getIdentity",
+        "produces": [
+          "text/plain"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The credentials provided failed authentication."
+          }
+        },
+        "security": [
+          {
+            "idp_auth": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "idp_auth": {
+      "type": "basic"
+    }
+  }
+}
