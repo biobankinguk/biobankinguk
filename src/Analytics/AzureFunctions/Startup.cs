@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Analytics.Services.Contracts;
 using Analytics.Services;
 using Analytics.Data;
-using Analytics.Data.Repositories;
 using Analytics.Data.Entities;
 using System;
 
@@ -21,13 +20,7 @@ namespace Analytics.AnalyticsAzureFunctions
             _configuration = builder.Services.BuildServiceProvider()
                 .GetService<IConfiguration>();
 
-            // Populate connection string with credentials
-            var sqlConnection = _configuration.GetConnectionString("analyticsdb_connection");
-            var sqlUsername = _configuration.GetValue("sqldb-username", "");
-            var sqlPassword = _configuration.GetValue("sqldb-password", "");
-
-            sqlConnection = String.Format(sqlConnection, sqlUsername, sqlPassword);
-
+            var sqlConnection = _configuration.GetConnectionString("sqldb-connection");
             builder.Services.AddDbContext<AnalyticsDbContext>(options =>
                options.UseSqlServer(sqlConnection, options => options.EnableRetryOnFailure()));
 
@@ -36,10 +29,6 @@ namespace Analytics.AnalyticsAzureFunctions
             builder.Services.AddScoped<IAnalyticsReportGenerator, AnalyticsReportGenerator>();
             builder.Services.AddTransient<IBiobankWebService, BiobankWebService>();
             builder.Services.AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>();
-            builder.Services.AddTransient<IGenericEFRepository<OrganisationAnalytic>, GenericEFRepository<OrganisationAnalytic>>();
-            builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticEvent>, GenericEFRepository<DirectoryAnalyticEvent>>();
-            builder.Services.AddTransient<IGenericEFRepository<DirectoryAnalyticMetric>, GenericEFRepository<DirectoryAnalyticMetric>>();
-
         }
 
     }
