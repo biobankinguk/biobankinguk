@@ -616,7 +616,6 @@ namespace Directory.Services
 
         public async Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByOrganisationNameAsync(string name)
         {
-            //We consider declined requests to not exist
             var type = await GetBiobankOrganisationTypeAsync();
 
             return (await _organisationRegisterRequestRepository.ListAsync(
