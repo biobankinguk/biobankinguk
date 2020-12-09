@@ -474,6 +474,10 @@ namespace Biobanks.Web.Controllers
                 {
                     await _userManager.RemoveFromRolesAsync(user.Id, Role.BiobankAdmin.ToString());
                 }
+
+                //remove biobank registration request to allow re-registration 
+                var biobankRequest = await _biobankReadService.GetBiobankRegisterRequestByOrganisationNameAsync(biobank.Name);
+                await _biobankWriteService.DeleteRegisterRequestAsync(biobankRequest);
                 SetTemporaryFeedbackMessage($"{biobank.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
             catch
@@ -4115,6 +4119,8 @@ namespace Biobanks.Web.Controllers
                 SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
+                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, "")
             });
         }
 
@@ -4131,7 +4137,9 @@ namespace Biobanks.Web.Controllers
                     new Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
                     new Config { Key = ConfigKey.HomepageSearchTitle, Value = homepage.SearchTitle ?? "" },
                     new Config { Key = ConfigKey.HomepageResourceRegistration, Value = homepage.ResourceRegistration ?? "" },
-                    new Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" }
+                    new Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" },
+                    new Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = homepage.RequireSamplesCollected ?? ""},
+                    new Config { Key = ConfigKey.HomepageSearchRadioAccessSamples, Value = homepage.AccessExistingSamples ?? "" }
                 }
             );
 
@@ -4232,48 +4240,39 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
-        #region Register Biobank Config
-        public ActionResult RegisterBiobankConfig() => View();
+        #region Register Biobank and Network Pages Config
+        public async Task<ActionResult> RegisterPagesConfig()
+        {
+            return View(new RegisterConfigModel
+            {
+                BiobankTitle = Config.Get(ConfigKey.RegisterBiobankTitle, ""),
+                BiobankDescription = Config.Get(ConfigKey.RegisterBiobankDescription, ""),
+                NetworkTitle = Config.Get(ConfigKey.RegisterNetworkTitle, ""),
+                NetworkDescription = Config.Get(ConfigKey.RegisterNetworkDescription, ""),
+            });
+        }
+
 
         [HttpPost]
-        public async Task<ActionResult> SaveRegisterBiobankConfig(string description)
+        public async Task<ActionResult> SaveRegisterPagesConfig(RegisterConfigModel registerConfigModel)
         {
             await _biobankWriteService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
-                    new Config { Key = ConfigKey.RegisterBiobankDescription, Value = description },
+                    new Config { Key = ConfigKey.RegisterBiobankTitle, Value = registerConfigModel.BiobankTitle ?? ""},
+                    new Config { Key = ConfigKey.RegisterBiobankDescription, Value = registerConfigModel.BiobankDescription ?? "" },
+                    new Config { Key = ConfigKey.RegisterNetworkTitle, Value = registerConfigModel.NetworkTitle ?? ""},
+                    new Config { Key = ConfigKey.RegisterNetworkDescription, Value = registerConfigModel.NetworkDescription ?? "" },
                 }
             );
 
             // Invalidate current config (Refreshed in SiteConfigAttribute filter)
             HttpContext.Application["Config"] = null;
-            var sampleResource = await _biobankReadService.GetSiteConfigValue(ConfigKey.SampleResourceName);
-            SetTemporaryFeedbackMessage("Register " + sampleResource + " Configuration saved successfully.", FeedbackMessageType.Success);
-            return Redirect("RegisterBiobankConfig");
+            SetTemporaryFeedbackMessage("Register configuration saved successfully.", FeedbackMessageType.Success);
+            return Redirect("RegisterPagesConfig");
         }
         #endregion
 
-        #region Register Network Config
-        public ActionResult RegisterNetworkConfig() => View();
-
-        [HttpPost]
-        public async Task<ActionResult> SaveRegisterNetworkConfig(string description)
-        {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
-                new List<Config>
-                {
-                    new Config { Key = ConfigKey.RegisterNetworkDescription, Value = description },
-                }
-            );
-
-            // Invalidate current config (Refreshed in SiteConfigAttribute filter)
-            HttpContext.Application["Config"] = null;
-
-            SetTemporaryFeedbackMessage("Register Network Configuration saved successfully.", FeedbackMessageType.Success);
-
-            return Redirect("RegisterNetworkConfig");
-        }
-        #endregion
 
         #region Site Config
         public async Task<ActionResult> SiteConfig()

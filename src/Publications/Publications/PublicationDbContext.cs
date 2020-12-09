@@ -20,18 +20,4 @@ namespace Publications
         public DbSet<Publication> Publications { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
     }
-
-    /*  Required for DesignTime creation of the context. Used for running EF migrations in CLI and devops pipelines. */
-    public class PublicationDbContextFactory : IDesignTimeDbContextFactory<PublicationDbContext>
-    {
-        public PublicationDbContext CreateDbContext(string[] args)
-        {
-            var options = new DbContextOptionsBuilder<PublicationDbContext>();
-
-            // Connection string passed from environment variable as EF doesn't (yet) support supplying it as a CLI parameter
-            options.UseSqlServer(Environment.GetEnvironmentVariable("sqldb_connection"), options => options.EnableRetryOnFailure());
-
-            return new PublicationDbContext(options.Options);
-        }
-    }
 }
