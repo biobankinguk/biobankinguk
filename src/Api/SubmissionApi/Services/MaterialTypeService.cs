@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
@@ -13,10 +12,10 @@ namespace Biobanks.SubmissionApi.Services
     /// <inheritdoc />
     public class MaterialTypeService : IMaterialTypeService
     {
-        private readonly Data.SubmissionsDbContext _db;
+        private readonly SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public MaterialTypeService(Data.SubmissionsDbContext db)
+        public MaterialTypeService(SubmissionsDbContext db)
         {
             _db = db;
         }

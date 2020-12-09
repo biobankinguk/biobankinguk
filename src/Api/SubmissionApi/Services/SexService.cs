@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +10,10 @@ namespace Biobanks.SubmissionApi.Services
     /// <inheritdoc />
     public class SexService : ISexService
     {
-        private readonly Data.SubmissionsDbContext _db;
+        private readonly SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public SexService(Data.SubmissionsDbContext db)
+        public SexService(SubmissionsDbContext db)
         {
             _db = db;
         }

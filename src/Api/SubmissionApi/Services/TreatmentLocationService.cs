@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +10,10 @@ namespace Biobanks.SubmissionApi.Services
     /// <inheritdoc />
     public class TreatmentLocationService : ITreatmentLocationService
     {
-        private readonly Data.SubmissionsDbContext _db;
+        private readonly SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public TreatmentLocationService(Data.SubmissionsDbContext db)
+        public TreatmentLocationService(SubmissionsDbContext db)
         {
             _db = db;
         }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
@@ -13,10 +12,10 @@ namespace Biobanks.SubmissionApi.Services
     /// <inheritdoc />
     public class ErrorService : IErrorService
     {
-        private readonly Data.SubmissionsDbContext _db;
+        private readonly SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public ErrorService(Data.SubmissionsDbContext db)
+        public ErrorService(SubmissionsDbContext db)
         {
             _db = db;
         }

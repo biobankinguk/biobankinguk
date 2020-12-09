@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Common.Data;
 using Data;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Consts;
@@ -18,10 +17,10 @@ namespace Biobanks.SubmissionApi.Services
     {
         private readonly IMapper _mapper;
 
-        private readonly Data.SubmissionsDbContext _db;
+        private readonly SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public CommitService(Data.SubmissionsDbContext db, IMapper mapper)
+        public CommitService(SubmissionsDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
