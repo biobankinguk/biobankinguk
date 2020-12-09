@@ -31,7 +31,7 @@ namespace Analytics.Services
         private readonly string _dateFormat = "yyyy-MM-dd";
         private readonly IConfiguration _config;
 
-        private AnalyticsDbContext _ctx;
+        private readonly AnalyticsDbContext _ctx;
         private readonly GoogleCredential _credentials;
         private readonly AnalyticsReportingService _analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
