@@ -51,7 +51,7 @@ namespace Biobanks.SubmissionApi.Controllers
         /// <param name="biobankId">The ID of the biobank to operate on.</param>
         /// <returns>The created content.</returns>
         [HttpPost("{biobankId}")]
-        [SwaggerResponse(201)]
+        [SwaggerResponse(202, Type = typeof(SubmissionSummaryModel))]
         [SwaggerResponse(400, "Request body expected.")]
         [SwaggerResponse(400, "Invalid request body provided.")]
         [SwaggerResponse(403, "Access to post to the requested biobank denied.")]
@@ -316,7 +316,7 @@ namespace Biobanks.SubmissionApi.Controllers
             );
 
             // return the status object
-            return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
+            return Accepted(_mapper.Map<SubmissionSummaryModel>(submission));
         }
 
         private async Task<BadRequestObjectResult> CancelSubmissionAndReturnBadRequest(object badEntity, int submissionId, string errorText)
