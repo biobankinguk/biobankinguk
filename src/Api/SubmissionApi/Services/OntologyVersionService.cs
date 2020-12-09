@@ -5,16 +5,17 @@ using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class OntologyVersionService : IOntologyVersionService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly Data.SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public OntologyVersionService(SubmissionsDbContext db)
+        public OntologyVersionService(Data.SubmissionsDbContext db)
         {
             _db = db;
         }

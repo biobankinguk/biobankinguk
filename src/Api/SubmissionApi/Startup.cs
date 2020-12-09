@@ -27,6 +27,7 @@ using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using UoN.AspNetCore.VersionMiddleware;
+using Data;
 
 namespace Biobanks.SubmissionApi
 {
@@ -56,7 +57,7 @@ namespace Biobanks.SubmissionApi
         {
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<SubmissionsDbContext>(opts =>
+            services.AddDbContext<Data.SubmissionsDbContext>(opts =>
                 opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
 
@@ -155,7 +156,7 @@ namespace Biobanks.SubmissionApi
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<SubmissionsDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<Data.SubmissionsDbContext>())
                 {
                     context.Database.Migrate();
                 }

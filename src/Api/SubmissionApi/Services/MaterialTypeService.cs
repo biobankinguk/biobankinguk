@@ -6,16 +6,17 @@ using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class MaterialTypeService : IMaterialTypeService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly Data.SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public MaterialTypeService(SubmissionsDbContext db)
+        public MaterialTypeService(Data.SubmissionsDbContext db)
         {
             _db = db;
         }

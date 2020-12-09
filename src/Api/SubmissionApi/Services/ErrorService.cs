@@ -6,16 +6,17 @@ using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class ErrorService : IErrorService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly Data.SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public ErrorService(SubmissionsDbContext db)
+        public ErrorService(Data.SubmissionsDbContext db)
         {
             _db = db;
         }

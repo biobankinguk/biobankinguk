@@ -9,16 +9,17 @@ using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Biobanks.SubmissionApi.Types;
 using Microsoft.EntityFrameworkCore;
+using Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class SubmissionService : ISubmissionService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly Data.SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public SubmissionService(SubmissionsDbContext db)
+        public SubmissionService(Data.SubmissionsDbContext db)
         {
             _db = db;
         }

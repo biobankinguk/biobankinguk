@@ -11,10 +11,10 @@ namespace Biobanks.SubmissionApi.Services
     /// <inheritdoc />
     public class RejectService : IRejectService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly Data.SubmissionsDbContext _db;
 
         /// <inheritdoc />
-        public RejectService(SubmissionsDbContext db)
+        public RejectService(Data.SubmissionsDbContext db)
         {
             _db = db;
         }
