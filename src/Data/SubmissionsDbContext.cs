@@ -1,6 +1,8 @@
 ﻿using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using System;
 
 namespace Data
 {
@@ -96,6 +98,20 @@ namespace Data
         }
 
         public SubmissionsDbContext(DbContextOptions options) : base(options) { }
+
+        /*  Required for DesignTime creation of the context.*/
+        public class SubmissionsDbContextFactory : IDesignTimeDbContextFactory<SubmissionsDbContext>
+        {
+            public SubmissionsDbContext CreateDbContext(string[] args)
+            {
+                var options = new DbContextOptionsBuilder<SubmissionsDbContext>();
+
+                // Connection string passed from environment variable as EF doesn't (yet) support supplying it as a CLI parameter
+                options.UseSqlServer(Environment.GetEnvironmentVariable("sqldb_connection"), options => options.EnableRetryOnFailure());
+
+                return new SubmissionsDbContext(options.Options);
+            }
+        }
     }
 
 }
