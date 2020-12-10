@@ -50,7 +50,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
             {
                 throw new ValidationException(
                     new ValidationResult(
-                        ValidationErrors.DateDiagnosed(dto.DateDiagnosed.ToString(), dto.IndividualReferenceId)
+                        ValidationErrors.DateInFuture(dto.DateDiagnosed, dto.IndividualReferenceId)
                     ),
                     null, null
                 );

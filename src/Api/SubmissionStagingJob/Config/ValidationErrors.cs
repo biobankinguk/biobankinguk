@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Biobanks.SubmissionAzureFunction.Config
 {
@@ -94,8 +95,8 @@ namespace Biobanks.SubmissionAzureFunction.Config
         public static string Sex(string value, string barcode, string individualReferenceId) =>
             InvalidForType(value, "Sex", barcode, individualReferenceId);
 
-        public static string DateDiagnosed(string value, string individualReferenceId) =>
-            InvalidForType(value, "DateDiagnosed", null, individualReferenceId);
+        public static string DateInFuture(DateTime value, string individualReferenceId) =>
+            $"{IdPropertiesPrefix(null, individualReferenceId)} {value.GetType()} '{value}' is in the future";
 
         #endregion
 

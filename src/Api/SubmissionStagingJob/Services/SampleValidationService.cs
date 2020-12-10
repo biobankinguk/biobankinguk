@@ -29,7 +29,9 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             //Sadly because of EF we can't do these in parallel :( but we still need to aggregate exceptions
             var exceptions = new List<ValidationException>();
-
+            
+            try { sample = ValidateFutureDate(dto, sample); }
+            catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateMaterialType(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateStorageTemperature(dto, sample); }
@@ -47,16 +49,35 @@ namespace Biobanks.SubmissionAzureFunction.Services
             try { sample = ValidateAgeAndYearOfBirth(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
 
-            if (exceptions.Any()) throw new AggregateException(exceptions); //throw the aggregate one
-
-            //no exceptions? set any remaining sample properties and return it
-
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
+            }
+                
             //value properties (don't need to await)
             sample.IndividualReferenceId = dto.IndividualReferenceId;
             sample.Barcode = dto.Barcode;
-            sample.DateCreated = dto.DateCreated;
             sample.SubmissionTimestamp = dto.SubmissionTimestamp;
             sample.CollectionName = dto.CollectionName;
+
+            return sample;
+        }
+
+        private StagedSample ValidateFutureDate(SampleDto dto, StagedSample sample)
+        {
+            // Check Date Isn't In The Future
+            if (dto.DateCreated > dto.SubmissionTimestamp)
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.DateInFuture(dto.DateCreated, dto.IndividualReferenceId)
+                    ),
+                    null, null
+                );
+            }
+
+            // Map Across Valid Date
+            sample.DateCreated = dto.DateCreated;
 
             return sample;
         }
