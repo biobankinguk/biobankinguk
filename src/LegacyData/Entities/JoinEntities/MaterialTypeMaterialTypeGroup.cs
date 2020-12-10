@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Biobanks.Common.Data.Entities.ReferenceData;
 
-namespace Biobanks.Common.Data.Entities.JoinEntities
+namespace LegacyData.Entities.JoinEntities
 {
     /// <summary>
     /// Many to many join table for Material Types and Material Type Groups

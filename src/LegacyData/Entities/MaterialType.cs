@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace LegacyData
+namespace LegacyData.Entities
 {
     /// <summary>
     /// Material Type terms.
