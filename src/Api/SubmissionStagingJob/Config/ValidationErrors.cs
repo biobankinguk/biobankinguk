@@ -94,6 +94,9 @@ namespace Biobanks.SubmissionAzureFunction.Config
         public static string Sex(string value, string barcode, string individualReferenceId) =>
             InvalidForType(value, "Sex", barcode, individualReferenceId);
 
+        public static string DateDiagnosed(string value, string individualReferenceId) =>
+            InvalidForType(value, "DateDiagnosed", null, individualReferenceId);
+
         #endregion
 
         #region Formats

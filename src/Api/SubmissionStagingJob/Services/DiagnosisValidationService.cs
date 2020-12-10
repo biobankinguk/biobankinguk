@@ -27,6 +27,8 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             var exceptions = new List<ValidationException>();
 
+            try { diagnosis = ValidateFutureDate(dto, diagnosis); }
+            catch (ValidationException e) { exceptions.Add(e); }
             try { diagnosis = await ValidateDiagnosisCode(dto, diagnosis); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { diagnosis = await ValidateDiagnosisCodeOntologyVersion(dto, diagnosis); }
@@ -34,13 +36,27 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             if (exceptions.Any()) throw new AggregateException(exceptions); //throw the aggregate one
 
-            //no exceptions? set any remaining sample properties and return it
-
-            //system properties
+            // System Properties - So No Need To Validate
             diagnosis.SubmissionTimestamp = dto.SubmissionTimestamp;
-
-            //value properties (don't need to await)
             diagnosis.IndividualReferenceId = dto.IndividualReferenceId;
+
+            return diagnosis;
+        }
+
+        private StagedDiagnosis ValidateFutureDate(DiagnosisDto dto, StagedDiagnosis diagnosis)
+        {
+            // Check Date Isn't In The Future
+            if (dto.DateDiagnosed > dto.SubmissionTimestamp)
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.DateDiagnosed(dto.DateDiagnosed.ToString(), dto.IndividualReferenceId)
+                    ),
+                    null, null
+                );
+            }
+            
+            // Map Across Valid Date
             diagnosis.DateDiagnosed = dto.DateDiagnosed;
 
             return diagnosis;
