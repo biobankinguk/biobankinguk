@@ -182,9 +182,7 @@ namespace Biobanks.SubmissionApi.Controllers
                                     dest.SubmissionTimestamp = submission.SubmissionTimestamp;
                                 }));
 
-                        if (string.IsNullOrEmpty(treatmentModel.TreatmentLocation))
-                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentLocation value.");
-                        else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntology))
+                        if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntology))
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntology value.");
                         else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntologyVersion))
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
