@@ -34,6 +34,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The date the sample was donated/taken.
         /// </summary>
+        [Required]
         public DateTime? DateCreated { get; set; }
 
         /// <summary>
