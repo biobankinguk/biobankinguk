@@ -10,7 +10,7 @@ namespace Biobanks.Common.Models
         /// The date of the diagnosis.
         /// </summary>
         [Required]
-        public DateTime DateDiagnosed { get; set; }
+        public DateTime? DateDiagnosed { get; set; }
 
         /// <summary>
         /// Foreign key column.

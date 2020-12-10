@@ -31,7 +31,7 @@ namespace Biobanks.Common.Models
         /// <summary>
         /// The date the sample was created, in ISO-8601 extended date or IETF RFC-3339 full-date format, e.g. 2016-01-01
         /// </summary>
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         /// <summary>
         /// The sex of the individual.
