@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using LegacyData.Entities.JoinEntities;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Data.Entities.ReferenceData
+namespace LegacyData.Entities
 {
     /// <summary>
     /// Material Type terms.
@@ -22,6 +23,6 @@ namespace Biobanks.Common.Data.Entities.ReferenceData
         /// <summary>
         /// Many to Many Relationship with MaterialTypeGroup
         /// </summary>
-        public ICollection<MaterialTypeGroup> MaterialTypeGroups { get; set; }
+        public ICollection<MaterialTypeMaterialTypeGroup> MaterialTypeGroups { get; set; }
     }
 }

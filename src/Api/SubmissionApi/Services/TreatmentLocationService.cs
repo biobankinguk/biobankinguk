@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Data;
 
 namespace Biobanks.SubmissionApi.Services
 {

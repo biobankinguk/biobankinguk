@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using LegacyData.Entities.JoinEntities;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Data.Entities.ReferenceData
+namespace LegacyData.Entities
 {
     /// <summary>
     /// This is an internal entity for artificially grouping material types.
@@ -24,6 +25,6 @@ namespace Biobanks.Common.Data.Entities.ReferenceData
         /// <summary>
         /// Join entities for MaterialTypes in the group
         /// </summary>
-        public ICollection<MaterialType> MaterialTypes { get; set; }
+        public ICollection<MaterialTypeMaterialTypeGroup> MaterialTypes { get; set; }
     }
 }

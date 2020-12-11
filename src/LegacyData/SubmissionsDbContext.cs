@@ -1,9 +1,12 @@
 ﻿using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Data.Entities.JoinEntities;
 using Biobanks.Common.Data.Entities.ReferenceData;
+using LegacyData.Entities.JoinEntities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using System;
 
-namespace Biobanks.Common.Data
+namespace LegacyData
 {
     public class SubmissionsDbContext : DbContext
     {
@@ -101,8 +104,11 @@ namespace Biobanks.Common.Data
                     x.MaterialTypeId,
                     x.MaterialTypeGroupId
                 });
+
         }
 
         public SubmissionsDbContext(DbContextOptions options) : base(options) { }
+
     }
+
 }
