@@ -15,13 +15,9 @@ namespace Biobanks.SubmissionApi.EqualityComparers
 
         /// <inheritdoc />
         public int GetHashCode(DiagnosisOperationModel obj)
-        {
-            var a = (obj.Diagnosis.IndividualReferenceId +
+            => (obj.Diagnosis.IndividualReferenceId +
                 obj.Diagnosis.DateDiagnosed +
                 obj.Diagnosis.DiagnosisCode)
                 .GetHashCode();
-
-            return a;
-        }
     }
 }
