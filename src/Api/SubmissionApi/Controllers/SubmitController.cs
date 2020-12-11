@@ -52,7 +52,7 @@ namespace Biobanks.SubmissionApi.Controllers
         /// <param name="biobankId">The ID of the biobank to operate on.</param>
         /// <returns>The created content.</returns>
         [HttpPost("{biobankId}")]
-        [SwaggerResponse(201)]
+        [SwaggerResponse(202, Type = typeof(SubmissionSummaryModel))]
         [SwaggerResponse(400, "Request body expected.")]
         [SwaggerResponse(400, "Invalid request body provided.")]
         [SwaggerResponse(403, "Access to post to the requested biobank denied.")]
@@ -72,20 +72,28 @@ namespace Biobanks.SubmissionApi.Controllers
             if (model.Treatments is null) model.Treatments = new List<TreatmentOperationModel>();
             if (model.Samples is null) model.Samples = new List<SampleOperationModel>();
 
+            // Check Total Records Is Within Range (0, max]
             var totalRecords = model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count;
+            var totalMaximum = _config.GetValue<int>("Limits:EntitiesPerSubmission");
 
-            if (totalRecords <= 0) return BadRequest("At least one record must be included in a submission.");
-
-            if (SectionsWithDuplicates(model, out var sections))
-                return BadRequest(
-                    $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', sections)}");
-
-            var maxEntitiesPerSubmission = _config.GetValue<int>("Limits:EntitiesPerSubmission");
-            if (model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count > maxEntitiesPerSubmission)
+            if (totalRecords <= 0)
             {
-                return BadRequest($"This submission contains more than the maximum of {maxEntitiesPerSubmission} records allowed.");
+                return BadRequest("At least one record must be included in a submission.");
+            }
+            else if (totalRecords > totalMaximum)
+            {
+                return BadRequest($"This submission contains more than the maximum of {totalMaximum} records allowed.");
             }
 
+            // Check No Section Contains Duplicate Entries
+            var duplicates = SectionsWithDuplicates(model);
+
+            if (duplicates.Any())
+            {
+                return BadRequest(
+                    $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', duplicates)}");
+            }
+                
             var diagnosesUpdates = new List<DiagnosisModel>();
             var samplesUpdates = new List<SampleModel>();
             var treatmentsUpdates = new List<TreatmentModel>();
@@ -114,8 +122,6 @@ namespace Biobanks.SubmissionApi.Controllers
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntology value.");
                         else if (string.IsNullOrEmpty(diagnosisModel.DiagnosisCodeOntologyVersion))
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntologyVersion value.");
-                        else if (diagnosisModel.DateDiagnosed == default(DateTime) || diagnosisModel.DateDiagnosed > DateTime.Now)
-                            return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DateDiagnosed value.");
                         else
                             diagnosesUpdates.Add(diagnosisModel);
                         break;
@@ -153,9 +159,6 @@ namespace Biobanks.SubmissionApi.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
                         else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
-                        else if (sampleModel.DateCreated == default(DateTime) || sampleModel.DateCreated > DateTime.Now)
-                            return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid DateCreated value.");
-
                         else
                             samplesUpdates.Add(sampleModel);
                         break;
@@ -187,14 +190,10 @@ namespace Biobanks.SubmissionApi.Controllers
                                     dest.SubmissionTimestamp = submission.SubmissionTimestamp;
                                 }));
 
-                        if (string.IsNullOrEmpty(treatmentModel.TreatmentLocation))
-                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentLocation value.");
-                        else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntology))
+                        if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntology))
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntology value.");
                         else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntologyVersion))
-                        return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
-                        else if (treatmentModel.DateTreated == default(DateTime) || treatmentModel.DateTreated > DateTime.Now)
-                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid DateTreated value.");
+                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
                         else
                             treatmentsUpdates.Add(treatmentModel);
                         break;
@@ -336,7 +335,7 @@ namespace Biobanks.SubmissionApi.Controllers
             }
 
             // return the status object
-            return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
+            return Accepted(_mapper.Map<SubmissionSummaryModel>(submission));
         }
 
         private async Task<BadRequestObjectResult> CancelSubmissionAndReturnBadRequest(object badEntity, int submissionId, string errorText)
@@ -345,33 +344,29 @@ namespace Biobanks.SubmissionApi.Controllers
             return BadRequest($"{IdPropertiesPrefix(badEntity)}{errorText}");
         }
 
-        private static bool SectionsWithDuplicates(SubmissionModel submission, out List<string> sections)
+        private static IEnumerable<string> SectionsWithDuplicates(SubmissionModel submission)
         {
-            sections = new List<string>();
+            var sections = new List<string>();
 
-            IEqualityComparer<T> GetComparer<T>(ICollection<T> models)
+            if (HasDuplicates(submission.Diagnoses, new DiagnosisOperationModelEqualityComparer()))
             {
-                switch (models)
-                {
-                    case ICollection<DiagnosisOperationModel> d:
-                        return (IEqualityComparer<T>)new DiagnosisOperationModelEqualityComparer();
-                    case ICollection<TreatmentOperationModel> t:
-                        return (IEqualityComparer<T>)new TreatmentOperationModelEqualityComparer();
-                    case ICollection<SampleOperationModel> s:
-                        return (IEqualityComparer<T>)new SampleOperationModelEqualityComparer();
-                    default: throw new InvalidOperationException();
-                }
+                sections.Add("Diagnosis");
+            }
+            if (HasDuplicates(submission.Treatments, new TreatmentOperationModelEqualityComparer()))
+            {
+                sections.Add("Treatment");
+            }
+            if (HasDuplicates(submission.Samples, new SampleOperationModelEqualityComparer()))
+            {
+                sections.Add("Sample");
             }
 
-            bool NoDuplicates<T>(ICollection<T> models)
-                where T : BaseOperationModel
-                => models.Count == models.Distinct(GetComparer(models)).Count();
+            return sections;
+        }
 
-            if (!NoDuplicates(submission.Diagnoses)) sections.Add("Diagnosis");
-            if (!NoDuplicates(submission.Treatments)) sections.Add("Treatment");
-            if (!NoDuplicates(submission.Samples)) sections.Add("Sample");
-
-            return sections.Any();
+        private static bool HasDuplicates<T>(IEnumerable<T> collection, IEqualityComparer<T> comparer) where T : class
+        {
+            return collection.Distinct(comparer).Count() < collection.Count();
         }
 
         private static string IdPropertiesPrefix(object entity)

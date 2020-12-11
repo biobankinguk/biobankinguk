@@ -13,7 +13,8 @@ namespace Biobanks.Common.Models
         [Required]
         public string IndividualReferenceId { get; set; }
 
-        public DateTime DateTreated { get; set; }
+        [Required]
+        public DateTime? DateTreated { get; set; }
 
         [Required]
         public string TreatmentCode { get; set; }

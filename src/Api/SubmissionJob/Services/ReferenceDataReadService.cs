@@ -108,8 +108,8 @@ namespace Biobanks.SubmissionJob.Services
             if (_cache.TryGetValue(CacheKeys.MaterialTypes, out IEnumerable<MaterialType> cacheEntry)) return cacheEntry;
 
             cacheEntry = await _db.MaterialTypes
-                .Include(x => x.MaterialTypeMaterialTypeGroups)
-                .ThenInclude(y => y.MaterialTypeGroup)
+                .Include(x => x.MaterialTypeGroups)
+                .ThenInclude(y => y.MaterialTypes)
                 .AsNoTracking()
                 .ToListAsync();
 
