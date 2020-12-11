@@ -72,26 +72,20 @@ namespace Biobanks.SubmissionApi.Controllers
             if (model.Treatments is null) model.Treatments = new List<TreatmentOperationModel>();
             if (model.Samples is null) model.Samples = new List<SampleOperationModel>();
 
-            // Check Total Records Is Within Range (0, max]
             var totalRecords = model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count;
-            var totalMaximum = _config.GetValue<int>("Limits:EntitiesPerSubmission");
 
-            if (totalRecords <= 0)
-            {
-                return BadRequest("At least one record must be included in a submission.");
-            }
-            else if (totalRecords > totalMaximum)
-            {
-                return BadRequest($"This submission contains more than the maximum of {totalMaximum} records allowed.");
-            }
+            if (totalRecords <= 0) return BadRequest("At least one record must be included in a submission.");
 
-            // Check No Section Contains Duplicate Entries
             if (SectionsWithDuplicates(model, out var sections))
-            {
                 return BadRequest(
                     $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', sections)}");
+
+            var maxEntitiesPerSubmission = _config.GetValue<int>("Limits:EntitiesPerSubmission");
+            if (model.Diagnoses.Count + model.Samples.Count + model.Treatments.Count > maxEntitiesPerSubmission)
+            {
+                return BadRequest($"This submission contains more than the maximum of {maxEntitiesPerSubmission} records allowed.");
             }
-                
+
             var diagnosesUpdates = new List<DiagnosisModel>();
             var samplesUpdates = new List<SampleModel>();
             var treatmentsUpdates = new List<TreatmentModel>();
@@ -346,25 +340,29 @@ namespace Biobanks.SubmissionApi.Controllers
         {
             sections = new List<string>();
 
-            if (HasDuplicates(submission.Diagnoses, new DiagnosisOperationModelEqualityComparer()))
+            IEqualityComparer<T> GetComparer<T>(ICollection<T> models)
             {
-                sections.Add("Diagnosis");
+                switch (models)
+                {
+                    case ICollection<DiagnosisOperationModel> d:
+                        return (IEqualityComparer<T>)new DiagnosisOperationModelEqualityComparer();
+                    case ICollection<TreatmentOperationModel> t:
+                        return (IEqualityComparer<T>)new TreatmentOperationModelEqualityComparer();
+                    case ICollection<SampleOperationModel> s:
+                        return (IEqualityComparer<T>)new SampleOperationModelEqualityComparer();
+                    default: throw new InvalidOperationException();
+                }
             }
-            if (HasDuplicates(submission.Treatments, new TreatmentOperationModelEqualityComparer()))
-            {
-                sections.Add("Treatment");
-            }
-            if (HasDuplicates(submission.Samples, new SampleOperationModelEqualityComparer()))
-            {
-                sections.Add("Sample");
-            }
+
+            bool NoDuplicates<T>(ICollection<T> models)
+                where T : BaseOperationModel
+                => models.Count == models.Distinct(GetComparer(models)).Count();
+
+            if (!NoDuplicates(submission.Diagnoses)) sections.Add("Diagnosis");
+            if (!NoDuplicates(submission.Treatments)) sections.Add("Treatment");
+            if (!NoDuplicates(submission.Samples)) sections.Add("Sample");
 
             return sections.Any();
-        }
-
-        private static bool HasDuplicates<T>(IEnumerable<T> collection, IEqualityComparer<T> comparer) where T : class
-        {
-            return collection.Distinct(comparer).Count() < collection.Count();
         }
 
         private static string IdPropertiesPrefix(object entity)
