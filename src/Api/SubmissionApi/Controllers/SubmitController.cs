@@ -86,10 +86,12 @@ namespace Biobanks.SubmissionApi.Controllers
             }
 
             // Check No Section Contains Duplicate Entries
-            if (SectionsWithDuplicates(model, out var sections))
+            var duplicates = SectionsWithDuplicates(model);
+
+            if (duplicates.Any())
             {
                 return BadRequest(
-                    $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', sections)}");
+                    $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', duplicates)}");
             }
                 
             var diagnosesUpdates = new List<DiagnosisModel>();
@@ -351,9 +353,9 @@ namespace Biobanks.SubmissionApi.Controllers
             return BadRequest($"{IdPropertiesPrefix(badEntity)}{errorText}");
         }
 
-        private static bool SectionsWithDuplicates(SubmissionModel submission, out List<string> sections)
+        private static IEnumerable<string> SectionsWithDuplicates(SubmissionModel submission)
         {
-            sections = new List<string>();
+            var sections = new List<string>();
 
             if (HasDuplicates(submission.Diagnoses, new DiagnosisOperationModelEqualityComparer()))
             {
@@ -368,7 +370,7 @@ namespace Biobanks.SubmissionApi.Controllers
                 sections.Add("Sample");
             }
 
-            return sections.Any();
+            return sections;
         }
 
         private static bool HasDuplicates<T>(IEnumerable<T> collection, IEqualityComparer<T> comparer) where T : class
