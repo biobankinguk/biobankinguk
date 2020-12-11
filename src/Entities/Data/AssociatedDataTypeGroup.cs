@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace Directory.Entity.Data
+namespace Entities.Data
 {
     public class AssociatedDataTypeGroup
     {

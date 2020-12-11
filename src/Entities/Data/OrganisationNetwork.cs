@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Directory.Entity.Data
+namespace Entities.Data
 {
     public class OrganisationNetwork
     {

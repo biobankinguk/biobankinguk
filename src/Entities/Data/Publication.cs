@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Directory.Entity.Data
+namespace Entities.Data
 {
     public class Publication
     {
