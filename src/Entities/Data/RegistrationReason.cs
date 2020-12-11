@@ -1,4 +1,4 @@
-namespace Directory.Entity.Data
+namespace Entities.Data
 {
     public class RegistrationReason
     {

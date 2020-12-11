@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Directory.Entity.Data
+namespace Entities.Data
 {
     public class DiagnosisCapability
     {

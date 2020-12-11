@@ -1,6 +1,6 @@
 using System;
 
-namespace Directory.Entity.Data
+namespace Entities.Data
 {
     public class TokenIssueRecord
     {

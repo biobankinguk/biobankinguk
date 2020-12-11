@@ -25,6 +25,9 @@
         "dependencies": {
           "EntityFramework": "6.4.4"
         }
+      },
+      "entities": {
+        "type": "Project"
       }
     }
   }
