@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Directory.Data;
-using Directory.Entity.Data;
+using Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
