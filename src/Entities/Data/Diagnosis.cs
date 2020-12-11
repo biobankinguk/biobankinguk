@@ -12,12 +12,7 @@ namespace Entities.Data
         [MaxLength(20)]
         public string SnomedIdentifier { get; set; }
 
-        // TODO: Move below to a declaration in the OnModelCreating in contexts
-        /*
-        [Required]
-        [Index("IX_UniqueDiagnosisDescription", IsUnique = true)]
         [MaxLength(200)] 
-        */
         public string Description { get; set; }
 
         //1 -> M Navigation properties?
