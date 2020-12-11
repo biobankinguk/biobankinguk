@@ -96,7 +96,7 @@ namespace Biobanks.SubmissionAzureFunction.Config
             InvalidForType(value, "Sex", barcode, individualReferenceId);
 
         public static string DateInFuture(DateTime value, string individualReferenceId) =>
-            $"{IdPropertiesPrefix(null, individualReferenceId)} 'DateTime {value}' is in the future";
+            $"{IdPropertiesPrefix(null, individualReferenceId)}'DateTime {value}' is in the future";
 
         #endregion
 
