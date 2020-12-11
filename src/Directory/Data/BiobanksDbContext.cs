@@ -87,6 +87,7 @@ namespace Directory.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Collection>().Property(f => f.StartDate).HasColumnType("datetime2");
+            modelBuilder.Entity<Diagnosis>().HasIndex(x => x.Description).IsUnique();
         }
     }
 }
