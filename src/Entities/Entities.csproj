@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>5e3e4eb7-4168-473a-b76f-36b95ad45678</ProjectGuid>
+    <ProjectGuid>{5E3E4EB7-4168-473A-B76F-36B95AD45678}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Entities</RootNamespace>
@@ -31,24 +31,66 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Data\AccessCondition.cs" />
+    <Compile Include="Data\AgeRange.cs" />
+    <Compile Include="Data\AnnualStatistic.cs" />
+    <Compile Include="Data\AnnualStatisticGroup.cs" />
+    <Compile Include="Data\AssociatedDataProcurementTimeframe.cs" />
+    <Compile Include="Data\AssociatedDataType.cs" />
+    <Compile Include="Data\AssociatedDataTypeGroup.cs" />
+    <Compile Include="Data\Blob.cs" />
+    <Compile Include="Data\CapabilityAssociatedData.cs" />
+    <Compile Include="Data\Collection.cs" />
+    <Compile Include="Data\CollectionAssociatedData.cs" />
+    <Compile Include="Data\CollectionPercentage.cs" />
+    <Compile Include="Data\CollectionPoint.cs" />
+    <Compile Include="Data\CollectionSampleSet.cs" />
+    <Compile Include="Data\CollectionStatus.cs" />
+    <Compile Include="Data\CollectionType.cs" />
+    <Compile Include="Data\Config.cs" />
+    <Compile Include="Data\ConsentRestriction.cs" />
+    <Compile Include="Data\Country.cs" />
+    <Compile Include="Data\County.cs" />
+    <Compile Include="Data\Diagnosis.cs" />
+    <Compile Include="Data\DiagnosisCapability.cs" />
+    <Compile Include="Data\DonorCount.cs" />
+    <Compile Include="Data\funder.cs" />
+    <Compile Include="Data\HtaStatus.cs" />
+    <Compile Include="Data\MacroscopicAssessment.cs" />
+    <Compile Include="Data\MaterialDetail.cs" />
+    <Compile Include="Data\MaterialType.cs" />
+    <Compile Include="Data\Network.cs" />
+    <Compile Include="Data\NetworkRegisterRequest.cs" />
+    <Compile Include="Data\NetworkUser.cs" />
+    <Compile Include="Data\Organisation.cs" />
+    <Compile Include="Data\OrganisationAnnualStatistic.cs" />
+    <Compile Include="Data\OrganisationNetwork.cs" />
+    <Compile Include="Data\OrganisationRegisterRequest.cs" />
+    <Compile Include="Data\OrganisationRegistrationReason.cs" />
+    <Compile Include="Data\OrganisationServiceOffering.cs" />
+    <Compile Include="Data\OrganisationType.cs" />
+    <Compile Include="Data\OrganisationUser.cs" />
+    <Compile Include="Data\PreservationType.cs" />
+    <Compile Include="Data\Publication.cs" />
+    <Compile Include="Data\RegistrationReason.cs" />
+    <Compile Include="Data\SampleCollectionMode.cs" />
+    <Compile Include="Data\ServiceOffering.cs" />
+    <Compile Include="Data\Sex.cs" />
+    <Compile Include="Data\SopStatus.cs" />
+    <Compile Include="Data\TokenIssueRecord.cs" />
+    <Compile Include="Data\TokenValidationRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
- </Project>
+</Project>
