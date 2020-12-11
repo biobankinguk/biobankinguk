@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LegacyData.Entities.JoinEntities;
 using System.ComponentModel.DataAnnotations;
 
 namespace LegacyData.Entities
@@ -22,6 +23,6 @@ namespace LegacyData.Entities
         /// <summary>
         /// Many to Many Relationship with MaterialTypeGroup
         /// </summary>
-        public ICollection<MaterialTypeGroup> MaterialTypeGroups { get; set; }
+        public ICollection<MaterialTypeMaterialTypeGroup> MaterialTypeGroups { get; set; }
     }
 }
