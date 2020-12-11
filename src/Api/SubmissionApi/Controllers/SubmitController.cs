@@ -52,7 +52,7 @@ namespace Biobanks.SubmissionApi.Controllers
         /// <param name="biobankId">The ID of the biobank to operate on.</param>
         /// <returns>The created content.</returns>
         [HttpPost("{biobankId}")]
-        [SwaggerResponse(201)]
+        [SwaggerResponse(202, Type = typeof(SubmissionSummaryModel))]
         [SwaggerResponse(400, "Request body expected.")]
         [SwaggerResponse(400, "Invalid request body provided.")]
         [SwaggerResponse(403, "Access to post to the requested biobank denied.")]
@@ -122,8 +122,6 @@ namespace Biobanks.SubmissionApi.Controllers
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntology value.");
                         else if (string.IsNullOrEmpty(diagnosisModel.DiagnosisCodeOntologyVersion))
                             return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DiagnosisCodeOntologyVersion value.");
-                        else if (diagnosisModel.DateDiagnosed == default(DateTime) || diagnosisModel.DateDiagnosed > DateTime.Now)
-                            return await CancelSubmissionAndReturnBadRequest(diagnosisModel, submission.Id, "Invalid DateDiagnosed value.");
                         else
                             diagnosesUpdates.Add(diagnosisModel);
                         break;
@@ -161,9 +159,6 @@ namespace Biobanks.SubmissionApi.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
                         else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
-                        else if (sampleModel.DateCreated == default(DateTime) || sampleModel.DateCreated > DateTime.Now)
-                            return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid DateCreated value.");
-
                         else
                             samplesUpdates.Add(sampleModel);
                         break;
@@ -195,14 +190,10 @@ namespace Biobanks.SubmissionApi.Controllers
                                     dest.SubmissionTimestamp = submission.SubmissionTimestamp;
                                 }));
 
-                        if (string.IsNullOrEmpty(treatmentModel.TreatmentLocation))
-                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentLocation value.");
-                        else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntology))
+                        if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntology))
                             return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntology value.");
                         else if (string.IsNullOrEmpty(treatmentModel.TreatmentCodeOntologyVersion))
-                        return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
-                        else if (treatmentModel.DateTreated == default(DateTime) || treatmentModel.DateTreated > DateTime.Now)
-                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid DateTreated value.");
+                            return await CancelSubmissionAndReturnBadRequest(treatmentModel, submission.Id, "Invalid TreatmentCodeOntologyVersion value.");
                         else
                             treatmentsUpdates.Add(treatmentModel);
                         break;
@@ -344,7 +335,7 @@ namespace Biobanks.SubmissionApi.Controllers
             }
 
             // return the status object
-            return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
+            return Accepted(_mapper.Map<SubmissionSummaryModel>(submission));
         }
 
         private async Task<BadRequestObjectResult> CancelSubmissionAndReturnBadRequest(object badEntity, int submissionId, string errorText)
