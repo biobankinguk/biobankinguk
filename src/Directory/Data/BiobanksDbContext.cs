@@ -1,5 +1,5 @@
 using System.Data.Entity;
-using Directory.Entity.Data;
+using Entities.Data;
 
 namespace Directory.Data
 {
