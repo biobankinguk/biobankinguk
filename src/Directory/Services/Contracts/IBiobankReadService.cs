@@ -186,6 +186,7 @@ namespace Directory.Services.Contracts
         Task<IEnumerable<NetworkRegisterRequest>> ListHistoricalNetworkRegisterRequestsAsync();
 
         Task<OrganisationRegisterRequest> GetBiobankRegisterRequestAsync(int requestId);
+        Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByOrganisationNameAsync(string name);
         Task<NetworkRegisterRequest> GetNetworkRegisterRequestAsync(int requestId);
         Task<Organisation> GetBiobankByExternalIdAsync(string externalId);
         Task<Organisation> GetBiobankByExternalIdForSearchResultsAsync(string externalId);
