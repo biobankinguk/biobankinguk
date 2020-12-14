@@ -188,23 +188,32 @@ namespace Biobanks.Web.Controllers
             // Single biobank only
             if (CurrentUser.IsInRole(Role.BiobankAdmin.ToString()))
             {
-                List<KeyValuePair<int, string>> biobankList = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserBiobanks);
-                var biobank = biobankList.FirstOrDefault();
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
-                Session[SessionKeys.ActiveOrganisationId] = biobank.Key;
-                Session[SessionKeys.ActiveOrganisationName] = biobank.Value;
-                return RedirectToAction("Collections", "Biobank");
+
+                var biobank = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(CurrentUser.Claims
+                    .Where(x => x.Type == CustomClaimType.BiobankId).ToList().FirstOrDefault()?.Value);
+
+                if (!biobank.Equals(default(KeyValuePair<int, string>)))
+                {
+                    Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
+                    Session[SessionKeys.ActiveOrganisationId] = biobank.Key;
+                    Session[SessionKeys.ActiveOrganisationName] = biobank.Value;
+                    return RedirectToAction("Collections", "Biobank");
+                }
             }
                 
             // Single network only
             if (CurrentUser.IsInRole(Role.NetworkAdmin.ToString()))
             {
-                List<KeyValuePair<int, string>> networkList = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserNetworks);
-                var network = networkList.FirstOrDefault();
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
-                Session[SessionKeys.ActiveOrganisationId] = network.Key;
-                Session[SessionKeys.ActiveOrganisationName] = network.Value;
-                return RedirectToAction("Biobanks", "Network");
+                var network = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(CurrentUser.Claims
+                    .Where(x => x.Type == CustomClaimType.NetworkId).ToList().FirstOrDefault()?.Value);
+
+                if (!network.Equals(default(KeyValuePair<int, string>)))
+                {
+                    Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
+                    Session[SessionKeys.ActiveOrganisationId] = network.Key;
+                    Session[SessionKeys.ActiveOrganisationName] = network.Value;
+                    return RedirectToAction("Biobanks", "Network");
+                }
             }
                 
             //or if no role-specific default
