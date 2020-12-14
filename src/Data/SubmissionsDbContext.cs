@@ -98,14 +98,26 @@ namespace Data
         }
         public SubmissionsDbContext(DbContextOptions options) : base(options) { }
 
-        /*  Required for DesignTime creation of the context.*/
         public class SubmissionsDbContextFactory : IDesignTimeDbContextFactory<SubmissionsDbContext>
         {
+            /*  Required for DesignTime creation of the context. EF operations can be done from
+             *  either Package Manager or via Dotnet EF Tools.
+             *  
+             *  For either option, the connection string of the database must be passed via
+             *  CLI arguments.
+             *  
+             *  Package Manager - https://docs.microsoft.com/en-us/ef/core/cli/powershell
+             *  >> <Migrations Command> -Args "<Connection-String>"
+             *  
+             *  dotnet CLI - https://docs.microsoft.com/en-us/ef/core/cli/dotnet
+             *  >> dotnet ef <CLI Command> -- "<Connection-String>"
+             */
+
             public SubmissionsDbContext CreateDbContext(string[] args)
             {
-                var options = new DbContextOptionsBuilder<SubmissionsDbContext>(); 
-                // Connection string passed needs to be pass in CLI  -- "connString"
+                var options = new DbContextOptionsBuilder<SubmissionsDbContext>();
                 options.UseSqlServer(args[0], options => options.EnableRetryOnFailure());
+
                 return new SubmissionsDbContext(options.Options);
             }
         }
