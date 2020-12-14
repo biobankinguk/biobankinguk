@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using Directory.Identity.Constants;
+using Newtonsoft.Json;
 
 namespace Directory.Identity
 {
@@ -12,8 +13,9 @@ namespace Directory.Identity
 
         //Add custom claims...
         public string Name => FindFirst(CustomClaimType.FullName).Value; //ClaimTypes.Name is used for username, which is acquirable directly from the identity instead
-        
-        public IEnumerable<string> BiobankIds => FindAll(CustomClaimType.BiobankId).Select(x => x.Value);
-        public IEnumerable<string> NetworkIds => FindAll(CustomClaimType.NetworkId).Select(x => x.Value);
+
+        public IEnumerable<string> BiobankIds => FindAll(CustomClaimType.BiobankId).Select(x => JsonConvert.DeserializeObject<KeyValuePair<string, string>>(x.Value).Key);
+ 
+        public IEnumerable<string> NetworkIds => FindAll(CustomClaimType.NetworkId).Select(x => JsonConvert.DeserializeObject<KeyValuePair<string, string>>(x.Value).Key);
     }
 }

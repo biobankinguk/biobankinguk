@@ -10,7 +10,6 @@ using Biobanks.Web.Utilities;
 
 namespace Biobanks
 {
-    // TODO: what is this filter? is it used anywhere?! UserAuthorize seems to be used instead...
     public class AuthorizeAttribute : System.Web.Mvc.AuthorizeAttribute
     {
         public IBiobankReadService BiobankReadService { get; set; }
