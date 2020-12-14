@@ -9,6 +9,7 @@ using Biobanks.Common.Exceptions;
 using Biobanks.Common.Extensions;
 using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
+using LegacyData;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 

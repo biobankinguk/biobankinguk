@@ -8,6 +8,7 @@ using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using LegacyData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
@@ -108,8 +109,8 @@ namespace Biobanks.SubmissionAzureFunction.Services
             if (_cache.TryGetValue(CacheKeys.MaterialTypes, out IEnumerable<MaterialType> cacheEntry)) return cacheEntry;
 
             cacheEntry = await _db.MaterialTypes
-                .Include(x => x.MaterialTypeMaterialTypeGroups)
-                .ThenInclude(y => y.MaterialTypeGroup)
+                .Include(x => x.MaterialTypeGroups)
+                .ThenInclude(y => y.MaterialTypes)
                 .AsNoTracking()
                 .ToListAsync();
 

@@ -11,6 +11,7 @@ using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using LegacyData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {

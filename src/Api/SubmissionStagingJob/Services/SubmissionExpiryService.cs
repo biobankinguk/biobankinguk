@@ -9,6 +9,7 @@ using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Z.EntityFramework.Plus;
+using LegacyData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {

@@ -9,6 +9,7 @@ using Biobanks.Common.Exceptions;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using LegacyData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
