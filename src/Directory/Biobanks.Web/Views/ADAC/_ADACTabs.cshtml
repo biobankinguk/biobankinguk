@@ -195,14 +195,17 @@
                         @Html.ActionLink("Term Page Config", "TermpageConfig")
                     </li>
 
-                    <li role="presentation"
-                        class="@(Model == "Register " + App.Config[ConfigKey.SampleResourceName] + " Config" ? "active" : "true")">
-                        @Html.ActionLink("Register Biobank Config", "RegisterBiobankConfig")
-                    </li>
+                    @if (App.Config[ConfigKey.DisplayAboutPage] != "false")
+                    {
+                        <li role="presentation"
+                            class="@(Model == "Aboutpage Config" ? "active" : "true")">
+                            @Html.ActionLink("About Page Config", "AboutpageConfig")
+                        </li>
+                    }
 
                     <li role="presentation"
-                        class="@(Model == "Register Network Config" ? "active" : "true")">
-                        @Html.ActionLink("Register Network Config", "RegisterNetworkConfig")
+                        class="@(Model == "Register Pages Config" ? "active" : "true")">
+                        @Html.ActionLink("Register Pages Config", "RegisterPagesConfig")
                     </li>
 
                     <li role="presentation"

@@ -2,33 +2,36 @@
 
 @switch (Model.Action ?? "")
 {
-	case "account":
-		Html.RenderPartial("_NavItemAccount", Model); break;
+    case "account":
+        Html.RenderPartial("_NavItemAccount", Model); break;
 
-	case "adac":
-		Html.RenderPartial("_NavItemAdac", Model); break;
+    case "adac":
+        Html.RenderPartial("_NavItemAdac", Model); break;
 
-	case "biobanks":
-		Html.RenderPartial("_NavItemBiobanks", Model); break;
+    case "biobanks":
+        Html.RenderPartial("_NavItemBiobanks", Model); break;
 
-	case "networks":
-		Html.RenderPartial("_NavItemNetworks", Model); break;
+    case "networks":
+        Html.RenderPartial("_NavItemNetworks", Model); break;
 
-	case "contact":
-		Html.RenderPartial("_NavItemContact", Model); break;
+    case "contact":
+        Html.RenderPartial("_NavItemContact", Model); break;
 
-	case "register_biobank":
-		Html.RenderPartial("_NavItemRegisterBiobank", Model); break;
+    case "about":
+        Html.RenderPartial("_NavItemAbout", Model); break;
 
-	case "register_network":
-		Html.RenderPartial("_NavItemRegisterNetwork", Model); break;
+    case "register_biobank":
+        Html.RenderPartial("_NavItemRegisterBiobank", Model); break;
 
-	case "login":
-		Html.RenderPartial("_NavItemLogin", Model); break;
+    case "register_network":
+        Html.RenderPartial("_NavItemRegisterNetwork", Model); break;
 
-	case "logout":
-		Html.RenderPartial("_NavItemLogout", Model); break;
+    case "login":
+        Html.RenderPartial("_NavItemLogin", Model); break;
 
-	default:
-		Html.RenderPartial("_NavItemBasic", Model); break;
+    case "logout":
+        Html.RenderPartial("_NavItemLogout", Model); break;
+
+    default:
+        Html.RenderPartial("_NavItemBasic", Model); break;
 }

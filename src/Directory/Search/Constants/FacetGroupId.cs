@@ -10,6 +10,6 @@ namespace Directory.Search.Constants
         CollectionDetails,
         Governance,
         AccessConditions,
-        //Location
+        Location
     }
 }
