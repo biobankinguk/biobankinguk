@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
+using LegacyData;
 
 [assembly: FunctionsStartup(typeof(Biobanks.SubmissionAzureFunction.Startup))]
 

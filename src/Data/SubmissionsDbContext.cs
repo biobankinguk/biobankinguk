@@ -98,14 +98,23 @@ namespace Data
         }
         public SubmissionsDbContext(DbContextOptions options) : base(options) { }
 
-        /*  Required for DesignTime creation of the context.*/
         public class SubmissionsDbContextFactory : IDesignTimeDbContextFactory<SubmissionsDbContext>
         {
+            /*  Required for DesignTime creation of the context.
+             *
+             *  For running migration ensure at least EFCore 5.0.0 is used
+             *  >> Install-Package Microsoft.EntityFrameworkCore - Version 5.0.0
+             *  >> Install-Package Microsoft.EntityFrameworkCore.Tools -Version 5.0.0
+             *  
+             *  The connection string is passed via CLI arguments
+             *  >> Update-Database -Args "<Connection-String>"
+             */
+
             public SubmissionsDbContext CreateDbContext(string[] args)
             {
-                var options = new DbContextOptionsBuilder<SubmissionsDbContext>(); 
-                // Connection string passed needs to be pass in CLI  -- "connString"
+                var options = new DbContextOptionsBuilder<SubmissionsDbContext>();
                 options.UseSqlServer(args[0], options => options.EnableRetryOnFailure());
+
                 return new SubmissionsDbContext(options.Options);
             }
         }
