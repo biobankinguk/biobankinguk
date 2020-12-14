@@ -39,19 +39,25 @@ namespace Directory.Services
             };
 
             // If they're a Biobank Admin then populate the claim for the ID of their Biobank.
+            // Additionally, add claims for accepted biobank requests
             if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.BiobankAdmin.ToString()))
             {
                 var biobanks = _biobankReadService.GetBiobankIdsAndNamesByUserId(user.Id);
-
-                claims.AddRange(biobanks.Select(biobank => new Claim(CustomClaimType.BiobankId, biobank.Key.ToString())));
+                claims.AddRange(biobanks.Select(biobank => new Claim(CustomClaimType.BiobankId, biobank.Key.ToString(), biobank.Value.ToString())));
+                
+                var biobankRequests = _biobankReadService.GetAcceptedBiobankRequestIdsAndNamesByUserId(user.Id);
+                claims.AddRange(biobankRequests.Select(biobankRequest => new Claim(CustomClaimType.BiobankRequestId, biobankRequest.Key.ToString(), biobankRequest.Value.ToString())));
             }
 
             // If they're a Network Admin then populate the claim for the ID of their Network.
+            // Additionally, add claims for accepted network requests
             if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.NetworkAdmin.ToString()))
             {
                 var networks = _biobankReadService.GetNetworkIdsAndNamesByUserId(user.Id);
+                claims.AddRange(networks.Select(network => new Claim(CustomClaimType.NetworkId, network.Key.ToString(), network.Value.ToString())));
 
-                claims.AddRange(networks.Select(network => new Claim(CustomClaimType.NetworkId, network.Key.ToString())));
+                var networkRequests = _biobankReadService.GetAcceptedNetworkRequestIdsAndNamesByUserId(user.Id);
+                claims.AddRange(networkRequests.Select(networkRequest => new Claim(CustomClaimType.NetworkRequestId, networkRequest.Key.ToString(), networkRequest.Value.ToString())));
             }
 
             AddClaims(claims);
