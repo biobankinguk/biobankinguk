@@ -9,10 +9,7 @@
 	{
 		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(biobank.Value);
 		<li>
-
 			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = currentClaim.Key, newBiobank = true})">
-
-
 				<span class="fa fa-book labelled-icon"></span>@((string)currentClaim.Value)
 			</a>
 		</li>
@@ -23,10 +20,7 @@
 	{
 		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(biobank.Value);
 		<li>
-
 			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = currentClaim.Key, newBiobank = false})">
-
-
 				<span class="fa fa-book labelled-icon"></span>@((string)currentClaim.Value)
 			</a>
 		</li>
