@@ -32,6 +32,7 @@
             @foreach (var type in Model.AccessConditions)
 			{ 
                 <tr class="@(type.AccessConditionCount > 0 ? "info" : "")"
+					data-resource-url="/api/AccessConditions"
 					data-access-condition-id="@type.Id"
 					data-access-condition-desc="@type.Description">
 
@@ -99,29 +100,33 @@
 			</div>
 
 			<!-- Modal Form -->
-			<form id="modal-access-conditions-form" class="form-horizontal" >
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-sm-12">
-							<input type="hidden" id="Id" name="Id" data-bind="value: modal.accessCondition().id">
-							<input type="hidden" id="SortOrder" name="SortOrder" data-bind="value: modal.accessCondition().sortOrder">
+            <form id="modal-access-conditions-form" 
+				  data-resource-url="/api/AccessConditions"
+                  data-update-success-redirect="@Url.Action("EditAccessConditionSuccess")"
+                  data-add-success-redirect="@Url.Action("AddAccessConditionSuccess")"
+                  class="form-horizontal">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="hidden" id="Id" name="Id" data-bind="value: modal.accessCondition().id">
+                            <input type="hidden" id="SortOrder" name="SortOrder" data-bind="value: modal.accessCondition().sortOrder">
 
-							<!-- Access Condition -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Description</label>
-								<div class="col-sm-9">
-									<input type="text" id="Description" name="Description" class="form-control" data-bind="value: modal.accessCondition().description()">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+                            <!-- Access Condition -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Description</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="Description" name="Description" class="form-control" data-bind="value: modal.accessCondition().description()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
-				</div>
-			</form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
+                </div>
+            </form>
 		</div>
     </div>
 </div>

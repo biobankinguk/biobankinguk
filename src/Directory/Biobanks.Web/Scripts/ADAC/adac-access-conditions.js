@@ -9,7 +9,7 @@ function AccessCondition(id, description, sortOrder) {
 
 function AccessConditionModal(id, description, sortOrder) {
     this.modalModeAdd = "Add";
-    this.modalModeEdit = "Edit";
+    this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
@@ -58,22 +58,34 @@ function AdacAccessConditionViewModel() {
 
     this.modalSubmit = function (e) {
         e.preventDefault();
+        var form = $(e.target); //get the submit button's form
 
         // Get Action Type
-        var action = _this.modal.mode().toLowerCase();
-        var url = `/api/AccessConditions/${action}AccessConditionAjax`;
+        var resourceUrl = form.data("resource-url")
+        var action = _this.modal.mode();
+        if (action == 'Add') {
+            var ajaxType = 'POST'
+            var url = resourceUrl; 
+        } else if (action == 'Update') {
+            var ajaxType = 'PUT';
+            var url = resourceUrl + `?id=${$(e.target.Id).val()}`;
+        }
+        var successRedirect = action.toLowerCase() + "-success-redirect";
 
         // Make AJAX Call
-        $.post(url, $(e.target).serialize(), function (data) {
-
-            // Clear any previous errors
-            _this.dialogErrors.removeAll();
-
-            if (data.success) {
+        $.ajax({
+            url: url,
+            type: ajaxType,
+            dataType: 'json',
+            data: form.serialize(),
+            success: function (data, textStatus, xhr) {
+                _this.dialogErrors.removeAll();
                 _this.hideModal();
-                window.location.replace(data.redirect);
-            }
-            else {
+                window.location.href =
+                    form.data(successRedirect) + "?Name=" + data.name;
+            },
+            error: function (data,xhr, textStatus, errorThrown) {
+                _this.dialogErrors.removeAll();
                 if (Array.isArray(data.errors)) {
                     for (var error of data.errors) {
                         _this.dialogErrors.push(error);
@@ -128,11 +140,16 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("/api/AccessConditions/EditAccessConditionAjax?sortOnly=true",
-            {
+        $.ajax({
+            url: `${$(triggerRow.node).data('resource-url') +
+                 "?id=" + $(triggerRow.node).data('access-condition-id')}&sortOnly=true`,
+            type: 'PUT',
+            dataType: 'json',
+            data: {
                 id: $(triggerRow.node).data('access-condition-id'),
                 description: $(triggerRow.node).data('access-condition-desc'),
                 sortOrder: (triggerRow.newPosition + 1) //1-indexable
-            });
+            }
+        });
     });
 });

@@ -784,7 +784,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Access Conditions
         public async Task<ActionResult> AccessConditions()
         {
-            var endpoint = "api/AccessConditions/AccessConditions";
+            var endpoint = "api/AccessConditions";
             try
             {
                 //Make request
@@ -808,11 +808,12 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteAccessCondition(AccessConditionModel model)
         {
-            var endpoint = "api/AccessConditions/DeleteAccessCondition";
+            var endpoint = $"api/AccessConditions?id={model.Id}";
             try
             {
+                
                 //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
+                var response = await _client.DeleteAsync(endpoint);
                 var contents = await response.Content.ReadAsStringAsync();
 
                 var result = JObject.Parse(contents);

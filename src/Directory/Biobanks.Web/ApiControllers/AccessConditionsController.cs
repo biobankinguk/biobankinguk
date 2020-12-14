@@ -25,9 +25,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         // GET api/{Controller}/{Action}
-
-        [HttpGet]
-        public async Task<IList> AccessConditions()
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListAccessConditionsAsync())
                 .Select(x =>
@@ -46,8 +44,7 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> AddAccessConditionAjax(AccessConditionModel model)
+        public async Task<IHttpActionResult> Post(AccessConditionModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidAccessConditionDescriptionAsync(model.Description))
@@ -75,15 +72,13 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddAccessConditionSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditAccessConditionAjax(AccessConditionModel model)
+        public async Task<IHttpActionResult> Put(int id, [FromBody]AccessConditionModel model, bool sortOnly = false)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidAccessConditionDescriptionAsync(model.Id, model.Description))
+            if (!sortOnly && await _biobankReadService.ValidAccessConditionDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use by another access condition. Access condition descriptions must be unique.");
             }
@@ -93,37 +88,30 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            if (await _biobankReadService.IsAccessConditionInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This access condition is currently in use and cannot be edited." }
-                });
-            }
+            // If in use, then consider update is to only re-order the type
+            bool inUse = await _biobankReadService.IsAccessConditionInUse(id);
 
             var access = new AccessCondition
             {
-                AccessConditionId = model.Id,
+                AccessConditionId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             };
 
-            await _biobankWriteService.UpdateAccessConditionAsync(access);
+            await _biobankWriteService.UpdateAccessConditionAsync(access, (sortOnly || inUse));
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditAccessConditionSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteAccessCondition(AccessConditionModel model)
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsAccessConditionInUse(model.Id))
+            var model = (await _biobankReadService.ListAccessConditionsAsync()).Where(x => x.AccessConditionId == id).FirstOrDefault();
+            if (await _biobankReadService.IsAccessConditionInUse(model.AccessConditionId))
             {
                 return Json(new
                 {
@@ -134,9 +122,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
             {
-                AccessConditionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
+                AccessConditionId = model.AccessConditionId
             });
 
             //Everything went A-OK!
