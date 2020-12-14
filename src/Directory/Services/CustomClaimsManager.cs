@@ -9,6 +9,7 @@ using Directory.Identity.Constants;
 using Directory.Services.Contracts;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using Newtonsoft.Json;
 
 namespace Directory.Services
 {
@@ -43,10 +44,10 @@ namespace Directory.Services
             if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.BiobankAdmin.ToString()))
             {
                 var biobanks = _biobankReadService.GetBiobankIdsAndNamesByUserId(user.Id);
-                claims.AddRange(biobanks.Select(biobank => new Claim(CustomClaimType.BiobankId, biobank.Key.ToString(), biobank.Value.ToString())));
+                claims.AddRange(biobanks.Select(biobank => new Claim(CustomClaimType.BiobankId, JsonConvert.SerializeObject(biobank))));
                 
                 var biobankRequests = _biobankReadService.GetAcceptedBiobankRequestIdsAndNamesByUserId(user.Id);
-                claims.AddRange(biobankRequests.Select(biobankRequest => new Claim(CustomClaimType.BiobankRequestId, biobankRequest.Key.ToString(), biobankRequest.Value.ToString())));
+                claims.AddRange(biobankRequests.Select(biobankRequest => new Claim(CustomClaimType.BiobankRequestId, JsonConvert.SerializeObject(biobankRequest))));
             }
 
             // If they're a Network Admin then populate the claim for the ID of their Network.
@@ -54,10 +55,10 @@ namespace Directory.Services
             if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.NetworkAdmin.ToString()))
             {
                 var networks = _biobankReadService.GetNetworkIdsAndNamesByUserId(user.Id);
-                claims.AddRange(networks.Select(network => new Claim(CustomClaimType.NetworkId, network.Key.ToString(), network.Value.ToString())));
+                claims.AddRange(networks.Select(network => new Claim(CustomClaimType.NetworkId, JsonConvert.SerializeObject(network))));
 
                 var networkRequests = _biobankReadService.GetAcceptedNetworkRequestIdsAndNamesByUserId(user.Id);
-                claims.AddRange(networkRequests.Select(networkRequest => new Claim(CustomClaimType.NetworkRequestId, networkRequest.Key.ToString(), networkRequest.Value.ToString())));
+                claims.AddRange(networkRequests.Select(networkRequest => new Claim(CustomClaimType.NetworkRequestId, JsonConvert.SerializeObject(networkRequest))));
             }
 
             AddClaims(claims);
