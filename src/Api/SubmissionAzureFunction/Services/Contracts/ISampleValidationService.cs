@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities;
 using Biobanks.SubmissionAzureFunction.Dtos;
+
+using StagedSample = LegacyData.Entities.StagedSample;
 
 namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {

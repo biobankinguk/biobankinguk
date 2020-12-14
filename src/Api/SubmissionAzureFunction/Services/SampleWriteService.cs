@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Extensions;
@@ -12,6 +11,8 @@ using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using LegacyData;
+using LiveSample = LegacyData.Entities.LiveSample;
+using StagedSample = LegacyData.Entities.StagedSample;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {

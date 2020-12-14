@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using LegacyData;
+
+using MaterialType = LegacyData.Entities.MaterialType;
+using MaterialTypeGroup = LegacyData.Entities.MaterialTypeGroup;
+using MaterialTypeMaterialTypeGroup = LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
@@ -109,8 +112,6 @@ namespace Biobanks.SubmissionAzureFunction.Services
             if (_cache.TryGetValue(CacheKeys.MaterialTypes, out IEnumerable<MaterialType> cacheEntry)) return cacheEntry;
 
             cacheEntry = await _db.MaterialTypes
-                .Include(x => x.MaterialTypeGroups)
-                .ThenInclude(y => y.MaterialTypes)
                 .AsNoTracking()
                 .ToListAsync();
 
