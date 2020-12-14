@@ -5,9 +5,9 @@
 @if (CurrentUser.Identity.IsAuthenticated)
 {
 	var biobankRequestClaims = CurrentUser.Claims.Where(x => x.Type == CustomClaimType.BiobankRequestId).ToList();
-	foreach (var c in biobankRequestClaims)
+	foreach (var biobank in biobankRequestClaims)
 	{
-		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(c.Value);
+		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(biobank.Value);
 		<li>
 
 			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = currentClaim.Key, newBiobank = true})">

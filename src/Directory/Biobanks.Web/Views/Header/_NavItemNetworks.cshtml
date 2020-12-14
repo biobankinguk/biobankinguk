@@ -1,32 +1,33 @@
 ﻿@using Newtonsoft.Json
+@using Directory.Identity.Constants;
 @model Biobanks.Web.Models.Header.NavItemModel
 
 @if (CurrentUser.Identity.IsAuthenticated)
 {
-	if (ViewBag.UserNetworkRequests != null)
+	var networkRequestClaims = CurrentUser.Claims.Where(x => x.Type == CustomClaimType.NetworkRequestId).ToList();
+	foreach (var network in networkRequestClaims)
 	{
-		var networks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserNetworkRequests);
+		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(network.Value);
+		<li>
 
-		foreach (var network in networks)
-		{
-			<li>
-				<a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = true })">
-					<span class="fa fa-exchange labelled-icon"></span>@((string)network.Value)
-				</a>
-			</li>
-		}
+			<a href="@Url.Action("SwitchToNetwork", "Account", new { id = currentClaim.Key, newNetwork = true})">
+
+				<span class="fa fa-exchange labelled-icon"></span>@((string)currentClaim.Value)
+			</a>
+		</li>
 	}
-	if (ViewBag.UserNetworks != null)
-	{
-		var networks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(ViewBag.UserNetworks);
 
-		foreach (var network in networks)
-		{
-			<li>
-				<a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = false })">
-					<span class="fa fa-exchange labelled-icon"></span>@((string)network.Value)
-				</a>
-			</li>
-		}
+	var networkClaims = CurrentUser.Claims.Where(x => x.Type == CustomClaimType.NetworkId).ToList();
+	foreach (var network in networkClaims)
+	{
+		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(network.Value);
+		<li>
+
+			<a href="@Url.Action("SwitchToNetwork", "Account", new { id = currentClaim.Key, newNetwork = false})">
+
+
+				<span class="fa fa-exchange labelled-icon"></span>@((string)currentClaim.Value)
+			</a>
+		</li>
 	}
 }
