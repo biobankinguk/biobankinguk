@@ -100,14 +100,17 @@ namespace Data
 
         public class SubmissionsDbContextFactory : IDesignTimeDbContextFactory<SubmissionsDbContext>
         {
-            /*  Required for DesignTime creation of the context.
-             *
-             *  For running migration ensure at least EFCore 5.0.0 is used
-             *  >> Install-Package Microsoft.EntityFrameworkCore - Version 5.0.0
-             *  >> Install-Package Microsoft.EntityFrameworkCore.Tools -Version 5.0.0
+            /*  Required for DesignTime creation of the context. EF operations can be done from
+             *  either Package Manager or via Dotnet EF Tools.
              *  
-             *  The connection string is passed via CLI arguments
-             *  >> Update-Database -Args "<Connection-String>"
+             *  For either option, the connection string of the database must be passed via
+             *  CLI arguments.
+             *  
+             *  Package Manager - https://docs.microsoft.com/en-us/ef/core/cli/powershell
+             *  >> <Migrations Command> -Args "<Connection-String>"
+             *  
+             *  dotnet CLI - https://docs.microsoft.com/en-us/ef/core/cli/dotnet
+             *  >> dotnet ef <CLI Command> -- "<Connection-String>"
              */
 
             public SubmissionsDbContext CreateDbContext(string[] args)
