@@ -1,13 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Biobanks.Common.Data.Entities;
+﻿using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Data.Entities.ReferenceData;
-
-// Legacy Entities Used To Support EF 3.1
-using LiveSample = LegacyData.Entities.LiveSample;
-using StagedSample = LegacyData.Entities.StagedSample;
-using MaterialType = LegacyData.Entities.MaterialType;
-using MaterialTypeGroup = LegacyData.Entities.MaterialTypeGroup;
-using MaterialTypeMaterialTypeGroup = LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
+using LegacyData.Entities.JoinEntities;
+using Microsoft.EntityFrameworkCore;
 
 namespace LegacyData
 {
@@ -22,7 +16,6 @@ namespace LegacyData
         // Reference Data
         public DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
-        public DbSet<MaterialTypeMaterialTypeGroup> MaterialTypeMaterialTypeGroup { get; set; }
         public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
         public DbSet<SnomedTerm> SnomedTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
@@ -101,7 +94,7 @@ namespace LegacyData
                     x.CollectionName
                 }).IsUnique();
 
-            // Join Entity Many-Many Relationship - Required for EF 3.1
+            //Join entity keys
             model.Entity<MaterialTypeMaterialTypeGroup>()
                 .HasKey(x => new
                 {
@@ -109,15 +102,6 @@ namespace LegacyData
                     x.MaterialTypeGroupId
                 });
 
-            model.Entity<MaterialTypeMaterialTypeGroup>()
-                .HasOne(x => x.MaterialType)
-                .WithMany(x => x.MaterialTypeGroups)
-                .HasForeignKey(x => x.MaterialTypeId);
-
-            model.Entity<MaterialTypeMaterialTypeGroup>()
-                .HasOne(x => x.MaterialTypeGroup)
-                .WithMany(x => x.MaterialTypes)
-                .HasForeignKey(x => x.MaterialTypeGroupId);
         }
 
         public SubmissionsDbContext(DbContextOptions options) : base(options) { }
