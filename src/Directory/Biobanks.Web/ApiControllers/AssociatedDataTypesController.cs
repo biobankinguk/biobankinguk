@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/AssociatedDataTypes")]
     public class AssociatedDataTypesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,9 +25,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: AssociatedDataTypes;
         [HttpGet]
-        public async Task<IHttpActionResult> AssociatedDataTypes()
+        [Route("")]
+        public async Task<IHttpActionResult> Get()
         {
             var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
                 .Select(x => new AssociatedDataTypeGroupModel
@@ -57,34 +58,37 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteAssociatedDataType(AssociatedDataTypeModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(model.Id))
+            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Where(x => x.AssociatedDataTypeId == id).FirstOrDefault();
+            if (await _biobankReadService.IsAssociatedDataTypeInUse(model.AssociatedDataTypeId))
             {
                 return Json(new
                 {
-                    msg = $"The associated data type \"{model.Name}\" is currently in use, and cannot be deleted.",
+                    msg = $"The associated data type \"{model.Description}\" is currently in use, and cannot be deleted.",
                     type = FeedbackMessageType.Danger
                 });
             }
 
             await _biobankWriteService.DeleteAssociatedDataTypeAsync(new AssociatedDataType
             {
-                AssociatedDataTypeId = model.Id,
-                Description = model.Name
+                AssociatedDataTypeId = id,
+                Description = model.Description
             });
 
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The associated data type \"{model.Name}\" was deleted successfully.",
+                msg = $"The associated data type \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditAssociatedDataTypeAjax(AssociatedDataTypeModel model)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, AssociatedDataTypeModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidAssociatedDataTypeDescriptionAsync(model.Name))
@@ -97,7 +101,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(model.Id))
+            if (await _biobankReadService.IsAssociatedDataTypeInUse(id))
             {
                 return Json(new
                 {
@@ -108,7 +112,7 @@ namespace Biobanks.Web.ApiControllers
 
             var associatedDataTypes = new AssociatedDataType
             {
-                AssociatedDataTypeId = model.Id,
+                AssociatedDataTypeId = id,
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Description = model.Name,
                 Message = model.Message
@@ -122,12 +126,12 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Name,
-                redirect = $"EditAssociatedDataTypeSuccess?name={model.Name}"
             });
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddAssociatedDataTypeAjax(AssociatedDataTypeModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(AssociatedDataTypeModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidAssociatedDataTypeDescriptionAsync(model.Name))
@@ -155,7 +159,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Name,
-                redirect = $"AddAssociatedDataTypeSuccess?name={model.Name}"
             });
         }
     }

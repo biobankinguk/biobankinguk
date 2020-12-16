@@ -1631,57 +1631,58 @@ namespace Biobanks.Web.Controllers
         #region RefData: Assocaited Data Types
         public async Task<ActionResult> AssociatedDataTypes()
         {
-            var endpoint = "api/AssociatedDataTypes/AssociatedDataTypes";
-            try
-            {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-                return View(new AssociatedDataTypesModel
+            var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
+                .Select(x => new AssociatedDataTypeGroupModel
                 {
-                    AssociatedDataTypes = result["AssociatedDataTypes"].ToObject<IList<AssociatedDataTypeModel>>(),
-                    AssociatedDataTypeGroups = result["AssociatedDataTypeGroups"].ToObject<IList<AssociatedDataTypeGroupModel>>()
-                });
-            }
-            catch (Exception)
+                    AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
+                    Name = x.Description,
+                })
+                .ToList();
+            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Select(x =>
+
+            Task.Run(async () => new AssociatedDataTypeModel
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new AssociatedDataTypesModel
-                { 
-                    AssociatedDataTypes = new List<AssociatedDataTypeModel> { },
-                    AssociatedDataTypeGroups = new List<AssociatedDataTypeGroupModel> { }
-                });
-            }
+                Id = x.AssociatedDataTypeId,
+                Name = x.Description,
+                Message = x.Message,
+                CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.AssociatedDataTypeId),
+                AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
+                AssociatedDataTypeGroupName = groups.Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()?.Name,
+
+            }).Result)
+
+               .ToList();
+
+
+            return View(new AssociatedDataTypesModel
+            {
+                AssociatedDataTypes = model,
+                AssociatedDataTypeGroups = groups
+            });
         }
 
         public async Task<ActionResult> DeleteAssociatedDataType(AssociatedDataTypeModel model)
         {
-            var endpoint = "api/AssociatedDataTypes/DeleteAssociatedDataType";
-            try
+            if (await _biobankReadService.IsAssociatedDataTypeInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("AssociatedDataTypes");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The associated data type \"{model.Name}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("AssociatedDataTypes");
             }
-        }
+
+            await _biobankWriteService.DeleteAssociatedDataTypeAsync(new AssociatedDataType
+            {
+                AssociatedDataTypeId = model.Id,
+                Description = model.Name
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The associated data type \"{model.Name}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("AssociatedDataTypes");
+            }
 
         public ActionResult EditAssociatedDataTypeSuccess(string name)
         {
