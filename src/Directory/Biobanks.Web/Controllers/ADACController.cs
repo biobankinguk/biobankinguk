@@ -842,51 +842,42 @@ namespace Biobanks.Web.Controllers
         #region RefData: Age Ranges
         public async Task<ActionResult> AgeRanges()
         {
-            var endpoint = "api/AgeRanges/AgeRanges";
-            try
-            {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+            var models = (await _biobankReadService.ListAgeRangesAsync())
+                .Select(x =>
+                    Task.Run(async () => new AgeRangeModel()
+                    {
+                        Id = x.AgeRangeId,
+                        Description = x.Description,
+                        SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.AgeRangeId)
+                    })
+                    .Result
+                )
+                .ToList();
 
-                var result = JsonConvert.DeserializeObject<IList<AgeRangeModel>>(contents);
-                return View(new AgeRangesModel
-                {
-                    AgeRanges = result
-                });
-            }
-            catch (Exception)
+            return View(new AgeRangesModel
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new AgeRangesModel { AgeRanges = new List<AgeRangeModel> { } });
-            }
-            
+                AgeRanges = models
+            });
+
         }
         public async Task<ActionResult> DeleteAgeRange(AgeRangeModel model)
         {
-            var endpoint = "api/AgeRanges/DeleteAgeRange";
-            try
+            if (await _biobankReadService.IsAgeRangeInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
+                SetTemporaryFeedbackMessage($"The age range \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
                 return RedirectToAction("AgeRanges");
             }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
 
-                return RedirectToAction("AgeRanges");
-            }
+            await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
+            {
+                AgeRangeId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            });
+
+            SetTemporaryFeedbackMessage($"The age range  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("AgeRanges");
 
         }
 

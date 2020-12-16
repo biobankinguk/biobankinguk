@@ -10,6 +10,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/AgeRanges")]
     public class AgeRangesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -23,7 +24,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
-        public async Task<IList> AgeRanges()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListAgeRangesAsync())
                 .Select(x =>
@@ -42,7 +44,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddAgeRangeAjax(AgeRangeModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(AgeRangeModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
@@ -74,11 +77,12 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditAgeRangeAjax(AgeRangeModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, AgeRangeModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidAgeRangeAsync(model.Description))
+            if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
             {
                 ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
@@ -88,28 +92,33 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
+            // If in use, prevent update
+            if (model.SampleSetsCount > 0)
+            {
+                return Json(new
+                {
+                    msg = $"The age range \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateAgeRangeAsync(new AgeRange
             {
-                AgeRangeId = model.Id,
+                AgeRangeId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditAgeRangeSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteAgeRange(AgeRangeModel model)
+        [HttpDelete]
+        public async Task<IHttpActionResult> Delete(AgeRangeModel model)
         {
             if (await _biobankReadService.IsAgeRangeInUse(model.Id))
             {
@@ -132,6 +141,34 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The age range  \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, AgeRangeModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            var access = new AgeRange
+            {
+                AgeRangeId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            };
+
+            await _biobankWriteService.UpdateAgeRangeAsync(access, true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
     }
 }
