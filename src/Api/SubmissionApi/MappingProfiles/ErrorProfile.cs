@@ -18,6 +18,14 @@ namespace Biobanks.SubmissionApi.MappingProfiles
                             src => JObject.Parse(src.RecordIdentifiers)
                         )
                     );
+
+            CreateMap<ErrorModel, Error>()
+                .ForMember(
+                    dest => dest.RecordIdentifiers,
+                    opts => opts.MapFrom(
+                            src => src.RecordIdentifiers.ToString()
+                        )
+                    );
         }
     }
 }
