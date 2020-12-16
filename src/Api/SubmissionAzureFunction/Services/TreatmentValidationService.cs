@@ -26,6 +26,8 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             var exceptions = new List<ValidationException>();
 
+            try { treatment = ValidateFutureDate(dto, treatment); }
+            catch (ValidationException e) { exceptions.Add(e); }
             try { treatment = await ValidateTreatmentCode(dto, treatment); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { treatment = await ValidateTreatmentLocation(dto, treatment); }
@@ -33,15 +35,32 @@ namespace Biobanks.SubmissionAzureFunction.Services
             try { treatment = await ValidateTreatmentCodeOntologyVersion(dto, treatment); }
             catch (ValidationException e) { exceptions.Add(e); }
 
-            if (exceptions.Any()) throw new AggregateException(exceptions); //throw the aggregate one
-
-            //no exceptions? set any remaining sample properties and return it
-
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
+            }
+            
             //system properties
             treatment.SubmissionTimestamp = dto.SubmissionTimestamp;
-
-            //value properties (don't need to await)
             treatment.IndividualReferenceId = dto.IndividualReferenceId;
+
+            return treatment;
+        }
+
+        private StagedTreatment ValidateFutureDate(TreatmentDto dto, StagedTreatment treatment)
+        {
+            // Check Date Isn't In The Future
+            if (dto.DateTreated > dto.SubmissionTimestamp)
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.DateInFuture(dto.DateTreated, dto.IndividualReferenceId)
+                    ),
+                    null, null
+                );
+            }
+
+            // Map Across Valid Date
             treatment.DateTreated = dto.DateTreated;
 
             return treatment;
