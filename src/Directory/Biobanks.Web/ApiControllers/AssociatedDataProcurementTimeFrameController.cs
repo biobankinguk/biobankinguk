@@ -12,6 +12,7 @@ using System.Linq;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/AssociatedDataProcurementTimeFrame")]
     public class AssociatedDataProcurementTimeFrameController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,10 +25,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET api/{Controller}/{Action}
-        // GET: AssociatedDataProcurementTimeFrame
         [HttpGet]
-        public async Task<IList> AssociatedDataProcurementTimeFrame()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
                     .Select(x =>
@@ -45,8 +45,9 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteAssociatedDataProcurementTimeFrame(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
         {
             //Validate min amount of time frames
             var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
@@ -83,11 +84,12 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditAssociatedDataProcurementTimeFrameAjax(Models.Shared.AssociatedDataProcurementTimeFrameModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, Models.Shared.AssociatedDataProcurementTimeFrameModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(model.Id, model.Description))
+            if (await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That Associated Data Procurement Time Frame already exists!");
             }
@@ -107,30 +109,36 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id);
+            // If in use, prevent update
+            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
+            {
+                return Json(new
+                {
+                    msg = $"The Associated Data Procurement Time Frame \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
-                AssociatedDataProcurementTimeframeId = model.Id,
+                AssociatedDataProcurementTimeframeId = id,
                 Description = model.Description,
                 DisplayValue = model.DisplayName,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             // Success message
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditAssociatedDataProcurementTimeFrameSuccess?name={model.Description}"
             });
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddAssociatedDataProcurementTimeFrameAjax(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
         {
             // Validate model
             var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
@@ -181,9 +189,37 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Description,
-                redirect = $"AddAssociatedDataProcurementTimeFrameSuccess?name={model.Description}"
+                name = model.Description
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, Models.Shared.AssociatedDataProcurementTimeFrameModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            // Update Preservation Type
+            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
+            {
+                AssociatedDataProcurementTimeframeId = id,
+                Description = model.Description,
+                DisplayValue = model.DisplayName,
+                SortOrder = model.SortOrder
+            },
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
 
     }

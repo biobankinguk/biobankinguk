@@ -99,7 +99,11 @@
             </div>
 
             <!-- Modal Form -->
-            <form id="modal-procurement-time-form" class="form-horizontal">
+            <form id="modal-procurement-time-form" 
+                  data-resource-url="/api/AssociatedDataProcurementTimeFrame"
+                  data-update-success-redirect="@Url.Action("EditAssociatedDataProcurementTimeFrameSuccess")"
+                  data-add-success-redirect="@Url.Action("AddAssociatedDataProcurementTimeFrameSuccess")"
+                  class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">

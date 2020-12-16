@@ -896,53 +896,53 @@ namespace Biobanks.Web.Controllers
         #region RefData: AssociatedDataProcurementTimeFrame
         public async Task<ActionResult> AssociatedDataProcurementTimeFrame()
         {
-            var endpoint = "api/AssociatedDataProcurementTimeFrame/AssociatedDataProcurementTimeFrame";
-            try
+            return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                AssociatedDataProcurementTimeFrameModels = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadAssociatedDataProcurementTimeFrameModel>>(contents);
-                return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel
+                Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
                 {
-                    AssociatedDataProcurementTimeFrameModels = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel { 
-                    AssociatedDataProcurementTimeFrameModels = new List<ReadAssociatedDataProcurementTimeFrameModel> { } });
-            }
+                    Id = x.AssociatedDataProcurementTimeframeId,
+                    Description = x.Description,
+                    DisplayName = x.DisplayValue,
+                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.AssociatedDataProcurementTimeframeId),
+                    SortOrder = x.SortOrder
+                }).Result)
+
+                    .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteAssociatedDataProcurementTimeFrame(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
         {
-            var endpoint = "api/AssociatedDataProcurementTimeFrame/DeleteAssociatedDataProcurementTimeFrame";
-            try
+            //Validate min amount of time frames
+            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
+            if (timeFrames.Count() <= 2)
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
+                SetTemporaryFeedbackMessage($"A minimum amount of 2 time frames are allowed.", FeedbackMessageType.Warning);
                 return RedirectToAction("AssociatedDataProcurementTimeFrame");
             }
-            catch (Exception)
+
+            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id))
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The associated data procurement time frame \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("AssociatedDataProcurementTimeFrame");
             }
 
+            await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
+            {
+                AssociatedDataProcurementTimeframeId = model.Id,
+                Description = model.Description
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("AssociatedDataProcurementTimeFrame");
         }
 
         public ActionResult EditAssociatedDataProcurementTimeFrameSuccess(string name)
