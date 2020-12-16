@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/AccessConditions")]
     public class AccessConditionsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,9 +25,8 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET api/{Controller}
-        //see  https://www.ais.com/web-api-mixing-traditional-verb-based-routing/
-        [ActionName("DefaultAction")]
+        [HttpGet]
+        [Route("")]
         public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListAccessConditionsAsync())
@@ -46,7 +46,8 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
-        [ActionName("DefaultAction")]
+        [HttpPost]
+        [Route("")]
         public async Task<IHttpActionResult> Post(AccessConditionModel model)
         {
             //If this description is valid, it already exists
@@ -79,7 +80,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPut]
-        [ActionName("DefaultAction")]
+        [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, AccessConditionModel model)
         {
             //If this description is valid, it already exists
@@ -120,7 +121,7 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [ActionName("DefaultAction")]
+        [HttpDelete]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListAccessConditionsAsync()).Where(x => x.AccessConditionId == id).FirstOrDefault();
@@ -146,8 +147,8 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        // GET api/AccessConditions/Sort
         [HttpPut]
+        [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, AccessConditionModel model)
         {
 

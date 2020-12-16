@@ -14,17 +14,9 @@ namespace Biobanks.Web.App_Start
 
         public static void Register(HttpConfiguration config)
         {
-            //see  https://www.ais.com/web-api-mixing-traditional-verb-based-routing/
-            config.Routes.MapHttpRoute(
-                name: "DefaultApiWithAction",
-                routeTemplate: "api/{controller}/{action}/{id}",
-                defaults: new 
-                { 
-                    id = RouteParameter.Optional ,
-                    action = "DefaultAction"
-                }
-             );
-            
+
+            //Use Attribute routing
+            config.MapHttpAttributeRoutes();
 
             // Configure JSON as default
             config.Formatters.Add(new BrowserJsonFormatter());
