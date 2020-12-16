@@ -33,6 +33,7 @@
                 @foreach (var procurement in Model.AssociatedDataProcurementTimeFrameModels)
                 {
                     <tr class="@(procurement.CollectionCapabilityCount > 0 ? "info" : "")"
+                        data-resource-url="/api/AssociatedDataProcurementTimeFrame"
                         data-procurement-id="@procurement.Id"
                         data-procurement-desc="@procurement.Description">
 

@@ -122,6 +122,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpDelete]
+        [Route("")]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListAccessConditionsAsync()).Where(x => x.AccessConditionId == id).FirstOrDefault();

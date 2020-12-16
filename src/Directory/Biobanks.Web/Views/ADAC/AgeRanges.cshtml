@@ -34,6 +34,7 @@
 				@foreach (var type in Model.AgeRanges)
 				{
 					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
+						data-resource-url="/api/AgeRanges"
 						data-age-range-id="@type.Id"
 						data-age-range-desc="@type.Description">
 
