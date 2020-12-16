@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
+
+using StagedSample = LegacyData.Entities.StagedSample;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
@@ -28,7 +29,9 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             //Sadly because of EF we can't do these in parallel :( but we still need to aggregate exceptions
             var exceptions = new List<ValidationException>();
-
+            
+            try { sample = ValidateFutureDate(dto, sample); }
+            catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateMaterialType(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateStorageTemperature(dto, sample); }
@@ -46,16 +49,35 @@ namespace Biobanks.SubmissionAzureFunction.Services
             try { sample = ValidateAgeAndYearOfBirth(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
 
-            if (exceptions.Any()) throw new AggregateException(exceptions); //throw the aggregate one
-
-            //no exceptions? set any remaining sample properties and return it
-
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
+            }
+                
             //value properties (don't need to await)
             sample.IndividualReferenceId = dto.IndividualReferenceId;
             sample.Barcode = dto.Barcode;
-            sample.DateCreated = dto.DateCreated;
             sample.SubmissionTimestamp = dto.SubmissionTimestamp;
             sample.CollectionName = dto.CollectionName;
+
+            return sample;
+        }
+
+        private StagedSample ValidateFutureDate(SampleDto dto, StagedSample sample)
+        {
+            // Check Date Isn't In The Future
+            if (dto.DateCreated > dto.SubmissionTimestamp)
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.DateInFuture(dto.DateCreated, dto.IndividualReferenceId)
+                    ),
+                    null, null
+                );
+            }
+
+            // Map Across Valid Date
+            sample.DateCreated = dto.DateCreated;
 
             return sample;
         }
@@ -108,7 +130,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             //check if extracted sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             // Validate SNOMED-CT term
@@ -130,7 +152,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
         {
             //check if extracted sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             // Validate SNOMED-CT term
@@ -152,7 +174,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
         {
             //check if tissue sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.TissueSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.TissueSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             // Validate SNOMED-CT term
@@ -200,7 +222,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             //check if extracted sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
+            if (!(mt?.MaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
             var result = await _refDataReadService.GetSampleContentMethod(dto.SampleContentMethod);
