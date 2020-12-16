@@ -12,6 +12,7 @@ using Directory.Entity.Data;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/AnnualStatistics")]
     public class AnnualStatisticsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -25,9 +26,9 @@ namespace Biobanks.Web.ApiControllers
         }
 
 
-        // GET: AnnualStatistics
         [HttpGet]
-        public async Task<IHttpActionResult> AnnualStatistics()
+        [Route("")]
+        public async Task<IHttpActionResult> Get()
         {
             var groups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
                  .Select(x => new AnnualStatisticGroupModel
@@ -59,7 +60,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddAnnualStatisticAjax(AnnualStatisticModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(AnnualStatisticModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
@@ -86,12 +88,12 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Name,
-                redirect = $"AddAnnualStatisticSuccess?name={model.Name}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditAnnualStatisticAjax(AnnualStatisticModel model)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, AnnualStatisticModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
@@ -104,7 +106,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            if (await _biobankReadService.IsAnnualStatisticInUse(model.Id))
+            if (await _biobankReadService.IsAnnualStatisticInUse(id))
             {
                 return Json(new
                 {
@@ -115,7 +117,7 @@ namespace Biobanks.Web.ApiControllers
 
             var annualStatistics = new AnnualStatistic
             {
-                AnnualStatisticId = model.Id,
+                AnnualStatisticId = id,
                 AnnualStatisticGroupId = model.AnnualStatisticGroupId,
                 Name = model.Name
             };
@@ -127,12 +129,12 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Name,
-                redirect = $"EditAnnualStatisticSuccess?name={model.Name}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteAnnualStatistic(AnnualStatisticModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(AnnualStatisticModel model)
         {
             if (await _biobankReadService.IsAnnualStatisticInUse(model.Id))
             {
@@ -158,6 +160,34 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The annual statistics type \"{model.Name}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, AnnualStatisticModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            var annualStatistics = new AnnualStatistic
+            {
+                AnnualStatisticId = id,
+                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
+                Name = model.Name
+            };
+
+            await _biobankWriteService.UpdateAnnualStatisticAsync(annualStatistics, true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Name
+            });
+
         }
     }
 }
