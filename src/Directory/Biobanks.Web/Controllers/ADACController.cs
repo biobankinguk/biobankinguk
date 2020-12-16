@@ -1707,50 +1707,42 @@ namespace Biobanks.Web.Controllers
         #region RefData: Associated Data Type Groups
         public async Task<ActionResult> AssociatedDataTypeGroups()
         {
-            var endpoint = "api/AssociatedDataTypeGroups/AssociatedDataTypeGroups";
-            try
+            return View(new AssociatedDataTypesGroupModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                AssociatedDataTypeGroups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadAssociatedDataTypeGroupModel>>(contents);
-                return View(new AssociatedDataTypesGroupModel
-                {
-                    AssociatedDataTypeGroups = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new AssociatedDataTypesGroupModel { AssociatedDataTypeGroups = new List<ReadAssociatedDataTypeGroupModel> { } });
-            }
+                    Task.Run(async () => new ReadAssociatedDataTypeGroupModel
+                    {
+                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
+                        Name = x.Description,
+                        AssociatedDataTypeGroupCount = await _biobankReadService.GetAssociatedDataTypeGroupCount(x.AssociatedDataTypeGroupId)
+                    }).Result)
+
+                    .ToList()
+            });
         }
         public async Task<ActionResult> DeleteAssociatedDataTypeGroup(AssociatedDataTypeGroupModel model)
         {
-            var endpoint = "api/AssociatedDataTypeGroups/DeleteAssociatedDataTypeGroup";
-            try
+            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(model.AssociatedDataTypeGroupId))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("AssociatedDataTypeGroups");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The associated data type group \"{model.Name}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("AssociatedDataTypeGroups");
             }
+
+            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
+            {
+                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
+                Description = model.Name
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The associated data type group \"{model.Name}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("AssociatedDataTypeGroups");
         }
        
         public ActionResult AddAssociatedDataTypeGroupSuccess(string name)
