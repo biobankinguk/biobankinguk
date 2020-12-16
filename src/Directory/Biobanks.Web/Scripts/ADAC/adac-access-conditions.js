@@ -58,7 +58,7 @@ function AdacAccessConditionViewModel() {
 
     this.modalSubmit = function (e) {
         e.preventDefault();
-        var form = $(e.target); //get the submit button's form
+        var form = $(e.target); // get form as a jquery object
 
         // Get Action Type
         var resourceUrl = form.data("resource-url")
@@ -68,7 +68,7 @@ function AdacAccessConditionViewModel() {
             var url = resourceUrl; 
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
-            var url = resourceUrl + `?id=${$(e.target.Id).val()}`;
+            var url = resourceUrl + '/' + $(e.target.Id).val();
         }
         var successRedirect = action.toLowerCase() + "-success-redirect";
 
@@ -141,8 +141,8 @@ $(function () {
 
         //AJAX Update
         $.ajax({
-            url: `${$(triggerRow.node).data('resource-url') +
-                 "?id=" + $(triggerRow.node).data('access-condition-id')}&sortOnly=true`,
+            url: $(triggerRow.node).data('resource-url') +
+                 "/Sort/" + $(triggerRow.node).data('access-condition-id'),
             type: 'PUT',
             dataType: 'json',
             data: {

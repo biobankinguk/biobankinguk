@@ -21,10 +21,12 @@ namespace Biobanks.Web.ApiControllers
                                           IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;
-            _biobankWriteService  = biobankWriteService;
+            _biobankWriteService = biobankWriteService;
         }
 
-        // GET api/{Controller}/{Action}
+        // GET api/{Controller}
+        //see  https://www.ais.com/web-api-mixing-traditional-verb-based-routing/
+        [ActionName("DefaultAction")]
         public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListAccessConditionsAsync())
@@ -44,6 +46,7 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
+        [ActionName("DefaultAction")]
         public async Task<IHttpActionResult> Post(AccessConditionModel model)
         {
             //If this description is valid, it already exists
@@ -75,10 +78,12 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        public async Task<IHttpActionResult> Put(int id, [FromBody]AccessConditionModel model, bool sortOnly = false)
+        [HttpPut]
+        [ActionName("DefaultAction")]
+        public async Task<IHttpActionResult> Put(int id, AccessConditionModel model)
         {
             //If this description is valid, it already exists
-            if (!sortOnly && await _biobankReadService.ValidAccessConditionDescriptionAsync(id, model.Description))
+            if (await _biobankReadService.ValidAccessConditionDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use by another access condition. Access condition descriptions must be unique.");
             }
@@ -88,8 +93,15 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then consider update is to only re-order the type
-            bool inUse = await _biobankReadService.IsAccessConditionInUse(id);
+            // If in use, prevent update
+            if (await _biobankReadService.IsAccessConditionInUse(id))
+            {
+                return Json(new
+                {
+                    msg = $"The access condition \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             var access = new AccessCondition
             {
@@ -98,7 +110,7 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder
             };
 
-            await _biobankWriteService.UpdateAccessConditionAsync(access, (sortOnly || inUse));
+            await _biobankWriteService.UpdateAccessConditionAsync(access);
 
             //Everything went A-OK!
             return Json(new
@@ -108,6 +120,7 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
+        [ActionName("DefaultAction")]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListAccessConditionsAsync()).Where(x => x.AccessConditionId == id).FirstOrDefault();
@@ -132,5 +145,34 @@ namespace Biobanks.Web.ApiControllers
                 type = FeedbackMessageType.Success
             });
         }
+
+        // GET api/AccessConditions/Sort
+        [HttpPut]
+        public async Task<IHttpActionResult> Sort(int id, AccessConditionModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            var access = new AccessCondition
+            {
+                AccessConditionId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            };
+
+            await _biobankWriteService.UpdateAccessConditionAsync(access, true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
+        }
+
     }
 }
