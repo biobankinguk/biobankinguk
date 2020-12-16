@@ -46,8 +46,10 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpDelete]
         [Route("")]
-        public async Task<IHttpActionResult> Delete(AnnualStatisticGroupModel model)
+        public async Task<IHttpActionResult> Delete(int id)
         {
+            var model = (await _biobankReadService.ListAnnualStatisticGroupsAsync()).Where(x => x.AnnualStatisticGroupId == id).First();
+
             if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
             {
                 return Json(new
@@ -59,7 +61,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
             {
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
+                AnnualStatisticGroupId = id,
                 Name = model.Name
             });
 

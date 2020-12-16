@@ -47,8 +47,10 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpDelete]
         [Route("")]
-        public async Task<IHttpActionResult> Delete(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
+        public async Task<IHttpActionResult> Delete(int id)
         {
+            var model = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames()).Where(x => x.AssociatedDataProcurementTimeframeId == id).First();
+
             //Validate min amount of time frames
             var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
             if (timeFrames.Count() <= 2)
@@ -60,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
                 });
             }
 
-            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id))
+            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
             {
                 return Json(new
                 {
@@ -71,7 +73,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
-                AssociatedDataProcurementTimeframeId = model.Id,
+                AssociatedDataProcurementTimeframeId = id,
                 Description = model.Description
             });
 

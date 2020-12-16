@@ -73,7 +73,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddAgeRangeSuccess?name={model.Description}"
             });
         }
 
@@ -118,9 +117,11 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpDelete]
-        public async Task<IHttpActionResult> Delete(AgeRangeModel model)
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsAgeRangeInUse(model.Id))
+            var model = (await _biobankReadService.ListAgeRangesAsync()).Where(x => x.AgeRangeId == id).First();
+
+            if (await _biobankReadService.IsAgeRangeInUse(id))
             {
                 return Json(new
                 {
@@ -131,7 +132,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
             {
-                AgeRangeId = model.Id,
+                AgeRangeId = model.AgeRangeId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
