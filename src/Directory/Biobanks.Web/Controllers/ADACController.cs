@@ -1109,51 +1109,45 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            var endpoint = "api/DiseaseStatuses/DiseaseStatuses";
-            try
+            return View(new DiagnosesModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                Diagnoses = (await _biobankReadService.ListDiagnosesAsync())
+                     .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadDiagnosisModel>>(contents);
-                return View(new DiagnosesModel
-                {
-                    Diagnoses = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new DiagnosesModel { Diagnoses = new List<ReadDiagnosisModel> { } });
-            }
+                     Task.Run(async () => new ReadDiagnosisModel
+                     {
+                         Id = x.DiagnosisId,
+                         SnomedIdentifier = x.SnomedIdentifier,
+                         Description = x.Description,
+                         CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
+                         OtherTerms = x.OtherTerms
+                     }).Result)
+
+                     .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteDiseaseStatus(DiagnosisModel model)
         {
-            var endpoint = "api/DiseaseStatuses/DeleteDiseaseStatus";
-            try
+            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("DiseaseStatuses");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("DiseaseStatuses");
             }
+
+            await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
+            {
+                DiagnosisId = model.Id,
+                Description = model.Description
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("DiseaseStatuses");
         }
 
         public ActionResult EditDiseaseStatusSuccess(string name)

@@ -13,6 +13,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/DiseaseStatuses")]
     public class DiseaseStatusesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -26,7 +27,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
-        public async Task<IList> DiseaseStatuses()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var model = (await _biobankReadService.ListDiagnosesAsync())
                 .Select(x =>
@@ -43,10 +45,13 @@ namespace Biobanks.Web.ApiControllers
                 return model;   
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteDiseaseStatus(DiagnosisModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
+            var model = (await _biobankReadService.ListDiagnosesAsync()).Where(x => x.DiagnosisId == id).First();
+
+            if (await _biobankReadService.IsDiagnosisInUse(id))
             {
                 return Json(new
                 {
@@ -57,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
             {
-                DiagnosisId = model.Id,
+                DiagnosisId = model.DiagnosisId,
                 Description = model.Description
             });
 
@@ -69,11 +74,12 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditDiseaseStatusAjax(DiagnosisModel model)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, DiagnosisModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Id, model.Description))
+            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use by another disease status. Disease status descriptions must be unique.");
             }
@@ -83,7 +89,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
+            if (await _biobankReadService.IsDiagnosisInUse(id))
             {
                 return Json(new
                 {
@@ -94,7 +100,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateDiagnosisAsync(new Diagnosis
             {
-                DiagnosisId = model.Id,
+                DiagnosisId = id,
                 SnomedIdentifier = model.SnomedIdentifier,
                 Description = model.Description,
                 OtherTerms = model.OtherTerms
@@ -109,7 +115,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddDiseaseStatusAjax(DiagnosisModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(DiagnosisModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
