@@ -64,7 +64,7 @@ namespace Biobanks
                     var biobankId = Convert.ToInt32(activeOrganisationId);
 
                     // If they don't have a claim on this biobank, return
-                    if (!currentUser.BiobankIds.Contains(activeOrganisationId.ToString()))
+                    if (currentUser.Biobanks.FirstOrDefault(x => x.Key == Convert.ToInt32(activeOrganisationId)).Key == 0)
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;
@@ -91,7 +91,7 @@ namespace Biobanks
                     var networkId = Convert.ToInt32(activeOrganisationId);
 
                     // If they don't have a claim on this biobank, return
-                    if (!currentUser.NetworkIds.Contains(networkId.ToString()))
+                    if (currentUser.Networks.FirstOrDefault(x => x.Key == networkId).Key == 0)
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;

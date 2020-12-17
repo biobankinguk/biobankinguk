@@ -61,7 +61,7 @@ namespace Biobanks.Web.Controllers
 
         #region Details
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> Index()
         {
             return View(await GetNetworkDetailsModelAsync());
@@ -186,7 +186,7 @@ namespace Biobanks.Web.Controllers
                 //add a claim now that they're associated with the network
                 _claimsManager.AddClaims(new List<Claim>
                 {
-                    new Claim(CustomClaimType.NetworkId, network.NetworkId.ToString())
+                    new Claim(CustomClaimType.Network, network.NetworkId.ToString())
                 });
 
                 //Logo upload (now we have the id, we can form the filename)
@@ -367,7 +367,7 @@ namespace Biobanks.Web.Controllers
 
         #region Admins
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> Admins()
         {
             var networkId = SessionHelper.GetNetworkId(Session);
@@ -431,7 +431,7 @@ namespace Biobanks.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<JsonResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
         {
             if (!ModelState.IsValid)
@@ -519,7 +519,7 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName)
         {
             //remove them from the network
@@ -538,7 +538,7 @@ namespace Biobanks.Web.Controllers
 
         #region Biobank membership
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> Biobanks()
         {
             var networkId = SessionHelper.GetNetworkId(Session);
@@ -571,7 +571,7 @@ namespace Biobanks.Web.Controllers
             return View(model);
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> DeleteBiobank(int biobankId, string biobankName)
         {
             try
@@ -589,7 +589,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("Biobanks");
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public ActionResult AddBiobank()
         {
             return View(new AddBiobankToNetworkModel());
@@ -597,7 +597,7 @@ namespace Biobanks.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model)
         {
             //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
@@ -703,7 +703,7 @@ namespace Biobanks.Web.Controllers
             return View(model);
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<JsonResult> SearchBiobanks(string wildcard)
         {
             var biobanks = await _biobankReadService.ListBiobanksAsync(wildcard, false);

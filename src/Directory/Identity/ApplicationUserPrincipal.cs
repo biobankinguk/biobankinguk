@@ -13,10 +13,6 @@ namespace Directory.Identity
 
         //Add custom claims...
         public string Name => FindFirst(CustomClaimType.FullName).Value; //ClaimTypes.Name is used for username, which is acquirable directly from the identity instead
-
-        public IEnumerable<string> BiobankIds => FindAll(CustomClaimType.Biobank).Select(x => JsonConvert.DeserializeObject<KeyValuePair<string, string>>(x.Value).Key);
- 
-        public IEnumerable<string> NetworkIds => FindAll(CustomClaimType.Network).Select(x => JsonConvert.DeserializeObject<KeyValuePair<string, string>>(x.Value).Key);
         public IEnumerable<KeyValuePair<int, string>> Biobanks => FindAll(CustomClaimType.Biobank).Select(x => JsonConvert.DeserializeObject<KeyValuePair<int, string>>(x.Value));
         public IEnumerable<KeyValuePair<int, string>> Networks => FindAll(CustomClaimType.Network).Select(x => JsonConvert.DeserializeObject<KeyValuePair<int, string>>(x.Value));
         public IEnumerable<KeyValuePair<int, string>> BiobankRequests => FindAll(CustomClaimType.BiobankRequest).Select(x => JsonConvert.DeserializeObject<KeyValuePair<int, string>>(x.Value));

@@ -9,6 +9,7 @@ using Biobanks.Web.Models.Profile;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
 using Directory.Data.Constants;
+using System;
 
 namespace Biobanks.Web.Controllers
 {
@@ -39,7 +40,7 @@ namespace Biobanks.Web.Controllers
             if (bb.IsSuspended)
             {
                 //Allow ADAC or this Biobank's admins to view the profile
-                if (CurrentUser.BiobankIds.Contains(bb.OrganisationId.ToString()) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
+                if (CurrentUser.Biobanks.FirstOrDefault(x => x.Key == Convert.ToInt32(bb.OrganisationId)).Key != 0 && User.IsInRole(Role.BiobankAdmin.ToString()) ||
                     User.IsInRole(Role.ADAC.ToString()))
                 {
                     //But alert them that the bb is suspended
