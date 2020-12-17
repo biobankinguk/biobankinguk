@@ -1748,51 +1748,44 @@ namespace Biobanks.Web.Controllers
         #region RefData: Consent Restrictions
         public async Task<ActionResult> ConsentRestriction()
         {
-            var endpoint = "api/ConsentRestrictions/ConsentRestriction";
-            try
+            return View(new Models.ADAC.ConsentRestrictionModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadConsentRestrictionModel>>(contents);
-                return View(new Models.ADAC.ConsentRestrictionModel
+                Task.Run(async () => new ReadConsentRestrictionModel
                 {
-                    ConsentRestrictions = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new AccessConditionsModel { AccessConditions = new List<ReadAccessConditionsModel> { } });
-            }
+                    Id = x.ConsentRestrictionId,
+                    Description = x.Description,
+                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.ConsentRestrictionId),
+                    SortOrder = x.SortOrder
+                }).Result)
+
+                    .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteConsentRestriction(Models.Shared.ConsentRestrictionModel model)
         {
-            var endpoint = "api/ConsentRestrictions/DeleteConsentRestriction";
-            try
+            if (await _biobankReadService.IsConsentRestrictionInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("ConsentRestriction");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The consent restriction \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("ConsentRestriction");
             }
+
+            await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
+            {
+                ConsentRestrictionId = model.Id,
+                Description = model.Description
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The consent restriction \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("ConsentRestriction");
         }
 
         public ActionResult EditConsentRestrictionSuccess(string name)
