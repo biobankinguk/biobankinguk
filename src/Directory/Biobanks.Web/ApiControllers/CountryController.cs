@@ -12,6 +12,8 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+
+    [RoutePrefix("api/Country")]
     public class CountryController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -25,9 +27,9 @@ namespace Biobanks.Web.ApiControllers
         }
 
 
-        // GET: Country
         [HttpGet]
-        public async Task<IList> Country()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var model = (await _biobankReadService.ListCountriesAsync())
                 .Select(x =>
@@ -45,7 +47,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddCountryAjax(Models.Shared.CountryModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(Models.Shared.CountryModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidCountryNameAsync(model.Name))
@@ -78,11 +81,12 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditCountryAjax(Models.Shared.CountryModel model)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, Models.Shared.CountryModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCountryNameAsync(model.Id, model.Name))
+            if (await _biobankReadService.ValidCountryNameAsync(id, model.Name))
             {
                 ModelState.AddModelError("Name", "That name is already in use by another country. Country names must be unique.");
             }
@@ -99,7 +103,7 @@ namespace Biobanks.Web.ApiControllers
                 });
             }
 
-            if (await _biobankReadService.IsCountryInUse(model.Id))
+            if (await _biobankReadService.IsCountryInUse(id))
             {
                 return Json(new
                 {
@@ -110,7 +114,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateCountryAsync(new Country
             {
-                CountryId = model.Id,
+                CountryId = id,
                 Name = model.Name
             });
 
@@ -122,10 +126,13 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteCountry(Models.Shared.CountryModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsCountryInUse(model.Id))
+            var model = (await _biobankReadService.ListCountriesAsync()).Where(x => x.CountryId == id).First();
+
+            if (await _biobankReadService.IsCountryInUse(id))
             {
                 return Json(new
                 {
@@ -136,7 +143,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCountryAsync(new Country
             {
-                CountryId = model.Id,
+                CountryId = model.CountryId,
                 Name = model.Name
             });
 

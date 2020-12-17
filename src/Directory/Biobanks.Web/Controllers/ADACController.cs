@@ -2074,25 +2074,20 @@ namespace Biobanks.Web.Controllers
         #region RefData: Country
         public async Task<ActionResult> Country()
         {
-            var endpoint = "api/Country/Country";
-            try
+            return View(new Models.ADAC.CountryModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                Countries = (await _biobankReadService.ListCountriesAsync())
+                     .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadCountryModel>>(contents);
-                return View(new Models.ADAC.CountryModel
-                {
-                    Countries = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new Models.ADAC.CountryModel { Countries = new List<ReadCountryModel> { } });
-            }
+                     Task.Run(async () => new ReadCountryModel
+                     {
+                         Id = x.CountryId,
+                         Name = x.Name,
+                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.CountryId)
+                     }).Result)
+
+                     .ToList()
+            });
         }
 
         public ActionResult AddCountrySuccess(string name)
@@ -2117,28 +2112,25 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteCountry(Models.Shared.CountryModel model)
         {
-            var endpoint = "api/Country/DeleteCountry";
-            try
+            if (await _biobankReadService.IsCountryInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("Country");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The country \"{model.Name}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("Country");
             }
+
+            await _biobankWriteService.DeleteCountryAsync(new Country
+            {
+                CountryId = model.Id,
+                Name = model.Name
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The country \"{model.Name}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("Country");
         }
         #endregion
 
