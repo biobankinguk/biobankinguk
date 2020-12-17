@@ -1245,51 +1245,42 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Points
         public async Task<ActionResult> CollectionPoints()
         {
-            var endpoint = "api/CollectionPoints/CollectionPoints";
-            try
-            {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+            var models = (await _biobankReadService.ListCollectionPointsAsync())
+                .Select(x =>
+                    Task.Run(async () => new CollectionPointModel()
+                    {
+                        Id = x.CollectionPointId,
+                        Description = x.Description,
+                        SortOrder = x.SortOrder,
+                    })
+                    .Result
+                )
+                .ToList();
 
-                var result = JsonConvert.DeserializeObject<IList<CollectionPointModel>>(contents);
-                return View(new CollectionPointsModel()
-                {
-                    CollectionPoints = result
-                });
-            }
-            catch (Exception)
+            return View(new CollectionPointsModel()
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new CollectionPointsModel { CollectionPoints = new List<CollectionPointModel> { } });
-            }
+                CollectionPoints = models
+            });
         }
 
         public async Task<ActionResult> DeleteCollectionPoint(CollectionPointModel model)
         {
-            var endpoint = "api/CollectionPoints/DeleteCollectionPoint";
-            try
+            if (await _biobankReadService.IsCollectionPointInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
+                SetTemporaryFeedbackMessage($"The collection point \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
                 return RedirectToAction("CollectionPoints");
             }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
 
-                return RedirectToAction("CollectionPoints");
-            }
+            await _biobankWriteService.DeleteCollectionPointAsync(new CollectionPoint
+            {
+                CollectionPointId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            });
+
+            // Success
+            SetTemporaryFeedbackMessage($"The collection point  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("CollectionPoints");
         }
 
         public ActionResult AddCollectionPointSuccess(string name)

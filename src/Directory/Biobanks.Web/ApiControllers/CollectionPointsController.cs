@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/CollectionPoints")]
     public class CollectionPointsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,9 +25,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: CollectionPoints
         [HttpGet]
-        public async Task<IList> CollectionPoints()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListCollectionPointsAsync())
                 .Select(x =>
@@ -43,7 +44,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddCollectionPointAjax(CollectionPointModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(CollectionPointModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidCollectionPointDescriptionAsync(model.Description))
@@ -71,15 +73,15 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddCollectionPointSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditCollectionPointAjax(CollectionPointModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, CollectionPointModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionPointDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidCollectionPointDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("CollectionPoints", "That collection point already exists!");
             }
@@ -89,31 +91,39 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
+            // If in use, prevent update
+            if (model.SampleSetsCount > 0)
+            {
+                return Json(new
+                {
+                    msg = $"The Collection points \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateCollectionPointAsync(new CollectionPoint
             {
-                CollectionPointId = model.Id,
+                CollectionPointId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             // Success message
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditCollectionPointSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteCollectionPoint(CollectionPointModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> DeleteCollectionPoint(int id)
         {
-            if (await _biobankReadService.IsCollectionPointInUse(model.Id))
+            var model = (await _biobankReadService.ListCollectionPointsAsync()).Where(x => x.CollectionPointId == id).First();
+
+            if (await _biobankReadService.IsCollectionPointInUse(id))
             {
                 return Json(new
                 {
@@ -124,7 +134,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCollectionPointAsync(new CollectionPoint
             {
-                CollectionPointId = model.Id,
+                CollectionPointId = model.CollectionPointId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -136,5 +146,32 @@ namespace Biobanks.Web.ApiControllers
                 type = FeedbackMessageType.Success
             });
         }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, CollectionPointModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdateCollectionPointAsync(new CollectionPoint
+            {
+                CollectionPointId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            }, true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
+        }
+
     }
 }
