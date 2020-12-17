@@ -2139,22 +2139,28 @@ namespace Biobanks.Web.Controllers
         {
             if (await _biobankReadService.GetSiteConfigStatus("site.display.counties") == true)
             {
-                var endpoint = "api/County/County";
-                try
-                {
-                    //Make request
-                    var response = await _client.GetAsync(endpoint);
-                    var contents = await response.Content.ReadAsStringAsync();
+                var countries = await _biobankReadService.ListCountriesAsync();
 
-                    var result = JsonConvert.DeserializeObject<CountiesModel>(contents);
-                    return View(result);
-                }
-                catch (Exception)
-                {
-                    SetTemporaryFeedbackMessage($"Something went wrong!",
-                        FeedbackMessageType.Danger);
-                    return View(new CountiesModel { });
-                }
+                return View(
+                    new CountiesModel
+                    {
+                        Counties = countries.ToDictionary(
+                            x => x.Name,
+                            x => x.Counties.Select(county =>
+                                Task.Run(async () =>
+                                    new CountyModel
+                                    {
+                                        Id = county.CountyId,
+                                        CountryId = x.CountryId,
+                                        Name = county.Name,
+                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.CountyId)
+                                    }
+                                 )
+                                .Result
+                            )
+                        )
+                    }
+                );
             }
             else
             {
@@ -2164,28 +2170,24 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteCounty(CountyModel model)
         {
-            var endpoint = "api/County/DeleteCounty";
-            try
+            if (await _biobankReadService.IsCountyInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
+                SetTemporaryFeedbackMessage($"The county \"{model.Name}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
                 return RedirectToAction("Country");
             }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
 
-                return RedirectToAction("Country");
-            }
+            var county = new County
+            {
+                CountyId = model.Id,
+                CountryId = model.CountryId,
+                Name = model.Name
+            };
+
+            await _biobankWriteService.DeleteCountyAsync(county);
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The county type \"{model.Name}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("County");
         }
 
         public ActionResult AddCountySuccess(string name)

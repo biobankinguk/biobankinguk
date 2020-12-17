@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/County")]
     public class CountyController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -25,9 +26,9 @@ namespace Biobanks.Web.ApiControllers
         }
 
 
-        // GET: County
         [HttpGet]
-        public async Task<CountiesModel> County()
+        [Route("")]
+        public async Task<CountiesModel> Get()
         {
                 var countries = await _biobankReadService.ListCountriesAsync();
             var model = new CountiesModel
@@ -52,7 +53,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddCountyAjax(CountyModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(CountyModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidCountyAsync(model.Name))
@@ -79,12 +81,12 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Name,
-                redirect = $"AddCountySuccess?name={model.Name}"
             });
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> EditCountyAjax(CountyModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Put(int id, CountyModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidCountyAsync(model.Name))
@@ -97,7 +99,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            if (await _biobankReadService.IsCountyInUse(model.Id))
+            if (await _biobankReadService.IsCountyInUse(id))
             {
                 return Json(new
                 {
@@ -108,7 +110,7 @@ namespace Biobanks.Web.ApiControllers
 
             var county = new County
             {
-                CountyId = model.Id,
+                CountyId = id,
                 CountryId = model.CountryId,
                 Name = model.Name
             };
@@ -120,14 +122,16 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Name,
-                redirect = $"EditCountySuccess?name={model.Name}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteCounty(CountyModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsCountyInUse(model.Id))
+            var model = (await _biobankReadService.ListCountriesAsync()).Select(x => x.Counties.Where(y=>y.CountyId == id).First()).First();
+
+            if (await _biobankReadService.IsCountyInUse(id))
             {
                 return Json(new
                 {
@@ -138,7 +142,7 @@ namespace Biobanks.Web.ApiControllers
 
             var county = new County
             {
-                CountyId = model.Id,
+                CountyId = model.CountyId,
                 CountryId = model.CountryId,
                 Name = model.Name
             };
