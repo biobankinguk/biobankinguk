@@ -13,6 +13,7 @@ using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/DonorCounts")]
     public class DonorCountsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -25,9 +26,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: DonorCounts
         [HttpGet]
-        public async Task<IList> DonorCounts()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListDonorCountsAsync(true))
                 .Select(x =>
@@ -48,7 +49,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddDonorCountAjax(DonorCountModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
@@ -82,18 +84,18 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddDonorCountSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditDonorCountAjax(DonorCountModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidDonorCountAsync(model.Description))
+            if (await _biobankReadService.ValidDonorCountAsync(model.Description))
             {
                 ModelState.AddModelError("DonorCounts", $"That {currentReferenceName.Value} already exists!");
             }
@@ -103,36 +105,44 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
+            // If in use, prevent update
+            if (model.SampleSetsCount > 0)
+            {
+                return Json(new
+                {
+                    msg = $"The donor count \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {
-                DonorCountId = model.Id,
+                DonorCountId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound
-            },
-            (sortOnly || inUse));
+            });
 
             // Success message
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditDonorCountSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteDonorCount(DonorCountModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
+            var model = (await _biobankReadService.ListDonorCountsAsync()).Where(x => x.DonorCountId == id).First();
+
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
 
-            if (await _biobankReadService.IsDonorCountInUse(model.Id))
+            if (await _biobankReadService.IsDonorCountInUse(id))
             {
                 return Json(new
                 {
@@ -143,7 +153,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteDonorCountAsync(new DonorCount
             {
-                DonorCountId = model.Id,
+                DonorCountId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = 0,
@@ -157,5 +167,36 @@ namespace Biobanks.Web.ApiControllers
                 type = FeedbackMessageType.Success
             });
         }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, DonorCountModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            // Update Preservation Type
+            await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
+            {
+                DonorCountId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder,
+                LowerBound = model.LowerBound,
+                UpperBound = model.UpperBound
+            },
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
+        }
+
     }
 }
