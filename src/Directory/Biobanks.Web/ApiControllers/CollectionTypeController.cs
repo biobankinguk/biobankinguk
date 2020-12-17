@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/CollectionType")]
     public class CollectionTypeController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,9 +25,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: CollectionType
         [HttpGet]
-        public async Task<IList> CollectionType()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var model = (await _biobankReadService.ListCollectionTypesAsync())
                     .Select(x =>
@@ -44,10 +45,13 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteCollectionType(Models.Shared.CollectionTypeModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsCollectionTypeInUse(model.Id))
+            var model = (await _biobankReadService.ListCollectionTypesAsync()).Where(x => x.CollectionTypeId == id).First();
+            
+            if (await _biobankReadService.IsCollectionTypeInUse(id))
             {
                 return Json(new
                 {
@@ -58,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
             {
-                CollectionTypeId = model.Id,
+                CollectionTypeId = model.CollectionTypeId,
                 Description = model.Description
             });
 
@@ -71,11 +75,12 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditCollectionTypeAjax(Models.Shared.CollectionTypeModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, Models.Shared.CollectionTypeModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("CollectionType", "That collection type already exists!");
             }
@@ -84,17 +89,24 @@ namespace Biobanks.Web.ApiControllers
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsCollectionTypeInUse(model.Id);
+
+            // If in use, prevent update
+            if (await _biobankReadService.IsCollectionTypeInUse(id))
+            {
+                return Json(new
+                {
+                    msg = $"The Collection type \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
             {
-                CollectionTypeId = model.Id,
+                CollectionTypeId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             //Everything went A-OK!
             return Json(new
@@ -105,7 +117,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddCollectionTypeAjax(Models.Shared.CollectionTypeModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(Models.Shared.CollectionTypeModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
@@ -131,5 +144,34 @@ namespace Biobanks.Web.ApiControllers
                 name = model.Description
             });
         }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, Models.Shared.CollectionTypeModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            // Update Preservation Type
+            await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
+            {
+                CollectionTypeId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            }, 
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
+        }
+
     }
 }

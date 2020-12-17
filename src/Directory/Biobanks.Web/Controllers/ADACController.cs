@@ -1442,52 +1442,44 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> CollectionType()
         {
-            var endpoint = "api/CollectionType/CollectionType";
-            try
+            return View(new Models.ADAC.CollectionTypeModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                     .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadCollectionTypeModel>>(contents);
-                return View(new Models.ADAC.CollectionTypeModel
-                {
-                    CollectionTypes = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new Models.ADAC.CollectionTypeModel { CollectionTypes = new List<ReadCollectionTypeModel> { } });
-            }
+                 Task.Run(async () => new ReadCollectionTypeModel
+                 {
+                     Id = x.CollectionTypeId,
+                     Description = x.Description,
+                     CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.CollectionTypeId),
+                     SortOrder = x.SortOrder
+                 }).Result)
 
+                     .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteCollectionType(Models.Shared.CollectionTypeModel model)
         {
-            var endpoint = "api/CollectionType/DeleteCollectionType";
-            try
+            if (await _biobankReadService.IsCollectionTypeInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("CollectionType");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The collection type \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("CollectionType");
             }
+
+            await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
+            {
+                CollectionTypeId = model.Id,
+                Description = model.Description
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The collection type \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("CollectionType");
 
         }
 
