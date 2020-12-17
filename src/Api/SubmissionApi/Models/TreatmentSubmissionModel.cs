@@ -10,6 +10,7 @@ namespace Biobanks.SubmissionApi.Models
         /// <summary>
         /// The anatomical location where the treatment was performed.
         /// </summary>
+        [Required]
         public string TreatmentLocation { get; set; }
 
         /// <summary>

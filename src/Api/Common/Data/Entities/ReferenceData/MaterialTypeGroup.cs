@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Data.Entities.JoinEntities;
 
 namespace Biobanks.Common.Data.Entities.ReferenceData
 {
@@ -25,6 +24,6 @@ namespace Biobanks.Common.Data.Entities.ReferenceData
         /// <summary>
         /// Join entities for MaterialTypes in the group
         /// </summary>
-        public ICollection<MaterialTypeMaterialTypeGroup> MaterialTypeMaterialTypeGroups { get; set; }
+        public ICollection<MaterialType> MaterialTypes { get; set; }
     }
 }

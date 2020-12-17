@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Common.Data;
+using Data;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Consts;
 using Biobanks.SubmissionApi.EqualityComparers;
@@ -34,15 +34,15 @@ namespace Biobanks.SubmissionApi.Services
             // if replacing, delete everything from the live areas first
             if (replace)
             {
-                await _db.Database.ExecuteSqlCommandAsync(SqlConsts.DeleteAllLiveDiagnoses(organisationId));
-                await _db.Database.ExecuteSqlCommandAsync(SqlConsts.DeleteAllLiveSamples(organisationId));
-                await _db.Database.ExecuteSqlCommandAsync(SqlConsts.DeleteAllLiveTreatments(organisationId));
+                await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveDiagnoses(organisationId));
+                await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveSamples(organisationId));
+                await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveTreatments(organisationId));
             }
 
             // merge staged entities into corresponding live tables
-            await _db.Database.ExecuteSqlCommandAsync(SqlConsts.MergeStagedDiagnosesIntoLive(organisationId));
-            await _db.Database.ExecuteSqlCommandAsync(SqlConsts.MergeStagedSamplesIntoLive(organisationId));
-            await _db.Database.ExecuteSqlCommandAsync(SqlConsts.MergeStagedTreatmentsIntoLive(organisationId));
+            await _db.Database.ExecuteSqlRawAsync(SqlConsts.MergeStagedDiagnosesIntoLive(organisationId));
+            await _db.Database.ExecuteSqlRawAsync(SqlConsts.MergeStagedSamplesIntoLive(organisationId));
+            await _db.Database.ExecuteSqlRawAsync(SqlConsts.MergeStagedTreatmentsIntoLive(organisationId));
 
             _db.Database.CommitTransaction();
 
