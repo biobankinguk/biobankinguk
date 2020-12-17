@@ -10,6 +10,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/CollectionPercentages")]
     public class CollectionPercentagesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -23,7 +24,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
-        public async Task<IList> CollectionPercentages()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListCollectionPercentagesAsync())
                 .Select(x =>
@@ -44,7 +46,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddCollectionPercentageAjax(CollectionPercentageModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(CollectionPercentageModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
@@ -74,15 +77,15 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddCollectionPercentageSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditCollectionPercentageAjax(CollectionPercentageModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, CollectionPercentageModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
+            if (await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
             {
                 ModelState.AddModelError("CollectionPercentage", "That collection percentage already exists!");
             }
@@ -103,22 +106,23 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound
-            },
-            (sortOnly || inUse));
+            });
 
             // Success message
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditCollectionPercentageSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteCollectionPercentage(CollectionPercentageModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsCollectionPercentageInUse(model.Id))
+            var model = (await _biobankReadService.ListCollectionPercentagesAsync()).Where(x => x.CollectionPercentageId == id).First();
+
+            if (await _biobankReadService.IsCollectionPercentageInUse(id))
             {
                 return Json(new
                 {
@@ -129,7 +133,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
             {
-                CollectionPercentageId = model.Id,
+                CollectionPercentageId = model.CollectionPercentageId,
                 Description = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = 0,
@@ -143,5 +147,34 @@ namespace Biobanks.Web.ApiControllers
                 type = FeedbackMessageType.Success
             });
         }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, CollectionPercentageModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
+            {
+                CollectionPercentageId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder,
+                LowerBound = model.LowerBound,
+                UpperBound = model.UpperBound
+            }, true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
+        }
+
     }
 }

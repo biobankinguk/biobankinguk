@@ -1180,60 +1180,53 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Percentages
         public async Task<ActionResult> CollectionPercentages()
         {
-            var endpoint = "api/CollectionPercentages/CollectionPercentages";
-            try
-            {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JsonConvert.DeserializeObject<IList<CollectionPercentageModel>>(contents);
-                if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent") == true)
-                {
-                    return View(new CollectionPercentagesModel()
+            var models = (await _biobankReadService.ListCollectionPercentagesAsync())
+                .Select(x =>
+                    Task.Run(async () => new CollectionPercentageModel()
                     {
-                        CollectionPercentages = result
-                    });
-                }
-                else
-                {
-                    return RedirectToAction("LockedRef");
-                }
-            }
-            catch (Exception)
+                        Id = x.CollectionPercentageId,
+                        Description = x.Description,
+                        SortOrder = x.SortOrder,
+                        LowerBound = x.LowerBound,
+                        UpperBound = x.UpperBound,
+                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.CollectionPercentageId)
+                    })
+                    .Result
+                )
+                .ToList();
+            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent") == true)
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new CollectionPercentagesModel { CollectionPercentages = new List<CollectionPercentageModel> { } });
+                return View(new CollectionPercentagesModel()
+                {
+                    CollectionPercentages = models
+                });
             }
-
-            
+            else
+            {
+                return RedirectToAction("LockedRef");
+            }
         }
 
         public async Task<ActionResult> DeleteCollectionPercentage(CollectionPercentageModel model)
         {
-            var endpoint = "api/CollectionPercentages/DeleteCollectionPercentage";
-            try
+            if (await _biobankReadService.IsCollectionPercentageInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("CollectionPercentages");
+                SetTemporaryFeedbackMessage($"The collection percentage \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                return RedirectToAction("CollectionPercentage");
             }
-            catch (Exception)
+
+            await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
+                CollectionPercentageId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder,
+                LowerBound = 0,
+                UpperBound = 1
+            });
 
-                return RedirectToAction("CollectionPercentages");
-            }
+            // Success
+            SetTemporaryFeedbackMessage($"The collection percentage  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("CollectionPercentages");
         }
 
         public ActionResult AddCollectionPercentageSuccess(string name)
