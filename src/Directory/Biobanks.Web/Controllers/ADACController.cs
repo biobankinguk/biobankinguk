@@ -1827,51 +1827,44 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Status
         public async Task<ActionResult> CollectionStatus()
         {
-            var endpoint = "api/CollectionStatus/CollectionStatus";
-            try
+            return View(new Models.ADAC.CollectionStatusModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadCollectionStatusModel>>(contents);
-                return View(new Models.ADAC.CollectionStatusModel
+                Task.Run(async () => new ReadCollectionStatusModel
                 {
-                    CollectionStatuses = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new Models.ADAC.CollectionStatusModel { CollectionStatuses = new List<ReadCollectionStatusModel> { } });
-            }
+                    Id = x.CollectionStatusId,
+                    Description = x.Description,
+                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.CollectionStatusId),
+                    SortOrder = x.SortOrder
+                }).Result)
+
+                    .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteCollectionStatus(Models.Shared.CollectionStatusModel model)
         {
-            var endpoint = "api/CollectionStatus/DeleteCollectionStatus";
-            try
+            if (await _biobankReadService.IsCollectionStatusInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("CollectionStatus");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The collection status \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("CollectionStatus");
             }
+
+            await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
+            {
+                CollectionStatusId = model.Id,
+                Description = model.Description
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The collection status \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("CollectionStatus");
         }
 
         public ActionResult EditCollectionStatusSuccess(string name)

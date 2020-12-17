@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/CollectionStatus")]
     public class CollectionStatusController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,9 +25,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: CollectionStatus
         [HttpGet]
-        public async Task<IList> CollectionStatus()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var model = (await _biobankReadService.ListCollectionStatusesAsync())
                     .Select(x =>
@@ -44,10 +45,13 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteCollectionStatus(Models.Shared.CollectionStatusModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsCollectionStatusInUse(model.Id))
+            var model = (await _biobankReadService.ListCollectionStatusesAsync()).Where(x => x.CollectionStatusId == id).First();
+
+            if (await _biobankReadService.IsCollectionStatusInUse(id))
             {
                 return Json(new
                 {
@@ -58,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
             {
-                CollectionStatusId = model.Id,
+                CollectionStatusId = model.CollectionStatusId,
                 Description = model.Description
             });
 
@@ -71,11 +75,12 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditCollectionStatusAjax(Models.Shared.CollectionStatusModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, Models.Shared.CollectionStatusModel model, bool sortOnly = false)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("CollectionStatus", "That collection status already exists!");
             }
@@ -84,8 +89,16 @@ namespace Biobanks.Web.ApiControllers
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsCollectionStatusInUse(model.Id);
+
+            // If in use, prevent update
+            if (await _biobankReadService.IsCollectionStatusInUse(id))
+            {
+                return Json(new
+                {
+                    msg = $"The collection status \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateCollectionStatusAsync(new CollectionStatus
@@ -93,8 +106,7 @@ namespace Biobanks.Web.ApiControllers
                 CollectionStatusId = model.Id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             //Everything went A-OK!
             return Json(new
@@ -105,7 +117,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddCollectionStatusAjax(Models.Shared.CollectionStatusModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(Models.Shared.CollectionStatusModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
@@ -131,5 +144,34 @@ namespace Biobanks.Web.ApiControllers
                 name = model.Description
             });
         }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, Models.Shared.CollectionStatusModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            // Update Preservation Type
+            await _biobankWriteService.UpdateCollectionStatusAsync(new CollectionStatus
+            {
+                CollectionStatusId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            }, 
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
+        }
+
     }
 }
