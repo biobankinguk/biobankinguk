@@ -101,7 +101,7 @@ namespace Biobanks.Web.ApiControllers
             // Update Preservation Type
             await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
             {
-                CollectionPercentageId = model.Id,
+                CollectionPercentageId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
