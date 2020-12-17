@@ -1,27 +1,23 @@
-﻿@using Newtonsoft.Json
-@using Directory.Identity.Constants;
-@model Biobanks.Web.Models.Header.NavItemModel
+﻿@model Biobanks.Web.Models.Header.NavItemModel
 
 @if (CurrentUser.Identity.IsAuthenticated)
 {
-	var biobankRequestClaims = CurrentUser.Claims.Where(x => x.Type == CustomClaimType.BiobankRequestId).ToList();
+	var biobankRequestClaims = CurrentUser.BiobankRequests;
 	foreach (var biobank in biobankRequestClaims)
 	{
-		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(biobank.Value);
 		<li>
-			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = currentClaim.Key, newBiobank = true})">
-				<span class="fa fa-book labelled-icon"></span>@((string)currentClaim.Value)
+			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = true})">
+				<span class="fa fa-book labelled-icon"></span>@((string)biobank.Value)
 			</a>
 		</li>
-	}
+    }
 
-	var biobankClaims = CurrentUser.Claims.Where(x => x.Type == CustomClaimType.BiobankId).ToList();
-	foreach (var biobank in biobankClaims)
-	{
-		var currentClaim = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(biobank.Value);
-		<li>
-			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = currentClaim.Key, newBiobank = false})">
-				<span class="fa fa-book labelled-icon"></span>@((string)currentClaim.Value)
+    var biobankClaims = CurrentUser.Biobanks;
+    foreach (var biobank in biobankClaims)
+    {
+        <li>
+            <a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = false})">
+                <span class="fa fa-book labelled-icon"></span>@((string)biobank.Value)
 			</a>
 		</li>
 	}

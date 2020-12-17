@@ -179,18 +179,16 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "ADAC");
 
             // if they have more than one claim, there's no obvious place to send them
-            if (CurrentUser.BiobankIds.Count() + CurrentUser.NetworkIds.Count() != 1)
+            if (CurrentUser.Biobanks.Count() + CurrentUser.Networks.Count() != 1)
                 return RedirectToAction("Index", "Home");
 
             //to returnUrl if appropriate, or a default route otherwise
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
 
-            // Single biobank only
+            // Biobank admin only
             if (CurrentUser.IsInRole(Role.BiobankAdmin.ToString()))
             {
-
-                var biobank = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(CurrentUser.Claims
-                    .Where(x => x.Type == CustomClaimType.BiobankId).ToList().FirstOrDefault()?.Value);
+                var biobank = CurrentUser.Biobanks.FirstOrDefault();
 
                 if (!biobank.Equals(default(KeyValuePair<int, string>)))
                 {
@@ -201,11 +199,11 @@ namespace Biobanks.Web.Controllers
                 }
             }
                 
-            // Single network only
+            // Network admin only
             if (CurrentUser.IsInRole(Role.NetworkAdmin.ToString()))
             {
                 var network = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(CurrentUser.Claims
-                    .Where(x => x.Type == CustomClaimType.NetworkId).ToList().FirstOrDefault()?.Value);
+                    .Where(x => x.Type == CustomClaimType.Network).ToList().FirstOrDefault()?.Value);
 
                 if (!network.Equals(default(KeyValuePair<int, string>)))
                 {
