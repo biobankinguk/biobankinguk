@@ -72,7 +72,7 @@ namespace Biobanks.Web.Controllers
 
         #region Biobank details
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Index()
         {
             var model = await GetBiobankDetailsModelAsync();
@@ -152,7 +152,7 @@ namespace Biobanks.Web.Controllers
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
                     {
-                        new Claim(CustomClaimType.BiobankId, biobank.OrganisationId.ToString())
+                        new Claim(CustomClaimType.Biobank, biobank.OrganisationId.ToString())
                     });
 
             Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
@@ -496,7 +496,7 @@ namespace Biobanks.Web.Controllers
 
         #region Admins
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Admins()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -651,7 +651,7 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> DeleteAdmin(string biobankUserId, string userFullName)
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -674,7 +674,7 @@ namespace Biobanks.Web.Controllers
 
         #region Funders
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Funders()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -781,7 +781,7 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> DeleteFunder(int funderId, string funderName)
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -797,7 +797,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("Funders");
         }
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> SearchFunders(string wildcard)
         {
             var funders = await _biobankReadService.ListFundersAsync(wildcard);
@@ -816,7 +816,7 @@ namespace Biobanks.Web.Controllers
 
         #region Collections
         [HttpGet]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Collections()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -1650,7 +1650,7 @@ namespace Biobanks.Web.Controllers
 
         #region Network Acceptance
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> NetworkAcceptance()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -1696,7 +1696,7 @@ namespace Biobanks.Web.Controllers
 
         #region Publications 
         [HttpGet]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Publications()
         {
             //If turned off in site config
@@ -1708,7 +1708,7 @@ namespace Biobanks.Web.Controllers
 
 
         [HttpGet]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> GetPublicationsAjax()
         {
             //If turned off in site config
@@ -1739,7 +1739,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> ClaimPublicationAjax(string publicationId, bool accept)
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
