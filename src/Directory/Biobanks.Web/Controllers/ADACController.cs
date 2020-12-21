@@ -1819,51 +1819,45 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sample Collection Mode
         public async Task<ActionResult> SampleCollectionModes()
         {
-            var endpoint = "api/SampleCollectionModes/SampleCollectionModes";
-            try
-            {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+            var models = (await _biobankReadService.ListSampleCollectionModeAsync())
+                .Select(x =>
+                    Task.Run(async () => new SampleCollectionModeModel
+                    {
+                        Id = x.SampleCollectionModeId,
+                        Description = x.Description,
+                        SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.SampleCollectionModeId)
+                    })
+                    .Result
+                )
+                .ToList();
 
-                var result = JsonConvert.DeserializeObject<IList<SampleCollectionModeModel>>(contents);
-                return View(new SampleCollectionModesModel
-                {
-                    SampleCollectionModes = result
-                });
-            }
-            catch (Exception)
+            return View(new SampleCollectionModesModel()
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new SampleCollectionModesModel { SampleCollectionModes = new List<SampleCollectionModeModel> { } });
-            }
+                SampleCollectionModes = models
+            });
         }
 
         public async Task<ActionResult> DeleteSampleCollectionMode(SampleCollectionModeModel model)
         {
-            var endpoint = "api/SampleCollectionModes/DeleteSampleCollectionMode";
-            try
+            if (await _biobankReadService.IsSampleCollectionModeInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
+                SetTemporaryFeedbackMessage($"The sample collection mode \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
                 return RedirectToAction("SampleCollectionModes");
             }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
 
-                return RedirectToAction("SampleCollectionModes");
-            }
+            var mode = new SampleCollectionMode
+            {
+                SampleCollectionModeId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            };
+
+            await _biobankWriteService.DeleteSampleCollectionModeAsync(mode);
+
+            // Success
+            SetTemporaryFeedbackMessage($"The sample colelction mode  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("SampleCollectionModes");
         }
 
         public ActionResult AddSampleCollectionModeSuccess(string name)

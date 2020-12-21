@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/SampleCollectionModes")]
     public class SampleCollectionModesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,9 +25,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: SampleCollectionModes
         [HttpGet]
-        public async Task<IList> SampleCollectionModes()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListSampleCollectionModeAsync())
                 .Select(x =>
@@ -45,7 +46,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddSampleCollectionModeAjax(SampleCollectionModeModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(SampleCollectionModeModel model)
         {
             //// Validate model
             if (await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
@@ -73,15 +75,15 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddSampleCollectionModeSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditSampleCollectionModeAjax(SampleCollectionModeModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, SampleCollectionModeModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
+            if (await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
             {
                 ModelState.AddModelError("SampleCollectionModes", "That sample collection modes already exists!");
             }
@@ -93,7 +95,7 @@ namespace Biobanks.Web.ApiControllers
 
             var mode = new SampleCollectionMode
             {
-                SampleCollectionModeId = model.Id,
+                SampleCollectionModeId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             };
@@ -105,14 +107,16 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditSampleCollectionModeSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteSampleCollectionMode(SampleCollectionModeModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsSampleCollectionModeInUse(model.Id))
+            var model = (await _biobankReadService.ListSampleCollectionModeAsync()).Where(x => x.SampleCollectionModeId == id).First();
+
+            if (await _biobankReadService.IsSampleCollectionModeInUse(id))
             {
                 return Json(new
                 {
@@ -123,7 +127,7 @@ namespace Biobanks.Web.ApiControllers
 
             var mode = new SampleCollectionMode
             {
-                SampleCollectionModeId = model.Id,
+                SampleCollectionModeId = model.SampleCollectionModeId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             };
@@ -136,6 +140,34 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The sample colelction mode  \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success 
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, SampleCollectionModeModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            var mode = new SampleCollectionMode
+            {
+                SampleCollectionModeId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            };
+
+            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode, true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
     }
 }
