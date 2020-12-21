@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/Sexes")]
     public class SexesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,10 +25,10 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        
-        // GET: Sexes
+
         [HttpGet]
-        public async Task<IList> Sexes()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var model = (await _biobankReadService.ListSexesAsync())
             .Select(x =>
@@ -46,7 +47,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddSexAjax(SexModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(SexModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidSexDescriptionAsync(model.Description))
@@ -71,20 +73,20 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddSexSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditSexAjax(SexModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, SexModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSexDescriptionAsync(model.Id, model.Description))
+            if (await _biobankReadService.ValidSexDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use by another material type. Sex descriptions must be unique.");
             }
 
-            if (await _biobankReadService.IsSexInUse(model.Id))
+            if (await _biobankReadService.IsSexInUse(id))
             {
                 ModelState.AddModelError("Description", "This sex is currently in use and cannot be edited.");
             }
@@ -96,7 +98,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateSexAsync(new Sex
             {
-                SexId = model.Id,
+                SexId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -106,14 +108,16 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditSexSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteSex(SexModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsSexInUse(model.Id))
+            var model = (await _biobankReadService.ListSexesAsync()).Where(x => x.SexId == id).First();
+
+            if (await _biobankReadService.IsSexInUse(id))
             {
             return Json(new
             {
@@ -124,7 +128,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteSexAsync(new Sex
             {
-                SexId = model.Id,
+                SexId = model.SexId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -135,6 +139,33 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The sex \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, SexModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdateSexAsync(new Sex
+            {
+                SexId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            },
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
     }
 }

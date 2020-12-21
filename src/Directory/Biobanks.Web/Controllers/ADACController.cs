@@ -1876,51 +1876,45 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sexes
         public async Task<ActionResult> Sexes()
         {
-            var endpoint = "api/Sexes/Sexes";
-            try
+            return View(new SexesModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                Sexes = (await _biobankReadService.ListSexesAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadSexModel>>(contents);
-                return View(new SexesModel
-                {
-                    Sexes = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new SexesModel { Sexes = new List<ReadSexModel> { } });
-            }
+                    Task.Run(async () => new ReadSexModel
+                    {
+                        Id = x.SexId,
+                        Description = x.Description,
+                        SexCount = await _biobankReadService.GetSexCount(x.SexId),
+                        SortOrder = x.SortOrder
+                    }).Result)
+
+                    .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteSex(SexModel model)
         {
-            var endpoint = "api/Sexes/DeleteSex";
-            try
+            if (await _biobankReadService.IsSexInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("Sexes");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The sex \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("Sexes");
             }
+
+            await _biobankWriteService.DeleteSexAsync(new Sex
+            {
+                SexId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The sex \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("Sexes");
         }
 
         public ActionResult AddSexSuccess(string name)
