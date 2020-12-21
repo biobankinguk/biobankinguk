@@ -13,6 +13,7 @@ using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/HtaStatus")]
     public class HtaStatusController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -26,9 +27,9 @@ namespace Biobanks.Web.ApiControllers
         }
 
 
-        // GET: HtaStatus
         [HttpGet]
-        public async Task<IList> HtaStatus()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListHtaStatusesAsync())
                         .Select(x =>
@@ -47,10 +48,13 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteHtaStatus(Models.Shared.HtaStatusModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsHtaStatusInUse(model.Id))
+            var model = (await _biobankReadService.ListHtaStatusesAsync()).Where(x => x.HtaStatusId == id).First();
+
+            if (await _biobankReadService.IsHtaStatusInUse(id))
             {
                 return Json(new
                 {
@@ -61,7 +65,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
             {
-                HtaStatusId = model.Id,
+                HtaStatusId = model.HtaStatusId,
                 Description = model.Description
             });
 
@@ -73,11 +77,12 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditHtaStatusAjax(Models.Shared.HtaStatusModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, Models.Shared.HtaStatusModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
+            if (!await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("HtaStatus", "That hta status already exists!");
             }
@@ -87,16 +92,15 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
             // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsHtaStatusInUse(model.Id);
+            bool inUse = await _biobankReadService.IsHtaStatusInUse(id);
 
             // Update Preservation Type
             await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
             {
-                HtaStatusId = model.Id,
+                HtaStatusId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             //Everything went A-OK!
             return Json(new
@@ -107,7 +111,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddHtaStatusAjax(Models.Shared.HtaStatusModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(Models.Shared.HtaStatusModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
@@ -133,5 +138,33 @@ namespace Biobanks.Web.ApiControllers
                 name = model.Description
             });
         }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, Models.Shared.HtaStatusModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
+            {
+                HtaStatusId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            },
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
+        }
+
     }
 }

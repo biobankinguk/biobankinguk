@@ -2320,25 +2320,21 @@ namespace Biobanks.Web.Controllers
         {
             if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.EnableHTA) == true)
             {
-                var endpoint = "api/HtaStatus/HtaStatus";
-                try
+                return View(new Models.ADAC.HtaStatusModel
                 {
-                    //Make request
-                    var response = await _client.GetAsync(endpoint);
-                    var contents = await response.Content.ReadAsStringAsync();
+                    HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
+                        .Select(x =>
 
-                    var result = JsonConvert.DeserializeObject<IList<ReadHtaStatusModel>>(contents);
-                    return View(new Models.ADAC.HtaStatusModel
+                    Task.Run(async () => new ReadHtaStatusModel
                     {
-                        HtaStatuses = result
-                    });
-                }
-                catch (Exception)
-                {
-                    SetTemporaryFeedbackMessage($"Something went wrong!",
-                        FeedbackMessageType.Danger);
-                    return View(new Models.ADAC.HtaStatusModel { HtaStatuses = new List<ReadHtaStatusModel> { } });
-                }
+                        Id = x.HtaStatusId,
+                        Description = x.Description,
+                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.HtaStatusId),
+                        SortOrder = x.SortOrder
+                    }).Result)
+
+                        .ToList()
+                });
             }
             else
             {
@@ -2349,28 +2345,25 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteHtaStatus(Models.Shared.HtaStatusModel model)
         {
-            var endpoint = "api/HtaStatus/DeleteHtaStatus";
-            try
+            if (await _biobankReadService.IsHtaStatusInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("HtaStatus");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The hta status \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("HtaStatus");
             }
+
+            await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
+            {
+                HtaStatusId = model.Id,
+                Description = model.Description
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The hta status \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("HtaStatus");
         }
 
         public ActionResult EditHtaStatusSuccess(string name)
