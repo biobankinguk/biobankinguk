@@ -33,6 +33,7 @@
                 @foreach (var serviceOffering in Model.ServiceOfferings)
                 {
                     <tr class="@(serviceOffering.OrganisationCount > 0 ? "info" : "")"
+                        data-resource-url="/api/ServiceOfferings"
                         data-offering-id="@serviceOffering.Id"
                         data-offering-name="@serviceOffering.Name">
 
@@ -97,9 +98,8 @@
             </div>
 
             <form id="modal-service-offering-form"
-                  data-update-action="/api/ServiceOfferings/EditServiceOfferingAjax")"
+                  data-resource-url="/api/ServiceOfferings"
                   data-update-success-redirect="@Url.Action("EditServiceOfferingSuccess")"
-                  data-add-action="/api/ServiceOfferings/AddServiceOfferingAjax"
                   data-add-success-redirect="@Url.Action("AddServiceOfferingSuccess")"
                   class="form-horizontal">
 

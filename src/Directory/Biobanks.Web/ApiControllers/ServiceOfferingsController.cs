@@ -13,6 +13,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/ServiceOfferings")]
     public class ServiceOfferingsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -25,9 +26,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: ServiceOfferings
         [HttpGet]
-        public async Task<IList> ServiceOffering()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListServiceOfferingsAsync())
                 .Select(x =>
@@ -45,10 +46,13 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteServiceOffering(Models.Shared.ServiceOfferingModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsServiceOfferingInUse(model.Id))
+            var model = (await _biobankReadService.ListServiceOfferingsAsync()).Where(x => x.ServiceId == id).First();
+
+            if (await _biobankReadService.IsServiceOfferingInUse(id))
             {
                 return Json(new
                 {
@@ -59,7 +63,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
             {
-                ServiceId = model.Id,
+                ServiceId = model.ServiceId,
                 Name = model.Name
             });
 
@@ -72,11 +76,12 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditServiceOfferingAjax(Models.Shared.ServiceOfferingModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, Models.Shared.ServiceOfferingModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidServiceOfferingName(model.Name))
+            if (await _biobankReadService.ValidServiceOfferingName(model.Name))
             {
                 ModelState.AddModelError("ServiceOffering", "That service offering already exists!");
             }
@@ -85,8 +90,16 @@ namespace Biobanks.Web.ApiControllers
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsServiceOfferingInUse(model.Id);
+
+            // If in use, prevent update
+            if (await _biobankReadService.IsServiceOfferingInUse(id))
+            {
+                return Json(new
+                {
+                    msg = $"The service offering \"{model.Name}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Service Offering
             await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
@@ -94,8 +107,7 @@ namespace Biobanks.Web.ApiControllers
                 ServiceId = model.Id,
                 Name = model.Name,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             //Everything went A-OK!
             return Json(new
@@ -106,7 +118,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddServiceOfferingAjax(Models.Shared.ServiceOfferingModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(Models.Shared.ServiceOfferingModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidServiceOfferingName(model.Name))
@@ -131,6 +144,33 @@ namespace Biobanks.Web.ApiControllers
                 success = true,
                 name = model.Name
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, Models.Shared.ServiceOfferingModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
+            {
+                ServiceId = model.Id,
+                Name = model.Name,
+                SortOrder = model.SortOrder
+            },
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Name,
+            });
+
         }
     }
 }

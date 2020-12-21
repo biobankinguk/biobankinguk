@@ -2336,50 +2336,43 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> ServiceOffering()
         {
-            var endpoint = "api/ServiceOfferings/ServiceOffering";
-            try
+            return View(new Models.ADAC.ServiceOfferingModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                ServiceOfferings = (await _biobankReadService.ListServiceOfferingsAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadServiceOfferingModel>>(contents);
-                return View(new Models.ADAC.ServiceOfferingModel
+                Task.Run(async () => new ReadServiceOfferingModel
                 {
-                    ServiceOfferings = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new Models.ADAC.ServiceOfferingModel { ServiceOfferings = new List<ReadServiceOfferingModel> { } });
-            }
+                    Id = x.ServiceId,
+                    Name = x.Name,
+                    OrganisationCount = await _biobankReadService.GetServiceOfferingOrganisationCount(x.ServiceId),
+                    SortOrder = x.SortOrder
+                }).Result)
+
+                    .ToList()
+            });
         }
         public async Task<ActionResult> DeleteServiceOffering(Models.Shared.ServiceOfferingModel model)
         {
-            var endpoint = "api/ServiceOfferings/DeleteServiceOffering";
-            try
+            if (await _biobankReadService.IsServiceOfferingInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("ServiceOffering");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The service offering \"{model.Name}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("ServiceOffering");
             }
+
+            await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
+            {
+                ServiceId = model.Id,
+                Name = model.Name
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The service offering \"{model.Name}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("ServiceOffering");
         }
 
         public ActionResult EditServiceOfferingSuccess(string name)
