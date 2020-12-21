@@ -2066,51 +2066,42 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sop Status
         public async Task<ActionResult> SopStatus()
         {
-            var endpoint = "api/SopStatus/SopStatus";
-            try
-            {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+            var models = (await _biobankReadService.ListSopStatusesAsync())
+                .Select(x =>
+                    Task.Run(async () => new SopStatusModel()
+                    {
+                        Id = x.SopStatusId,
+                        Description = x.Description,
+                        SortOrder = x.SortOrder,
+                    })
+                    .Result
+                )
+                .ToList();
 
-                var result = JsonConvert.DeserializeObject<IList<SopStatusModel>>(contents);
-                return View(new SopStatusesModel
-                {
-                    SopStatuses = result
-                });
-            }
-            catch (Exception)
+            return View(new SopStatusesModel()
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new SopStatusesModel { SopStatuses = new List<SopStatusModel> { } });
-            }
+                SopStatuses = models
+            });
         }
 
         public async Task<ActionResult> DeleteSopStatus(SopStatusModel model)
         {
-            var endpoint = "api/SopStatus/DeleteSopStatus";
-            try
+            if (await _biobankReadService.IsSopStatusInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
+                SetTemporaryFeedbackMessage($"The sop status \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
                 return RedirectToAction("SopStatus");
             }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
 
-                return RedirectToAction("SopStatus");
-            }
+            await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
+            {
+                SopStatusId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            });
+
+            // Success
+            SetTemporaryFeedbackMessage($"The sop status  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("SopStatus");
         }
 
         public ActionResult AddSopStatusSuccess(string name)

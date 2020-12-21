@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/SopStatus")]
     public class SopStatusController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,9 +25,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: SopStatus
         [HttpGet]
-        public async Task<IList> SopStatus()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListSopStatusesAsync())
                 .Select(x =>
@@ -43,7 +44,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddSopStatusAjax(SopStatusModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(SopStatusModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidSopStatusAsync(model.Description))
@@ -71,15 +73,15 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddSopStatusSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditSopStatusAjax(SopStatusModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, SopStatusModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidSopStatusAsync(model.Description))
+            if (await _biobankReadService.ValidSopStatusAsync(model.Description))
             {
                 ModelState.AddModelError("SopStatus", "That sop status already exists!");
             }
@@ -89,8 +91,15 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
+            // If in use, prevent update
+            if (model.SampleSetsCount > 0)
+            {
+                return Json(new
+                {
+                    msg = $"The access condition \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateSopStatusAsync(new SopStatus
@@ -98,22 +107,22 @@ namespace Biobanks.Web.ApiControllers
                 SopStatusId = model.Id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             // Success message
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditSopStatusSuccess?name={model.Description}"
             });
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> DeleteSopStatus(SopStatusModel model)
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsSopStatusInUse(model.Id))
+            var model = (await _biobankReadService.ListSopStatusesAsync()).Where(x => x.SopStatusId == id).First();
+
+            if (await _biobankReadService.IsSopStatusInUse(id))
             {
                 return Json(new
                 {
@@ -124,7 +133,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
             {
-                SopStatusId = model.Id,
+                SopStatusId = model.SopStatusId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -135,6 +144,34 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The sop status  \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, SopStatusModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            // Update Preservation Type
+            await _biobankWriteService.UpdateSopStatusAsync(new SopStatus
+            {
+                SopStatusId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            },
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
     }
 }

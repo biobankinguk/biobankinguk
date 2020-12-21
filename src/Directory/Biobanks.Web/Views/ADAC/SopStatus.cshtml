@@ -34,6 +34,7 @@
 				@foreach (var type in Model.SopStatuses)
 				{
 					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
+						data-resource-url="/api/SopStatus"
 						data-sop-status-id="@type.Id"
 						data-sop-status-desc="@type.Description">
 
@@ -101,7 +102,11 @@
 			</div>
 
 			<!-- Modal Form -->
-			<form id="modal-sop-status-form" class="form-horizontal" >
+			<form id="modal-sop-status-form"
+				  data-resource-url="/api/SopStatus"
+				  data-update-success-redirect="@Url.Action("EditSopStatusSuccess")"
+                  data-add-success-redirect="@Url.Action("AddSopStatusSuccess")"
+				  class="form-horizontal" >
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-sm-12">
