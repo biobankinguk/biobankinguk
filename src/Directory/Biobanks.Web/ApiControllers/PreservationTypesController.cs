@@ -13,6 +13,7 @@ using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/PreservationTypes")]
     public class PreservationTypesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -26,7 +27,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddPreservationTypeAjax(PreservationTypeModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(PreservationTypeModel model)
         {
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
@@ -58,12 +60,12 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddPreservationTypeSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
             });
         }
 
         [HttpGet]
-        public async Task<IList> PreservationTypes()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListPreservationTypesAsync())
                 .Select(x =>
@@ -85,14 +87,15 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditPreservationTypeAjax(PreservationTypeModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, PreservationTypeModel model)
         {
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
 
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidPreservationTypeAsync(model.Description))
+            if (await _biobankReadService.ValidPreservationTypeAsync(model.Description))
             {
                 ModelState.AddModelError("PreservationType", $"That {currentReferenceName.Value} already exists!");
             }
@@ -102,35 +105,41 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
+            // If in use, prevent update
+            if (model.SampleSetsCount > 0)
+            {
+                return Json(new
+                {
+                    msg = $"The preservation type \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdatePreservationTypeAsync(new PreservationType
             {
-                PreservationTypeId = model.Id,
+                PreservationTypeId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-
+            });
 
             // Success message
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditPreservationTypeSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeletePreservationType(PreservationTypeModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
+            var model = (await _biobankReadService.ListPreservationTypesAsync()).Where(x => x.PreservationTypeId == id).First();
+
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
-            if (await _biobankReadService.IsPreservationTypeInUse(model.Id))
+            if (await _biobankReadService.IsPreservationTypeInUse(id))
             {
                 return Json(new
                 {
@@ -141,7 +150,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeletePreservationTypeAsync(new PreservationType
             {
-                PreservationTypeId = model.Id,
+                PreservationTypeId = model.PreservationTypeId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -152,6 +161,33 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, PreservationTypeModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdatePreservationTypeAsync(new PreservationType
+            {
+                PreservationTypeId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            },
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
     }
 }
