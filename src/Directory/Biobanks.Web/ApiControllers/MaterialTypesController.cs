@@ -11,6 +11,7 @@ using System.Collections;
 using System.Web.Http.ModelBinding;
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/MaterialTypes")]
     public class MaterialTypesController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -24,7 +25,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
-        public async Task<IList> MaterialTypes()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var model = (await _biobankReadService.ListMaterialTypesAsync())
                     .Select(x =>
@@ -41,7 +43,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddMaterialTypeAjax(MaterialTypeModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(MaterialTypeModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
@@ -66,15 +69,15 @@ namespace Biobanks.Web.ApiControllers
             {
                 success = true,
                 name = model.Description,
-                redirect = $"AddMaterialTypeSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditMaterialTypeAjax(MaterialTypeModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, MaterialTypeModel model)
         {
             // Validate model
-            if (!sortOnly && await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("MaterialType", "That description is already in use. Material types must be unique.");
             }
@@ -84,8 +87,15 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = false;
+            // If in use, prevent update
+            if (await _biobankReadService.IsMaterialTypeInUse(id))
+            {
+                return Json(new
+                {
+                    msg = $"The material type \"{model.Description}\" is currently in use, and cannot be updated.",
+                    type = FeedbackMessageType.Danger
+                });
+            }
 
             // Update Preservation Type
             await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
@@ -93,21 +103,22 @@ namespace Biobanks.Web.ApiControllers
                 MaterialTypeId = model.Id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditMaterialTypeSuccess?name={model.Description}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteMaterialType(MaterialTypeModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsMaterialTypeInUse(model.Id))
+            var model = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => x.MaterialTypeId == id).First();
+
+            if (await _biobankReadService.IsMaterialTypeInUse(id))
             {
                 return Json(new
                 {
@@ -118,7 +129,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
             {
-                MaterialTypeId = model.Id,
+                MaterialTypeId = model.MaterialTypeId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -129,6 +140,34 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The material type \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, MaterialTypeModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
+            {
+                MaterialTypeId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            },
+            true);
+
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
     }
 }

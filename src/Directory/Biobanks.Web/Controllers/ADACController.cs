@@ -1037,52 +1037,46 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Types
         public async Task<ActionResult> MaterialTypes()
         {
-            var endpoint = "api/MaterialTypes/MaterialTypes";
-            try
+            return View(new MaterialTypesModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadMaterialTypeModel>>(contents);
-                return View(new MaterialTypesModel
-                {
-                    MaterialTypes = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new MaterialTypesModel { MaterialTypes = new List<ReadMaterialTypeModel> { } });
-            }
+                    Task.Run(async () => new ReadMaterialTypeModel
+                    {
+                        Id = x.MaterialTypeId,
+                        Description = x.Description,
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.MaterialTypeId),
+                        SortOrder = x.SortOrder
+                    }).Result)
+
+                    .ToList()
+            });
 
         }
 
         public async Task<ActionResult> DeleteMaterialType(MaterialTypeModel model)
         {
-            var endpoint = "api/MaterialTypes/DeleteMaterialType";
-            try
+            if (await _biobankReadService.IsMaterialTypeInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("MaterialTypes");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The material type \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("MaterialTypes");
             }
+
+            await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
+            {
+                MaterialTypeId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The material type \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("MaterialTypes");
         }
 
         public ActionResult EditMaterialTypeSuccess(string name)

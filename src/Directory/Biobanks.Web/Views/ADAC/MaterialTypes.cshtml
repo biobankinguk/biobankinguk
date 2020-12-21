@@ -33,6 +33,7 @@
 				@foreach (var materialType in Model.MaterialTypes)
 				{
 					<tr class="@(materialType.MaterialDetailCount > 0 ? "info" : "")"
+						data-resource-url="/api/MaterialTypes"
 						data-material-type-id="@materialType.Id"
 						data-material-type-desc="@materialType.Description">
 
@@ -96,23 +97,28 @@
                 </div>
             </div>
 
-            <form id="modal-material-type-form" class="form-horizontal">
+            <!-- Modal Form -->
+            <form id="modal-material-type-form"
+                  data-resource-url="/api/MaterialTypes"
+                  data-update-success-redirect="@Url.Action("EditMaterialTypeSuccess")"
+                  data-add-success-redirect="@Url.Action("AddMaterialTypeSuccess")"
+                  class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
-						<div class="col-sm-12">
+                        <div class="col-sm-12">
 
-							<input type="hidden" id="Id" name="Id" data-bind="value: modal.materialType().id">
-							<input type="hidden" id="SortOrder" name="SortOrder" data-bind="value: modal.materialType().sortOrder()">
+                            <input type="hidden" id="Id" name="Id" data-bind="value: modal.materialType().id">
+                            <input type="hidden" id="SortOrder" name="SortOrder" data-bind="value: modal.materialType().sortOrder()">
 
-							<!-- Description -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Description</label>
-								<div class="col-sm-9">
-									<input type="text" id="Description" name="Description" class="form-control"
-										   data-bind="value: modal.materialType().description()">
-								</div>
-							</div>
-						</div>
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Description</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="Description" name="Description" class="form-control"
+                                           data-bind="value: modal.materialType().description()">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
