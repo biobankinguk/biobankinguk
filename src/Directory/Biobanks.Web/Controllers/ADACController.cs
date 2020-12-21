@@ -2141,51 +2141,43 @@ namespace Biobanks.Web.Controllers
         #region RefData: Registration Reason
         public async Task<ActionResult> RegistrationReason()
         {
-            var endpoint = "api/RegistrationReason/RegistrationReason";
-            try
+            return View(new Models.ADAC.RegistrationReasonModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadRegistrationReasonModel>>(contents);
-                return View(new Models.ADAC.RegistrationReasonModel
+                Task.Run(async () => new ReadRegistrationReasonModel
                 {
-                    RegistrationReasons = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new Models.ADAC.RegistrationReasonModel { RegistrationReasons = new List<ReadRegistrationReasonModel> { } });
-            }
+                    Id = x.RegistrationReasonId,
+                    Description = x.Description,
+                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.RegistrationReasonId),
+                }).Result)
+
+                    .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteRegistrationReason(Models.Shared.RegistrationReasonModel model)
         {
-            var endpoint = "api/RegistrationReason/DeleteRegistrationReason";
-            try
+            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("RegistrationReason");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The registration reason \"{model.Description}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("RegistrationReason");
             }
+
+            await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
+            {
+                RegistrationReasonId = model.Id,
+                Description = model.Description
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The registration reason \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("RegistrationReason");
         }
 
         public ActionResult EditRegistrationReasonSuccess(string name)

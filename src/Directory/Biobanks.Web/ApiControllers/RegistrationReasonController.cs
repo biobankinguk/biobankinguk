@@ -12,6 +12,7 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/RegistrationReason")]
     public class RegistrationReasonController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -25,9 +26,9 @@ namespace Biobanks.Web.ApiControllers
         }
 
 
-        // GET: RegistrationReason
         [HttpGet]
-        public async Task<IList> RegistrationReason()
+        [Route("")]
+        public async Task<IList> Get()
         {
                 var model = (await _biobankReadService.ListRegistrationReasonsAsync())
                     .Select(x =>
@@ -44,10 +45,13 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteRegistrationReason(Models.Shared.RegistrationReasonModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
+            var model = (await _biobankReadService.ListRegistrationReasonsAsync()).Where(x => x.RegistrationReasonId == id).First();
+
+            if (await _biobankReadService.IsRegistrationReasonInUse(id))
             {
                 return Json(new
                 {
@@ -58,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
             {
-                RegistrationReasonId = model.Id,
+                RegistrationReasonId = model.RegistrationReasonId,
                 Description = model.Description
             });
 
@@ -70,11 +74,12 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditRegistrationReasonAjax(Models.Shared.RegistrationReasonModel model)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, Models.Shared.RegistrationReasonModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Id, model.Description))
+            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use by another registration reason. Registration reason descriptions must be unique.");
             }
@@ -84,7 +89,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
+            if (await _biobankReadService.IsRegistrationReasonInUse(id))
             {
                 return Json(new
                 {
@@ -95,7 +100,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateRegistrationReasonAsync(new RegistrationReason
             {
-                RegistrationReasonId = model.Id,
+                RegistrationReasonId = id,
                 Description = model.Description
             });
 
@@ -108,7 +113,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddRegistrationReasonAjax(Models.Shared.RegistrationReasonModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(Models.Shared.RegistrationReasonModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Description))

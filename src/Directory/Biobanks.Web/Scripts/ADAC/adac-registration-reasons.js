@@ -51,34 +51,40 @@ function AdacRegistrationReasonViewModel() {
 
     this.modalSubmit = function (e) {
         e.preventDefault();
-        var form = $(e.target); //get the submit button's form
+        var form = $(e.target); // get form as a jquery object
 
-        var action = _this.modal.mode().toLowerCase() + "-action";
-        var successRedirect =
-            _this.modal.mode().toLowerCase() + "-success-redirect";
+        // Get Action Type
+        var resourceUrl = form.data("resource-url")
+        var action = _this.modal.mode();
+        if (action == 'Add') {
+            var ajaxType = 'POST'
+            var url = resourceUrl;
+        } else if (action == 'Update') {
+            var ajaxType = 'PUT';
+            var url = resourceUrl + '/' + $(e.target.Id).val();
+        }
+        var successRedirect = action.toLowerCase() + "-success-redirect";
 
+        // Make AJAX Call
         $.ajax({
-            type: "POST",
-            url: form.data(action),
+            url: url,
+            type: ajaxType,
+            dataType: 'json',
             data: form.serialize(),
-            success: function (data) {
-                //clear form errors (as these are in the page's ko model)
+            success: function (data, textStatus, xhr) {
                 _this.dialogErrors.removeAll();
-
-                if (data.success) {
-                    _this.hideModal();
-                    //now we can redirect (force a page reload, following the successful AJAX submit
-                    //(why not just do a regular POST submit? for nice AJAX modal form valdation)
-                    window.location.href =
-                        form.data(successRedirect) + "?Name=" + data.name;
-                } else {
-                    if (Array.isArray(data.errors)) {
-                        for (var error of data.errors) {
-                            _this.dialogErrors.push(error);
-                        }
+                _this.hideModal();
+                window.location.href =
+                    form.data(successRedirect) + "?Name=" + data.name;
+            },
+            error: function (data, xhr, textStatus, errorThrown) {
+                _this.dialogErrors.removeAll();
+                if (Array.isArray(data.errors)) {
+                    for (var error of data.errors) {
+                        _this.dialogErrors.push(error);
                     }
                 }
-            },
+            }
         });
     };
 }
