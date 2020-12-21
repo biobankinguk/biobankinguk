@@ -2255,51 +2255,52 @@ namespace Biobanks.Web.Controllers
         #region RefData: Macroscopic Assessment
         public async Task<ActionResult> MacroscopicAssessments()
         {
-            var endpoint = "api/MacroscopicAssessments/MacroscopicAssessments";
-            try
-            {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+            var models = (await _biobankReadService.ListMacroscopicAssessmentsAsync())
+                .Select(x =>
+                    Task.Run(async () => new MacroscopicAssessmentModel()
+                    {
+                        Id = x.MacroscopicAssessmentId,
+                        Description = x.Description,
+                        SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetMacroscopicAssessmentUsageCount(x.MacroscopicAssessmentId)
+                    })
+                    .Result
+                )
+                .ToList();
 
-                var result = JsonConvert.DeserializeObject<IList<MacroscopicAssessmentModel>>(contents);
-                return View(new MacroscopicAssessmentsModel
-                {
-                    MacroscopicAssessments = result
-                });
-            }
-            catch (Exception)
+            return View(new MacroscopicAssessmentsModel()
             {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new MacroscopicAssessmentsModel { MacroscopicAssessments = new List<MacroscopicAssessmentModel> { } });
-            }
+                MacroscopicAssessments = models
+            });
         }
 
         public async Task<ActionResult> DeleteMacroscopicAssessment(MacroscopicAssessmentModel model)
         {
-            var endpoint = "api/MacroscopicAssessments/DeleteMacroscopicAssessment";
-            try
+            //Getting the name of the reference type as stored in the config
+            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+
+            if (await _biobankReadService.IsMacroscopicAssessmentInUse(model.Id))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
+                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
                 return RedirectToAction("MacroscopicAssessments");
             }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
 
+            if ((await _biobankReadService.ListMacroscopicAssessmentsAsync()).Count() <= 1)
+            {
+                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently the last entry and cannot be deleted", FeedbackMessageType.Danger);
                 return RedirectToAction("MacroscopicAssessments");
             }
+
+            await _biobankWriteService.DeleteMacroscopicAssessmentAsync(new MacroscopicAssessment
+            {
+                MacroscopicAssessmentId = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            });
+
+            // Success
+            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("MacroscopicAssessments");
         }
 
         public ActionResult AddMacroscopicAssessmentSuccess(string name, string referencename)

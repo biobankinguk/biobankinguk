@@ -13,6 +13,7 @@ using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [RoutePrefix("api/MacroscopicAssessments")]
     public class MacroscopicAssessmentsController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
@@ -25,9 +26,9 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
-        // GET: MacroscopicAssessment
         [HttpGet]
-        public async Task<IList> MacroscopicAssessments()
+        [Route("")]
+        public async Task<IList> Get()
         {
             var models = (await _biobankReadService.ListMacroscopicAssessmentsAsync())
                 .Select(x =>
@@ -46,7 +47,8 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> AddMacroscopicAssessmentAjax(MacroscopicAssessmentModel model)
+        [Route("")]
+        public async Task<IHttpActionResult> Post(MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
@@ -81,14 +83,15 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> EditMacroscopicAssessmentAjax(MacroscopicAssessmentModel model, bool sortOnly = false)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Put(int id, MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             //// Validate model
-            if (!sortOnly && await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
+            if (await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
             {
                 ModelState.AddModelError("MacroscopicAssessments", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
             }
@@ -104,28 +107,30 @@ namespace Biobanks.Web.ApiControllers
             // Update Preservation Type
             await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
             {
-                MacroscopicAssessmentId = model.Id,
+                MacroscopicAssessmentId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
+            });
 
             // Success message
             return Json(new
             {
                 success = true,
                 name = model.Description,
-                redirect = $"EditMacroscopicAssessmentSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
             });
         }
 
-        [HttpPost]
-        public async Task<IHttpActionResult> DeleteMacroscopicAssessment(MacroscopicAssessmentModel model)
+        [HttpDelete]
+        [Route("")]
+        public async Task<IHttpActionResult> Delete(int id)
         {
+
+            var model = (await _biobankReadService.ListMacroscopicAssessmentsAsync()).Where(x => x.MacroscopicAssessmentId == id).First();
+            
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
-            if (await _biobankReadService.IsMacroscopicAssessmentInUse(model.Id))
+            if (await _biobankReadService.IsMacroscopicAssessmentInUse(id))
             {
                 return Json(new
                 {
@@ -145,7 +150,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteMacroscopicAssessmentAsync(new MacroscopicAssessment
             {
-                MacroscopicAssessmentId = model.Id,
+                MacroscopicAssessmentId = model.MacroscopicAssessmentId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -156,6 +161,33 @@ namespace Biobanks.Web.ApiControllers
                 msg = $"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.",
                 type = FeedbackMessageType.Success
             });
+        }
+
+        [HttpPut]
+        [Route("Sort/{id}")]
+        public async Task<IHttpActionResult> Sort(int id, MacroscopicAssessmentModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
+            }
+
+            await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
+            {
+                MacroscopicAssessmentId = id,
+                Description = model.Description,
+                SortOrder = model.SortOrder
+            }, 
+            true);
+
+            //Everything went A-OK!
+            return Json(new
+            {
+                success = true,
+                name = model.Description,
+            });
+
         }
     }
 }
