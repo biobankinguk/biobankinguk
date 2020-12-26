@@ -35,7 +35,8 @@
                     <tr class="@(procurement.CollectionCapabilityCount > 0 ? "info" : "")"
                         data-resource-url="/api/AssociatedDataProcurementTimeFrame"
                         data-procurement-id="@procurement.Id"
-                        data-procurement-desc="@procurement.Description">
+                        data-procurement-desc="@procurement.Description"
+                        data-procurement-name="@procurement.DisplayName">
 
                         <td>@procurement.SortOrder</td>
                         <td>@procurement.Description</td>
@@ -104,6 +105,7 @@
                   data-resource-url="/api/AssociatedDataProcurementTimeFrame"
                   data-update-success-redirect="@Url.Action("EditAssociatedDataProcurementTimeFrameSuccess")"
                   data-add-success-redirect="@Url.Action("AddAssociatedDataProcurementTimeFrameSuccess")"
+                  data-add-overflow-redirect="@Url.Action("AddAssociatedDataProcurementTimeFrameOverflow")"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

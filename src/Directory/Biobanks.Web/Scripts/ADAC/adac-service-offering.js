@@ -166,7 +166,7 @@ $(function () {
                 dataType: 'json',
                 data: {
                     id: $(triggerRow.node).data('offering-id'),
-                    description: $(triggerRow.node).data('offering-desc'),
+                    name: $(triggerRow.node).data('offering-name'),
                     sortOrder: (triggerRow.newPosition + 1) //1-indexable
                 }
             });

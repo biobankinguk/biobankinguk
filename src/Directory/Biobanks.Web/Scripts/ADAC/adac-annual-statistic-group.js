@@ -62,7 +62,7 @@ function AdacAnnualStatisticGroupViewModel() {
             var url = resourceUrl;
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
-            var url = resourceUrl + '/' + $(e.target.Id).val();
+            var url = resourceUrl + '/' + $(e.target.AnnualStatisticGroupId).val();
         }
         var successRedirect = action.toLowerCase() + "-success-redirect";
 

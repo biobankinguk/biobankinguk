@@ -149,10 +149,8 @@ namespace Biobanks.Web.ApiControllers
                 //SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
                 return Json(new
                 {
-                    msg = $"A maximum amount of 5 time frames are allowed.",
-                    type = "warning",
                     success = true,
-                    redirect = $"AssociatedDataProcurementTimeFrame"
+                    overflow = true
                 });
             }
 
@@ -210,8 +208,8 @@ namespace Biobanks.Web.ApiControllers
             {
                 AssociatedDataProcurementTimeframeId = id,
                 Description = model.Description,
-                DisplayValue = model.DisplayName,
-                SortOrder = model.SortOrder
+                SortOrder = model.SortOrder,
+                DisplayValue = model.DisplayName
             },
             true);
 

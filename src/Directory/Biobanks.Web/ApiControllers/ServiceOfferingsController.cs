@@ -104,7 +104,7 @@ namespace Biobanks.Web.ApiControllers
             // Update Service Offering
             await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
             {
-                ServiceId = model.Id,
+                ServiceId = id,
                 Name = model.Name,
                 SortOrder = model.SortOrder
             });
@@ -158,7 +158,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
             {
-                ServiceId = model.Id,
+                ServiceId = id,
                 Name = model.Name,
                 SortOrder = model.SortOrder
             },

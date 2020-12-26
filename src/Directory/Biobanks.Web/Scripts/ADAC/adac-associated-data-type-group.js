@@ -62,7 +62,7 @@ function AdacAssociatedDataTypeGroupViewModel() {
             var url = resourceUrl;
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
-            var url = resourceUrl + '/' + $(e.target.Id).val();
+            var url = resourceUrl + '/' + $(e.target.AssociatedDataTypeGroupId).val();
         }
         var successRedirect = action.toLowerCase() + "-success-redirect";
 
@@ -87,6 +87,7 @@ function AdacAssociatedDataTypeGroupViewModel() {
                 }
             }
         });
+    };
 }
 
 var adacAssociatedDataTypeGroupVM;

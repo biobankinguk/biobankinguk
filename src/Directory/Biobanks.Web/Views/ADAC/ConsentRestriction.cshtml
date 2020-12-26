@@ -33,7 +33,7 @@
                 @foreach (var consentRestriction in Model.ConsentRestrictions)
                 {
                     <tr class="@(consentRestriction.CollectionCount > 0 ? "info" : "")"
-                        data-resource-url="/api/ConsentRestriction"
+                        data-resource-url="/api/ConsentRestrictions"
                         data-restriction-id="@consentRestriction.Id"
                         data-restriction-desc="@consentRestriction.Description">
 

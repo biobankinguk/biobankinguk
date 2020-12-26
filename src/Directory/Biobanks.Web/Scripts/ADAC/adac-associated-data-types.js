@@ -100,6 +100,7 @@ function AdacAssociatedDataTypeViewModel() {
                 }
             }
         });
+    };
 }
 
 $(function () {

@@ -963,6 +963,15 @@ namespace Biobanks.Web.Controllers
 
             return RedirectToAction("AssociatedDataProcurementTimeFrame");
         }
+
+        public ActionResult AddAssociatedDataProcurementTimeFrameOverflow()
+        {
+            //This action solely exists so we can set a feedback message
+
+            SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
+
+            return RedirectToAction("AssociatedDataProcurementTimeFrame");
+        }
         #endregion
 
         #region RefData: AnnualStatistics
@@ -1747,51 +1756,43 @@ namespace Biobanks.Web.Controllers
         #region RefData: Annual Statistic Groups
         public async Task<ActionResult> AnnualStatisticGroups()
         {
-            var endpoint = "api/AnnualStatisticGroups/AnnualStatisticGroups";
-            try
+            return View(new AnnualStatisticGroupsModel
             {
-                //Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+                AnnualStatisticGroups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
+                    .Select(x =>
 
-                var result = JsonConvert.DeserializeObject<IList<ReadAnnualStatisticGroupModel>>(contents);
-                return View(new AnnualStatisticGroupsModel
-                {
-                    AnnualStatisticGroups = result
-                });
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
-                    FeedbackMessageType.Danger);
-                return View(new AnnualStatisticGroupsModel { AnnualStatisticGroups = new List<ReadAnnualStatisticGroupModel> { } });
-            }
+                    Task.Run(async () => new ReadAnnualStatisticGroupModel
+                    {
+                        AnnualStatisticGroupId = x.AnnualStatisticGroupId,
+                        Name = x.Name,
+                        AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.AnnualStatisticGroupId)
+                    }).Result)
+
+                    .ToList()
+            });
         }
 
         public async Task<ActionResult> DeleteAnnualStatisticGroup(AnnualStatisticGroupModel model)
         {
-            var endpoint = "api/AnnualStatisticGroups/DeleteAnnualStatisticGroup";
-            try
+            if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
             {
-                //Make request
-                var response = await _client.PostAsJsonAsync(endpoint, model);
-                var contents = await response.Content.ReadAsStringAsync();
-
-                var result = JObject.Parse(contents);
-
-                //Everything went A-OK!
-                SetTemporaryFeedbackMessage(result["msg"].ToString(),
-                    (FeedbackMessageType)int.Parse(result["type"].ToString()));
-
-                return RedirectToAction("AnnualStatisticGroups");
-            }
-            catch (Exception)
-            {
-                SetTemporaryFeedbackMessage($"Something went wrong!",
+                SetTemporaryFeedbackMessage(
+                    $"The annual statistic group \"{model.Name}\" is currently in use, and cannot be deleted.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("AnnualStatisticGroups");
             }
+
+            await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
+            {
+                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
+                Name = model.Name
+            });
+
+            //Everything went A-OK!
+            SetTemporaryFeedbackMessage($"The annual statistic group \"{model.Name}\" was deleted successfully.",
+                FeedbackMessageType.Success);
+
+            return RedirectToAction("AnnualStatisticGroups");
         }
 
         public ActionResult EditAnnualStatisticGroupSuccess(string name)
