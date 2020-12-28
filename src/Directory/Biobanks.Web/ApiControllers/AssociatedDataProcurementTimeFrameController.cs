@@ -55,20 +55,17 @@ namespace Biobanks.Web.ApiControllers
             var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
             if (timeFrames.Count() <= 2)
             {
-                return Json(new
-                {
-                    msg = $"A minimum amount of 2 time frames are allowed.",
-                    type = FeedbackMessageType.Warning
-                });
+                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"A minimum amount of 2 time frames are allowed.");
             }
 
             if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The associated data procurement time frame \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"The associated data procurement time frame \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
@@ -80,8 +77,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The associated data procurement time frame \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
 
         }
@@ -106,19 +103,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field allows a maximum of 10 characters.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The Associated Data Procurement Time Frame \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"The Associated Data Procurement Time Frame \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Preservation Type
@@ -146,12 +139,6 @@ namespace Biobanks.Web.ApiControllers
             var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
             if (timeFrames.Count() >= 5)
             {
-                //SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
-                //return Json(new
-                //{
-                //    success = true,
-                //    overflow = true
-                //});
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"A maximum amount of 5 time frames are allowed.");
             }
 
@@ -198,12 +185,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, Models.Shared.AssociatedDataProcurementTimeFrameModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // Update Preservation Type
             await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {

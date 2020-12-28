@@ -118,13 +118,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListSopStatusesAsync()).Where(x => x.SopStatusId == id).First();
 
+            // If in use, prevent update
             if (await _biobankReadService.IsSopStatusInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The sop status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("SopStatus", $"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
@@ -137,8 +139,8 @@ namespace Biobanks.Web.ApiControllers
             // Success
             return Json(new
             {
-                msg = $"The sop status  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

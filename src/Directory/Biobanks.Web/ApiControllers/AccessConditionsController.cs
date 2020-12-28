@@ -123,13 +123,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListAccessConditionsAsync()).Where(x => x.AccessConditionId == id).First();
 
-            if (await _biobankReadService.IsAccessConditionInUse(model.AccessConditionId))
+            // If in use, prevent update
+            if (await _biobankReadService.IsAccessConditionInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("Description", $"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
@@ -140,8 +142,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The access condition \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

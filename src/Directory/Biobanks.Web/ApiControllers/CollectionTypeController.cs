@@ -50,14 +50,16 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListCollectionTypesAsync()).Where(x => x.CollectionTypeId == id).First();
-            
+
+            // If in use, prevent update
             if (await _biobankReadService.IsCollectionTypeInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The collection type \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("CollectionType", $"The Collection type \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
@@ -69,8 +71,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The collection type \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description
             });
 
         }

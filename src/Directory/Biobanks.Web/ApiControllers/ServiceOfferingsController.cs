@@ -52,13 +52,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListServiceOfferingsAsync()).Where(x => x.ServiceId == id).First();
 
+            // If in use, prevent update
             if (await _biobankReadService.IsServiceOfferingInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The service offering \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("ServiceOffering", $"The service offering \"{model.Name}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
@@ -70,8 +72,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The service offering \"{model.Name}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Name
             });
 
         }

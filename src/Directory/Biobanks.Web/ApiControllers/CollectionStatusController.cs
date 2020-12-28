@@ -51,13 +51,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListCollectionStatusesAsync()).Where(x => x.CollectionStatusId == id).First();
 
+            // If in use, prevent update
             if (await _biobankReadService.IsCollectionStatusInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The collection status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("CollectionStatus", $"The collection status \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
@@ -69,8 +71,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The collection status \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description
             });
 
         }

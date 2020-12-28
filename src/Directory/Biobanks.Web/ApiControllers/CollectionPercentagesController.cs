@@ -125,13 +125,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListCollectionPercentagesAsync()).Where(x => x.CollectionPercentageId == id).First();
 
+            // If in use, prevent update
             if (await _biobankReadService.IsCollectionPercentageInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The collection percentage \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("CollectionPercentage", $"The collection percentage \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
@@ -146,8 +148,8 @@ namespace Biobanks.Web.ApiControllers
             // Success
             return Json(new
             {
-                msg = $"The collection percentage  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

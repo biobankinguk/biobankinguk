@@ -138,13 +138,15 @@ namespace Biobanks.Web.ApiControllers
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
 
+            // If in use, prevent update
             if (await _biobankReadService.IsDonorCountInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("DonorCounts", $"The donor count \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteDonorCountAsync(new DonorCount
@@ -159,8 +161,8 @@ namespace Biobanks.Web.ApiControllers
             // Success
             return Json(new
             {
-                msg = $"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

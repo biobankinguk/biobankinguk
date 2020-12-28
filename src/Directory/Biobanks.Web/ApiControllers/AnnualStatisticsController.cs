@@ -136,11 +136,12 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsAnnualStatisticInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The annual statistic \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("AnnualStatistics", $"The annual statistic \"{model.Name}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             var annualStatistic = new AnnualStatistic
@@ -155,9 +156,10 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The annual statistics type \"{model.Name}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Name
             });
+
         }
 
         [HttpPut]

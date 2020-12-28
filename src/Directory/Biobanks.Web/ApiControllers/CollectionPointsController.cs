@@ -119,13 +119,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListCollectionPointsAsync()).Where(x => x.CollectionPointId == id).First();
 
+            // If in use, prevent update
             if (await _biobankReadService.IsCollectionPointInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The collection point \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("CollectionPoints", $"The collection point \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteCollectionPointAsync(new CollectionPoint
@@ -138,8 +140,8 @@ namespace Biobanks.Web.ApiControllers
             // Success
             return Json(new
             {
-                msg = $"The collection point  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

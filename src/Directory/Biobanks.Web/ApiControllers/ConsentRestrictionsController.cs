@@ -51,13 +51,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListConsentRestrictionsAsync()).Where(x => x.ConsentRestrictionId == id).First();
 
+            // If in use, prevent update
             if (await _biobankReadService.IsConsentRestrictionInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The consent restriction \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("ConsentRestriction", $"The consent restriction \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
@@ -69,8 +71,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The consent restriction \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description
             });
         }
 

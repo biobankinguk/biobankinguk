@@ -48,14 +48,15 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync()).Where(x => x.AssociatedDataTypeGroupId == id).First();
-            
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(model.AssociatedDataTypeGroupId))
+
+            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The associated data type group \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("Name", $"The associated data type group \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
@@ -67,8 +68,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The associated data type group \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description
             });
         }
 

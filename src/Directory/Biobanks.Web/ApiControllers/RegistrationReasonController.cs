@@ -53,11 +53,12 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsRegistrationReasonInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The registration reason \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("Description", $"The registration reason \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
@@ -69,8 +70,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The registration reason \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description
             });
         }
 

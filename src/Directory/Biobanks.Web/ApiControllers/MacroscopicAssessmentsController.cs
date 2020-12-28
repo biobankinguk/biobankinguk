@@ -90,7 +90,7 @@ namespace Biobanks.Web.ApiControllers
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
-            //// Validate model
+            // Validate model
             if (await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
             {
                 ModelState.AddModelError("MacroscopicAssessments", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
@@ -105,7 +105,6 @@ namespace Biobanks.Web.ApiControllers
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-
 
             // Update Preservation Type
             await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
@@ -135,20 +134,17 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsMacroscopicAssessmentInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("MacroscopicAssessments", $"This {currentReferenceName.Value} \"{model.Description}\" is currently in use and cannot be deleted.");
             }
 
             if ((await _biobankReadService.ListMacroscopicAssessmentsAsync()).Count() <= 1)
             {
-                return Json(new
-                {
-                    msg = $"The {currentReferenceName.Value} \"{model.Description}\" is currently the last entry and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("MacroscopicAssessments", $"The {currentReferenceName.Value} \"{model.Description}\" is currently the last entry and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteMacroscopicAssessmentAsync(new MacroscopicAssessment
@@ -161,8 +157,8 @@ namespace Biobanks.Web.ApiControllers
             // Success
             return Json(new
             {
-                msg = $"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

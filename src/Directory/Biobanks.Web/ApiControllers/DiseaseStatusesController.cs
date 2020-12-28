@@ -53,11 +53,12 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsDiagnosisInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("Description", $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
@@ -69,8 +70,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The disease status \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description
             });
         }
 

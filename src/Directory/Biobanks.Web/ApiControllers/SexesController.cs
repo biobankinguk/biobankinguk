@@ -119,11 +119,12 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsSexInUse(id))
             {
-            return Json(new
+                ModelState.AddModelError("Description", $"The sex \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
             {
-                msg = $"The sex \"{model.Description}\" is currently in use, and cannot be deleted.",
-                type = FeedbackMessageType.Danger
-            });
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteSexAsync(new Sex
@@ -136,8 +137,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The sex \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

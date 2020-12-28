@@ -117,13 +117,15 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListAgeRangesAsync()).Where(x => x.AgeRangeId == id).First();
 
+            // If in use, prevent update
             if (await _biobankReadService.IsAgeRangeInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The age range \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("AgeRange", $"The age range \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
@@ -135,8 +137,8 @@ namespace Biobanks.Web.ApiControllers
 
             return Json(new
             {
-                msg = $"The age range  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

@@ -56,11 +56,12 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsHtaStatusInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The hta status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("HtaStatus", $"The hta status \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
@@ -72,8 +73,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The hta status \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description
             });
         }
 

@@ -135,13 +135,16 @@ namespace Biobanks.Web.ApiControllers
 
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
+
+            // If in use, prevent update
             if (await _biobankReadService.IsPreservationTypeInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("PreservationType", $"The preservation type \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeletePreservationTypeAsync(new PreservationType

@@ -123,11 +123,12 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsSampleCollectionModeInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The sample collection mode \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("SampleCollectionModes", $"This sample collection mode \"{model.Description}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             var mode = new SampleCollectionMode
@@ -142,8 +143,8 @@ namespace Biobanks.Web.ApiControllers
             // Success
             return Json(new
             {
-                msg = $"The sample colelction mode  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success 
+                success = true,
+                name = model.Description,
             });
         }
 

@@ -116,11 +116,12 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsCountryInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The country \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("Name", $"The country \"{model.Name}\" is currently in use, and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteCountryAsync(new Country
@@ -132,8 +133,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The country \"{model.Name}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Name
             });
         }
     }

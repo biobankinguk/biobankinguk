@@ -50,13 +50,14 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = (await _biobankReadService.ListAnnualStatisticGroupsAsync()).Where(x => x.AnnualStatisticGroupId == id).First();
 
-            if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
+            if (await _biobankReadService.IsAnnualStatisticGroupInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The annual statistic group \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("Name", "This annual statistic group is currently in use and cannot be deleted.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
@@ -68,8 +69,8 @@ namespace Biobanks.Web.ApiControllers
             //Everything went A-OK!
             return Json(new
             {
-                msg = $"The annual statistic group \"{model.Name}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Name
             });
         }
 
