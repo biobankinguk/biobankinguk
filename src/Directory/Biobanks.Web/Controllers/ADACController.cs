@@ -48,7 +48,6 @@ namespace Biobanks.Web.Controllers
 
         private readonly IMapper _mapper;
         private readonly ITokenLoggingService _tokenLog;
-        private readonly HttpClient _client;
 
         public ADACController(
             IBiobankReadService biobankReadService,
@@ -70,12 +69,6 @@ namespace Biobanks.Web.Controllers
             _searchProvider = searchProvider;
             _mapper = mapper;
             _tokenLog = tokenLog;
-
-            //Http client for RefData Apis
-            _client = new HttpClient()
-            {
-                BaseAddress = new Uri(ConfigurationManager.AppSettings["RefDataApiUrl"])
-            };
         }
 
         // GET: ADACAdmin
