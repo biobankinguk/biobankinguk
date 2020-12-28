@@ -12,13 +12,13 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [RoutePrefix("api/CollectionPoints")]
-    public class CollectionPointsController : ApiBaseController
+    [RoutePrefix("api/CollectionPoint")]
+    public class CollectionPointController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public CollectionPointsController(IBiobankReadService biobankReadService,
+        public CollectionPointController(IBiobankReadService biobankReadService,
                                           IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;

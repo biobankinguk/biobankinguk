@@ -46,7 +46,7 @@
 				@foreach (var type in Model.MacroscopicAssessments)
 				{
 					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
-						data-resource-url="/api/MacroscopicAssessments"
+						data-resource-url="/api/MacroscopicAssessment"
 						data-macro-assessment-id="@type.Id"
 						data-macro-assessment-desc="@type.Description">
 
@@ -114,7 +114,7 @@
             
             @*Modal Form*@
         <form id="modal-macro-assessments-form"
-              data-resource-url="/api/MacroscopicAssessments"
+              data-resource-url="/api/MacroscopicAssessment"
               data-update-success-redirect="@Url.Action("EditMacroscopicAssessmentSuccess")"
               data-add-success-redirect="@Url.Action("AddMacroscopicAssessmentSuccess")"
               class="form-horizontal">

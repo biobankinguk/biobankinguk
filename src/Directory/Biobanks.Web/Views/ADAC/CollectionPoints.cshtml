@@ -32,7 +32,7 @@
             @foreach (var type in Model.CollectionPoints)
 			{ 
                 <tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
-					data-resource-url="/api/CollectionPoints"
+					data-resource-url="/api/CollectionPoint"
 					data-collection-point-id="@type.Id"
 					data-collection-point-desc="@type.Description">
 
@@ -100,7 +100,7 @@
 
 			<!-- Modal Form -->
             <form id="modal-collection-points-form"
-                  data-resource-url="/api/CollectionPoints"
+                  data-resource-url="/api/CollectionPoint"
                   data-update-success-redirect="@Url.Action("EditCollectionPointSuccess")"
                   data-add-success-redirect="@Url.Action("AddCollectionPointSuccess")"
                   class="form-horizontal">

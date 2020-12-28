@@ -12,13 +12,13 @@ using Directory.Entity.Data;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [RoutePrefix("api/AnnualStatistics")]
-    public class AnnualStatisticsController : ApiBaseController
+    [RoutePrefix("api/AnnualStatistic")]
+    public class AnnualStatisticController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public AnnualStatisticsController(IBiobankReadService biobankReadService,
+        public AnnualStatisticController(IBiobankReadService biobankReadService,
                                           IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;

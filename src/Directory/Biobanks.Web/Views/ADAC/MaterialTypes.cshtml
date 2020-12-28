@@ -33,7 +33,7 @@
 				@foreach (var materialType in Model.MaterialTypes)
 				{
 					<tr class="@(materialType.MaterialDetailCount > 0 ? "info" : "")"
-						data-resource-url="/api/MaterialTypes"
+						data-resource-url="/api/MaterialType"
 						data-material-type-id="@materialType.Id"
 						data-material-type-desc="@materialType.Description">
 
@@ -99,7 +99,7 @@
 
             <!-- Modal Form -->
             <form id="modal-material-type-form"
-                  data-resource-url="/api/MaterialTypes"
+                  data-resource-url="/api/MaterialType"
                   data-update-success-redirect="@Url.Action("EditMaterialTypeSuccess")"
                   data-add-success-redirect="@Url.Action("AddMaterialTypeSuccess")"
                   class="form-horizontal">

@@ -32,7 +32,7 @@
             @foreach (var type in Model.AccessConditions)
 			{ 
                 <tr class="@(type.AccessConditionCount > 0 ? "info" : "")"
-					data-resource-url="/api/AccessConditions"
+					data-resource-url="/api/AccessCondition"
 					data-access-condition-id="@type.Id"
 					data-access-condition-desc="@type.Description">
 
@@ -101,7 +101,7 @@
 
 			<!-- Modal Form -->
             <form id="modal-access-conditions-form" 
-				  data-resource-url="/api/AccessConditions"
+				  data-resource-url="/api/AccessCondition"
                   data-update-success-redirect="@Url.Action("EditAccessConditionSuccess")"
                   data-add-success-redirect="@Url.Action("AddAccessConditionSuccess")"
                   class="form-horizontal">

@@ -33,7 +33,7 @@
                 @foreach (var consentRestriction in Model.ConsentRestrictions)
                 {
                     <tr class="@(consentRestriction.CollectionCount > 0 ? "info" : "")"
-                        data-resource-url="/api/ConsentRestrictions"
+                        data-resource-url="/api/ConsentRestriction"
                         data-restriction-id="@consentRestriction.Id"
                         data-restriction-desc="@consentRestriction.Description">
 
@@ -98,7 +98,7 @@
             </div>
 
             <form id="modal-consent-restriction-form"
-                  data-resource-url="/api/ConsentRestrictions"
+                  data-resource-url="/api/ConsentRestriction"
                   data-update-success-redirect="@Url.Action("EditConsentRestrictionSuccess")"
                   data-add-success-redirect="@Url.Action("AddConsentRestrictionSuccess")"
                   class="form-horizontal">

@@ -11,13 +11,13 @@ using System.Collections;
 using System.Web.Http.ModelBinding;
 namespace Biobanks.Web.ApiControllers
 {
-    [RoutePrefix("api/AssociatedDataTypeGroups")]
-    public class AssociatedDataTypeGroupsController : ApiBaseController
+    [RoutePrefix("api/AssociatedDataTypeGroup")]
+    public class AssociatedDataTypeGroupController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public AssociatedDataTypeGroupsController(IBiobankReadService biobankReadService,
+        public AssociatedDataTypeGroupController(IBiobankReadService biobankReadService,
                                           IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;

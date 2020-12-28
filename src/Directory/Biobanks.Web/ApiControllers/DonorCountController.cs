@@ -13,13 +13,13 @@ using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [RoutePrefix("api/DonorCounts")]
-    public class DonorCountsController : ApiBaseController
+    [RoutePrefix("api/DonorCount")]
+    public class DonorCountController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public DonorCountsController(IBiobankReadService biobankReadService,
+        public DonorCountController(IBiobankReadService biobankReadService,
                                           IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;

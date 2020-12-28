@@ -35,7 +35,7 @@
 				@foreach (var type in Model.CollectionPercentages)
 				{
 					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
-						data-resource-url="/api/CollectionPercentages"
+						data-resource-url="/api/CollectionPercentage"
 						data-collection-percentage-id="@type.Id"
 						data-collection-percentage-desc="@type.Description"
 						data-collection-percentage-lower-bound="@type.LowerBound"
@@ -107,7 +107,7 @@
 
 			<!-- Modal Form -->
             <form id="modal-collection-percentages-form"
-                  data-resource-url="/api/CollectionPercentages"
+                  data-resource-url="/api/CollectionPercentage"
                   data-update-success-redirect="@Url.Action("EditCollectionPercentageSuccess")"
                   data-add-success-redirect="@Url.Action("AddCollectionPercentageSuccess")"
                   class="form-horizontal">

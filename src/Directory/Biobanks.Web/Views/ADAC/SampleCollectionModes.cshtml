@@ -33,7 +33,7 @@
 				@foreach (var mode in Model.SampleCollectionModes)
 				{
 					<tr class="@(mode.SampleSetsCount > 0 ? "info" : "")"
-						data-resource-url="/api/SampleCollectionModes"
+						data-resource-url="/api/SampleCollectionMode"
 						data-collection-mode-id="@mode.Id"
 						data-collection-mode-desc="@mode.Description">
 
@@ -103,7 +103,7 @@
 
 			<!-- Modal Form -->
             <form id="modal-collection-modes-form" 
-				  data-resource-url="/api/SampleCollectionModes"
+				  data-resource-url="/api/SampleCollectionMode"
                   data-update-success-redirect="@Url.Action("EditSampleCollectionModeSuccess")"
                   data-add-success-redirect="@Url.Action("AddSampleCollectionModeSuccess")"
                   class="form-horizontal">

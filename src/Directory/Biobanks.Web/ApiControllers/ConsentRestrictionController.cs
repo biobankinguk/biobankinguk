@@ -12,13 +12,13 @@ using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [RoutePrefix("api/ConsentRestrictions")]
-    public class ConsentRestrictionsController : ApiBaseController
+    [RoutePrefix("api/ConsentRestriction")]
+    public class ConsentRestrictionController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public ConsentRestrictionsController(IBiobankReadService biobankReadService,
+        public ConsentRestrictionController(IBiobankReadService biobankReadService,
                                           IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;

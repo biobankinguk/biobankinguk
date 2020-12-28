@@ -34,7 +34,7 @@
 				@foreach (var type in Model.AgeRanges)
 				{
 					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
-						data-resource-url="/api/AgeRanges"
+						data-resource-url="/api/AgeRange"
 						data-age-range-id="@type.Id"
 						data-age-range-desc="@type.Description">
 
@@ -103,7 +103,7 @@
 
 			<!-- Modal Form -->
             <form id="modal-age-ranges-form" 
-				  data-resource-url="/api/AgeRanges"
+				  data-resource-url="/api/AgeRange"
                   data-update-success-redirect="@Url.Action("EditAgeRangeSuccess")"
                   data-add-success-redirect="@Url.Action("AddAgeRangeSuccess")"
                   class="form-horizontal">

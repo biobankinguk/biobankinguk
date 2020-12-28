@@ -3,21 +3,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Directory.Entity.Data;
-using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
 using System.Web.Http.ModelBinding;
+
 namespace Biobanks.Web.ApiControllers
 {
-    [RoutePrefix("api/MaterialTypes")]
-    public class MaterialTypesController : ApiBaseController
+    [RoutePrefix("api/AgeRange")]
+    public class AgeRangeController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public MaterialTypesController(IBiobankReadService biobankReadService,
+        public AgeRangeController(IBiobankReadService biobankReadService,
                                           IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;
@@ -28,28 +27,30 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var model = (await _biobankReadService.ListMaterialTypesAsync())
-                    .Select(x =>
-
-                    Task.Run(async () => new ReadMaterialTypeModel
+            var models = (await _biobankReadService.ListAgeRangesAsync())
+                .Select(x =>
+                    Task.Run(async () => new AgeRangeModel()
                     {
-                        Id = x.MaterialTypeId,
+                        Id = x.AgeRangeId,
                         Description = x.Description,
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.MaterialTypeId),
-                        SortOrder = x.SortOrder
-                    }).Result).ToList();
+                        SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.AgeRangeId)
+                    })
+                    .Result
+                )
+                .ToList();
 
-            return model;
+            return models;
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(MaterialTypeModel model)
+        public async Task<IHttpActionResult> Post(AgeRangeModel model)
         {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
+            // Validate model
+            if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
             {
-                ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
+                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
 
             if (!ModelState.IsValid)
@@ -57,14 +58,17 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddMaterialTypeAsync(new MaterialType
+            // Add new Age Range
+            var range = new AgeRange
             {
-                MaterialTypeId = model.Id,
+                AgeRangeId = model.Id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            });
+            };
 
-            //Everything went A-OK!
+            await _biobankWriteService.AddAgeRangeAsync(range);
+            await _biobankWriteService.UpdateAgeRangeAsync(range, true); // Ensure sortOrder is correct
+
             return Json(new
             {
                 success = true,
@@ -74,18 +78,18 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, MaterialTypeModel model)
+        public async Task<IHttpActionResult> Put(int id, AgeRangeModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
             {
-                ModelState.AddModelError("MaterialType", "That description is already in use. Material types must be unique.");
+                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
 
             // If in use, prevent update
-            if (await _biobankReadService.IsMaterialTypeInUse(id))
+            if (model.SampleSetsCount > 0)
             {
-                ModelState.AddModelError("MaterialType", $"The material type \"{model.Description}\" is currently in use, and cannot be updated.");
+                ModelState.AddModelError("AgeRange", $"The age range \"{model.Description}\" is currently in use, and cannot be updated.");
             }
 
             if (!ModelState.IsValid)
@@ -94,9 +98,9 @@ namespace Biobanks.Web.ApiControllers
             }
 
             // Update Preservation Type
-            await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
+            await _biobankWriteService.UpdateAgeRangeAsync(new AgeRange
             {
-                MaterialTypeId = model.Id,
+                AgeRangeId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
@@ -109,15 +113,14 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpDelete]
-        [Route("")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => x.MaterialTypeId == id).First();
+            var model = (await _biobankReadService.ListAgeRangesAsync()).Where(x => x.AgeRangeId == id).First();
 
             // If in use, prevent update
-            if (await _biobankReadService.IsMaterialTypeInUse(id))
+            if (await _biobankReadService.IsAgeRangeInUse(id))
             {
-                ModelState.AddModelError("MaterialType", $"The material type \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("AgeRange", $"The age range \"{model.Description}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -125,14 +128,13 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
+            await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
             {
-                MaterialTypeId = model.MaterialTypeId,
+                AgeRangeId = model.AgeRangeId,
                 Description = model.Description,
                 SortOrder = model.SortOrder
             });
 
-            //Everything went A-OK!
             return Json(new
             {
                 success = true,
@@ -142,16 +144,17 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, MaterialTypeModel model)
+        public async Task<IHttpActionResult> Sort(int id, AgeRangeModel model)
         {
-            await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
+
+            var access = new AgeRange
             {
-                MaterialTypeId = id,
+                AgeRangeId = id,
                 Description = model.Description,
                 SortOrder = model.SortOrder
-            },
-            true);
+            };
 
+            await _biobankWriteService.UpdateAgeRangeAsync(access, true);
 
             //Everything went A-OK!
             return Json(new

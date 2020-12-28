@@ -49,7 +49,7 @@
                 @foreach (var donor in Model.DonorCounts)
                 {
                     <tr class="@(donor.SampleSetsCount > 0 ? "info" : "")"
-                        data-resource-url="/api/DonorCounts"
+                        data-resource-url="/api/DonorCount"
                         data-donor-count-id="@donor.Id"
                         data-donor-count-desc="@donor.Description"
                         data-donor-count-lower-bound="@donor.LowerBound"
@@ -121,7 +121,7 @@
 
             <!-- Modal Form -->
             <form id="modal-donor-counts-form"
-                  data-resource-url="/api/DonorCounts"
+                  data-resource-url="/api/DonorCount"
                   data-update-success-redirect="@Url.Action("EditDonorCountSuccess")"
                   data-add-success-redirect="@Url.Action("AddDonorCountSuccess")"
                   class="form-horizontal">
