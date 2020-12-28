@@ -10,60 +10,55 @@ using Google.Apis.Services;
 using Google.Apis.AnalyticsReporting.v4;
 using Google.Apis.AnalyticsReporting.v4.Data;
 
+using Analytics.Data;
 using Analytics.Services.Dto;
 using Analytics.Services.Contracts;
-using Analytics.Data.Repositories;
 using Analytics.Data.Entities;
+using Analytics.Services.Helpers;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Analytics.Services.Helpers;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Analytics.Services
 {
     // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
     public class GoogleAnalyticsReadService : IHostedService, IGoogleAnalyticsReadService
     {
-        private readonly string VIEW_ID;
-        private readonly string START_DATE; //default: "2016-01-01"; //specified in DATE_FORMAT
-        private readonly string DATE_FORMAT = "yyyy-MM-dd";
+        private readonly string _viewId;
+        private readonly string _startDate; //default: "2016-01-01"; //specified in _dateFormat
+        private readonly string _dateFormat = "yyyy-MM-dd";
+        private readonly IConfiguration _config;
 
-        private readonly GoogleCredential credentials;
-        private readonly AnalyticsReportingService analytics;
+        private readonly AnalyticsDbContext _ctx;
+        private readonly GoogleCredential _credentials;
+        private readonly AnalyticsReportingService _analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
         private readonly IBiobankWebService _biobankWebService;
-        private readonly IGenericEFRepository<OrganisationAnalytic> _organisationAnalyticRepository;
-        private readonly IGenericEFRepository<DirectoryAnalyticEvent> _directoryAnalyticEventRepository;
-        private readonly IGenericEFRepository<DirectoryAnalyticMetric> _directoryAnalyticMetricRepository;
 
-        public GoogleAnalyticsReadService(IGenericEFRepository<OrganisationAnalytic> organisationAnalyticRepository,
-                                          IGenericEFRepository<DirectoryAnalyticEvent> directoryAnalyticEventRepository,
-                                          IGenericEFRepository<DirectoryAnalyticMetric> directoryAnalyticMetricRepository,
+        public GoogleAnalyticsReadService(AnalyticsDbContext ctx,
                                           IBiobankWebService biobankWebService,
                                           ILogger<GoogleAnalyticsReadService> logger,
                                           IConfiguration configuration)
 
         {
-            var apikey   = Environment.GetEnvironmentVariable("analytics-apikey");
-            this.VIEW_ID = Environment.GetEnvironmentVariable("analytics-viewid");
-            this.START_DATE = Environment.GetEnvironmentVariable("start-date");
+            _ctx = ctx;
+            _config = configuration;
+            _viewId = _config.GetValue<string>("analytics-viewid", "");
+            _startDate = _config.GetValue<string>("start-date", "2016-01-01");
 
-            this.credentials = GoogleCredential.FromJson(apikey)
+            _credentials = GoogleCredential.FromJson(_config.GetValue<string>("analytics-apikey", "{}"))
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
 
-            this.analytics = new AnalyticsReportingService(
+            _analytics = new AnalyticsReportingService(
                 new BaseClientService.Initializer
                 {
-                    HttpClientInitializer = this.credentials,
+                    HttpClientInitializer = _credentials,
                     ApplicationName = "Google Analytics API v4 Biobanks"
                 });
-            this._organisationAnalyticRepository = organisationAnalyticRepository;
-            this._directoryAnalyticEventRepository = directoryAnalyticEventRepository;
-            this._directoryAnalyticMetricRepository = directoryAnalyticMetricRepository;
-            this._biobankWebService = biobankWebService;
-            this._logger = logger;
+            _biobankWebService = biobankWebService;
+            _logger = logger;
         }
 
         #region GoogleAnalytics API - Data Download
@@ -141,10 +136,10 @@ namespace Analytics.Services
 
         public IList<ReportRequest> ConstructRequest(IList<Metric> metrics, IList<Dimension> dimensions, IList<Segment> segments, IList<DateRange> dateRanges,
                                               IList<DimensionFilterClause> dimensionfilterclauses = null, int pagesize = 100000)
-        {
+        { 
             var request = new ReportRequest
             {
-                ViewId = VIEW_ID,
+                ViewId = _viewId,
                 DateRanges = dateRanges,
                 Dimensions = dimensions,
                 Metrics = metrics,
@@ -230,7 +225,7 @@ namespace Analytics.Services
 
         public GetReportsResponse GetReports(IList<ReportRequest> reportRequests)
         {
-            var request = analytics.Reports.BatchGet(new GetReportsRequest
+            var request = _analytics.Reports.BatchGet(new GetReportsRequest
             {
                 ReportRequests = reportRequests
             });
@@ -240,13 +235,13 @@ namespace Analytics.Services
 
         //or use function overloading or dynamic?
         public async Task<DateTimeOffset> GetLatestBiobankEntry()
-            => (await _organisationAnalyticRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await  _ctx.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestEventEntry()
-            => (await _directoryAnalyticEventRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _ctx.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestMetricEntry()
-            => (await _directoryAnalyticMetricRepository.ListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _ctx.DirectoryAnalyticMetrics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
 
         public DateTimeOffset ConvertToDateTime(string inputDateTime, string format)
@@ -272,7 +267,7 @@ namespace Analytics.Services
 
             foreach (ReportRow bbd in biobankData)
             {
-                _organisationAnalyticRepository.Insert(new OrganisationAnalytic
+                 _ctx.OrganisationAnalytics.Add(new OrganisationAnalytic
                 {
                     Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                     PagePath = bbd.Dimensions[1],
@@ -285,7 +280,7 @@ namespace Analytics.Services
                     OrganisationExternalId = biobankId
                 });
             }
-            await _organisationAnalyticRepository.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
         }
 
         public async Task DownloadAllBiobankData(IList<DateRange> dateRanges)
@@ -306,7 +301,7 @@ namespace Analytics.Services
 
                 foreach (ReportRow bbd in biobankData)
                 {
-                    _organisationAnalyticRepository.Insert(new OrganisationAnalytic
+                     _ctx.OrganisationAnalytics.Add(new OrganisationAnalytic
                     {
                         Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                         PagePath = bbd.Dimensions[1],
@@ -319,7 +314,7 @@ namespace Analytics.Services
                         OrganisationExternalId = biobankId
                     });
                 }
-                await _organisationAnalyticRepository.SaveChangesAsync();
+                await  _ctx.SaveChangesAsync();
                 _logger.LogInformation($"Fetched analytics for data for {biobankId}");
             }
         }
@@ -341,7 +336,7 @@ namespace Analytics.Services
 
             foreach (ReportRow events in eventData)
             {
-                _directoryAnalyticEventRepository.Insert(new DirectoryAnalyticEvent
+                _ctx.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
                 {
                     Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
                     EventCategory = events.Dimensions[1],
@@ -354,11 +349,11 @@ namespace Analytics.Services
                     Counts = int.Parse(events.Metrics[0].Values[0]),
                 });
             }
-            await _directoryAnalyticEventRepository.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
 
             foreach (ReportRow metric in metricData)
             {
-                _directoryAnalyticMetricRepository.Insert(new DirectoryAnalyticMetric
+                _ctx.DirectoryAnalyticMetrics.Add(new DirectoryAnalyticMetric
                 {
                     Date = ConvertToDateTime(metric.Dimensions[0], "yyyyMMdd"),
                     PagePath = metric.Dimensions[1],
@@ -373,7 +368,7 @@ namespace Analytics.Services
                     AvgSessionDuration = Convert.ToInt32(double.Parse(metric.Metrics[0].Values[3])),
                 });
             }
-            await _directoryAnalyticMetricRepository.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
             _logger.LogInformation($"Fetched event and metric data for analytics");
         }
 
@@ -389,22 +384,21 @@ namespace Analytics.Services
             //get start date by subtracting report period (specified in quarters) from end date
             var startDate = endDate.AddMonths(-reportPeriod * monthsPerQuarter);
 
-            return new DateRange { StartDate = startDate.ToString(DATE_FORMAT), EndDate = endDate.ToString(DATE_FORMAT) };
+            return new DateRange { StartDate = startDate.ToString(_dateFormat), EndDate = endDate.ToString(_dateFormat) };
         }
 
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData()
-            => (await _organisationAnalyticRepository.ListAsync());
+            => await _ctx.OrganisationAnalytics.ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData(DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _organisationAnalyticRepository.ListAsync(
-                false,
+            return await _ctx.OrganisationAnalytics.Where(
                 x => x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<DirectoryAnalyticEvent>> GetDirectoryEventData(DateRange dateRange)
@@ -412,10 +406,9 @@ namespace Analytics.Services
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _directoryAnalyticEventRepository.ListAsync(
-                false,
+            return await _ctx.DirectoryAnalyticEvents.Where(
                 x => x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<DirectoryAnalyticMetric>> GetDirectoryMetricData(DateRange dateRange)
@@ -423,25 +416,23 @@ namespace Analytics.Services
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _directoryAnalyticMetricRepository.ListAsync(
-                false,
+            return await _ctx.DirectoryAnalyticMetrics.Where(
                 x => x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId)
-            => (await _organisationAnalyticRepository.ListAsync(false, x => x.OrganisationExternalId == biobankId));
+            => await _ctx.OrganisationAnalytics.Where( x => x.OrganisationExternalId == biobankId).ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId, DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _organisationAnalyticRepository.ListAsync(
-                false,
+            return await _ctx.OrganisationAnalytics.Where(
                 x => x.OrganisationExternalId == biobankId &&
                 x.Date >= startDate &&
-                x.Date <= endDate);
+                x.Date <= endDate).ToListAsync();
         }
 
         public IEnumerable<OrganisationAnalytic> FilterByPagePath(IEnumerable<OrganisationAnalytic> biobankData, string path)
@@ -806,14 +797,14 @@ namespace Analytics.Services
             // If no previous analtytics record
             if (lastentry == DateTimeOffset.MinValue)
             {
-                var dateRange = new[] { new DateRange { StartDate = START_DATE, EndDate = DateTimeOffset.Now.ToString(DATE_FORMAT) } };
+                var dateRange = new[] { new DateRange { StartDate = _startDate, EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
                 await DownloadAllBiobankData(dateRange);
                 await DownloadDirectoryData(dateRange);
             }
             // If last entry is in the past
             else if (lastentry > DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
             {
-                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(DATE_FORMAT), EndDate = DateTimeOffset.Now.ToString(DATE_FORMAT) } };
+                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(_dateFormat), EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
                 await DownloadAllBiobankData(dateRange);
                 await DownloadDirectoryData(dateRange);
             }

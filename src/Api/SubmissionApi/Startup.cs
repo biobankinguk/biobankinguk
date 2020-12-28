@@ -15,17 +15,19 @@ using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using UoN.AspNetCore.VersionMiddleware;
+using Data;
 
 namespace Biobanks.SubmissionApi
 {
@@ -51,21 +53,21 @@ namespace Biobanks.SubmissionApi
         /// <param name="services">Collection of services to be configured.</param>
         /// <returns></returns>
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<SubmissionsDbContext>(opts =>
+            services.AddDbContext<Data.SubmissionsDbContext>(opts =>
                 opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
 
             services.AddMvc(opts =>
             {
                 opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
+                opts.EnableEndpointRouting = false;
             })
-                .AddJsonOptions(opts =>
-                    opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .AddNewtonsoftJson(opts =>
+                    opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
 
             // JWT Auth
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -87,7 +89,7 @@ namespace Biobanks.SubmissionApi
             services.AddSwaggerGen(opts =>
             {
                 opts.SwaggerDoc("v1",
-                    new Info
+                    new Microsoft.OpenApi.Models.OpenApiInfo
                     {
                         Title = "UKCRC Tissue Directory API",
                         Version = "v1"
@@ -102,12 +104,15 @@ namespace Biobanks.SubmissionApi
 
             services.AddAutoMapper();
 
-            var autofac = new ContainerBuilder();
+            // Synchronous I/O is disabled by default in .NET Core 3
+            services.Configure<IISServerOptions>(opts =>
+            {
+                opts.AllowSynchronousIO = true;
+            });
 
-            autofac.Register(
-                    (c, p) => CloudStorageAccount.Parse(Configuration.GetConnectionString("AzureQueueConnectionString")))
-                .AsSelf();
-
+            // disable output fortmat buffering
+            services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true);
+            
             services.AddTransient<ISubmissionService, SubmissionService>();
             services.AddTransient<IErrorService, ErrorService>();
             services.AddTransient<IBlobWriteService, AzureBlobWriteService>();
@@ -127,8 +132,16 @@ namespace Biobanks.SubmissionApi
             services.AddTransient<IStorageTemperatureService, StorageTemperatureService>();
             services.AddTransient<ITreatmentLocationService, TreatmentLocationService>();
 
-            autofac.Populate(services); //load the basic services into autofac's container
-            return new AutofacServiceProvider(autofac.Build());
+            //autofac.Populate(services); //load the basic services into autofac's container
+            //return new AutofacServiceProvider(autofac.Build());
+            services.AddOptions();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(
+                    (c, p) => CloudStorageAccount.Parse(Configuration.GetConnectionString("AzureQueueConnectionString")))
+                .AsSelf();
         }
 
         /// <summary>
@@ -136,14 +149,14 @@ namespace Biobanks.SubmissionApi
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // first migrate the database
             using (var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<SubmissionsDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<Data.SubmissionsDbContext>())
                 {
                     context.Database.Migrate();
                 }
@@ -166,10 +179,21 @@ namespace Biobanks.SubmissionApi
             app.UseStatusCodePages();
 
             app.UseVersion();
-
+            /*
             app.UseSwagger(c =>
                 c.PreSerializeFilters.Add((swagger, request) =>
                     swagger.Host = request.Host.Value));
+            */
+
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                {
+                    swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } };
+                });
+            });
+
+
 
             app.UseSwaggerUI(c =>
             {
@@ -178,9 +202,16 @@ namespace Biobanks.SubmissionApi
                 c.SupportedSubmitMethods(); // don't allow "try it out" as the token auth doesn't work
             });
 
+            app.UseRouting();
+
             app.UseAuthentication();
 
-            app.UseMvc();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             // Hangfire
             app.UseHangfireServer();

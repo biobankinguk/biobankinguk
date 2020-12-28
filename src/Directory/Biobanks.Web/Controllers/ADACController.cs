@@ -487,6 +487,10 @@ namespace Biobanks.Web.Controllers
                 {
                     await _userManager.RemoveFromRolesAsync(user.Id, Role.BiobankAdmin.ToString());
                 }
+
+                //remove biobank registration request to allow re-registration 
+                var biobankRequest = await _biobankReadService.GetBiobankRegisterRequestByOrganisationNameAsync(biobank.Name);
+                await _biobankWriteService.DeleteRegisterRequestAsync(biobankRequest);
                 SetTemporaryFeedbackMessage($"{biobank.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
             catch
