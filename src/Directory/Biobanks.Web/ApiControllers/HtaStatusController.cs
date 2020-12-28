@@ -87,12 +87,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("HtaStatus", "That hta status already exists!");
             }
 
+            if (await _biobankReadService.IsHtaStatusInUse(id))
+            {
+                ModelState.AddModelError("HtaStatus", "This hta status is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsHtaStatusInUse(id);
 
             // Update Preservation Type
             await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
@@ -143,12 +146,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, Models.Shared.HtaStatusModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
             {
                 HtaStatusId = id,

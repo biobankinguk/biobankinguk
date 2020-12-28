@@ -101,18 +101,14 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AnnualStatistics", "That annual statistic already exists!");
             }
 
+            if (await _biobankReadService.IsAnnualStatisticInUse(id))
+            {
+                ModelState.AddModelError("AnnualStatistics", "This annual statistic is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAnnualStatisticInUse(id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This annual statistic is currently in use and cannot be edited." }
-                });
             }
 
             var annualStatistics = new AnnualStatistic
@@ -168,11 +164,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, AnnualStatisticModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
 
             var annualStatistics = new AnnualStatistic
             {

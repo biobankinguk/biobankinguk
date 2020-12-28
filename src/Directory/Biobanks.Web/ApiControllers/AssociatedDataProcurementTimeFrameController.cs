@@ -147,11 +147,12 @@ namespace Biobanks.Web.ApiControllers
             if (timeFrames.Count() >= 5)
             {
                 //SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
-                return Json(new
-                {
-                    success = true,
-                    overflow = true
-                });
+                //return Json(new
+                //{
+                //    success = true,
+                //    overflow = true
+                //});
+                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"A maximum amount of 5 time frames are allowed.");
             }
 
             if (await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(model.Description))

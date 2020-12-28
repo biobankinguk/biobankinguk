@@ -97,18 +97,14 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AssociatedDataTypes", "That associated data type already exists!");
             }
 
+            if (await _biobankReadService.IsAssociatedDataTypeInUse(id))
+            {
+                ModelState.AddModelError("AssociatedDataTypes", "This associated data type is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This associated data type is currently in use and cannot be edited." }
-                });
             }
 
             var associatedDataTypes = new AssociatedDataType

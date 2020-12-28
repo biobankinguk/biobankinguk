@@ -84,19 +84,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("ConsentRestriction", "That consent restriction already exists!");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (await _biobankReadService.IsConsentRestrictionInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The consent restriction \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("ConsentRestriction", $"The consent restriction \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Preservation Type
@@ -148,12 +144,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, Models.Shared.ConsentRestrictionModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // Update Preservation Type
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
             {

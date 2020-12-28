@@ -88,12 +88,17 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("SampleCollectionModes", "That sample collection modes already exists!");
             }
 
+            if (await _biobankReadService.IsSampleCollectionModeInUse(id))
+            {
+                ModelState.AddModelError("SampleCollectionModes", $"This sample collection mode \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-
-            var mode = new SampleCollectionMode
+            
+           var mode = new SampleCollectionMode
             {
                 SampleCollectionModeId = id,
                 Description = model.Description,
@@ -146,12 +151,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, SampleCollectionModeModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             var mode = new SampleCollectionMode
             {
                 SampleCollectionModeId = id,

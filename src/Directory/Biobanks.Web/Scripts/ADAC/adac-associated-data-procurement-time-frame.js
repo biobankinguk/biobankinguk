@@ -78,14 +78,8 @@ function AdacAssociatedDataProcurementTimeFrameViewModel() {
                 _this.dialogErrors.removeAll();
                 if (data.success) {
                     _this.hideModal();
-                    if (data["overflow"]) { //checks if the key exists and is true
-                        window.location.href =
-                            form.data("add-overflow-redirect");
-                    }
-                    else {
-                        window.location.href =
-                            form.data(successRedirect) + "?Name=" + data.name;
-                    }
+                    window.location.href =
+                        form.data(successRedirect) + "?Name=" + data.name;
                 }
                 else {
                     if (Array.isArray(data.errors)) {

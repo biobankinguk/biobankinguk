@@ -100,19 +100,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("DonorCounts", $"That {currentReferenceName.Value} already exists!");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (model.SampleSetsCount > 0)
             {
-                return Json(new
-                {
-                    msg = $"The donor count \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("DonorCounts", $"The donor count \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Preservation Type
@@ -172,12 +168,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, DonorCountModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // Update Preservation Type
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {

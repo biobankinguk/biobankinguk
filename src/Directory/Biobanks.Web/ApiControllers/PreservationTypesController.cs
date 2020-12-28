@@ -26,6 +26,30 @@ namespace Biobanks.Web.ApiControllers
             _biobankWriteService = biobankWriteService;
         }
 
+        [HttpGet]
+        [Route("")]
+        public async Task<IList> Get()
+        {
+            var models = (await _biobankReadService.ListPreservationTypesAsync())
+                .Select(x =>
+                    new PreservationTypeModel()
+                    {
+                        Id = x.PreservationTypeId,
+                        Description = x.Description,
+                        SortOrder = x.SortOrder,
+                    }
+                )
+                .ToList();
+
+            // Fetch Sample Set Count
+            foreach (var model in models)
+            {
+                model.SampleSetsCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
+            }
+
+            return models;
+        }
+
         [HttpPost]
         [Route("")]
         public async Task<IHttpActionResult> Post(PreservationTypeModel model)
@@ -63,30 +87,6 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpGet]
-        [Route("")]
-        public async Task<IList> Get()
-        {
-            var models = (await _biobankReadService.ListPreservationTypesAsync())
-                .Select(x =>
-                    new PreservationTypeModel()
-                    {
-                        Id = x.PreservationTypeId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                    }
-                )
-                .ToList();
-
-            // Fetch Sample Set Count
-            foreach (var model in models)
-            {
-                model.SampleSetsCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
-            }
-
-            return models;
-        }
-
         [HttpPut]
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, PreservationTypeModel model)
@@ -100,19 +100,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("PreservationType", $"That {currentReferenceName.Value} already exists!");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (model.SampleSetsCount > 0)
             {
-                return Json(new
-                {
-                    msg = $"The preservation type \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("PreservationType", $"The preservation type \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Preservation Type
@@ -167,12 +163,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, PreservationTypeModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             await _biobankWriteService.UpdatePreservationTypeAsync(new PreservationType
             {
                 PreservationTypeId = id,

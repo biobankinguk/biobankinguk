@@ -82,19 +82,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("MaterialType", "That description is already in use. Material types must be unique.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (await _biobankReadService.IsMaterialTypeInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The material type \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("MaterialType", $"The material type \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Preservation Type
@@ -146,12 +142,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, MaterialTypeModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
             {
                 MaterialTypeId = id,

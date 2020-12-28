@@ -90,13 +90,16 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("CollectionPercentage", "That collection percentage already exists!");
             }
 
+            // If in use, prevent update
+            if (model.SampleSetsCount > 0)
+            {
+                ModelState.AddModelError("CollectionPercentage", "That collection percentage is currently in use, and cannot be updated.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
 
             // Update Preservation Type
             await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
@@ -152,12 +155,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, CollectionPercentageModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
             {
                 CollectionPercentageId = id,

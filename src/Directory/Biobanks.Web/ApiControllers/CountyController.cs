@@ -94,18 +94,14 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("County", "That county already exists!");
             }
 
+            if (await _biobankReadService.IsCountyInUse(id))
+            {
+                ModelState.AddModelError("County", "This county is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsCountyInUse(id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This county is currently in use and cannot be edited." }
-                });
             }
 
             var county = new County

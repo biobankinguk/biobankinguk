@@ -83,18 +83,14 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Name", "That name is already in use by another annual statistic group. Annual Statistic Group names must be unique.");
             }
 
+            if (await _biobankReadService.IsAnnualStatisticGroupInUse(id))
+            {
+                ModelState.AddModelError("Name", "This annual statistic group is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAnnualStatisticGroupInUse(id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This annual statistic group is currently in use and cannot be edited." }
-                });
             }
 
             await _biobankWriteService.UpdateAnnualStatisticGroupAsync(new AnnualStatisticGroup

@@ -86,19 +86,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("ServiceOffering", "That service offering already exists!");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (await _biobankReadService.IsServiceOfferingInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The service offering \"{model.Name}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("ServiceOffering", $"The service offering \"{model.Name}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Service Offering
@@ -150,12 +146,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, Models.Shared.ServiceOfferingModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
             {
                 ServiceId = id,

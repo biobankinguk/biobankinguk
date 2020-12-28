@@ -110,18 +110,14 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Name", "That name is already in use by another asscoiated data type group. Associated Data Type Group names must be unique.");
             }
 
+            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(id))
+            {
+                ModelState.AddModelError("Name", "This associated data type group is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This associated data type group is currently in use and cannot be edited." }
-                });
             }
 
             await _biobankWriteService.UpdateAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup

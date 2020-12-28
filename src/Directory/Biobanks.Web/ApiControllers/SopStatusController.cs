@@ -86,19 +86,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("SopStatus", "That sop status already exists!");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (model.SampleSetsCount > 0)
             {
-                return Json(new
-                {
-                    msg = $"The access condition \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("SopStatus", $"The access condition \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Preservation Type
@@ -150,12 +146,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, SopStatusModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // Update Preservation Type
             await _biobankWriteService.UpdateSopStatusAsync(new SopStatus
             {

@@ -86,19 +86,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("CollectionPoints", "That collection point already exists!");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (model.SampleSetsCount > 0)
             {
-                return Json(new
-                {
-                    msg = $"The Collection points \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("CollectionPoints", $"The Collection points \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             // Update Preservation Type
@@ -151,12 +147,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, CollectionPointModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             await _biobankWriteService.UpdateCollectionPointAsync(new CollectionPoint
             {
                 CollectionPointId = id,

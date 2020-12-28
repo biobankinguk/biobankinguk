@@ -80,15 +80,16 @@ function AdacCollectionModeViewModel() {
             data: form.serialize(),
             success: function (data, textStatus, xhr) {
                 _this.dialogErrors.removeAll();
-                _this.hideModal();
-                window.location.href =
-                    form.data(successRedirect) + "?Name=" + data.name;
-            },
-            error: function (data, xhr, textStatus, errorThrown) {
-                _this.dialogErrors.removeAll();
-                if (Array.isArray(data.errors)) {
-                    for (var error of data.errors) {
-                        _this.dialogErrors.push(error);
+                if (data.success) {
+                    _this.hideModal();
+                    window.location.href =
+                        form.data(successRedirect) + "?Name=" + data.name;
+                }
+                else {
+                    if (Array.isArray(data.errors)) {
+                        for (var error of data.errors) {
+                            _this.dialogErrors.push(error);
+                        }
                     }
                 }
             }

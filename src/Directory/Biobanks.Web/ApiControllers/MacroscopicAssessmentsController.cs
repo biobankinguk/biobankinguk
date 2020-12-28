@@ -96,13 +96,16 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("MacroscopicAssessments", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
             }
 
+            if (model.SampleSetsCount > 0)
+            {
+                ModelState.AddModelError("MacroscopicAssessments", $"This {currentReferenceName.Value} \"{model.Description}\" is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
 
             // Update Preservation Type
             await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
@@ -167,12 +170,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, MacroscopicAssessmentModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
             {
                 MacroscopicAssessmentId = id,

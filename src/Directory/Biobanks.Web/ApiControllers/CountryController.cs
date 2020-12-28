@@ -58,14 +58,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return Json(new
-                {
-                    success = false,
-                    errors = ModelState.Values
-                        .Where(x => x.Errors.Count > 0)
-                        .SelectMany(x => x.Errors)
-                        .Select(x => x.ErrorMessage).ToList()
-                });
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.AddCountryAsync(new Country
@@ -91,25 +84,14 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Name", "That name is already in use by another country. Country names must be unique.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = ModelState.Values
-                        .Where(x => x.Errors.Count > 0)
-                        .SelectMany(x => x.Errors)
-                        .Select(x => x.ErrorMessage).ToList()
-                });
-            }
-
             if (await _biobankReadService.IsCountryInUse(id))
             {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This country is currently in use and cannot be edited." }
-                });
+                ModelState.AddModelError("Name", "This country is currently in use and cannot be edited.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             await _biobankWriteService.UpdateCountryAsync(new Country

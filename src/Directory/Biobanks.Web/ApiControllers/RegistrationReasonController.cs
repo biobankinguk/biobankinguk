@@ -84,18 +84,14 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Description", "That description is already in use by another registration reason. Registration reason descriptions must be unique.");
             }
 
+            if (await _biobankReadService.IsRegistrationReasonInUse(id))
+            {
+                ModelState.AddModelError("Description", "This registration reason is currently in use and cannot be edited.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsRegistrationReasonInUse(id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This registration reason is currently in use and cannot be edited." }
-                });
             }
 
             await _biobankWriteService.UpdateRegistrationReasonAsync(new RegistrationReason

@@ -89,19 +89,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Description", "That description is already in use by another access condition. Access condition descriptions must be unique.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             // If in use, prevent update
             if (await _biobankReadService.IsAccessConditionInUse(id))
             {
-                return Json(new
-                {
-                    msg = $"The access condition \"{model.Description}\" is currently in use, and cannot be updated.",
-                    type = FeedbackMessageType.Danger
-                });
+                ModelState.AddModelError("Description", $"The access condition \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return JsonModelInvalidResponse(ModelState);
             }
 
             var access = new AccessCondition
@@ -153,12 +149,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("Sort/{id}")]
         public async Task<IHttpActionResult> Sort(int id, AccessConditionModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
             var access = new AccessCondition
             {
                 AccessConditionId = id,
