@@ -1,5 +1,6 @@
 tempkey.rsa
 **/wwwroot/dist
+**/frontend/dist
 
 snomed.csv
 swagger.xml
