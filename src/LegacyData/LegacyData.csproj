@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Api\Common\Common.csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
 
 </Project>
