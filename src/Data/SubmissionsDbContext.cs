@@ -1,8 +1,8 @@
-﻿using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Data.Entities.ReferenceData;
+﻿//using Biobanks.Common.Data.Entities;
+//using Biobanks.Common.Data.Entities.ReferenceData;
+using Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System;
 
 namespace Data
 {
@@ -26,7 +26,7 @@ namespace Data
         public DbSet<OntologyVersion> OntologyVersions { get; set; }
         public DbSet<Sex> Sexes { get; set; }
 
-        // Actual Data
+        // API Data
         public DbSet<LiveDiagnosis> Diagnoses { get; set; }
         public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
         public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
@@ -96,6 +96,7 @@ namespace Data
                 }).IsUnique();
 
         }
+        
         public SubmissionsDbContext(DbContextOptions options) : base(options) { }
 
         public class SubmissionsDbContextFactory : IDesignTimeDbContextFactory<SubmissionsDbContext>

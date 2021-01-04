@@ -68,7 +68,7 @@
     <Compile Include="Data\Diagnosis.cs" />
     <Compile Include="Data\DiagnosisCapability.cs" />
     <Compile Include="Data\DonorCount.cs" />
-    <Compile Include="Data\funder.cs" />
+    <Compile Include="Data\Funder.cs" />
     <Compile Include="Data\HtaStatus.cs" />
     <Compile Include="Data\MacroscopicAssessment.cs" />
     <Compile Include="Data\MaterialDetail.cs" />
