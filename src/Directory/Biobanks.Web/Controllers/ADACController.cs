@@ -1246,6 +1246,7 @@ namespace Biobanks.Web.Controllers
                         Id = x.CollectionPointId,
                         Description = x.Description,
                         SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetCollectionPointUsageCount(x.CollectionPointId)
                     })
                     .Result
                 )
@@ -2071,6 +2072,7 @@ namespace Biobanks.Web.Controllers
                         Id = x.SopStatusId,
                         Description = x.Description,
                         SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.SopStatusId)
                     })
                     .Result
                 )

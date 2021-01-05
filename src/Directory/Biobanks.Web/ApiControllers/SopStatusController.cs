@@ -32,6 +32,7 @@ namespace Biobanks.Web.ApiControllers
                         Id = x.SopStatusId,
                         Description = x.Description,
                         SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.SopStatusId)//GetCollectionPointUsageCount(x.CollectionPointId)
                     })
                     .Result
                 )
