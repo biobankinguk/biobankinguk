@@ -162,9 +162,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, MacroscopicAssessmentModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, MacroscopicAssessmentModel model)
         {
             await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
             {

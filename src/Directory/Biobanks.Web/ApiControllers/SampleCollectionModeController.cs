@@ -148,9 +148,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, SampleCollectionModeModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, SampleCollectionModeModel model)
         {
             var mode = new SampleCollectionMode
             {

@@ -147,9 +147,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, AccessConditionModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, AccessConditionModel model)
         {
             var access = new AccessCondition
             {

@@ -190,8 +190,8 @@ $(function () {
         //AJAX Update
         $.ajax({
             url: $(triggerRow.node).data('resource-url') +
-                "/Sort/" + $(triggerRow.node).data('sexes-id'),
-            type: 'PUT',
+                "/" + $(triggerRow.node).data('sexes-id') + "/move",
+            type: 'POST',
             dataType: 'json',
             data: {
                 id: $(triggerRow.node).data('sexes-id'),

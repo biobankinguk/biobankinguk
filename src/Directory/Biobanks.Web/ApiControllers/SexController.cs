@@ -142,9 +142,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, SexModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, SexModel model)
         {
             await _biobankWriteService.UpdateSexAsync(new Sex
             {

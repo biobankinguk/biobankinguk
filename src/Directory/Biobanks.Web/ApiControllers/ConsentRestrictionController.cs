@@ -142,9 +142,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, Models.Shared.ConsentRestrictionModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, Models.Shared.ConsentRestrictionModel model)
         {
             // Update Preservation Type
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction

@@ -162,9 +162,9 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, AnnualStatisticModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, AnnualStatisticModel model)
         {
 
             var annualStatistics = new AnnualStatistic

@@ -145,9 +145,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, CollectionPointModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, CollectionPointModel model)
         {
             await _biobankWriteService.UpdateCollectionPointAsync(new CollectionPoint
             {

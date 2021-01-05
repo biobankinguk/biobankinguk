@@ -145,9 +145,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, SopStatusModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, SopStatusModel model)
         {
             // Update Preservation Type
             await _biobankWriteService.UpdateSopStatusAsync(new SopStatus

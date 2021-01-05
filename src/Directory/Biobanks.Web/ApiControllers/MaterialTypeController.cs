@@ -140,9 +140,9 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPut]
-        [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, MaterialTypeModel model)
+        [HttpPost]
+        [Route("{id}/move")]
+        public async Task<IHttpActionResult> Move(int id, MaterialTypeModel model)
         {
             await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
             {

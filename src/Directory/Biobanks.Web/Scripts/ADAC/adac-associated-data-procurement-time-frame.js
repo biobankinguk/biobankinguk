@@ -168,8 +168,8 @@ $(function () {
             //AJAX Update
             $.ajax({
                 url: $(triggerRow.node).data('resource-url') +
-                    "/Sort/" + $(triggerRow.node).data('procurement-id'),
-                type: 'PUT',
+                    "/" + $(triggerRow.node).data('procurement-id') + "/move",
+                type: 'POST',
                 dataType: 'json',
                 data: {
                     id: $(triggerRow.node).data('procurement-id'),
