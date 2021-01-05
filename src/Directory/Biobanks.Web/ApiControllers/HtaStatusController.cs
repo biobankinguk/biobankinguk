@@ -78,7 +78,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, HtaStatusModel model)
         {
             // Validate model
-            if (!await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("HtaStatus", "That hta status already exists!");
             }

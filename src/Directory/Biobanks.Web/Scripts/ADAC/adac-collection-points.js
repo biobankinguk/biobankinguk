@@ -107,7 +107,7 @@ $(function () {
 
         var $link = $(this);
 
-        bootbox.confirm("Are you sure you want to delete " + $link .data("collection-point") + "?",
+        bootbox.confirm("Are you sure you want to delete " + $link.data("collection-point") + "?",
             function (confirmation) {
                 confirmation && window.location.assign($link.attr("href"));
             }

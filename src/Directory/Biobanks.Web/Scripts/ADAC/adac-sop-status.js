@@ -123,10 +123,9 @@ $(function () {
     var table = $("#sop-status")["DataTable"]({
         paging: false,
         info: false,
-        autoWidth: false,
         rowReorder: true,
         columnDefs: [
-            { orderable: true, "visible": true, className: 'reorder', targets: 0 }, // Column must be orderable for rowReorder
+            { orderable: true, "visible": false, className: 'reorder', targets: 0 }, // Column must be orderable for rowReorder
             { orderable: false, targets: '_all' }
         ],
         language: {
