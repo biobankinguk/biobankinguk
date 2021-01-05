@@ -46,7 +46,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpDelete]
-        [Route("")]
+        [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListCollectionTypesAsync()).Where(x => x.CollectionTypeId == id).First();

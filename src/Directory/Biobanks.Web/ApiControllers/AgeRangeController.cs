@@ -113,6 +113,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpDelete]
+        [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListAgeRangesAsync()).Where(x => x.AgeRangeId == id).First();

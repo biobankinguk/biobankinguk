@@ -113,7 +113,8 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
+        [HttpDelete]
+        [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListSopStatusesAsync()).Where(x => x.SopStatusId == id).First();

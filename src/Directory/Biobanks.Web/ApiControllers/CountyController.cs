@@ -122,7 +122,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpDelete]
-        [Route("")]
+        [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var model = (await _biobankReadService.ListCountriesAsync()).Select(x => x.Counties.Where(y=>y.CountyId == id).First()).First();

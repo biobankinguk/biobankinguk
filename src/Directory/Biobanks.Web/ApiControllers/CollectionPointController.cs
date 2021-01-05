@@ -114,7 +114,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpDelete]
-        [Route("")]
+        [Route("{id}")]
         public async Task<IHttpActionResult> DeleteCollectionPoint(int id)
         {
             var model = (await _biobankReadService.ListCollectionPointsAsync()).Where(x => x.CollectionPointId == id).First();
