@@ -1,15 +1,12 @@
-﻿using Directory.Services.Contracts;
+﻿using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Directory.Services.Contracts;
 using Directory.Entity.Data;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
 using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
-using System.Collections;
-using System.Web.Http.ModelBinding;
 
+using ServiceOfferingModel = Biobanks.Web.Models.Shared.ServiceOfferingModel;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -80,7 +77,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.ServiceOfferingModel model)
+        public async Task<IHttpActionResult> Put(int id, ServiceOfferingModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidServiceOfferingName(model.Name))
@@ -117,7 +114,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.ServiceOfferingModel model)
+        public async Task<IHttpActionResult> Post(ServiceOfferingModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidServiceOfferingName(model.Name))
@@ -146,7 +143,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("Sort/{id}")]
-        public async Task<IHttpActionResult> Sort(int id, Models.Shared.ServiceOfferingModel model)
+        public async Task<IHttpActionResult> Sort(int id, ServiceOfferingModel model)
         {
             await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
             {

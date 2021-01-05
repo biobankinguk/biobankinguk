@@ -9,6 +9,7 @@ using Biobanks.Web.Models.ADAC;
 using System.Web.Http.Results;
 using System.Collections;
 using System.Web.Http.ModelBinding;
+using RegistrationReasonModel = Biobanks.Web.Models.Shared.RegistrationReasonModel;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -77,7 +78,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.RegistrationReasonModel model)
+        public async Task<IHttpActionResult> Put(int id, RegistrationReasonModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(id, model.Description))
@@ -111,7 +112,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.RegistrationReasonModel model)
+        public async Task<IHttpActionResult> Post(RegistrationReasonModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Description))
