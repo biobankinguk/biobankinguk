@@ -4,12 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Directory.Entity.Data;
 using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
-using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
-using System.Web.Http.ModelBinding;
-using Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -34,7 +29,7 @@ namespace Biobanks.Web.ApiControllers
             var models = (await _biobankReadService.ListHtaStatusesAsync())
                         .Select(x =>
 
-                    Task.Run(async () => new ReadHtaStatusModel
+                    Task.Run(async () => new Models.ADAC.ReadHtaStatusModel
                     {
                         Id = x.HtaStatusId,
                         Description = x.Description,
@@ -80,7 +75,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.HtaStatusModel model)
+        public async Task<IHttpActionResult> Put(int id, HtaStatusModel model)
         {
             // Validate model
             if (!await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
@@ -116,7 +111,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.HtaStatusModel model)
+        public async Task<IHttpActionResult> Post(HtaStatusModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
@@ -145,7 +140,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, Models.Shared.HtaStatusModel model)
+        public async Task<IHttpActionResult> Move(int id, HtaStatusModel model)
         {
             await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
             {

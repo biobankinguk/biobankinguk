@@ -3,12 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Directory.Entity.Data;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
 using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
-using System.Web.Http.ModelBinding;
 using RegistrationReasonModel = Biobanks.Web.Models.Shared.RegistrationReasonModel;
 
 namespace Biobanks.Web.ApiControllers

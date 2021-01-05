@@ -4,11 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Directory.Entity.Data;
 using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
-using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
-using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -34,7 +30,7 @@ namespace Biobanks.Web.ApiControllers
             var model = (await _biobankReadService.ListCountriesAsync())
                 .Select(x =>
 
-                Task.Run(async () => new ReadCountryModel
+                Task.Run(async () => new Models.ADAC.ReadCountryModel
                 {
                     Id = x.CountryId,
                     Name = x.Name,
@@ -48,7 +44,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.CountryModel model)
+        public async Task<IHttpActionResult> Post(CountryModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidCountryNameAsync(model.Name))
@@ -76,7 +72,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.CountryModel model)
+        public async Task<IHttpActionResult> Put(int id, CountryModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidCountryNameAsync(id, model.Name))

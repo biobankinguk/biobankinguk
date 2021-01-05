@@ -4,11 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Directory.Entity.Data;
 using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
-using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
-using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -32,7 +28,7 @@ namespace Biobanks.Web.ApiControllers
             var model = (await _biobankReadService.ListConsentRestrictionsAsync())
                     .Select(x =>
 
-                Task.Run(async () => new ReadConsentRestrictionModel
+                Task.Run(async () => new Models.ADAC.ReadConsentRestrictionModel
                 {
                     Id = x.ConsentRestrictionId,
                     Description = x.Description,
@@ -78,7 +74,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.ConsentRestrictionModel model)
+        public async Task<IHttpActionResult> Put(int id, ConsentRestrictionModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidConsentRestrictionDescriptionAsync(model.Description))
@@ -115,7 +111,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.ConsentRestrictionModel model)
+        public async Task<IHttpActionResult> Post(ConsentRestrictionModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
@@ -144,7 +140,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, Models.Shared.ConsentRestrictionModel model)
+        public async Task<IHttpActionResult> Move(int id, ConsentRestrictionModel model)
         {
             // Update Preservation Type
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction

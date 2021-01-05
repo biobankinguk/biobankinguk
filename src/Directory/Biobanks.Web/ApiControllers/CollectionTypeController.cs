@@ -4,11 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Directory.Entity.Data;
 using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
-using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
-using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -32,7 +28,7 @@ namespace Biobanks.Web.ApiControllers
             var model = (await _biobankReadService.ListCollectionTypesAsync())
                     .Select(x =>
 
-                Task.Run(async () => new ReadCollectionTypeModel
+                Task.Run(async () => new Models.ADAC.ReadCollectionTypeModel
                 {
                     Id = x.CollectionTypeId,
                     Description = x.Description,
@@ -79,7 +75,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.CollectionTypeModel model)
+        public async Task<IHttpActionResult> Put(int id, CollectionTypeModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
@@ -116,7 +112,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.CollectionTypeModel model)
+        public async Task<IHttpActionResult> Post(CollectionTypeModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
@@ -145,7 +141,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, Models.Shared.CollectionTypeModel model)
+        public async Task<IHttpActionResult> Move(int id, CollectionTypeModel model)
         {
             // Update Preservation Type
             await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType

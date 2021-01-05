@@ -4,11 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Directory.Entity.Data;
 using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
-using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
-using System.Web.Http.ModelBinding;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -32,7 +28,7 @@ namespace Biobanks.Web.ApiControllers
             var model = (await _biobankReadService.ListCollectionStatusesAsync())
                     .Select(x =>
 
-                Task.Run(async () => new ReadCollectionStatusModel
+                Task.Run(async () => new Models.ADAC.ReadCollectionStatusModel
                 {
                     Id = x.CollectionStatusId,
                     Description = x.Description,
@@ -79,7 +75,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.CollectionStatusModel model, bool sortOnly = false)
+        public async Task<IHttpActionResult> Put(int id, CollectionStatusModel model, bool sortOnly = false)
         {
             // Validate model
             if (await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
@@ -116,7 +112,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.CollectionStatusModel model)
+        public async Task<IHttpActionResult> Post(CollectionStatusModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
@@ -145,7 +141,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, Models.Shared.CollectionStatusModel model)
+        public async Task<IHttpActionResult> Move(int id, CollectionStatusModel model)
         {
             // Update Preservation Type
             await _biobankWriteService.UpdateCollectionStatusAsync(new CollectionStatus

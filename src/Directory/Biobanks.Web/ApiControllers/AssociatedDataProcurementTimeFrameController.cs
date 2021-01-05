@@ -2,11 +2,7 @@
 using System.Web.Http;
 using Directory.Entity.Data;
 using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
-using Biobanks.Web.Models.ADAC;
-using System.Web.Http.Results;
 using System.Collections;
-using System.Web.Http.ModelBinding;
 using Directory.Services.Contracts;
 using System.Linq;
 
@@ -32,7 +28,7 @@ namespace Biobanks.Web.ApiControllers
             var models = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
                     .Select(x =>
 
-                Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
+                Task.Run(async () => new Models.ADAC.ReadAssociatedDataProcurementTimeFrameModel
                 {
                     Id = x.AssociatedDataProcurementTimeframeId,
                     Description = x.Description,
@@ -85,7 +81,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, Models.Shared.AssociatedDataProcurementTimeFrameModel model)
+        public async Task<IHttpActionResult> Put(int id, AssociatedDataProcurementTimeFrameModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(id, model.Description))
@@ -133,7 +129,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
+        public async Task<IHttpActionResult> Post(AssociatedDataProcurementTimeFrameModel model)
         {
             // Validate model
             var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
@@ -183,7 +179,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, Models.Shared.AssociatedDataProcurementTimeFrameModel model)
+        public async Task<IHttpActionResult> Move(int id, AssociatedDataProcurementTimeFrameModel model)
         {
             // Update Preservation Type
             await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
