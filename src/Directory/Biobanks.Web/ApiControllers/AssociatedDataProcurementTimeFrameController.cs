@@ -89,16 +89,6 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That Associated Data Procurement Time Frame already exists!");
             }
 
-            if (model.DisplayName == null)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field is required.");
-            }
-
-            if (model.DisplayName.Length > 10)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field allows a maximum of 10 characters.");
-            }
-
             // If in use, prevent update
             if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
             {
