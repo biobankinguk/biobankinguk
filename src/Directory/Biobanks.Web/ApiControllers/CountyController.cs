@@ -79,8 +79,8 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
-        [HttpPost]
-        [Route("")]
+        [HttpPut]
+        [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, CountyModel model)
         {
             // Validate model
