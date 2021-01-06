@@ -67,8 +67,8 @@
                     </li>
 
                     <li role="presentation"
-                        class="@(Model == "Associated Data Procurement Time Frames" ? "active" : "true")">
-                        @Html.ActionLink("Associated Data Procurement Time Frames", "AssociatedDataProcurementTimeFrame")
+                        class="@(Model == "Associated Data Procurement Time Frame" ? "active" : "true")">
+                        @Html.ActionLink("Associated Data Procurement Time Frame", "AssociatedDataProcurementTimeFrame")
                     </li>
 
                     @if (App.Config[ConfigKey.ShowPreservationPercentage] != "false")
@@ -89,7 +89,7 @@
                         @Html.ActionLink("Consent Restrictions", "ConsentRestriction")
                     </li>
                     <li role="presentation"
-                        class="@(Model == "Donor Counts" ? "active" : "true")">
+                        class="@(Model == $"{@App.Config[ConfigKey.DonorCountName]}" ? "active" : "true")">
                         @Html.ActionLink($"{@App.Config[ConfigKey.DonorCountName]}", "DonorCounts")
                     </li>
                     <li role="presentation"
@@ -127,7 +127,7 @@
                     }
 
                     <li role="presentation"
-                        class="@(Model == "Macroscopic Assessments" ? "active" : "true")">
+                        class="@(Model == $"{@App.Config[ConfigKey.MacroscopicAssessmentName]}" ? "active" : "true")">
                         @Html.ActionLink($"{@App.Config[ConfigKey.MacroscopicAssessmentName]}", "MacroscopicAssessments")
                     </li>
 
@@ -137,7 +137,7 @@
                     </li>
 
 					<li role="presentation"
-						class="@(Model == "Preservation Types" ? "active" : "true")">
+						class="@(Model == $"{@App.Config[ConfigKey.PreservationTypeName]}" ? "active" : "true")">
 						@Html.ActionLink($"{@App.Config[ConfigKey.PreservationTypeName]}", "PreservationTypes")
 					</li>
 

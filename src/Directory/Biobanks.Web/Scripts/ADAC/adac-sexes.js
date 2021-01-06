@@ -8,7 +8,7 @@ function Sex(id, description, sortOrder) {
 
 function SexModal(id, description, sortOrder) {
     this.modalModeAdd = "Add";
-    this.modalModeEdit = "Edit";
+    this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
     this.sex = ko.observable(
@@ -56,25 +56,38 @@ function AdacSexViewModel() {
 
     this.modalSubmit = function (e) {
         e.preventDefault();
+        var form = $(e.target); // get form as a jquery object
 
         // Get Action Type
-        var action = _this.modal.mode().toLowerCase();
-        var url = `${action}SexAjax`;
+        var resourceUrl = form.data("resource-url")
+        var action = _this.modal.mode();
+        if (action == 'Add') {
+            var ajaxType = 'POST'
+            var url = resourceUrl;
+        } else if (action == 'Update') {
+            var ajaxType = 'PUT';
+            var url = resourceUrl + '/' + $(e.target.Id).val();
+        }
+        var successRedirect = action.toLowerCase() + "-success-redirect";
 
         // Make AJAX Call
-        $.post(url, $(e.target).serialize(), function (data) {
-
-            // Clear any previous errors
-            _this.dialogErrors.removeAll();
-
-            if (data.success) {
-                _this.hideModal();
-                window.location.replace(data.redirect);
-            }
-            else {
-                if (Array.isArray(data.errors)) {
-                    for (var error of data.errors) {
-                        _this.dialogErrors.push(error);
+        $.ajax({
+            url: url,
+            type: ajaxType,
+            dataType: 'json',
+            data: form.serialize(),
+            success: function (data, textStatus, xhr) {
+                _this.dialogErrors.removeAll();
+                if (data.success) {
+                    _this.hideModal();
+                    window.location.href =
+                        form.data(successRedirect) + "?Name=" + data.name;
+                }
+                else {
+                    if (Array.isArray(data.errors)) {
+                        for (var error of data.errors) {
+                            _this.dialogErrors.push(error);
+                        }
                     }
                 }
             }
@@ -175,11 +188,17 @@ $(function () {
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
 
         //AJAX Update
-        $.post("EditSexAjax?sortOnly=true",
-            {
+        $.ajax({
+            url: $(triggerRow.node).data('resource-url') +
+                "/" + $(triggerRow.node).data('sexes-id') + "/move",
+            type: 'POST',
+            dataType: 'json',
+            data: {
                 id: $(triggerRow.node).data('sexes-id'),
                 description: $(triggerRow.node).data('sexes-desc'),
                 sortOrder: (triggerRow.newPosition + 1) //1-indexable
-            });
+            }
+
+        });
     });
 });

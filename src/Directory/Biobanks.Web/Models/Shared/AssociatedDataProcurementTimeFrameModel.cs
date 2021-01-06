@@ -13,6 +13,8 @@ namespace Biobanks.Web.Models.Shared
         [Required]
         public string Description { get; set; }
 
+        [Required]
+        [MinLength(10)]
         public string DisplayName { get; set; }
         public int SortOrder { get; set; }
     }

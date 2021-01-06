@@ -33,6 +33,7 @@
                 @foreach (var hta in Model.HtaStatuses)
                 {
                     <tr class="@(hta.CollectionCount > 0 ? "info" : "")"
+                        data-resource-url="/api/HtaStatus"
                         data-hta-id="@hta.Id"
                         data-hta-desc="@hta.Description">
 
@@ -97,9 +98,8 @@
             </div>
 
             <form id="modal-hta-status-form"
-                  data-update-action="@Url.Action("EditHtaStatusAjax")"
+                  data-resource-url="/api/HtaStatus"
                   data-update-success-redirect="@Url.Action("EditHtaStatusSuccess")"
-                  data-add-action="@Url.Action("AddHtaStatusAjax")"
                   data-add-success-redirect="@Url.Action("AddHtaStatusSuccess")"
                   class="form-horizontal">
 

@@ -48,6 +48,7 @@
 				@foreach (var type in Model.PreservationTypes)
 				{
 					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
+						data-resource-url="/api/PreservationType"
 						data-preservation-id="@type.Id"
 						data-preservation-desc="@type.Description">
 
@@ -114,7 +115,11 @@
 			</div>
 
 			<!-- Modal Form -->
-			<form id="modal-preservation-types-form" class="form-horizontal">
+			<form id="modal-preservation-types-form"
+				  data-resource-url="/api/PreservationType"
+				  data-update-success-redirect="@Url.Action("EditPreservationTypeSuccess")"
+                  data-add-success-redirect="@Url.Action("AddPreservationTypeSuccess")"
+				  class="form-horizontal">
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-sm-12">
