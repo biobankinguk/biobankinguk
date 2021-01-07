@@ -4,11 +4,14 @@
 @{
     ViewBag.Title = "Register a new network";
 }
+@if (App.Config[ConfigKey.RegisterRegistrationHelpUrl] != "")
+{
 <div class="row">
     <div class="alert alert-info col-sm-3 info-help">
         <p>For guidance, go to our <a href="@App.Config[ConfigKey.RegisterRegistrationHelpUrl]">help page</a>.</p>
     </div>
 </div>
+}
     <h2>@App.Config[ConfigKey.RegisterNetworkTitle]</h2>
 
 <div class="row">
