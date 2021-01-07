@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Biobanks.Common.Contracts;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Entities.Api.ReferenceData;
 
-namespace Biobanks.Common.Data.Entities
+namespace Entities.Api
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Entities.Api.ReferenceData;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;

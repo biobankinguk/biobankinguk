@@ -1,6 +1,6 @@
 ﻿using Biobanks.Common.Contracts;
-using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Entities.Api;
+using Entities.Api.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

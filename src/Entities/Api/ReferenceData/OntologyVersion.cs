@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Data.Entities.ReferenceData
+namespace Entities.Api.ReferenceData
 {
     /// <summary>
     /// Ontology Versions.

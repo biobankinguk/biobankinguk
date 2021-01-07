@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;

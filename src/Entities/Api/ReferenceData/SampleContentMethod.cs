@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Data.Entities.ReferenceData
+namespace Entities.Api.ReferenceData
 {
     /// <summary>
-    /// Storage Temperature entity.
+    /// Sample Content Method.
     /// </summary>
-    public class StorageTemperature
+    public class SampleContentMethod
     {
         /// <summary>
         /// Internal id.

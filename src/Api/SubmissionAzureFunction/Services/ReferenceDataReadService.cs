@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Entities.Api.ReferenceData;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Data.Entities.ReferenceData
+namespace Entities.Api.ReferenceData
 {
     /// <summary>
-    /// Treatment Location entity.
+    /// Sex term.
     /// </summary>
-    public class TreatmentLocation
+    public class Sex
     {
         /// <summary>
         /// Internal id.

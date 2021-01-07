@@ -1,5 +1,4 @@
 using AutoMapper;
-using Biobanks.Common.Data;
 using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.MappingProfiles;
 using Biobanks.SubmissionAzureFunction.Services;

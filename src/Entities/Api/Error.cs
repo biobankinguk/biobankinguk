@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Common.Data.Entities
+﻿namespace Entities.Api
 {
     public class Error
     {

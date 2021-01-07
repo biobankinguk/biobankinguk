@@ -1,6 +1,5 @@
-﻿//using Biobanks.Common.Data.Entities;
-//using Biobanks.Common.Data.Entities.ReferenceData;
-using Entities.Data;
+﻿using Entities.Api;
+using Entities.Api.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
