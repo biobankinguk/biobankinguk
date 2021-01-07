@@ -34,6 +34,7 @@ namespace Directory.Data.Constants
         public const string RegisterBiobankDescription = "site.register.biobank.description";
         public const string RegisterNetworkTitle = "site.register.network.title";
         public const string RegisterNetworkDescription = "site.register.network.description";
+        public const string RegisterRegistrationHelpUrl = "site.register.registrationhelpurl";
 
         //Editable Termspage
         public const string TermpageInfo = "site.termpage.pageinfo";

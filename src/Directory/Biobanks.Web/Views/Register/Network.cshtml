@@ -4,7 +4,11 @@
 @{
     ViewBag.Title = "Register a new network";
 }
-
+<div class="row">
+    <div class="alert alert-info col-sm-3 info-help">
+        <p>For guidance, go to our <a href="@App.Config[ConfigKey.RegisterRegistrationHelpUrl]">help page</a>.</p>
+    </div>
+</div>
     <h2>@App.Config[ConfigKey.RegisterNetworkTitle]</h2>
 
 <div class="row">
@@ -17,7 +21,7 @@
     <div class="col-sm-9">
         @using (Html.BeginForm("Network", "Register",
             FormMethod.Post,
-            new { @class = "form-horizontal", id="register-form" }))
+            new { @class = "form-horizontal", id = "register-form" }))
         {
             @Html.AntiForgeryToken()
 

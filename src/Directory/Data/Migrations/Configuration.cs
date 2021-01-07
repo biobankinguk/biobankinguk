@@ -213,6 +213,11 @@ namespace Directory.Data.Migrations
                             Key = "site.register.network.description",
                             Value = "If you are a network, such as the Confederation of Cancer Biobanks, you can register below.",
                         },
+                        new Config
+                        {
+                            Key = "site.register.registrationhelpurl",
+                            Value = "https://biobankinguk.org/share/",
+                        },
 
                         /** Sample Resource Config**/
 

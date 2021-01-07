@@ -11,5 +11,6 @@ namespace Biobanks.Web.Models.ADAC
         public string BiobankDescription { get; set; }
         public string NetworkTitle { get; set; }
         public string NetworkDescription { get; set; }
+        public string RegistrationHelpUrl { get; set; }
     }
 }
