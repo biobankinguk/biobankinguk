@@ -91,7 +91,7 @@ namespace Directory.Services
                 updatedSampleSet.SampleSetId,
                 new PartialSampleSet
                 {
-                    Sex = updatedSampleSet.Sex.Description,
+                    Sex = updatedSampleSet.Sex.Value,
                     AgeRange = updatedSampleSet.AgeRange.Description,
                     AgeRangeMetadata = JsonConvert.SerializeObject(new
                     {
@@ -120,7 +120,7 @@ namespace Directory.Services
                     SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
                         updatedSampleSet.DonorCount.Description, 
                         updatedSampleSet.AgeRange.Description,
-                        updatedSampleSet.Sex.Description,
+                        updatedSampleSet.Sex.Value,
                         updatedSampleSet.MaterialDetails)
                 }));
         }

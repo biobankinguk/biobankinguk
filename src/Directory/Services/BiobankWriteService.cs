@@ -10,6 +10,7 @@ using Directory.Services.Contracts;
 using System.IO;
 using AutoMapper;
 using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Services
 {
@@ -1680,20 +1681,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                sex.Description =
+                sex.Value =
                     sexes
-                        .Where(x => x.SexId == sex.SexId)
+                        .Where(x => x.Id == sex.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = sexes.Where(x => x.SexId == sex.SexId).First();
+            var oldType = sexes.Where(x => x.Id == sex.Id).First();
             var reverse = (oldType.SortOrder < sex.SortOrder);
 
             var newOrder = sexes
                     .Prepend(sex)
-                    .GroupBy(x => x.SexId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1718,7 +1719,7 @@ namespace Directory.Services
 
         public async Task DeleteSexAsync(Sex sex)
         {
-            await _sexRepository.DeleteAsync(sex.SexId);
+            await _sexRepository.DeleteAsync(sex.Id);
             await _sexRepository.SaveChangesAsync();
         }
         #endregion

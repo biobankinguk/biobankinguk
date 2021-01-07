@@ -14,6 +14,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Directory.DataSeed.Services;
 using System.Security.Cryptography.X509Certificates;
 using Directory.DataSeed.Dto;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.DataSeed.Services
 {

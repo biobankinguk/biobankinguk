@@ -1,5 +1,6 @@
 ﻿using Entities.Api;
 using Entities.Api.ReferenceData;
+using Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 

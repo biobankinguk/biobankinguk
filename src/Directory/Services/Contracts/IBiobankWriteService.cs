@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Directory.Services.Dto;
 using System.IO;
 using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Services.Contracts
 {

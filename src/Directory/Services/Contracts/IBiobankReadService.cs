@@ -5,6 +5,7 @@ using Directory.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Search.Constants;
 using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Services.Contracts
 {

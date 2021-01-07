@@ -13,6 +13,7 @@ using Directory.Services.Dto;
 using Directory.Services.Contracts;
 using Microsoft.AspNet.Identity;
 using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Services
 {
@@ -1290,13 +1291,13 @@ namespace Directory.Services
                    x => x.SexId == id)).Count();
 
         public async Task<bool> ValidSexDescriptionAsync(string sexDescription)
-            => (await _sexRepository.ListAsync(false, x => x.Description == sexDescription)).Any();
+            => (await _sexRepository.ListAsync(false, x => x.Value == sexDescription)).Any();
 
         public async Task<bool> ValidSexDescriptionAsync(int sexId, string sexDescription)
             => (await _sexRepository.ListAsync(
                 false,
-                x => x.Description == sexDescription &&
-                     x.SexId != sexId)).Any();
+                x => x.Value == sexDescription &&
+                     x.Id != sexId)).Any();
 
         public async Task<int> GetAccessConditionsCount(int id)
          => (await _collectionRepository.ListAsync(

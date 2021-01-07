@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -32,9 +32,9 @@ namespace Biobanks.Web.ApiControllers
 
             Task.Run(async () => new ReadSexModel
             {
-                Id = x.SexId,
-                Description = x.Description,
-                SexCount = await _biobankReadService.GetSexCount(x.SexId),
+                Id = x.Id,
+                Description = x.Value,
+                SexCount = await _biobankReadService.GetSexCount(x.Id),
                 SortOrder = x.SortOrder
             }).Result)
 
@@ -60,8 +60,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddSexAsync(new Sex
             {
-                SexId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -95,8 +95,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateSexAsync(new Sex
             {
-                SexId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -112,11 +112,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListSexesAsync()).Where(x => x.SexId == id).First();
+            var model = (await _biobankReadService.ListSexesAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsSexInUse(id))
             {
-                ModelState.AddModelError("Description", $"The sex \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("Description", $"The sex \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -126,8 +126,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteSexAsync(new Sex
             {
-                SexId = model.SexId,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder
             });
 
@@ -135,7 +135,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -145,8 +145,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateSexAsync(new Sex
             {
-                SexId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             },
             true);

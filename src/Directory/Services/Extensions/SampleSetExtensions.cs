@@ -51,10 +51,10 @@ namespace Directory.Services.Extensions
                         })
                     }),
 
-                Sex = sampleSet.Sex.Description,
+                Sex = sampleSet.Sex.Value,
                 SexMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.Sex.Description,
+                    Name = sampleSet.Sex.Value,
                     sampleSet.Sex.SortOrder
                 }),
                 AgeRange = sampleSet.AgeRange.Description,
@@ -93,7 +93,7 @@ namespace Directory.Services.Extensions
                 SampleSetSummary = BuildSampleSetSummary(
                     sampleSet.DonorCount.Description,
                     sampleSet.AgeRange.Description,
-                    sampleSet.Sex.Description,
+                    sampleSet.Sex.Value,
                     sampleSet.MaterialDetails),
                 Country = sampleSet.Collection.Organisation.Country.Name,
                 County = sampleSet.Collection.Organisation.County?.Name ?? "Not Provided"

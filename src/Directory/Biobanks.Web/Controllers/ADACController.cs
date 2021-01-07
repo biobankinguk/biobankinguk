@@ -30,6 +30,7 @@ using Hangfire.States;
 using System.Net.Http;
 using System.Configuration;
 using Newtonsoft.Json.Linq;
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
@@ -1882,9 +1883,9 @@ namespace Biobanks.Web.Controllers
 
                     Task.Run(async () => new ReadSexModel
                     {
-                        Id = x.SexId,
-                        Description = x.Description,
-                        SexCount = await _biobankReadService.GetSexCount(x.SexId),
+                        Id = x.Id,
+                        Description = x.Value,
+                        SexCount = await _biobankReadService.GetSexCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
@@ -1904,8 +1905,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteSexAsync(new Sex
             {
-                SexId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 

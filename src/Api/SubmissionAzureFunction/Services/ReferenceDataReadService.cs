@@ -12,6 +12,7 @@ using LegacyData;
 using MaterialType = LegacyData.Entities.MaterialType;
 using MaterialTypeGroup = LegacyData.Entities.MaterialTypeGroup;
 using MaterialTypeMaterialTypeGroup = LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {

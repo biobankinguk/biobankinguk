@@ -1,3 +1,4 @@
+using Entities.Shared.ReferenceData;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

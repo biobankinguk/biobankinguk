@@ -23,13 +23,9 @@ using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
-using Biobanks.Web.Extensions;
-using static System.String;
 using System.Net.Http;
-using System.Xml.Linq;
-using Microsoft.Ajax.Utilities;
 using Directory.Data.Constants;
-
+using static System.String;
 
 namespace Biobanks.Web.Controllers
 {
@@ -1049,7 +1045,7 @@ namespace Biobanks.Web.Controllers
                 SampleSets = collection.SampleSets.Select(sampleSet => new CollectionSampleSetSummaryModel
                 {
                     Id = sampleSet.SampleSetId,
-                    Sex = sampleSet.Sex.Description,
+                    Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Description,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Description).Distinct()),
                     PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType.Description).Distinct())
@@ -1238,7 +1234,7 @@ namespace Biobanks.Web.Controllers
             {
                 Id = sampleSet.SampleSetId,
                 CollectionId = sampleSet.CollectionId,
-                Sex = sampleSet.Sex.Description,
+                Sex = sampleSet.Sex.Value,
                 AgeRange = sampleSet.AgeRange.Description,
                 DonorCount = sampleSet.DonorCount.Description,
                 MaterialPreservationDetails = sampleSet.MaterialDetails.Select(x => new MaterialPreservationDetailModel
@@ -1372,8 +1368,8 @@ namespace Biobanks.Web.Controllers
                 .Select(
                     x => new ReferenceDataModel
                     {
-                        Id = x.SexId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                 .OrderBy(x => x.SortOrder);

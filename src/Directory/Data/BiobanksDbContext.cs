@@ -1,5 +1,6 @@
 using System.Data.Entity;
 using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Data
 {

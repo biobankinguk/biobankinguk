@@ -7,6 +7,7 @@ using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.SubmissionApi.Controllers.ReferenceData
 {
