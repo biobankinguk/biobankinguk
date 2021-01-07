@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Biobanks.Common.Contracts
+namespace Entities.Api.Contracts
 {
     public interface ISubmissionTimestamped
     {

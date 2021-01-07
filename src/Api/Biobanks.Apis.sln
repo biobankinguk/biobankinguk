@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "..\Data\Data.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyData", "..\LegacyData\LegacyData.csproj", "{F44C7A1A-A464-4A4A-A85A-8F12F8D5E4E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "..\Entities\Entities.csproj", "{5E3E4EB7-4168-473A-B76F-36B95AD45678}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "..\Entities\Entities.csproj", "{5E3E4EB7-4168-473A-B76F-36B95AD45678}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

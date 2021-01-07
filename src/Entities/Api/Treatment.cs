@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Contracts;
+using Entities.Api.Contracts;
 using Entities.Api.ReferenceData;
 
 namespace Entities.Api

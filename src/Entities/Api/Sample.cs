@@ -1,4 +1,4 @@
-﻿using Biobanks.Common.Contracts;
+﻿using Entities.Api.Contracts;
 using Entities.Api.ReferenceData;
 using System;
 using System.Collections.Generic;
