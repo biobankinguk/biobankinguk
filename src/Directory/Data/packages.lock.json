@@ -20,12 +20,6 @@
         "resolved": "4.7.0",
         "contentHash": "NdvNRjTPxYvIEhXQszT9L9vJhdQoX6AQ0AlhjTU+5NqFQVuacJTfhPVAvtGWNA2OJCqRiR/okBcZgMwI6MqcZg=="
       },
-      "Biobanks.Directory.Entity": {
-        "type": "Project",
-        "dependencies": {
-          "EntityFramework": "6.4.4"
-        }
-      },
       "entities": {
         "type": "Project"
       }

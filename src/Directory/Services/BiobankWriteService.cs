@@ -4,16 +4,12 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
 using Directory.Data.Repositories;
 using Directory.Services.Dto;
 using Directory.Services.Contracts;
 using System.IO;
 using AutoMapper;
-using Nest;
-using AutoMapper.Internal;
-using System.Runtime.InteropServices;
-using Directory.Services.Extensions;
+using Entities.Data;
 
 namespace Directory.Services
 {

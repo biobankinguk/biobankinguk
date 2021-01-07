@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Identity.Contracts;
 using Directory.Identity.Data.Entities;
 using Directory.Search.Legacy;
@@ -1587,7 +1587,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("AssociatedDataTypeGroups");
             }
 
-            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
+            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
             {
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Description = model.Name

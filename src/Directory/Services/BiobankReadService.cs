@@ -4,7 +4,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Directory.Data.Caching;
-using Directory.Entity.Data;
 using Directory.Data.Repositories;
 using Directory.Identity.Contracts;
 using Directory.Search.Legacy;
@@ -13,12 +12,7 @@ using Directory.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Services.Contracts;
 using Microsoft.AspNet.Identity;
-using Hangfire.States;
-using System.Security.Cryptography.X509Certificates;
-using System.Drawing.Text;
-using Castle.Core.Internal;
-using System.ComponentModel;
-using Directory.Data.Constants;
+using Entities.Data;
 
 namespace Directory.Services
 {

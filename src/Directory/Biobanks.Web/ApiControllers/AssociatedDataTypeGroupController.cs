@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Entities.Data;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
@@ -85,7 +85,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
+            await _biobankWriteService.AddAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
             {
                 Description = model.Name
             });

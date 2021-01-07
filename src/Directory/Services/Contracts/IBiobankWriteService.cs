@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
 using Directory.Services.Dto;
 using System.IO;
+using Entities.Data;
 
 namespace Directory.Services.Contracts
 {

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
 using Directory.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Search.Constants;
+using Entities.Data;
 
 namespace Directory.Services.Contracts
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Data.Repositories;
 using Directory.Services.Contracts;
 

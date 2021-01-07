@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Search.Dto.Results;
 using Directory.Services.Dto;
 using Biobanks.Web.AutoMapper;

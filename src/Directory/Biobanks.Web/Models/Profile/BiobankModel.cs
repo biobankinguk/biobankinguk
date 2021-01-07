@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Directory.Entity.Data;
+using Entities.Data;
 using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Models.Profile

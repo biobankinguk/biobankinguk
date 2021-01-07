@@ -661,24 +661,16 @@
       "Biobanks.Directory.Data": {
         "type": "Project",
         "dependencies": {
-          "Biobanks.Directory.Entity": "1.0.0",
           "Entities": "1.0.0",
           "EntityFramework": "6.4.4",
           "Newtonsoft.Json": "12.0.3",
           "System.Runtime.Caching": "4.7.0"
         }
       },
-      "Biobanks.Directory.Entity": {
-        "type": "Project",
-        "dependencies": {
-          "EntityFramework": "6.4.4"
-        }
-      },
       "Biobanks.Directory.Identity": {
         "type": "Project",
         "dependencies": {
           "Biobanks.Directory.Data": "1.0.0",
-          "Biobanks.Directory.Entity": "1.0.0",
           "EntityFramework": "6.4.4",
           "Microsoft.AspNet.Identity.Core": "2.2.3",
           "Microsoft.AspNet.Identity.EntityFramework": "2.2.3",
@@ -700,7 +692,6 @@
         "dependencies": {
           "AutoMapper": "10.0.0",
           "Biobanks.Directory.Data": "1.0.0",
-          "Biobanks.Directory.Entity": "1.0.0",
           "Biobanks.Directory.Identity": "1.0.0",
           "Biobanks.Directory.Search": "1.0.0",
           "Castle.Core": "4.4.1",

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Search.Dto.Documents;
 using Newtonsoft.Json;
 

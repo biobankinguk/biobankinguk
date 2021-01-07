@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Identity.Data.Entities;
 using Directory.Identity.Contracts;
 using Directory.Identity.Constants;

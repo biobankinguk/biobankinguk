@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Directory.Entity.Data;
+using Entities.Data;
 
 namespace Biobanks.Web.Models.Biobank
 {
