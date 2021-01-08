@@ -152,7 +152,7 @@ namespace Biobanks.Web.Controllers
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
                     {
-                        new Claim(CustomClaimType.Biobank, biobank.OrganisationId.ToString())
+                        new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
                     });
 
             Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;

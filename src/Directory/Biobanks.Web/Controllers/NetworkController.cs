@@ -22,6 +22,7 @@ using Directory.Services.Dto;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
 using Directory.Data.Constants;
+using Newtonsoft.Json;
 
 namespace Biobanks.Web.Controllers
 {
@@ -186,7 +187,7 @@ namespace Biobanks.Web.Controllers
                 //add a claim now that they're associated with the network
                 _claimsManager.AddClaims(new List<Claim>
                 {
-                    new Claim(CustomClaimType.Network, network.NetworkId.ToString())
+                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(network.NetworkId, network.Name)))
                 });
 
                 //Logo upload (now we have the id, we can form the filename)
