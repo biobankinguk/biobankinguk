@@ -102,7 +102,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
             {
                 MacroscopicAssessmentId = id,

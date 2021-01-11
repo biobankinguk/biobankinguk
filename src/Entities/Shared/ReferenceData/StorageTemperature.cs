@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Api.ReferenceData
+namespace Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Storage Temperature entity.
@@ -17,5 +17,8 @@ namespace Entities.Api.ReferenceData
         /// </summary>
         [Required]
         public string Value { get; set; }
+
+
+        public int SortOrder { get; set; }
     }
 }

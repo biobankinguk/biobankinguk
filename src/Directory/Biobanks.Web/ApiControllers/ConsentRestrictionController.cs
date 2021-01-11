@@ -93,7 +93,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
             {
                 ConsentRestrictionId = id,
@@ -142,7 +141,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, ConsentRestrictionModel model)
         {
-            // Update Preservation Type
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
             {
                 ConsentRestrictionId = id,

@@ -94,7 +94,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
             {
                 CollectionTypeId = id,
@@ -143,7 +142,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, CollectionTypeModel model)
         {
-            // Update Preservation Type
             await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
             {
                 CollectionTypeId = id,

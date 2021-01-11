@@ -29,7 +29,7 @@ namespace Directory.Services
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
-        private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
+        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
@@ -94,7 +94,7 @@ namespace Directory.Services
             IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
-            IGenericEFRepository<PreservationType> preservationTypeRepository,
+            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
@@ -140,7 +140,7 @@ namespace Directory.Services
             _collectionPointRepository = collectionPointRepository;
             _ageRangeRepository = ageRangeRepository;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
-            _preservationTypeRepository = preservationTypeRepository;
+            _storageTemperatureRepository = storageTemperatureRepository;
             _sopStatusRepository = sopStatusRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
@@ -1438,36 +1438,36 @@ namespace Directory.Services
         }
         #endregion
 
-        #region RefData: Preservation Types
-        public async Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType)
+        #region RefData: Storage Temperature
+        public async Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature)
         {
-            _preservationTypeRepository.Insert(preservationType);
-            await _preservationTypeRepository.SaveChangesAsync();
+            _storageTemperatureRepository.Insert(storageTemperature);
+            await _storageTemperatureRepository.SaveChangesAsync();
 
-            return preservationType;
+            return storageTemperature;
         }
 
-        public async Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false)
+        public async Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly = false)
         {
-            var types = await _biobankReadService.ListPreservationTypesAsync();
+            var types = await _biobankReadService.ListStorageTemperaturesAsync();
 
             // If only updating sortOrder
             if (sortOnly)
             {
-                preservationType.Description =
+                storageTemperature.Value =
                     types
-                        .Where(x => x.PreservationTypeId == preservationType.PreservationTypeId)
+                        .Where(x => x.Id == storageTemperature.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.PreservationTypeId == preservationType.PreservationTypeId).First();
-            var reverse = (oldType.SortOrder < preservationType.SortOrder);
+            var oldType = types.Where(x => x.Id == storageTemperature.Id).First();
+            var reverse = (oldType.SortOrder < storageTemperature.SortOrder);
 
             var newOrder = types
-                    .Prepend(preservationType)
-                    .GroupBy(x => x.PreservationTypeId)
+                    .Prepend(storageTemperature)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1483,17 +1483,17 @@ namespace Directory.Services
                     return x;
                 })
                 .ToList()
-                .ForEach(_preservationTypeRepository.Update);
+                .ForEach(_storageTemperatureRepository.Update);
 
-            await _preservationTypeRepository.SaveChangesAsync();
+            await _storageTemperatureRepository.SaveChangesAsync();
 
-            return preservationType;
+            return storageTemperature;
         }
 
-        public async Task DeletePreservationTypeAsync(PreservationType preservationType)
+        public async Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature)
         {
-            await _preservationTypeRepository.DeleteAsync(preservationType.PreservationTypeId);
-            await _preservationTypeRepository.SaveChangesAsync();
+            await _storageTemperatureRepository.DeleteAsync(storageTemperature.Id);
+            await _storageTemperatureRepository.SaveChangesAsync();
         }
         #endregion
 

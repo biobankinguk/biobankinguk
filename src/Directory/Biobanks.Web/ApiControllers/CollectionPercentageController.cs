@@ -99,7 +99,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
             {
                 CollectionPercentageId = id,

@@ -95,10 +95,10 @@ namespace Directory.Services.Contracts
         Task<bool> ValidCollectionTypeDescriptionAsync(string collectionTypeDescription);
         Task<bool> ValidCollectionTypeDescriptionAsync(int collectionTypeId, string collectionTypeDescription);
 
-        Task<IEnumerable<PreservationType>> ListPreservationTypesAsync();
-        Task<bool> ValidPreservationTypeAsync(string preservationTypeDescription);
-        Task<bool> IsPreservationTypeInUse(int id);
-        Task<int> GetPreservationTypeUsageCount(int id);
+        Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync();
+        Task<bool> ValidStorageTemperatureAsync(string preservationTypeDescription);
+        Task<bool> IsStorageTemperatureInUse(int id);
+        Task<int> GetStorageTemperatureUsageCount(int id);
 
         Task<IEnumerable<SopStatus>> ListSopStatusesAsync();
         Task<bool> ValidSopStatusAsync(string sopStatusDescription);

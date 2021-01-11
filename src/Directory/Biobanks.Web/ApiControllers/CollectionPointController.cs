@@ -94,7 +94,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateCollectionPointAsync(new CollectionPoint
             {
                 CollectionPointId = id,

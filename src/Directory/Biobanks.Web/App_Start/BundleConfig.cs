@@ -208,9 +208,9 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/donor-counts").Include(
                "~/Scripts/bootbox*",
                "~/Scripts/ADAC/adac-donor-counts.js"));
-            bundles.Add(new ScriptBundle("~/bundles/adac/preservation-types").Include(
+            bundles.Add(new ScriptBundle("~/bundles/adac/storage-temperatures").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-preservation-types.js"));
+                "~/Scripts/ADAC/adac-storage-temperatures.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sop-status").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sop-status.js"));

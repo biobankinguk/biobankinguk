@@ -444,7 +444,7 @@
     <Compile Include="ApiControllers\HtaStatusController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
-    <Compile Include="ApiControllers\PreservationTypeController.cs" />
+    <Compile Include="ApiControllers\StorageTemperatureController.cs" />
     <Compile Include="ApiControllers\RegistrationReasonController.cs" />
     <Compile Include="ApiControllers\SampleCollectionModeController.cs" />
     <Compile Include="ApiControllers\ServiceOfferingController.cs" />
@@ -588,7 +588,7 @@
     <Content Include="Scripts\ADAC\adac-macro-assessments.js" />
     <Content Include="Scripts\ADAC\adac-sample-collection-modes.js" />
     <Content Include="Scripts\ADAC\adac-access-conditions.js" />
-    <Content Include="Scripts\ADAC\adac-preservation-types.js" />
+    <Content Include="Scripts\ADAC\adac-storage-temperatures.js" />
     <Content Include="Scripts\ADAC\adac-registration-reasons.js" />
     <Content Include="Scripts\ADAC\adac-service-offering.js" />
     <Content Include="Scripts\ADAC\adac-site-config.js" />
@@ -641,7 +641,7 @@
     <Content Include="Views\ADAC\AssociatedDataTypes.cshtml" />
     <Content Include="Views\ADAC\ConsentRestriction.cshtml" />
     <Content Include="Views\ADAC\Sexes.cshtml" />
-    <Content Include="Views\ADAC\PreservationTypes.cshtml" />
+    <Content Include="Views\ADAC\StorageTemperatures.cshtml" />
     <Content Include="Views\ADAC\CollectionPoints.cshtml" />
     <Content Include="Views\ADAC\CollectionPercentages.cshtml" />
     <Content Include="Views\ADAC\AgeRanges.cshtml" />
@@ -871,7 +871,7 @@
     <Compile Include="Models\ADAC\ReadCollectionTypeModel.cs" />
     <Compile Include="Models\ADAC\ReadMaterialTypeModel.cs" />
     <Compile Include="Models\ADAC\AssociatedDataTypesModel.cs" />
-    <Compile Include="Models\ADAC\PreservationTypesModel.cs" />
+    <Compile Include="Models\ADAC\StorageTemperaturesModel.cs" />
     <Compile Include="Models\ADAC\ConsentRestrictionModel.cs" />
     <Compile Include="Models\ADAC\ReadConsentRestrictionModel.cs" />
     <Compile Include="Models\ADAC\ReadRegistrationReasonModel.cs" />

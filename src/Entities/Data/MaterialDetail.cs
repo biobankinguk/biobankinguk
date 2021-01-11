@@ -1,3 +1,4 @@
+using Entities.Shared.ReferenceData;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,8 +14,8 @@ namespace Entities.Data
         public virtual MaterialType MaterialType { get; set; }
 
         [Key, Column(Order = 2)]
-        public int PreservationTypeId { get; set; }
-        public virtual PreservationType PreservationType { get; set; }
+        public int StorageTemperatureId { get; set; }
+        public virtual StorageTemperature StorageTemperature { get; set; }
 
         [Key, Column(Order = 3)]
         public int MacroscopicAssessmentId { get; set; }

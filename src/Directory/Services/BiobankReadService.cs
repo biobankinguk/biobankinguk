@@ -67,7 +67,7 @@ namespace Directory.Services
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
         private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
-        private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
+        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
@@ -133,7 +133,7 @@ namespace Directory.Services
             IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
          
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IGenericEFRepository<PreservationType> preservationTypeRepository,
+            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
@@ -192,7 +192,7 @@ namespace Directory.Services
             _registrationReasonRepository = registrationReasonRepository;
             _serviceOfferingRepository = serviceOfferingRepository;
 
-            _preservationTypeRepository = preservationTypeRepository;
+            _storageTemperatureRepository = storageTemperatureRepository;
             _collectionPercentage = collectionPercentage;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
@@ -526,7 +526,7 @@ namespace Directory.Services
                 x => x.MaterialDetails.Select(y => y.CollectionPercentage),
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.PreservationType),
+                x => x.MaterialDetails.Select(y => y.StorageTemperature),
                 x => x.Collection.Organisation.Country,
                 x => x.Collection.Organisation.County
             );
@@ -566,7 +566,7 @@ namespace Directory.Services
                 x => x.MaterialDetails.Select(y => y.CollectionPercentage),
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.PreservationType),
+                x => x.MaterialDetails.Select(y => y.StorageTemperature),
                 x => x.Collection.Organisation.Country,
                 x => x.Collection.Organisation.County
             );
@@ -757,7 +757,7 @@ namespace Directory.Services
                 x => x.SampleSets.Select(y => y.Sex),
                 x => x.SampleSets.Select(y => y.AgeRange),
                 x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.MaterialType)),
-                x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.PreservationType))
+                x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.StorageTemperature))
             )).FirstOrDefault();
 
         public async Task<IEnumerable<Collection>> ListCollectionsAsync()
@@ -802,7 +802,7 @@ namespace Directory.Services
                 x => x.MaterialDetails.Select(y => y.CollectionPercentage),
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.PreservationType)
+                x => x.MaterialDetails.Select(y => y.StorageTemperature)
             )).FirstOrDefault();
 
         public async Task<CollectionSampleSet> GetSampleSetByIdForIndexingAsync(int id)
@@ -826,7 +826,7 @@ namespace Directory.Services
                 x => x.MaterialDetails.Select(y => y.CollectionPercentage),
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.PreservationType),
+                x => x.MaterialDetails.Select(y => y.StorageTemperature),
                 x => x.Collection.Organisation.Country,
                 x => x.Collection.Organisation.County
             )).FirstOrDefault();
@@ -1103,18 +1103,18 @@ namespace Directory.Services
 
 
 
-        public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
-            => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+        public async Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync()
+            => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
-        public async Task<int> GetPreservationTypeUsageCount(int id)
-            => (await _materialDetailsRepository.ListAsync(false, x => x.PreservationTypeId == id)).Count();
+        public async Task<int> GetStorageTemperatureUsageCount(int id)
+            => (await _materialDetailsRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
 
-        public async Task<bool> IsPreservationTypeInUse(int id)
-            => (await GetPreservationTypeUsageCount(id)) > 0;
+        public async Task<bool> IsStorageTemperatureInUse(int id)
+            => (await GetStorageTemperatureUsageCount(id)) > 0;
 
-        public async Task<bool> ValidPreservationTypeAsync(string preservationTypeDescription)
+        public async Task<bool> ValidStorageTemperatureAsync(string storageTemperature)
         {
-            return (await _preservationTypeRepository.ListAsync(false, x => x.Description == preservationTypeDescription)).Any();
+            return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();
         }
 
         public async Task<IEnumerable<Diagnosis>> ListDiagnosesAsync(string wildcard = "")

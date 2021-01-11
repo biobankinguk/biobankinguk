@@ -7,17 +7,17 @@ using System.Web;
 
 namespace Biobanks.Web.Models.ADAC
 {
-    public class PreservationTypesModel
+    public class StorageTemperaturesModel
     {
-        public ICollection<PreservationTypeModel> PreservationTypes { get; set; }
+        public ICollection<StorageTemperatureModel> StorageTemperatures { get; set; }
     }
 
-    public class PreservationTypeModel
+    public class StorageTemperatureModel
     {
         public int Id { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string Value { get; set; }
 
         public int SortOrder { get; set; }
 

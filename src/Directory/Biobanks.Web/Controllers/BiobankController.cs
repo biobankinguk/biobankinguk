@@ -1048,7 +1048,7 @@ namespace Biobanks.Web.Controllers
                     Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Description,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Description).Distinct()),
-                    PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType.Description).Distinct())
+                    StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
                 })
             };
 
@@ -1086,7 +1086,7 @@ namespace Biobanks.Web.Controllers
                     MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
                     {
                         MaterialTypeId = x.materialType,
-                        PreservationTypeId = x.preservationType,
+                        StorageTemperatureId = x.storageTemperature,
                         CollectionPercentageId = x.percentage,
                         MacroscopicAssessmentId = x.macroscopicAssessment
                     }).ToList()
@@ -1120,7 +1120,7 @@ namespace Biobanks.Web.Controllers
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
                     materialType = x.MaterialTypeId,
-                    preservationType = x.PreservationTypeId,
+                    storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
                 }))
@@ -1162,13 +1162,13 @@ namespace Biobanks.Web.Controllers
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
                     materialType = x.MaterialTypeId,
-                    preservationType = x.PreservationTypeId,
+                    storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
                 }))
             };
 
-            return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+              return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
         }
 
         [HttpPost]
@@ -1190,7 +1190,7 @@ namespace Biobanks.Web.Controllers
                     MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
                     {
                         MaterialTypeId = x.materialType,
-                        PreservationTypeId = x.preservationType,
+                        StorageTemperatureId = x.storageTemperature,
                         CollectionPercentageId = x.percentage,
                         MacroscopicAssessmentId = x.macroscopicAssessment
                     }).ToList()
@@ -1242,7 +1242,7 @@ namespace Biobanks.Web.Controllers
                     CollectionPercentage = x.CollectionPercentage?.Description,
                     MacroscopicAssessment = x.MacroscopicAssessment.Description,
                     MaterialType = x.MaterialType.Description,
-                    PreservationType = x.PreservationType.Description
+                    StorageTemperature = x.StorageTemperature.Value
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
             };
@@ -1407,13 +1407,13 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
+            model.StorageTemperatures = (await _biobankReadService.ListStorageTemperaturesAsync())
                 .Select(
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.PreservationTypeId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);

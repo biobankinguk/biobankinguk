@@ -74,11 +74,11 @@ namespace Directory.Services.Extensions
                     .Select(x => new MaterialPreservationDetailDocument
                     {
                         MaterialType = x.MaterialType.Description,
-                        PreservationType = x.PreservationType.Description,
-                        PreservationTypeMetadata = JsonConvert.SerializeObject(new
+                        StorageTemperature = x.StorageTemperature.Value,
+                        StorageTemperatureMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = x.PreservationType.Description,
-                            x.PreservationType.SortOrder
+                            Name = x.StorageTemperature.Value,
+                            x.StorageTemperature.SortOrder
                         }),
                         MacroscopicAssessment = x.MacroscopicAssessment.Description,
                         PercentageOfSampleSet = x.CollectionPercentage?.Description

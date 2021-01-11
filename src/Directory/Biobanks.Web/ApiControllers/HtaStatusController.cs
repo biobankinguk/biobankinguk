@@ -93,7 +93,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
             {
                 HtaStatusId = id,

@@ -91,7 +91,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
             {
                 MaterialTypeId = model.Id,

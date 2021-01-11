@@ -48,7 +48,7 @@ namespace Directory.DataSeed.Services
             ["HtaStatus"] = typeof(HtaStatus),
             ["MaterialTypes"] = typeof(MaterialType),
             ["MacroscopicAssessments"] = typeof(MacroscopicAssessment),
-            ["PreservationTypes"] = typeof(PreservationType),
+            ["StorageTemperatures"] = typeof(StorageTemperature),
             ["RegistrationReasons"] = typeof(RegistrationReason),
             ["SampleCollectionModes"] = typeof(SampleCollectionMode),
             ["ServiceOfferings"] = typeof(ServiceOffering),

@@ -52,7 +52,7 @@ namespace Directory.Data
         //Collection Material Preservation details
         public DbSet<MaterialDetail> MaterialDetails { get; set; }
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
-        public DbSet<PreservationType> PreservationTypes { get; set; }
+        public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
 

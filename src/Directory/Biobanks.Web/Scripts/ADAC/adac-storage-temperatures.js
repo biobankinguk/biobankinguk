@@ -1,28 +1,28 @@
 // Modals
-var adacPreservationTypeVM;
+var adacStorageTemperatureVM;
 
-function PreservationType(id, description, sortOrder) {
+function StorageTemperature(id, value, sortOrder) {
     this.id = id;
-    this.description = ko.observable(description);
+    this.value = ko.observable(value);
     this.sortOrder = sortOrder;
 }
 
-function PreservationTypeModal(id, description, sortOrder) {
+function StorageTemperatureModal(id, value, sortOrder) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
-    this.preservationType = ko.observable(
-        new PreservationType(id, description, sortOrder)
+    this.storageTemperature = ko.observable(
+        new StorageTemperature(id, value, sortOrder)
     );
 }
 
-function AdacPreservationTypeViewModel() {
+function AdacStorageTemperatureViewModel() {
     var _this = this;
 
-    this.modalId = "#preservation-types-modal";
-    this.modal = new PreservationTypeModal(0, "", 0);
+    this.modalId = "#storage-temperatures-modal";
+    this.modal = new StorageTemperatureModal(0, "", 0);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -36,20 +36,20 @@ function AdacPreservationTypeViewModel() {
 
     this.openModalForAdd = function () {
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.preservationType(new PreservationType(0, "", 0));
+        _this.modal.storageTemperature(new StorageTemperature(0, "", 0));
         _this.showModal();
     };
 
     this.openModalForEdit = function (_, event) {
         _this.modal.mode(_this.modal.modalModeEdit);
 
-        var preservationType = $(event.currentTarget).data("preservation-type");
+        var storageTemperature = $(event.currentTarget).data("storage-temperature");
 
-        _this.modal.preservationType(
-            new PreservationType(
-                preservationType.Id,
-                preservationType.Description,
-                preservationType.SortOrder
+        _this.modal.storageTemperature(
+            new StorageTemperature(
+                storageTemperature.Id,
+                storageTemperature.Value,
+                storageTemperature.SortOrder
             )
         );
 
@@ -98,8 +98,8 @@ function AdacPreservationTypeViewModel() {
 }
 
 $(function () {
-    $("#modal-preservation-types-form").submit(function (e) {
-        adacPreservationTypeVM.modalSubmit(e);
+    $("#modal-storage-temperatures-form").submit(function (e) {
+        adacStorageTemperatureVM.modalSubmit(e);
     });
 
     $(".delete-confirm").click(function (e) {
@@ -107,24 +107,24 @@ $(function () {
 
         var $link = $(this);
 
-        bootbox.confirm("Are you sure you want to delete " + $link .data("preservation-type") + "?",
+        bootbox.confirm("Are you sure you want to delete " + $link .data("storage-temperature") + "?",
             function (confirmation) {
                 confirmation && window.location.assign($link.attr("href"));
             }
         );
     });
 
-    adacPreservationTypeVM = new AdacPreservationTypeViewModel();
-    ko.applyBindings(adacPreservationTypeVM);
+    adacStorageTemperatureVM = new AdacStorageTemperatureViewModel();
+    ko.applyBindings(adacStorageTemperatureVM);
 });
 
 $(function () {
-    $("#change-preservation-type-name-form").submit(function (e) {
+    $("#change-storage-temperature-name-form").submit(function (e) {
         e.preventDefault();
         $.ajax({
             type: "POST",
             url: "UpdateReferenceTermName",
-            data: { newReferenceTermKey: "site.display.preservation.name", newReferenceTermName: document.getElementById("PreservationTypeName").value},
+            data: { newReferenceTermKey: "site.display.preservation.name", newReferenceTermName: document.getElementById("StorageTemperatureName").value},
             dataType: "json",
             success: function () {
                 location.reload();
@@ -132,14 +132,14 @@ $(function () {
         });
     });
 
-    $("#preservationTypeTitle").click(function () {
+    $("#storageTemperatureTitle").click(function () {
         document.getElementById("titleName").setAttribute("hidden", true);
-        document.getElementById("change-preservation-type-name-form").removeAttribute("hidden");
+        document.getElementById("change-storage-temperature-name-form").removeAttribute("hidden");
 
     });
 
-    $("#preservationTypeTitleCancel").click(function () {
-        document.getElementById("change-preservation-type-name-form").setAttribute("hidden", true);
+    $("#storageTemperatureTitleCancel").click(function () {
+        document.getElementById("change-storage-temperature-name-form").setAttribute("hidden", true);
         document.getElementById("titleName").removeAttribute("hidden");
 
     });
@@ -149,7 +149,7 @@ $(function () {
 
 // DataTables
 $(function () {
-    var table = $("#preservation-types")["DataTable"]({
+    var table = $("#storage-temperatures")["DataTable"]({
         paging: false,
         info: false,
         autoWidth: false,
@@ -168,16 +168,16 @@ $(function () {
 
         // Find the row that was moved
         var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
+        var $row = $(triggerRow.node);
 
         //AJAX Update
         $.ajax({
-            url: $(triggerRow.node).data('resource-url') +
-                "/" + $(triggerRow.node).data('preservation-id') + "/move",
+            url: $row.data('resource-url') + "/" + $row.data('id') + "/move",
             type: 'POST',
             dataType: 'json',
             data: {
-                id: $(triggerRow.node).data('preservation-id'),
-                description: $(triggerRow.node).data('preservation-desc'),
+                id: $row.data('id'),
+                value: $row.data('value'),
                 sortOrder: (triggerRow.newPosition + 1) //1-indexable
             }
         });

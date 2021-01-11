@@ -107,7 +107,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {
                 DonorCountId = id,
@@ -166,7 +165,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, DonorCountModel model)
         {
-            // Update Preservation Type
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {
                 DonorCountId = id,

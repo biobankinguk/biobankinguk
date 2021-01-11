@@ -1420,16 +1420,16 @@ namespace Biobanks.Web.Controllers
         }
         #endregion
 
-        #region RefData: Preservation Type
-
-        public async Task<ActionResult> PreservationTypes()
+        #region RefData: Storage Temperature
+        
+        public async Task<ActionResult> StorageTemperatures()
         {
-            var models = (await _biobankReadService.ListPreservationTypesAsync())
+            var models = (await _biobankReadService.ListStorageTemperaturesAsync())
                 .Select(x =>
-                    new PreservationTypeModel()
+                    new StorageTemperatureModel()
                     {
-                        Id = x.PreservationTypeId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Value = x.Value,
                         SortOrder = x.SortOrder,
                     }
                 )
@@ -1438,49 +1438,50 @@ namespace Biobanks.Web.Controllers
             // Fetch Sample Set Count
             foreach (var model in models)
             {
-                model.SampleSetsCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
+                model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
             }
 
-            return View(new PreservationTypesModel
+            return View(new StorageTemperaturesModel
             {
-                PreservationTypes = models
+                StorageTemperatures = models
             });
         }
 
-        public async Task<ActionResult> DeletePreservationType(PreservationTypeModel model)
+        public async Task<ActionResult> DeleteStorageTemperature(StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
-            if (await _biobankReadService.IsPreservationTypeInUse(model.Id))
+            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            if (await _biobankReadService.IsStorageTemperatureInUse(model.Id))
             {
 
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("PreservationTypes");
+                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Value}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                return RedirectToAction("StorageTemperatures");
             }
 
-            await _biobankWriteService.DeletePreservationTypeAsync(new PreservationType
+            await _biobankWriteService.DeleteStorageTemperatureAsync(new StorageTemperature
             {
-                PreservationTypeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder
             });
 
             // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
+            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Value}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("StorageTemperatures");
         }
 
-        public ActionResult AddPreservationTypeSuccess(string name, string referencename)
+        public ActionResult AddStorageTemperatureSuccess(string name, string referencename)
         {
             SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
+            return RedirectToAction("StorageTemperatures");
         }
 
-        public ActionResult EditPreservationTypeSuccess(string name, string referencename)
+        public ActionResult EditStorageTemperatureSuccess(string name, string referencename)
         {
             SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
+            return RedirectToAction("StorageTemperatures");
         }
+        
         #endregion
 
         #region RefData: Assocaited Data Types

@@ -14,7 +14,7 @@ namespace Biobanks.Web.Models.Biobank
         public IEnumerable<ReferenceDataModel> AgeRanges { get; set; }
         public IEnumerable<ReferenceDataModel> DonorCounts { get; set; }
         public IEnumerable<ReferenceDataModel> MaterialTypes { get; set; }
-        public IEnumerable<ReferenceDataModel> PreservationTypes { get; set; }
+        public IEnumerable<ReferenceDataModel> StorageTemperatures { get; set; }
         public IEnumerable<ReferenceDataModel> Percentages { get; set; }
         public IEnumerable<ReferenceDataModel> MacroscopicAssessments { get; set; }
         #endregion
@@ -57,7 +57,7 @@ namespace Biobanks.Web.Models.Biobank
                 foreach (var mpd in MaterialPreservationDetails)
                 {
                     if (mpd.materialType == 0 ||
-                        mpd.preservationType == 0 ||
+                        mpd.storageTemperature == 0 ||
                         mpd.percentage == 0 ||
                         mpd.macroscopicAssessment == 0)
                     {
@@ -80,7 +80,7 @@ namespace Biobanks.Web.Models.Biobank
     public class MaterialDetailModel
     {
         public int materialType { get; set; }
-        public int preservationType { get; set; }
+        public int storageTemperature { get; set; }
         public int? percentage { get; set; }
         public int macroscopicAssessment { get; set; }
     }
