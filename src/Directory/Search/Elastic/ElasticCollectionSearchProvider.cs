@@ -199,7 +199,7 @@ namespace Directory.Search.Elastic
                     MaterialPreservationDetails = result.MaterialPreservationDetails.Select(mpd => new MaterialPreservationDetailSummary
                     {
                         MaterialType = mpd.MaterialType,
-                        PreservationType = mpd.StorageTemperature,
+                        StorageTemperature = mpd.StorageTemperature,
                         MacroscopicAssessment = mpd.MacroscopicAssessment,
                         PercentageOfSampleSet = mpd.PercentageOfSampleSet
                     })

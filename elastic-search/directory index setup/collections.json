@@ -113,10 +113,10 @@
           "materialType": {
             "type": "keyword"
           },
-          "preservationType": {
+          "storageTemperature": {
             "type": "keyword"
           },
-          "preservationTypeMetadata": {
+          "storageTemperatureMetadata": {
             "type": "keyword"
           },
           "macroscopicAssessment": {

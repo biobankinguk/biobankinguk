@@ -69,9 +69,9 @@ namespace Directory.Search.Dto.Facets
             },
             new FacetDetailSummary
             {
-                Label = "Preservation Type",
-                Name = "preservationType",
-                Slug = "pret"
+                Label = "Storage Temperature",
+                Name = "storageTemperature",
+                Slug = "stmp"
             },
             new FacetDetailSummary
             {

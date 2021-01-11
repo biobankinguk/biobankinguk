@@ -7,10 +7,10 @@ namespace Directory.Search.Dto.Documents
         [Keyword(Name = "materialType")]
         public string MaterialType { get; set; }
 
-        [Keyword(Name = "preservationType")]
+        [Keyword(Name = "storageTemperature")]
         public string StorageTemperature { get; set; }
 
-        [Keyword(Name = "preservationTypeMetadata")]
+        [Keyword(Name = "storageTemperatureMetadata")]
         public string StorageTemperatureMetadata { get; set; }
 
         [Keyword(Name = "macroscopicAssessment")]
