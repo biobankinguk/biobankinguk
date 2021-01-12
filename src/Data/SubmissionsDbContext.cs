@@ -27,7 +27,7 @@ namespace Data
         public DbSet<Sex> Sexes { get; set; }
 
         // API Data
-        public DbSet<LiveDiagnosis> Diagnoses { get; set; }
+        public DbSet<LiveDiagnosis> LiveDiagnoses { get; set; }
         public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
         public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
 
