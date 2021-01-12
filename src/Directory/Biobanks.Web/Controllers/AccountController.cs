@@ -202,8 +202,7 @@ namespace Biobanks.Web.Controllers
             // Network admin only
             if (CurrentUser.IsInRole(Role.NetworkAdmin.ToString()))
             {
-                var network = JsonConvert.DeserializeObject<KeyValuePair<int, string>>(CurrentUser.Claims
-                    .Where(x => x.Type == CustomClaimType.Network).ToList().FirstOrDefault()?.Value);
+                var network = CurrentUser.Networks.FirstOrDefault();
 
                 if (!network.Equals(default(KeyValuePair<int, string>)))
                 {
