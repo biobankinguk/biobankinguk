@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Api.ReferenceData
+namespace Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Material Type terms.
@@ -18,6 +18,9 @@ namespace Entities.Api.ReferenceData
         /// </summary>
         [Required]
         public string Value { get; set; }
+
+
+        public int SortOrder { get; set; }
 
         /// <summary>
         /// Many to Many Relationship with MaterialTypeGroup

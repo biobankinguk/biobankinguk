@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities.Api.ReferenceData;
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.SubmissionApi.Services.Contracts
 {

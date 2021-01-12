@@ -890,7 +890,7 @@ namespace Directory.Services
 
             return collection.SampleSets
                 .SelectMany(x => x.MaterialDetails)
-                .Select(x => x.MaterialType.Description)
+                .Select(x => x.MaterialType.Value)
                 .Distinct();
         }
 
@@ -1243,13 +1243,13 @@ namespace Directory.Services
                  x => x.MaterialTypeId == id)).Count();
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
-            => (await _materialTypeRepository.ListAsync(false, x => x.Description == materialTypeDescription)).Any();
+            => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(int materialTypeId, string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(
                 false,
-                x => x.Description == materialTypeDescription &&
-                     x.MaterialTypeId != materialTypeId)).Any();
+                x => x.Value == materialTypeDescription &&
+                     x.Id != materialTypeId)).Any();
 
         public async Task<int> GetConsentRestrictionCollectionCount(int id)
         {

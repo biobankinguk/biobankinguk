@@ -1051,9 +1051,9 @@ namespace Biobanks.Web.Controllers
 
                     Task.Run(async () => new ReadMaterialTypeModel
                     {
-                        Id = x.MaterialTypeId,
-                        Description = x.Description,
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.MaterialTypeId),
+                        Id = x.Id,
+                        Description = x.Value,
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
@@ -1074,8 +1074,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
             {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 

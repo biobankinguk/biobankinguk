@@ -6,6 +6,7 @@ using Entities.Data;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -31,9 +32,9 @@ namespace Biobanks.Web.ApiControllers
 
                     Task.Run(async () => new ReadMaterialTypeModel
                     {
-                        Id = x.MaterialTypeId,
-                        Description = x.Description,
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.MaterialTypeId),
+                        Id = x.Id,
+                        Description = x.Value,
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result).ToList();
 
@@ -57,8 +58,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddMaterialTypeAsync(new MaterialType
             {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -93,8 +94,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
             {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -109,12 +110,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => x.MaterialTypeId == id).First();
+            var model = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsMaterialTypeInUse(id))
             {
-                ModelState.AddModelError("MaterialType", $"The material type \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("MaterialType", $"The material type \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -124,8 +125,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
             {
-                MaterialTypeId = model.MaterialTypeId,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder
             });
 
@@ -133,7 +134,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -143,8 +144,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
             {
-                MaterialTypeId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             },
             true);

@@ -1047,7 +1047,7 @@ namespace Biobanks.Web.Controllers
                     Id = sampleSet.SampleSetId,
                     Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Description,
-                    MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Description).Distinct()),
+                    MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
                     StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
                 })
             };
@@ -1241,7 +1241,7 @@ namespace Biobanks.Web.Controllers
                 {
                     CollectionPercentage = x.CollectionPercentage?.Description,
                     MacroscopicAssessment = x.MacroscopicAssessment.Description,
-                    MaterialType = x.MaterialType.Description,
+                    MaterialType = x.MaterialType.Value,
                     StorageTemperature = x.StorageTemperature.Value
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
@@ -1401,8 +1401,8 @@ namespace Biobanks.Web.Controllers
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.MaterialTypeId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);

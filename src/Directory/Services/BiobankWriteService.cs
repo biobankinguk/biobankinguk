@@ -1500,7 +1500,7 @@ namespace Directory.Services
         #region RefData: Material Type
         public async Task DeleteMaterialTypeAsync(MaterialType materialType)
         {
-            await _materialTypeRepository.DeleteAsync(materialType.MaterialTypeId);
+            await _materialTypeRepository.DeleteAsync(materialType.Id);
             await _materialTypeRepository.SaveChangesAsync();
         }
 
@@ -1511,20 +1511,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                materialType.Description =
+                materialType.Value =
                     types
-                        .Where(x => x.MaterialTypeId == materialType.MaterialTypeId)
+                        .Where(x => x.Id == materialType.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.MaterialTypeId == materialType.MaterialTypeId).First();
+            var oldType = types.Where(x => x.Id == materialType.Id).First();
             var reverse = (oldType.SortOrder < materialType.SortOrder);
 
             var newOrder = types
                     .Prepend(materialType)
-                    .GroupBy(x => x.MaterialTypeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change

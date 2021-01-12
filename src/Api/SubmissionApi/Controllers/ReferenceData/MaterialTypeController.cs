@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Biobanks.Common.Auth;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
-using Entities.Api.ReferenceData;
+using Entities.Shared.ReferenceData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;

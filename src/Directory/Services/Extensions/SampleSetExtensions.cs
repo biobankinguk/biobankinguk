@@ -73,7 +73,7 @@ namespace Directory.Services.Extensions
                 MaterialPreservationDetails = sampleSet.MaterialDetails
                     .Select(x => new MaterialPreservationDetailDocument
                     {
-                        MaterialType = x.MaterialType.Description,
+                        MaterialType = x.MaterialType.Value,
                         StorageTemperature = x.StorageTemperature.Value,
                         StorageTemperatureMetadata = JsonConvert.SerializeObject(new
                         {
@@ -111,7 +111,7 @@ namespace Directory.Services.Extensions
             if (materialDetails != null && materialDetails.Any())
             {
                 result = string.Concat(result, ", ",
-                    string.Join(" / ", materialDetails.Select(x => x.MaterialType.Description)));
+                    string.Join(" / ", materialDetails.Select(x => x.MaterialType.Value)));
             }
 
             return result;

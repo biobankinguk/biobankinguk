@@ -107,7 +107,7 @@ namespace Directory.Services
                     MaterialPreservationDetails = updatedSampleSet.MaterialDetails
                         .Select(x => new MaterialPreservationDetailDocument
                         {
-                            MaterialType = x.MaterialType.Description,
+                            MaterialType = x.MaterialType.Value,
                             StorageTemperature = x.StorageTemperature.Value,
                             StorageTemperatureMetadata = JsonConvert.SerializeObject(new
                             {

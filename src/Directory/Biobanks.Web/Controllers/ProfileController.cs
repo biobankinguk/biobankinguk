@@ -187,7 +187,7 @@ namespace Biobanks.Web.Controllers
 
             sampleSets.ToList().ForEach(
                 x => x.MaterialDetails.ToList().ForEach(
-                    y => materialTypes.Add(y.MaterialType.Description)));
+                    y => materialTypes.Add(y.MaterialType.Value)));
 
             //return first 3, slash separated
             var result = string.Join(" / ", materialTypes.Distinct().OrderBy(x => x).Take(3));
