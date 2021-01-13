@@ -19,6 +19,7 @@
     "datatables.net-buttons-bs": "^1.6.5",
     "datatables.net-rowreorder": "^1.2.7",
     "datatables.net-rowreorder-bs": "^1.2.7",
+    "font-awesome": "^4.7.0",
     "jquery": "^2.2.4",
     "jquery-ajax-unobtrusive": "^3.2.6",
     "jquery-validation": "^1.14.0",
