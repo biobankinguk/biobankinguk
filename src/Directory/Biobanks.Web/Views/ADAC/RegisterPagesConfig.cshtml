@@ -72,6 +72,12 @@
                     <br />
                     <!-- Registration Help Url -->
                     <div class="form-group">
+                        <label class="col-md-2 control-label">Enable Registration Help Url</label>
+                        <div class="col-md-3">
+                            <input type="checkbox" id="EnableRegistrationHelpUrl" name="EnableRegistrationHelpUrl" value="@Model.EnableRegistrationHelpUrl">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-md-2 control-label">Registration Help Url</label>
                         <div class="col-md-10">
                             <input type="text" id="RegistrationHelpUrl" name="RegistrationHelpUrl" class="form-control" value="@Model.RegistrationHelpUrl">
@@ -88,4 +94,5 @@
 @section FooterScripts
 {
     @Scripts.Render("~/bundles/markdowndeep")
+    @Scripts.Render("~/bundles/adac/register-pages-config")
 }

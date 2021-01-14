@@ -5,7 +5,7 @@
 @{
     ViewBag.Title = "Register a new " + App.Config[ConfigKey.SampleResourceName];
 }
-@if (App.Config[ConfigKey.RegisterRegistrationHelpUrl] != "")
+@if (App.Config[ConfigKey.RegisterRegistrationHelpUrl] != "" && App.Config[ConfigKey.EnableRegisterRegistrationHelpUrl] == "true")
 {
 <div class="row">
     <div class="alert alert-info col-sm-3 info-help">
