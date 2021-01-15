@@ -80,27 +80,27 @@ namespace Biobanks.Web.Controllers
                         Logo = x.Logo,
                         Description = x.Description
                     }).ToList(),
-                CapabilityDiagnoses = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
+                CapabilitySnomedTerms = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
                     x => new CapabilityModel
                     {
                         Id = x.DiagnosisCapabilityId,
-                        Diagnosis = x.SnomedTerm.Description,
+                        SnomedTerm = x.SnomedTerm.Description,
                         Protocols = x.SampleCollectionMode.Description
                     })
-                    .Select(x => x.Diagnosis)
+                    .Select(x => x.SnomedTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                CollectionDiagnoses = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
+                CollectionSnomedTerms = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,
-                        Diagnosis = x.SnomedTerm.Description,
+                        SnomedTerm = x.SnomedTerm.Description,
                         SampleSetsCount = x.SampleSets.Count,
                         StartYear = x.StartDate.Year,
                         MaterialTypes = GetMaterialTypeSummary(x.SampleSets)
                     })
-                    .Select(x => x.Diagnosis)
+                    .Select(x => x.SnomedTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),

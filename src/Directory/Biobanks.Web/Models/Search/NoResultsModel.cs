@@ -9,6 +9,6 @@ namespace Biobanks.Web.Models.Search
         public SearchDocumentType SearchType { get; set; }
         public string Diagnosis { get; set; }
 
-        public ICollection<DiagnosisModel> Suggestions { get; set; }
+        public ICollection<SnomedTermModel> Suggestions { get; set; }
     }
 }

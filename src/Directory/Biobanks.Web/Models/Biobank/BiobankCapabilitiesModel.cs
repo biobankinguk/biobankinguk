@@ -10,7 +10,7 @@ namespace Biobanks.Web.Models.Biobank
     public class BiobankCapabilityModel
     {
         public int Id { get; set; }
-        public string Diagnosis { get; set; }
+        public string SnomedTerm { get; set; }
         public string Protocol { get; set; }
     }
 }

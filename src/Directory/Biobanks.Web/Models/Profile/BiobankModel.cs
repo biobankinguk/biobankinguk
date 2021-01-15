@@ -37,9 +37,9 @@ namespace Biobanks.Web.Models.Profile
 
         public ICollection<NetworkMemberModel> NetworkMembers { get; set; }
 
-        public ICollection<string> CapabilityDiagnoses { get; set; }
+        public ICollection<string> CapabilitySnomedTerms { get; set; }
 
-        public ICollection<string> CollectionDiagnoses { get; set; }
+        public ICollection<string> CollectionSnomedTerms { get; set; }
 
         public ICollection<string> Services { get; set; }
 

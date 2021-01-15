@@ -31,6 +31,7 @@ using System.Net.Http;
 using System.Configuration;
 using Newtonsoft.Json.Linq;
 using Entities.Shared.ReferenceData;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace Biobanks.Web.Controllers
 {
@@ -1110,24 +1111,20 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View(new SnomedTermModel 
-            {
-                SnomedTerms = (await _biobankReadService.ListSnomedTermsAsync())
-                     .Select(x =>
+            return View((await _biobankReadService.ListSnomedTermsAsync()).Select(x =>
 
-                     Task.Run(async () => new ReadDiagnosisModel
-                     {
-                         SnomedTermId = x.Id,
-                         Description = x.Description,
-                         CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
-                         OtherTerms = x.OtherTerms
-                     }).Result)
-
-                     .ToList()
-            });
+                Task.Run(async() => new ReadSnomedTermModel
+                {
+                    SnomedTermId = x.Id,
+                    Description = x.Description,
+                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            ));
         }
 
-        public async Task<ActionResult> DeleteDiseaseStatus(DiagnosisModel model)
+        public async Task<ActionResult> DeleteDiseaseStatus(SnomedTermModel model)
         {
             if (await _biobankReadService.IsSnomedTermInUse(model.SnomedTermId))
             {
@@ -2487,28 +2484,23 @@ namespace Biobanks.Web.Controllers
                 .GroupBy(x => x.SnomedTermId)
                 .Select(x => x.First().SnomedTerm);
 
-            var diagnosesModel = new SnomedTermModel
-            {
-                SnomedTerms = snomedTerms
-                       .Select(x =>
-                       Task.Run(async () => new ReadDiagnosisModel
-                       {
-                           SnomedTermId = x.Id,
-                           Description = x.Description,
-                           CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
-                           OtherTerms = x.OtherTerms
-                       })
-                   .Result
-                   )
-                   .ToList()
-            };
-            var diagnosesModels = new List<SnomedTermModel>();
-            diagnosesModels.Add(diagnosesModel);
+            // Find CollectionCapabilityCount For Each SnomedTerm
+            var snomedTermsModel = snomedTerms.Select(x =>
+
+                Task.Run(async () => new ReadSnomedTermModel
+                {
+                    SnomedTermId = x.Id,
+                    Description = x.Description,
+                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            );
 
             return View("TermpageConfigPreview", new TermPageModel
             {
-                TermpageContentModel = termpage,
-                DiagnosesModel = diagnosesModels
+                SnomedTermsModel = snomedTermsModel,
+                TermpageContentModel = termpage
             });
         }
 

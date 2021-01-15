@@ -2,7 +2,7 @@
 
 namespace Biobanks.Web.Models.Shared
 {
-    public class DiagnosisModel
+    public class SnomedTermModel
     {
         [Required]
         [StringLength(20)]

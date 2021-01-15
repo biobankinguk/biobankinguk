@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
@@ -23,48 +20,38 @@ namespace Biobanks.Web.Controllers
             _biobankReadService = biobankReadService;
         }
 
-        private async Task<TermPageModel> PopulateTermPageModel(TermPageModel model)
+        // GET: Term
+        public async Task<ActionResult> Index()
         {
-            //Populate Term Page Info
-            model.TermpageContentModel = new TermpageContentModel
+            // Term Page Info
+            var termContentModel = new TermpageContentModel
             {
                 PageInfo = Config.Get(ConfigKey.TermpageInfo, "")
             };
 
-            
             // List of Unique Diagnoses With Sample Sets
             var snomedTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
                 .GroupBy(x => x.SnomedTermId)
                 .Select(x => x.First().SnomedTerm);
-            
-            // Populate Diagnoses Model
-            var diagnosesModel = new SnomedTermModel
+
+            var snomedTermsModel = snomedTerms.Select(x => 
+                
+                Task.Run(async () => new ReadSnomedTermModel
+                {
+                    SnomedTermId = x.Id,
+                    Description = x.Description,
+                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            );
+
+            return View(new TermPageModel
             {
-                SnomedTerms = snomedTerms.Select(x =>
-                        Task.Run(async () => new ReadDiagnosisModel
-                        { 
-                            SnomedTermId = x.Id,
-                            Description = x.Description,
-                            CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
-                            OtherTerms = x.OtherTerms
-                        })
-                        .Result
-                    )
-                    .ToList()
-            };
-
-            model.DiagnosesModel = new List<SnomedTermModel> { diagnosesModel };
-
-            return model;
-        }
-
-
-        // GET: Term
-        public async Task<ActionResult> Index()
-        {
-            return View((TermPageModel)(await PopulateTermPageModel(new TermPageModel())));
-
+                SnomedTermsModel = snomedTermsModel,
+                TermpageContentModel = termContentModel,
+            });
         }
     }
 }

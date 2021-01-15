@@ -829,7 +829,7 @@ namespace Biobanks.Web.Controllers
                 BiobankCollectionModels = collections.Select(x => new BiobankCollectionModel
                 {
                     Id = x.CollectionId,
-                    Diagnosis = x.SnomedTerm.Description,
+                    SnomedTerm = x.SnomedTerm.Description,
                     Title = x.Title,
                     StartYear = x.StartDate.Year,
                     MaterialTypes = Join(", ", _biobankReadService.ExtractDistinctMaterialTypes(x).Select(y => y)),
@@ -1031,7 +1031,7 @@ namespace Biobanks.Web.Controllers
                 Id = collection.CollectionId,
                 Title = collection.Title,
                 Description = collection.Description,
-                Diagnosis = collection.SnomedTerm.Description,
+                SnomedTerm = collection.SnomedTerm.Description,
                 StartDate = collection.StartDate,
                 AccessCondition = collection.AccessCondition.Description,
                 CollectionType = collection.CollectionType?.Description,
@@ -1473,7 +1473,7 @@ namespace Biobanks.Web.Controllers
                 BiobankCapabilityModels = capabilities.Select(x => new BiobankCapabilityModel
                 {
                     Id = x.DiagnosisCapabilityId,
-                    Diagnosis = x.SnomedTerm.Description,
+                    SnomedTerm = x.SnomedTerm.Description,
                     Protocol = x.SampleCollectionMode.Description
                 })
             };
@@ -1628,7 +1628,7 @@ namespace Biobanks.Web.Controllers
             var model = new CapabilityModel
             {
                 Id = capability.DiagnosisCapabilityId,
-                Diagnosis = capability.SnomedTerm.Description,
+                SnomedTerm = capability.SnomedTerm.Description,
                 Protocols = capability.SampleCollectionMode.Description,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
                 AssociatedData = capability.AssociatedData.Select(x => new AssociatedDataSummaryModel

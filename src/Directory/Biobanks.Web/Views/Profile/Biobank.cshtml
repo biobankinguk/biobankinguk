@@ -69,16 +69,16 @@
 		</div>
 	}
 
-	@if (Model.CollectionDiagnoses.Any())
+	@if (Model.CollectionSnomedTerms.Any())
 	{
 		<div class="row">
 			<div class="col-sm-12">
 				<h3>Existing samples:</h3>
 				<ul>
-					@foreach (var diagnosis in Model.CollectionDiagnoses)
+					@foreach (var snomedTerm in Model.CollectionSnomedTerms)
 					{
 						<li>
-							@diagnosis
+							@snomedTerm
 						</li>
 					}
 				</ul>
@@ -86,16 +86,16 @@
 		</div>
 	}
 
-	@if (Model.CapabilityDiagnoses.Any())
+	@if (Model.CapabilitySnomedTerms.Any())
 	{
 		<div class="row">
 			<div class="col-sm-12">
 				<h3>Bespoke collection capabilities:</h3>
 				<ul>
-					@foreach (var diagnosis in Model.CapabilityDiagnoses)
+					@foreach (var snomedTerm in Model.CapabilitySnomedTerms)
 					{
 						<li>
-							@diagnosis
+							@snomedTerm
 						</li>
 					}
 				</ul>

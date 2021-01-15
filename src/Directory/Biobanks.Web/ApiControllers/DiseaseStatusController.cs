@@ -27,7 +27,7 @@ namespace Biobanks.Web.ApiControllers
         {
             return (await _biobankReadService.ListSnomedTermsAsync()).Select(x =>
 
-                Task.Run(async () => new ReadDiagnosisModel
+                Task.Run(async () => new ReadSnomedTermModel
                 {
                     SnomedTermId = x.Id,
                     Description = x.Description,
@@ -71,7 +71,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(string id, DiagnosisModel model)
+        public async Task<IHttpActionResult> Put(string id, SnomedTermModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidSnomedTermDescriptionAsync(id, model.Description))
@@ -106,7 +106,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(DiagnosisModel model)
+        public async Task<IHttpActionResult> Post(SnomedTermModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidSnomedTermDescriptionAsync(model.Description))

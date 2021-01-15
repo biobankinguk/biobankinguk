@@ -86,7 +86,7 @@ namespace Biobanks.Web.Controllers
                 var neoplasm = await GetDiagnosesSearchResultsAsync(model.SearchType, "neoplasm");
 
                 //munge them into a distinct list
-                var results = new List<DiagnosisModel>();
+                var results = new List<SnomedTermModel>();
                 results.AddRange(malignant);
                 results.AddRange(neoplasm);
                 model.Suggestions = results
@@ -221,12 +221,12 @@ namespace Biobanks.Web.Controllers
             return this.Jsonp(diagnosisModels, callback, JsonRequestBehavior.AllowGet);
         }
 
-        private async Task<List<DiagnosisModel>> GetDiagnosesSearchResultsAsync(SearchDocumentType type, string wildcard)
+        private async Task<List<SnomedTermModel>> GetDiagnosesSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var snomedTerms = await _biobankReadService.ListSearchableSnomedTermsAsync(type, wildcard);
 
             var model =  snomedTerms.Select(x =>
-                new DiagnosisModel
+                new SnomedTermModel
                 {
                     SnomedTermId = x.Id,
                     Description = x.Description,
@@ -238,12 +238,12 @@ namespace Biobanks.Web.Controllers
             return model;
         }
 
-        private async Task<List<DiagnosisModel>> GetDiagnosesAsync(string wildcard)
+        private async Task<List<SnomedTermModel>> GetDiagnosesAsync(string wildcard)
         {
             var snomedTerms = await _biobankReadService.ListSnomedTermsAsync(wildcard);
 
             var model = snomedTerms.Select(x =>
-               new DiagnosisModel
+               new SnomedTermModel
                {
                    SnomedTermId = x.Id,
                    Description = x.Description,
