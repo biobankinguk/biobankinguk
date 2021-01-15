@@ -107,35 +107,37 @@
                 <div class="modal-body">
 
                     <div class="row">
-                        <div class="col-sm-12">
-   
-                            <!-- SNOMED ID -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">SNOMED ID</label>
-                                <div class="col-sm-9">
-                                    <input type="text" id="SnomedTermId" name="SnomedTermId" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().snomedTermId()" maxlength="20">
-                                </div>
-                            </div>
+						<div class="col-sm-12">
 
-                            <!-- Description -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" id="Description" name="Description" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().description()">
-                                </div>
-                            </div>
+							<input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().snomedTermId()">
 
-                            <!-- Other Terms -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Other Terms</label>
-                                <div class="col-sm-9">
-                                    <input type="text" id="OtherTerms" name="OtherTerms" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().otherTerms()">
-                                </div>
-                            </div>
-                        </div>
+							<!-- SNOMED ID -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">SNOMED ID</label>
+								<div class="col-sm-9">
+									<input type="text" id="SnomedTermId" name="SnomedTermId" class="form-control"
+										   data-bind="value: modal.diseaseStatus().snomedTermId()" maxlength="20">
+								</div>
+							</div>
+
+							<!-- Description -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Name</label>
+								<div class="col-sm-9">
+									<input type="text" id="Description" name="Description" class="form-control"
+										   data-bind="value: modal.diseaseStatus().description()">
+								</div>
+							</div>
+
+							<!-- Other Terms -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Other Terms</label>
+								<div class="col-sm-9">
+									<input type="text" id="OtherTerms" name="OtherTerms" class="form-control"
+										   data-bind="value: modal.diseaseStatus().otherTerms()">
+								</div>
+							</div>
+						</div>
                     </div>
 
                 </div>

@@ -33,6 +33,8 @@ function AdacDiseaseStatusViewModel() {
     };
 
     this.openModalForAdd = function () {
+        $("#SnomedTermId").prop("readonly", false);
+
         _this.modal.mode(_this.modal.modalModeAdd);
         _this.modal.diseaseStatus(new DiseaseStatus("", "", ""));
         _this.showModal();
@@ -41,16 +43,12 @@ function AdacDiseaseStatusViewModel() {
     this.openModalForEdit = function (_, event) {
         var diseaseStatus = $(event.currentTarget).data("disease-status");
 
+        $("#SnomedTermId").prop("readonly", true); // Shouldn't be able to edit SNOMED ID
+
         _this.modal.mode(_this.modal.modalModeEdit);
-
-        console.log($(event.currentTarget));
-        console.log(diseaseStatus);
-        console.log(diseaseStatus.snomedTermId);
-
         _this.modal.diseaseStatus(
             new DiseaseStatus(diseaseStatus.SnomedTermId, diseaseStatus.Description, diseaseStatus.OtherTerms)
         );
-
         _this.showModal();
     };
 
