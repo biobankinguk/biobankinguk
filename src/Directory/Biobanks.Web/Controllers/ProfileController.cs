@@ -84,7 +84,7 @@ namespace Biobanks.Web.Controllers
                     x => new CapabilityModel
                     {
                         Id = x.DiagnosisCapabilityId,
-                        Diagnosis = x.Diagnosis.Description,
+                        Diagnosis = x.SnomedTerm.Description,
                         Protocols = x.SampleCollectionMode.Description
                     })
                     .Select(x => x.Diagnosis)
@@ -95,7 +95,7 @@ namespace Biobanks.Web.Controllers
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,
-                        Diagnosis = x.Diagnosis.Description,
+                        Diagnosis = x.SnomedTerm.Description,
                         SampleSetsCount = x.SampleSets.Count,
                         StartYear = x.StartDate.Year,
                         MaterialTypes = GetMaterialTypeSummary(x.SampleSets)

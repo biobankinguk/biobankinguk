@@ -1,3 +1,4 @@
+using Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,8 +12,8 @@ namespace Entities.Data
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
 
-        public int DiagnosisId { get; set; }
-        public virtual Diagnosis Diagnosis { get; set; }
+        public string SnomedTermId { get; set; }
+        public virtual SnomedTerm SnomedTerm { get; set; }
 
         [MaxLength(250)]
         public string Title { get; set; }

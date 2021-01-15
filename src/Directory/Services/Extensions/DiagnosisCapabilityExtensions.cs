@@ -18,7 +18,7 @@ namespace Directory.Services.Extensions
             return new CapabilityDocument
             {
                 Id = capability.DiagnosisCapabilityId,
-                Diagnosis = capability.Diagnosis.Description,
+                Diagnosis = capability.SnomedTerm.Description,
                 BiobankId = capability.OrganisationId,
                 BiobankExternalId = capability.Organisation.OrganisationExternalId,
                 Biobank = capability.Organisation.Name,

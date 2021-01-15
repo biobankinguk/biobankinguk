@@ -1,10 +1,7 @@
 using System.Data.Entity;
 using Entities.Api;
-using Entities.Api.ReferenceData;
 using Entities.Data;
 using Entities.Shared.ReferenceData;
-
-using Diagnosis = Entities.Data.Diagnosis;
 
 namespace Directory.Data
 {
@@ -32,7 +29,6 @@ namespace Directory.Data
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
 
         //Shared capability / collection details
-        public DbSet<Diagnosis> Diagnoses { get; set; }
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
         public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
 
@@ -88,6 +84,7 @@ namespace Directory.Data
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<Sex> Sexes { get; set; }
+        public DbSet<SnomedTerm> SnomedTerm { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
 
 
@@ -124,7 +121,7 @@ namespace Directory.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Collection>().Property(f => f.StartDate).HasColumnType("datetime2");
-            modelBuilder.Entity<Diagnosis>().HasIndex(x => x.Description).IsUnique();
+            modelBuilder.Entity<SnomedTerm>().HasIndex(x => x.Description).IsUnique();
         }
     }
 }

@@ -1,3 +1,4 @@
+using Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
 
@@ -10,8 +11,8 @@ namespace Entities.Data
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
 
-        public int DiagnosisId { get; set; }
-        public virtual Diagnosis Diagnosis { get; set; }
+        public string SnomedTermId { get; set; }
+        public virtual SnomedTerm SnomedTerm { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

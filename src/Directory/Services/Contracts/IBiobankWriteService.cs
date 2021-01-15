@@ -63,9 +63,9 @@ namespace Directory.Services.Contracts
         Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request);
         Task<NetworkRegisterRequest> UpdateNetworkRegisterRequestAsync(NetworkRegisterRequest request);
 
-        Task DeleteDiagnosisAsync(Diagnosis diagnosis);
-        Task<Diagnosis> UpdateDiagnosisAsync(Diagnosis diagnosis);
-        Task<Diagnosis> AddDiagnosisAsync(Diagnosis diagnosis);
+        Task DeleteSnomedTermAsync(SnomedTerm diagnosis);
+        Task<SnomedTerm> UpdateSnomedTermAsync(SnomedTerm diagnosis);
+        Task<SnomedTerm> AddSnomedTermAsync(SnomedTerm diagnosis);
         
         Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType);
         Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);

@@ -1110,17 +1110,16 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View(new DiagnosesModel
+            return View(new SnomedTermModel 
             {
-                Diagnoses = (await _biobankReadService.ListDiagnosesAsync())
+                SnomedTerms = (await _biobankReadService.ListSnomedTermsAsync())
                      .Select(x =>
 
                      Task.Run(async () => new ReadDiagnosisModel
                      {
-                         Id = x.DiagnosisId,
-                         SnomedIdentifier = x.SnomedIdentifier,
+                         SnomedTermId = x.Id,
                          Description = x.Description,
-                         CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
+                         CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
                          OtherTerms = x.OtherTerms
                      }).Result)
 
@@ -1130,7 +1129,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DeleteDiseaseStatus(DiagnosisModel model)
         {
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
+            if (await _biobankReadService.IsSnomedTermInUse(model.SnomedTermId))
             {
                 SetTemporaryFeedbackMessage(
                     $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
@@ -1138,15 +1137,14 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("DiseaseStatuses");
             }
 
-            await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
+            await _biobankWriteService.DeleteSnomedTermAsync(new SnomedTerm
             {
-                DiagnosisId = model.Id,
+                Id = model.SnomedTermId,
                 Description = model.Description
             });
 
             //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
+            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
 
             return RedirectToAction("DiseaseStatuses");
         }
@@ -2483,29 +2481,28 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> TermpageConfigPreview(TermpageContentModel termpage)
         {
-            //Populate Diagnoses for Preview View
-            var diagnoses = (await _biobankReadService.ListCollectionsAsync())
+            // Populate Snomed Terms for Preview View
+            var snomedTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.DiagnosisId)
-                .Select(x => x.First().Diagnosis);
+                .GroupBy(x => x.SnomedTermId)
+                .Select(x => x.First().SnomedTerm);
 
-            var diagnosesModel = new DiagnosesModel
+            var diagnosesModel = new SnomedTermModel
             {
-                Diagnoses = diagnoses
+                SnomedTerms = snomedTerms
                        .Select(x =>
                        Task.Run(async () => new ReadDiagnosisModel
                        {
-                           Id = x.DiagnosisId,
-                           SnomedIdentifier = x.SnomedIdentifier,
+                           SnomedTermId = x.Id,
                            Description = x.Description,
-                           CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
+                           CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
                            OtherTerms = x.OtherTerms
                        })
                    .Result
                    )
                    .ToList()
             };
-            var diagnosesModels = new List<DiagnosesModel>();
+            var diagnosesModels = new List<SnomedTermModel>();
             diagnosesModels.Add(diagnosesModel);
 
             return View("TermpageConfigPreview", new TermPageModel

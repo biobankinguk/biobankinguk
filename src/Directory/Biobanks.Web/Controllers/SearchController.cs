@@ -223,28 +223,36 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<DiagnosisModel>> GetDiagnosesSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
-            var diagnoses = await _biobankReadService.ListSearchableDiagnosesAsync(type, wildcard);
+            var snomedTerms = await _biobankReadService.ListSearchableSnomedTermsAsync(type, wildcard);
 
-            return diagnoses
-               .Select(x => new DiagnosisModel
-               {
-                   Id = x.DiagnosisId,
-                   SnomedIdentifier = x.SnomedIdentifier,
-                   Description = x.Description,
-               }).ToList();
+            var model =  snomedTerms.Select(x =>
+                new DiagnosisModel
+                {
+                    SnomedTermId = x.Id,
+                    Description = x.Description,
+                    OtherTerms = x.OtherTerms
+                }
+            )
+            .ToList();
+
+            return model;
         }
 
         private async Task<List<DiagnosisModel>> GetDiagnosesAsync(string wildcard)
         {
-            var diagnoses = await _biobankReadService.ListDiagnosesAsync(wildcard);
+            var snomedTerms = await _biobankReadService.ListSnomedTermsAsync(wildcard);
 
-            return diagnoses
-               .Select(x => new DiagnosisModel
+            var model = snomedTerms.Select(x =>
+               new DiagnosisModel
                {
-                   Id = x.DiagnosisId,
-                   SnomedIdentifier = x.SnomedIdentifier,
+                   SnomedTermId = x.Id,
                    Description = x.Description,
-               }).ToList();
+                   OtherTerms = x.OtherTerms
+               }
+            )
+            .ToList();
+
+            return model;
         }
         #endregion
 

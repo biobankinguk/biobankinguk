@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
-
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -16,8 +15,7 @@ namespace Biobanks.Web.ApiControllers
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public DiseaseStatusController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public DiseaseStatusController(IBiobankReadService biobankReadService, IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -27,28 +25,27 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var model = (await _biobankReadService.ListDiagnosesAsync())
-                .Select(x =>
+            return (await _biobankReadService.ListSnomedTermsAsync()).Select(x =>
 
                 Task.Run(async () => new ReadDiagnosisModel
                 {
-                    Id = x.DiagnosisId,
-                    SnomedIdentifier = x.SnomedIdentifier,
+                    SnomedTermId = x.Id,
                     Description = x.Description,
-                    CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
+                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
-                }).Result).ToList();
-
-                return model;   
+                })
+                .Result
+            )
+            .ToList();
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListDiagnosesAsync()).Where(x => x.DiagnosisId == id).First();
+            var model = (await _biobankReadService.ListSnomedTermsAsync()).Where(x => x.Id == id).First();
 
-            if (await _biobankReadService.IsDiagnosisInUse(id))
+            if (await _biobankReadService.IsSnomedTermInUse(id))
             {
                 ModelState.AddModelError("Description", $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.");
             }
@@ -58,9 +55,9 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
+            await _biobankWriteService.DeleteSnomedTermAsync(new SnomedTerm
             {
-                DiagnosisId = model.DiagnosisId,
+                Id = model.Id,
                 Description = model.Description
             });
 
@@ -74,15 +71,15 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, DiagnosisModel model)
+        public async Task<IHttpActionResult> Put(string id, DiagnosisModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(id, model.Description))
+            if (await _biobankReadService.ValidSnomedTermDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use by another disease status. Disease status descriptions must be unique.");
             }
 
-            if (await _biobankReadService.IsDiagnosisInUse(id))
+            if (await _biobankReadService.IsSnomedTermInUse(id))
             {
                 ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
@@ -92,10 +89,9 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateDiagnosisAsync(new Diagnosis
+            await _biobankWriteService.UpdateSnomedTermAsync(new SnomedTerm
             {
-                DiagnosisId = id,
-                SnomedIdentifier = model.SnomedIdentifier,
+                Id = model.SnomedTermId,
                 Description = model.Description,
                 OtherTerms = model.OtherTerms
             });
@@ -113,7 +109,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(DiagnosisModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidSnomedTermDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
             }
@@ -123,10 +119,10 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddDiagnosisAsync(new Diagnosis
+            await _biobankWriteService.AddSnomedTermAsync(new SnomedTerm
             {
+                Id = model.SnomedTermId,
                 Description = model.Description,
-                SnomedIdentifier = model.SnomedIdentifier,
                 OtherTerms = model.OtherTerms
             });
 

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Entities.Api.Contracts;
 using Entities.Api.ReferenceData;
+using Entities.Shared.ReferenceData;
 
 namespace Entities.Api
 {

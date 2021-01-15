@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Api.ReferenceData
+namespace Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Sniomed Tag entity.

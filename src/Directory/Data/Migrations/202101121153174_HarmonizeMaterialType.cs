@@ -13,25 +13,25 @@
             CreateTable(
                 "dbo.MaterialTypeGroups",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Value = c.String(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Value = c.String(nullable: false),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.MaterialTypeGroupMaterialTypes",
                 c => new
-                    {
-                        MaterialTypeGroupId = c.Int(nullable: false),
-                        MaterialTypeId = c.Int(nullable: false),
-                    })
+                {
+                    MaterialTypeGroupId = c.Int(nullable: false),
+                    MaterialTypeId = c.Int(nullable: false),
+                })
                 .PrimaryKey(t => new { t.MaterialTypeGroupId, t.MaterialTypeId })
                 .ForeignKey("dbo.MaterialTypeGroups", t => t.MaterialTypeGroupId, cascadeDelete: true)
                 .ForeignKey("dbo.MaterialTypes", t => t.MaterialTypeId, cascadeDelete: true)
                 .Index(t => t.MaterialTypeGroupId)
                 .Index(t => t.MaterialTypeId);
-            
+
             RenameColumn("dbo.MaterialTypes", "MaterialTypeId", "Id");
             RenameColumn("dbo.MaterialTypes", "Description", "Value");
 

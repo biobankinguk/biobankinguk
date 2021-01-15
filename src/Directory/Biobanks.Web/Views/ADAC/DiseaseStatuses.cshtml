@@ -1,5 +1,5 @@
 ﻿@using System.Web.Optimization
-@model Biobanks.Web.Models.ADAC.DiagnosesModel
+@model Biobanks.Web.Models.ADAC.SnomedTermModel
 
 @{
     ViewBag.Title = "Disease statuses";
@@ -30,20 +30,20 @@
             </thead>
 
             <tbody>
-            @foreach (var diagnosis in Model.Diagnoses)
+            @foreach (var snomedTerm in Model.SnomedTerms)
             {
-                <tr class="@(diagnosis.CollectionCapabilityCount > 0 ? "info" : "")">
+                <tr class="@(snomedTerm.CollectionCapabilityCount > 0 ? "info" : "")">
                     <td>
-                        <div class="wrappable-td">@Html.DisplayFor(x => diagnosis.Description)</div>
+                        <div class="wrappable-td">@Html.DisplayFor(x => snomedTerm.Description)</div>
                     </td>
                     <td>
-                        @Html.DisplayFor(x => diagnosis.SnomedIdentifier)
+                        @Html.DisplayFor(x => snomedTerm.SnomedTermId)
                     </td>
-                    <td><div class="wrappable-td">@Html.DisplayFor(x => diagnosis.OtherTerms)</div></td>
-                    <td>@diagnosis.CollectionCapabilityCount</td>
+                    <td><div class="wrappable-td">@Html.DisplayFor(x => snomedTerm.OtherTerms)</div></td>
+                    <td>@snomedTerm.CollectionCapabilityCount</td>
 
                     <td class="text-right">
-                        @if (diagnosis.CollectionCapabilityCount > 0)
+                        @if (snomedTerm.CollectionCapabilityCount > 0)
                         {
                             <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
                         }
@@ -53,17 +53,17 @@
                                class="action-icon"
                                href="#"
                                data-target="#disease-status-modal"
-                               data-disease-status="@Json.Encode(diagnosis)"
+                               data-disease-status="@Json.Encode(snomedTerm)"
                                data-bind="click: openModalForEdit">
                                 <span class="fa fa-edit labelled-icon"></span>Edit
                             </a>
 
                             <a title="Delete"
                                class="action-icon delete-confirm"
-                               data-disease-status="&quot;@diagnosis.Description&quot;"
+                               data-disease-status="&quot;@snomedTerm.Description&quot;"
                                href="@Url.Action("DeleteDiseaseStatus", new
                                      {
-                                         diagnosis.Id, diagnosis.Description
+                                         snomedTerm.SnomedTermId, snomedTerm.Description
                                      })">
                                 <span class="fa fa-trash labelled-icon"></span>Delete
                             </a>
@@ -108,14 +108,13 @@
 
                     <div class="row">
                         <div class="col-sm-12">
-                            <input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().id">
-
+   
                             <!-- SNOMED ID -->
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">SNOMED ID</label>
                                 <div class="col-sm-9">
-                                    <input type="text" id="SnomedIdentifier" name="SnomedIdentifier" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().snomedIdentifier()" maxlength="20">
+                                    <input type="text" id="SnomedTermId" name="SnomedTermId" class="form-control"
+                                           data-bind="value: modal.diseaseStatus().snomedTermId()" maxlength="20">
                                 </div>
                             </div>
 
@@ -148,8 +147,6 @@
         </div>
     </div>
 </div>
-
-
 
 @section FooterScripts
 {

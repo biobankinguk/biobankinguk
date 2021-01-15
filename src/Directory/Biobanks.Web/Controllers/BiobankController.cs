@@ -829,7 +829,7 @@ namespace Biobanks.Web.Controllers
                 BiobankCollectionModels = collections.Select(x => new BiobankCollectionModel
                 {
                     Id = x.CollectionId,
-                    Diagnosis = x.Diagnosis.Description,
+                    Diagnosis = x.SnomedTerm.Description,
                     Title = x.Title,
                     StartYear = x.StartDate.Year,
                     MaterialTypes = Join(", ", _biobankReadService.ExtractDistinctMaterialTypes(x).Select(y => y)),
@@ -912,7 +912,7 @@ namespace Biobanks.Web.Controllers
             var model = new EditCollectionModel
             {
                 Id = collection.CollectionId,
-                Diagnosis = collection.Diagnosis.Description,
+                Diagnosis = collection.SnomedTerm.Description,
                 Title = collection.Title,
                 Description = collection.Description,
                 StartDate = collection.StartDate.Year,
@@ -1031,7 +1031,7 @@ namespace Biobanks.Web.Controllers
                 Id = collection.CollectionId,
                 Title = collection.Title,
                 Description = collection.Description,
-                Diagnosis = collection.Diagnosis.Description,
+                Diagnosis = collection.SnomedTerm.Description,
                 StartDate = collection.StartDate,
                 AccessCondition = collection.AccessCondition.Description,
                 CollectionType = collection.CollectionType?.Description,
@@ -1473,7 +1473,7 @@ namespace Biobanks.Web.Controllers
                 BiobankCapabilityModels = capabilities.Select(x => new BiobankCapabilityModel
                 {
                     Id = x.DiagnosisCapabilityId,
-                    Diagnosis = x.Diagnosis.Description,
+                    Diagnosis = x.SnomedTerm.Description,
                     Protocol = x.SampleCollectionMode.Description
                 })
             };
@@ -1534,7 +1534,7 @@ namespace Biobanks.Web.Controllers
             var model = new EditCapabilityModel
             {
                 Id = id,
-                Diagnosis = capability.Diagnosis.Description,
+                Diagnosis = capability.SnomedTerm.Description,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
                 Groups = groups.Groups
             };
@@ -1628,7 +1628,7 @@ namespace Biobanks.Web.Controllers
             var model = new CapabilityModel
             {
                 Id = capability.DiagnosisCapabilityId,
-                Diagnosis = capability.Diagnosis.Description,
+                Diagnosis = capability.SnomedTerm.Description,
                 Protocols = capability.SampleCollectionMode.Description,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
                 AssociatedData = capability.AssociatedData.Select(x => new AssociatedDataSummaryModel

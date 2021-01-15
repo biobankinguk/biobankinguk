@@ -36,7 +36,7 @@ namespace Directory.Services
         private readonly IGenericEFRepository<CollectionSampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
         private readonly IGenericEFRepository<HtaStatus> _htaStatusRepository;
-        private readonly IGenericEFRepository<Diagnosis> _diagnosisRepository;
+        private readonly IGenericEFRepository<SnomedTerm> _snomedTermRepository;
         private readonly IGenericEFRepository<CollectionSampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
@@ -102,7 +102,7 @@ namespace Directory.Services
             IGenericEFRepository<CollectionSampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
             IGenericEFRepository<HtaStatus> htaStatusRepository,
-            IGenericEFRepository<Diagnosis> diagnosisRepository,
+            IGenericEFRepository<SnomedTerm> snomedTermRepository,
             IGenericEFRepository<CollectionSampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
@@ -163,7 +163,7 @@ namespace Directory.Services
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
             _htaStatusRepository = htaStatusRepository;
-            _diagnosisRepository = diagnosisRepository;
+            _snomedTermRepository = snomedTermRepository;
             _sampleSetRepository = sampleSetRepository;
             _siteConfigRepository = siteConfigRepository;
             _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
@@ -458,8 +458,8 @@ namespace Directory.Services
                 x => biobankNetworkIds.Contains(x.NetworkId));
         }
 
-        public async Task<bool> IsDiagnosisInUse(int id)
-            => (await GetDiagnosisCollectionCapabilityCount(id) > 0);
+        public async Task<bool> IsSnomedTermInUse(string id)
+            => (await GetSnomedTermCollectionCapabilityCount(id) > 0);
 
         public async Task<bool> IsMaterialTypeInUse(int id)
             => (await GetMaterialTypeMaterialDetailCount(id) > 0);
@@ -508,7 +508,7 @@ namespace Directory.Services
                 x => sampleSetIds.Contains(x.SampleSetId) && !x.Collection.Organisation.IsSuspended,
                 null,
                 x => x.Collection,
-                x => x.Collection.Diagnosis,
+                x => x.Collection.SnomedTerm,
                 x => x.Collection.Organisation,
                 x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
                 x => x.Collection.CollectionPoint,
@@ -539,7 +539,7 @@ namespace Directory.Services
                 x => x.Organisation,
                 x => x.Organisation.OrganisationNetworks.Select(on => on.Network),
                 x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.AssociatedData,
                 x => x.SampleCollectionMode
             );
@@ -548,7 +548,7 @@ namespace Directory.Services
                 IEnumerable<int> sampleSetIds)
             => await _sampleSetRepository.ListAsync(false, x => sampleSetIds.Contains(x.SampleSetId), null,
                 x => x.Collection,
-                x => x.Collection.Diagnosis,
+                x => x.Collection.SnomedTerm,
                 x => x.Collection.Organisation,
                 x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
                 x => x.Collection.CollectionPoint,
@@ -579,7 +579,7 @@ namespace Directory.Services
                 x => x.Organisation,
                 x => x.Organisation.OrganisationNetworks.Select(on => on.Network),
                 x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.AssociatedData,
                 x => x.SampleCollectionMode
             );
@@ -703,7 +703,7 @@ namespace Directory.Services
             => (await _collectionRepository.ListAsync(false,
                 x => x.CollectionId == id,
                 null,
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
@@ -729,7 +729,7 @@ namespace Directory.Services
             => (await _collectionRepository.ListAsync(false,
                 x => x.CollectionId == id,
                 null,
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
@@ -746,7 +746,7 @@ namespace Directory.Services
             => (await _collectionRepository.ListAsync(false,
                 x => x.CollectionId == id,
                 null,
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
@@ -766,7 +766,7 @@ namespace Directory.Services
                 false,
                 null,
                 null,
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.SampleSets.Select(y => y.MaterialDetails));
 
             return collections;
@@ -778,19 +778,19 @@ namespace Directory.Services
                 false,
                 x => x.OrganisationId == organisationId,
                 null,
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.SampleSets.Select(y => y.MaterialDetails));
 
             return collections;
         }
 
-        public async Task<IEnumerable<Diagnosis>> GetUsedDiagnosisAsync()
+        public async Task<IEnumerable<SnomedTerm>> GetUsedSnomedTermsAsync()
         {
             var collections = await _collectionRepository.ListAsync(false);
-            var uniqueDiagnosis = (collections.Select(x => x.DiagnosisId)).Distinct();
-            var diagnosisList = await _diagnosisRepository.ListAsync(false, x => uniqueDiagnosis.Contains(x.DiagnosisId));
+            var uniqueSnomedTermsIds = collections.Select(x => x.SnomedTermId).Distinct();
+            var uniqueSnomedTerms = await _snomedTermRepository.ListAsync(false, x => uniqueSnomedTermsIds.Contains(x.Id));
 
-            return diagnosisList;
+            return uniqueSnomedTerms;
         }
 
         public async Task<CollectionSampleSet> GetSampleSetByIdAsync(int id)
@@ -808,7 +808,7 @@ namespace Directory.Services
         public async Task<CollectionSampleSet> GetSampleSetByIdForIndexingAsync(int id)
             => (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
                 x => x.Collection,
-                x => x.Collection.Diagnosis,
+                x => x.Collection.SnomedTerm,
                 x => x.Collection.Organisation,
                 x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network),
                 x => x.Collection.CollectionPoint,
@@ -847,7 +847,7 @@ namespace Directory.Services
             => (await _capabilityRepository.ListAsync(false,
                 x => x.DiagnosisCapabilityId == id,
                 null,
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.AssociatedData,
                 x => x.SampleCollectionMode
             )).FirstOrDefault();
@@ -859,7 +859,7 @@ namespace Directory.Services
                 x => x.Organisation,
                 x => x.Organisation.OrganisationNetworks.Select(on => @on.Network),
                 x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.AssociatedData,
                 x => x.AssociatedData.Select(y => y.AssociatedDataType),
                 x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
@@ -872,7 +872,7 @@ namespace Directory.Services
                 false,
                 x => x.OrganisationId == organisationId,
                 null,
-                x => x.Diagnosis,
+                x => x.SnomedTerm,
                 x => x.SampleCollectionMode);
 
             return capabilities;
@@ -1117,8 +1117,8 @@ namespace Directory.Services
             return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();
         }
 
-        public async Task<IEnumerable<Diagnosis>> ListDiagnosesAsync(string wildcard = "")
-            => await _diagnosisRepository.ListAsync(false, x => x.Description.Contains(wildcard));
+        public async Task<IEnumerable<SnomedTerm>> ListSnomedTermsAsync(string wildcard = "")
+            => await _snomedTermRepository.ListAsync(false, x => x.Description.Contains(wildcard));
 
         #region Site Config
         public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
@@ -1142,21 +1142,21 @@ namespace Directory.Services
 
         #endregion
 
-        public async Task<IEnumerable<Diagnosis>> ListSearchableDiagnosesAsync(SearchDocumentType type, string wildcard = "")
+        public async Task<IEnumerable<SnomedTerm>> ListSearchableSnomedTermsAsync(SearchDocumentType type, string wildcard = "")
         {
             var searchableDiagnoses = _searchProvider.ListDiagnoses(type, wildcard);
 
-            return await _diagnosisRepository.ListAsync(false, x => searchableDiagnoses.Contains(x.Description));
+            return await _snomedTermRepository.ListAsync(false, x => searchableDiagnoses.Contains(x.Description));
         }
 
-        public async Task<bool> ValidDiagnosisDescriptionAsync(string diagnosisDescription)
-            => (await _diagnosisRepository.ListAsync(false, x => x.Description == diagnosisDescription)).Any();
+        public async Task<bool> ValidSnomedTermDescriptionAsync(string snomedTermDescription)
+            => (await _snomedTermRepository.ListAsync(false, x => x.Description == snomedTermDescription)).Any();
 
-        public async Task<bool> ValidDiagnosisDescriptionAsync(int diagnosisId, string diagnosisDescription)
-            => (await _diagnosisRepository.ListAsync(
+        public async Task<bool> ValidSnomedTermDescriptionAsync(string snomedTermId, string snomedDescription)
+            => (await _snomedTermRepository.ListAsync(
                 false,
-                x => x.Description == diagnosisDescription &&
-                     x.DiagnosisId != diagnosisId)).Any();
+                x => x.Description == snomedDescription &&
+                     x.Id != snomedTermId)).Any();
 
         public async Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription)
     => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Description == consentDescription)).Any();
@@ -1227,15 +1227,15 @@ namespace Directory.Services
                 x => x.Description == collectionStatusDescription &&
                      x.CollectionStatusId != collectionStatusId)).Any();
 
-        public async Task<Diagnosis> GetDiagnosisByDescription(string description)
-            => (await _diagnosisRepository.ListAsync(false, x => x.Description == description)).Single();
+        public async Task<SnomedTerm> GetSnomedTermByDescription(string description)
+            => (await _snomedTermRepository.ListAsync(false, x => x.Description == description)).Single();
 
-        public async Task<int> GetDiagnosisCollectionCapabilityCount(int id)
+        public async Task<int> GetSnomedTermCollectionCapabilityCount(string id)
         => (await _collectionRepository.ListAsync(
                    false,
-                   x => x.DiagnosisId == id)).Count() + (await _capabilityRepository.ListAsync(
+                   x => x.SnomedTermId == id)).Count() + (await _capabilityRepository.ListAsync(
                    false,
-                   x => x.DiagnosisId == id)).Count();
+                   x => x.SnomedTermId == id)).Count();
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
       => (await _materialDetailRepository.ListAsync(

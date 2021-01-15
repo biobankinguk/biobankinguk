@@ -41,7 +41,7 @@ namespace Directory.DataSeed.Services
             ["ConsentRestrictions"] = typeof(ConsentRestriction),
             ["Counties"] = typeof(County),
             ["Countries"] = typeof(Country),
-            ["Diagnosis"] = typeof(Diagnosis),
+            ["SnomedTerm"] = typeof(SnomedTerm), // Should this be seeded here?
             ["DonorCounts"] = typeof(DonorCount),
             ["Funders"] = typeof(Funder),
             ["Sexes"] = typeof(Sex),

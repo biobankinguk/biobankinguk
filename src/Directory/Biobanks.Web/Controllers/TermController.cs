@@ -31,34 +31,31 @@ namespace Biobanks.Web.Controllers
                 PageInfo = Config.Get(ConfigKey.TermpageInfo, "")
             };
 
-            //Populate Diagnoses Model
+            
             // List of Unique Diagnoses With Sample Sets
-            var diagnoses = (await _biobankReadService.ListCollectionsAsync())
+            var snomedTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.DiagnosisId)
-                .Select(x => x.First().Diagnosis);
-
-            model.DiagnosesModel = new List<DiagnosesModel>();
-
-                var diagnosesModel = new DiagnosesModel
-                {
-                    Diagnoses = diagnoses
-                        .Select(x =>
+                .GroupBy(x => x.SnomedTermId)
+                .Select(x => x.First().SnomedTerm);
+            
+            // Populate Diagnoses Model
+            var diagnosesModel = new SnomedTermModel
+            {
+                SnomedTerms = snomedTerms.Select(x =>
                         Task.Run(async () => new ReadDiagnosisModel
-                    {
-                        Id = x.DiagnosisId,
-                        SnomedIdentifier = x.SnomedIdentifier,
-                        Description = x.Description,
-                        CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
-                        OtherTerms = x.OtherTerms
-                    })
-                    .Result
+                        { 
+                            SnomedTermId = x.Id,
+                            Description = x.Description,
+                            CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                            OtherTerms = x.OtherTerms
+                        })
+                        .Result
                     )
                     .ToList()
-                };
-                model.DiagnosesModel.Add(diagnosesModel);
+            };
 
-        
+            model.DiagnosesModel = new List<SnomedTermModel> { diagnosesModel };
+
             return model;
         }
 

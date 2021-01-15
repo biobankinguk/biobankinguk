@@ -121,12 +121,13 @@ namespace Directory.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
-        Task<IEnumerable<Diagnosis>> ListDiagnosesAsync(string wildcard = "");
-        Task<IEnumerable<Diagnosis>> ListSearchableDiagnosesAsync(SearchDocumentType type, string wildcard = "");
-        Task<bool> ValidDiagnosisDescriptionAsync(string diagnosisDescription);
-        Task<bool> ValidDiagnosisDescriptionAsync(int diagnosisId, string diagnosisDescription);
-        Task<Diagnosis> GetDiagnosisByDescription(string description);
-        Task<int> GetDiagnosisCollectionCapabilityCount(int id);
+        Task<IEnumerable<SnomedTerm>> ListSnomedTermsAsync(string wildcard = "");
+        Task<IEnumerable<SnomedTerm>> ListSearchableSnomedTermsAsync(SearchDocumentType type, string wildcard = "");
+        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisDescription);
+        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisId, string diagnosisDescription);
+        Task<SnomedTerm> GetSnomedTermByDescription(string description);
+        Task<int> GetSnomedTermCollectionCapabilityCount(string id);
+        Task<bool> IsSnomedTermInUse(string id);
 
         Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
@@ -193,7 +194,7 @@ namespace Directory.Services.Contracts
         Task<Organisation> GetBiobankByExternalIdForSearchResultsAsync(string externalId);
         Task<IEnumerable<Organisation>> GetBiobanksByExternalIdsAsync(IList<string> biobankExternalIds);
         Task<IEnumerable<Network>> GetNetworksByBiobankIdAsync(int organisationId);
-        Task<bool> IsDiagnosisInUse(int id);
+
         Task<bool> IsMaterialTypeInUse(int id);
         Task<bool> IsAssociatedDataTypeInUse(int id);
         Task<bool> IsSexInUse(int id);

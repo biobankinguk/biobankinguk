@@ -4,11 +4,9 @@ namespace Biobanks.Web.Models.Shared
 {
     public class DiagnosisModel
     {
-        public int Id { get; set; }
-
         [Required]
         [StringLength(20)]
-        public string SnomedIdentifier { get; set; }
+        public string SnomedTermId { get; set; }
 
         [Required]
         public string Description { get; set; }

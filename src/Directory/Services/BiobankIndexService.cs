@@ -149,7 +149,7 @@ namespace Directory.Services
                 updatedCapability.DiagnosisCapabilityId,
                 new PartialCapability
                 {
-                    Diagnosis = updatedCapability.Diagnosis.Description,
+                    Diagnosis = updatedCapability.SnomedTerm.Description,
                     Protocols = updatedCapability.SampleCollectionMode.Description,
                     AnnualDonorExpectation = donorExpectation.Key,
                     AnnualDonorExpectationMetadata = donorExpectationMetadata,
@@ -192,7 +192,7 @@ namespace Directory.Services
                         sampleSet.SampleSetId,
                         new PartialCollection
                         {
-                            Diagnosis = collection.Diagnosis.Description,
+                            Diagnosis = collection.SnomedTerm.Description,
                             CollectionTitle = collection.Title,
                             StartYear = collection.StartDate.Year.ToString(),
                             CollectionPoint = collection.CollectionPoint.Description,
