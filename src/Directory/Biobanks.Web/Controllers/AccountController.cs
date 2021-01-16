@@ -17,7 +17,6 @@ using Biobanks.Web.Utilities;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Newtonsoft.Json;
 
 namespace Biobanks.Web.Controllers
 {
@@ -144,7 +143,6 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> LoginRedirect(string returnUrl = null)
         {
             //This is an action, so that it's a separate request and the user identity cookie has roles and claims available :)
-
             //do we need them to create a profile for an associated org or network etc?
 
             // Start by updating user's last login time
@@ -152,26 +150,32 @@ namespace Biobanks.Web.Controllers
 
             //Biobank
 
+            //get all accepted biobanks
+            var biobankRequests = await _biobankReadService.ListAcceptedBiobankRegisterRequestsAsync();
+            var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == CurrentUser.Name && x.UserEmail == CurrentUser.Email);
+            
             // if there is an unregistered biobank to finish registering, go there
-            KeyValuePair<int, string>? unregisteredBiobank = SessionHelper.GetFirstUnregisteredBiobank(ViewBag);
-            if (unregisteredBiobank != null && !unregisteredBiobank.Equals(default(KeyValuePair<int, string>)))
+            if (firstAcceptedBiobabankRequest != null)
             {
                 Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewBiobank;
-                Session[SessionKeys.ActiveOrganisationId] = unregisteredBiobank.Value.Key;
-                Session[SessionKeys.ActiveOrganisationName] = unregisteredBiobank.Value.Value;
+                Session[SessionKeys.ActiveOrganisationId] = firstAcceptedBiobabankRequest.OrganisationRegisterRequestId;
+                Session[SessionKeys.ActiveOrganisationName] = firstAcceptedBiobabankRequest.OrganisationName;
 
-                return RedirectToAction("SwitchToBiobank", new {id = unregisteredBiobank.Value.Key, newBiobank = true});
+                return RedirectToAction("SwitchToBiobank", new {id = firstAcceptedBiobabankRequest.OrganisationRegisterRequestId, newBiobank = true});
             }
 
+            //get all accepted networks
+            var networkRequests = await _biobankReadService.ListAcceptedNetworkRegisterRequestAsync();
+            var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == CurrentUser.Identity.GetUserName() && x.UserEmail == CurrentUser.Email);
+
             // if there is an unregistered network to finish registering, go there
-            KeyValuePair<int, string>? unregisteredNetwork = SessionHelper.GetFirstUnregisteredNetwork(ViewBag);
-            if (unregisteredNetwork != null && !unregisteredNetwork.Equals(default(KeyValuePair<int, string>)))
+            if(firstAcceptedNetworkRequest != null)
             {
                 Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewNetwork;
-                Session[SessionKeys.ActiveOrganisationId] = unregisteredNetwork.Value.Key;
-                Session[SessionKeys.ActiveOrganisationName] = unregisteredNetwork.Value.Value;
+                Session[SessionKeys.ActiveOrganisationId] = firstAcceptedNetworkRequest.NetworkRegisterRequestId;
+                Session[SessionKeys.ActiveOrganisationName] = firstAcceptedNetworkRequest.NetworkName;
 
-                return RedirectToAction("SwitchToNetwork", new {id = unregisteredNetwork.Value.Key, newNetwork = true});
+                return RedirectToAction("SwitchToNetwork", new {id = firstAcceptedNetworkRequest.NetworkRegisterRequestId, newNetwork = true});
             }
 
             //ADAC

@@ -36,7 +36,8 @@ namespace Directory.Services
 
             var claims = new List<Claim>
             {
-                new Claim(CustomClaimType.FullName, user.Name)
+                new Claim(CustomClaimType.FullName, user.Name),
+                new Claim(CustomClaimType.Email, user.Email)
             };
 
             // If they're a Biobank Admin then populate the claim for the ID of their Biobank.

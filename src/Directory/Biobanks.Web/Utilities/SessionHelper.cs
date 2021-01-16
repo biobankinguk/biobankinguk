@@ -32,23 +32,5 @@ namespace Biobanks.Web.Utilities
             // if no networkId in session, return 0
             return 0;
         }
-
-        public static KeyValuePair<int, string>? GetFirstUnregisteredBiobank(dynamic viewbag)
-        {
-            // if no unregistered biobanks, return null
-            if (viewbag.UserBiobankRequests == null) return null;
-
-            List<KeyValuePair<int, string>> biobanks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(viewbag.UserBiobankRequests);
-            return biobanks.FirstOrDefault();
-        }
-
-        public static KeyValuePair<int, string>? GetFirstUnregisteredNetwork(dynamic viewbag)
-        {
-            // if no unregistered biobanks, return null
-            if (viewbag.UserNetworkRequests == null) return null;
-
-            List<KeyValuePair<int, string>> networks = JsonConvert.DeserializeObject<List<KeyValuePair<int, string>>>(viewbag.UserNetworkRequests);
-            return networks.FirstOrDefault();
-        }
     }
 }

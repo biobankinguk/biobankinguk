@@ -40,7 +40,7 @@ namespace Biobanks.Web.Controllers
             if (bb.IsSuspended)
             {
                 //Allow ADAC or this Biobank's admins to view the profile
-                if (CurrentUser.Biobanks.FirstOrDefault(x => x.Key == Convert.ToInt32(bb.OrganisationId)).Key != 0 && User.IsInRole(Role.BiobankAdmin.ToString()) ||
+                if (CurrentUser.Biobanks.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
                     User.IsInRole(Role.ADAC.ToString()))
                 {
                     //But alert them that the bb is suspended

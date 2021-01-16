@@ -53,18 +53,16 @@ namespace Biobanks
 
             // verify network claim
             var session = httpContext.Session;
-            var activeOrganisationId = session[SessionKeys.ActiveOrganisationId];
+            var activeOrganisationId = (int) session[SessionKeys.ActiveOrganisationId];
             var activeOrganisationType = Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]);
 
 
-            if (activeOrganisationId != null)
+            if (activeOrganisationId != 0)
             {
                 if (activeOrganisationType == (int)ActiveOrganisationType.Biobank)
                 {
-                    var biobankId = Convert.ToInt32(activeOrganisationId);
-
                     // If they don't have a claim on this biobank, return
-                    if (currentUser.Biobanks.FirstOrDefault(x => x.Key == Convert.ToInt32(activeOrganisationId)).Key == 0)
+                    if (currentUser.Biobanks.ContainsKey(activeOrganisationId))
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;
@@ -75,7 +73,7 @@ namespace Biobanks
 
                     var bb =
                         Task.Run(async () =>
-                                await BiobankReadService.GetBiobankByIdAsync(biobankId))
+                                await BiobankReadService.GetBiobankByIdAsync(activeOrganisationId))
                             .Result;
 
                     //only fail if suspended
@@ -91,7 +89,7 @@ namespace Biobanks
                     var networkId = Convert.ToInt32(activeOrganisationId);
 
                     // If they don't have a claim on this biobank, return
-                    if (currentUser.Networks.FirstOrDefault(x => x.Key == networkId).Key == 0)
+                    if (currentUser.Networks.ContainsKey(networkId))
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;

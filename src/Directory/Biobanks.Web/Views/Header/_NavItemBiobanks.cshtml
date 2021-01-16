@@ -7,7 +7,7 @@
 	{
 		<li>
 			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = true})">
-				<span class="fa fa-book labelled-icon"></span>@((string)biobank.Value)
+				<span class="fa fa-book labelled-icon"></span>@(biobank.Value)
 			</a>
 		</li>
     }
@@ -17,7 +17,7 @@
     {
         <li>
             <a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = false})">
-                <span class="fa fa-book labelled-icon"></span>@((string)biobank.Value)
+                <span class="fa fa-book labelled-icon"></span>@(biobank.Value)
 			</a>
 		</li>
 	}

@@ -7,7 +7,7 @@
     {
 		<li>
 			<a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = true})">
-			<span class="fa fa-exchange labelled-icon"></span>@((string)network.Value)
+			<span class="fa fa-exchange labelled-icon"></span>@(network.Value)
 			</a>
 		</li>
     }
@@ -18,7 +18,7 @@
     <li>
 
         <a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = false})">
-            <span class="fa fa-exchange labelled-icon"></span>@((string)network.Value)
+            <span class="fa fa-exchange labelled-icon"></span>@(network.Value)
 		</a>
 	</li>
 	}

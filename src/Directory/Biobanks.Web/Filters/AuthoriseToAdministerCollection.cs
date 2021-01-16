@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Web.Mvc;
 using Directory.Services.Contracts;
 using Biobanks.Web.Extensions;
@@ -17,17 +16,15 @@ namespace Biobanks.Web.Filters
             base.OnAuthorization(filterContext);
 
             var session = filterContext.RequestContext.HttpContext.Session;
-            var activeOrganisationId = session[SessionKeys.ActiveOrganisationId];
+            var activeOrganisationId = (int) session[SessionKeys.ActiveOrganisationId];
 
-            if (activeOrganisationId != null
-                && Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int) ActiveOrganisationType.Biobank
+            if (Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int) ActiveOrganisationType.Biobank
                 && filterContext.RequestContext.HttpContext.User.ToApplicationUserPrincipal()
-                .Biobanks.FirstOrDefault(x => x.Key == Convert.ToInt32(activeOrganisationId)).Key != 0)
+                .Biobanks.ContainsKey(activeOrganisationId))
             {
-                var biobankId = (int) activeOrganisationId;
                 var collectionId = int.Parse(filterContext.Controller.ValueProvider.GetValue("id").AttemptedValue);
 
-                if (BiobankReadService.CanThisBiobankAdministerThisCollection(biobankId, collectionId))
+                if (BiobankReadService.CanThisBiobankAdministerThisCollection(activeOrganisationId, collectionId))
                 {
                     return;
                 }
