@@ -4,7 +4,7 @@ using System.Web.Http;
 using System.Threading.Tasks;
 using Directory.Services.Contracts;
 using System.Linq;
-using Directory.Entity.Data;
+using Entities.Data;
 
 namespace Biobanks.Web.ApiControllers
 {

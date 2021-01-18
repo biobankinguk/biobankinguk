@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Directory.DataSeed.Dto;
+using Entities.Data;
+using Directory.Data.Constants;
+using Directory.Services.Contracts;
 
 namespace Directory.DataSeed.Services
 {

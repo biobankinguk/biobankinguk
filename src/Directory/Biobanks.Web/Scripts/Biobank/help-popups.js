@@ -265,10 +265,10 @@ $(".help-label-capability-annualdonorexpectation").click(function () {
     });
 });
 
-$(".help-label-adac-preservationtype-override").click(function () {
+$(".help-label-adac-storagetemperature-override").click(function () {
     bootbox.dialog({
-        message: "This function overrides the site wide " + document.getElementById("PreservationTypeRefValue").value + " with a specified user input value.",
-        title: "Overriding " + document.getElementById("PreservationTypeRefValue").value,
+        message: "This function overrides the site wide " + document.getElementById("StorageTemperatureRefValue").value + " with a specified user input value.",
+        title: "Overriding " + document.getElementById("StorageTemperatureRefValue").value,
         buttons: helpIconBootboxButtons
     });
 });

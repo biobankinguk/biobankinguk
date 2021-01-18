@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Entities.Data;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Directory.Data.Constants;
@@ -107,7 +107,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {
                 DonorCountId = id,
@@ -166,7 +165,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, DonorCountModel model)
         {
-            // Update Preservation Type
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {
                 DonorCountId = id,

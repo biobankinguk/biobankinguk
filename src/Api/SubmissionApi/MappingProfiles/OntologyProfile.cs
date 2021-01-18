@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Entities.Api.ReferenceData;
 using Biobanks.SubmissionApi.Models;
 
 namespace Biobanks.SubmissionApi.MappingProfiles

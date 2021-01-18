@@ -13,7 +13,7 @@ $(function() {
         //    }
         //},
         remote: {
-            url: '/Search/ListDiagnoses?wildcard=%QUERY',
+            url: '/Search/ListSnomedTerms?wildcard=%QUERY',
             filter: function (x) {
                 return $.map(x, function (item) {
                     return {

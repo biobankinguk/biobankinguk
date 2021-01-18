@@ -6,11 +6,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Directory.Data;
-using Directory.Entity.Data;
+using Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
+using Directory.DataSeed.Services;
+using System.Security.Cryptography.X509Certificates;
+using Directory.DataSeed.Dto;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.DataSeed.Services
 {

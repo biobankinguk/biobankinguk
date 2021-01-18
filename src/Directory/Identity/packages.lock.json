@@ -91,6 +91,11 @@
         "resolved": "1.0.0",
         "contentHash": "OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw=="
       },
+      "System.ComponentModel.Annotations": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
+      },
       "System.Runtime.Caching": {
         "type": "Transitive",
         "resolved": "4.7.0",
@@ -99,16 +104,17 @@
       "Biobanks.Directory.Data": {
         "type": "Project",
         "dependencies": {
-          "Biobanks.Directory.Entity": "1.0.0",
+          "Entities": "1.0.0",
           "EntityFramework": "6.4.4",
           "Newtonsoft.Json": "12.0.3",
           "System.Runtime.Caching": "4.7.0"
         }
       },
-      "Biobanks.Directory.Entity": {
+      "entities": {
         "type": "Project",
         "dependencies": {
-          "EntityFramework": "6.4.4"
+          "Microsoft.CSharp": "4.7.0",
+          "System.ComponentModel.Annotations": "5.0.0"
         }
       }
     }

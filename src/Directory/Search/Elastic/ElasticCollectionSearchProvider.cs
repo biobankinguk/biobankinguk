@@ -14,7 +14,6 @@ using Directory.Search.Constants;
 namespace Directory.Search.Elastic
 {
     // TODO major renaming work
-    // diagnosis -> ontology term
     // biobank -> organisation
 
     /// <inheritdoc cref="ICollectionSearchProvider" />
@@ -64,11 +63,11 @@ namespace Directory.Search.Elastic
         public IEnumerable<string> ListOntologyTerms(string wildcard = "")
         {
             var collections = _client.Search<CollectionDocument>(s => s
-                .Query(q => q.Wildcard(p => p.Diagnosis, $"*{wildcard}*"))
+                .Query(q => q.Wildcard(p => p.SnomedTerm, $"*{wildcard}*"))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
-                        .Field(p => p.Diagnosis))));
+                        .Field(p => p.SnomedTerm))));
 
             return collections.Aggregations.Terms("diagnoses").Buckets.Select(x => x.Key);
         }
@@ -199,7 +198,7 @@ namespace Directory.Search.Elastic
                     MaterialPreservationDetails = result.MaterialPreservationDetails.Select(mpd => new MaterialPreservationDetailSummary
                     {
                         MaterialType = mpd.MaterialType,
-                        PreservationType = mpd.PreservationType,
+                        StorageTemperature = mpd.StorageTemperature,
                         MacroscopicAssessment = mpd.MacroscopicAssessment,
                         PercentageOfSampleSet = mpd.PercentageOfSampleSet
                     })
@@ -217,7 +216,7 @@ namespace Directory.Search.Elastic
             return new CollectionSummary
             {
                 CollectionId = document.CollectionId,
-                Diagnosis = document.Diagnosis,
+                SnomedTerm = document.SnomedTerm,
                 CollectionTitle = document.CollectionTitle,
                 StartYear = document.StartYear,
                 EndYear = document.EndYear,

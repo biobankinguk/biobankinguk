@@ -40,7 +40,7 @@ namespace Directory.Data.Constants
 
 
         // Ref Data Name Configuration Options
-        public const string PreservationTypeName = "site.display.preservation.name";
+        public const string StorageTemperatureName = "site.display.preservation.name"; //TODO: Migrate key name?
         public const string DonorCountName = "site.display.donorcount.name";
         public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
 

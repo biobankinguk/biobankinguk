@@ -9,7 +9,7 @@ namespace Biobanks.Web.Models.Shared
 {
     public class TermPageModel
     {
-        public List<DiagnosesModel> DiagnosesModel { get; set; }
+        public IEnumerable<ReadSnomedTermModel> SnomedTermsModel { get; set; }
         public TermpageContentModel TermpageContentModel { get; set; }
     }
 }

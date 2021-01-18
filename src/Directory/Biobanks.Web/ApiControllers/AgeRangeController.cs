@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Entities.Data;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
 
@@ -95,7 +95,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateAgeRangeAsync(new AgeRange
             {
                 AgeRangeId = id,

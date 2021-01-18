@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Identity.Data.Entities;
 using Directory.Identity.Contracts;
 using Directory.Identity.Constants;
@@ -23,13 +23,9 @@ using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
-using Biobanks.Web.Extensions;
-using static System.String;
 using System.Net.Http;
-using System.Xml.Linq;
-using Microsoft.Ajax.Utilities;
 using Directory.Data.Constants;
-
+using static System.String;
 
 namespace Biobanks.Web.Controllers
 {
@@ -833,7 +829,7 @@ namespace Biobanks.Web.Controllers
                 BiobankCollectionModels = collections.Select(x => new BiobankCollectionModel
                 {
                     Id = x.CollectionId,
-                    Diagnosis = x.Diagnosis.Description,
+                    SnomedTerm = x.SnomedTerm.Description,
                     Title = x.Title,
                     StartYear = x.StartDate.Year,
                     MaterialTypes = Join(", ", _biobankReadService.ExtractDistinctMaterialTypes(x).Select(y => y)),
@@ -916,7 +912,7 @@ namespace Biobanks.Web.Controllers
             var model = new EditCollectionModel
             {
                 Id = collection.CollectionId,
-                Diagnosis = collection.Diagnosis.Description,
+                Diagnosis = collection.SnomedTerm.Description,
                 Title = collection.Title,
                 Description = collection.Description,
                 StartDate = collection.StartDate.Year,
@@ -1035,7 +1031,7 @@ namespace Biobanks.Web.Controllers
                 Id = collection.CollectionId,
                 Title = collection.Title,
                 Description = collection.Description,
-                Diagnosis = collection.Diagnosis.Description,
+                SnomedTerm = collection.SnomedTerm.Description,
                 StartDate = collection.StartDate,
                 AccessCondition = collection.AccessCondition.Description,
                 CollectionType = collection.CollectionType?.Description,
@@ -1049,10 +1045,10 @@ namespace Biobanks.Web.Controllers
                 SampleSets = collection.SampleSets.Select(sampleSet => new CollectionSampleSetSummaryModel
                 {
                     Id = sampleSet.SampleSetId,
-                    Sex = sampleSet.Sex.Description,
+                    Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Description,
-                    MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Description).Distinct()),
-                    PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType.Description).Distinct())
+                    MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
+                    StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
                 })
             };
 
@@ -1090,7 +1086,7 @@ namespace Biobanks.Web.Controllers
                     MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
                     {
                         MaterialTypeId = x.materialType,
-                        PreservationTypeId = x.preservationType,
+                        StorageTemperatureId = x.storageTemperature,
                         CollectionPercentageId = x.percentage,
                         MacroscopicAssessmentId = x.macroscopicAssessment
                     }).ToList()
@@ -1124,7 +1120,7 @@ namespace Biobanks.Web.Controllers
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
                     materialType = x.MaterialTypeId,
-                    preservationType = x.PreservationTypeId,
+                    storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
                 }))
@@ -1166,13 +1162,13 @@ namespace Biobanks.Web.Controllers
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
                     materialType = x.MaterialTypeId,
-                    preservationType = x.PreservationTypeId,
+                    storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
                 }))
             };
 
-            return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+              return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
         }
 
         [HttpPost]
@@ -1194,7 +1190,7 @@ namespace Biobanks.Web.Controllers
                     MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
                     {
                         MaterialTypeId = x.materialType,
-                        PreservationTypeId = x.preservationType,
+                        StorageTemperatureId = x.storageTemperature,
                         CollectionPercentageId = x.percentage,
                         MacroscopicAssessmentId = x.macroscopicAssessment
                     }).ToList()
@@ -1238,15 +1234,15 @@ namespace Biobanks.Web.Controllers
             {
                 Id = sampleSet.SampleSetId,
                 CollectionId = sampleSet.CollectionId,
-                Sex = sampleSet.Sex.Description,
+                Sex = sampleSet.Sex.Value,
                 AgeRange = sampleSet.AgeRange.Description,
                 DonorCount = sampleSet.DonorCount.Description,
                 MaterialPreservationDetails = sampleSet.MaterialDetails.Select(x => new MaterialPreservationDetailModel
                 {
                     CollectionPercentage = x.CollectionPercentage?.Description,
                     MacroscopicAssessment = x.MacroscopicAssessment.Description,
-                    MaterialType = x.MaterialType.Description,
-                    PreservationType = x.PreservationType.Description
+                    MaterialType = x.MaterialType.Value,
+                    StorageTemperature = x.StorageTemperature.Value
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
             };
@@ -1372,8 +1368,8 @@ namespace Biobanks.Web.Controllers
                 .Select(
                     x => new ReferenceDataModel
                     {
-                        Id = x.SexId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                 .OrderBy(x => x.SortOrder);
@@ -1405,19 +1401,19 @@ namespace Biobanks.Web.Controllers
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.MaterialTypeId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
+            model.StorageTemperatures = (await _biobankReadService.ListStorageTemperaturesAsync())
                 .Select(
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.PreservationTypeId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
@@ -1477,7 +1473,7 @@ namespace Biobanks.Web.Controllers
                 BiobankCapabilityModels = capabilities.Select(x => new BiobankCapabilityModel
                 {
                     Id = x.DiagnosisCapabilityId,
-                    Diagnosis = x.Diagnosis.Description,
+                    SnomedTerm = x.SnomedTerm.Description,
                     Protocol = x.SampleCollectionMode.Description
                 })
             };
@@ -1538,7 +1534,7 @@ namespace Biobanks.Web.Controllers
             var model = new EditCapabilityModel
             {
                 Id = id,
-                Diagnosis = capability.Diagnosis.Description,
+                Diagnosis = capability.SnomedTerm.Description,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
                 Groups = groups.Groups
             };
@@ -1632,7 +1628,7 @@ namespace Biobanks.Web.Controllers
             var model = new CapabilityModel
             {
                 Id = capability.DiagnosisCapabilityId,
-                Diagnosis = capability.Diagnosis.Description,
+                SnomedTerm = capability.SnomedTerm.Description,
                 Protocols = capability.SampleCollectionMode.Description,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
                 AssociatedData = capability.AssociatedData.Select(x => new AssociatedDataSummaryModel

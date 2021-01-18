@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
 using Directory.Services.Contracts;
@@ -100,7 +100,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
                 AssociatedDataProcurementTimeframeId = id,
@@ -161,7 +160,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, AssociatedDataProcurementTimeFrameModel model)
         {
-            // Update Preservation Type
             await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
                 AssociatedDataProcurementTimeframeId = id,

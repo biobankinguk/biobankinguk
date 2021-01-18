@@ -8,7 +8,7 @@ namespace Biobanks.Web.Models.Biobank
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Diagnosis { get; set; }
+        public string SnomedTerm { get; set; }
         public DateTime StartDate { get; set; }
         public string AccessCondition { get; set; }
         public string CollectionType { get; set; }
@@ -25,6 +25,6 @@ namespace Biobanks.Web.Models.Biobank
         public string Sex { get; set; }
         public string Age { get; set; }
         public string MaterialTypes { get; set; }
-        public string PreservationTypes { get; set; }
+        public string StorageTemperatures { get; set; }
     }
 }

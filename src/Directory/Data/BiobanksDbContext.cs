@@ -1,5 +1,8 @@
 using System.Data.Entity;
-using Directory.Entity.Data;
+using Entities.Api;
+using Entities.Api.ReferenceData;
+using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Data
 {
@@ -27,7 +30,6 @@ namespace Directory.Data
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
 
         //Shared capability / collection details
-        public DbSet<Diagnosis> Diagnoses { get; set; }
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
         public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
 
@@ -44,14 +46,11 @@ namespace Directory.Data
 
         //Collection SampleSet details
         public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
-        public DbSet<Sex> Sexes { get; set; }
         public DbSet<AgeRange> AgeRanges { get; set; }
         public DbSet<DonorCount> DonorCounts { get; set; }
 
         //Collection Material Preservation details
         public DbSet<MaterialDetail> MaterialDetails { get; set; }
-        public virtual DbSet<MaterialType> MaterialTypes { get; set; }
-        public DbSet<PreservationType> PreservationTypes { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
 
@@ -81,12 +80,48 @@ namespace Directory.Data
         // Biobank Publications
         public DbSet<Publication> Publications { get; set; }
 
+
+        /* Shared Reference Data */
+        public virtual DbSet<MaterialType> MaterialTypes { get; set; }
+        public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
+        public DbSet<Sex> Sexes { get; set; }
+        public DbSet<SnomedTerm> SnomedTerms { get; set; }
+        public DbSet<SnomedTag> SnomedTags { get; set; }
+        public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+
+
+        /*  API Entities  */
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<Error> Errors { get; set; }
+
+        // Reference Data
+        public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
+        public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
+        public DbSet<Ontology> Ontologies { get; set; }
+        public DbSet<OntologyVersion> OntologyVersions { get; set; }
+
+        // API Data
+        public DbSet<LiveDiagnosis> Diagnoses { get; set; }
+        public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
+        public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
+
+        public DbSet<LiveTreatment> Treatments { get; set; }
+        public DbSet<StagedTreatment> StagedTreatments { get; set; }
+        public DbSet<StagedTreatmentDelete> StagedTreatmentDeletes { get; set; }
+
+        public DbSet<LiveSample> Samples { get; set; }
+        public DbSet<StagedSample> StagedSamples { get; set; }
+        public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
+
+
         public BiobanksDbContext() : base("Biobanks") { }
         public BiobanksDbContext(string connectionString) : base(connectionString) { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Collection>().Property(f => f.StartDate).HasColumnType("datetime2");
+            modelBuilder.Entity<SnomedTerm>().HasIndex(x => x.Description).IsUnique();
         }
     }
 }

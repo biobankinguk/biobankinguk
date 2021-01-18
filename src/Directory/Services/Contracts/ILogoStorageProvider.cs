@@ -1,6 +1,6 @@
+using Entities.Data;
 using System.IO;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
 
 namespace Directory.Services.Contracts
 {

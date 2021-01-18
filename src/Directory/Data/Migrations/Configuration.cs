@@ -4,7 +4,7 @@ using System.Data.Entity.Validation;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Directory.Entity.Data;
+using Entities.Data;
 using Newtonsoft.Json;
 using System.Data.Entity.Migrations;
 using Directory.Data.Transforms.Url;

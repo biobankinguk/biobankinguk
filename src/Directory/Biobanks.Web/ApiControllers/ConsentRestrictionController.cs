@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
 
@@ -93,7 +93,6 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
             {
                 ConsentRestrictionId = id,
@@ -114,7 +113,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(ConsentRestrictionModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidSnomedTermDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Consent restriction descriptions must be unique.");
             }
@@ -142,7 +141,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, ConsentRestrictionModel model)
         {
-            // Update Preservation Type
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
             {
                 ConsentRestrictionId = id,

@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
 using Directory.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Search.Constants;
+using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Services.Contracts
 {
@@ -94,10 +95,10 @@ namespace Directory.Services.Contracts
         Task<bool> ValidCollectionTypeDescriptionAsync(string collectionTypeDescription);
         Task<bool> ValidCollectionTypeDescriptionAsync(int collectionTypeId, string collectionTypeDescription);
 
-        Task<IEnumerable<PreservationType>> ListPreservationTypesAsync();
-        Task<bool> ValidPreservationTypeAsync(string preservationTypeDescription);
-        Task<bool> IsPreservationTypeInUse(int id);
-        Task<int> GetPreservationTypeUsageCount(int id);
+        Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync();
+        Task<bool> ValidStorageTemperatureAsync(string preservationTypeDescription);
+        Task<bool> IsStorageTemperatureInUse(int id);
+        Task<int> GetStorageTemperatureUsageCount(int id);
 
         Task<IEnumerable<SopStatus>> ListSopStatusesAsync();
         Task<bool> ValidSopStatusAsync(string sopStatusDescription);
@@ -120,12 +121,13 @@ namespace Directory.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
-        Task<IEnumerable<Diagnosis>> ListDiagnosesAsync(string wildcard = "");
-        Task<IEnumerable<Diagnosis>> ListSearchableDiagnosesAsync(SearchDocumentType type, string wildcard = "");
-        Task<bool> ValidDiagnosisDescriptionAsync(string diagnosisDescription);
-        Task<bool> ValidDiagnosisDescriptionAsync(int diagnosisId, string diagnosisDescription);
-        Task<Diagnosis> GetDiagnosisByDescription(string description);
-        Task<int> GetDiagnosisCollectionCapabilityCount(int id);
+        Task<IEnumerable<SnomedTerm>> ListSnomedTermsAsync(string wildcard = "");
+        Task<IEnumerable<SnomedTerm>> ListSearchableSnomedTermsAsync(SearchDocumentType type, string wildcard = "");
+        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisDescription);
+        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisId, string diagnosisDescription);
+        Task<SnomedTerm> GetSnomedTermByDescription(string description);
+        Task<int> GetSnomedTermCollectionCapabilityCount(string id);
+        Task<bool> IsSnomedTermInUse(string id);
 
         Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
@@ -192,7 +194,7 @@ namespace Directory.Services.Contracts
         Task<Organisation> GetBiobankByExternalIdForSearchResultsAsync(string externalId);
         Task<IEnumerable<Organisation>> GetBiobanksByExternalIdsAsync(IList<string> biobankExternalIds);
         Task<IEnumerable<Network>> GetNetworksByBiobankIdAsync(int organisationId);
-        Task<bool> IsDiagnosisInUse(int id);
+
         Task<bool> IsMaterialTypeInUse(int id);
         Task<bool> IsAssociatedDataTypeInUse(int id);
         Task<bool> IsSexInUse(int id);

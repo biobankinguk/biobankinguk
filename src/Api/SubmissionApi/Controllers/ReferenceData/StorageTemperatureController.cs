@@ -2,11 +2,11 @@
 using System.Net;
 using System.Threading.Tasks;
 using Biobanks.Common.Auth;
-using Biobanks.Common.Data.Entities.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Entities.Shared.ReferenceData;
 
 namespace Biobanks.SubmissionApi.Controllers.ReferenceData
 {

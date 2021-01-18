@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Identity.Contracts;
 using Directory.Identity.Data.Entities;
 using Directory.Search.Legacy;
@@ -30,6 +30,8 @@ using Hangfire.States;
 using System.Net.Http;
 using System.Configuration;
 using Newtonsoft.Json.Linq;
+using Entities.Shared.ReferenceData;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace Biobanks.Web.Controllers
 {
@@ -1050,9 +1052,9 @@ namespace Biobanks.Web.Controllers
 
                     Task.Run(async () => new ReadMaterialTypeModel
                     {
-                        Id = x.MaterialTypeId,
-                        Description = x.Description,
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.MaterialTypeId),
+                        Id = x.Id,
+                        Description = x.Value,
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
@@ -1073,8 +1075,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
             {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -1109,27 +1111,22 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View(new DiagnosesModel
-            {
-                Diagnoses = (await _biobankReadService.ListDiagnosesAsync())
-                     .Select(x =>
+            return View((await _biobankReadService.ListSnomedTermsAsync()).Select(x =>
 
-                     Task.Run(async () => new ReadDiagnosisModel
-                     {
-                         Id = x.DiagnosisId,
-                         SnomedIdentifier = x.SnomedIdentifier,
-                         Description = x.Description,
-                         CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
-                         OtherTerms = x.OtherTerms
-                     }).Result)
-
-                     .ToList()
-            });
+                Task.Run(async() => new ReadSnomedTermModel
+                {
+                    SnomedTermId = x.Id,
+                    Description = x.Description,
+                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            ));
         }
 
-        public async Task<ActionResult> DeleteDiseaseStatus(DiagnosisModel model)
+        public async Task<ActionResult> DeleteDiseaseStatus(SnomedTermModel model)
         {
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
+            if (await _biobankReadService.IsSnomedTermInUse(model.SnomedTermId))
             {
                 SetTemporaryFeedbackMessage(
                     $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
@@ -1137,15 +1134,14 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("DiseaseStatuses");
             }
 
-            await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
+            await _biobankWriteService.DeleteSnomedTermAsync(new SnomedTerm
             {
-                DiagnosisId = model.Id,
+                Id = model.SnomedTermId,
                 Description = model.Description
             });
 
             //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
+            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
 
             return RedirectToAction("DiseaseStatuses");
         }
@@ -1419,16 +1415,16 @@ namespace Biobanks.Web.Controllers
         }
         #endregion
 
-        #region RefData: Preservation Type
-
-        public async Task<ActionResult> PreservationTypes()
+        #region RefData: Storage Temperature
+        
+        public async Task<ActionResult> StorageTemperatures()
         {
-            var models = (await _biobankReadService.ListPreservationTypesAsync())
+            var models = (await _biobankReadService.ListStorageTemperaturesAsync())
                 .Select(x =>
-                    new PreservationTypeModel()
+                    new StorageTemperatureModel()
                     {
-                        Id = x.PreservationTypeId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Value = x.Value,
                         SortOrder = x.SortOrder,
                     }
                 )
@@ -1437,49 +1433,50 @@ namespace Biobanks.Web.Controllers
             // Fetch Sample Set Count
             foreach (var model in models)
             {
-                model.SampleSetsCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
+                model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
             }
 
-            return View(new PreservationTypesModel
+            return View(new StorageTemperaturesModel
             {
-                PreservationTypes = models
+                StorageTemperatures = models
             });
         }
 
-        public async Task<ActionResult> DeletePreservationType(PreservationTypeModel model)
+        public async Task<ActionResult> DeleteStorageTemperature(StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
-            if (await _biobankReadService.IsPreservationTypeInUse(model.Id))
+            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            if (await _biobankReadService.IsStorageTemperatureInUse(model.Id))
             {
 
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("PreservationTypes");
+                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Value}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
+                return RedirectToAction("StorageTemperatures");
             }
 
-            await _biobankWriteService.DeletePreservationTypeAsync(new PreservationType
+            await _biobankWriteService.DeleteStorageTemperatureAsync(new StorageTemperature
             {
-                PreservationTypeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder
             });
 
             // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
+            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Value}\" was deleted successfully.", FeedbackMessageType.Success);
+            return RedirectToAction("StorageTemperatures");
         }
 
-        public ActionResult AddPreservationTypeSuccess(string name, string referencename)
+        public ActionResult AddStorageTemperatureSuccess(string name, string referencename)
         {
             SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
+            return RedirectToAction("StorageTemperatures");
         }
 
-        public ActionResult EditPreservationTypeSuccess(string name, string referencename)
+        public ActionResult EditStorageTemperatureSuccess(string name, string referencename)
         {
             SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
+            return RedirectToAction("StorageTemperatures");
         }
+        
         #endregion
 
         #region RefData: Assocaited Data Types
@@ -1587,7 +1584,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("AssociatedDataTypeGroups");
             }
 
-            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
+            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
             {
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Description = model.Name
@@ -1882,9 +1879,9 @@ namespace Biobanks.Web.Controllers
 
                     Task.Run(async () => new ReadSexModel
                     {
-                        Id = x.SexId,
-                        Description = x.Description,
-                        SexCount = await _biobankReadService.GetSexCount(x.SexId),
+                        Id = x.Id,
+                        Description = x.Value,
+                        SexCount = await _biobankReadService.GetSexCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
@@ -1904,8 +1901,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteSexAsync(new Sex
             {
-                SexId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -2481,35 +2478,29 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> TermpageConfigPreview(TermpageContentModel termpage)
         {
-            //Populate Diagnoses for Preview View
-            var diagnoses = (await _biobankReadService.ListCollectionsAsync())
+            // Populate Snomed Terms for Preview View
+            var snomedTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.DiagnosisId)
-                .Select(x => x.First().Diagnosis);
+                .GroupBy(x => x.SnomedTermId)
+                .Select(x => x.First().SnomedTerm);
 
-            var diagnosesModel = new DiagnosesModel
-            {
-                Diagnoses = diagnoses
-                       .Select(x =>
-                       Task.Run(async () => new ReadDiagnosisModel
-                       {
-                           Id = x.DiagnosisId,
-                           SnomedIdentifier = x.SnomedIdentifier,
-                           Description = x.Description,
-                           CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
-                           OtherTerms = x.OtherTerms
-                       })
-                   .Result
-                   )
-                   .ToList()
-            };
-            var diagnosesModels = new List<DiagnosesModel>();
-            diagnosesModels.Add(diagnosesModel);
+            // Find CollectionCapabilityCount For Each SnomedTerm
+            var snomedTermsModel = snomedTerms.Select(x =>
+
+                Task.Run(async () => new ReadSnomedTermModel
+                {
+                    SnomedTermId = x.Id,
+                    Description = x.Description,
+                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            );
 
             return View("TermpageConfigPreview", new TermPageModel
             {
-                TermpageContentModel = termpage,
-                DiagnosesModel = diagnosesModels
+                SnomedTermsModel = snomedTermsModel,
+                TermpageContentModel = termpage
             });
         }
 

@@ -4,16 +4,13 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
 using Directory.Data.Repositories;
 using Directory.Services.Dto;
 using Directory.Services.Contracts;
 using System.IO;
 using AutoMapper;
-using Nest;
-using AutoMapper.Internal;
-using System.Runtime.InteropServices;
-using Directory.Services.Extensions;
+using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Services
 {
@@ -25,14 +22,14 @@ namespace Directory.Services
 
         private readonly ILogoStorageProvider _logoStorageProvider;
 
-        private readonly IGenericEFRepository<Diagnosis> _diagnosisRepository;
+        private readonly IGenericEFRepository<SnomedTerm> _snomedTermRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
-        private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
+        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
@@ -82,7 +79,7 @@ namespace Directory.Services
         public BiobankWriteService(
             IBiobankReadService biobankReadService,
             ILogoStorageProvider logoStorageProvider,
-            IGenericEFRepository<Diagnosis> diagnosisRepository,
+            IGenericEFRepository<SnomedTerm> snomedTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
@@ -97,7 +94,7 @@ namespace Directory.Services
             IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
-            IGenericEFRepository<PreservationType> preservationTypeRepository,
+            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
@@ -137,13 +134,13 @@ namespace Directory.Services
 
             _logoStorageProvider = logoStorageProvider;
 
-            _diagnosisRepository = diagnosisRepository;
+            _snomedTermRepository = snomedTermRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _donorCountRepository = donorCountRepository;
             _collectionPointRepository = collectionPointRepository;
             _ageRangeRepository = ageRangeRepository;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
-            _preservationTypeRepository = preservationTypeRepository;
+            _storageTemperatureRepository = storageTemperatureRepository;
             _sopStatusRepository = sopStatusRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
@@ -195,15 +192,15 @@ namespace Directory.Services
 
         public async Task<Collection> AddCollectionAsync(
             Collection collection,
-            string diagnosisDescription,
+            string snomedTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(diagnosisDescription);
+            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(snomedTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.ConsentRestrictionId))).ToList();
 
-            collection.DiagnosisId = diagnosis.DiagnosisId;
+            collection.SnomedTermId = snomedTerm.Id;
             collection.LastUpdated = DateTime.Now;
             collection.AssociatedData = associatedData.ToList();
             collection.ConsentRestrictions = consentRestrictions;
@@ -217,7 +214,7 @@ namespace Directory.Services
 
         public async Task UpdateCollectionAsync(
             Collection collection,
-            string diagnosisDescription,
+            string snomedTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
@@ -230,11 +227,11 @@ namespace Directory.Services
             existingCollection.AssociatedData.Clear();
             existingCollection.ConsentRestrictions.Clear();
 
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(diagnosisDescription);
+            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(snomedTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.ConsentRestrictionId))).ToList();
 
-            existingCollection.DiagnosisId = diagnosis.DiagnosisId;
+            existingCollection.SnomedTermId = snomedTerm.Id;
             existingCollection.Title = collection.Title;
             existingCollection.Description = collection.Description;
             existingCollection.StartDate = collection.StartDate;
@@ -349,12 +346,12 @@ namespace Directory.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(capabilityDTO.Diagnosis);
+            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(capabilityDTO.Diagnosis);
 
             var capability = new DiagnosisCapability
             {
                 OrganisationId = capabilityDTO.OrganisationId,
-                DiagnosisId = diagnosis.DiagnosisId,
+                SnomedTermId = snomedTerm.Id,
                 AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value,
                 AssociatedData = associatedData.ToList(),
                 SampleCollectionModeId = capabilityDTO.SampleCollectionModeId,
@@ -378,9 +375,9 @@ namespace Directory.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(capabilityDTO.Diagnosis);
+            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(capabilityDTO.Diagnosis);
 
-            existingCapability.DiagnosisId = diagnosis.DiagnosisId;
+            existingCapability.SnomedTermId = snomedTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;
             existingCapability.SampleCollectionModeId = capabilityDTO.SampleCollectionModeId;
             existingCapability.LastUpdated = DateTime.Now;
@@ -687,26 +684,26 @@ namespace Directory.Services
             return organisationNetwork;
         }
 
-        public async Task DeleteDiagnosisAsync(Diagnosis diagnosis)
+        public async Task DeleteSnomedTermAsync(SnomedTerm snomedTerm)
         {
-            await _diagnosisRepository.DeleteAsync(diagnosis.DiagnosisId);
-            await _diagnosisRepository.SaveChangesAsync();
+            await _snomedTermRepository.DeleteAsync(snomedTerm.Id);
+            await _snomedTermRepository.SaveChangesAsync();
         }
 
-        public async Task<Diagnosis> UpdateDiagnosisAsync(Diagnosis diagnosis)
+        public async Task<SnomedTerm> UpdateSnomedTermAsync(SnomedTerm snomedTerm)
         {
-            _diagnosisRepository.Update(diagnosis);
-            await _diagnosisRepository.SaveChangesAsync();
+            _snomedTermRepository.Update(snomedTerm);
+            await _snomedTermRepository.SaveChangesAsync();
 
-            return diagnosis;
+            return snomedTerm;
         }
 
-        public async Task<Diagnosis> AddDiagnosisAsync(Diagnosis diagnosis)
+        public async Task<SnomedTerm> AddSnomedTermAsync(SnomedTerm snomedTerm)
         {
-            _diagnosisRepository.Insert(diagnosis);
-            await _diagnosisRepository.SaveChangesAsync();
+            _snomedTermRepository.Insert(snomedTerm);
+            await _snomedTermRepository.SaveChangesAsync();
 
-            return diagnosis;
+            return snomedTerm;
         }
 
         #region RefData: Sample Collection Mode
@@ -1441,36 +1438,36 @@ namespace Directory.Services
         }
         #endregion
 
-        #region RefData: Preservation Types
-        public async Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType)
+        #region RefData: Storage Temperature
+        public async Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature)
         {
-            _preservationTypeRepository.Insert(preservationType);
-            await _preservationTypeRepository.SaveChangesAsync();
+            _storageTemperatureRepository.Insert(storageTemperature);
+            await _storageTemperatureRepository.SaveChangesAsync();
 
-            return preservationType;
+            return storageTemperature;
         }
 
-        public async Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false)
+        public async Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly = false)
         {
-            var types = await _biobankReadService.ListPreservationTypesAsync();
+            var types = await _biobankReadService.ListStorageTemperaturesAsync();
 
             // If only updating sortOrder
             if (sortOnly)
             {
-                preservationType.Description =
+                storageTemperature.Value =
                     types
-                        .Where(x => x.PreservationTypeId == preservationType.PreservationTypeId)
+                        .Where(x => x.Id == storageTemperature.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.PreservationTypeId == preservationType.PreservationTypeId).First();
-            var reverse = (oldType.SortOrder < preservationType.SortOrder);
+            var oldType = types.Where(x => x.Id == storageTemperature.Id).First();
+            var reverse = (oldType.SortOrder < storageTemperature.SortOrder);
 
             var newOrder = types
-                    .Prepend(preservationType)
-                    .GroupBy(x => x.PreservationTypeId)
+                    .Prepend(storageTemperature)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1486,24 +1483,24 @@ namespace Directory.Services
                     return x;
                 })
                 .ToList()
-                .ForEach(_preservationTypeRepository.Update);
+                .ForEach(_storageTemperatureRepository.Update);
 
-            await _preservationTypeRepository.SaveChangesAsync();
+            await _storageTemperatureRepository.SaveChangesAsync();
 
-            return preservationType;
+            return storageTemperature;
         }
 
-        public async Task DeletePreservationTypeAsync(PreservationType preservationType)
+        public async Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature)
         {
-            await _preservationTypeRepository.DeleteAsync(preservationType.PreservationTypeId);
-            await _preservationTypeRepository.SaveChangesAsync();
+            await _storageTemperatureRepository.DeleteAsync(storageTemperature.Id);
+            await _storageTemperatureRepository.SaveChangesAsync();
         }
         #endregion
 
         #region RefData: Material Type
         public async Task DeleteMaterialTypeAsync(MaterialType materialType)
         {
-            await _materialTypeRepository.DeleteAsync(materialType.MaterialTypeId);
+            await _materialTypeRepository.DeleteAsync(materialType.Id);
             await _materialTypeRepository.SaveChangesAsync();
         }
 
@@ -1514,20 +1511,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                materialType.Description =
+                materialType.Value =
                     types
-                        .Where(x => x.MaterialTypeId == materialType.MaterialTypeId)
+                        .Where(x => x.Id == materialType.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.MaterialTypeId == materialType.MaterialTypeId).First();
+            var oldType = types.Where(x => x.Id == materialType.Id).First();
             var reverse = (oldType.SortOrder < materialType.SortOrder);
 
             var newOrder = types
                     .Prepend(materialType)
-                    .GroupBy(x => x.MaterialTypeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1684,20 +1681,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                sex.Description =
+                sex.Value =
                     sexes
-                        .Where(x => x.SexId == sex.SexId)
+                        .Where(x => x.Id == sex.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = sexes.Where(x => x.SexId == sex.SexId).First();
+            var oldType = sexes.Where(x => x.Id == sex.Id).First();
             var reverse = (oldType.SortOrder < sex.SortOrder);
 
             var newOrder = sexes
                     .Prepend(sex)
-                    .GroupBy(x => x.SexId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1722,7 +1719,7 @@ namespace Directory.Services
 
         public async Task DeleteSexAsync(Sex sex)
         {
-            await _sexRepository.DeleteAsync(sex.SexId);
+            await _sexRepository.DeleteAsync(sex.Id);
             await _sexRepository.SaveChangesAsync();
         }
         #endregion

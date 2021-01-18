@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Search.Dto.Documents;
 using Newtonsoft.Json;
 
@@ -10,13 +10,10 @@ namespace Directory.Services.Extensions
     {
         public static CollectionDocument ToCollectionSearchDocument(this CollectionSampleSet sampleSet)
         {
-
-
-
             return new CollectionDocument
             {
                 Id = sampleSet.SampleSetId,
-                Diagnosis = sampleSet.Collection.Diagnosis.Description,
+                SnomedTerm = sampleSet.Collection.SnomedTerm.Description,
                 BiobankId = sampleSet.Collection.OrganisationId,
                 BiobankExternalId = sampleSet.Collection.Organisation.OrganisationExternalId,
                 Biobank = sampleSet.Collection.Organisation.Name,
@@ -51,10 +48,10 @@ namespace Directory.Services.Extensions
                         })
                     }),
 
-                Sex = sampleSet.Sex.Description,
+                Sex = sampleSet.Sex.Value,
                 SexMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.Sex.Description,
+                    Name = sampleSet.Sex.Value,
                     sampleSet.Sex.SortOrder
                 }),
                 AgeRange = sampleSet.AgeRange.Description,
@@ -73,12 +70,12 @@ namespace Directory.Services.Extensions
                 MaterialPreservationDetails = sampleSet.MaterialDetails
                     .Select(x => new MaterialPreservationDetailDocument
                     {
-                        MaterialType = x.MaterialType.Description,
-                        PreservationType = x.PreservationType.Description,
-                        PreservationTypeMetadata = JsonConvert.SerializeObject(new
+                        MaterialType = x.MaterialType.Value,
+                        StorageTemperature = x.StorageTemperature.Value,
+                        StorageTemperatureMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = x.PreservationType.Description,
-                            x.PreservationType.SortOrder
+                            Name = x.StorageTemperature.Value,
+                            x.StorageTemperature.SortOrder
                         }),
                         MacroscopicAssessment = x.MacroscopicAssessment.Description,
                         PercentageOfSampleSet = x.CollectionPercentage?.Description
@@ -93,7 +90,7 @@ namespace Directory.Services.Extensions
                 SampleSetSummary = BuildSampleSetSummary(
                     sampleSet.DonorCount.Description,
                     sampleSet.AgeRange.Description,
-                    sampleSet.Sex.Description,
+                    sampleSet.Sex.Value,
                     sampleSet.MaterialDetails),
                 Country = sampleSet.Collection.Organisation.Country.Name,
                 County = sampleSet.Collection.Organisation.County?.Name ?? "Not Provided"
@@ -111,7 +108,7 @@ namespace Directory.Services.Extensions
             if (materialDetails != null && materialDetails.Any())
             {
                 result = string.Concat(result, ", ",
-                    string.Join(" / ", materialDetails.Select(x => x.MaterialType.Description)));
+                    string.Join(" / ", materialDetails.Select(x => x.MaterialType.Value)));
             }
 
             return result;

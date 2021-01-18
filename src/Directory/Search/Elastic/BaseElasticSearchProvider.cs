@@ -12,25 +12,25 @@ namespace Directory.Search.Elastic
     {
         #region Building the Search Queries
 
-        protected static QueryContainer[] BuildSearchQueries<T>(string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
+        protected static QueryContainer[] BuildSearchQueries<T>(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
             where T : BaseDocument
         {
-            var diagnosisQuery = string.IsNullOrWhiteSpace(diagnosis)
+            var snomedTermQuery = string.IsNullOrWhiteSpace(snomedTerm)
                     ? Query<T>.MatchAll()
-                    : Query<T>.Term(p => p.Diagnosis, diagnosis.ToLower());
+                    : Query<T>.Term(p => p.SnomedTerm, snomedTerm.ToLower());
 
             var facetQueries = selectedFacets != null
                     ? BuildFacetQueries(selectedFacets)
                     : Enumerable.Empty<QueryContainer>();
 
-            return facetQueries.Prepend(diagnosisQuery).ToArray();
+            return facetQueries.Prepend(snomedTermQuery).ToArray();
         }
 
-        protected static QueryContainer[] BuildSearchQueries<T>(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
+        protected static QueryContainer[] BuildSearchQueries<T>(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
             where T : BaseDocument
         {
             // Build the list of queries using the base query builder.
-            var queryList = BuildSearchQueries<T>(diagnosis, selectedFacets).ToList();
+            var queryList = BuildSearchQueries<T>(snomedTerm, selectedFacets).ToList();
 
             // Add an extra query for the biobankId.
             queryList.Add(Query<T>.Term(p => p.BiobankExternalId, biobankExternalId));

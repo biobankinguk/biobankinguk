@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Search.Dto.Results;
 using Directory.Services.Dto;
 using Biobanks.Web.AutoMapper;
@@ -42,7 +42,7 @@ namespace Biobanks.Web
 
                 cfg.CreateMap<DiagnosisCapability, DetailedCapabilitySearchCapabilityModel>()
                     .ForMember(dest => dest.Protocols, opts => opts.MapFrom(src => src.SampleCollectionMode.Description))
-                    .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.Diagnosis.Description))
+                    .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.SnomedTerm.Description))
                     .ForMember(dest => dest.AssociatedData,
                         opts => opts.MapFrom(src => src.AssociatedData.Select(
                             x => new KeyValuePair<string, string>(x.AssociatedDataType.Description,

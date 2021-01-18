@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
 using Directory.Services.Dto;
 using System.IO;
+using Entities.Data;
+using Entities.Shared.ReferenceData;
 
 namespace Directory.Services.Contracts
 {
@@ -62,9 +63,9 @@ namespace Directory.Services.Contracts
         Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request);
         Task<NetworkRegisterRequest> UpdateNetworkRegisterRequestAsync(NetworkRegisterRequest request);
 
-        Task DeleteDiagnosisAsync(Diagnosis diagnosis);
-        Task<Diagnosis> UpdateDiagnosisAsync(Diagnosis diagnosis);
-        Task<Diagnosis> AddDiagnosisAsync(Diagnosis diagnosis);
+        Task DeleteSnomedTermAsync(SnomedTerm diagnosis);
+        Task<SnomedTerm> UpdateSnomedTermAsync(SnomedTerm diagnosis);
+        Task<SnomedTerm> AddSnomedTermAsync(SnomedTerm diagnosis);
         
         Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType);
         Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);
@@ -118,9 +119,9 @@ namespace Directory.Services.Contracts
         Task<SampleCollectionMode> UpdateSampleCollectionModeAsync(SampleCollectionMode sampleCollection, bool sortOnly = false);
         Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
 
-        Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
-        Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly=false);
-        Task DeletePreservationTypeAsync(PreservationType preservationType);
+        Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature);
+        Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly=false);
+        Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature);
 
         Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
         Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType);

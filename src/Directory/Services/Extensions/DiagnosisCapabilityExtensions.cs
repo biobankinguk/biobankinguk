@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Search.Dto.Documents;
 using Newtonsoft.Json;
 
@@ -18,7 +18,7 @@ namespace Directory.Services.Extensions
             return new CapabilityDocument
             {
                 Id = capability.DiagnosisCapabilityId,
-                Diagnosis = capability.Diagnosis.Description,
+                SnomedTerm = capability.SnomedTerm.Description,
                 BiobankId = capability.OrganisationId,
                 BiobankExternalId = capability.Organisation.OrganisationExternalId,
                 Biobank = capability.Organisation.Name,

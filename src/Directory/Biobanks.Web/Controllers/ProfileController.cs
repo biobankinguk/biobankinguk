@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Entity.Data;
+using Entities.Data;
 using Directory.Identity.Constants;
 using Directory.Services.Contracts;
 using Biobanks.Web.Models.Profile;
@@ -80,27 +80,27 @@ namespace Biobanks.Web.Controllers
                         Logo = x.Logo,
                         Description = x.Description
                     }).ToList(),
-                CapabilityDiagnoses = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
+                CapabilitySnomedTerms = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
                     x => new CapabilityModel
                     {
                         Id = x.DiagnosisCapabilityId,
-                        Diagnosis = x.Diagnosis.Description,
+                        SnomedTerm = x.SnomedTerm.Description,
                         Protocols = x.SampleCollectionMode.Description
                     })
-                    .Select(x => x.Diagnosis)
+                    .Select(x => x.SnomedTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                CollectionDiagnoses = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
+                CollectionSnomedTerms = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,
-                        Diagnosis = x.Diagnosis.Description,
+                        SnomedTerm = x.SnomedTerm.Description,
                         SampleSetsCount = x.SampleSets.Count,
                         StartYear = x.StartDate.Year,
                         MaterialTypes = GetMaterialTypeSummary(x.SampleSets)
                     })
-                    .Select(x => x.Diagnosis)
+                    .Select(x => x.SnomedTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
@@ -187,7 +187,7 @@ namespace Biobanks.Web.Controllers
 
             sampleSets.ToList().ForEach(
                 x => x.MaterialDetails.ToList().ForEach(
-                    y => materialTypes.Add(y.MaterialType.Description)));
+                    y => materialTypes.Add(y.MaterialType.Value)));
 
             //return first 3, slash separated
             var result = string.Join(" / ", materialTypes.Distinct().OrderBy(x => x).Take(3));

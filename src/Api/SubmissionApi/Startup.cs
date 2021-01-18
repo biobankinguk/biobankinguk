@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Biobanks.Common.Auth;
-using Biobanks.Common.Data;
 using Biobanks.SubmissionApi.Filters;
 using Biobanks.SubmissionApi.Services;
 using Biobanks.SubmissionApi.Services.Contracts;
 using clacks.overhead;
 using Hangfire;
-using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,9 +22,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
 using UoN.AspNetCore.VersionMiddleware;
-using Data;
 
 namespace Biobanks.SubmissionApi
 {

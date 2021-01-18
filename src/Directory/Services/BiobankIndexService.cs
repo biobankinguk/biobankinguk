@@ -91,7 +91,7 @@ namespace Directory.Services
                 updatedSampleSet.SampleSetId,
                 new PartialSampleSet
                 {
-                    Sex = updatedSampleSet.Sex.Description,
+                    Sex = updatedSampleSet.Sex.Value,
                     AgeRange = updatedSampleSet.AgeRange.Description,
                     AgeRangeMetadata = JsonConvert.SerializeObject(new
                     {
@@ -107,12 +107,12 @@ namespace Directory.Services
                     MaterialPreservationDetails = updatedSampleSet.MaterialDetails
                         .Select(x => new MaterialPreservationDetailDocument
                         {
-                            MaterialType = x.MaterialType.Description,
-                            PreservationType = x.PreservationType.Description,
-                            PreservationTypeMetadata = JsonConvert.SerializeObject(new
+                            MaterialType = x.MaterialType.Value,
+                            StorageTemperature = x.StorageTemperature.Value,
+                            StorageTemperatureMetadata = JsonConvert.SerializeObject(new
                             {
-                                Name = x.PreservationType.Description,
-                                x.PreservationType.SortOrder
+                                Name = x.StorageTemperature.Value,
+                                x.StorageTemperature.SortOrder
                             }),
                             MacroscopicAssessment = x.MacroscopicAssessment.Description,
                             PercentageOfSampleSet = x.CollectionPercentage.Description
@@ -120,7 +120,7 @@ namespace Directory.Services
                     SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
                         updatedSampleSet.DonorCount.Description, 
                         updatedSampleSet.AgeRange.Description,
-                        updatedSampleSet.Sex.Description,
+                        updatedSampleSet.Sex.Value,
                         updatedSampleSet.MaterialDetails)
                 }));
         }
@@ -143,13 +143,11 @@ namespace Directory.Services
             });
 
             // Queue up a job to update the capability in the search index.
-
-
             BackgroundJob.Enqueue(() => _indexProvider.UpdateCapabilitySearchDocument(
                 updatedCapability.DiagnosisCapabilityId,
                 new PartialCapability
                 {
-                    Diagnosis = updatedCapability.Diagnosis.Description,
+                    SnomedTerm = updatedCapability.SnomedTerm.Description,
                     Protocols = updatedCapability.SampleCollectionMode.Description,
                     AnnualDonorExpectation = donorExpectation.Key,
                     AnnualDonorExpectationMetadata = donorExpectationMetadata,
@@ -192,7 +190,7 @@ namespace Directory.Services
                         sampleSet.SampleSetId,
                         new PartialCollection
                         {
-                            Diagnosis = collection.Diagnosis.Description,
+                            SnomedTerm = collection.SnomedTerm.Description,
                             CollectionTitle = collection.Title,
                             StartYear = collection.StartDate.Year.ToString(),
                             CollectionPoint = collection.CollectionPoint.Description,

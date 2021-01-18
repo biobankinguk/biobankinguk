@@ -10,7 +10,7 @@
     <div class="col-sm-12">
         <ul class="breadcrumb">
             <li><a href="/">Home</a><span class="divider"></span></li>
-            <li><a href="@Url.Action("Collections", "Search", new {Model.Diagnosis, Model.SelectedFacets})">Search</a><span class="divider"></span></li>
+            <li><a href="@Url.Action("Collections", "Search", new { Model.SnomedTerm, Model.SelectedFacets })">Search</a><span class="divider"></span></li>
             <li class="active">Search Detail</li>
         </ul>
     </div>
@@ -39,7 +39,7 @@
     <div class="well results-well">
         <div class="row">
             <div class="col-sm-6">
-                <h3>@collection.Diagnosis</h3>
+                <h3>@collection.SnomedTerm</h3>
                 @if (!string.IsNullOrEmpty(collection.CollectionTitle))
                 {
                     <h4>@collection.CollectionTitle</h4>
@@ -94,7 +94,7 @@
                         <thead>
 							<tr>
 								<th>Material Type</th>
-								<th>@App.Config[ConfigKey.PreservationTypeName]</th>
+								<th>@App.Config[ConfigKey.StorageTemperatureName]</th>
                                 <th> @App.Config[ConfigKey.MacroscopicAssessmentName] </th>
                                 
                                 @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
@@ -110,7 +110,7 @@
                                 {
 							        <tr>
 								        <td>@mpd.MaterialType</td>
-								        <td>@mpd.PreservationType</td>
+								        <td>@mpd.StorageTemperature</td>
 								        <td>@mpd.MacroscopicAssessment</td>
 
 								        @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")

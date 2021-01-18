@@ -232,6 +232,11 @@
         "resolved": "4.5.0",
         "contentHash": "pL2ChpaRRWI/p4LXyy4RgeWlYF2sgfj/pnVMvBqwNFr5cXg7CXNnWZWxrOONLg8VGdFB8oB+EG2Qw4MLgTOe+A=="
       },
+      "System.ComponentModel.Annotations": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
+      },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
         "resolved": "4.5.1",
@@ -245,23 +250,16 @@
       "Biobanks.Directory.Data": {
         "type": "Project",
         "dependencies": {
-          "Biobanks.Directory.Entity": "1.0.0",
+          "Entities": "1.0.0",
           "EntityFramework": "6.4.4",
           "Newtonsoft.Json": "12.0.3",
           "System.Runtime.Caching": "4.7.0"
-        }
-      },
-      "Biobanks.Directory.Entity": {
-        "type": "Project",
-        "dependencies": {
-          "EntityFramework": "6.4.4"
         }
       },
       "Biobanks.Directory.Identity": {
         "type": "Project",
         "dependencies": {
           "Biobanks.Directory.Data": "1.0.0",
-          "Biobanks.Directory.Entity": "1.0.0",
           "EntityFramework": "6.4.4",
           "Microsoft.AspNet.Identity.Core": "2.2.3",
           "Microsoft.AspNet.Identity.EntityFramework": "2.2.3",
@@ -276,6 +274,13 @@
           "Microsoft.CSharp": "4.7.0",
           "NEST": "7.8.1",
           "Newtonsoft.Json": "12.0.3"
+        }
+      },
+      "entities": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.ComponentModel.Annotations": "5.0.0"
         }
       }
     }

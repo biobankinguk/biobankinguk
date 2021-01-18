@@ -24,9 +24,9 @@
     @Scripts.Render("~/bundles/search")
 }
 
-<h2 class="search">@ViewBag.Title: <small>@Model.Diagnosis</small></h2>
+<h2 class="search">@ViewBag.Title: <small>@Model.SnomedTerm</small></h2>
 
-@if (!string.IsNullOrEmpty(Model.Diagnosis))
+@if (!string.IsNullOrEmpty(Model.SnomedTerm))
 {
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">

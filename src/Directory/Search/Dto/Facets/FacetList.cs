@@ -267,12 +267,12 @@ namespace Directory.Search.Dto.Facets
             },
             new FacetDetail(FacetGroupId.SampleDetails)
             {
-                Label = "Preservation Type",
-                Name = "preservationType",
-                Slug = "pret",
+                Label = "Storage Temperature",
+                Name = "storageTemperature",
+                Slug = "stmp",
                 NestedAggregation = true,
                 NestedAggregationPath = "materialPreservationDetails",
-                NestedAggregationFieldName = "preservationType",
+                NestedAggregationFieldName = "storageTemperature",
                 SearchTypes = new List<SearchType>
                 {
                     SearchType.Collection
