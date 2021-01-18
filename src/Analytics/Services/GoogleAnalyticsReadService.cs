@@ -512,7 +512,7 @@ namespace Analytics.Services
             {
                 var bbRanking = ranking.Where(x => x.Biobank == biobankId);
                 if (bbRanking.Count() > 0)
-                    getTopBiobanks.Append(bbRanking.First());
+                    getTopBiobanks = getTopBiobanks.Append(bbRanking.First());
                 else
                     getTopBiobanks = getTopBiobanks.Append(new QuarterlySummary
                     {
