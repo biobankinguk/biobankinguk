@@ -1,4 +1,4 @@
-PreservationTypeId,Description,SortOrder
+Id,Value,SortOrder
 1,Room temperature,1
 2,2 °C to 10 °C,2
 3,-18 °C to -35 °C,3

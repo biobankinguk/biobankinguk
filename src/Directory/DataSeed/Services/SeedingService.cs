@@ -6,21 +6,19 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Directory.Data;
-using Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
-using Directory.DataSeed.Services;
-using System.Security.Cryptography.X509Certificates;
-using Directory.DataSeed.Dto;
+using Entities.Data;
 using Entities.Shared.ReferenceData;
+using Entities.Api.ReferenceData;
 
 namespace Directory.DataSeed.Services
 {
     internal class SeedingService : IHostedService
     {
-        private const string _dataDir = "data/";
+        private const string _dataDir = "data";
 
         private readonly ILogger<SeedingService> _logger;
         private readonly BiobanksDbContext _db;
@@ -36,6 +34,7 @@ namespace Directory.DataSeed.Services
 
             _seedActions = new List<Action>
             {
+                /* Directory Specific */
                 SeedCsv<AccessCondition>,
                 SeedCsv<AgeRange>,
                 SeedAnnualStatistics,
@@ -48,20 +47,29 @@ namespace Directory.DataSeed.Services
                 SeedCsv<CollectionStatus>,
                 SeedCsv<CollectionType>,
                 SeedCsv<ConsentRestriction>,
-                SeedCountries,
-                SeedCounties,
-                SeedCsv<Diagnosis>,
+                //SeedCountries,
+                //SeedCounties,
                 SeedCsv<DonorCount>,
                 SeedCsv<Funder>,
-                SeedCsv<Sex>,
                 SeedCsv<HtaStatus>,
-                SeedCsv<MaterialType>,
                 SeedCsv<MacroscopicAssessment>,
-                SeedCsv<PreservationType>,
                 SeedCsv<RegistrationReason>,
                 SeedCsv<SampleCollectionMode>,
                 SeedCsv<ServiceOffering>,
-                SeedCsv<SopStatus>
+                SeedCsv<SopStatus>,
+                
+                /* API Specific */
+                SeedCsv<Ontology>,
+                //SeedCsv<OntologyVersion>,
+                SeedCsv<SampleContentMethod>,
+                SeedCsv<Status>,
+                SeedCsv<TreatmentLocation>,
+
+                /* Shared */
+                SeedCsv<MaterialType>,
+                SeedCsv<Sex>,
+                //SeedCsv<SnomedTerm>,
+                SeedCsv<StorageTemperature>,
             };
         }
 
@@ -141,8 +149,18 @@ namespace Directory.DataSeed.Services
 
         private void Seed<T>(IEnumerable<T> entities) where T : class
         {
-            _db.Set<T>().AddRange(entities);
-            _db.SaveChanges();
+            var set = _db.Set<T>();
+            
+            if (set.Any())
+            {
+                _logger.LogInformation($"{ typeof(T).Name }: { set.Count() } entries already exist");
+            }
+            else
+            {
+                _logger.LogInformation($"{ typeof(T).Name }: Writing { entities.Count() } entries");
+                set.AddRange(entities);
+                _db.SaveChanges();
+            }
         }
 
         private void SeedCsv<T>() where T : class
@@ -160,7 +178,7 @@ namespace Directory.DataSeed.Services
             using (var stream = new StreamReader(filePath))
             using (var reader = new CsvReader(stream, CultureInfo.InvariantCulture))
             {
-                return reader.GetRecords<T>();
+                return reader.GetRecords<T>().ToList();
             }
         }
     }

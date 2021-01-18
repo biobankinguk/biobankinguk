@@ -1,4 +1,4 @@
-MaterialTypeId,Description,SortOrder
+Id,Value,SortOrder
 1,cDNA/mRNA,4
 3,Core biopsy,5
 4,DNA,6
