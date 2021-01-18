@@ -1,5 +1,6 @@
 using System.Data.Entity;
 using Entities.Api;
+using Entities.Api.ReferenceData;
 using Entities.Data;
 using Entities.Shared.ReferenceData;
 
@@ -84,35 +85,34 @@ namespace Directory.Data
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<Sex> Sexes { get; set; }
-        public DbSet<SnomedTerm> SnomedTerm { get; set; }
+        public DbSet<SnomedTerm> SnomedTerms { get; set; }
+        public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
 
 
-        ///*  API Entities  */
-        //public DbSet<Status> Statuses { get; set; }
-        //public DbSet<Submission> Submissions { get; set; }
-        //public DbSet<Error> Errors { get; set; }
+        /*  API Entities  */
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<Error> Errors { get; set; }
 
         // Reference Data
-        //public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
-        //public DbSet<SnomedTerm> SnomedTerms { get; set; }
-        //public DbSet<SnomedTag> SnomedTags { get; set; }
-        //public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
-        //public DbSet<Ontology> Ontologies { get; set; }
-        //public DbSet<OntologyVersion> OntologyVersions { get; set; }
+        public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
+        public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
+        public DbSet<Ontology> Ontologies { get; set; }
+        public DbSet<OntologyVersion> OntologyVersions { get; set; }
 
-        //// API Data
-        //public DbSet<LiveDiagnosis> LiveDiagnoses { get; set; }
-        //public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
-        //public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
+        // API Data
+        public DbSet<LiveDiagnosis> Diagnoses { get; set; }
+        public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
+        public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
 
-        //public DbSet<LiveTreatment> Treatments { get; set; }
-        //public DbSet<StagedTreatment> StagedTreatments { get; set; }
-        //public DbSet<StagedTreatmentDelete> StagedTreatmentDeletes { get; set; }
+        public DbSet<LiveTreatment> Treatments { get; set; }
+        public DbSet<StagedTreatment> StagedTreatments { get; set; }
+        public DbSet<StagedTreatmentDelete> StagedTreatmentDeletes { get; set; }
 
-        //public DbSet<LiveSample> Samples { get; set; }
-        //public DbSet<StagedSample> StagedSamples { get; set; }
-        //public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
+        public DbSet<LiveSample> Samples { get; set; }
+        public DbSet<StagedSample> StagedSamples { get; set; }
+        public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
 
 
         public BiobanksDbContext() : base("Biobanks") { }
