@@ -1843,7 +1843,7 @@ namespace Biobanks.Web.Controllers
             if (endQuarter == 0)
                 endQuarter = ((DateTime.Today.Month + 2) / 3);
             if (reportPeriod == 0)
-                reportPeriod = 10;
+                reportPeriod = 5;
 
             var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
             return View(model);
