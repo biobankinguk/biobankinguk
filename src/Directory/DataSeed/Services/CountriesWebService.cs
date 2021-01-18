@@ -1,18 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
-using System.IO;
 using Newtonsoft.Json;
 using Directory.DataSeed.Dto;
-using Directory.Entity.Data;
-using Directory.Data.Constants;
-using Directory.Services.Contracts;
 
 namespace Directory.DataSeed.Services
 {
@@ -21,24 +12,19 @@ namespace Directory.DataSeed.Services
         private readonly HttpClient _client;
         private Uri _uri;
         private IConfiguration _configuration;
+
         public CountriesWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
             _configuration = configuration;
             _uri = new Uri(_configuration["CountriesApiKey"]);
-
         }
 
-        public async Task<List<CountriesDTO>> GetCountries()
+        public IEnumerable<CountriesDTO> ListCountries()
         {
-            List<CountriesDTO> result = await Search();
-            return result; 
-        }
-        private async Task<List<CountriesDTO>> Search()
-        {
+            var response = _client.GetStringAsync(_uri).Result;
+            var result = JsonConvert.DeserializeObject<IEnumerable<CountriesDTO>>(response);
 
-            string response = await _client.GetStringAsync(_uri);
-            List<CountriesDTO> result = JsonConvert.DeserializeObject<List<CountriesDTO>>(response);
             return result;
         }
 
@@ -46,6 +32,5 @@ namespace Directory.DataSeed.Services
         {
             _client.Dispose();
         }
-
     }
 }
