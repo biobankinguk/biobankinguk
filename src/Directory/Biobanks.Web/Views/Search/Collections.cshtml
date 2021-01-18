@@ -12,13 +12,13 @@
     @Scripts.Render("~/bundles/search")
 }
 
-<h2 class="search">@ViewBag.Title: <small>@Model.Diagnosis</small></h2>
+<h2 class="search">@ViewBag.Title: <small>@Model.SnomedTerm</small></h2>
 
 <div class="row">
     @Html.Partial("_Facets", new FacetsModel
     {
         Action = Request.RequestContext.RouteData.Values["action"].ToString(),
-        Diagnosis = Model.Diagnosis,
+        Diagnosis = Model.SnomedTerm,
         Facets = Model.Facets,
         SelectedFacets = Model.SelectedFacets
     })
@@ -31,7 +31,7 @@
                             new
                             {
                                 biobankExternalId = biobank.ExternalId,
-                                diagnosis = Model.Diagnosis,
+                                diagnosis = Model.SnomedTerm,
                                 selectedFacets = Request.QueryString["selectedFacets"]
                             })" class="detailed-search-link">
                     <div class="well well-hover">

@@ -13,7 +13,7 @@ namespace Directory.Services.Extensions
             return new CollectionDocument
             {
                 Id = sampleSet.SampleSetId,
-                Diagnosis = sampleSet.Collection.SnomedTerm.Description,
+                SnomedTerm = sampleSet.Collection.SnomedTerm.Description,
                 BiobankId = sampleSet.Collection.OrganisationId,
                 BiobankExternalId = sampleSet.Collection.Organisation.OrganisationExternalId,
                 Biobank = sampleSet.Collection.Organisation.Name,

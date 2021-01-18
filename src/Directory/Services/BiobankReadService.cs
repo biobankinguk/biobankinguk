@@ -1144,7 +1144,7 @@ namespace Directory.Services
 
         public async Task<IEnumerable<SnomedTerm>> ListSearchableSnomedTermsAsync(SearchDocumentType type, string wildcard = "")
         {
-            var searchableDiagnoses = _searchProvider.ListDiagnoses(type, wildcard);
+            var searchableDiagnoses = _searchProvider.ListSnomedTerms(type, wildcard);
 
             return await _snomedTermRepository.ListAsync(false, x => searchableDiagnoses.Contains(x.Description));
         }

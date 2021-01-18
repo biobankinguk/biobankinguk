@@ -10,10 +10,12 @@ namespace Directory.Search.Legacy
     // It should be thrown away when the services are rewritten
     public interface ISearchProvider
     {
-        Result CollectionSearchByDiagnosis(string diagnosis, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
-        BiobankCollectionResult CollectionSearchByDiagnosisAndBiobank(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets);
-        Result CapabilitySearchByDiagnosis(string diagnosis, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
-        BiobankCapabilityResult CapabilitySearchByDiagnosisAndBiobank(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets);
+        Result CollectionSearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
+        BiobankCollectionResult CollectionSearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets);
+        
+        Result CapabilitySearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
+        BiobankCapabilityResult CapabilitySearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets);
+        
         Task<long> CountCollectionSearchDocuments();
         Task<long> CountCapabilitySearchDocuments();
 
@@ -21,7 +23,7 @@ namespace Directory.Search.Legacy
         Task<List<int>> GetAllSampleSetIds();
         Task<List<int>> GetAllCapabilityIds();
 
-        //List Diagnoses in the index, for a given document type
-        IEnumerable<string> ListDiagnoses(SearchDocumentType type, string wildcard = "");
+        //List SnomedTerms in the index, for a given document type
+        IEnumerable<string> ListSnomedTerms(SearchDocumentType type, string wildcard = "");
     }
 }

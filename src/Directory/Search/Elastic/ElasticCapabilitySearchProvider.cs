@@ -14,7 +14,6 @@ using Directory.Search.Constants;
 namespace Directory.Search.Elastic
 {
     // TODO major renaming work
-    // diagnosis -> ontology term
     // biobank -> organisation
 
     /// <inheritdoc cref="ICapabilitySearchProvider" />
@@ -64,11 +63,11 @@ namespace Directory.Search.Elastic
         public IEnumerable<string> ListOntologyTerms(string wildcard = "")
         {
             var capabilities = _client.Search<CapabilityDocument>(s => s
-                .Query(q => q.Wildcard(p => p.Diagnosis, $"*{wildcard}*"))
+                .Query(q => q.Wildcard(p => p.SnomedTerm, $"*{wildcard}*"))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
-                        .Field(p => p.Diagnosis))));
+                        .Field(p => p.SnomedTerm))));
 
             return capabilities.Aggregations.Terms("diagnoses").Buckets.Select(x => x.Key);
         }

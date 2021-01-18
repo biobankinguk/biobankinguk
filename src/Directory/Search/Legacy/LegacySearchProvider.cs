@@ -18,17 +18,17 @@ namespace Directory.Search.Legacy
             _collections = collections;
         }
 
-        public Result CapabilitySearchByDiagnosis(string diagnosis, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
-            => _capabilities.Search(diagnosis, selectedFacets, maxHits);
+        public Result CapabilitySearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+            => _capabilities.Search(snomedTerm, selectedFacets, maxHits);
 
-        public BiobankCapabilityResult CapabilitySearchByDiagnosisAndBiobank(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
-            => _capabilities.Search(biobankExternalId, diagnosis, selectedFacets);
+        public BiobankCapabilityResult CapabilitySearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
+            => _capabilities.Search(biobankExternalId, snomedTerm, selectedFacets);
 
-        public Result CollectionSearchByDiagnosis(string diagnosis, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
-            => _collections.Search(diagnosis, selectedFacets, maxHits);
+        public Result CollectionSearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+            => _collections.Search(snomedTerm, selectedFacets, maxHits);
 
-        public BiobankCollectionResult CollectionSearchByDiagnosisAndBiobank(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
-            => _collections.Search(biobankExternalId, diagnosis, selectedFacets);
+        public BiobankCollectionResult CollectionSearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
+            => _collections.Search(biobankExternalId, snomedTerm, selectedFacets);
 
         public Task<long> CountCapabilitySearchDocuments()
             => _capabilities.Count();
@@ -42,7 +42,7 @@ namespace Directory.Search.Legacy
         public Task<List<int>> GetAllSampleSetIds()
             => _collections.ListIds();
 
-        public IEnumerable<string> ListDiagnoses(SearchDocumentType type, string wildcard = "")
+        public IEnumerable<string> ListSnomedTerms(SearchDocumentType type, string wildcard = "")
             => type == SearchDocumentType.Capability
                 ? _capabilities.ListOntologyTerms(wildcard)
                 : _collections.ListOntologyTerms(wildcard);

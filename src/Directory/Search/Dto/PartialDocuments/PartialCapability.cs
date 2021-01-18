@@ -7,7 +7,7 @@ namespace Directory.Search.Dto.PartialDocuments
     public class PartialCapability
     {
         [Text(Name = "diagnosis")]
-        public string Diagnosis { get; set; }
+        public string SnomedTerm { get; set; }
 
         [Keyword(Name = "protocols")]
         public string Protocols { get; set; }

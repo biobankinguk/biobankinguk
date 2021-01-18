@@ -143,13 +143,11 @@ namespace Directory.Services
             });
 
             // Queue up a job to update the capability in the search index.
-
-
             BackgroundJob.Enqueue(() => _indexProvider.UpdateCapabilitySearchDocument(
                 updatedCapability.DiagnosisCapabilityId,
                 new PartialCapability
                 {
-                    Diagnosis = updatedCapability.SnomedTerm.Description,
+                    SnomedTerm = updatedCapability.SnomedTerm.Description,
                     Protocols = updatedCapability.SampleCollectionMode.Description,
                     AnnualDonorExpectation = donorExpectation.Key,
                     AnnualDonorExpectationMetadata = donorExpectationMetadata,
@@ -192,7 +190,7 @@ namespace Directory.Services
                         sampleSet.SampleSetId,
                         new PartialCollection
                         {
-                            Diagnosis = collection.SnomedTerm.Description,
+                            SnomedTerm = collection.SnomedTerm.Description,
                             CollectionTitle = collection.Title,
                             StartYear = collection.StartDate.Year.ToString(),
                             CollectionPoint = collection.CollectionPoint.Description,

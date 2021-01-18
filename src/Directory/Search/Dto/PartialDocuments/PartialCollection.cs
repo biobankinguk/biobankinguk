@@ -7,7 +7,7 @@ namespace Directory.Search.Dto.PartialDocuments
     public class PartialCollection
     {
         [Text(Name = "diagnosis")]
-        public string Diagnosis { get; set; }
+        public string SnomedTerm { get; set; }
 
         [Keyword(Name = "collectionTitle")]
         public string CollectionTitle { get; set; }

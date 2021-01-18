@@ -7,7 +7,8 @@ namespace Biobanks.Web.Models.Search
     public class NoResultsModel
     {
         public SearchDocumentType SearchType { get; set; }
-        public string Diagnosis { get; set; }
+        
+        public string SnomedTerm { get; set; }
 
         public ICollection<SnomedTermModel> Suggestions { get; set; }
     }

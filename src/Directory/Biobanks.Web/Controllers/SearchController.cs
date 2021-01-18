@@ -35,28 +35,20 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> Collections(string diagnosis, string selectedFacets)
+        public async Task<ViewResult> Collections(string snomedTerm, string selectedFacets)
         {
             // Build the base model.
-
-            if (diagnosis == null)
-            {
-                // This is meant to be " " as opposed to "" or string.Empty, as the latter result in blank NoResults views.
-                diagnosis = " ";
-            }
-            
             var model = new BaseSearchModel
             {
-                Diagnosis = diagnosis
+                SnomedTerm = snomedTerm ?? " "  // Null values set to " " wildcard
             };
 
-            
             // Extract the search facets.
             model.SelectedFacets = ExtractSearchFacets(selectedFacets);
 
             // Search based on the provided criteria.
-            var searchResults = _searchProvider.CollectionSearchByDiagnosis(
-                diagnosis,
+            var searchResults = _searchProvider.CollectionSearchBySnomedTerm(
+                snomedTerm,
                 BuildSearchFacets(model.SelectedFacets),
                 0);
 
@@ -67,7 +59,7 @@ namespace Biobanks.Web.Controllers
             if (!model.Biobanks.Any())
                 return await NoResults(new NoResultsModel
                 {
-                    Diagnosis = model.Diagnosis,
+                    SnomedTerm = model.SnomedTerm,
                     SearchType = SearchDocumentType.Collection
                 });
 
@@ -76,14 +68,14 @@ namespace Biobanks.Web.Controllers
 
         private async Task<ViewResult> NoResults(NoResultsModel model)
         {
-            model.Suggestions = await GetDiagnosesSearchResultsAsync(model.SearchType, model.Diagnosis?.ToLower());
+            model.Suggestions = await GetSnomedTermSearchResultsAsync(model.SearchType, model.SnomedTerm?.ToLower());
 
             //BIO-455 special case for cancer (will override this with a genericised approach in BIO-447
-            if (model.Diagnosis.ToLower() == "cancer")
+            if (model.SnomedTerm.ToLower() == "cancer")
             {
                 //get suggestions for the relevant correct searches
-                var malignant = await GetDiagnosesSearchResultsAsync(model.SearchType, "malignant");
-                var neoplasm = await GetDiagnosesSearchResultsAsync(model.SearchType, "neoplasm");
+                var malignant = await GetSnomedTermSearchResultsAsync(model.SearchType, "malignant");
+                var neoplasm = await GetSnomedTermSearchResultsAsync(model.SearchType, "neoplasm");
 
                 //munge them into a distinct list
                 var results = new List<SnomedTermModel>();
@@ -99,7 +91,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> CollectionsDetail(string biobankExternalId, string diagnosis, string selectedFacets)
+        public async Task<ViewResult> CollectionsDetail(string biobankExternalId, string snomedTerm, string selectedFacets)
         {
             // Get the search facets.
             var searchFacets = string.IsNullOrEmpty(selectedFacets)
@@ -107,11 +99,11 @@ namespace Biobanks.Web.Controllers
                 : BuildSearchFacets(ExtractSearchFacets(selectedFacets));
 
             // Search based on the provided criteria.
-            var searchResults = _searchProvider.CollectionSearchByDiagnosisAndBiobank(biobankExternalId, diagnosis, searchFacets);
+            var searchResults = _searchProvider.CollectionSearchBySnomedTermAndBiobank(biobankExternalId, snomedTerm, searchFacets);
 
             var model = _mapper.Map<DetailedCollectionSearchModel>(searchResults);
 
-            model.Diagnosis = diagnosis;
+            model.SnomedTerm = snomedTerm;
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
@@ -131,26 +123,20 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> Capabilities(string diagnosis, string selectedFacets)
+        public async Task<ViewResult> Capabilities(string snomedTerm, string selectedFacets)
         {
-            if (diagnosis == null)
-            {
-                // This is meant to be " " as opposed to "" or string.Empty, as the latter result in blank NoResults views.
-                diagnosis = " ";
-            }
-
             // Build the base model.
             var model = new BaseSearchModel
             {
-                Diagnosis = diagnosis
+                SnomedTerm = snomedTerm ?? " "
             };
 
             // Extract the search facets.
             model.SelectedFacets = ExtractSearchFacets(selectedFacets);
 
             // Search based on the provided criteria.
-            var searchResults = _searchProvider.CapabilitySearchByDiagnosis(
-                diagnosis,
+            var searchResults = _searchProvider.CapabilitySearchBySnomedTerm(
+                snomedTerm,
                 BuildSearchFacets(model.SelectedFacets),
                 0);
 
@@ -161,7 +147,7 @@ namespace Biobanks.Web.Controllers
             if (!model.Biobanks.Any())
                 return await NoResults(new NoResultsModel
                 {
-                    Diagnosis = model.Diagnosis,
+                    SnomedTerm = model.SnomedTerm,
                     SearchType = SearchDocumentType.Collection
                 });
 
@@ -169,7 +155,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ViewResult> CapabilitiesDetail(string biobankExternalId, string diagnosis, string selectedFacets)
+        public async Task<ViewResult> CapabilitiesDetail(string biobankExternalId, string snomedTerm, string selectedFacets)
         {
             // Get the search facets.
             var searchFacets = string.IsNullOrEmpty(selectedFacets)
@@ -177,11 +163,11 @@ namespace Biobanks.Web.Controllers
                 : BuildSearchFacets(ExtractSearchFacets(selectedFacets));
 
             // Search based on the provided criteria.
-            var searchResults = _searchProvider.CapabilitySearchByDiagnosisAndBiobank(biobankExternalId, diagnosis, searchFacets);
+            var searchResults = _searchProvider.CapabilitySearchBySnomedTermAndBiobank(biobankExternalId, snomedTerm, searchFacets);
 
             var model = _mapper.Map<DetailedCapabilitySearchModel>(searchResults);
 
-            model.Diagnosis = diagnosis;
+            model.Diagnosis = snomedTerm;
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
@@ -192,15 +178,15 @@ namespace Biobanks.Web.Controllers
 
         #region Diagnosis Type Ahead
         [AllowAnonymous]
-        public async Task<JsonpResult> ListDiagnoses(string wildcard, string callback)
+        public async Task<JsonpResult> ListSnomedTerms(string wildcard, string callback)
         {
-            var diagnosisModels = await GetDiagnosesAsync(wildcard);
+            var snomedTermModels = await GetSnomedTermsAsync(wildcard);
 
-            return this.Jsonp(diagnosisModels, callback, JsonRequestBehavior.AllowGet);
+            return this.Jsonp(snomedTermModels, callback, JsonRequestBehavior.AllowGet);
         }
 
         [AllowAnonymous]
-        public async Task<JsonpResult> SearchDiagnoses(string searchDocumentType, string wildcard, string callback)
+        public async Task<JsonpResult> SearchSnomedTerms(string searchDocumentType, string wildcard, string callback)
         {
             SearchDocumentType type;
 
@@ -216,12 +202,12 @@ namespace Biobanks.Web.Controllers
                     throw new ArgumentOutOfRangeException();
             }
 
-            var diagnosisModels = await GetDiagnosesSearchResultsAsync(type, wildcard.ToLower());
+            var snomedTermsModel = await GetSnomedTermSearchResultsAsync(type, wildcard.ToLower());
 
-            return this.Jsonp(diagnosisModels, callback, JsonRequestBehavior.AllowGet);
+            return this.Jsonp(snomedTermsModel, callback, JsonRequestBehavior.AllowGet);
         }
 
-        private async Task<List<SnomedTermModel>> GetDiagnosesSearchResultsAsync(SearchDocumentType type, string wildcard)
+        private async Task<List<SnomedTermModel>> GetSnomedTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var snomedTerms = await _biobankReadService.ListSearchableSnomedTermsAsync(type, wildcard);
 
@@ -238,7 +224,7 @@ namespace Biobanks.Web.Controllers
             return model;
         }
 
-        private async Task<List<SnomedTermModel>> GetDiagnosesAsync(string wildcard)
+        private async Task<List<SnomedTermModel>> GetSnomedTermsAsync(string wildcard)
         {
             var snomedTerms = await _biobankReadService.ListSnomedTermsAsync(wildcard);
 
@@ -286,14 +272,14 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         //this allows us to specify Collections / Capabilities with one box, using radios
-        public ActionResult Unified(string diagnosis, string searchRadio)
+        public ActionResult Unified(string snomedTerm, string searchRadio)
         {
             switch (searchRadio)
             {
                 case "Collections":
-                    return RedirectToAction("Collections", new {diagnosis});
+                    return RedirectToAction("Collections", new { snomedTerm });
                 case "Capabilities":
-                    return RedirectToAction("Capabilities", new {diagnosis});
+                    return RedirectToAction("Capabilities", new { snomedTerm });
                 default:
                     throw new ArgumentOutOfRangeException();
             }
