@@ -33,6 +33,7 @@
                 @foreach (var collectionType in Model.CollectionTypes)
                 {
                     <tr class="@(collectionType.CollectionCount > 0 ? "info" : "")"
+                        data-resource-url="/api/CollectionType"
                         data-collection-type-id="@collectionType.Id"
                         data-collection-type-desc="@collectionType.Description">
 
@@ -97,9 +98,8 @@
             </div>
 
             <form id="modal-collection-type-form"
-                  data-update-action="@Url.Action("EditCollectionTypeAjax")"
+                  data-resource-url="/api/CollectionType"
                   data-update-success-redirect="@Url.Action("EditCollectionTypeSuccess")"
-                  data-add-action="@Url.Action("AddCollectionTypeAjax")"
                   data-add-success-redirect="@Url.Action("AddCollectionTypeSuccess")"
                   class="form-horizontal">
 

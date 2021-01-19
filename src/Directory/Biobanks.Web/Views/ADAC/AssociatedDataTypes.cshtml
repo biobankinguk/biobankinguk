@@ -117,7 +117,11 @@
             </div>
 
             <!-- Modal Form -->
-            <form id="modal-associated-types-form" class="form-horizontal">
+            <form id="modal-associated-types-form" 
+				  data-resource-url="/api/AssociatedDataType"
+                  data-update-success-redirect="@Url.Action("EditAssociatedDataTypeSuccess")"
+                  data-add-success-redirect="@Url.Action("AddAssociatedDataTypeSuccess")"
+                  class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">

@@ -424,6 +424,32 @@
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Compile Include="ApiControllers\AccessConditionController.cs" />
+    <Compile Include="ApiControllers\AgeRangeController.cs" />
+    <Compile Include="ApiControllers\AnnualStatisticGroupController.cs" />
+    <Compile Include="ApiControllers\AnnualStatisticController.cs" />
+    <Compile Include="ApiControllers\ApiBaseController.cs" />
+    <Compile Include="ApiControllers\AssociatedDataProcurementTimeFrameController.cs" />
+    <Compile Include="ApiControllers\AssociatedDataTypeGroupController.cs" />
+    <Compile Include="ApiControllers\AssociatedDataTypeController.cs" />
+    <Compile Include="ApiControllers\CollectionPercentageController.cs" />
+    <Compile Include="ApiControllers\CollectionPointController.cs" />
+    <Compile Include="ApiControllers\CollectionStatusController.cs" />
+    <Compile Include="ApiControllers\CollectionTypeController.cs" />
+    <Compile Include="ApiControllers\ConsentRestrictionController.cs" />
+    <Compile Include="ApiControllers\CountryController.cs" />
+    <Compile Include="ApiControllers\CountyController.cs" />
+    <Compile Include="ApiControllers\DiseaseStatusController.cs" />
+    <Compile Include="ApiControllers\DonorCountController.cs" />
+    <Compile Include="ApiControllers\HtaStatusController.cs" />
+    <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
+    <Compile Include="ApiControllers\MaterialTypeController.cs" />
+    <Compile Include="ApiControllers\PreservationTypeController.cs" />
+    <Compile Include="ApiControllers\RegistrationReasonController.cs" />
+    <Compile Include="ApiControllers\SampleCollectionModeController.cs" />
+    <Compile Include="ApiControllers\ServiceOfferingController.cs" />
+    <Compile Include="ApiControllers\SexController.cs" />
+    <Compile Include="ApiControllers\SopStatusController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
@@ -1038,6 +1064,31 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\" />
+    <Folder Include="Views\AgeRanges\" />
+    <Folder Include="Views\AnnualStatisticGroups\" />
+    <Folder Include="Views\AnnualStatistics\" />
+    <Folder Include="Views\ApiBase\" />
+    <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
+    <Folder Include="Views\AssociatedDataTypeGroups\" />
+    <Folder Include="Views\AssociatedDataTypes\" />
+    <Folder Include="Views\CollectionPercentages\" />
+    <Folder Include="Views\CollectionPoints\" />
+    <Folder Include="Views\CollectionStatus\" />
+    <Folder Include="Views\CollectionType\" />
+    <Folder Include="Views\ConsentRestrictions\" />
+    <Folder Include="Views\Country\" />
+    <Folder Include="Views\County\" />
+    <Folder Include="Views\DiseaseStatuses\" />
+    <Folder Include="Views\DonorCounts\" />
+    <Folder Include="Views\HtaStatus\" />
+    <Folder Include="Views\MacroscopicAssessment\" />
+    <Folder Include="Views\MaterialTypes\" />
+    <Folder Include="Views\PreservationType\" />
+    <Folder Include="Views\RegistrationReason\" />
+    <Folder Include="Views\SampleCollectionModes\" />
+    <Folder Include="Views\ServiceOfferings\" />
+    <Folder Include="Views\Sexes\" />
+    <Folder Include="Views\SopStatus\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">

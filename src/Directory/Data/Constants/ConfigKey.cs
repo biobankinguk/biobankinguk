@@ -24,6 +24,7 @@ namespace Directory.Data.Constants
         // Editable Homepage
         public const string HomepageTitle = "site.homepage.title";
         public const string HomepageSearchTitle = "site.homepage.searchtitle";
+        public const string HomepageSearchSubTitle = "site.homepage.searchsubtitle";
         public const string HomepageResourceRegistration = "site.homepage.resourceregistration";
         public const string HomepageNetworkRegistration = "site.homepage.networkregistration";
         public const string HomepageSearchRadioSamplesCollected = "site.homepage.searchradiosamplescollected";

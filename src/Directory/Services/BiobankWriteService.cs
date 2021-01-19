@@ -956,7 +956,7 @@ namespace Directory.Services
 
         public async Task<DonorCount> UpdateDonorCountAsync(DonorCount donorCount, bool sortOnly = false)
         {
-            var donorCounts = await _biobankReadService.ListDonorCountsAsync();
+            var donorCounts = await _biobankReadService.ListDonorCountsAsync(true);
 
             // If only updating sortOrder
             if (sortOnly)
@@ -1503,7 +1503,7 @@ namespace Directory.Services
         #region RefData: Material Type
         public async Task DeleteMaterialTypeAsync(MaterialType materialType)
         {
-            await _materialTypeRepository.DeleteAsync(materialType);
+            await _materialTypeRepository.DeleteAsync(materialType.MaterialTypeId);
             await _materialTypeRepository.SaveChangesAsync();
         }
 

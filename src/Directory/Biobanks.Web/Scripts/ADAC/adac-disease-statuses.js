@@ -54,38 +54,45 @@ function AdacDiseaseStatusViewModel() {
     _this.showModal();
   };
 
-  this.modalSubmit = function (e) {
-    e.preventDefault();
-    var form = $(e.target); //get the submit button's form
+    this.modalSubmit = function (e) {
+        e.preventDefault();
+        var form = $(e.target); // get form as a jquery object
 
-    var action = _this.modal.mode().toLowerCase() + "-action";
-    var successRedirect =
-      _this.modal.mode().toLowerCase() + "-success-redirect";
-
-    $.ajax({
-      type: "POST",
-      url: form.data(action),
-      data: form.serialize(),
-      success: function (data) {
-        //clear form errors (as these are in the page's ko model)
-        _this.dialogErrors.removeAll();
-
-        if (data.success) {
-          _this.hideModal();
-          //now we can redirect (force a page reload, following the successful AJAX submit
-          //(why not just do a regular POST submit? for nice AJAX modal form valdation)
-          window.location.href =
-            form.data(successRedirect) + "?Name=" + data.name;
-        } else {
-          if (Array.isArray(data.errors)) {
-            for (var error of data.errors) {
-              _this.dialogErrors.push(error);
-            }
-          }
+        // Get Action Type
+        var resourceUrl = form.data("resource-url")
+        var action = _this.modal.mode();
+        if (action == 'Add') {
+            var ajaxType = 'POST'
+            var url = resourceUrl;
+        } else if (action == 'Update') {
+            var ajaxType = 'PUT';
+            var url = resourceUrl + '/' + $(e.target.Id).val();
         }
-      },
-    });
-  };
+        var successRedirect = action.toLowerCase() + "-success-redirect";
+
+        // Make AJAX Call
+        $.ajax({
+            url: url,
+            type: ajaxType,
+            dataType: 'json',
+            data: form.serialize(),
+            success: function (data, textStatus, xhr) {
+                _this.dialogErrors.removeAll();
+                if (data.success) {
+                    _this.hideModal();
+                    window.location.href =
+                        form.data(successRedirect) + "?Name=" + data.name;
+                }
+                else {
+                    if (Array.isArray(data.errors)) {
+                        for (var error of data.errors) {
+                            _this.dialogErrors.push(error);
+                        }
+                    }
+                }
+            }
+        });
+    };
 }
 
 var adacDiseaseStatusVM;

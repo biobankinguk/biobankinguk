@@ -33,8 +33,10 @@
                 @foreach (var procurement in Model.AssociatedDataProcurementTimeFrameModels)
                 {
                     <tr class="@(procurement.CollectionCapabilityCount > 0 ? "info" : "")"
+                        data-resource-url="/api/AssociatedDataProcurementTimeFrame"
                         data-procurement-id="@procurement.Id"
-                        data-procurement-desc="@procurement.Description">
+                        data-procurement-desc="@procurement.Description"
+                        data-procurement-name="@procurement.DisplayName">
 
                         <td>@procurement.SortOrder</td>
                         <td>@procurement.Description</td>
@@ -99,7 +101,12 @@
             </div>
 
             <!-- Modal Form -->
-            <form id="modal-procurement-time-form" class="form-horizontal">
+            <form id="modal-procurement-time-form" 
+                  data-resource-url="/api/AssociatedDataProcurementTimeFrame"
+                  data-update-success-redirect="@Url.Action("EditAssociatedDataProcurementTimeFrameSuccess")"
+                  data-add-success-redirect="@Url.Action("AddAssociatedDataProcurementTimeFrameSuccess")"
+                  data-add-overflow-redirect="@Url.Action("AddAssociatedDataProcurementTimeFrameOverflow")"
+                  class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">

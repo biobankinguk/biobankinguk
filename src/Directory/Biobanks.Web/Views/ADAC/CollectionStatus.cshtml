@@ -33,6 +33,7 @@
                 @foreach (var collectionStatus in Model.CollectionStatuses)
                 {
                     <tr class="@(collectionStatus.CollectionCount > 0 ? "info" : "")"
+                        data-resource-url="/api/CollectionStatus"
                         data-collection-status-id="@collectionStatus.Id"
                         data-collection-status-desc="@collectionStatus.Description">
 
@@ -97,9 +98,8 @@
             </div>
 
             <form id="modal-collection-status-form"
-                  data-update-action="@Url.Action("EditCollectionStatusAjax")"
+                  data-resource-url="/api/CollectionStatus"
                   data-update-success-redirect="@Url.Action("EditCollectionStatusSuccess")"
-                  data-add-action="@Url.Action("AddCollectionStatusAjax")"
                   data-add-success-redirect="@Url.Action("AddCollectionStatusSuccess")"
                   class="form-horizontal">
 

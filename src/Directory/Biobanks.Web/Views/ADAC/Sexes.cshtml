@@ -33,6 +33,7 @@
 				@foreach (var sex in Model.Sexes)
 				{
 				<tr class="@(sex.SexCount > 0 ? "info" : "")"
+                    data-resource-url="/api/Sex"
 					data-sexes-id="@sex.Id"
 					data-sexes-desc="@sex.Description">
 					
@@ -97,9 +98,8 @@
             </div>
 
             <form id="modal-sex-form"
-                  data-update-action="@Url.Action("EditSexAjax")"
+                  data-resource-url="/api/Sex"
                   data-update-success-redirect="@Url.Action("EditSexSuccess")"
-                  data-add-action="@Url.Action("AddSexAjax")"
                   data-add-success-redirect="@Url.Action("AddSexSuccess")"
                   class="form-horizontal">
 

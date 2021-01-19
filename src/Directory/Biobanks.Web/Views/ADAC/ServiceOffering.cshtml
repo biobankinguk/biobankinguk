@@ -2,7 +2,7 @@
 @model Biobanks.Web.Models.ADAC.ServiceOfferingModel
 
 @{
-    ViewBag.Title = "Service offerings";
+    ViewBag.Title = "Service Offerings";
 }
 
 @Html.Partial("_ADACTabs", (string)ViewBag.Title)
@@ -33,6 +33,7 @@
                 @foreach (var serviceOffering in Model.ServiceOfferings)
                 {
                     <tr class="@(serviceOffering.OrganisationCount > 0 ? "info" : "")"
+                        data-resource-url="/api/ServiceOffering"
                         data-offering-id="@serviceOffering.Id"
                         data-offering-name="@serviceOffering.Name">
 
@@ -97,9 +98,8 @@
             </div>
 
             <form id="modal-service-offering-form"
-                  data-update-action="@Url.Action("EditServiceOfferingAjax")"
+                  data-resource-url="/api/ServiceOffering"
                   data-update-success-redirect="@Url.Action("EditServiceOfferingSuccess")"
-                  data-add-action="@Url.Action("AddServiceOfferingAjax")"
                   data-add-success-redirect="@Url.Action("AddServiceOfferingSuccess")"
                   class="form-horizontal">
 
@@ -109,11 +109,9 @@
                         <div class="col-sm-12">
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.serviceOffering().id">
 
-
-
                             <!-- Description -->
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">name</label>
+                                <label class="col-sm-3 control-label">Name</label>
                                 <div class="col-sm-9">
                                     <input type="text" id="name" name="name" class="form-control"
                                            data-bind="value: modal.serviceOffering().name()">

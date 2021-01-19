@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Data.Entities.ReferenceData;
 
 namespace LegacyData.Entities.JoinEntities
 {

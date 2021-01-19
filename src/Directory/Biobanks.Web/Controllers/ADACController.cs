@@ -24,6 +24,12 @@ using System.Linq.Expressions;
 using Biobanks.Web.Models.Home;
 using Directory.Data.Constants;
 using Biobanks.Web.Models.Search;
+using Directory.Services;
+using Microsoft.Ajax.Utilities;
+using Hangfire.States;
+using System.Net.Http;
+using System.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace Biobanks.Web.Controllers
 {
@@ -763,7 +769,7 @@ namespace Biobanks.Web.Controllers
             if (endQuarter == 0)
                 endQuarter = ((DateTime.Today.Month + 2) / 3);
             if (reportPeriod == 0)
-                reportPeriod = 10;
+                reportPeriod = 5;
 
             var model = _mapper.Map<DirectoryAnalyticReport>(await _analyticsReportGenerator.GetDirectoryReport(year, endQuarter, reportPeriod));
             return View(model);
@@ -776,18 +782,18 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AccessConditions()
         {
             var models = (await _biobankReadService.ListAccessConditionsAsync())
-                .Select(x =>
-                    Task.Run(async () => new ReadAccessConditionsModel
-                    {
-                        Id = x.AccessConditionId,
-                        Description = x.Description,
-                        SortOrder = x.SortOrder,
-                        AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.AccessConditionId),
-                    }
-                    )
-                    .Result
+            .Select(x =>
+                Task.Run(async () => new ReadAccessConditionsModel
+                {
+                    Id = x.AccessConditionId,
+                    Description = x.Description,
+                    SortOrder = x.SortOrder,
+                    AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.AccessConditionId),
+                }
                 )
-                .ToList();
+                .Result
+            )
+            .ToList();
 
             return View(new AccessConditionsModel
             {
@@ -795,79 +801,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [HttpPost]
-        public async Task<JsonResult> AddAccessConditionAjax(AccessConditionModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidAccessConditionDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Access condition descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var access = new AccessCondition
-            {
-                AccessConditionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddAccessConditionAsync(access);
-            await _biobankWriteService.UpdateAccessConditionAsync(access, true);
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddAccessConditionSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAccessConditionAjax(AccessConditionModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidAccessConditionDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another access condition. Access condition descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAccessConditionInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This access condition is currently in use and cannot be edited." }
-                });
-            }
-
-            var access = new AccessCondition
-            {
-                AccessConditionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.UpdateAccessConditionAsync(access);
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditAccessConditionSuccess?name={model.Description}"
-            });
-        }
 
         public async Task<ActionResult> DeleteAccessCondition(AccessConditionModel model)
         {
@@ -880,14 +813,12 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
             {
-                AccessConditionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
+                AccessConditionId = model.Id
             });
 
             //Everything went A-OK!
             SetTemporaryFeedbackMessage($"The access condition \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
+                    FeedbackMessageType.Success);
 
             return RedirectToAction("AccessConditions");
         }
@@ -925,75 +856,8 @@ namespace Biobanks.Web.Controllers
             {
                 AgeRanges = models
             });
+
         }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAgeRangeAjax(AgeRangeModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
-            {
-                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // Add new Age Range
-            var range = new AgeRange
-            {
-                AgeRangeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddAgeRangeAsync(range);
-            await _biobankWriteService.UpdateAgeRangeAsync(range, true); // Ensure sortOrder is correct
-
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddAgeRangeSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAgeRangeAjax(AgeRangeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidAgeRangeAsync(model.Description))
-            {
-                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateAgeRangeAsync(new AgeRange
-            {
-                AgeRangeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditAgeRangeSuccess?name={model.Description}"
-            });
-        }
-
         public async Task<ActionResult> DeleteAgeRange(AgeRangeModel model)
         {
             if (await _biobankReadService.IsAgeRangeInUse(model.Id))
@@ -1011,6 +875,7 @@ namespace Biobanks.Web.Controllers
 
             SetTemporaryFeedbackMessage($"The age range  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
             return RedirectToAction("AgeRanges");
+
         }
 
         public ActionResult AddAgeRangeSuccess(string name)
@@ -1075,53 +940,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("AssociatedDataProcurementTimeFrame");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAssociatedDataProcurementTimeFrameAjax(Models.Shared.AssociatedDataProcurementTimeFrameModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That Associated Data Procurement Time Frame already exists!");
-            }
-
-            if (model.DisplayName == null)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field is required.");
-            }
-
-            if (model.DisplayName.Length > 10)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field allows a maximum of 10 characters.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
-            {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description,
-                DisplayValue = model.DisplayName,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditAssociatedDataProcurementTimeFrameSuccess?name={model.Description}"
-            });
         }
 
         public ActionResult EditAssociatedDataProcurementTimeFrameSuccess(string name)
@@ -1133,67 +951,21 @@ namespace Biobanks.Web.Controllers
 
             return RedirectToAction("AssociatedDataProcurementTimeFrame");
         }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAssociatedDataProcurementTimeFrameAjax(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
-        {
-            // Validate model
-            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-            if (timeFrames.Count() >= 5)
-            {
-                SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
-                return Json(new
-                {
-                    success = true,
-                    redirect = $"AssociatedDataProcurementTimeFrame"
-                });
-            }
-
-            if (await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That description is already in use. Associated Data Procurement Time Frame descriptions must be unique.");
-            }
-
-            if (model.DisplayName == null)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field is required.");
-            }
-
-            if (model.DisplayName.Length > 10)
-            {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "The Display Name field allows a maximum of 10 characters.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var procurement = new AssociatedDataProcurementTimeframe
-            {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                DisplayValue = model.DisplayName
-            };
-
-            await _biobankWriteService.AddAssociatedDataProcurementTimeFrameAsync(procurement);
-            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(procurement, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddAssociatedDataProcurementTimeFrameSuccess?name={model.Description}"
-            });
-        }
         public ActionResult AddAssociatedDataProcurementTimeFrameSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
 
             SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{name}\" has been added successfully.",
                 FeedbackMessageType.Success);
+
+            return RedirectToAction("AssociatedDataProcurementTimeFrame");
+        }
+
+        public ActionResult AddAssociatedDataProcurementTimeFrameOverflow()
+        {
+            //This action solely exists so we can set a feedback message
+
+            SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
 
             return RedirectToAction("AssociatedDataProcurementTimeFrame");
         }
@@ -1229,79 +1001,7 @@ namespace Biobanks.Web.Controllers
                 AnnualStatistics = models,
                 AnnualStatisticGroups = groups
             });
-        }
 
-        [HttpPost]
-        public async Task<JsonResult> AddAnnualStatisticAjax(AnnualStatisticModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
-            {
-                ModelState.AddModelError("AnnualStatistics", "That name is already in use. Annual statistics names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var annualStatistic = new AnnualStatistic
-            {
-                AnnualStatisticId = model.Id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.AddAnnualStatisticAsync(annualStatistic);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"AddAnnualStatisticSuccess?name={model.Name}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAnnualStatisticAjax(AnnualStatisticModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
-            {
-                ModelState.AddModelError("AnnualStatistics", "That annual statistic already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAnnualStatisticInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This annual statistic is currently in use and cannot be edited." }
-                });
-            }
-
-            var annualStatistics = new AnnualStatistic
-            {
-                AnnualStatisticId = model.Id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.UpdateAnnualStatisticAsync(annualStatistics);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"EditAnnualStatisticSuccess?name={model.Name}"
-            });
         }
 
         public async Task<ActionResult> DeleteAnnualStatistic(AnnualStatisticModel model)
@@ -1358,70 +1058,7 @@ namespace Biobanks.Web.Controllers
 
                     .ToList()
             });
-        }
 
-        [HttpPost]
-        public async Task<JsonResult> AddMaterialTypeAjax(MaterialTypeModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddMaterialTypeAsync(new MaterialType
-            {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddMaterialTypeSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditMaterialTypeAjax(MaterialTypeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("MaterialType", "That description is already in use. Material types must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = false;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateMaterialTypeAsync(new MaterialType
-            {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditMaterialTypeSuccess?name={model.Description}"
-            });
         }
 
         public async Task<ActionResult> DeleteMaterialType(MaterialTypeModel model)
@@ -1475,18 +1112,18 @@ namespace Biobanks.Web.Controllers
             return View(new DiagnosesModel
             {
                 Diagnoses = (await _biobankReadService.ListDiagnosesAsync())
-                    .Select(x =>
+                     .Select(x =>
 
-                    Task.Run(async () => new ReadDiagnosisModel
-                    {
-                        Id = x.DiagnosisId,
-                        SnomedIdentifier = x.SnomedIdentifier,
-                        Description = x.Description,
-                        CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
-                        OtherTerms = x.OtherTerms
-                    }).Result)
+                     Task.Run(async () => new ReadDiagnosisModel
+                     {
+                         Id = x.DiagnosisId,
+                         SnomedIdentifier = x.SnomedIdentifier,
+                         Description = x.Description,
+                         CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
+                         OtherTerms = x.OtherTerms
+                     }).Result)
 
-                    .ToList()
+                     .ToList()
             });
         }
 
@@ -1513,45 +1150,6 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("DiseaseStatuses");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> EditDiseaseStatusAjax(DiagnosisModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another disease status. Disease status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This disease status is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateDiagnosisAsync(new Diagnosis
-            {
-                DiagnosisId = model.Id,
-                SnomedIdentifier = model.SnomedIdentifier,
-                Description = model.Description,
-                OtherTerms = model.OtherTerms
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
-        }
-
         public ActionResult EditDiseaseStatusSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
@@ -1560,35 +1158,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("DiseaseStatuses");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddDiseaseStatusAjax(DiagnosisModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddDiagnosisAsync(new Diagnosis
-            {
-                Description = model.Description,
-                SnomedIdentifier = model.SnomedIdentifier,
-                OtherTerms = model.OtherTerms
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddDiseaseStatusSuccess(string name)
@@ -1630,78 +1199,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionPercentageAjax(CollectionPercentageModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPercentage", "That description is already in use. Collection percentage descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var percentage = new CollectionPercentage
-            {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound,
-            };
-
-            await _biobankWriteService.AddCollectionPercentageAsync(percentage);
-            await _biobankWriteService.UpdateCollectionPercentageAsync(percentage, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddCollectionPercentageSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionPercentageAjax(CollectionPercentageModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPercentage", "That collection percentage already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
-            {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditCollectionPercentageSuccess?name={model.Description}"
-            });
         }
 
         public async Task<ActionResult> DeleteCollectionPercentage(CollectionPercentageModel model)
@@ -1749,6 +1246,7 @@ namespace Biobanks.Web.Controllers
                         Id = x.CollectionPointId,
                         Description = x.Description,
                         SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetCollectionPointUsageCount(x.CollectionPointId)
                     })
                     .Result
                 )
@@ -1757,74 +1255,6 @@ namespace Biobanks.Web.Controllers
             return View(new CollectionPointsModel()
             {
                 CollectionPoints = models
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionPointAjax(CollectionPointModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCollectionPointDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPoints", "That description is already in use. collection point descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var points = new CollectionPoint
-            {
-                CollectionPointId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddCollectionPointAsync(points);
-            await _biobankWriteService.UpdateCollectionPointAsync(points, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddCollectionPointSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionPointAjax(CollectionPointModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionPointDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionPoints", "That collection point already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionPointAsync(new CollectionPoint
-            {
-                CollectionPointId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditCollectionPointSuccess?name={model.Description}"
             });
         }
 
@@ -1885,85 +1315,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [HttpPost]
-        public async Task<JsonResult> AddDonorCountAjax(DonorCountModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
-
-            // Validate model
-            if (await _biobankReadService.ValidDonorCountAsync(model.Description))
-            {
-                ModelState.AddModelError("DonorCounts", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var donor = new DonorCount
-            {
-                DonorCountId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound
-
-            };
-
-            await _biobankWriteService.AddDonorCountAsync(donor);
-            await _biobankWriteService.UpdateDonorCountAsync(donor, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddDonorCountSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditDonorCountAjax(DonorCountModel model, bool sortOnly = false)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
-
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidDonorCountAsync(model.Description))
-            {
-                ModelState.AddModelError("DonorCounts", $"That {currentReferenceName.Value} already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
-            {
-                DonorCountId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditDonorCountSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
-            });
-        }
-
         public async Task<ActionResult> DeleteDonorCount(DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
@@ -2009,17 +1360,17 @@ namespace Biobanks.Web.Controllers
             return View(new Models.ADAC.CollectionTypeModel
             {
                 CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
-                    .Select(x =>
+                     .Select(x =>
 
-                Task.Run(async () => new ReadCollectionTypeModel
-                {
-                    Id = x.CollectionTypeId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.CollectionTypeId),
-                    SortOrder = x.SortOrder
-                }).Result)
+                 Task.Run(async () => new ReadCollectionTypeModel
+                 {
+                     Id = x.CollectionTypeId,
+                     Description = x.Description,
+                     CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.CollectionTypeId),
+                     SortOrder = x.SortOrder
+                 }).Result)
 
-                    .ToList()
+                     .ToList()
             });
         }
 
@@ -2047,39 +1398,6 @@ namespace Biobanks.Web.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionTypeAjax(Models.Shared.CollectionTypeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionType", "That collection type already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsCollectionTypeInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
-            {
-                CollectionTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
-        }
-
         public ActionResult EditCollectionTypeSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
@@ -2088,34 +1406,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("CollectionType");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionTypeAjax(Models.Shared.CollectionTypeModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Collection types descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddCollectionTypeAsync(new CollectionType
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddCollectionTypeSuccess(string name)
@@ -2130,42 +1420,6 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region RefData: Preservation Type
-        [HttpPost]
-        public async Task<JsonResult> AddPreservationTypeAjax(PreservationTypeModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
-
-            // Validate model
-            if (await _biobankReadService.ValidPreservationTypeAsync(model.Description))
-            {
-                ModelState.AddModelError("PreservationType", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // Add new Preservation Type
-            var type = new PreservationType
-            {
-                PreservationTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddPreservationTypeAsync(type);
-            await _biobankWriteService.UpdatePreservationTypeAsync(type, true); // Ensure sortOrder is correct
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddPreservationTypeSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
-            });
-        }
 
         public async Task<ActionResult> PreservationTypes()
         {
@@ -2189,46 +1443,6 @@ namespace Biobanks.Web.Controllers
             return View(new PreservationTypesModel
             {
                 PreservationTypes = models
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditPreservationTypeAjax(PreservationTypeModel model, bool sortOnly = false)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
-
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidPreservationTypeAsync(model.Description))
-            {
-                ModelState.AddModelError("PreservationType", $"That {currentReferenceName.Value} already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdatePreservationTypeAsync(new PreservationType
-            {
-                PreservationTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditPreservationTypeSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
             });
         }
 
@@ -2322,50 +1536,7 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("AssociatedDataTypes");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditAssociatedDataTypeAjax(AssociatedDataTypeModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAssociatedDataTypeDescriptionAsync(model.Name))
-            {
-                ModelState.AddModelError("AssociatedDataTypes", "That associated data type already exists!");
             }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This associated data type is currently in use and cannot be edited." }
-                });
-            }
-
-            var associatedDataTypes = new AssociatedDataType
-            {
-                AssociatedDataTypeId = model.Id,
-                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name,
-                Message = model.Message
-
-            };
-
-            await _biobankWriteService.UpdateAssociatedDataTypeAsync(associatedDataTypes);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"EditAssociatedDataTypeSuccess?name={model.Name}"
-            });
-        }
 
         public ActionResult EditAssociatedDataTypeSuccess(string name)
         {
@@ -2375,39 +1546,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("AssociatedDataTypes");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAssociatedDataTypeAjax(AssociatedDataTypeModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidAssociatedDataTypeDescriptionAsync(model.Name))
-            {
-                ModelState.AddModelError("AssociatedDataTypes", "That name is already in use. Associated Data Type names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var associatedDataType = new AssociatedDataType
-            {
-                AssociatedDataTypeId = model.Id,
-                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name,
-                Message = model.Message
-            };
-
-            await _biobankWriteService.AddAssociatedDataTypeAsync(associatedDataType);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"AddAssociatedDataTypeSuccess?name={model.Name}"
-            });
         }
 
         public ActionResult AddAssociatedDataTypeSuccess(string name)
@@ -2461,34 +1599,7 @@ namespace Biobanks.Web.Controllers
 
             return RedirectToAction("AssociatedDataTypeGroups");
         }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAssociatedDataTypeGroupAjax(AssociatedDataTypeGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAssociatedDataTypeGroupNameAsync(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Associated Data Type Group names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
-            {
-                Description = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
-        }
-
+       
         public ActionResult AddAssociatedDataTypeGroupSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
@@ -2499,43 +1610,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("AssociatedDataTypeGroups");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> EditAssociatedDataTypeGroupAjax(AssociatedDataTypeGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAssociatedDataTypeGroupNameAsync(model.AssociatedDataTypeGroupId, model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use by another asscoiated data type group. Associated Data Type Group names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(model.AssociatedDataTypeGroupId))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This associated data type group is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
-            {
-                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
-        }
-
+  
         public ActionResult EditAssociatedDataTypeGroupSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
@@ -2589,40 +1664,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("ConsentRestriction");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditConsentRestrictionAjax(Models.Shared.ConsentRestrictionModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidConsentRestrictionDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("ConsentRestriction", "That consent restriction already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsConsentRestrictionInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
-            {
-                ConsentRestrictionId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditConsentRestrictionSuccess(string name)
@@ -2633,34 +1674,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("ConsentRestriction");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddConsentRestrictionAjax(Models.Shared.ConsentRestrictionModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidDiagnosisDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Consent restriction descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddConsentRestrictionAsync(new ConsentRestriction
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddConsentRestrictionSuccess(string name)
@@ -2715,40 +1728,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("CollectionStatus");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCollectionStatusAjax(Models.Shared.CollectionStatusModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("CollectionStatus", "That collection status already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsCollectionStatusInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateCollectionStatusAsync(new CollectionStatus
-            {
-                CollectionStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditCollectionStatusSuccess(string name)
@@ -2759,34 +1738,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("CollectionStatus");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCollectionStatusAjax(Models.Shared.CollectionStatusModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCollectionStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Collection status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddCollectionStatusAsync(new CollectionStatus
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddCollectionStatusSuccess(string name)
@@ -2842,43 +1793,6 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("AnnualStatisticGroups");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> EditAnnualStatisticGroupAjax(AnnualStatisticGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAnnualStatisticGroupNameAsync(model.AnnualStatisticGroupId, model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use by another annual statistic group. Annual Statistic Group names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This annual statistic group is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateAnnualStatisticGroupAsync(new AnnualStatisticGroup
-            {
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
-        }
-
         public ActionResult EditAnnualStatisticGroupSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
@@ -2887,33 +1801,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("AnnualStatisticGroups");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddAnnualStatisticGroupAjax(AnnualStatisticGroupModel model)
-        {
-            //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAnnualStatisticGroupNameAsync(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Annual Statistic Group names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddAnnualStatisticGroupAsync(new AnnualStatisticGroup
-            {
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult AddAnnualStatisticGroupSuccess(string name)
@@ -2947,71 +1834,6 @@ namespace Biobanks.Web.Controllers
             return View(new SampleCollectionModesModel()
             {
                 SampleCollectionModes = models
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddSampleCollectionModeAjax(SampleCollectionModeModel model)
-        {
-            //// Validate model
-            if (await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
-            {
-                ModelState.AddModelError("SampleCollectionModes", "That description is already in use. Sample collection modes must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var mode = new SampleCollectionMode
-            {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddSampleCollectionModeAsync(mode);
-            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddSampleCollectionModeSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditSampleCollectionModeAjax(SampleCollectionModeModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
-            {
-                ModelState.AddModelError("SampleCollectionModes", "That sample collection modes already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var mode = new SampleCollectionMode
-            {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode);
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditSampleCollectionModeSuccess?name={model.Description}"
             });
         }
 
@@ -3070,71 +1892,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [HttpPost]
-        public async Task<JsonResult> AddSexAjax(SexModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSexDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Sex descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddSexAsync(new Sex
-            {
-                SexId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddSexSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditSexAjax(SexModel model, bool sortOnly = false)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSexDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another material type. Sex descriptions must be unique.");
-            }
-
-            if (await _biobankReadService.IsSexInUse(model.Id))
-            {
-                ModelState.AddModelError("Description", "This sex is currently in use and cannot be edited.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.UpdateSexAsync(new Sex
-            {
-                SexId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditSexSuccess?name={model.Description}"
-            });
-        }
-
         public async Task<ActionResult> DeleteSex(SexModel model)
         {
             if (await _biobankReadService.IsSexInUse(model.Id))
@@ -3178,50 +1935,16 @@ namespace Biobanks.Web.Controllers
             return View(new Models.ADAC.CountryModel
             {
                 Countries = (await _biobankReadService.ListCountriesAsync())
-                    .Select(x =>
+                     .Select(x =>
 
-                    Task.Run(async () => new ReadCountryModel
-                    {
-                        Id = x.CountryId,
-                        Name = x.Name,
-                        CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.CountryId)
-                    }).Result)
+                     Task.Run(async () => new ReadCountryModel
+                     {
+                         Id = x.CountryId,
+                         Name = x.Name,
+                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.CountryId)
+                     }).Result)
 
-                    .ToList()
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddCountryAjax(Models.Shared.CountryModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCountryNameAsync(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Country names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = ModelState.Values
-                        .Where(x => x.Errors.Count > 0)
-                        .SelectMany(x => x.Errors)
-                        .Select(x => x.ErrorMessage).ToList()
-                });
-            }
-
-            await _biobankWriteService.AddCountryAsync(new Country
-            {
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
+                     .ToList()
             });
         }
 
@@ -3233,50 +1956,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("Country");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCountryAjax(Models.Shared.CountryModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCountryNameAsync(model.Id, model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use by another country. Country names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = ModelState.Values
-                        .Where(x => x.Errors.Count > 0)
-                        .SelectMany(x => x.Errors)
-                        .Select(x => x.ErrorMessage).ToList()
-                });
-            }
-
-            if (await _biobankReadService.IsCountryInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This country is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateCountryAsync(new Country
-            {
-                CountryId = model.Id,
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult EditCountrySuccess(string name)
@@ -3347,79 +2026,6 @@ namespace Biobanks.Web.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<JsonResult> AddCountyAjax(CountyModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCountyAsync(model.Name))
-            {
-                ModelState.AddModelError("County", "That name is already in use. County names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var county = new County
-            {
-                CountyId = model.Id,
-                CountryId = model.CountryId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.AddCountyAsync(county);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"AddCountySuccess?name={model.Name}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditCountyAjax(CountyModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidCountyAsync(model.Name))
-            {
-                ModelState.AddModelError("County", "That county already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsCountyInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This county is currently in use and cannot be edited." }
-                });
-            }
-
-            var county = new County
-            {
-                CountyId = model.Id,
-                CountryId = model.CountryId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.UpdateCountyAsync(county);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-                redirect = $"EditCountySuccess?name={model.Name}"
-            });
-        }
-
         public async Task<ActionResult> DeleteCounty(CountyModel model)
         {
             if (await _biobankReadService.IsCountyInUse(model.Id))
@@ -3466,6 +2072,7 @@ namespace Biobanks.Web.Controllers
                         Id = x.SopStatusId,
                         Description = x.Description,
                         SortOrder = x.SortOrder,
+                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.SopStatusId)
                     })
                     .Result
                 )
@@ -3474,74 +2081,6 @@ namespace Biobanks.Web.Controllers
             return View(new SopStatusesModel()
             {
                 SopStatuses = models
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddSopStatusAjax(SopStatusModel model)
-        {
-            // Validate model
-            if (await _biobankReadService.ValidSopStatusAsync(model.Description))
-            {
-                ModelState.AddModelError("SopStatus", "That description is already in use. Sop status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var status = new SopStatus
-            {
-                SopStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddSopStatusAsync(status);
-            await _biobankWriteService.UpdateSopStatusAsync(status, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddSopStatusSuccess?name={model.Description}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditSopStatusAjax(SopStatusModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidSopStatusAsync(model.Description))
-            {
-                ModelState.AddModelError("SopStatus", "That sop status already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateSopStatusAsync(new SopStatus
-            {
-                SopStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditSopStatusSuccess?name={model.Description}"
             });
         }
 
@@ -3620,43 +2159,6 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("RegistrationReason");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> EditRegistrationReasonAjax(Models.Shared.RegistrationReasonModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Id, model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use by another registration reason. Registration reason descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
-            {
-                return Json(new
-                {
-                    success = false,
-                    errors = new[] { "This registration reason is currently in use and cannot be edited." }
-                });
-            }
-
-            await _biobankWriteService.UpdateRegistrationReasonAsync(new RegistrationReason
-            {
-                RegistrationReasonId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
-        }
-
         public ActionResult EditRegistrationReasonSuccess(string name)
         {
             //This action solely exists so we can set a feedback message
@@ -3665,33 +2167,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("RegistrationReason");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddRegistrationReasonAjax(Models.Shared.RegistrationReasonModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Registration reason descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddRegistrationReasonAsync(new RegistrationReason
-            {
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddRegistrationReasonSuccess(string name)
@@ -3724,80 +2199,6 @@ namespace Biobanks.Web.Controllers
             return View(new MacroscopicAssessmentsModel()
             {
                 MacroscopicAssessments = models
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddMacroscopicAssessmentAjax(MacroscopicAssessmentModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
-
-            // Validate model
-            if (await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
-            {
-                ModelState.AddModelError("MacroscopicAssessments", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            var assessment = new MacroscopicAssessment
-            {
-                MacroscopicAssessmentId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.AddMacroscopicAssessmentAsync(assessment);
-            await _biobankWriteService.UpdateMacroscopicAssessmentAsync(assessment, true);
-
-            // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddMacroscopicAssessmentSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
-            });
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditMacroscopicAssessmentAjax(MacroscopicAssessmentModel model, bool sortOnly = false)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
-
-            //// Validate model
-            if (!sortOnly && await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
-            {
-                ModelState.AddModelError("MacroscopicAssessments", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            // If in use, then only re-order the type
-            bool inUse = model.SampleSetsCount > 0;
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateMacroscopicAssessmentAsync(new MacroscopicAssessment
-            {
-                MacroscopicAssessmentId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"EditMacroscopicAssessmentSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
             });
         }
 
@@ -3868,7 +2269,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-
         }
 
 
@@ -3893,40 +2293,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("HtaStatus");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditHtaStatusAjax(Models.Shared.HtaStatusModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("HtaStatus", "That hta status already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsHtaStatusInUse(model.Id);
-
-            // Update Preservation Type
-            await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
-            {
-                HtaStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult EditHtaStatusSuccess(string name)
@@ -3937,34 +2303,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("HtaStatus");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddHtaStatusAjax(Models.Shared.HtaStatusModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidHtaStatusDescriptionAsync(model.Description))
-            {
-                ModelState.AddModelError("Description", "That description is already in use. Hta status descriptions must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-            await _biobankWriteService.AddHtaStatusAsync(new HtaStatus
-            {
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
         }
 
         public ActionResult AddHtaStatusSuccess(string name)
@@ -4020,40 +2358,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("ServiceOffering");
-
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> EditServiceOfferingAjax(Models.Shared.ServiceOfferingModel model, bool sortOnly = false)
-        {
-            // Validate model
-            if (!sortOnly && await _biobankReadService.ValidServiceOfferingName(model.Name))
-            {
-                ModelState.AddModelError("ServiceOffering", "That service offering already exists!");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-            // If in use, then only re-order the type
-            bool inUse = await _biobankReadService.IsServiceOfferingInUse(model.Id);
-
-            // Update Service Offering
-            await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
-            {
-                ServiceId = model.Id,
-                Name = model.Name,
-                SortOrder = model.SortOrder
-            },
-            (sortOnly || inUse));
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult EditServiceOfferingSuccess(string name)
@@ -4064,34 +2368,6 @@ namespace Biobanks.Web.Controllers
                 FeedbackMessageType.Success);
 
             return RedirectToAction("ServiceOffering");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> AddServiceOfferingAjax(Models.Shared.ServiceOfferingModel model)
-        {
-            //If this description is valid, it already exists
-            if (await _biobankReadService.ValidServiceOfferingName(model.Name))
-            {
-                ModelState.AddModelError("Name", "That name is already in use. Service offering names must be unique.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return JsonModelInvalidResponse(ModelState);
-            }
-
-
-            await _biobankWriteService.AddServiceOfferingAsync(new ServiceOffering
-            {
-                Name = model.Name,
-                SortOrder = model.SortOrder
-            });
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
         }
 
         public ActionResult AddServiceOfferingSuccess(string name)
@@ -4117,6 +2393,7 @@ namespace Biobanks.Web.Controllers
             {
                 Title = Config.Get(ConfigKey.HomepageTitle, ""),
                 SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
@@ -4136,6 +2413,7 @@ namespace Biobanks.Web.Controllers
                 {
                     new Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
                     new Config { Key = ConfigKey.HomepageSearchTitle, Value = homepage.SearchTitle ?? "" },
+                    new Config { Key = ConfigKey.HomepageSearchSubTitle, Value = homepage.SearchSubTitle ?? "" },
                     new Config { Key = ConfigKey.HomepageResourceRegistration, Value = homepage.ResourceRegistration ?? "" },
                     new Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" },
                     new Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = homepage.RequireSamplesCollected ?? ""},
