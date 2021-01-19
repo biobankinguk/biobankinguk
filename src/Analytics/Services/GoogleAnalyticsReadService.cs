@@ -380,10 +380,9 @@ namespace Analytics.Services
             int month = endQuarter * monthsPerQuarter;
             int lastDayofQuarter = DateTime.DaysInMonth(year, month);
 
-            DateTimeOffset endDate = new DateTimeOffset(year, month, lastDayofQuarter,0,0,0,TimeSpan.Zero);
+            var endDate = new DateTimeOffset(year, month, lastDayofQuarter,0,0,0,TimeSpan.Zero);
             //get start date by subtracting report period (specified in quarters) from end date
-            var startDate = endDate.AddMonths(-reportPeriod * monthsPerQuarter);
-            startDate = startDate.AddDays(1); //add +1 day as start date is included in report.
+            var startDate = endDate.AddMonths(-1 * reportPeriod * monthsPerQuarter).AddDays(1);
 
             return new DateRange { StartDate = startDate.ToString(_dateFormat), EndDate = endDate.ToString(_dateFormat) };
         }
