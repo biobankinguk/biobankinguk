@@ -23,11 +23,8 @@ using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
-using Biobanks.Web.Extensions;
 using static System.String;
 using System.Net.Http;
-using System.Xml.Linq;
-using Microsoft.Ajax.Utilities;
 using Directory.Data.Constants;
 
 
@@ -148,7 +145,7 @@ namespace Biobanks.Web.Controllers
             request.OrganisationCreatedDate = DateTime.Now;
             request.OrganisationExternalId = biobank.OrganisationExternalId;
             await _biobankWriteService.UpdateOrganisationRegisterRequestAsync(request);
-
+            
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
                     {

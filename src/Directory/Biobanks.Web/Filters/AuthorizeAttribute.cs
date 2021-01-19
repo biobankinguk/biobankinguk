@@ -62,7 +62,7 @@ namespace Biobanks
                 if (activeOrganisationType == (int)ActiveOrganisationType.Biobank)
                 {
                     // If they don't have a claim on this biobank, return
-                    if (currentUser.Biobanks.ContainsKey(activeOrganisationId))
+                    if (!currentUser.Biobanks.ContainsKey(activeOrganisationId))
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;
