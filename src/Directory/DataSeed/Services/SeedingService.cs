@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
 using Entities.Data;
 using Entities.Shared.ReferenceData;
+using CsvHelper.Configuration;
 using Entities.Api.ReferenceData;
 
 namespace Directory.DataSeed.Services
@@ -23,6 +24,7 @@ namespace Directory.DataSeed.Services
         private readonly ILogger<SeedingService> _logger;
         private readonly BiobanksDbContext _db;
         private readonly CountriesWebService _countriesWebService;
+        private readonly CsvConfiguration _csvConfiguration;
 
         private IEnumerable<Action> _seedActions;
 
@@ -32,6 +34,13 @@ namespace Directory.DataSeed.Services
             _logger = logger;
             _countriesWebService = countriesWebService;
 
+            // Configure CsvReader
+            _csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture)
+            {
+                IgnoreReferences = true
+            };
+
+            // List Order Determines Seed Order
             _seedActions = new List<Action>
             {
                 /* Directory Specific */
@@ -47,8 +56,8 @@ namespace Directory.DataSeed.Services
                 SeedCsv<CollectionStatus>,
                 SeedCsv<CollectionType>,
                 SeedCsv<ConsentRestriction>,
-                //SeedCountries,
-                //SeedCounties,
+                SeedCountries,
+                SeedCounties,
                 SeedCsv<DonorCount>,
                 SeedCsv<Funder>,
                 SeedCsv<HtaStatus>,
@@ -68,7 +77,7 @@ namespace Directory.DataSeed.Services
                 /* Shared */
                 SeedCsv<MaterialType>,
                 SeedCsv<Sex>,
-                //SeedCsv<SnomedTerm>,
+                SeedCsv<SnomedTerm>,
                 SeedCsv<StorageTemperature>,
             };
         }
@@ -113,7 +122,7 @@ namespace Directory.DataSeed.Services
         private void SeedCountries() 
         {
             var seedUN = Prompt.GetYesNo("Would you like to seed UN Countries?", false);
-
+            
             // Seed Countries
             if (seedUN)
             {
@@ -131,20 +140,25 @@ namespace Directory.DataSeed.Services
             }
 
             // Update Config Value
+            WriteConfig("site.display.counties", !seedUN ? "true" : "false");
         }
 
         private void SeedCounties()
         {
-            var countries = _db.Set<Country>().ToList();
+            if (ReadConfig("site.display.counties") == "true")
+            {
+                // References Of All Seeded Countries
+                var countries = _db.Set<Country>().ToList();
 
-            // Seed Counties From Csv - Linking With Existing Countries
-            Seed(
-                ReadCsv<County>().Select(x => new County
-                {
-                    Name = x.Name,
-                    Country = countries.Single(y => y.CountryId == x.CountryId)
-                })
-            );
+                // Seed Counties From Csv - Linking With Existing Countries
+                Seed(
+                    ReadCsv<County>().Select(x => new County
+                    {
+                        Name = x.Name,
+                        Country = countries.Single(y => y.CountryId == x.CountryId)
+                    })
+                );
+            }
         }
 
         private void Seed<T>(IEnumerable<T> entities) where T : class
@@ -168,7 +182,18 @@ namespace Directory.DataSeed.Services
             Seed(ReadCsv<T>());
         }
 
-        private IEnumerable<T> ReadCsv<T>(string filePath = "")
+        private void WriteConfig(string key, string value)
+        {
+            _db.Configs.FirstOrDefault(x => x.Key == key).Value = value;
+            _db.SaveChanges();
+        }
+
+        private string ReadConfig(string key)
+        {
+            return _db.Configs.FirstOrDefault(x => x.Key == key).Value;
+        }
+
+        private IEnumerable<T> ReadCsv<T>(string filePath = "") where T : class
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -176,7 +201,7 @@ namespace Directory.DataSeed.Services
             }
 
             using (var stream = new StreamReader(filePath))
-            using (var reader = new CsvReader(stream, CultureInfo.InvariantCulture))
+            using (var reader = new CsvReader(stream, _csvConfiguration))
             {
                 return reader.GetRecords<T>().ToList();
             }

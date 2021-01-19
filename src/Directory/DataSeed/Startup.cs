@@ -1,9 +1,6 @@
 using Directory.Data;
-using Entities.Data;
-using Directory.Data.Repositories;
 using Directory.DataSeed.Services;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Directory.Services.Contracts;
@@ -15,6 +12,7 @@ namespace Directory.DataSeed
     public class Startup
     {
         public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -48,15 +46,15 @@ namespace Directory.DataSeed
             services.AddHttpClient();
 
         }
+
         /// <summary>
         /// Configure Startup Services
         /// </summary>
         public static void Configure(HostBuilderContext context, IServiceCollection services)
         {
-            services.AddHostedService<SeedingService>();
-            services.AddSingleton<CountriesWebService>();
             services.AddScoped<IBiobankReadService, BiobankReadService>();
-
+            services.AddSingleton<CountriesWebService>();
+            services.AddHostedService<SeedingService>();
         }
     }
 }
