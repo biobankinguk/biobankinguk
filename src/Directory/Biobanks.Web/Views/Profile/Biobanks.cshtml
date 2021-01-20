@@ -61,15 +61,21 @@
             <tr>
                 <th width="50"></th>
                 <th width="350">Name</th>
-                <th width="250">County</th>
+                @if (App.Config[ConfigKey.ShowCounties] == "true")
+                {
+                    <th width="250">County</th>
+                }
                 <th>Description</th>
 
                 @foreach (var organisation in Model)
                 {
-<tr>
+            <tr>
                 <td></td>
                 <td><a href="@Url.Action("Biobank", "Profile", new { id = @organisation.OrganisationExternalId})">@organisation.Name</a></td>
-                <td>@organisation.County.Name</td>
+                @if (App.Config[ConfigKey.ShowCounties] == "true")
+                {
+                    <td>@organisation.County.Name</td>
+                }
                 <td>@organisation.Description</td>
             </tr>
                 }

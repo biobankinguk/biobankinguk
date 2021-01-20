@@ -11,41 +11,6 @@
 @* Report Header *@
 <h1>TDCC Analytics Report</h1>
 
-@using (Html.BeginForm("Analytics", "Biobank", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
-{
-    <div class="form-group">
-        <label for="Year" class="col-sm-4 control-label required">
-            Year
-        </label>
-        <div class="col-sm-8">
-            @Html.TextBoxFor(x => x.Year, new { @class = "form-control", autocomplete = "off" })
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="EndQuarter" class="col-sm-4 control-label required">
-            End Quarter
-        </label>
-        <div class="col-sm-8">
-            @Html.TextBoxFor(x => x.EndQuarter, new { @class = "form-control", autocomplete = "off" })
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="ReportPeriod" class="col-sm-4 control-label required">
-            Report Period
-        </label>
-        <div class="col-sm-8">
-            @Html.TextBoxFor(x => x.ReportPeriod, new { @class = "form-control", autocomplete = "off" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10 text-center">
-            <button type="submit" class="btn btn-primary">Generate Report</button>
-        </div>
-    </div>
-
-}
-
 <div class="row">
     <div class="col-md-12">
         @if (Model == null || Model.Error.ErrorCode < 0)
@@ -74,7 +39,7 @@
                     }
                     <div class="@(!string.IsNullOrEmpty(Model.Logo) ? "col-sm-10" : "col-sm-12")">
                         <h2>@Model.Name</h2>
-                        <p><i>This report summarises your profile's performance on the UKCRC Tissue Directory</i></p>
+                        <p><i>This report summarises your profile's performance on the UKCRC Tissue Directory over the past <strong>@Model.ReportPeriod</strong> quarters</i></p>
                     </div>
                 </div>
             </div>
@@ -221,7 +186,7 @@
                     <div class="col-sm-6">
                         <br />
                         <h3><strong>Searches Per Quarter</strong></h3>
-                        <p>This graph shows how many times per quarter your samples were viewed as the result of users searching the Tissue Directory and compares your profile's performance with the Tissue Directory average over the past <strong>X</strong> quarters</p>
+                        <p>This graph shows how many times per quarter your samples were viewed as the result of users searching the Tissue Directory and compares your profile's performance with the Tissue Directory average over the past <strong>@Model.ReportPeriod</strong> quarters</p>
                         <br />
                         <div id="plotly-SearchPerQuarter" class="col-sm-10 boxplot"></div>
                     </div>
