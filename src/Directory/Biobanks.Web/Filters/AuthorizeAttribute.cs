@@ -53,7 +53,7 @@ namespace Biobanks
 
             // verify network claim
             var session = httpContext.Session;
-            var activeOrganisationId = (int) session[SessionKeys.ActiveOrganisationId];
+            var activeOrganisationId = Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
             var activeOrganisationType = Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]);
 
 
@@ -86,10 +86,9 @@ namespace Biobanks
 
                 else if (activeOrganisationType == (int) ActiveOrganisationType.Network)
                 {
-                    var networkId = Convert.ToInt32(activeOrganisationId);
 
                     // If they don't have a claim on this biobank, return
-                    if (currentUser.Networks.ContainsKey(networkId))
+                    if (currentUser.Networks.ContainsKey(activeOrganisationId))
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;
@@ -118,17 +117,15 @@ namespace Biobanks
                     break;
                 case BiobanksAuthorizeFailure.BiobankSuspended:
                     var session = filterContext.HttpContext.Session;
-                    var activeOrganisationId = session[SessionKeys.ActiveOrganisationId];
+                    var activeOrganisationId = Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
 
-                    if (activeOrganisationId != null
+                    if (activeOrganisationId != 0
                         && Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) ==
                         (int)ActiveOrganisationType.Biobank)
                     {
-                        var biobankId = Convert.ToInt32(activeOrganisationId);
-
                         var bb =
                             Task.Run(async () =>
-                                    await BiobankReadService.GetBiobankByIdAsync(biobankId))
+                                    await BiobankReadService.GetBiobankByIdAsync(activeOrganisationId))
                                 .Result;
                         filterContext.Result = new BiobankSuspendedResult(bb.Name);
                     }

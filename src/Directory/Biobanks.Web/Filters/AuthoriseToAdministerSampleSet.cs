@@ -16,7 +16,7 @@ namespace Biobanks.Web.Filters
             base.OnAuthorization(filterContext);
 
             var session = filterContext.RequestContext.HttpContext.Session;
-            var activeOrganisationId = (int) session[SessionKeys.ActiveOrganisationId];
+            var activeOrganisationId =  Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
 
             if (Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int) ActiveOrganisationType.Biobank
                 && filterContext.RequestContext.HttpContext.User.ToApplicationUserPrincipal()

@@ -14,7 +14,7 @@ namespace Biobanks.Web.Utilities
             if (Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int) ActiveOrganisationType.Biobank
                 || Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int) ActiveOrganisationType.NewBiobank)
             {
-                return (int) session[SessionKeys.ActiveOrganisationId];
+                return Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
             }
 
             // if no biobankId in session, return 0
@@ -26,7 +26,7 @@ namespace Biobanks.Web.Utilities
             if (Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int) ActiveOrganisationType.Network
                 || Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int) ActiveOrganisationType.NewNetwork)
             {
-                return (int) session[SessionKeys.ActiveOrganisationId];
+                return Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
             }
 
             // if no networkId in session, return 0
