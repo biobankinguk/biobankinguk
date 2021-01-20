@@ -778,6 +778,31 @@ namespace Biobanks.Web.Controllers
 
         #region Reference Datasets
 
+        public ActionResult SetRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
+        {
+            string action;
+            switch (feedback.CRUDAction)
+            {
+                case "add":
+                case "create":
+                    action = "added";
+                    break;
+                case "edit":
+                case "update":
+                    action = "edited";
+                    break;
+                case "delete":
+                    action = "deleted";
+                    break;
+                default:
+                    action = "modified";
+                    break;
+            }
+
+            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been {action} successfully.", FeedbackMessageType.Success);
+            return Redirect(feedback.RedirectUrl);
+        }
+
         #region RefData: Access Conditions
         public async Task<ActionResult> AccessConditions()
         {
@@ -799,40 +824,6 @@ namespace Biobanks.Web.Controllers
             {
                 AccessConditions = models
             });
-        }
-
-
-        public async Task<ActionResult> DeleteAccessCondition(AccessConditionModel model)
-        {
-            if (await _biobankReadService.IsAccessConditionInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AccessConditions");
-            }
-
-            await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
-            {
-                AccessConditionId = model.Id
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The access condition \"{model.Description}\" was deleted successfully.",
-                    FeedbackMessageType.Success);
-
-            return RedirectToAction("AccessConditions");
-        }
-
-        public ActionResult AddAccessConditionSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The access condition \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AccessConditions");
-        }
-
-        public ActionResult EditAccessConditionSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The access condition \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AccessConditions");
         }
         #endregion
 

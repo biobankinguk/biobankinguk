@@ -70,7 +70,6 @@ function AdacAccessConditionViewModel() {
             var ajaxType = 'PUT';
             var url = resourceUrl + '/' + $(e.target.Id).val();
         }
-        var successRedirect = action.toLowerCase() + "-success-redirect";
 
         // Make AJAX Call
         $.ajax({
@@ -82,8 +81,8 @@ function AdacAccessConditionViewModel() {
                 _this.dialogErrors.removeAll();
                 if (data.success) {
                     _this.hideModal();
-                    window.location.href =
-                        form.data(successRedirect) + "?Name=" + data.name;
+                    _this.setFeedback(data.name,
+                        form.data("success-redirect"), form.data("refdata-type"), action.toLowerCase())
                 }
                 else {
                     if (Array.isArray(data.errors)) {
@@ -95,6 +94,18 @@ function AdacAccessConditionViewModel() {
             }
         });
     };
+
+    this.setFeedback = function (name, redirectTo, refdata, action) {
+        // Send Feedback message
+        var url = "/ADAC/SetRefDataSuccessFeedbackAjax";
+        var data = {
+            name: name,
+            redirectUrl: redirectTo,
+            refDataType: refdata,
+            CRUDAction: action,
+        };
+        window.location.href = url + "?" + $.param(data);
+    }
 }
 
 $(function () {
@@ -106,10 +117,32 @@ $(function () {
         e.preventDefault();
 
         var $link = $(this);
+        var linkData = $link.data("access-condition")
+        var url = $link.data("resource-url") + "/" + linkData.Id;
 
-        bootbox.confirm("Are you sure you want to delete " + $link .data("access-condition") + "?",
+        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
             function (confirmation) {
-                confirmation && window.location.assign($link.attr("href"));
+                //confirmation && window.location.assign($link.attr("href"));
+                if (confirmation) {
+                    // Make AJAX Call
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (data, textStatus, xhr) {
+                            if (data.success) {
+                                adacAccessConditionVM.setFeedback(data.name,
+                                    $link.data("success-redirect"), $link.data("refdata-type"), "delete")
+                            }
+                            else {
+                                if (Array.isArray(data.errors)) {
+                                    if (data.errors.length > 0) {
+                                        window.feedbackMessage(data.errors[0], "warning");
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
         );
     });

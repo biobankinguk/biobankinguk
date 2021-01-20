@@ -899,6 +899,7 @@
     <Compile Include="Models\Shared\ConsentRestrictionModel.cs" />
     <Compile Include="Models\Shared\AssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\Shared\CountryModel.cs" />
+    <Compile Include="Models\Shared\RefDataFeedbackModel.cs" />
     <Compile Include="Models\Shared\RegistrationReasonModel.cs" />
     <Compile Include="Models\Shared\ServiceOfferingModel.cs" />
     <Compile Include="Models\Shared\SexModel.cs" />
