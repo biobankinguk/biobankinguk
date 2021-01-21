@@ -215,12 +215,12 @@ namespace Directory.Data.Migrations
                         },
                         new Config
                         {
-                            Key = "site.register.enableregistrationhelpurl",
+                            Key = "site.register.help.show",
                             Value = "false",
                         },
                         new Config
                         {
-                            Key = "site.register.registrationhelpurl",
+                            Key = "site.register.help.url",
                             Value = "https://biobankinguk.org/share/",
                         },
 
