@@ -64,6 +64,16 @@ namespace Directory.Data.Migrations
                             ReadOnly = false
                         },
 
+                        // Enable/Disable Registration Emails
+                        new Config
+                        {
+                            Key = "site.emails.register",
+                            Value = "true",
+                            Name = "Allow registration emails to be sent",
+                            Description = "Enable/Disable whether registration emails are to be sent",
+                            ReadOnly = false
+                        },
+
                         // Show Counties
                         new Config
                         {
