@@ -17,8 +17,9 @@ namespace Biobanks.Web.Filters
 
             var session = filterContext.RequestContext.HttpContext.Session;
             var activeOrganisationId = Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
+            var activeOrganisationType = Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]);
 
-            if (Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) == (int)ActiveOrganisationType.Biobank
+            if  (activeOrganisationType == (int)ActiveOrganisationType.Biobank
                 && filterContext.RequestContext.HttpContext.User.ToApplicationUserPrincipal().Biobanks.ContainsKey(activeOrganisationId))
             {
                 var capabilityId = int.Parse(filterContext.Controller.ValueProvider.GetValue("id").AttemptedValue);

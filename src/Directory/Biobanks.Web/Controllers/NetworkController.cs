@@ -74,7 +74,9 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
                     FeedbackMessageType.Info);
 
-            return Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]) == (int)ActiveOrganisationType.NewNetwork
+            var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
+
+            return activeOrganisationType == (int)ActiveOrganisationType.NewNetwork
                 ? View(await NewNetworkDetailsModelAsync()) //no network id means we're dealing with a request
                 : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network
         }

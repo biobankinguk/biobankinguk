@@ -189,7 +189,9 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
                     FeedbackMessageType.Info);
 
-            return Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]) == (int)ActiveOrganisationType.NewBiobank
+            var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
+
+            return activeOrganisationType == (int)ActiveOrganisationType.NewBiobank
                 ? View(await NewBiobankDetailsModelAsync()) //no biobank id means we're dealing with a request
                 : View(await GetBiobankDetailsModelAsync()); //biobank id means we're dealing with an existing biobank
         }

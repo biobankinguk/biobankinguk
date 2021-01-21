@@ -118,9 +118,9 @@ namespace Biobanks
                 case BiobanksAuthorizeFailure.BiobankSuspended:
                     var session = filterContext.HttpContext.Session;
                     var activeOrganisationId = Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
+                    var activeOrganisationType = Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]);
 
-                    if (activeOrganisationId != 0
-                        && Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) ==
+                    if (activeOrganisationId != 0 && activeOrganisationType ==
                         (int)ActiveOrganisationType.Biobank)
                     {
                         var bb =
