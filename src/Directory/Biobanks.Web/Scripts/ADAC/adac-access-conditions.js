@@ -66,9 +66,11 @@ function AdacAccessConditionViewModel() {
         if (action == 'Add') {
             var ajaxType = 'POST'
             var url = resourceUrl;
+            var feedbackfn = setAddFeedback // fn from adac-refdata-feedback.js
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
             var url = resourceUrl + '/' + $(e.target.Id).val();
+            var feedbackfn = setEditFeedback // fn from adac-refdata-feedback.js
         }
 
         // Make AJAX Call
@@ -81,8 +83,8 @@ function AdacAccessConditionViewModel() {
                 _this.dialogErrors.removeAll();
                 if (data.success) {
                     _this.hideModal();
-                    _this.setFeedback(data.name,
-                        form.data("success-redirect"), form.data("refdata-type"), action.toLowerCase())
+                    feedbackfn(data.name,
+                        form.data("success-redirect"), form.data("refdata-type"))
                 }
                 else {
                     if (Array.isArray(data.errors)) {
@@ -94,18 +96,6 @@ function AdacAccessConditionViewModel() {
             }
         });
     };
-
-    this.setFeedback = function (name, redirectTo, refdata, action) {
-        // Send Feedback message
-        var url = "/ADAC/SetRefDataSuccessFeedbackAjax";
-        var data = {
-            name: name,
-            redirectUrl: redirectTo,
-            refDataType: refdata,
-            CRUDAction: action,
-        };
-        window.location.href = url + "?" + $.param(data);
-    }
 }
 
 $(function () {
@@ -130,8 +120,8 @@ $(function () {
                         type: 'DELETE',
                         success: function (data, textStatus, xhr) {
                             if (data.success) {
-                                adacAccessConditionVM.setFeedback(data.name,
-                                    $link.data("success-redirect"), $link.data("refdata-type"), "delete")
+                                setDeleteFeedback(data.name,
+                                    $link.data("success-redirect"), $link.data("refdata-type"))
                             }
                             else {
                                 if (Array.isArray(data.errors)) {

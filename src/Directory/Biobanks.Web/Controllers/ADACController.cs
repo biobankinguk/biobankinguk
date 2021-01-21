@@ -778,28 +778,19 @@ namespace Biobanks.Web.Controllers
 
         #region Reference Datasets
 
-        public ActionResult SetRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
+        public ActionResult AddRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
         {
-            string action;
-            switch (feedback.CRUDAction)
-            {
-                case "add":
-                case "create":
-                    action = "added";
-                    break;
-                case "edit":
-                case "update":
-                    action = "edited";
-                    break;
-                case "delete":
-                    action = "deleted";
-                    break;
-                default:
-                    action = "modified";
-                    break;
-            }
-
-            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been {action} successfully.", FeedbackMessageType.Success);
+            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been added successfully.", FeedbackMessageType.Success);
+            return Redirect(feedback.RedirectUrl);
+        }
+        public ActionResult EditRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
+        {
+            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been edited successfully.", FeedbackMessageType.Success);
+            return Redirect(feedback.RedirectUrl);
+        }
+        public ActionResult DeleteRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
+        {
+            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been deleted successfully.", FeedbackMessageType.Success);
             return Redirect(feedback.RedirectUrl);
         }
 

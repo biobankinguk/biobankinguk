@@ -248,6 +248,8 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/annual-statistic-group").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-annual-statistic-group.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/refdata-feedback").Include(
+               "~/Scripts/ADAC/adac-refdata-feedback.js"));
 
             // Site Config
             bundles.Add(new ScriptBundle("~/bundles/adac/site-config").Include(
