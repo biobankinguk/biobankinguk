@@ -13,12 +13,6 @@ using Directory.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Services.Contracts;
 using Microsoft.AspNet.Identity;
-using Hangfire.States;
-using System.Security.Cryptography.X509Certificates;
-using System.Drawing.Text;
-using Castle.Core.Internal;
-using System.ComponentModel;
-using Directory.Data.Constants;
 
 namespace Directory.Services
 {
@@ -391,6 +385,21 @@ namespace Directory.Services
             => await _networkRegisterRequestRepository.ListAsync(
                 false,
                 x => x.AcceptedDate == null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
+
+        public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync()
+            //Show all that are accepted but not yet created
+            //filter by no created date, but an existing accepted date
+            => await _organisationRegisterRequestRepository.ListAsync(
+                false,
+                x => x.AcceptedDate != null && x.DeclinedDate == null && x.OrganisationCreatedDate == null);
+
+        public async Task<IEnumerable<NetworkRegisterRequest>> ListAcceptedNetworkRegisterRequestAsync()
+            //Show all that are accepted but not yet created
+            //filter by no created date, but an existing accepted date
+            => await _networkRegisterRequestRepository.ListAsync(
+                false,
+                x => x.AcceptedDate != null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
+
 
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync()
             //Show all that are "closed"
@@ -1485,6 +1494,7 @@ namespace Directory.Services
 
         public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
             => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
+
 
     }
 }

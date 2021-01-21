@@ -15,7 +15,6 @@ namespace Biobanks.Web
             filters.Add(new UserAuthenticateAttribute());
             filters.Add(new BiobanksAuthenticateAttribute());
             filters.Add(new RequireHttpsAttribute());
-            filters.Add(new OrganisationsRoleAttribute());
         }
     }
 }

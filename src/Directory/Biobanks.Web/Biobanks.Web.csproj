@@ -922,7 +922,6 @@
     <Compile Include="Extensions\HttpPostedFilebaseExtensions.cs" />
     <Compile Include="Extensions\IPrincipalExtensions.cs" />
     <Compile Include="Filters\HangfireAuthorisationFilter.cs" />
-    <Compile Include="Filters\OrganisationsRoleAttribute.cs" />
     <Compile Include="Filters\SuspendedWarningAttribute.cs" />
     <Compile Include="Filters\VerifyRecaptchaAttribute.cs" />
     <Compile Include="HtmlHelpers\IsDebugHelper.cs" />
