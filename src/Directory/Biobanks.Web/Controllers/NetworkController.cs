@@ -677,16 +677,13 @@ namespace Biobanks.Web.Controllers
                 {
                     if (trustedBiobanks.Value == "true" && !approved)
                     {
-                        if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
-                        {
-                            //Send notification email to biobank
-                            await _emailService.SendNewBiobankRegistrationNotification(
-                                biobank.ContactEmail,
-                                model.BiobankName,
-                                network.Name,
-                                Url.Action("NetworkAcceptance", "Biobank", null, Request.Url.Scheme)
-                                    );
-                        }
+                        //Send notification email to biobank
+                        await _emailService.SendNewBiobankRegistrationNotification(
+                            biobank.ContactEmail,
+                            model.BiobankName,
+                            network.Name,
+                            Url.Action("NetworkAcceptance", "Biobank", null, Request.Url.Scheme)
+                                );
                     }
                    
                     //send back to the Biobanks list, with feedback

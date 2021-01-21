@@ -67,7 +67,7 @@ namespace Directory.Data.Migrations
                         // Enable/Disable Registration Emails
                         new Config
                         {
-                            Key = "site.emails.register",
+                            Key = "site.email.registration",
                             Value = "true",
                             Name = "Allow registration emails to be sent",
                             Description = "Enable/Disable whether registration emails are to be sent",
