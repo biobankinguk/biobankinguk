@@ -179,7 +179,9 @@ namespace Directory.Services.Contracts
         Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdAsync(int networkId);
         Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdForIndexingAsync(int networkId);
         Task<IEnumerable<Network>> ListNetworksAsync();
+        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync();
         Task<IEnumerable<OrganisationRegisterRequest>> ListOpenBiobankRegisterRequestsAsync();
+        Task<IEnumerable<NetworkRegisterRequest>> ListAcceptedNetworkRegisterRequestAsync();
         Task<IEnumerable<NetworkRegisterRequest>> ListOpenNetworkRegisterRequestsAsync();
 
         Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync();
