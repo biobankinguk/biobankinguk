@@ -54,11 +54,11 @@
 
                             <a title="Delete"
                                class="action-icon delete-confirm"
-                               data-annual-statistic-group="&quot;@asg.Name&quot;"
-                               href="@Url.Action("DeleteAnnualStatisticGroup", new
-                                     {
-                                         asg.AnnualStatisticGroupId, asg.Name
-                                     })">
+                               data-annual-statistic-group="@Json.Encode(asg)"
+                               data-resource-url="/api/AnnualStatisticGroup"
+                               data-success-redirect="@Url.Action("AnnualStatisticGroups")"
+                               data-refdata-type="Annual Statistic Group"
+                               href="#">
                                 <span class="fa fa-trash labelled-icon"></span>Delete
                             </a>
                         }
@@ -94,8 +94,8 @@
 
             <form id="modal-annual-statistic-group-form"
                   data-resource-url="/api/AnnualStatisticGroup"
-                  data-update-success-redirect="@Url.Action("EditAnnualStatisticGroupSuccess")"
-                  data-add-success-redirect="@Url.Action("AddAnnualStatisticGroupSuccess")"
+                  data-success-redirect="@Url.Action("AnnualStatisticGroups")"
+				  data-refdata-type="Annual Statistic Group"
                   class="form-horizontal">
 
                 <div class="modal-body">
