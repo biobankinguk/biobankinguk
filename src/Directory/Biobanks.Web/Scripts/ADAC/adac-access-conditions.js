@@ -66,11 +66,11 @@ function AdacAccessConditionViewModel() {
         if (action == 'Add') {
             var ajaxType = 'POST'
             var url = resourceUrl;
-            var feedbackfn = setAddFeedback // fn from adac-refdata-feedback.js
+            var feedbackfn = setAddFeedback // cf. adac-refdata-feedback.js
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
             var url = resourceUrl + '/' + $(e.target.Id).val();
-            var feedbackfn = setEditFeedback // fn from adac-refdata-feedback.js
+            var feedbackfn = setEditFeedback // cf. adac-refdata-feedback.js
         }
 
         // Make AJAX Call
@@ -112,7 +112,6 @@ $(function () {
 
         bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
             function (confirmation) {
-                //confirmation && window.location.assign($link.attr("href"));
                 if (confirmation) {
                     // Make AJAX Call
                     $.ajax({
