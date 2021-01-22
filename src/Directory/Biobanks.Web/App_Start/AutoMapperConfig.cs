@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Biobanks.Entities.Data;
-using Directory.Search.Dto.Results;
+using Biobanks.Search.Dto.Results;
 using Directory.Services.Dto;
 using Biobanks.Web.AutoMapper;
 using Biobanks.Web.Models.ADAC;

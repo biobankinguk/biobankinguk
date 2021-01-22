@@ -12,7 +12,7 @@ using Directory.Data.Repositories;
 using Biobanks.Identity.Services;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
-using Directory.Search.Legacy;
+using Biobanks.Search.Legacy;
 using Directory.Services;
 using Directory.Services.Contracts;
 using Castle.MicroKernel.Registration;
@@ -21,8 +21,8 @@ using Castle.Windsor;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataProtection;
-using Directory.Search.Contracts;
-using Directory.Search.Elastic;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Elastic;
 using System.Web.Http;
 
 namespace Biobanks.Web.Windsor

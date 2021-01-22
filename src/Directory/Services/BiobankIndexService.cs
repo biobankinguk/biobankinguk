@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Search.Legacy;
+using Biobanks.Search.Legacy;
 using Directory.Services.Extensions;
 using Directory.Services.Contracts;
 using Castle.Core.Internal;
 using Hangfire;
 using Newtonsoft.Json;
-using Directory.Search.Dto.PartialDocuments;
-using Directory.Search.Dto.Documents;
+using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Search.Dto.Documents;
 using System.Configuration;
 using System.Net.Http;
 

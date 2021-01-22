@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Search.Contracts;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Documents;
-using Directory.Search.Dto.Results;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 using Elasticsearch.Net;
 using Nest;
-using DirectorySearchResult = Directory.Search.Dto.Results.Result;
-using Directory.Search.Constants;
+using DirectorySearchResult = Biobanks.Search.Dto.Results.Result;
+using Result = Biobanks.Search.Dto.Results.Result;
 
-namespace Directory.Search.Elastic
+namespace Biobanks.Search.Elastic
 {
     // TODO major renaming work
     // biobank -> organisation
@@ -73,7 +74,7 @@ namespace Directory.Search.Elastic
         }
 
         /// <inheritdoc />
-        public DirectorySearchResult Search(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+        public Result Search(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
         {
             var searchResult =
                 _client.Search<CollectionDocument>(
@@ -93,7 +94,7 @@ namespace Directory.Search.Elastic
 
             var facets = searchFacets.Where(x => x.Name != "consentRestrictions").Append(consentFacet);
 
-            return new DirectorySearchResult
+            return new Result
             {
                 Biobanks = biobanks,
                 Facets = facets

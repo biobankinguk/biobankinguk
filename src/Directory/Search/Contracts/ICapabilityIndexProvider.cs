@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Search.Dto.PartialDocuments;
-using Directory.Search.Dto.Documents;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.PartialDocuments;
 
-namespace Directory.Search.Contracts
+namespace Biobanks.Search.Contracts
 {
     public interface ICapabilityIndexProvider
     {

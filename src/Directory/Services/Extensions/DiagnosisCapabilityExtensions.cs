@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Directory.Search.Dto.Documents;
+using Biobanks.Search.Dto.Documents;
 using Newtonsoft.Json;
 
 namespace Directory.Services.Extensions

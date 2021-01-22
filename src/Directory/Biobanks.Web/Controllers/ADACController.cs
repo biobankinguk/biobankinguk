@@ -9,7 +9,7 @@ using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
-using Directory.Search.Legacy;
+using Biobanks.Search.Legacy;
 using Biobanks.Identity.Constants;
 using Directory.Services.Contracts;
 using Biobanks.Web.Extensions;

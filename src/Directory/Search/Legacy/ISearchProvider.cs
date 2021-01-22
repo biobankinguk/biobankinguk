@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Results;
-using Directory.Search.Constants;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 
-namespace Directory.Search.Legacy
+namespace Biobanks.Search.Legacy
 {
     // TODO: This is a legacy contract for bridging to the old index service code
     // It should be thrown away when the services are rewritten

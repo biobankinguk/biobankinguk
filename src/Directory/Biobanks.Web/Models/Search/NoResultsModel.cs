@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Directory.Search.Constants;
+using Biobanks.Search.Constants;
 using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Models.Search

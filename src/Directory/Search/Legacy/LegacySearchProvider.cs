@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Search.Contracts;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Results;
-using Directory.Search.Constants;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 
-namespace Directory.Search.Legacy
+namespace Biobanks.Search.Legacy
 {
     public class LegacySearchProvider : ISearchProvider
     {

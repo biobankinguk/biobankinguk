@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Documents;
-using Directory.Search.Constants;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.Facets;
 using Nest;
 using Newtonsoft.Json;
 
-namespace Directory.Search.Elastic
+namespace Biobanks.Search.Elastic
 {
     public abstract class BaseElasticSearchProvider
     {

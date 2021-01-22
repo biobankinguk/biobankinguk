@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Identity.Data.Entities;
 using Directory.Services.Dto;
-using Directory.Search.Constants;
+using Biobanks.Search.Constants;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
