@@ -1,6 +1,6 @@
-using Directory.Identity.Contracts;
-using Directory.Identity.Constants;
-using Directory.Identity.Data.Entities;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Constants;
+using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity;
 using Postal;
 using System.Collections.Generic;

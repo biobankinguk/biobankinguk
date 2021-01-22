@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Biobanks.Identity.Data.Entities;
 using Directory.Data.Caching;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
-using Directory.Identity.Data.Entities;
 
-namespace Directory.Identity.Services
+namespace Biobanks.Identity.Services
 {
     public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {

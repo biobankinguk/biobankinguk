@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Biobanks.Entities.Data;
-using Directory.Identity.Constants;
+using Biobanks.Identity.Constants;
 using Directory.Services.Contracts;
 using Biobanks.Web.Models.Profile;
 using Biobanks.Web.Models.Shared;

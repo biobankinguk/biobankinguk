@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Identity.Data.Entities;
+using Biobanks.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Search.Constants;
 using Biobanks.Entities.Data;
