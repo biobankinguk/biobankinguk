@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Directory.Services.Contracts
+namespace Biobanks.Directory.Services.Contracts
 {
     public interface IEmailService
     {

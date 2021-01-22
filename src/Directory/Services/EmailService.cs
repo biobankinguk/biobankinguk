@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Configuration;
 
-namespace Directory.Services
+namespace Biobanks.Directory.Services
 {
     public class EmailService : Contracts.IEmailService
     {

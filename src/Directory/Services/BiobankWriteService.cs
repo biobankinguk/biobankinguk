@@ -5,15 +5,15 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using Directory.Data.Repositories;
-using Directory.Services.Dto;
-using Directory.Services.Contracts;
 using System.IO;
 using AutoMapper;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Directory.Services
+namespace Biobanks.Directory.Services
 {
     public class BiobankWriteService : IBiobankWriteService
     {

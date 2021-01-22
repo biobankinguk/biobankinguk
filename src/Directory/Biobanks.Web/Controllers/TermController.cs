@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.Search;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Directory.Data.Constants;
 

@@ -2,11 +2,11 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Directory.Data.Repositories;
-using Directory.Services.Contracts;
 
-namespace Directory.Services
+namespace Biobanks.Directory.Services
 {
     public class SqlServerLogoStorageProvider : ILogoStorageProvider
     {

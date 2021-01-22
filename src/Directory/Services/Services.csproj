@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Directory.Services</RootNamespace>
+    <RootNamespace>Biobanks.Directory.Services</RootNamespace>
     <AssemblyName>Biobanks.Directory.Services</AssemblyName>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>

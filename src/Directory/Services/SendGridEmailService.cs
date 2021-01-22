@@ -12,7 +12,7 @@ using System;
 using System.Diagnostics;
 using System.Configuration;
 
-namespace Directory.Services
+namespace Biobanks.Directory.Services
 {
     public class SendGridEmailService : Contracts.IEmailService
     {

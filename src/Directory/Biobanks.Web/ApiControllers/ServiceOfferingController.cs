@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;

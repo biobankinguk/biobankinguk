@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {

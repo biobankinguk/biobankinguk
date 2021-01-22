@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Directory.Services
+namespace Biobanks.Directory.Services
 {
     // General helpers for working with images
     public static class ImageService

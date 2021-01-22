@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Search.Legacy;
-using Directory.Services.Extensions;
-using Directory.Services.Contracts;
 using Castle.Core.Internal;
 using Hangfire;
 using Newtonsoft.Json;
@@ -12,8 +10,10 @@ using Biobanks.Search.Dto.PartialDocuments;
 using Biobanks.Search.Dto.Documents;
 using System.Configuration;
 using System.Net.Http;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services.Extensions;
 
-namespace Directory.Services
+namespace Biobanks.Directory.Services
 {
     public class BiobankIndexService : IBiobankIndexService
     {

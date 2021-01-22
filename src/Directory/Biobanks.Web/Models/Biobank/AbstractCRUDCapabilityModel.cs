@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using DataAnnotationsExtensions;
 
 namespace Biobanks.Web.Models.Biobank

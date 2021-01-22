@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Models.Biobank
 {

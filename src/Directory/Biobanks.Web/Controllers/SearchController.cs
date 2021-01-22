@@ -7,7 +7,7 @@ using AutoMapper;
 using Biobanks.Search.Legacy;
 using Biobanks.Search.Dto.Facets;
 using Biobanks.Search.Constants;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Models.Search;
 using Biobanks.Web.Models.Shared;
 using Microsoft.Ajax.Utilities;

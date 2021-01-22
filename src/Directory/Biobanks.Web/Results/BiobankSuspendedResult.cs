@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Biobanks.Entities.Data;
-using Directory.Services;
+using Biobanks.Directory.Services;
 
 namespace Biobanks.Web.Results
 {

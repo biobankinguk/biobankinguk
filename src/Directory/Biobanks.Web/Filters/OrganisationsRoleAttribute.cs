@@ -1,6 +1,6 @@
 using System;
 using System.Web.Mvc;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using StackExchange.Profiling;

@@ -2,7 +2,7 @@ using Biobanks.Entities.Data;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Directory.Services.Contracts
+namespace Biobanks.Directory.Services.Contracts
 {
     public interface ILogoStorageProvider
     {

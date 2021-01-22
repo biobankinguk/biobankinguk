@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using Biobanks.Entities.Data;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;

@@ -3,7 +3,7 @@ using System.Linq;
 using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Search.Dto.Results;
-using Directory.Services.Dto;
+using Biobanks.Directory.Services.Dto;
 using Biobanks.Web.AutoMapper;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Biobank;

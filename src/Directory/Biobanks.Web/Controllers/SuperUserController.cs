@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Biobanks.Search.Legacy;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Models.SuperUser;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Filters;

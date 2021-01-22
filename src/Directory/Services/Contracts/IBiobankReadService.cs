@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Directory.Services.Dto;
 using Biobanks.Identity.Data.Entities;
-using Directory.Services.Dto;
 using Biobanks.Search.Constants;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Directory.Services.Contracts
+namespace Biobanks.Directory.Services.Contracts
 {
     public interface IBiobankReadService
     {
