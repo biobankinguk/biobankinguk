@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Directory.Identity.Contracts;
 using Directory.Identity.Data.Entities;
 using Directory.Search.Legacy;
@@ -30,8 +30,9 @@ using Hangfire.States;
 using System.Net.Http;
 using System.Configuration;
 using Newtonsoft.Json.Linq;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {

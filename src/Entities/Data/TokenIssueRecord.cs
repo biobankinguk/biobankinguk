@@ -1,6 +1,6 @@
 using System;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data
 {
     public class TokenIssueRecord
     {

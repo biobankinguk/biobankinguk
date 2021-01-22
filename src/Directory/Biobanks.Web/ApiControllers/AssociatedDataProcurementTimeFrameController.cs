@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
 using Directory.Services.Contracts;
 using System.Linq;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {

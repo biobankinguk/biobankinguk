@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Biobanks.Entities.Data.ReferenceData;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data
 {
     public class CapabilityAssociatedData
     {

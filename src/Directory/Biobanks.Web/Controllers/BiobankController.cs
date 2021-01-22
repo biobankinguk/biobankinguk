@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Directory.Identity.Data.Entities;
 using Directory.Identity.Contracts;
 using Directory.Identity.Constants;
@@ -24,6 +24,7 @@ using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
 using System.Net.Http;
+using Biobanks.Entities.Data.ReferenceData;
 using Directory.Data.Constants;
 using static System.String;
 

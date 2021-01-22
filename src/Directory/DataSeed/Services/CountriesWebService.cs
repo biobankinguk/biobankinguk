@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.IO;
 using Newtonsoft.Json;
 using Directory.DataSeed.Dto;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Directory.Data.Constants;
 using Directory.Services.Contracts;
 

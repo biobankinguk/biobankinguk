@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class AnnualStatisticGroup
     {

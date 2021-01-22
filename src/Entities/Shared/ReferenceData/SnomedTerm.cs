@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Entities.Shared.ReferenceData
+namespace Biobanks.Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Represents a term from the SNOMED list.

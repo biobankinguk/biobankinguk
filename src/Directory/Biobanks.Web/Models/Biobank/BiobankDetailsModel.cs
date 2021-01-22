@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
-using Entities.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Models.Biobank

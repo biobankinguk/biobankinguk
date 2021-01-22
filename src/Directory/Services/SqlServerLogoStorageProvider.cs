@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Directory.Data.Repositories;
 using Directory.Services.Contracts;
 

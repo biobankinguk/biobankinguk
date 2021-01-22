@@ -1,8 +1,9 @@
 using System.Data.Entity;
-using Entities.Api;
-using Entities.Api.ReferenceData;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Api;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Directory.Data
 {

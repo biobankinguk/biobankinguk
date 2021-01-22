@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class AssociatedDataTypeGroup
     {

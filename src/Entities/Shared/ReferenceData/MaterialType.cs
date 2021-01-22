@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Shared.ReferenceData
+namespace Biobanks.Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Material Type terms.

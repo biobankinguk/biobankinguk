@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
+
 namespace Biobanks.Web.ApiControllers
 {
     [RoutePrefix("api/AssociatedDataTypeGroup")]

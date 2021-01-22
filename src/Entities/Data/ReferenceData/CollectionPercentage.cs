@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class CollectionPercentage
     {

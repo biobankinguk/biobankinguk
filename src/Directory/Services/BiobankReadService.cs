@@ -12,8 +12,9 @@ using Directory.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Services.Contracts;
 using Microsoft.AspNet.Identity;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Directory.Services
 {

@@ -9,8 +9,9 @@ using Directory.Services.Dto;
 using Directory.Services.Contracts;
 using System.IO;
 using AutoMapper;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Directory.Services
 {

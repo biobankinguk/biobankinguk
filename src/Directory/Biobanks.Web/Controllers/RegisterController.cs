@@ -2,7 +2,7 @@ using System;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Directory.Identity.Contracts;
 using Directory.Identity.Data.Entities;
 using Directory.Services.Contracts;

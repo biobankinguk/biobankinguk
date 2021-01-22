@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using Directory.Identity.Data.Entities;
 using Directory.Services.Dto;
 using Directory.Search.Constants;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Directory.Services.Contracts
 {

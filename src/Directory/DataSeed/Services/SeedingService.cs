@@ -6,15 +6,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Directory.Data;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
 using Directory.DataSeed.Services;
 using System.Security.Cryptography.X509Certificates;
+using Biobanks.Entities.Data.ReferenceData;
 using Directory.DataSeed.Dto;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Directory.DataSeed.Services
 {

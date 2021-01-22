@@ -250,7 +250,7 @@
       "Biobanks.Directory.Data": {
         "type": "Project",
         "dependencies": {
-          "Entities": "1.0.0",
+          "Biobanks.Entities": "1.0.0",
           "EntityFramework": "6.4.4",
           "Newtonsoft.Json": "12.0.3",
           "System.Runtime.Caching": "4.7.0"
@@ -276,7 +276,7 @@
           "Newtonsoft.Json": "12.0.3"
         }
       },
-      "entities": {
+      "Biobanks.Entities": {
         "type": "Project",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",

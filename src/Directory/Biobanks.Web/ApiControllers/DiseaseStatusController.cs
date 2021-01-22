@@ -5,7 +5,7 @@ using System.Web.Http;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {

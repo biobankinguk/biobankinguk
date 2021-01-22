@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Entities</RootNamespace>
+    <RootNamespace>Biobanks.Entities</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>Biobanks.Entities</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

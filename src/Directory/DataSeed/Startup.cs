@@ -1,5 +1,5 @@
 using Directory.Data;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Directory.Data.Repositories;
 using Directory.DataSeed.Services;
 using Microsoft.Extensions.Configuration;

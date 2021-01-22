@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Entities.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Directory.Search.Dto.Documents;
 using Newtonsoft.Json;
 
