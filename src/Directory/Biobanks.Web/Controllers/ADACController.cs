@@ -2527,6 +2527,8 @@ namespace Biobanks.Web.Controllers
                 BiobankDescription = Config.Get(ConfigKey.RegisterBiobankDescription, ""),
                 NetworkTitle = Config.Get(ConfigKey.RegisterNetworkTitle, ""),
                 NetworkDescription = Config.Get(ConfigKey.RegisterNetworkDescription, ""),
+                EnableRegistrationHelpUrl = Config.Get(ConfigKey.EnableRegisterRegistrationHelpUrl, ""),
+                RegistrationHelpUrl = Config.Get(ConfigKey.RegisterRegistrationHelpUrl, "")
             });
         }
 
@@ -2541,6 +2543,8 @@ namespace Biobanks.Web.Controllers
                     new Config { Key = ConfigKey.RegisterBiobankDescription, Value = registerConfigModel.BiobankDescription ?? "" },
                     new Config { Key = ConfigKey.RegisterNetworkTitle, Value = registerConfigModel.NetworkTitle ?? ""},
                     new Config { Key = ConfigKey.RegisterNetworkDescription, Value = registerConfigModel.NetworkDescription ?? "" },
+                    new Config { Key = ConfigKey.EnableRegisterRegistrationHelpUrl, Value = registerConfigModel.EnableRegistrationHelpUrl ?? "" },
+                    new Config { Key = ConfigKey.RegisterRegistrationHelpUrl, Value = registerConfigModel.RegistrationHelpUrl ?? "" }
                 }
             );
 
