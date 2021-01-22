@@ -12,6 +12,7 @@ namespace PublicationsAzureFunctions
 {
     public class BatchFunction
     {
+        
         private FetchPublicationsService _fetchPublicationsService;
         private readonly CancellationToken cancellationToken;
 
@@ -32,5 +33,6 @@ namespace PublicationsAzureFunctions
 
             log.LogInformation($"C# Timer trigger function executed successfully");
         }
+        
     }
 }
