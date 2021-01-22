@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Linq;
 using Publications.Services.Contracts;
 using Microsoft.Extensions.Configuration;
+using Publications.Services.Dto;
 
 namespace Publications
 {
@@ -28,7 +29,12 @@ namespace Publications
 
         public async Task<PublicationDto> GetPublicationById(int publicationId)
         {
-            return (await Search($"{publicationId}")).Publications.FirstOrDefault();
+            return (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
+        }
+
+        public async Task<AnnotationResult> GetAnnotationsByIdAndSource(int publicationId, string source)
+        {
+            return (await AnnotationSearch(publicationId, source)).FirstOrDefault();
         }
 
         public async Task<List<PublicationDto>> GetOrganisationPublications(string biobank)
@@ -42,7 +48,7 @@ namespace Publications
             //API Pagination loop - will stop once current cursor and next cursor are equal (no more records)
             do
             {
-                var result = await Search(query, nextCursor);
+                var result = await PublicationSearch(query, nextCursor);
 
                 // Collect publications from paged result
                 publications.AddRange(result.Publications);
@@ -56,7 +62,7 @@ namespace Publications
             return publications;
         }
 
-        private async Task<EpmcSearchResult> Search(string query, string cursorMark="*")
+        private async Task<EpmcSearchResult> PublicationSearch(string query, string cursorMark="*")
         {
             // Parse query parameters
             var parameters = new Dictionary<string, string>()
@@ -73,6 +79,24 @@ namespace Publications
             
             // Parse JSON result
             var result = JsonConvert.DeserializeObject<EpmcSearchResult>(response);
+
+            return result;
+        }
+
+        private async Task<List<AnnotationResult>> AnnotationSearch(int publicationId, string source)
+        {
+            // Parse query parameters
+            var parameters = new Dictionary<string, string>()
+                {
+                    { "articleIds", $"{source}:{publicationId}" },
+                    { "format", "JSON" }
+                };
+
+            string endpoint = QueryHelpers.AddQueryString("annotations_api/annotationsByArticleIds", parameters);
+            string response = await _client.GetStringAsync(endpoint);
+
+            // Parse JSON result
+            var result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
 
             return result;
         }
