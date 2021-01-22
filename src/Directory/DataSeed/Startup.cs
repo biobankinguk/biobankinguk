@@ -1,6 +1,6 @@
-using Directory.Data;
+using Biobanks.Directory.Data;
 using Biobanks.Entities.Data;
-using Directory.Data.Repositories;
+using Biobanks.Directory.Data.Repositories;
 using Directory.DataSeed.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;

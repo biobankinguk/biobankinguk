@@ -11,7 +11,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Directory.DataSeed.Dto;
 using Biobanks.Entities.Data;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Services.Contracts;
 
 namespace Directory.DataSeed.Services

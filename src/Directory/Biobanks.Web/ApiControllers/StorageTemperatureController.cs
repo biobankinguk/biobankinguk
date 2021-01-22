@@ -6,7 +6,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers

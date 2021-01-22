@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
-using Directory.Data.Repositories;
+using Biobanks.Directory.Data.Repositories;
 
 namespace Biobanks.Directory.Services
 {

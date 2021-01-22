@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Directory.Data</RootNamespace>
+    <RootNamespace>Biobanks.Directory.Data</RootNamespace>
     <AssemblyName>Biobanks.Directory.Data</AssemblyName>
     <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>

@@ -6,7 +6,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {

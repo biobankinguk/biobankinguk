@@ -8,7 +8,7 @@ using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Models.Profile;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {

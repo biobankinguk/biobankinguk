@@ -6,7 +6,7 @@ using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.Search;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Extensions;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {

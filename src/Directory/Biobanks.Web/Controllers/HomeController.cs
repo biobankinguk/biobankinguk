@@ -10,7 +10,7 @@ using Biobanks.Web.Models.Home;
 using Biobanks.Web.Extensions;
 using Newtonsoft.Json;
 using Biobanks.Web.Utilities;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {

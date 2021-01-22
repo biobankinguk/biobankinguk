@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Directory.Data;
+using Biobanks.Directory.Data;
 using Biobanks.Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;

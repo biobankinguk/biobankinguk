@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Biobanks.Identity.Data.Entities;
-using Directory.Data.Caching;
+using Biobanks.Directory.Data.Caching;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;

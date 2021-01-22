@@ -1,4 +1,4 @@
-﻿namespace Directory.Data.Migrations
+﻿namespace Biobanks.Directory.Data.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;

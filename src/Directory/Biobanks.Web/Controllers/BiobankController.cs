@@ -13,7 +13,7 @@ using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Constants;
 using Biobanks.Directory.Services;
 using Biobanks.Directory.Services.Dto;
-using Directory.Data.Transforms.Url;
+using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
@@ -25,7 +25,7 @@ using MvcSiteMapProvider;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Biobanks.Entities.Data.ReferenceData;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 using static System.String;
 
 namespace Biobanks.Web.Controllers

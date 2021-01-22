@@ -5,7 +5,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Directory.Data
+namespace Biobanks.Directory.Data
 {
     public class BiobanksDbContext : DbContext
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Directory.Data.Constants
+namespace Biobanks.Directory.Data.Constants
 {
     public static class ConfigKey
     {

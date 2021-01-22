@@ -11,7 +11,7 @@ using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Constants;
 using Biobanks.Directory.Services;
 using Biobanks.Web.Models.Network;
-using Directory.Data.Transforms.Url;
+using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
@@ -22,7 +22,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Directory.Services.Dto;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {

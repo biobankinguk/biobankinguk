@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Data.Repositories;
+using Biobanks.Directory.Data.Repositories;
 using System.IO;
 using AutoMapper;
 using Biobanks.Directory.Services.Contracts;
