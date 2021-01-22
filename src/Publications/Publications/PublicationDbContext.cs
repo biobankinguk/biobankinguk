@@ -20,5 +20,19 @@ namespace Publications
         public DbSet<Publication> Publications { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<Annotation> Annotations { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PublicationAnnotation>()
+                .HasKey(bc => new { bc.PublicationId, bc.AnnotationId });
+            modelBuilder.Entity<PublicationAnnotation>()
+                .HasOne(bc => bc.Publication)
+                .WithMany(b => b.PublicationAnnotations)
+                .HasForeignKey(bc => bc.PublicationId);
+            modelBuilder.Entity<PublicationAnnotation>()
+                .HasOne(bc => bc.Annotation)
+                .WithMany(c => c.PublicationAnnotations)
+                .HasForeignKey(bc => bc.AnnotationId);
+        }
     }
 }

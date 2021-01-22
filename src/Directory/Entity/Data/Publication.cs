@@ -30,7 +30,7 @@ namespace Directory.Entity.Data
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
 
-        public List<Annotation> Annotations { get; set; }
+        public virtual ICollection<Annotation> Annotations { get; set; }
     
     }
 }

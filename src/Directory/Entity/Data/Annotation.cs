@@ -14,6 +14,6 @@ namespace Directory.Entity.Data
 
         public string Uri { get; set; }
 
-        public List<Publication> Publications { get; set; }
+        public virtual ICollection<Publication> Publications { get; set; }
     }
 }

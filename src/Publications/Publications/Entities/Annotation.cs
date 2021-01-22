@@ -12,6 +12,6 @@ namespace Publications.Entities
 
         public string Uri { get; set; }
 
-        public List<Publication> Publications { get; set; }
+        public virtual ICollection<PublicationAnnotation> PublicationAnnotations { get; set; }
     }
 }

@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddAnnotationsEntity : DbMigration
+    public partial class AddAnnotationEntity : DbMigration
     {
         public override void Up()
         {
