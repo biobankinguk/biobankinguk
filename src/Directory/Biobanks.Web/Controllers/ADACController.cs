@@ -1156,48 +1156,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteConsentRestriction(Models.Shared.ConsentRestrictionModel model)
-        {
-            if (await _biobankReadService.IsConsentRestrictionInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The consent restriction \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("ConsentRestriction");
-            }
-
-            await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
-            {
-                ConsentRestrictionId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The consent restriction \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ConsentRestriction");
-        }
-
-        public ActionResult EditConsentRestrictionSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The consent restriction \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ConsentRestriction");
-        }
-
-        public ActionResult AddConsentRestrictionSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The consent restriction \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ConsentRestriction");
-        }
         #endregion
 
         #region RefData: Collection Status
