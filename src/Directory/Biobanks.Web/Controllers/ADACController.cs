@@ -1266,48 +1266,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public ActionResult AddCountrySuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The country \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Country");
-        }
-
-        public ActionResult EditCountrySuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The country \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Country");
-        }
-
-        public async Task<ActionResult> DeleteCountry(Models.Shared.CountryModel model)
-        {
-            if (await _biobankReadService.IsCountryInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The country \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("Country");
-            }
-
-            await _biobankWriteService.DeleteCountryAsync(new Country
-            {
-                CountryId = model.Id,
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The country \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Country");
-        }
         #endregion
 
         #region RefData: County
