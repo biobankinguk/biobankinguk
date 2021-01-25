@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Entities.Api;
-using Entities.Api.ReferenceData;
+﻿using Biobanks.Entities.Api;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 
 // Legacy Entities Used To Support EF 3.1
 using LiveSample = LegacyData.Entities.LiveSample;
@@ -8,7 +9,6 @@ using StagedSample = LegacyData.Entities.StagedSample;
 using MaterialType = LegacyData.Entities.MaterialType;
 using MaterialTypeGroup = LegacyData.Entities.MaterialTypeGroup;
 using MaterialTypeMaterialTypeGroup = LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
-using Entities.Shared.ReferenceData;
 
 namespace LegacyData
 {
