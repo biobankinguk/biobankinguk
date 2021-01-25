@@ -1133,49 +1133,6 @@ namespace Biobanks.Web.Controllers
                     .ToList()
             });
         }
-        public async Task<ActionResult> DeleteAssociatedDataTypeGroup(AssociatedDataTypeGroupModel model)
-        {
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(model.AssociatedDataTypeGroupId))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data type group \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AssociatedDataTypeGroups");
-            }
-
-            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new Directory.Entity.Data.AssociatedDataTypeGroup
-            {
-                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data type group \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypeGroups");
-        }
-       
-        public ActionResult AddAssociatedDataTypeGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type group \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypeGroups");
-        }
-
-  
-        public ActionResult EditAssociatedDataTypeGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type group \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypeGroups");
-        }
 
         #endregion
 
