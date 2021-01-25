@@ -976,39 +976,6 @@ namespace Biobanks.Web.Controllers
             }
         }
 
-        public async Task<ActionResult> DeleteCollectionPercentage(CollectionPercentageModel model)
-        {
-            if (await _biobankReadService.IsCollectionPercentageInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The collection percentage \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionPercentage");
-            }
-
-            await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
-            {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = 0,
-                UpperBound = 1
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The collection percentage  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPercentages");
-        }
-
-        public ActionResult AddCollectionPercentageSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection percentage \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPercentages");
-        }
-
-        public ActionResult EditCollectionPercentageSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection percentage \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPercentages");
-        }
         #endregion
 
         #region RefData: Collection Points
