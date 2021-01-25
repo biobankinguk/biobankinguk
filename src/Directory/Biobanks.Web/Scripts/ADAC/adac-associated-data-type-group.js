@@ -66,7 +66,6 @@ function AdacAssociatedDataTypeGroupViewModel() {
             var url = resourceUrl + '/' + $(e.target.AssociatedDataTypeGroupId).val();
             var feedbackfn = setEditFeedback // cf. adac-refdata-feedback.js
         }
-        var successRedirect = action.toLowerCase() + "-success-redirect";
 
         // Make AJAX Call
         $.ajax({
@@ -78,8 +77,8 @@ function AdacAssociatedDataTypeGroupViewModel() {
                 _this.dialogErrors.removeAll();
                 if (data.success) {
                     _this.hideModal();
-                    window.location.href =
-                        form.data(successRedirect) + "?Name=" + data.name;
+                    feedbackfn(data.name,
+                        form.data("success-redirect"), form.data("refdata-type"))
                 }
                 else {
                     if (Array.isArray(data.errors)) {

@@ -68,7 +68,6 @@ function AdacAssociatedDataProcurementTimeFrameViewModel() {
             var url = resourceUrl + '/' + $(e.target.Id).val();
             var feedbackfn = setEditFeedback // cf. adac-refdata-feedback.js
         }
-        var successRedirect = action.toLowerCase() + "-success-redirect";
 
         // Make AJAX Call
         $.ajax({
