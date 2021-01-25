@@ -1026,42 +1026,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteDonorCount(DonorCountModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
-
-            if (await _biobankReadService.IsDonorCountInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("DonorCount");
-            }
-
-            await _biobankWriteService.DeleteDonorCountAsync(new DonorCount
-            {
-                DonorCountId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = 0,
-                UpperBound = 1
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("DonorCounts");
-        }
-
-        public ActionResult AddDonorCountSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("DonorCounts");
-        }
-
-        public ActionResult EditDonorCountSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("DonorCounts");
-        }
         #endregion
 
         #region RefData: Collection Type
