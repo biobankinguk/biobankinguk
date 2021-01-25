@@ -60,9 +60,11 @@ function AdacAssociatedDataTypeGroupViewModel() {
         if (action == 'Add') {
             var ajaxType = 'POST'
             var url = resourceUrl;
+            var feedbackfn = setAddFeedback // cf. adac-refdata-feedback.js
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
             var url = resourceUrl + '/' + $(e.target.AssociatedDataTypeGroupId).val();
+            var feedbackfn = setEditFeedback // cf. adac-refdata-feedback.js
         }
         var successRedirect = action.toLowerCase() + "-success-redirect";
 
@@ -163,11 +165,33 @@ $(function () {
 
     $(".delete-confirm").click(function (e) {
         e.preventDefault();
+
         var $link = $(this);
-        bootbox.confirm(
-            "Are you sure you want to delete " + $link.data("associated-groups") + "?",
+        var linkData = $link.data("refdata-model")
+        var url = $link.data("resource-url") + "/" + linkData.AssociatedDataTypeGroupId;
+
+        bootbox.confirm("Are you sure you want to delete " + linkData.Name + "?",
             function (confirmation) {
-                confirmation && window.location.assign($link.attr("href"));
+                if (confirmation) {
+                    // Make AJAX Call
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (data, textStatus, xhr) {
+                            if (data.success) {
+                                setDeleteFeedback(data.name,
+                                    $link.data("success-redirect"), $link.data("refdata-type"))
+                            }
+                            else {
+                                if (Array.isArray(data.errors)) {
+                                    if (data.errors.length > 0) {
+                                        window.feedbackMessage(data.errors[0], "warning");
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
         );
     });
