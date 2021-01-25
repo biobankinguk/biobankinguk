@@ -1199,49 +1199,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteAnnualStatisticGroup(AnnualStatisticGroupModel model)
-        {
-            if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The annual statistic group \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AnnualStatisticGroups");
-            }
-
-            await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
-            {
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The annual statistic group \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AnnualStatisticGroups");
-        }
-
-        public ActionResult EditAnnualStatisticGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The annual statistic group \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AnnualStatisticGroups");
-        }
-
-        public ActionResult AddAnnualStatisticGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The annual statistic group \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AnnualStatisticGroups");
-        }
-
         #endregion
 
         #region RefData: Sample Collection Mode
