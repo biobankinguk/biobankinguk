@@ -10,7 +10,6 @@ using Biobanks.Web.Utilities;
 
 namespace Biobanks
 {
-    // TODO: what is this filter? is it used anywhere?! UserAuthorize seems to be used instead...
     public class AuthorizeAttribute : System.Web.Mvc.AuthorizeAttribute
     {
         public IBiobankReadService BiobankReadService { get; set; }
@@ -54,18 +53,16 @@ namespace Biobanks
 
             // verify network claim
             var session = httpContext.Session;
-            var activeOrganisationId = session[SessionKeys.ActiveOrganisationId];
+            var activeOrganisationId = Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
             var activeOrganisationType = Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]);
 
 
-            if (activeOrganisationId != null)
+            if (activeOrganisationId != 0)
             {
                 if (activeOrganisationType == (int)ActiveOrganisationType.Biobank)
                 {
-                    var biobankId = Convert.ToInt32(activeOrganisationId);
-
                     // If they don't have a claim on this biobank, return
-                    if (!currentUser.BiobankIds.Contains(activeOrganisationId.ToString()))
+                    if (!currentUser.Biobanks.ContainsKey(activeOrganisationId))
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;
@@ -76,7 +73,7 @@ namespace Biobanks
 
                     var bb =
                         Task.Run(async () =>
-                                await BiobankReadService.GetBiobankByIdAsync(biobankId))
+                                await BiobankReadService.GetBiobankByIdAsync(activeOrganisationId))
                             .Result;
 
                     //only fail if suspended
@@ -89,10 +86,9 @@ namespace Biobanks
 
                 else if (activeOrganisationType == (int) ActiveOrganisationType.Network)
                 {
-                    var networkId = Convert.ToInt32(activeOrganisationId);
 
                     // If they don't have a claim on this biobank, return
-                    if (!currentUser.NetworkIds.Contains(networkId.ToString()))
+                    if (!currentUser.Networks.ContainsKey(activeOrganisationId))
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;
@@ -121,17 +117,15 @@ namespace Biobanks
                     break;
                 case BiobanksAuthorizeFailure.BiobankSuspended:
                     var session = filterContext.HttpContext.Session;
-                    var activeOrganisationId = session[SessionKeys.ActiveOrganisationId];
+                    var activeOrganisationId = Convert.ToInt32(session[SessionKeys.ActiveOrganisationId]);
+                    var activeOrganisationType = Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]);
 
-                    if (activeOrganisationId != null
-                        && Convert.ToInt32(session[SessionKeys.ActiveOrganisationType]) ==
+                    if (activeOrganisationId != 0 && activeOrganisationType ==
                         (int)ActiveOrganisationType.Biobank)
                     {
-                        var biobankId = Convert.ToInt32(activeOrganisationId);
-
                         var bb =
                             Task.Run(async () =>
-                                    await BiobankReadService.GetBiobankByIdAsync(biobankId))
+                                    await BiobankReadService.GetBiobankByIdAsync(activeOrganisationId))
                                 .Result;
                         filterContext.Result = new BiobankSuspendedResult(bb.Name);
                     }

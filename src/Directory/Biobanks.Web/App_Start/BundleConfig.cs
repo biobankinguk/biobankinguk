@@ -284,6 +284,11 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sample-resource-config.js"));
 
+            // Register Pages Config
+            bundles.Add(new ScriptBundle("~/bundles/adac/register-pages-config").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-register-pages-config.js"));
+
             // Search
             bundles.Add(new ScriptBundle("~/bundles/search").Include(
                 "~/Scripts/typeahead.bundle*",

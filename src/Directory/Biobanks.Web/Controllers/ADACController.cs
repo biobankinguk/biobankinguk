@@ -769,7 +769,7 @@ namespace Biobanks.Web.Controllers
             if (endQuarter == 0)
                 endQuarter = ((DateTime.Today.Month + 2) / 3);
             if (reportPeriod == 0)
-                reportPeriod = 10;
+                reportPeriod = 5;
 
             var model = _mapper.Map<DirectoryAnalyticReport>(await _analyticsReportGenerator.GetDirectoryReport(year, endQuarter, reportPeriod));
             return View(model);
@@ -1437,6 +1437,7 @@ namespace Biobanks.Web.Controllers
             {
                 Title = Config.Get(ConfigKey.HomepageTitle, ""),
                 SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
@@ -1456,6 +1457,7 @@ namespace Biobanks.Web.Controllers
                 {
                     new Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
                     new Config { Key = ConfigKey.HomepageSearchTitle, Value = homepage.SearchTitle ?? "" },
+                    new Config { Key = ConfigKey.HomepageSearchSubTitle, Value = homepage.SearchSubTitle ?? "" },
                     new Config { Key = ConfigKey.HomepageResourceRegistration, Value = homepage.ResourceRegistration ?? "" },
                     new Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" },
                     new Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = homepage.RequireSamplesCollected ?? ""},
@@ -1569,6 +1571,8 @@ namespace Biobanks.Web.Controllers
                 BiobankDescription = Config.Get(ConfigKey.RegisterBiobankDescription, ""),
                 NetworkTitle = Config.Get(ConfigKey.RegisterNetworkTitle, ""),
                 NetworkDescription = Config.Get(ConfigKey.RegisterNetworkDescription, ""),
+                EnableRegistrationHelpUrl = Config.Get(ConfigKey.EnableRegisterRegistrationHelpUrl, ""),
+                RegistrationHelpUrl = Config.Get(ConfigKey.RegisterRegistrationHelpUrl, "")
             });
         }
 
@@ -1583,6 +1587,8 @@ namespace Biobanks.Web.Controllers
                     new Config { Key = ConfigKey.RegisterBiobankDescription, Value = registerConfigModel.BiobankDescription ?? "" },
                     new Config { Key = ConfigKey.RegisterNetworkTitle, Value = registerConfigModel.NetworkTitle ?? ""},
                     new Config { Key = ConfigKey.RegisterNetworkDescription, Value = registerConfigModel.NetworkDescription ?? "" },
+                    new Config { Key = ConfigKey.EnableRegisterRegistrationHelpUrl, Value = registerConfigModel.EnableRegistrationHelpUrl ?? "" },
+                    new Config { Key = ConfigKey.RegisterRegistrationHelpUrl, Value = registerConfigModel.RegistrationHelpUrl ?? "" }
                 }
             );
 

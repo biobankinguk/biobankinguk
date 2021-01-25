@@ -24,6 +24,7 @@ namespace Directory.Data.Constants
         // Editable Homepage
         public const string HomepageTitle = "site.homepage.title";
         public const string HomepageSearchTitle = "site.homepage.searchtitle";
+        public const string HomepageSearchSubTitle = "site.homepage.searchsubtitle";
         public const string HomepageResourceRegistration = "site.homepage.resourceregistration";
         public const string HomepageNetworkRegistration = "site.homepage.networkregistration";
         public const string HomepageSearchRadioSamplesCollected = "site.homepage.searchradiosamplescollected";
@@ -34,6 +35,8 @@ namespace Directory.Data.Constants
         public const string RegisterBiobankDescription = "site.register.biobank.description";
         public const string RegisterNetworkTitle = "site.register.network.title";
         public const string RegisterNetworkDescription = "site.register.network.description";
+        public const string EnableRegisterRegistrationHelpUrl = "site.register.help.show";
+        public const string RegisterRegistrationHelpUrl = "site.register.help.url";
 
         //Editable Termspage
         public const string TermpageInfo = "site.termpage.pageinfo";
