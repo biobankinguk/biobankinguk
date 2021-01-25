@@ -1401,49 +1401,6 @@ namespace Biobanks.Web.Controllers
         }
 
 
-        public async Task<ActionResult> DeleteHtaStatus(Models.Shared.HtaStatusModel model)
-        {
-            if (await _biobankReadService.IsHtaStatusInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The hta status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("HtaStatus");
-            }
-
-            await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
-            {
-                HtaStatusId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The hta status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("HtaStatus");
-        }
-
-        public ActionResult EditHtaStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The hta status \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("HtaStatus");
-        }
-
-        public ActionResult AddHtaStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The hta status \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("HtaStatus");
-        }
-
         #endregion
 
         #region RefData: Service Offerings
