@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Configuration;
-using Biobanks.Directory.Services.Contracts;
-using Biobanks.Directory.Services.Dto;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 using Newtonsoft.Json;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Services
 {
     public class AnalyticsReportGenerator : IDisposable, IAnalyticsReportGenerator
     {

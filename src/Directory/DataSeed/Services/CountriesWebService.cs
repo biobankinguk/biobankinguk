@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using Directory.DataSeed.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Directory.Data.Constants;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 
 namespace Directory.DataSeed.Services
 {

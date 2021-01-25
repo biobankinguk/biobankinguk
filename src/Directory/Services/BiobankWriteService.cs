@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using Biobanks.Directory.Data.Repositories;
 using System.IO;
 using AutoMapper;
-using Biobanks.Directory.Services.Contracts;
-using Biobanks.Directory.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Services
 {
     public class BiobankWriteService : IBiobankWriteService
     {

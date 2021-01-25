@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
-using Biobanks.Directory.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Services.Dto;
 
-namespace Biobanks.Directory.Services.Contracts
+namespace Biobanks.Services.Contracts
 {
     public interface IBiobankWriteService
     {

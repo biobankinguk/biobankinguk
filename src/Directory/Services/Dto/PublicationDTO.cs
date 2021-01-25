@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Biobanks.Directory.Services.Dto
+namespace Biobanks.Services.Dto
 {
     public class PublicationDTO
     {

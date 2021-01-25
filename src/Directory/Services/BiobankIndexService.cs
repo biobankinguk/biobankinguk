@@ -10,10 +10,10 @@ using Biobanks.Search.Dto.PartialDocuments;
 using Biobanks.Search.Dto.Documents;
 using System.Configuration;
 using System.Net.Http;
-using Biobanks.Directory.Services.Contracts;
-using Biobanks.Directory.Services.Extensions;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Extensions;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Services
 {
     public class BiobankIndexService : IBiobankIndexService
     {

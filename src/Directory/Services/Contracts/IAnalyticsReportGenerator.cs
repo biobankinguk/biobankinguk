@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Biobanks.Directory.Services.Dto;
+using Biobanks.Services.Dto;
 
-namespace Biobanks.Directory.Services.Contracts
+namespace Biobanks.Services.Contracts
 {
     public interface IAnalyticsReportGenerator
     {

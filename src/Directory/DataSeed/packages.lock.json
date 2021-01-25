@@ -667,21 +667,6 @@
           "System.Runtime.Caching": "4.7.0"
         }
       },
-      "Biobanks.Directory.Services": {
-        "type": "Project",
-        "dependencies": {
-          "AutoMapper": "10.0.0",
-          "Biobanks.Directory.Data": "1.0.0",
-          "Biobanks.Identity": "1.0.0",
-          "Biobanks.Search": "1.0.0",
-          "Castle.Core": "4.4.1",
-          "ExcelDataReader.DataSet": "3.6.0",
-          "HangFire": "1.7.11",
-          "ImageResizer": "4.2.5",
-          "Postal.Mvc5": "1.2.0",
-          "SendGrid": "9.17.0"
-        }
-      },
       "Biobanks.Entities": {
         "type": "Project",
         "dependencies": {
@@ -707,6 +692,21 @@
           "Microsoft.CSharp": "4.7.0",
           "NEST": "7.8.1",
           "Newtonsoft.Json": "12.0.3"
+        }
+      },
+      "Biobanks.Services": {
+        "type": "Project",
+        "dependencies": {
+          "AutoMapper": "10.0.0",
+          "Biobanks.Directory.Data": "1.0.0",
+          "Biobanks.Identity": "1.0.0",
+          "Biobanks.Search": "1.0.0",
+          "Castle.Core": "4.4.1",
+          "ExcelDataReader.DataSet": "3.6.0",
+          "HangFire": "1.7.11",
+          "ImageResizer": "4.2.5",
+          "Postal.Mvc5": "1.2.0",
+          "SendGrid": "9.17.0"
         }
       }
     },

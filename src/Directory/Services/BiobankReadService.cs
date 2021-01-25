@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Directory.Services.Contracts;
-using Biobanks.Directory.Services.Dto;
 using Biobanks.Directory.Data.Caching;
 using Biobanks.Directory.Data.Repositories;
 using Biobanks.Identity.Contracts;
@@ -15,8 +13,10 @@ using Microsoft.AspNet.Identity;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Services
 {
     public class BiobankReadService : IBiobankReadService
     {

@@ -1,6 +1,6 @@
 ﻿using Biobanks.Web.Controllers;
 using Biobanks.Web.Models.Shared;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using StackExchange.Profiling;
 using System;
 using System.Collections.Generic;

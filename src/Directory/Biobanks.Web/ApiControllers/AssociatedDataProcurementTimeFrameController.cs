@@ -3,7 +3,7 @@ using System.Web.Http;
 using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using System.Linq;
 using Biobanks.Entities.Data.ReferenceData;
 

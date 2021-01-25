@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>Biobanks.Directory.Services</RootNamespace>
-    <AssemblyName>Biobanks.Directory.Services</AssemblyName>
+    <AssemblyName>Biobanks.Services</AssemblyName>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 

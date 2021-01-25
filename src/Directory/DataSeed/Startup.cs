@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Biobanks.Directory.Services.Contracts;
-using Biobanks.Directory.Services;
+using Biobanks.Services.Contracts;
+using Biobanks.Services;
 using System;
 
 namespace Directory.DataSeed

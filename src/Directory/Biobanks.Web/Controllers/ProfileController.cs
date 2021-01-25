@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Biobanks.Entities.Data;
 using Biobanks.Identity.Constants;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.Profile;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;

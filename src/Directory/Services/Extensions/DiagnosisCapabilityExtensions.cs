@@ -5,7 +5,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Search.Dto.Documents;
 using Newtonsoft.Json;
 
-namespace Biobanks.Directory.Services.Extensions
+namespace Biobanks.Services.Extensions
 {
     public static class DiagnosisCapabilityExtensions
     {

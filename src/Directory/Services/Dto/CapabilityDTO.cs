@@ -1,4 +1,4 @@
-namespace Biobanks.Directory.Services.Dto
+namespace Biobanks.Services.Dto
 {
     public class CapabilityDTO
     {
