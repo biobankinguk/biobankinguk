@@ -113,7 +113,7 @@ $(function () {
         e.preventDefault();
 
         var $link = $(this);
-        var linkData = $link.data("annual-stats")
+        var linkData = $link.data("refdata-model")
         var url = $link.data("resource-url") + "/" + linkData.Id;
 
         bootbox.confirm("Are you sure you want to delete " + linkData.Name + "?",
