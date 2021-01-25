@@ -898,40 +898,6 @@ namespace Biobanks.Web.Controllers
 
         }
 
-        public async Task<ActionResult> DeleteAnnualStatistic(AnnualStatisticModel model)
-        {
-            if (await _biobankReadService.IsAnnualStatisticInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The annual statistic \"{model.Name}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("AnnualStatistics");
-            }
-
-            var annualStatistic = new AnnualStatistic
-            {
-                AnnualStatisticId = model.Id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.DeleteAnnualStatisticAsync(annualStatistic);
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The annual statistics type \"{model.Name}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AnnualStatistics");
-        }
-
-        public ActionResult AddAnnualStatisticSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The annual statistic \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AnnualStatistics");
-        }
-
-        public ActionResult EditAnnualStatisticSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The annual statistic \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AnnualStatistics");
-        }
-
         #endregion
 
         #region RefData: Material Types
