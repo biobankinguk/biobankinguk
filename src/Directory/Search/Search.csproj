@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Biobanks.Directory.Search</RootNamespace>
-    <AssemblyName>Biobanks.Directory.Search</AssemblyName>
+    <RootNamespace>Biobanks.Search</RootNamespace>
+    <AssemblyName>Biobanks.Search</AssemblyName>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 

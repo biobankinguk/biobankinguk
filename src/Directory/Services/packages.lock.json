@@ -256,14 +256,6 @@
           "System.Runtime.Caching": "4.7.0"
         }
       },
-      "Biobanks.Directory.Search": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "NEST": "7.8.1",
-          "Newtonsoft.Json": "12.0.3"
-        }
-      },
       "Biobanks.Entities": {
         "type": "Project",
         "dependencies": {
@@ -280,6 +272,14 @@
           "Microsoft.AspNet.Identity.EntityFramework": "2.2.3",
           "Microsoft.AspNet.Identity.Owin": "2.2.3",
           "Microsoft.CSharp": "4.7.0",
+          "Newtonsoft.Json": "12.0.3"
+        }
+      },
+      "Biobanks.Search": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "NEST": "7.8.1",
           "Newtonsoft.Json": "12.0.3"
         }
       }
