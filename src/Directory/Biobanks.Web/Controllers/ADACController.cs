@@ -1326,37 +1326,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteSopStatus(SopStatusModel model)
-        {
-            if (await _biobankReadService.IsSopStatusInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The sop status \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("SopStatus");
-            }
-
-            await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
-            {
-                SopStatusId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The sop status  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SopStatus");
-        }
-
-        public ActionResult AddSopStatusSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sop status \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SopStatus");
-        }
-
-        public ActionResult EditSopStatusSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sop status \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SopStatus");
-        }
         #endregion
 
         #region RefData: Registration Reason
