@@ -1,7 +1,7 @@
 using Biobanks.Directory.Data;
 using Biobanks.Entities.Data;
 using Biobanks.Directory.Data.Repositories;
-using Directory.DataSeed.Services;
+using Biobanks.DataSeed.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;

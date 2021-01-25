@@ -11,13 +11,13 @@ using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
-using Directory.DataSeed.Services;
+using Biobanks.DataSeed.Services;
 using System.Security.Cryptography.X509Certificates;
+using Biobanks.DataSeed.Dto;
 using Biobanks.Entities.Data.ReferenceData;
-using Directory.DataSeed.Dto;
 using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Directory.DataSeed.Services
+namespace Biobanks.DataSeed.Services
 {
     internal class SeedingService : IHostedService
     {
