@@ -1,5 +1,7 @@
 ﻿using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -8,25 +10,70 @@ namespace Biobanks.Data
 {
     public class BiobanksDbContext : DbContext
     {
-        public DbSet<Status> Statuses { get; set; }
-
-        public DbSet<Submission> Submissions { get; set; }
-
-        public DbSet<Error> Errors { get; set; }
-
-        // Reference Data
+        /* Shared Reference Data */
         public DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
+        public DbSet<Sex> Sexes { get; set; }
         public DbSet<SnomedTerm> SnomedTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
         public DbSet<Ontology> Ontologies { get; set; }
         public DbSet<OntologyVersion> OntologyVersions { get; set; }
-        public DbSet<Sex> Sexes { get; set; }
 
-        // API Data
+        /* Directory */
+        public DbSet<AccessCondition> AccessConditions { get; set; }
+        public DbSet<AgeRange> AgeRanges { get; set; }
+        public DbSet<AnnualStatistic> AnnualStatistics { get; set; }
+        public DbSet<AnnualStatisticGroup> AnnualStatisticGroups { get; set; }
+        public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
+        public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
+        public DbSet<Blob> Blobs { get; set; }
+        public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
+        public DbSet<CollectionAssociatedData> CollectionAssociatedDatas { get; set; }
+        public DbSet<Collection> Collections { get; set; }
+        public DbSet<CollectionType> CollectionTypes { get; set; }
+        public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
+        public DbSet<CollectionStatus> CollectionStatuses { get; set; }
+        public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
+        public DbSet<CollectionPoint> CollectionPoints { get; set; }
+        public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
+        public DbSet<Config> Configs { get; set; }
+        public DbSet<County> Counties { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
+        public DbSet<DonorCount> DonorCounts { get; set; }
+        public DbSet<Funder> Funders { get; set; }
+        public DbSet<HtaStatus> HtaStatuses { get; set; }
+        public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
+        public DbSet<MaterialDetail> MaterialDetails { get; set; }
+        public DbSet<Network> Networks { get; set; }
+        public DbSet<NetworkRegisterRequest> NetworkRegisterRequests { get; set; }
+        public DbSet<NetworkUser> NetworkUsers { get; set; }
+        public DbSet<Organisation> Organisations { get; set; }
+        public DbSet<OrganisationAnnualStatistic> OrganisationAnnualStatistics { get; set; }
+        public DbSet<OrganisationNetwork> OrganisationNetworks { get; set; }
+        public DbSet<OrganisationRegistrationReason> OrganisationRegistrationReasons { get; set; }
+        public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
+        public DbSet<OrganisationType> OrganisationTypes { get; set; }
+        public DbSet<OrganisationUser> OrganisationUsers { get; set; }
+        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
+        public DbSet<RegistrationReason> RegistrationReasons { get; set; }
+        public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
+        public DbSet<ServiceOffering> ServiceOfferings { get; set; }
+        public DbSet<SopStatus> SopStatuses { get; set; }
+        public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
+        public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
+
+        /* Publications */
+        public DbSet<Publication> Publications { get; set; }
+
+        /* API */
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<Error> Errors { get; set; }
+
         public DbSet<LiveDiagnosis> LiveDiagnoses { get; set; }
         public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
         public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
