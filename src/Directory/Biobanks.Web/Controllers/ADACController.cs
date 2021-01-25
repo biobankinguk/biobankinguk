@@ -1000,37 +1000,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteCollectionPoint(CollectionPointModel model)
-        {
-            if (await _biobankReadService.IsCollectionPointInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The collection point \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionPoints");
-            }
-
-            await _biobankWriteService.DeleteCollectionPointAsync(new CollectionPoint
-            {
-                CollectionPointId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The collection point  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPoints");
-        }
-
-        public ActionResult AddCollectionPointSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection point \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPoints");
-        }
-
-        public ActionResult EditCollectionPointSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection point \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPoints");
-        }
         #endregion
 
         #region RefData: Donor Counts
