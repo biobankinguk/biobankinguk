@@ -1245,41 +1245,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteSex(SexModel model)
-        {
-            if (await _biobankReadService.IsSexInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The sex \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("Sexes");
-            }
-
-            await _biobankWriteService.DeleteSexAsync(new Sex
-            {
-                SexId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The sex \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Sexes");
-        }
-
-        public ActionResult AddSexSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sex \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("Sexes");
-        }
-
-        public ActionResult EditSexSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sex \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("Sexes");
-        }
         #endregion
 
         #region RefData: Country
