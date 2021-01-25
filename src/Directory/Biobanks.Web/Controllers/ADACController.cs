@@ -1078,40 +1078,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeletePreservationType(PreservationTypeModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.PreservationTypeName);
-            if (await _biobankReadService.IsPreservationTypeInUse(model.Id))
-            {
-
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("PreservationTypes");
-            }
-
-            await _biobankWriteService.DeletePreservationTypeAsync(new PreservationType
-            {
-                PreservationTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
-        }
-
-        public ActionResult AddPreservationTypeSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
-        }
-
-        public ActionResult EditPreservationTypeSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("PreservationTypes");
-        }
         #endregion
 
         #region RefData: Assocaited Data Types
