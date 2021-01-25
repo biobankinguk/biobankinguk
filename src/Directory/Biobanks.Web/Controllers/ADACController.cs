@@ -863,64 +863,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteAssociatedDataProcurementTimeFrame(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
-        {
-            //Validate min amount of time frames
-            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-            if (timeFrames.Count() <= 2)
-            {
-                SetTemporaryFeedbackMessage($"A minimum amount of 2 time frames are allowed.", FeedbackMessageType.Warning);
-                return RedirectToAction("AssociatedDataProcurementTimeFrame");
-            }
-
-            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data procurement time frame \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AssociatedDataProcurementTimeFrame");
-            }
-
-            await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
-            {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
-
-        public ActionResult EditAssociatedDataProcurementTimeFrameSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
-        public ActionResult AddAssociatedDataProcurementTimeFrameSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
-
-        public ActionResult AddAssociatedDataProcurementTimeFrameOverflow()
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
         #endregion
 
         #region RefData: AnnualStatistics
