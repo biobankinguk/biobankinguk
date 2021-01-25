@@ -180,6 +180,7 @@ $(function () {
     });
 
     $(".delete-confirm").click(function (e) {
+        e.preventDefault();
 
         var $link = $(this);
         var linkData = $link.data("refdata-model")

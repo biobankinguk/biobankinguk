@@ -66,11 +66,11 @@ function AdacAccessConditionViewModel() {
         if (action == 'Add') {
             var ajaxType = 'POST'
             var url = resourceUrl;
-            var feedbackfn = setAddFeedback // cf. adac-refdata-feedback.js
+            var feedbackfn = setAddFeedback; // cf. adac-refdata-feedback.js
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
             var url = resourceUrl + '/' + $(e.target.Id).val();
-            var feedbackfn = setEditFeedback // cf. adac-refdata-feedback.js
+            var feedbackfn = setEditFeedback; // cf. adac-refdata-feedback.js
         }
 
         // Make AJAX Call
@@ -84,7 +84,7 @@ function AdacAccessConditionViewModel() {
                 if (data.success) {
                     _this.hideModal();
                     feedbackfn(data.name,
-                        form.data("success-redirect"), form.data("refdata-type"))
+                        form.data("success-redirect"), form.data("refdata-type"));
                 }
                 else {
                     if (Array.isArray(data.errors)) {
