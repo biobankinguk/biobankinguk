@@ -19,8 +19,17 @@ namespace Publications.Services
         }
 
 
-        public async Task AddPublicationAnnotations(int publicationId, IEnumerable<Tag> annotations)
+        public async Task AddPublicationAnnotations(int publicationId, AnnotationResult annotations)
         {
+            var existingAnnotations = _ctx.PublicationAnnotations.Where(x => x.PublicationId == publicationId);
+
+            //Need to drill down to Tag Level to get name and uri
+            var fetchedAnnotations = annotations.Annotations.Select(x => new Annotation()
+            {
+
+            });
+
+   
             throw new NotImplementedException();
         }
 

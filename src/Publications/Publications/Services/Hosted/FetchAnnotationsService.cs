@@ -49,7 +49,7 @@ namespace Publications.Services.Hosted
                     //Fetch all annotations for each publication
                     var annotations = await _epmcWebService.GetPublicationAnnotations(publication.Id, publication.Source);
                     //Add Annotations to db
-                    _logger.LogInformation($"Fetched {annotations.Annotations.Count()} annotations for {publication}");
+                    _logger.LogInformation($"Fetched {annotations.Count()} annotations for {publication}");
                 }
             }
 

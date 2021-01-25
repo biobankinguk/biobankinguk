@@ -32,9 +32,9 @@ namespace Publications
             return (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
         }
 
-        public async Task<AnnotationResult> GetPublicationAnnotations(int publicationId, string source)
+        public async Task<List<AnnotationDto>> GetPublicationAnnotations(int publicationId, string source)
         {
-            return (await AnnotationSearch(publicationId, source)).FirstOrDefault();
+            return (await AnnotationSearch(publicationId, source));
         }
 
         public async Task<List<PublicationDto>> GetOrganisationPublications(string biobank)
@@ -83,8 +83,9 @@ namespace Publications
             return result;
         }
 
-        private async Task<List<AnnotationResult>> AnnotationSearch(int publicationId, string source)
+        private async Task<List<AnnotationDto>> AnnotationSearch(int publicationId, string source)
         {
+            var annotations = new List<AnnotationDto>();
             // Parse query parameters
             var parameters = new Dictionary<string, string>()
                 {
@@ -98,7 +99,14 @@ namespace Publications
             // Parse JSON result
             var result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
 
-            return result;
+            foreach(var annotation in result)
+            {
+                foreach(var tags in annotation.Annotations)
+                {
+                    annotations.Add(tags);
+                }
+            }
+            return annotations;
         }
 
     }

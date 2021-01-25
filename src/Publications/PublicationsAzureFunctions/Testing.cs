@@ -11,6 +11,8 @@ using Publications.Services.Contracts;
 using Publications.Services.Hosted;
 using System.Threading;
 using Publications.Services;
+using Publications;
+using System.Linq;
 
 namespace PublicationsAzureFunctions
 {
@@ -31,9 +33,10 @@ namespace PublicationsAzureFunctions
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            //var test = await _epmcService.GetAnnotationsByIdAndSource(126679, "MED");
-            await _fetchPublicationsService.StartAsync(cancellationToken);
-            await _fetchPublicationsService.StopAsync(cancellationToken);
+            var test = await _epmcService.GetPublicationAnnotations(126679, "MED");
+            //await _fetchPublicationsService.StartAsync(cancellationToken);
+            //await _fetchPublicationsService.StopAsync(cancellationToken);
+            //var publicationId = 33340264;
 
             return new OkObjectResult("Done");
         }
