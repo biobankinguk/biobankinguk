@@ -73,6 +73,7 @@ function AdacAssociatedDataTypeViewModel() {
         if (action == 'Add') {
             var ajaxType = 'POST'
             var url = resourceUrl;
+            var feedbackfn = setAddFeedback; // cf. adac-refdata-feedback.js
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
             var url = resourceUrl + '/' + $(e.target.Id).val();
