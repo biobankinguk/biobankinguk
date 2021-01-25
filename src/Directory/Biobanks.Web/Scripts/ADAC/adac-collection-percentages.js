@@ -70,11 +70,12 @@ function AdacCollectionPercentageViewModel() {
         if (action == 'Add') {
             var ajaxType = 'POST'
             var url = resourceUrl;
+            var feedbackfn = setAddFeedback // cf. adac-refdata-feedback.js
         } else if (action == 'Update') {
             var ajaxType = 'PUT';
             var url = resourceUrl + '/' + $(e.target.Id).val();
+            var feedbackfn = setEditFeedback // cf. adac-refdata-feedback.js
         }
-        var successRedirect = action.toLowerCase() + "-success-redirect";
 
         // Make AJAX Call
         $.ajax({
@@ -86,8 +87,8 @@ function AdacCollectionPercentageViewModel() {
                 _this.dialogErrors.removeAll();
                 if (data.success) {
                     _this.hideModal();
-                    window.location.href =
-                        form.data(successRedirect) + "?Name=" + data.name;
+                    feedbackfn(data.name,
+                        form.data("success-redirect"), form.data("refdata-type"))
                 }
                 else {
                     if (Array.isArray(data.errors)) {
@@ -110,10 +111,31 @@ $(function () {
         e.preventDefault();
 
         var $link = $(this);
+        var linkData = $link.data("refdata-model")
+        var url = $link.data("resource-url") + "/" + linkData.Id;
 
-        bootbox.confirm("Are you sure you want to delete " + $link .data("collection-percentage") + "?",
+        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
             function (confirmation) {
-                confirmation && window.location.assign($link.attr("href"));
+                if (confirmation) {
+                    // Make AJAX Call
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (data, textStatus, xhr) {
+                            if (data.success) {
+                                setDeleteFeedback(data.name,
+                                    $link.data("success-redirect"), $link.data("refdata-type"))
+                            }
+                            else {
+                                if (Array.isArray(data.errors)) {
+                                    if (data.errors.length > 0) {
+                                        window.feedbackMessage(data.errors[0], "warning");
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
         );
     });
