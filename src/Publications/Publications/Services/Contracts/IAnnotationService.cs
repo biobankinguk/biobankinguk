@@ -10,6 +10,6 @@ namespace Publications.Services.Contracts
 {
     public interface IAnnotationService
     {
-        Task AddPublicationAnnotations(int publicationId, AnnotationResult annotations);
+        Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDto> annotations);
     }
 }

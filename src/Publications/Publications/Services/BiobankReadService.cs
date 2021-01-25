@@ -31,10 +31,9 @@ namespace Publications.Services
         public async Task<IList<string>> GetOrganisationNames()
             => (await ListBiobanksAsync()).Select(x => x.Name).ToList();
 
-        /*public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _publicationRepository.ListAsync(true, x => x.OrganisationId == biobankId); */
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
             => await _ctx.Publications.Where(x => x.Id == biobankId).ToListAsync();
+
 
     }
 }

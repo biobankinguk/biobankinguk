@@ -32,7 +32,7 @@ namespace Publications
             return (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
         }
 
-        public async Task<List<AnnotationDto>> GetPublicationAnnotations(int publicationId, string source)
+        public async Task<List<AnnotationDto>> GetPublicationAnnotations(string publicationId, string source)
         {
             return (await AnnotationSearch(publicationId, source));
         }
@@ -83,7 +83,7 @@ namespace Publications
             return result;
         }
 
-        private async Task<List<AnnotationDto>> AnnotationSearch(int publicationId, string source)
+        private async Task<List<AnnotationDto>> AnnotationSearch(string publicationId, string source)
         {
             var annotations = new List<AnnotationDto>();
             // Parse query parameters

@@ -47,13 +47,13 @@ namespace Publications.Services.Hosted
                 foreach (var publication in publications)
                 {
                     //Fetch all annotations for each publication
-                    var annotations = await _epmcWebService.GetPublicationAnnotations(publication.Id, publication.Source);
-                    //Add Annotations to db
+                    var annotations = await _epmcWebService.GetPublicationAnnotations(publication.PublicationId, publication.Source);
+
+                    await _annotationService.AddPublicationAnnotations(publication.PublicationId, annotations);
+
                     _logger.LogInformation($"Fetched {annotations.Count()} annotations for {publication}");
                 }
             }
-
-            throw new NotImplementedException();
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
