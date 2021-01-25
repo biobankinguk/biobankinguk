@@ -1347,48 +1347,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteRegistrationReason(Models.Shared.RegistrationReasonModel model)
-        {
-            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The registration reason \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("RegistrationReason");
-            }
-
-            await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
-            {
-                RegistrationReasonId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The registration reason \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("RegistrationReason");
-        }
-
-        public ActionResult EditRegistrationReasonSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The registration reason \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("RegistrationReason");
-        }
-
-        public ActionResult AddRegistrationReasonSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The registration reason \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("RegistrationReason");
-        }
         #endregion
 
         #region RefData: Macroscopic Assessment
