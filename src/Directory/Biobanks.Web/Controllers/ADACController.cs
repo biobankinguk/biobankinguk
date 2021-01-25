@@ -1371,46 +1371,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteMacroscopicAssessment(MacroscopicAssessmentModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
-
-            if (await _biobankReadService.IsMacroscopicAssessmentInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("MacroscopicAssessments");
-            }
-
-            if ((await _biobankReadService.ListMacroscopicAssessmentsAsync()).Count() <= 1)
-            {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently the last entry and cannot be deleted", FeedbackMessageType.Danger);
-                return RedirectToAction("MacroscopicAssessments");
-            }
-
-            await _biobankWriteService.DeleteMacroscopicAssessmentAsync(new MacroscopicAssessment
-            {
-                MacroscopicAssessmentId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("MacroscopicAssessments");
-        }
-
-        public ActionResult AddMacroscopicAssessmentSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("MacroscopicAssessments");
-        }
-
-        public ActionResult EditMacroscopicAssessmentSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("MacroscopicAssessments");
-        }
         #endregion
 
         #region RefData: HtaStatus
