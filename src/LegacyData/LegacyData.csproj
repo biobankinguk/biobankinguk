@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Biobanks.LegacyData</AssemblyName>
+    <RootNamespace>Biobanks.LegacyData</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LegacyData.Entities
+namespace Biobanks.LegacyData.Entities
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>
