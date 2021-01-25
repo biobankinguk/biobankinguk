@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Data.Migrations
+namespace Biobanks.Data.Migrations
 {
     public partial class HarmonizeStorageTemperature : Migration
     {

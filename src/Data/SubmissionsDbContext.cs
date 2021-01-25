@@ -1,10 +1,10 @@
-﻿using Entities.Api;
-using Entities.Api.ReferenceData;
-using Entities.Shared.ReferenceData;
+﻿using Biobanks.Entities.Api;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Data
+namespace Biobanks.Data
 {
     public class SubmissionsDbContext : DbContext
     {
