@@ -1113,48 +1113,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteAssociatedDataType(AssociatedDataTypeModel model)
-        {
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data type \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AssociatedDataTypes");
-            }
-
-            await _biobankWriteService.DeleteAssociatedDataTypeAsync(new AssociatedDataType
-            {
-                AssociatedDataTypeId = model.Id,
-                Description = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data type \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypes");
-            }
-
-        public ActionResult EditAssociatedDataTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypes");
-        }
-
-        public ActionResult AddAssociatedDataTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypes");
-        }
         #endregion
 
         #region RefData: Associated Data Type Groups
