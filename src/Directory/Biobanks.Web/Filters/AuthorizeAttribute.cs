@@ -88,7 +88,7 @@ namespace Biobanks
                 {
 
                     // If they don't have a claim on this biobank, return
-                    if (currentUser.Networks.ContainsKey(activeOrganisationId))
+                    if (!currentUser.Networks.ContainsKey(activeOrganisationId))
                     {
                         _failureType = BiobanksAuthorizeFailure.Unauthorized;
                         return false;
