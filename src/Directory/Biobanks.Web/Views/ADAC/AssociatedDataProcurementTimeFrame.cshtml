@@ -59,13 +59,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-procurement-time="@procurement.Description"
-                                   href="@Url.Action("DeleteAssociatedDataProcurementTimeFrame", new
-											{
-												procurement.Id,
-												procurement.Description,
-												procurement.SortOrder
-											})">
+                                   data-refdata-model="@Json.Encode(procurement)"
+                                   data-resource-url="/api/AssociatedDataProcurementTimeFrame"
+                                   data-success-redirect="@Url.Action("AssociatedDataProcurementTimeFrames")"
+                                   data-refdata-type="Associated Data Procurement Time Frame"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -103,9 +101,8 @@
             <!-- Modal Form -->
             <form id="modal-procurement-time-form" 
                   data-resource-url="/api/AssociatedDataProcurementTimeFrame"
-                  data-update-success-redirect="@Url.Action("EditAssociatedDataProcurementTimeFrameSuccess")"
-                  data-add-success-redirect="@Url.Action("AddAssociatedDataProcurementTimeFrameSuccess")"
-                  data-add-overflow-redirect="@Url.Action("AddAssociatedDataProcurementTimeFrameOverflow")"
+                  data-success-redirect="@Url.Action("AssociatedDataProcurementTimeFrames")"
+				  data-refdata-type="Associated Data Procurement Time Frame"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
