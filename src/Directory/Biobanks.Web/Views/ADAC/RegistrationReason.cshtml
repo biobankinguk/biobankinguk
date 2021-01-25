@@ -54,11 +54,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-registration-reason="&quot;@registrationReason.Description&quot;"
-                                   href="@Url.Action("DeleteRegistrationReason", new
-                                     {
-                                         registrationReason.Id, registrationReason.Description
-                                     })">
+                                   data-refdata-model="@Json.Encode(registrationReason)"
+                                   data-resource-url="/api/RegistrationReason"
+                                   data-success-redirect="@Url.Action("RegistrationReasons")"
+                                   data-refdata-type="Registration Reason"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -94,8 +94,8 @@
 
             <form id="modal-registration-reason-form"
                   data-resource-url="/api/RegistrationReason"
-                  data-update-success-redirect="@Url.Action("EditRegistrationReasonSuccess")"
-                  data-add-success-redirect="@Url.Action("AddRegistrationReasonSuccess")"
+                  data-success-redirect="@Url.Action("RegistrationReasons")"
+                  data-refdata-type="Registration Reason"
                   class="form-horizontal">
 
                 <div class="modal-body">
