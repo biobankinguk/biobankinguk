@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Entities.Api.ReferenceData;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using LegacyData;
+using Biobanks.LegacyData;
 
-using MaterialType = LegacyData.Entities.MaterialType;
-using MaterialTypeGroup = LegacyData.Entities.MaterialTypeGroup;
-using MaterialTypeMaterialTypeGroup = LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
-using Entities.Shared.ReferenceData;
+using MaterialType = Biobanks.LegacyData.Entities.MaterialType;
+using MaterialTypeGroup = Biobanks.LegacyData.Entities.MaterialTypeGroup;
+using MaterialTypeMaterialTypeGroup = Biobanks.LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class ReferenceDataReadService : IReferenceDataReadService
     {
         private readonly IMemoryCache _cache;
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         public ReferenceDataReadService(
-            IMemoryCache cache, SubmissionsDbContext db)
+            IMemoryCache cache, BiobanksDbContext db)
         {
             _cache = cache;
             _db = db;

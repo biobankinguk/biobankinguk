@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Biobanks.Common.Auth;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities.Api.ReferenceData;
-using Entities.Shared.ReferenceData;
-using MaterialType = LegacyData.Entities.MaterialType;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using MaterialType = Biobanks.LegacyData.Entities.MaterialType;
 
 namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {

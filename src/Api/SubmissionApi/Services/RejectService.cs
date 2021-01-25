@@ -4,17 +4,17 @@ using System.Threading.Tasks;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Z.EntityFramework.Plus;
-using Data;
+using Biobanks.Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class RejectService : IRejectService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public RejectService(SubmissionsDbContext db)
+        public RejectService(BiobanksDbContext db)
         {
             _db = db;
         }

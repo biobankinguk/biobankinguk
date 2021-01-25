@@ -52,7 +52,7 @@ namespace Biobanks.SubmissionApi
         {
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<Data.SubmissionsDbContext>(opts =>
+            services.AddDbContext<Data.BiobanksDbContext>(opts =>
                 opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
 
@@ -151,7 +151,7 @@ namespace Biobanks.SubmissionApi
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<Data.SubmissionsDbContext>())
+                using (var context = serviceScope.ServiceProvider.GetService<Data.BiobanksDbContext>())
                 {
                     context.Database.Migrate();
                 }

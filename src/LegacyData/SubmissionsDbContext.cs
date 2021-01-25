@@ -12,7 +12,7 @@ using MaterialTypeMaterialTypeGroup = Biobanks.LegacyData.Entities.JoinEntities.
 
 namespace Biobanks.LegacyData
 {
-    public class SubmissionsDbContext : DbContext
+    public class BiobanksDbContext : DbContext
     {
         public DbSet<Status> Statuses { get; set; }
 
@@ -121,7 +121,7 @@ namespace Biobanks.LegacyData
                 .HasForeignKey(x => x.MaterialTypeGroupId);
         }
 
-        public SubmissionsDbContext(DbContextOptions options) : base(options) { }
+        public BiobanksDbContext(DbContextOptions options) : base(options) { }
 
     }
 

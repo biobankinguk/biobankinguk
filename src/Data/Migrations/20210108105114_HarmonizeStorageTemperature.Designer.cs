@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
-    [DbContext(typeof(SubmissionsDbContext))]
+    [DbContext(typeof(BiobanksDbContext))]
     [Migration("20210108105114_HarmonizeStorageTemperature")]
     partial class HarmonizeStorageTemperature
     {

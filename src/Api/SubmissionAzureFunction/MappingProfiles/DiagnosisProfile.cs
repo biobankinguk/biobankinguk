@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionAzureFunction.Dtos;
 

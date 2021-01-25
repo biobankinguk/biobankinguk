@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
-    [DbContext(typeof(SubmissionsDbContext))]
-    partial class SubmissionsDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(BiobanksDbContext))]
+    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

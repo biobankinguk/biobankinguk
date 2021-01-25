@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
-using LegacyData;
+using Biobanks.LegacyData;
 
 [assembly: FunctionsStartup(typeof(Biobanks.SubmissionAzureFunction.Startup))]
 
@@ -48,7 +48,7 @@ namespace Biobanks.SubmissionAzureFunction
             });
 
             // Register DbContext
-            builder.Services.AddDbContext<SubmissionsDbContext>(options => options
+            builder.Services.AddDbContext<BiobanksDbContext>(options => options
                 .EnableSensitiveDataLogging()
                 .UseSqlServer(
                     _configuration.GetConnectionString("DefaultConnection")

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
-    [DbContext(typeof(SubmissionsDbContext))]
+    [DbContext(typeof(BiobanksDbContext))]
     [Migration("20201210120159_InitialCreate")]
     partial class InitialCreate
     {

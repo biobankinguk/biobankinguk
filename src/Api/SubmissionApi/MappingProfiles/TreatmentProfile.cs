@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.SubmissionApi.Models;
 using TreatmentModel = Biobanks.Common.Models.TreatmentModel;
 

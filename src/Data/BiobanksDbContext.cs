@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Biobanks.Data
 {
-    public class SubmissionsDbContext : DbContext
+    public class BiobanksDbContext : DbContext
     {
         public DbSet<Status> Statuses { get; set; }
 
@@ -97,9 +97,9 @@ namespace Biobanks.Data
 
         }
         
-        public SubmissionsDbContext(DbContextOptions options) : base(options) { }
+        public BiobanksDbContext(DbContextOptions options) : base(options) { }
 
-        public class SubmissionsDbContextFactory : IDesignTimeDbContextFactory<SubmissionsDbContext>
+        public class BiobanksDbContextFactory : IDesignTimeDbContextFactory<BiobanksDbContext>
         {
             /*  Required for DesignTime creation of the context. EF operations can be done from
              *  either Package Manager or via Dotnet EF Tools.
@@ -114,12 +114,12 @@ namespace Biobanks.Data
              *  >> dotnet ef <CLI Command> -- "<Connection-String>"
              */
 
-            public SubmissionsDbContext CreateDbContext(string[] args)
+            public BiobanksDbContext CreateDbContext(string[] args)
             {
-                var options = new DbContextOptionsBuilder<SubmissionsDbContext>();
+                var options = new DbContextOptionsBuilder<BiobanksDbContext>();
                 options.UseSqlServer(args[0], options => options.EnableRetryOnFailure());
 
-                return new SubmissionsDbContext(options.Options);
+                return new BiobanksDbContext(options.Options);
             }
         }
     }

@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Common;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Biobanks.SubmissionApi.Types;
 using Microsoft.EntityFrameworkCore;
-using Data;
+using Biobanks.Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class SubmissionService : ISubmissionService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public SubmissionService(SubmissionsDbContext db)
+        public SubmissionService(BiobanksDbContext db)
         {
             _db = db;
         }
