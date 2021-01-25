@@ -1178,48 +1178,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteCollectionStatus(Models.Shared.CollectionStatusModel model)
-        {
-            if (await _biobankReadService.IsCollectionStatusInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The collection status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionStatus");
-            }
-
-            await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
-            {
-                CollectionStatusId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The collection status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionStatus");
-        }
-
-        public ActionResult EditCollectionStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The collection status \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionStatus");
-        }
-
-        public ActionResult AddCollectionStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The collection status \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionStatus");
-        }
         #endregion 
 
         #region RefData: Annual Statistic Groups
