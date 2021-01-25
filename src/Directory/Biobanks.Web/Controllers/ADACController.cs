@@ -1302,40 +1302,6 @@ namespace Biobanks.Web.Controllers
             }
         }
 
-        public async Task<ActionResult> DeleteCounty(CountyModel model)
-        {
-            if (await _biobankReadService.IsCountyInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The county \"{model.Name}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("Country");
-            }
-
-            var county = new County
-            {
-                CountyId = model.Id,
-                CountryId = model.CountryId,
-                Name = model.Name
-            };
-
-            await _biobankWriteService.DeleteCountyAsync(county);
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The county type \"{model.Name}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("County");
-        }
-
-        public ActionResult AddCountySuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The county \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("County");
-        }
-
-        public ActionResult EditCountySuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The county \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("County");
-        }
-
         #endregion
 
         #region RefData: Sop Status
