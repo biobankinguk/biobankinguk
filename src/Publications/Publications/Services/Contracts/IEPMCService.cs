@@ -15,6 +15,6 @@ namespace Publications.Services.Contracts
 
         //Annotations
 
-        Task<AnnotationResult> GetAnnotationsByIdAndSource(int publicationId, string source);
+        Task<AnnotationResult> GetPublicationAnnotations(int publicationId, string source);
     }
 }

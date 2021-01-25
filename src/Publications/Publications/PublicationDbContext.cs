@@ -20,7 +20,6 @@ namespace Publications
         public DbSet<Publication> Publications { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<Annotation> Annotations { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PublicationAnnotation>()

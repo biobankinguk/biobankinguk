@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Publications.Services.Contracts;
 using Publications.Services.Dto;
+using Publications.Entities;
 
 namespace Publications.Services
 {
@@ -17,9 +19,11 @@ namespace Publications.Services
         }
 
 
-        public async Task AddPublicationAnnotations(int publicationId, IEnumerable<AnnotationDto> annotations)
+        public async Task AddPublicationAnnotations(int publicationId, IEnumerable<Tag> annotations)
         {
-            
+            throw new NotImplementedException();
         }
+
+
     }
 }

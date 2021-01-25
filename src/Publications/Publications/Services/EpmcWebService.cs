@@ -32,7 +32,7 @@ namespace Publications
             return (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
         }
 
-        public async Task<AnnotationResult> GetAnnotationsByIdAndSource(int publicationId, string source)
+        public async Task<AnnotationResult> GetPublicationAnnotations(int publicationId, string source)
         {
             return (await AnnotationSearch(publicationId, source)).FirstOrDefault();
         }
