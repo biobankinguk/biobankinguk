@@ -41,19 +41,21 @@ namespace Publications.Services.Hosted
 
             foreach (var biobank in biobanks)
             {
-                var publications = await _epmcWebService.GetOrganisationPublications(biobank.Name);
+                //Fetch all publications for each organisation in DB
+                var publications = await _biobankReadService.ListOrganisationPublications(biobank.OrganisationId);
+
                 foreach (var publication in publications)
                 {
-                    //var annotations = await _epmcWebService.GetPublicationAnnotations(publication.Id, publication.)
+                    //Fetch all annotations for each publication
+                    var annotations = await _epmcWebService.GetPublicationAnnotations(publication.Id, publication.Source);
+                    //Add Annotations to db
+                    _logger.LogInformation($"Fetched {annotations.Annotations.Count()} annotations for {publication}");
                 }
             }
 
             throw new NotImplementedException();
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }
