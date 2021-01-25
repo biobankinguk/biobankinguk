@@ -921,49 +921,6 @@ namespace Biobanks.Web.Controllers
 
         }
 
-        public async Task<ActionResult> DeleteMaterialType(MaterialTypeModel model)
-        {
-            if (await _biobankReadService.IsMaterialTypeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The material type \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("MaterialTypes");
-            }
-
-            await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
-            {
-                MaterialTypeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The material type \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("MaterialTypes");
-        }
-
-        public ActionResult EditMaterialTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The material type \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("MaterialTypes");
-        }
-
-        public ActionResult AddMaterialTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The material type \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("MaterialTypes");
-        }
         #endregion
 
         #region RefData: Disease Status
