@@ -1223,39 +1223,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteSampleCollectionMode(SampleCollectionModeModel model)
-        {
-            if (await _biobankReadService.IsSampleCollectionModeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The sample collection mode \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("SampleCollectionModes");
-            }
-
-            var mode = new SampleCollectionMode
-            {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.DeleteSampleCollectionModeAsync(mode);
-
-            // Success
-            SetTemporaryFeedbackMessage($"The sample colelction mode  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SampleCollectionModes");
-        }
-
-        public ActionResult AddSampleCollectionModeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sameple collection mode \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SampleCollectionModes");
-        }
-
-        public ActionResult EditSampleCollectionModeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sample collection mode \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SampleCollectionModes");
-        }
         #endregion
 
         #region RefData: Sexes
