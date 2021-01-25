@@ -60,11 +60,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-consent-restriction="&quot;@consentRestriction.Description&quot;"
-                                   href="@Url.Action("DeleteConsentRestriction", new
-                                     {
-                                         consentRestriction.Id, consentRestriction.Description, consentRestriction.SortOrder
-                                     })">
+                                   data-refdata-model="@Json.Encode(consentRestriction)"
+                                   data-resource-url="/api/ConsentRestriction"
+                                   data-success-redirect="@Url.Action("ConsentRestrictions")"
+                                   data-refdata-type="Consent Restriction"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -99,8 +99,8 @@
 
             <form id="modal-consent-restriction-form"
                   data-resource-url="/api/ConsentRestriction"
-                  data-update-success-redirect="@Url.Action("EditConsentRestrictionSuccess")"
-                  data-add-success-redirect="@Url.Action("AddConsentRestrictionSuccess")"
+                  data-success-redirect="@Url.Action("ConsentRestrictions")"
+                  data-refdata-type="Consent Restriction"
                   class="form-horizontal">
 
                 <div class="modal-body">
