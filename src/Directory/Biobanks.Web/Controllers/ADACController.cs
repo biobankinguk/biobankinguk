@@ -1049,49 +1049,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteCollectionType(Models.Shared.CollectionTypeModel model)
-        {
-            if (await _biobankReadService.IsCollectionTypeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The collection type \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionType");
-            }
-
-            await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
-            {
-                CollectionTypeId = model.Id,
-                Description = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The collection type \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionType");
-
-        }
-
-        public ActionResult EditCollectionTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The collection type \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionType");
-        }
-
-        public ActionResult AddCollectionTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The consent restriction \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionType");
-        }
         #endregion
 
         #region RefData: Preservation Type
