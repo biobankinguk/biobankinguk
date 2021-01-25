@@ -1423,48 +1423,6 @@ namespace Biobanks.Web.Controllers
                     .ToList()
             });
         }
-        public async Task<ActionResult> DeleteServiceOffering(Models.Shared.ServiceOfferingModel model)
-        {
-            if (await _biobankReadService.IsServiceOfferingInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The service offering \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("ServiceOffering");
-            }
-
-            await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
-            {
-                ServiceId = model.Id,
-                Name = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The service offering \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ServiceOffering");
-        }
-
-        public ActionResult EditServiceOfferingSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The service offering \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ServiceOffering");
-        }
-
-        public ActionResult AddServiceOfferingSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The service offering \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ServiceOffering");
-        }
 
         #endregion
 
