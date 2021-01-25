@@ -840,37 +840,7 @@ namespace Biobanks.Web.Controllers
             });
 
         }
-        public async Task<ActionResult> DeleteAgeRange(AgeRangeModel model)
-        {
-            if (await _biobankReadService.IsAgeRangeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The age range \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("AgeRanges");
-            }
-
-            await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
-            {
-                AgeRangeId = model.Id,
-                Description = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            SetTemporaryFeedbackMessage($"The age range  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AgeRanges");
-
-        }
-
-        public ActionResult AddAgeRangeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The age range \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AgeRanges");
-        }
-
-        public ActionResult EditAgeRangeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The age range \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AgeRanges");
-        }
+        
         #endregion
         #region RefData: AssociatedDataProcurementTimeFrame
         public async Task<ActionResult> AssociatedDataProcurementTimeFrame()
