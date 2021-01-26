@@ -30,8 +30,8 @@ namespace Biobanks.Web.ApiControllers
             var groups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
                  .Select(x => new AnnualStatisticGroupModel
                  {
-                     AnnualStatisticGroupId = x.AnnualStatisticGroupId,
-                     Name = x.Name,
+                     AnnualStatisticGroupId = x.Id,
+                     Name = x.Value,
                  })
                  .ToList();
 
@@ -39,9 +39,9 @@ namespace Biobanks.Web.ApiControllers
                 .Select(x =>
                     Task.Run(async () => new AnnualStatisticModel
                     {
-                        Id = x.AnnualStatisticId,
-                        Name = x.Name,
-                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.AnnualStatisticId),
+                        Id = x.Id,
+                        Name = x.Value,
+                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.Id),
                         AnnualStatisticGroupId = x.AnnualStatisticGroupId,
                         AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
                     })
@@ -73,9 +73,9 @@ namespace Biobanks.Web.ApiControllers
 
             var annualStatistic = new AnnualStatistic
             {
-                AnnualStatisticId = model.Id,
+                Id = model.Id,
                 AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
+                Value = model.Name
             };
 
             await _biobankWriteService.AddAnnualStatisticAsync(annualStatistic);
@@ -110,9 +110,9 @@ namespace Biobanks.Web.ApiControllers
 
             var annualStatistics = new AnnualStatistic
             {
-                AnnualStatisticId = id,
+                Id = id,
                 AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
+                Value = model.Name
             };
 
             await _biobankWriteService.UpdateAnnualStatisticAsync(annualStatistics);
@@ -129,11 +129,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAnnualStatisticsAsync()).Where(x => x.AnnualStatisticId == id).First();
+            var model = (await _biobankReadService.ListAnnualStatisticsAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsAnnualStatisticInUse(id))
             {
-                ModelState.AddModelError("AnnualStatistics", $"The annual statistic \"{model.Name}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("AnnualStatistics", $"The annual statistic \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -143,9 +143,9 @@ namespace Biobanks.Web.ApiControllers
 
             var annualStatistic = new AnnualStatistic
             {
-                AnnualStatisticId = id,
+                Id = id,
                 AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
+                Value = model.Value
             };
 
             await _biobankWriteService.DeleteAnnualStatisticAsync(annualStatistic);
@@ -154,7 +154,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Name
+                name = model.Value
             });
 
         }
@@ -166,9 +166,9 @@ namespace Biobanks.Web.ApiControllers
 
             var annualStatistics = new AnnualStatistic
             {
-                AnnualStatisticId = id,
+                Id = id,
                 AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
+                Value = model.Name
             };
 
             await _biobankWriteService.UpdateAnnualStatisticAsync(annualStatistics, true);

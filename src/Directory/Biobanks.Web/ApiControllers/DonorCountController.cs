@@ -31,12 +31,12 @@ namespace Biobanks.Web.ApiControllers
                 .Select(x =>
                     Task.Run(async () => new DonorCountModel()
                     {
-                        Id = x.DonorCountId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.DonorCountId)
+                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -65,8 +65,8 @@ namespace Biobanks.Web.ApiControllers
 
             var donor = new DonorCount
             {
-                DonorCountId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound
@@ -110,8 +110,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {
-                DonorCountId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound
@@ -129,7 +129,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListDonorCountsAsync()).Where(x => x.DonorCountId == id).First();
+            var model = (await _biobankReadService.ListDonorCountsAsync()).Where(x => x.Id == id).First();
 
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
@@ -137,7 +137,7 @@ namespace Biobanks.Web.ApiControllers
             // If in use, prevent update
             if (await _biobankReadService.IsDonorCountInUse(id))
             {
-                ModelState.AddModelError("DonorCounts", $"The donor count \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("DonorCounts", $"The donor count \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -147,8 +147,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteDonorCountAsync(new DonorCount
             {
-                DonorCountId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Value,
                 SortOrder = model.SortOrder,
                 LowerBound = 0,
                 UpperBound = 1
@@ -158,7 +158,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -168,8 +168,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateDonorCountAsync(new DonorCount
             {
-                DonorCountId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound

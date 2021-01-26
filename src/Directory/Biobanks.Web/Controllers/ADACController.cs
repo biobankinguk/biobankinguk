@@ -788,10 +788,10 @@ namespace Biobanks.Web.Controllers
             .Select(x =>
                 Task.Run(async () => new ReadAccessConditionsModel
                 {
-                    Id = x.AccessConditionId,
-                    Description = x.Description,
+                    Id = x.Id,
+                    Description = x.Value,
                     SortOrder = x.SortOrder,
-                    AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.AccessConditionId),
+                    AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.Id),
                 }
                 )
                 .Result
@@ -816,7 +816,7 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
             {
-                AccessConditionId = model.Id
+                Id = model.Id
             });
 
             //Everything went A-OK!
@@ -846,10 +846,10 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new AgeRangeModel()
                     {
-                        Id = x.AgeRangeId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.AgeRangeId)
+                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -871,8 +871,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
             {
-                AgeRangeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -903,10 +903,10 @@ namespace Biobanks.Web.Controllers
 
                 Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
                 {
-                    Id = x.AssociatedDataProcurementTimeframeId,
-                    Description = x.Description,
+                    Id = x.Id,
+                    Description = x.Value,
                     DisplayName = x.DisplayValue,
-                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.AssociatedDataProcurementTimeframeId),
+                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -934,8 +934,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -980,8 +980,8 @@ namespace Biobanks.Web.Controllers
             var groups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
                 .Select(x => new AnnualStatisticGroupModel
                 {
-                    AnnualStatisticGroupId = x.AnnualStatisticGroupId,
-                    Name = x.Name,
+                    AnnualStatisticGroupId = x.Id,
+                    Name = x.Value,
                 })
                 .ToList();
 
@@ -989,9 +989,9 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new AnnualStatisticModel
                     {
-                        Id = x.AnnualStatisticId,
-                        Name = x.Name,
-                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.AnnualStatisticId),
+                        Id = x.Id,
+                        Name = x.Value,
+                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.Id),
                         AnnualStatisticGroupId = x.AnnualStatisticGroupId,
                         AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
                     })
@@ -1017,9 +1017,9 @@ namespace Biobanks.Web.Controllers
 
             var annualStatistic = new AnnualStatistic
             {
-                AnnualStatisticId = model.Id,
+                Id = model.Id,
                 AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
+                Value = model.Name
             };
 
             await _biobankWriteService.DeleteAnnualStatisticAsync(annualStatistic);
@@ -1175,12 +1175,12 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new CollectionPercentageModel()
                     {
-                        Id = x.CollectionPercentageId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.CollectionPercentageId)
+                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1208,8 +1208,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
             {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = 0,
                 UpperBound = 1
@@ -1240,10 +1240,10 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new CollectionPointModel()
                     {
-                        Id = x.CollectionPointId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPointUsageCount(x.CollectionPointId)
+                        SampleSetsCount = await _biobankReadService.GetCollectionPointUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1265,8 +1265,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteCollectionPointAsync(new CollectionPoint
             {
-                CollectionPointId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -1295,12 +1295,12 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new DonorCountModel()
                     {
-                        Id = x.DonorCountId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.DonorCountId)
+                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1325,8 +1325,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteDonorCountAsync(new DonorCount
             {
-                DonorCountId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = 0,
                 UpperBound = 1
@@ -1361,9 +1361,9 @@ namespace Biobanks.Web.Controllers
 
                  Task.Run(async () => new ReadCollectionTypeModel
                  {
-                     Id = x.CollectionTypeId,
-                     Description = x.Description,
-                     CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.CollectionTypeId),
+                     Id = x.Id,
+                     Description = x.Value,
+                     CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.Id),
                      SortOrder = x.SortOrder
                  }).Result)
 
@@ -1383,8 +1383,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
             {
-                CollectionTypeId = model.Id,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -1486,18 +1486,18 @@ namespace Biobanks.Web.Controllers
             var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
                 .Select(x => new AssociatedDataTypeGroupModel
                 {
-                    AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                    Name = x.Description,
+                    AssociatedDataTypeGroupId = x.Id,
+                    Name = x.Value,
                 })
                 .ToList();
             var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Select(x =>
 
             Task.Run(async () => new AssociatedDataTypeModel
             {
-                Id = x.AssociatedDataTypeId,
-                Name = x.Description,
+                Id = x.Id,
+                Name = x.Value,
                 Message = x.Message,
-                CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.AssociatedDataTypeId),
+                CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.Id),
                 AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
                 AssociatedDataTypeGroupName = groups.Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()?.Name,
 
@@ -1525,8 +1525,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteAssociatedDataTypeAsync(new AssociatedDataType
             {
-                AssociatedDataTypeId = model.Id,
-                Description = model.Name
+                Id = model.Id,
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -1567,9 +1567,9 @@ namespace Biobanks.Web.Controllers
 
                     Task.Run(async () => new ReadAssociatedDataTypeGroupModel
                     {
-                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                        Name = x.Description,
-                        AssociatedDataTypeGroupCount = await _biobankReadService.GetAssociatedDataTypeGroupCount(x.AssociatedDataTypeGroupId)
+                        AssociatedDataTypeGroupId = x.Id,
+                        Name = x.Value,
+                        AssociatedDataTypeGroupCount = await _biobankReadService.GetAssociatedDataTypeGroupCount(x.Id)
                     }).Result)
 
                     .ToList()
@@ -1587,8 +1587,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
             {
-                AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name
+                Id = model.AssociatedDataTypeGroupId,
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -1631,9 +1631,9 @@ namespace Biobanks.Web.Controllers
 
                 Task.Run(async () => new ReadConsentRestrictionModel
                 {
-                    Id = x.ConsentRestrictionId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.ConsentRestrictionId),
+                    Id = x.Id,
+                    Description = x.Value,
+                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -1653,8 +1653,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
             {
-                ConsentRestrictionId = model.Id,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -1695,9 +1695,9 @@ namespace Biobanks.Web.Controllers
 
                 Task.Run(async () => new ReadCollectionStatusModel
                 {
-                    Id = x.CollectionStatusId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.CollectionStatusId),
+                    Id = x.Id,
+                    Description = x.Value,
+                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -1717,8 +1717,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
             {
-                CollectionStatusId = model.Id,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -1759,9 +1759,9 @@ namespace Biobanks.Web.Controllers
 
                     Task.Run(async () => new ReadAnnualStatisticGroupModel
                     {
-                        AnnualStatisticGroupId = x.AnnualStatisticGroupId,
-                        Name = x.Name,
-                        AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.AnnualStatisticGroupId)
+                        AnnualStatisticGroupId = x.Id,
+                        Name = x.Value,
+                        AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.Id)
                     }).Result)
 
                     .ToList()
@@ -1780,8 +1780,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
             {
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
+                Id = model.AnnualStatisticGroupId,
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -1820,10 +1820,10 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new SampleCollectionModeModel
                     {
-                        Id = x.SampleCollectionModeId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.SampleCollectionModeId)
+                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1845,8 +1845,8 @@ namespace Biobanks.Web.Controllers
 
             var mode = new SampleCollectionMode
             {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 
@@ -1937,9 +1937,9 @@ namespace Biobanks.Web.Controllers
 
                      Task.Run(async () => new ReadCountryModel
                      {
-                         Id = x.CountryId,
-                         Name = x.Name,
-                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.CountryId)
+                         Id = x.Id,
+                         Name = x.Value,
+                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.Id)
                      }).Result)
 
                      .ToList()
@@ -1978,8 +1978,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteCountryAsync(new Country
             {
-                CountryId = model.Id,
-                Name = model.Name
+                Id = model.Id,
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -2001,15 +2001,15 @@ namespace Biobanks.Web.Controllers
                     new CountiesModel
                     {
                         Counties = countries.ToDictionary(
-                            x => x.Name,
+                            x => x.Value,
                             x => x.Counties.Select(county =>
                                 Task.Run(async () =>
                                     new CountyModel
                                     {
-                                        Id = county.CountyId,
-                                        CountryId = x.CountryId,
-                                        Name = county.Name,
-                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.CountyId)
+                                        Id = county.Id,
+                                        CountryId = x.Id,
+                                        Name = county.Value,
+                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.Id)
                                     }
                                  )
                                 .Result
@@ -2034,9 +2034,9 @@ namespace Biobanks.Web.Controllers
 
             var county = new County
             {
-                CountyId = model.Id,
+                Id = model.Id,
                 CountryId = model.CountryId,
-                Name = model.Name
+                Value = model.Name
             };
 
             await _biobankWriteService.DeleteCountyAsync(county);
@@ -2067,10 +2067,10 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new SopStatusModel()
                     {
-                        Id = x.SopStatusId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.SopStatusId)
+                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -2092,8 +2092,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
             {
-                SopStatusId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -2125,9 +2125,9 @@ namespace Biobanks.Web.Controllers
 
                 Task.Run(async () => new ReadRegistrationReasonModel
                 {
-                    Id = x.RegistrationReasonId,
-                    Description = x.Description,
-                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.RegistrationReasonId),
+                    Id = x.Id,
+                    Description = x.Value,
+                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
                 }).Result)
 
                     .ToList()
@@ -2146,8 +2146,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
             {
-                RegistrationReasonId = model.Id,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -2185,10 +2185,10 @@ namespace Biobanks.Web.Controllers
                 .Select(x =>
                     Task.Run(async () => new MacroscopicAssessmentModel()
                     {
-                        Id = x.MacroscopicAssessmentId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetMacroscopicAssessmentUsageCount(x.MacroscopicAssessmentId)
+                        SampleSetsCount = await _biobankReadService.GetMacroscopicAssessmentUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -2219,8 +2219,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteMacroscopicAssessmentAsync(new MacroscopicAssessment
             {
-                MacroscopicAssessmentId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -2254,9 +2254,9 @@ namespace Biobanks.Web.Controllers
 
                     Task.Run(async () => new ReadHtaStatusModel
                     {
-                        Id = x.HtaStatusId,
-                        Description = x.Description,
-                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.HtaStatusId),
+                        Id = x.Id,
+                        Description = x.Value,
+                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
@@ -2282,8 +2282,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
             {
-                HtaStatusId = model.Id,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -2326,9 +2326,9 @@ namespace Biobanks.Web.Controllers
 
                 Task.Run(async () => new ReadServiceOfferingModel
                 {
-                    Id = x.ServiceId,
-                    Name = x.Name,
-                    OrganisationCount = await _biobankReadService.GetServiceOfferingOrganisationCount(x.ServiceId),
+                    Id = x.Id,
+                    Name = x.Value,
+                    OrganisationCount = await _biobankReadService.GetServiceOfferingOrganisationCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -2347,8 +2347,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
             {
-                ServiceId = model.Id,
-                Name = model.Name
+                Id = model.Id,
+                Value = model.Name
             });
 
             //Everything went A-OK!

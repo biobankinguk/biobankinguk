@@ -33,9 +33,9 @@ namespace Biobanks.Web.ApiControllers
 
                 Task.Run(async () => new ReadRegistrationReasonModel
                 {
-                    Id = x.RegistrationReasonId,
-                    Description = x.Description,
-                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.RegistrationReasonId),
+                    Id = x.Id,
+                    Description = x.Value,
+                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
                 }).Result)
 
                     .ToList();
@@ -47,11 +47,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListRegistrationReasonsAsync()).Where(x => x.RegistrationReasonId == id).First();
+            var model = (await _biobankReadService.ListRegistrationReasonsAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsRegistrationReasonInUse(id))
             {
-                ModelState.AddModelError("Description", $"The registration reason \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("Description", $"The registration reason \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -61,15 +61,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
             {
-                RegistrationReasonId = model.RegistrationReasonId,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description
+                name = model.Value
             });
         }
 
@@ -95,8 +95,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateRegistrationReasonAsync(new RegistrationReason
             {
-                RegistrationReasonId = id,
-                Description = model.Description
+                Id = id,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -124,7 +124,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddRegistrationReasonAsync(new RegistrationReason
             {
-                Description = model.Description
+                Value = model.Description
             });
 
             //Everything went A-OK!

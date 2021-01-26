@@ -162,8 +162,8 @@ namespace Biobanks.DataSeed.Services
             foreach (dynamic x in csvRecords)
                 _db.Counties.Add(new County
                 {
-                    Name = x.Name,
-                    Country = countries.Single(y => y.CountryId == x.CountryId)
+                    Value = x.Name,
+                    Country = countries.Single(y => y.Id == x.CountryId)
                 });
 
             _db.SaveChanges();
@@ -182,7 +182,7 @@ namespace Biobanks.DataSeed.Services
                 foreach (CountriesDTO country in countries)
                     _db.Countries.Add(new Country
                     {
-                        Name = country.CountryName
+                        Value = country.CountryName
                     });
                 configEntity.Value = "false";
                 _db.SaveChanges();

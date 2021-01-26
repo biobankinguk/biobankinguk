@@ -25,26 +25,26 @@ namespace Biobanks.Services.Extensions
                 CollectionId = sampleSet.CollectionId,
                 CollectionTitle = sampleSet.Collection.Title,
                 StartYear = sampleSet.Collection.StartDate.Year.ToString(),
-                CollectionPoint = sampleSet.Collection.CollectionPoint.Description,
-                CollectionStatus = sampleSet.Collection.CollectionStatus.Description,
+                CollectionPoint = sampleSet.Collection.CollectionPoint.Value,
+                CollectionStatus = sampleSet.Collection.CollectionStatus.Value,
                 ConsentRestrictions = BuildConsentRestrictions(sampleSet.Collection.ConsentRestrictions.ToList()),
-                HTA = sampleSet.Collection.HtaStatus?.Description ?? "not provided",
-                AccessCondition = sampleSet.Collection.AccessCondition.Description,
+                HTA = sampleSet.Collection.HtaStatus?.Value ?? "not provided",
+                AccessCondition = sampleSet.Collection.AccessCondition.Value,
                 AccessConditionMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.Collection.AccessCondition.Description,
+                    Name = sampleSet.Collection.AccessCondition.Value,
                     sampleSet.Collection.AccessCondition.SortOrder
                 }),
-                CollectionType = sampleSet.Collection.CollectionType?.Description,
+                CollectionType = sampleSet.Collection.CollectionType?.Value,
 
                 AssociatedData = sampleSet.Collection.AssociatedData
                     .Select(x => new AssociatedDataDocument
                     {
-                        Text = x.AssociatedDataType.Description,
-                        Timeframe = x.AssociatedDataProcurementTimeframe.Description,
+                        Text = x.AssociatedDataType.Value,
+                        Timeframe = x.AssociatedDataProcurementTimeframe.Value,
                         TimeframeMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = x.AssociatedDataProcurementTimeframe.Description,
+                            Name = x.AssociatedDataProcurementTimeframe.Value,
                             x.AssociatedDataProcurementTimeframe.SortOrder
                         })
                     }),
@@ -55,16 +55,16 @@ namespace Biobanks.Services.Extensions
                     Name = sampleSet.Sex.Value,
                     sampleSet.Sex.SortOrder
                 }),
-                AgeRange = sampleSet.AgeRange.Description,
+                AgeRange = sampleSet.AgeRange.Value,
                 AgeRangeMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.AgeRange.Description,
+                    Name = sampleSet.AgeRange.Value,
                     sampleSet.AgeRange.SortOrder
                 }),
-                DonorCount = sampleSet.DonorCount.Description,
+                DonorCount = sampleSet.DonorCount.Value,
                 DonorCountMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.DonorCount.Description,
+                    Name = sampleSet.DonorCount.Value,
                     sampleSet.DonorCount.SortOrder
                 }),
 
@@ -78,23 +78,23 @@ namespace Biobanks.Services.Extensions
                             Name = x.StorageTemperature.Value,
                             x.StorageTemperature.SortOrder
                         }),
-                        MacroscopicAssessment = x.MacroscopicAssessment.Description,
-                        PercentageOfSampleSet = x.CollectionPercentage?.Description
+                        MacroscopicAssessment = x.MacroscopicAssessment.Value,
+                        PercentageOfSampleSet = x.CollectionPercentage?.Value
                     }),
 
                 BiobankServices = sampleSet.Collection.Organisation.OrganisationServiceOfferings
                     .Select(x => new BiobankServiceDocument
                     {
-                        Name = x.ServiceOffering.Name
+                        Name = x.ServiceOffering.Value
                     }),
 
                 SampleSetSummary = BuildSampleSetSummary(
-                    sampleSet.DonorCount.Description,
-                    sampleSet.AgeRange.Description,
+                    sampleSet.DonorCount.Value,
+                    sampleSet.AgeRange.Value,
                     sampleSet.Sex.Value,
                     sampleSet.MaterialDetails),
-                Country = sampleSet.Collection.Organisation.Country.Name,
-                County = sampleSet.Collection.Organisation.County?.Name ?? "Not Provided"
+                Country = sampleSet.Collection.Organisation.Country.Value,
+                County = sampleSet.Collection.Organisation.County?.Value ?? "Not Provided"
             };
         }
 
@@ -118,7 +118,7 @@ namespace Biobanks.Services.Extensions
         public static IEnumerable<ConsentRestrictionDocument> BuildConsentRestrictions(IList<ConsentRestriction> consentRestrictions)
         {
             return consentRestrictions.Any()
-                ? consentRestrictions.Select(cr => new ConsentRestrictionDocument {Description = cr.Description})
+                ? consentRestrictions.Select(cr => new ConsentRestrictionDocument {Description = cr.Value})
                 : new List<ConsentRestrictionDocument> { new ConsentRestrictionDocument {Description = "No restrictions"} };
         }
     }

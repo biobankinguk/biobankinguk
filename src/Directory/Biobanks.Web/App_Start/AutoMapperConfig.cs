@@ -41,12 +41,12 @@ namespace Biobanks.Web
                     .ForMember(dest => dest.LogoName, opts => opts.MapFrom(src => src.Logo));
 
                 cfg.CreateMap<DiagnosisCapability, DetailedCapabilitySearchCapabilityModel>()
-                    .ForMember(dest => dest.Protocols, opts => opts.MapFrom(src => src.SampleCollectionMode.Description))
+                    .ForMember(dest => dest.Protocols, opts => opts.MapFrom(src => src.SampleCollectionMode.Value))
                     .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.SnomedTerm.Description))
                     .ForMember(dest => dest.AssociatedData,
                         opts => opts.MapFrom(src => src.AssociatedData.Select(
-                            x => new KeyValuePair<string, string>(x.AssociatedDataType.Description,
-                                x.AssociatedDataProcurementTimeframe.Description))));
+                            x => new KeyValuePair<string, string>(x.AssociatedDataType.Value,
+                                x.AssociatedDataProcurementTimeframe.Value))));
 
                 cfg.CreateMap<CopySampleSetModel, AddSampleSetModel>();
 

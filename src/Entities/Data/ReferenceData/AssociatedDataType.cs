@@ -4,10 +4,10 @@ namespace Biobanks.Entities.Data.ReferenceData
 {
     public class AssociatedDataType
     {
-        public int AssociatedDataTypeId { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string Value { get; set; }
 
         public string Message { get; set; }
         public int AssociatedDataTypeGroupId { get; set; }

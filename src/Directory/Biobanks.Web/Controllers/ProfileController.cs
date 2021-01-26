@@ -68,8 +68,8 @@ namespace Biobanks.Web.Controllers
                 AddressLine4 = bb.AddressLine4,
                 City = bb.City,
                 PostCode = bb.PostCode,
-                CountyName = bb.County?.Name,
-                CountryName = bb.Country.Name,
+                CountyName = bb.County?.Value,
+                CountryName = bb.Country.Value,
                 ContactNumber = bb.ContactNumber,
                 LastUpdated = bb.LastUpdated,
                 NetworkMembers = (await _biobankReadService.GetNetworksByBiobankIdAsync(bb.OrganisationId)).Select(
@@ -85,7 +85,7 @@ namespace Biobanks.Web.Controllers
                     {
                         Id = x.DiagnosisCapabilityId,
                         SnomedTerm = x.SnomedTerm.Description,
-                        Protocols = x.SampleCollectionMode.Description
+                        Protocols = x.SampleCollectionMode.Value
                     })
                     .Select(x => x.SnomedTerm)
                     .Distinct()
@@ -106,7 +106,7 @@ namespace Biobanks.Web.Controllers
                     .ToList(),
                 Services = (await _biobankReadService.ListBiobankServiceOfferingsAsync(bb.OrganisationId))
                     .OrderBy(x => x.ServiceOffering.SortOrder)
-                    .Select(x => x.ServiceOffering.Name)
+                    .Select(x => x.ServiceOffering.Value)
                     .ToList(),
                
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
@@ -128,7 +128,7 @@ namespace Biobanks.Web.Controllers
                 Url = nw.Url,
                 Logo = nw.Logo,
                 ContactEmail = nw.Email,
-                SopStatus = nw.SopStatus.Description,
+                SopStatus = nw.SopStatus.Value,
                 BiobankMembers = (await _biobankReadService.GetBiobanksByNetworkIdAsync(id)).Select(
                     x => new BiobankMemberModel
                     {

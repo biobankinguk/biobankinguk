@@ -199,7 +199,7 @@ namespace Biobanks.Services
         {
             var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(snomedTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
-                        x => consentRestrictionIds.Contains(x.ConsentRestrictionId))).ToList();
+                        x => consentRestrictionIds.Contains(x.Id))).ToList();
 
             collection.SnomedTermId = snomedTerm.Id;
             collection.LastUpdated = DateTime.Now;
@@ -230,7 +230,7 @@ namespace Biobanks.Services
 
             var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(snomedTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
-                        x => consentRestrictionIds.Contains(x.ConsentRestrictionId))).ToList();
+                        x => consentRestrictionIds.Contains(x.Id))).ToList();
 
             existingCollection.SnomedTermId = snomedTerm.Id;
             existingCollection.Title = collection.Title;
@@ -723,20 +723,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                sampleCollectionMode.Description =
+                sampleCollectionMode.Value =
                     modes
-                        .Where(x => x.SampleCollectionModeId == sampleCollectionMode.SampleCollectionModeId)
+                        .Where(x => x.Id == sampleCollectionMode.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldMode = modes.Where(x => x.SampleCollectionModeId == sampleCollectionMode.SampleCollectionModeId).First();
+            var oldMode = modes.Where(x => x.Id == sampleCollectionMode.Id).First();
             var reverse = (oldMode.SortOrder < sampleCollectionMode.SortOrder);
 
             var newOrder = modes
                     .Prepend(sampleCollectionMode)
-                    .GroupBy(x => x.SampleCollectionModeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -761,7 +761,7 @@ namespace Biobanks.Services
 
         public async Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollectionMode)
         {
-            await _sampleCollectionModeRepository.DeleteAsync(sampleCollectionMode.SampleCollectionModeId);
+            await _sampleCollectionModeRepository.DeleteAsync(sampleCollectionMode.Id);
             await _sampleCollectionModeRepository.SaveChangesAsync();
         }
         #endregion
@@ -782,20 +782,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionPoint.Description =
+                collectionPoint.Value =
                     points
-                        .Where(x => x.CollectionPointId == collectionPoint.CollectionPointId)
+                        .Where(x => x.Id == collectionPoint.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldPoint = points.Where(x => x.CollectionPointId == collectionPoint.CollectionPointId).First();
+            var oldPoint = points.Where(x => x.Id == collectionPoint.Id).First();
             var reverse = (oldPoint.SortOrder < collectionPoint.SortOrder);
 
             var newOrder = points
                     .Prepend(collectionPoint)
-                    .GroupBy(x => x.CollectionPointId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -820,7 +820,7 @@ namespace Biobanks.Services
 
         public async Task DeleteCollectionPointAsync(CollectionPoint collectionPoint)
         {
-            await _collectionPointRepository.DeleteAsync(collectionPoint.CollectionPointId);
+            await _collectionPointRepository.DeleteAsync(collectionPoint.Id);
             await _collectionPointRepository.SaveChangesAsync();
         }
         #endregion
@@ -841,20 +841,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionPercentage.Description =
+                collectionPercentage.Value =
                     percentages
-                        .Where(x => x.CollectionPercentageId == collectionPercentage.CollectionPercentageId)
+                        .Where(x => x.Id == collectionPercentage.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldPercentage = percentages.Where(x => x.CollectionPercentageId == collectionPercentage.CollectionPercentageId).First();
+            var oldPercentage = percentages.Where(x => x.Id == collectionPercentage.Id).First();
             var reverse = (oldPercentage.SortOrder < collectionPercentage.SortOrder);
 
             var newOrder = percentages
                     .Prepend(collectionPercentage)
-                    .GroupBy(x => x.CollectionPercentageId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -879,7 +879,7 @@ namespace Biobanks.Services
 
         public async Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage)
         {
-            await _collectionPercentageRepository.DeleteAsync(collectionPercentage.CollectionPercentageId);
+            await _collectionPercentageRepository.DeleteAsync(collectionPercentage.Id);
             await _collectionPercentageRepository.SaveChangesAsync();
         }
         #endregion
@@ -900,20 +900,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                consentRestriction.Description =
+                consentRestriction.Value =
                     restrictions
-                        .Where(x => x.ConsentRestrictionId == consentRestriction.ConsentRestrictionId)
+                        .Where(x => x.Id == consentRestriction.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldRestriction = restrictions.Where(x => x.ConsentRestrictionId == consentRestriction.ConsentRestrictionId).First();
+            var oldRestriction = restrictions.Where(x => x.Id == consentRestriction.Id).First();
             var reverse = (oldRestriction.SortOrder < consentRestriction.SortOrder);
 
             var newOrder = restrictions
                     .Prepend(consentRestriction)
-                    .GroupBy(x => x.ConsentRestrictionId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -938,7 +938,7 @@ namespace Biobanks.Services
 
         public async Task DeleteConsentRestrictionAsync(ConsentRestriction consentRestriction)
         {
-            await _consentRestrictionRepository.DeleteAsync(consentRestriction.ConsentRestrictionId);
+            await _consentRestrictionRepository.DeleteAsync(consentRestriction.Id);
             await _consentRestrictionRepository.SaveChangesAsync();
         }
         #endregion
@@ -959,20 +959,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                donorCount.Description =
+                donorCount.Value =
                     donorCounts
-                        .Where(x => x.DonorCountId == donorCount.DonorCountId)
+                        .Where(x => x.Id == donorCount.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldCount = donorCounts.Where(x => x.DonorCountId == donorCount.DonorCountId).First();
+            var oldCount = donorCounts.Where(x => x.Id == donorCount.Id).First();
             var reverse = (oldCount.SortOrder < donorCount.SortOrder);
 
             var newOrder = donorCounts
                     .Prepend(donorCount)
-                    .GroupBy(x => x.DonorCountId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -997,7 +997,7 @@ namespace Biobanks.Services
 
         public async Task DeleteDonorCountAsync(DonorCount donorCount)
         {
-            await _donorCountRepository.DeleteAsync(donorCount.DonorCountId);
+            await _donorCountRepository.DeleteAsync(donorCount.Id);
             await _donorCountRepository.SaveChangesAsync();
         }
         #endregion
@@ -1018,20 +1018,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                macroscopicAssessment.Description =
+                macroscopicAssessment.Value =
                     assessments
-                        .Where(x => x.MacroscopicAssessmentId == macroscopicAssessment.MacroscopicAssessmentId)
+                        .Where(x => x.Id == macroscopicAssessment.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldAssessment = assessments.Where(x => x.MacroscopicAssessmentId == macroscopicAssessment.MacroscopicAssessmentId).First();
+            var oldAssessment = assessments.Where(x => x.Id == macroscopicAssessment.Id).First();
             var reverse = (oldAssessment.SortOrder < macroscopicAssessment.SortOrder);
 
             var newOrder = assessments
                     .Prepend(macroscopicAssessment)
-                    .GroupBy(x => x.MacroscopicAssessmentId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1056,7 +1056,7 @@ namespace Biobanks.Services
 
         public async Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment)
         {
-            await _macroscopicAssessmentRepository.DeleteAsync(macroscopicAssessment.MacroscopicAssessmentId);
+            await _macroscopicAssessmentRepository.DeleteAsync(macroscopicAssessment.Id);
             await _macroscopicAssessmentRepository.SaveChangesAsync();
         }
         #endregion
@@ -1077,20 +1077,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                ageRange.Description =
+                ageRange.Value =
                     types
-                        .Where(x => x.AgeRangeId == ageRange.AgeRangeId)
+                        .Where(x => x.Id == ageRange.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.AgeRangeId == ageRange.AgeRangeId).First();
+            var oldType = types.Where(x => x.Id == ageRange.Id).First();
             var reverse = (oldType.SortOrder < ageRange.SortOrder);
 
             var newOrder = types
                     .Prepend(ageRange)
-                    .GroupBy(x => x.AgeRangeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1115,7 +1115,7 @@ namespace Biobanks.Services
 
         public async Task DeleteAgeRangeAsync(AgeRange ageRange)
         {
-            await _ageRangeRepository.DeleteAsync(ageRange.AgeRangeId);
+            await _ageRangeRepository.DeleteAsync(ageRange.Id);
             await _ageRangeRepository.SaveChangesAsync();
         }
         #endregion
@@ -1136,20 +1136,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                sopStatus.Description =
+                sopStatus.Value =
                     statuses
-                        .Where(x => x.SopStatusId == sopStatus.SopStatusId)
+                        .Where(x => x.Id == sopStatus.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.SopStatusId == sopStatus.SopStatusId).First();
+            var oldStatus = statuses.Where(x => x.Id == sopStatus.Id).First();
             var reverse = (oldStatus.SortOrder < sopStatus.SortOrder);
 
             var newOrder = statuses
                     .Prepend(sopStatus)
-                    .GroupBy(x => x.SopStatusId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1174,7 +1174,7 @@ namespace Biobanks.Services
 
         public async Task DeleteSopStatusAsync(SopStatus sopStatus)
         {
-            await _sopStatusRepository.DeleteAsync(sopStatus.SopStatusId);
+            await _sopStatusRepository.DeleteAsync(sopStatus.Id);
             await _sopStatusRepository.SaveChangesAsync();
         }
         #endregion
@@ -1195,20 +1195,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                accessCondition.Description =
+                accessCondition.Value =
                     conditions
-                        .Where(x => x.AccessConditionId == accessCondition.AccessConditionId)
+                        .Where(x => x.Id == accessCondition.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldCondition = conditions.Where(x => x.AccessConditionId == accessCondition.AccessConditionId).First();
+            var oldCondition = conditions.Where(x => x.Id == accessCondition.Id).First();
             var reverse = (oldCondition.SortOrder < accessCondition.SortOrder);
 
             var newOrder = conditions
                     .Prepend(accessCondition)
-                    .GroupBy(x => x.AccessConditionId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1233,7 +1233,7 @@ namespace Biobanks.Services
 
         public async Task DeleteAccessConditionAsync(AccessCondition accessCondition)
         {
-            await _accessConditionRepository.DeleteAsync(accessCondition.AccessConditionId);
+            await _accessConditionRepository.DeleteAsync(accessCondition.Id);
             await _accessConditionRepository.SaveChangesAsync();
         }
         #endregion
@@ -1257,7 +1257,7 @@ namespace Biobanks.Services
 
         public async Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic)
         {
-            await _annualStatisticRepository.DeleteAsync(annualStatistic.AnnualStatisticId);
+            await _annualStatisticRepository.DeleteAsync(annualStatistic.Id);
             await _annualStatisticRepository.SaveChangesAsync();
         }
         #endregion
@@ -1278,20 +1278,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionStatus.Description =
+                collectionStatus.Value =
                     statuses
-                        .Where(x => x.CollectionStatusId == collectionStatus.CollectionStatusId)
+                        .Where(x => x.Id == collectionStatus.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.CollectionStatusId == collectionStatus.CollectionStatusId).First();
+            var oldStatus = statuses.Where(x => x.Id == collectionStatus.Id).First();
             var reverse = (oldStatus.SortOrder < collectionStatus.SortOrder);
 
             var newOrder = statuses
                     .Prepend(collectionStatus)
-                    .GroupBy(x => x.CollectionStatusId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1316,7 +1316,7 @@ namespace Biobanks.Services
 
         public async Task DeleteCollectionStatusAsync(CollectionStatus collectionStatus)
         {
-            await _collectionStatusRepository.DeleteAsync(collectionStatus.CollectionStatusId);
+            await _collectionStatusRepository.DeleteAsync(collectionStatus.Id);
             await _collectionStatusRepository.SaveChangesAsync();
         }
         #endregion
@@ -1337,20 +1337,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                timeframe.Description =
+                timeframe.Value =
                     procurements
-                        .Where(x => x.AssociatedDataProcurementTimeframeId == timeframe.AssociatedDataProcurementTimeframeId)
+                        .Where(x => x.Id == timeframe.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldTimeframe = procurements.Where(x => x.AssociatedDataProcurementTimeframeId == timeframe.AssociatedDataProcurementTimeframeId).First();
+            var oldTimeframe = procurements.Where(x => x.Id == timeframe.Id).First();
             var reverse = (oldTimeframe.SortOrder < timeframe.SortOrder);
 
             var newOrder = procurements
                     .Prepend(timeframe)
-                    .GroupBy(x => x.AssociatedDataProcurementTimeframeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1375,7 +1375,7 @@ namespace Biobanks.Services
 
         public async Task DeleteAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
         {
-            await _associatedDataProcurementTimeFrameRepository.DeleteAsync(associatedDataProcurementTimeframe.AssociatedDataProcurementTimeframeId);
+            await _associatedDataProcurementTimeFrameRepository.DeleteAsync(associatedDataProcurementTimeframe.Id);
             await _associatedDataProcurementTimeFrameRepository.SaveChangesAsync();
         }
         #endregion
@@ -1396,20 +1396,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                htaStatus.Description =
+                htaStatus.Value =
                     statuses
-                        .Where(x => x.HtaStatusId == htaStatus.HtaStatusId)
+                        .Where(x => x.Id == htaStatus.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.HtaStatusId == htaStatus.HtaStatusId).First();
+            var oldStatus = statuses.Where(x => x.Id == htaStatus.Id).First();
             var reverse = (oldStatus.SortOrder < htaStatus.SortOrder);
 
             var newOrder = statuses
                     .Prepend(htaStatus)
-                    .GroupBy(x => x.HtaStatusId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1434,7 +1434,7 @@ namespace Biobanks.Services
 
         public async Task DeleteHtaStatusAsync(HtaStatus htaStatus)
         {
-            await _htaStatusRepository.DeleteAsync(htaStatus.HtaStatusId);
+            await _htaStatusRepository.DeleteAsync(htaStatus.Id);
             await _htaStatusRepository.SaveChangesAsync();
         }
         #endregion
@@ -1560,7 +1560,7 @@ namespace Biobanks.Services
         #region RefData: Collection Type
         public async Task DeleteCollectionTypeAsync(CollectionType collectionType)
         {
-            await _collectionTypeRepository.DeleteAsync(collectionType.CollectionTypeId);
+            await _collectionTypeRepository.DeleteAsync(collectionType.Id);
             await _collectionTypeRepository.SaveChangesAsync();
         }
 
@@ -1571,17 +1571,17 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionType.Description =
+                collectionType.Value =
                     types
-                        .Where(x => x.CollectionTypeId == collectionType.CollectionTypeId)
+                        .Where(x => x.Id == collectionType.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Insert respecting Sort Order
             types
                 .Prepend(collectionType)          // Add new item
-                .GroupBy(x => x.CollectionTypeId) // Remove old item of same ID
+                .GroupBy(x => x.Id) // Remove old item of same ID
                 .Select(x => x.First())
                 .OrderByDescending(x => x.SortOrder)    // Order giving priority to new item
                 .Reverse()
@@ -1623,20 +1623,20 @@ namespace Biobanks.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                serviceOffering.Name =
+                serviceOffering.Value =
                     offerings
-                        .Where(x => x.ServiceId == serviceOffering.ServiceId)
+                        .Where(x => x.Id == serviceOffering.Id)
                         .First()
-                        .Name;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = offerings.Where(x => x.ServiceId == serviceOffering.ServiceId).First();
+            var oldStatus = offerings.Where(x => x.Id == serviceOffering.Id).First();
             var reverse = (oldStatus.SortOrder < serviceOffering.SortOrder);
 
             var newOrder = offerings
                     .Prepend(serviceOffering)
-                    .GroupBy(x => x.ServiceId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1661,7 +1661,7 @@ namespace Biobanks.Services
       
         public async Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering)
         {
-            await _serviceOfferingRepository.DeleteAsync(serviceOffering.ServiceId);
+            await _serviceOfferingRepository.DeleteAsync(serviceOffering.Id);
             await _serviceOfferingRepository.SaveChangesAsync();
         }
         #endregion
@@ -1740,7 +1740,7 @@ namespace Biobanks.Services
         //delete adt
         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
         {
-            await _associatedDataTypeRepository.DeleteAsync(associatedDataType.AssociatedDataTypeId);
+            await _associatedDataTypeRepository.DeleteAsync(associatedDataType.Id);
             await _associatedDataTypeRepository.SaveChangesAsync();
         }
         public async Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
@@ -1778,7 +1778,7 @@ namespace Biobanks.Services
 
         public async Task DeleteCountryAsync(Country country)
         {
-            await _countryRepository.DeleteAsync(country.CountryId);
+            await _countryRepository.DeleteAsync(country.Id);
             await _countryRepository.SaveChangesAsync();
         }
         #endregion
@@ -1799,7 +1799,7 @@ namespace Biobanks.Services
         }
         public async Task DeleteCountyAsync(County county)
         {
-            await _countyRepository.DeleteAsync(county.CountyId);
+            await _countyRepository.DeleteAsync(county.Id);
             await _countyRepository.SaveChangesAsync();
         }
 
@@ -1807,7 +1807,7 @@ namespace Biobanks.Services
         
         public async Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason)
         {
-            await _registrationReasonRepository.DeleteAsync(registrationReason.RegistrationReasonId);
+            await _registrationReasonRepository.DeleteAsync(registrationReason.Id);
             await _registrationReasonRepository.SaveChangesAsync();
         }
         public async Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason)
@@ -2001,7 +2001,7 @@ namespace Biobanks.Services
 
         public async Task DeleteAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup)
         {
-            await _associatedDataTypeGroupRepository.DeleteAsync(associatedDataTypeGroup.AssociatedDataTypeGroupId);
+            await _associatedDataTypeGroupRepository.DeleteAsync(associatedDataTypeGroup.Id);
             await _associatedDataTypeGroupRepository.SaveChangesAsync();
         }
 
@@ -2021,7 +2021,7 @@ namespace Biobanks.Services
         }
         public async Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
         {
-            await _annualStatisticGroupRepository.DeleteAsync(annualStatisticGroup.AnnualStatisticGroupId);
+            await _annualStatisticGroupRepository.DeleteAsync(annualStatisticGroup.Id);
             await _annualStatisticGroupRepository.SaveChangesAsync();
         }
 

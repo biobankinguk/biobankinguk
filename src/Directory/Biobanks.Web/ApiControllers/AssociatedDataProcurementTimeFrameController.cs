@@ -31,10 +31,10 @@ namespace Biobanks.Web.ApiControllers
 
                 Task.Run(async () => new Models.ADAC.ReadAssociatedDataProcurementTimeFrameModel
                 {
-                    Id = x.AssociatedDataProcurementTimeframeId,
-                    Description = x.Description,
+                    Id = x.Id,
+                    Description = x.Value,
                     DisplayName = x.DisplayValue,
-                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.AssociatedDataProcurementTimeframeId),
+                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result).ToList();
 
@@ -46,7 +46,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames()).Where(x => x.AssociatedDataProcurementTimeframeId == id).First();
+            var model = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames()).Where(x => x.Id == id).First();
 
             //Validate min amount of time frames
             var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
@@ -57,7 +57,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
             {
-                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"The associated data procurement time frame \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"The associated data procurement time frame \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -67,15 +67,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
-                AssociatedDataProcurementTimeframeId = id,
-                Description = model.Description
+                Id = id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
 
         }
@@ -103,8 +103,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
-                AssociatedDataProcurementTimeframeId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 DisplayValue = model.DisplayName,
                 SortOrder = model.SortOrder
             });
@@ -140,8 +140,8 @@ namespace Biobanks.Web.ApiControllers
 
             var procurement = new AssociatedDataProcurementTimeframe
             {
-                AssociatedDataProcurementTimeframeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 DisplayValue = model.DisplayName
             };
@@ -163,8 +163,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
             {
-                AssociatedDataProcurementTimeframeId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 DisplayValue = model.DisplayName
             },

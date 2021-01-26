@@ -92,16 +92,16 @@ namespace Biobanks.Services
                 new PartialSampleSet
                 {
                     Sex = updatedSampleSet.Sex.Value,
-                    AgeRange = updatedSampleSet.AgeRange.Description,
+                    AgeRange = updatedSampleSet.AgeRange.Value,
                     AgeRangeMetadata = JsonConvert.SerializeObject(new
                     {
-                        Name = updatedSampleSet.AgeRange.Description,
+                        Name = updatedSampleSet.AgeRange.Value,
                         updatedSampleSet.AgeRange.SortOrder
                     }),
-                    DonorCount = updatedSampleSet.DonorCount.Description,
+                    DonorCount = updatedSampleSet.DonorCount.Value,
                     DonorCountMetadata = JsonConvert.SerializeObject(new
                     {
-                        Name = updatedSampleSet.DonorCount.Description,
+                        Name = updatedSampleSet.DonorCount.Value,
                         updatedSampleSet.DonorCount.SortOrder
                     }),
                     MaterialPreservationDetails = updatedSampleSet.MaterialDetails
@@ -114,12 +114,12 @@ namespace Biobanks.Services
                                 Name = x.StorageTemperature.Value,
                                 x.StorageTemperature.SortOrder
                             }),
-                            MacroscopicAssessment = x.MacroscopicAssessment.Description,
-                            PercentageOfSampleSet = x.CollectionPercentage.Description
+                            MacroscopicAssessment = x.MacroscopicAssessment.Value,
+                            PercentageOfSampleSet = x.CollectionPercentage.Value
                         }),
                     SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
-                        updatedSampleSet.DonorCount.Description, 
-                        updatedSampleSet.AgeRange.Description,
+                        updatedSampleSet.DonorCount.Value, 
+                        updatedSampleSet.AgeRange.Value,
                         updatedSampleSet.Sex.Value,
                         updatedSampleSet.MaterialDetails)
                 }));
@@ -148,16 +148,16 @@ namespace Biobanks.Services
                 new PartialCapability
                 {
                     SnomedTerm = updatedCapability.SnomedTerm.Description,
-                    Protocols = updatedCapability.SampleCollectionMode.Description,
+                    Protocols = updatedCapability.SampleCollectionMode.Value,
                     AnnualDonorExpectation = donorExpectation.Key,
                     AnnualDonorExpectationMetadata = donorExpectationMetadata,
                     AssociatedData = updatedCapability.AssociatedData.Select(ad => new AssociatedDataDocument
                     {
-                        Text = ad.AssociatedDataType.Description,
-                        Timeframe = ad.AssociatedDataProcurementTimeframe.Description,
+                        Text = ad.AssociatedDataType.Value,
+                        Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
                         TimeframeMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = ad.AssociatedDataProcurementTimeframe.Description,
+                            Name = ad.AssociatedDataProcurementTimeframe.Value,
                             ad.AssociatedDataProcurementTimeframe.SortOrder
                         })
                     })
@@ -193,19 +193,19 @@ namespace Biobanks.Services
                             SnomedTerm = collection.SnomedTerm.Description,
                             CollectionTitle = collection.Title,
                             StartYear = collection.StartDate.Year.ToString(),
-                            CollectionPoint = collection.CollectionPoint.Description,
-                            CollectionStatus = collection.CollectionStatus.Description,
+                            CollectionPoint = collection.CollectionPoint.Value,
+                            CollectionStatus = collection.CollectionStatus.Value,
                             ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
-                            HTA = collection.HtaStatus != null ? collection.HtaStatus.Description : "not recorded",
-                            AccessCondition = collection.AccessCondition.Description,
-                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Description : string.Empty,
+                            HTA = collection.HtaStatus != null ? collection.HtaStatus.Value : "not recorded",
+                            AccessCondition = collection.AccessCondition.Value,
+                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
                             AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
                             {
-                                Text = ad.AssociatedDataType.Description,
-                                Timeframe = ad.AssociatedDataProcurementTimeframe.Description,
+                                Text = ad.AssociatedDataType.Value,
+                                Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
                                 TimeframeMetadata = JsonConvert.SerializeObject(new
                                 {
-                                    Name = ad.AssociatedDataProcurementTimeframe.Description,
+                                    Name = ad.AssociatedDataProcurementTimeframe.Value,
                                     ad.AssociatedDataProcurementTimeframe.SortOrder
                                 })
                             })
@@ -223,7 +223,7 @@ namespace Biobanks.Services
                 Biobank = biobank.Name,
                 BiobankServices = biobank.OrganisationServiceOfferings.Select(x => new BiobankServiceDocument
                 {
-                    Name = x.ServiceOffering.Name
+                    Name = x.ServiceOffering.Value
                 })
             };
 

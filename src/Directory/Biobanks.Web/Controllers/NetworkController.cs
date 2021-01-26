@@ -253,7 +253,7 @@ namespace Biobanks.Web.Controllers
         {
             var allSopStatuses = (List<SopStatus>) await _biobankReadService.ListSopStatusesAsync();
             return
-                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.SopStatusId, status.Description))
+                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
                     .ToList();
         }
 

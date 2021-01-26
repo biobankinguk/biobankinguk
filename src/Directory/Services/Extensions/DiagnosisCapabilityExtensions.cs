@@ -27,16 +27,16 @@ namespace Biobanks.Services.Extensions
                 Networks = capability.Organisation.OrganisationNetworks
                     .Select(x => new NetworkDocument {Name = x.Network.Name}).ToList(),
 
-                Protocols = capability.SampleCollectionMode.Description,
+                Protocols = capability.SampleCollectionMode.Value,
 
                 AssociatedData = capability.AssociatedData
                     .Select(x => new AssociatedDataDocument
                     {
-                        Text = x.AssociatedDataType.Description,
-                        Timeframe = x.AssociatedDataProcurementTimeframe.Description,
+                        Text = x.AssociatedDataType.Value,
+                        Timeframe = x.AssociatedDataProcurementTimeframe.Value,
                         TimeframeMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = x.AssociatedDataProcurementTimeframe.Description,
+                            Name = x.AssociatedDataProcurementTimeframe.Value,
                             x.AssociatedDataProcurementTimeframe.SortOrder
                         })
                     }),
@@ -44,7 +44,7 @@ namespace Biobanks.Services.Extensions
                 BiobankServices = capability.Organisation.OrganisationServiceOfferings
                     .Select(x => new BiobankServiceDocument
                     {
-                        Name = x.ServiceOffering.Name
+                        Name = x.ServiceOffering.Value
                     }),
 
                 AnnualDonorExpectation = donorExpectation.Key,
@@ -63,7 +63,7 @@ namespace Biobanks.Services.Extensions
             var donorCount = donorCounts.First(
                 x => x.LowerBound <= annualDonorCount & (x.UpperBound >= annualDonorCount || x.UpperBound == null));
             return new KeyValuePair<string, int>(
-                donorCount.Description,
+                donorCount.Value,
                 donorCount.SortOrder);
         }
     }
