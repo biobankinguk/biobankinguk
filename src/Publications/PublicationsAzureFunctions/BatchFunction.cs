@@ -33,9 +33,11 @@ namespace PublicationsAzureFunctions
             //Pulls Biobanks from directory (test), gets publications from API and pushes to Azure DB
             await _fetchPublicationsService.StartAsync(cancellationToken);
             await _fetchPublicationsService.StopAsync(cancellationToken);
+
             //Pulls Publications from directory (test), gets annotations from API and pushes to Azure DB
             await _fetchAnnotationsService.StartAsync(cancellationToken);
             await _fetchPublicationsService.StopAsync(cancellationToken);
+
             log.LogInformation($"C# Timer trigger function executed successfully");
         }
         
