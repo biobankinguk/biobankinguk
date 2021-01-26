@@ -12,17 +12,28 @@ namespace Publications.Services
     public class AnnotationService : IAnnotationService
     {
         private PublicationDbContext _ctx;
+        private IBiobankReadService _biobankReadService;
 
-        public AnnotationService(PublicationDbContext ctx)
+        public AnnotationService(PublicationDbContext ctx, IBiobankReadService biobankReadService)
         {
             _ctx = ctx;
+            _biobankReadService = biobankReadService;
         }
 
 
         public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDto> annotations)
         {
-            var existingAnnotations = _ctx.PublicationAnnotations.Where(x => x.Publication_Id == int.Parse(publicationId));
-            var existingPublications = _ctx.Publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+            var existingPublications = await _biobankReadService.GetPublicationById(publicationId);
+            var existingAnnotations = await _biobankReadService.GetPublicationAnnotations(existingPublications.Id);
+
+            var exAnnotations = new List<Annotation>();
+            foreach (var annotationObj in existingAnnotations)
+            {
+                var annotation = await _biobankReadService.GetAnnotationById(annotationObj.Annotation_Id);
+                exAnnotations.Add(annotation);
+            }
+
             var annotationList = new List<Annotation>();
 
             foreach(var annotation in annotations)
@@ -31,6 +42,7 @@ namespace Publications.Services
                 {
                     var annotationEntity = new Annotation()
                     {
+                        AnnotationId = annotation.Id,
                         Name = tags.Name,
                         Uri = tags.Uri,
                         PublicationAnnotations = new List<PublicationAnnotation>()
@@ -40,8 +52,6 @@ namespace Publications.Services
                         Annotation_Id = annotationEntity.Id,
                         Publication_Id = existingPublications.Id
                     };
-
-
                     annotationEntity.PublicationAnnotations.Add(publicationAnnotation);
                     annotationList.Add(annotationEntity);
                 }
@@ -49,24 +59,22 @@ namespace Publications.Services
 
             foreach (var newer in annotationList)
             {
-                foreach (var test in newer.PublicationAnnotations)
+                var older = exAnnotations.Where(x => x.AnnotationId == newer.AnnotationId).FirstOrDefault();
+                if (older is null)
                 {
-                    var older = existingAnnotations.Where(x => x.Annotation_Id == test.Annotation_Id).FirstOrDefault();
-                    if (older is null)
-                    {
-                        _ctx.Add(newer);
-                    }
-                    else
-                    {
-                        
-                    }
+                   //Add new record
+                   _ctx.Add(newer);
                 }
-
+                else
+                {
+                   //Get annotation using annotation EF Id
+                   var olderAnnotation = await _biobankReadService.GetAnnotationById(older.Id);
+                   olderAnnotation.Name = newer.Name;
+                   olderAnnotation.Uri = newer.Uri;
+                   _ctx.Update(olderAnnotation);
+                }
             }
-
-            await _ctx.SaveChangesAsync();
+           await _ctx.SaveChangesAsync();
         }
-
-
     }
 }
