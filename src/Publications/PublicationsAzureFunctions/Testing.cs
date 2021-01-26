@@ -35,10 +35,8 @@ namespace PublicationsAzureFunctions
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            //var test = await _epmcService.GetPublicationAnnotations(126679, "MED");
             await _fetchAnnotationsService.StartAsync(cancellationToken);
             await _fetchAnnotationsService.StopAsync(cancellationToken);
-            //var publicationId = 33340264;
 
 
             return new OkObjectResult("Done");

@@ -34,16 +34,15 @@ namespace Publications.Services
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
             => await _ctx.Publications.Where(x => x.OrganisationId == biobankId).ToListAsync();
 
-        //This uses Publication Id from EF
-
+        //Uses Publication Id from EF
         public async Task<IEnumerable<PublicationAnnotation>> GetPublicationAnnotations(int publicationId)
             => await _ctx.PublicationAnnotations.Where(x => x.Publication_Id == publicationId).Include(a => a.Annotation).ToListAsync();
         
-        //This uses publicationId from publication itself not EF 
+        //Uses publicationId from API
         public async Task<Publication> GetPublicationById(string publicationId)
             => await _ctx.Publications.Where(x => x.PublicationId == publicationId).FirstOrDefaultAsync();
 
-        //This uses Annotation Id from EF
+        //Uses Annotation Id from EF
         public async Task<Annotation> GetAnnotationById(int annotationId)
             => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
     }
