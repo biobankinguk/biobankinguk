@@ -1,5 +1,6 @@
 ﻿namespace Biobanks.Directory.Data.Migrations
 {
+    using System;
     using System.Data.Entity.Migrations;
     
     public partial class RenameRefDataFields : DbMigration
@@ -176,6 +177,11 @@
             CreateIndex("dbo.OrganisationServiceOfferings", "ServiceId");
             AddForeignKey("dbo.OrganisationServiceOfferings", "ServiceId", "dbo.ServiceOfferings", "Id");
 
+            // SnomedTerm
+            DropIndex("dbo.SnomedTerms", new[] { "Description" });
+            RenameColumn("dbo.SnomedTerms", "Description", "Value");
+            CreateIndex("dbo.SnomedTerms", "Value", unique: true);
+
             // SopStatus
             DropForeignKey("dbo.Networks", "SopStatusId", "dbo.SopStatus");
             DropPrimaryKey("dbo.SopStatus");
@@ -289,6 +295,16 @@
             RenameColumn(table: "dbo.ConsentRestrictionCollections", name: "ConsentRestriction_Id", newName: "ConsentRestriction_ConsentRestrictionId");
             AddForeignKey("dbo.ConsentRestrictionCollections", "ConsentRestriction_ConsentRestrictionId", "dbo.ConsentRestrictions", "ConsentRestrictionId", cascadeDelete: true);
 
+            // Country
+            DropForeignKey("dbo.Counties", "CountryId", "dbo.Countries");
+            DropForeignKey("dbo.Organisations", "CountryId", "dbo.Countries");
+            DropPrimaryKey("dbo.Countries");
+            RenameColumn("dbo.Countries", "Id", "CountryId");
+            RenameColumn("dbo.Countries", "Value", "Name");
+            AddPrimaryKey("dbo.Countries", "CountryId");
+            AddForeignKey("dbo.Counties", "CountryId", "dbo.Countries");
+            AddForeignKey("dbo.Organisations", "CountryId", "dbo.Countries");
+
             // County
             DropForeignKey("dbo.Organisations", "CountyId", "dbo.Counties");
             DropPrimaryKey("dbo.Counties");
@@ -346,6 +362,11 @@
             AddPrimaryKey("dbo.ServiceOfferings", "ServiceId");
             CreateIndex("dbo.OrganisationServiceOfferings", "ServiceId");
             AddForeignKey("dbo.OrganisationServiceOfferings", "ServiceId", "dbo.ServiceOfferings", "ServiceId", cascadeDelete: true);
+
+            // SnomedTerm
+            DropIndex("dbo.SnomedTerms", new[] { "Value" });
+            RenameColumn("dbo.SnomedTerms", "Value", "Description");
+            CreateIndex("dbo.SnomedTerms", "Description", unique: true);
 
             // SopStatus
             DropForeignKey("dbo.Networks", "SopStatusId", "dbo.SopStatus");

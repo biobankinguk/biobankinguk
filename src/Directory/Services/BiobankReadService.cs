@@ -1119,7 +1119,7 @@ namespace Biobanks.Services
         }
 
         public async Task<IEnumerable<SnomedTerm>> ListSnomedTermsAsync(string wildcard = "")
-            => await _snomedTermRepository.ListAsync(false, x => x.Description.Contains(wildcard));
+            => await _snomedTermRepository.ListAsync(false, x => x.Value.Contains(wildcard));
 
         #region Site Config
         public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
@@ -1147,16 +1147,16 @@ namespace Biobanks.Services
         {
             var searchableDiagnoses = _searchProvider.ListSnomedTerms(type, wildcard);
 
-            return await _snomedTermRepository.ListAsync(false, x => searchableDiagnoses.Contains(x.Description));
+            return await _snomedTermRepository.ListAsync(false, x => searchableDiagnoses.Contains(x.Value));
         }
 
         public async Task<bool> ValidSnomedTermDescriptionAsync(string snomedTermDescription)
-            => (await _snomedTermRepository.ListAsync(false, x => x.Description == snomedTermDescription)).Any();
+            => (await _snomedTermRepository.ListAsync(false, x => x.Value == snomedTermDescription)).Any();
 
         public async Task<bool> ValidSnomedTermDescriptionAsync(string snomedTermId, string snomedDescription)
             => (await _snomedTermRepository.ListAsync(
                 false,
-                x => x.Description == snomedDescription &&
+                x => x.Value == snomedDescription &&
                      x.Id != snomedTermId)).Any();
 
         public async Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription)
@@ -1229,7 +1229,7 @@ namespace Biobanks.Services
                      x.Id != collectionStatusId)).Any();
 
         public async Task<SnomedTerm> GetSnomedTermByDescription(string description)
-            => (await _snomedTermRepository.ListAsync(false, x => x.Description == description)).Single();
+            => (await _snomedTermRepository.ListAsync(false, x => x.Value == description)).Single();
 
         public async Task<int> GetSnomedTermCollectionCapabilityCount(string id)
         => (await _collectionRepository.ListAsync(

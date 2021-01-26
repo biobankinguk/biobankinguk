@@ -30,7 +30,7 @@ namespace Biobanks.Web.ApiControllers
                 Task.Run(async () => new ReadSnomedTermModel
                 {
                     SnomedTermId = x.Id,
-                    Description = x.Description,
+                    Description = x.Value,
                     CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
@@ -47,7 +47,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsSnomedTermInUse(id))
             {
-                ModelState.AddModelError("Description", $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("Description", $"The disease status \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -58,14 +58,14 @@ namespace Biobanks.Web.ApiControllers
             await _biobankWriteService.DeleteSnomedTermAsync(new SnomedTerm
             {
                 Id = model.Id,
-                Description = model.Description
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description
+                name = model.Value
             });
         }
 
@@ -92,7 +92,7 @@ namespace Biobanks.Web.ApiControllers
             await _biobankWriteService.UpdateSnomedTermAsync(new SnomedTerm
             {
                 Id = model.SnomedTermId,
-                Description = model.Description,
+                Value = model.Description,
                 OtherTerms = model.OtherTerms
             });
 
@@ -122,7 +122,7 @@ namespace Biobanks.Web.ApiControllers
             await _biobankWriteService.AddSnomedTermAsync(new SnomedTerm
             {
                 Id = model.SnomedTermId,
-                Description = model.Description,
+                Value = model.Description,
                 OtherTerms = model.OtherTerms
             });
 

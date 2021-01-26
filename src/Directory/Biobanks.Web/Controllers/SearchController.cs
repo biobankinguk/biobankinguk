@@ -215,7 +215,7 @@ namespace Biobanks.Web.Controllers
                 new SnomedTermModel
                 {
                     SnomedTermId = x.Id,
-                    Description = x.Description,
+                    Description = x.Value,
                     OtherTerms = x.OtherTerms
                 }
             )
@@ -232,7 +232,7 @@ namespace Biobanks.Web.Controllers
                new SnomedTermModel
                {
                    SnomedTermId = x.Id,
-                   Description = x.Description,
+                   Description = x.Value,
                    OtherTerms = x.OtherTerms
                }
             )

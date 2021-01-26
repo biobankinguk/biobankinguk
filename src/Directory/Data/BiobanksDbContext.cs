@@ -122,7 +122,7 @@ namespace Biobanks.Directory.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Collection>().Property(f => f.StartDate).HasColumnType("datetime2");
-            modelBuilder.Entity<SnomedTerm>().HasIndex(x => x.Description).IsUnique();
+            modelBuilder.Entity<SnomedTerm>().HasIndex(x => x.Value).IsUnique();
         }
     }
 }

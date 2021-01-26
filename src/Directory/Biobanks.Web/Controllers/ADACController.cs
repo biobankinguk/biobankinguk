@@ -1117,7 +1117,7 @@ namespace Biobanks.Web.Controllers
                 Task.Run(async() => new ReadSnomedTermModel
                 {
                     SnomedTermId = x.Id,
-                    Description = x.Description,
+                    Description = x.Value,
                     CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
@@ -1138,7 +1138,7 @@ namespace Biobanks.Web.Controllers
             await _biobankWriteService.DeleteSnomedTermAsync(new SnomedTerm
             {
                 Id = model.SnomedTermId,
-                Description = model.Description
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -2493,7 +2493,7 @@ namespace Biobanks.Web.Controllers
                 Task.Run(async () => new ReadSnomedTermModel
                 {
                     SnomedTermId = x.Id,
-                    Description = x.Description,
+                    Description = x.Value,
                     CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })

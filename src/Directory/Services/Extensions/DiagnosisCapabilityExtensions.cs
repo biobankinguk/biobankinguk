@@ -19,7 +19,7 @@ namespace Biobanks.Services.Extensions
             return new CapabilityDocument
             {
                 Id = capability.DiagnosisCapabilityId,
-                SnomedTerm = capability.SnomedTerm.Description,
+                SnomedTerm = capability.SnomedTerm.Value,
                 BiobankId = capability.OrganisationId,
                 BiobankExternalId = capability.Organisation.OrganisationExternalId,
                 Biobank = capability.Organisation.Name,

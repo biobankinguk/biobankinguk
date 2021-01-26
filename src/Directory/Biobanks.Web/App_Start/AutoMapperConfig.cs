@@ -42,7 +42,7 @@ namespace Biobanks.Web
 
                 cfg.CreateMap<DiagnosisCapability, DetailedCapabilitySearchCapabilityModel>()
                     .ForMember(dest => dest.Protocols, opts => opts.MapFrom(src => src.SampleCollectionMode.Value))
-                    .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.SnomedTerm.Description))
+                    .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.SnomedTerm.Value))
                     .ForMember(dest => dest.AssociatedData,
                         opts => opts.MapFrom(src => src.AssociatedData.Select(
                             x => new KeyValuePair<string, string>(x.AssociatedDataType.Value,

@@ -16,6 +16,7 @@ using System.Security.Cryptography.X509Certificates;
 using Biobanks.DataSeed.Dto;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
+using CsvHelper.Configuration;
 
 namespace Biobanks.DataSeed.Services
 {
@@ -42,7 +43,7 @@ namespace Biobanks.DataSeed.Services
             ["ConsentRestrictions"] = typeof(ConsentRestriction),
             ["Counties"] = typeof(County),
             ["Countries"] = typeof(Country),
-            ["SnomedTerm"] = typeof(SnomedTerm), // Should this be seeded here?
+            //["SnomedTerms"] = typeof(SnomedTerm), // Should this be seeded here?
             ["DonorCounts"] = typeof(DonorCount),
             ["Funders"] = typeof(Funder),
             ["Sexes"] = typeof(Sex),
@@ -162,7 +163,7 @@ namespace Biobanks.DataSeed.Services
             foreach (dynamic x in csvRecords)
                 _db.Counties.Add(new County
                 {
-                    Value = x.Name,
+                    Value = x.Value,
                     Country = countries.Single(y => y.Id == x.CountryId)
                 });
 
@@ -200,10 +201,15 @@ namespace Biobanks.DataSeed.Services
 
         private List<object> Read(string tableName, Type type)
         {
+            var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+            {
+                IgnoreReferences = true
+            };
+
             //TODO catch and write to console that file not found, but move on. Allow user to decide which tables to populate
             using (var reader = new StreamReader($"data/{tableName}.csv"))
             {
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                using (var csv = new CsvReader(reader, config))
                 {
                     return csv.GetRecords(type).ToList();
                 }

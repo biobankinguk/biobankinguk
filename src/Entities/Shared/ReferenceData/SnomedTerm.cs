@@ -19,7 +19,7 @@ namespace Biobanks.Entities.Shared.ReferenceData
         /// <summary>
         /// A friendly description of this SNOMED term used by Biobanks Phase 2.
         /// </summary>
-        public string Description { get; set; }
+        public string Value { get; set; }
 
         /// <summary>
         /// Directory Alias For Search

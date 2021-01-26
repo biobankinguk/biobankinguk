@@ -40,7 +40,7 @@ namespace Biobanks.Web.Controllers
                 Task.Run(async () => new ReadSnomedTermModel
                 {
                     SnomedTermId = x.Id,
-                    Description = x.Description,
+                    Description = x.Value,
                     CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
