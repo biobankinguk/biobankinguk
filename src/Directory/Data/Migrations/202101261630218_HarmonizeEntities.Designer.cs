@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class AddApiEntities : IMigrationMetadata
+    public sealed partial class HarmonizeEntities : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddApiEntities));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(HarmonizeEntities));
         
         string IMigrationMetadata.Id
         {
-            get { return "202101181115002_AddApiEntities"; }
+            get { return "202101261630218_HarmonizeEntities"; }
         }
         
         string IMigrationMetadata.Source

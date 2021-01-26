@@ -1,6 +1,5 @@
 ﻿namespace Biobanks.Directory.Data.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
     
     public partial class AddApiEntities : DbMigration
@@ -10,111 +9,111 @@
             CreateTable(
                 "dbo.LiveDiagnosis",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        DateDiagnosed = c.DateTime(nullable: false),
-                        DiagnosisCodeId = c.String(nullable: false, maxLength: 20),
-                        DiagnosisCodeOntologyVersionId = c.Int(nullable: false),
-                        OrganisationId = c.Int(nullable: false),
-                        SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
-                        IndividualReferenceId = c.String(nullable: false, maxLength: 255),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    DateDiagnosed = c.DateTime(nullable: false),
+                    DiagnosisCodeId = c.String(nullable: false, maxLength: 20),
+                    DiagnosisCodeOntologyVersionId = c.Int(nullable: false),
+                    OrganisationId = c.Int(nullable: false),
+                    SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
+                    IndividualReferenceId = c.String(nullable: false, maxLength: 255),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.SnomedTerms", t => t.DiagnosisCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.DiagnosisCodeOntologyVersionId, cascadeDelete: true)
                 .Index(t => t.DiagnosisCodeId)
                 .Index(t => t.DiagnosisCodeOntologyVersionId);
-            
+
             CreateTable(
                 "dbo.OntologyVersions",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Value = c.String(nullable: false),
-                        OntologyId = c.Int(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Value = c.String(nullable: false),
+                    OntologyId = c.Int(nullable: false),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Ontologies", t => t.OntologyId, cascadeDelete: true)
                 .Index(t => t.OntologyId);
-            
+
             CreateTable(
                 "dbo.Ontologies",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Value = c.String(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Value = c.String(nullable: false),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.Errors",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Message = c.String(),
-                        RecordIdentifiers = c.String(),
-                        SubmissionId = c.Int(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Message = c.String(),
+                    RecordIdentifiers = c.String(),
+                    SubmissionId = c.Int(nullable: false),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Submissions", t => t.SubmissionId, cascadeDelete: true)
                 .Index(t => t.SubmissionId);
-            
+
             CreateTable(
                 "dbo.Submissions",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        BiobankId = c.Int(nullable: false),
-                        SubmissionTimestamp = c.DateTime(nullable: false),
-                        TotalRecords = c.Int(nullable: false),
-                        RecordsProcessed = c.Int(nullable: false),
-                        StatusId = c.Int(nullable: false),
-                        StatusChangeTimestamp = c.DateTime(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    BiobankId = c.Int(nullable: false),
+                    SubmissionTimestamp = c.DateTime(nullable: false),
+                    TotalRecords = c.Int(nullable: false),
+                    RecordsProcessed = c.Int(nullable: false),
+                    StatusId = c.Int(nullable: false),
+                    StatusChangeTimestamp = c.DateTime(nullable: false),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Status", t => t.StatusId, cascadeDelete: true)
                 .Index(t => t.StatusId);
-            
+
             CreateTable(
                 "dbo.Status",
                 c => new
-                    {
-                        Id = c.Int(nullable: false),
-                        Value = c.String(),
-                    })
+                {
+                    Id = c.Int(nullable: false),
+                    Value = c.String(),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.SampleContentMethods",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Value = c.String(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Value = c.String(nullable: false),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.LiveSamples",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Barcode = c.String(nullable: false),
-                        YearOfBirth = c.Int(),
-                        AgeAtDonation = c.Int(),
-                        MaterialTypeId = c.Int(nullable: false),
-                        StorageTemperatureId = c.Int(),
-                        DateCreated = c.DateTime(nullable: false, storeType: "date"),
-                        ExtractionSiteId = c.String(maxLength: 20),
-                        ExtractionSiteOntologyVersionId = c.Int(),
-                        ExtractionProcedureId = c.String(maxLength: 20),
-                        SampleContentId = c.String(maxLength: 20),
-                        SampleContentMethodId = c.Int(),
-                        SexId = c.Int(),
-                        CollectionName = c.String(),
-                        OrganisationId = c.Int(nullable: false),
-                        SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
-                        IndividualReferenceId = c.String(nullable: false, maxLength: 255),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Barcode = c.String(nullable: false),
+                    YearOfBirth = c.Int(),
+                    AgeAtDonation = c.Int(),
+                    MaterialTypeId = c.Int(nullable: false),
+                    StorageTemperatureId = c.Int(),
+                    DateCreated = c.DateTime(nullable: false, storeType: "date"),
+                    ExtractionSiteId = c.String(maxLength: 20),
+                    ExtractionSiteOntologyVersionId = c.Int(),
+                    ExtractionProcedureId = c.String(maxLength: 20),
+                    SampleContentId = c.String(maxLength: 20),
+                    SampleContentMethodId = c.Int(),
+                    SexId = c.Int(),
+                    CollectionName = c.String(),
+                    OrganisationId = c.Int(nullable: false),
+                    SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
+                    IndividualReferenceId = c.String(nullable: false, maxLength: 255),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.SnomedTerms", t => t.ExtractionProcedureId)
                 .ForeignKey("dbo.SnomedTerms", t => t.ExtractionSiteId)
@@ -132,65 +131,65 @@
                 .Index(t => t.SampleContentId)
                 .Index(t => t.SampleContentMethodId)
                 .Index(t => t.SexId);
-            
+
             CreateTable(
                 "dbo.StagedDiagnosis",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        DateDiagnosed = c.DateTime(nullable: false),
-                        DiagnosisCodeId = c.String(nullable: false, maxLength: 20),
-                        DiagnosisCodeOntologyVersionId = c.Int(nullable: false),
-                        OrganisationId = c.Int(nullable: false),
-                        SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
-                        IndividualReferenceId = c.String(nullable: false, maxLength: 255),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    DateDiagnosed = c.DateTime(nullable: false),
+                    DiagnosisCodeId = c.String(nullable: false, maxLength: 20),
+                    DiagnosisCodeOntologyVersionId = c.Int(nullable: false),
+                    OrganisationId = c.Int(nullable: false),
+                    SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
+                    IndividualReferenceId = c.String(nullable: false, maxLength: 255),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.SnomedTerms", t => t.DiagnosisCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.DiagnosisCodeOntologyVersionId, cascadeDelete: true)
                 .Index(t => t.DiagnosisCodeId)
                 .Index(t => t.DiagnosisCodeOntologyVersionId);
-            
+
             CreateTable(
                 "dbo.StagedDiagnosisDeletes",
                 c => new
-                    {
-                        Id = c.Int(nullable: false),
-                        OrganisationId = c.Int(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false),
+                    OrganisationId = c.Int(nullable: false),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.StagedSampleDeletes",
                 c => new
-                    {
-                        Id = c.Int(nullable: false),
-                        OrganisationId = c.Int(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false),
+                    OrganisationId = c.Int(nullable: false),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.StagedSamples",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Barcode = c.String(nullable: false),
-                        YearOfBirth = c.Int(),
-                        AgeAtDonation = c.Int(),
-                        MaterialTypeId = c.Int(nullable: false),
-                        StorageTemperatureId = c.Int(),
-                        DateCreated = c.DateTime(nullable: false, storeType: "date"),
-                        ExtractionSiteId = c.String(maxLength: 20),
-                        ExtractionSiteOntologyVersionId = c.Int(),
-                        ExtractionProcedureId = c.String(maxLength: 20),
-                        SampleContentId = c.String(maxLength: 20),
-                        SampleContentMethodId = c.Int(),
-                        SexId = c.Int(),
-                        CollectionName = c.String(),
-                        OrganisationId = c.Int(nullable: false),
-                        SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
-                        IndividualReferenceId = c.String(nullable: false, maxLength: 255),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Barcode = c.String(nullable: false),
+                    YearOfBirth = c.Int(),
+                    AgeAtDonation = c.Int(),
+                    MaterialTypeId = c.Int(nullable: false),
+                    StorageTemperatureId = c.Int(),
+                    DateCreated = c.DateTime(nullable: false, storeType: "date"),
+                    ExtractionSiteId = c.String(maxLength: 20),
+                    ExtractionSiteOntologyVersionId = c.Int(),
+                    ExtractionProcedureId = c.String(maxLength: 20),
+                    SampleContentId = c.String(maxLength: 20),
+                    SampleContentMethodId = c.Int(),
+                    SexId = c.Int(),
+                    CollectionName = c.String(),
+                    OrganisationId = c.Int(nullable: false),
+                    SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
+                    IndividualReferenceId = c.String(nullable: false, maxLength: 255),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.SnomedTerms", t => t.ExtractionProcedureId)
                 .ForeignKey("dbo.SnomedTerms", t => t.ExtractionSiteId)
@@ -208,29 +207,29 @@
                 .Index(t => t.SampleContentId)
                 .Index(t => t.SampleContentMethodId)
                 .Index(t => t.SexId);
-            
+
             CreateTable(
                 "dbo.StagedTreatmentDeletes",
                 c => new
-                    {
-                        Id = c.Int(nullable: false),
-                        OrganisationId = c.Int(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false),
+                    OrganisationId = c.Int(nullable: false),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.StagedTreatments",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        DateTreated = c.DateTime(nullable: false),
-                        TreatmentCodeId = c.String(nullable: false, maxLength: 20),
-                        TreatmentLocationId = c.Int(),
-                        TreatmentCodeOntologyVersionId = c.Int(nullable: false),
-                        OrganisationId = c.Int(nullable: false),
-                        SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
-                        IndividualReferenceId = c.String(nullable: false, maxLength: 255),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    DateTreated = c.DateTime(nullable: false),
+                    TreatmentCodeId = c.String(nullable: false, maxLength: 20),
+                    TreatmentLocationId = c.Int(),
+                    TreatmentCodeOntologyVersionId = c.Int(nullable: false),
+                    OrganisationId = c.Int(nullable: false),
+                    SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
+                    IndividualReferenceId = c.String(nullable: false, maxLength: 255),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.SnomedTerms", t => t.TreatmentCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.TreatmentCodeOntologyVersionId, cascadeDelete: true)
@@ -238,29 +237,29 @@
                 .Index(t => t.TreatmentCodeId)
                 .Index(t => t.TreatmentLocationId)
                 .Index(t => t.TreatmentCodeOntologyVersionId);
-            
+
             CreateTable(
                 "dbo.TreatmentLocations",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Value = c.String(nullable: false),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    Value = c.String(nullable: false),
+                })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.LiveTreatments",
                 c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        DateTreated = c.DateTime(nullable: false),
-                        TreatmentCodeId = c.String(nullable: false, maxLength: 20),
-                        TreatmentLocationId = c.Int(),
-                        TreatmentCodeOntologyVersionId = c.Int(nullable: false),
-                        OrganisationId = c.Int(nullable: false),
-                        SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
-                        IndividualReferenceId = c.String(nullable: false, maxLength: 255),
-                    })
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    DateTreated = c.DateTime(nullable: false),
+                    TreatmentCodeId = c.String(nullable: false, maxLength: 20),
+                    TreatmentLocationId = c.Int(),
+                    TreatmentCodeOntologyVersionId = c.Int(nullable: false),
+                    OrganisationId = c.Int(nullable: false),
+                    SubmissionTimestamp = c.DateTimeOffset(nullable: false, precision: 7),
+                    IndividualReferenceId = c.String(nullable: false, maxLength: 255),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.SnomedTerms", t => t.TreatmentCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.TreatmentCodeOntologyVersionId, cascadeDelete: true)
@@ -268,9 +267,9 @@
                 .Index(t => t.TreatmentCodeId)
                 .Index(t => t.TreatmentLocationId)
                 .Index(t => t.TreatmentCodeOntologyVersionId);
-            
+
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.LiveTreatments", "TreatmentLocationId", "dbo.TreatmentLocations");
