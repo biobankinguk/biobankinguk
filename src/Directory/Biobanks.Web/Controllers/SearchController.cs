@@ -263,7 +263,7 @@ namespace Biobanks.Web.Controllers
             {
                 Name = FacetList.GetFacetName(GetFacetSlug(x)),
                 Value = GetFacetValue(x)
-            });
+            }).Where(x => !(x.Name is null));
         }
 
         private static string GetFacetValue(string facetId)
