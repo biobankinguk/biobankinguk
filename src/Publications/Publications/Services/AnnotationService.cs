@@ -27,13 +27,6 @@ namespace Publications.Services
             var existingPublications = await _biobankReadService.GetPublicationById(publicationId);
             var existingAnnotations = await _biobankReadService.GetPublicationAnnotations(existingPublications.Id);
 
-            var exAnnotations = new List<Annotation>();
-            foreach (var annotationObj in existingAnnotations)
-            {
-                var annotation = await _biobankReadService.GetAnnotationById(annotationObj.Annotation_Id);
-                exAnnotations.Add(annotation);
-            }
-
             var annotationList = new List<Annotation>();
 
             foreach(var annotation in annotations)
@@ -57,9 +50,12 @@ namespace Publications.Services
                 }
             }
 
+            //Add or Update new annotations
             foreach (var newer in annotationList)
             {
-                var older = exAnnotations.Where(x => x.AnnotationId == newer.AnnotationId).FirstOrDefault();
+                //Find if older version of annotation exists
+                var older = existingAnnotations.Select(x => x.Annotation).Where(a => a.AnnotationId == newer.AnnotationId).FirstOrDefault();
+
                 if (older is null)
                 {
                    //Add new record
@@ -67,11 +63,10 @@ namespace Publications.Services
                 }
                 else
                 {
-                   //Get annotation using annotation EF Id
-                   var olderAnnotation = await _biobankReadService.GetAnnotationById(older.Id);
-                   olderAnnotation.Name = newer.Name;
-                   olderAnnotation.Uri = newer.Uri;
-                   _ctx.Update(olderAnnotation);
+                    //Update existing record
+                    older.Name = newer.Name;
+                    older.Uri = newer.Uri;
+                   _ctx.Update(older);
                 }
             }
            await _ctx.SaveChangesAsync();
