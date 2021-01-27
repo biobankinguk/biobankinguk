@@ -81,6 +81,9 @@ namespace Directory.Data
         // Biobank Publications
         public DbSet<Publication> Publications { get; set; }
 
+        // Biobanks Annotations
+        public DbSet<Annotation> Annotations { get; set; }
+
         public BiobanksDbContext() : base("Biobanks") { }
         public BiobanksDbContext(string connectionString) : base(connectionString) { }
 
