@@ -1112,22 +1112,22 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View((await _biobankReadService.ListSnomedTermsAsync()).Select(x =>
+            return View((await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
 
-                Task.Run(async() => new ReadSnomedTermModel
+                Task.Run(async() => new ReadOntologyTermModel
                 {
-                    SnomedTermId = x.Id,
+                    OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
             ));
         }
 
-        public async Task<ActionResult> DeleteDiseaseStatus(SnomedTermModel model)
+        public async Task<ActionResult> DeleteDiseaseStatus(OntologyTermModel model)
         {
-            if (await _biobankReadService.IsSnomedTermInUse(model.SnomedTermId))
+            if (await _biobankReadService.IsOntologyTermInUse(model.OntologyTermId))
             {
                 SetTemporaryFeedbackMessage(
                     $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
@@ -1135,9 +1135,9 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("DiseaseStatuses");
             }
 
-            await _biobankWriteService.DeleteSnomedTermAsync(new SnomedTerm
+            await _biobankWriteService.DeleteOntologyTermAsync(new OntologyTerm
             {
-                Id = model.SnomedTermId,
+                Id = model.OntologyTermId,
                 Value = model.Description
             });
 
@@ -2482,19 +2482,19 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> TermpageConfigPreview(TermpageContentModel termpage)
         {
             // Populate Snomed Terms for Preview View
-            var snomedTerms = (await _biobankReadService.ListCollectionsAsync())
+            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.SnomedTermId)
-                .Select(x => x.First().SnomedTerm);
+                .GroupBy(x => x.OntologyTermId)
+                .Select(x => x.First().OntologyTerm);
 
-            // Find CollectionCapabilityCount For Each SnomedTerm
-            var snomedTermsModel = snomedTerms.Select(x =>
+            // Find CollectionCapabilityCount For Each OntologyTerm
+            var ontologyTermModels = ontologyTerms.Select(x =>
 
-                Task.Run(async () => new ReadSnomedTermModel
+                Task.Run(async () => new ReadOntologyTermModel
                 {
-                    SnomedTermId = x.Id,
+                    OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
@@ -2502,7 +2502,7 @@ namespace Biobanks.Web.Controllers
 
             return View("TermpageConfigPreview", new TermPageModel
             {
-                SnomedTermsModel = snomedTermsModel,
+                OntologyTermsModel = ontologyTermModels,
                 TermpageContentModel = termpage
             });
         }

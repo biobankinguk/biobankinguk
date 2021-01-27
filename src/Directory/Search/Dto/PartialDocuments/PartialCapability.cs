@@ -7,7 +7,7 @@ namespace Biobanks.Search.Dto.PartialDocuments
     public class PartialCapability
     {
         [Text(Name = "diagnosis")]
-        public string SnomedTerm { get; set; }
+        public string OntologyTerm { get; set; }
 
         [Keyword(Name = "protocols")]
         public string Protocols { get; set; }

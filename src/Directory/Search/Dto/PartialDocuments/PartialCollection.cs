@@ -7,7 +7,7 @@ namespace Biobanks.Search.Dto.PartialDocuments
     public class PartialCollection
     {
         [Text(Name = "diagnosis")]
-        public string SnomedTerm { get; set; }
+        public string OntologyTerm { get; set; }
 
         [Keyword(Name = "collectionTitle")]
         public string CollectionTitle { get; set; }

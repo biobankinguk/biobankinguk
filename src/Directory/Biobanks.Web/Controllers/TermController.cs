@@ -30,18 +30,18 @@ namespace Biobanks.Web.Controllers
             };
 
             // List of Unique Diagnoses With Sample Sets
-            var snomedTerms = (await _biobankReadService.ListCollectionsAsync())
+            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.SnomedTermId)
-                .Select(x => x.First().SnomedTerm);
+                .GroupBy(x => x.OntologyTermId)
+                .Select(x => x.First().OntologyTerm);
 
-            var snomedTermsModel = snomedTerms.Select(x => 
+            var ontologyTermsModel = ontologyTerms.Select(x => 
                 
-                Task.Run(async () => new ReadSnomedTermModel
+                Task.Run(async () => new ReadOntologyTermModel
                 {
-                    SnomedTermId = x.Id,
+                    OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
@@ -49,7 +49,7 @@ namespace Biobanks.Web.Controllers
 
             return View(new TermPageModel
             {
-                SnomedTermsModel = snomedTermsModel,
+                OntologyTermsModel = ontologyTermsModel,
                 TermpageContentModel = termContentModel,
             });
         }

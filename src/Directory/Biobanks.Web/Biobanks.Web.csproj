@@ -930,7 +930,7 @@
     <Compile Include="Results\HttpForbiddenResult.cs" />
     <Compile Include="HangfireJobActivator\HangfireWindsorJobActivator.cs" />
     <Compile Include="Models\ADAC\BiobankActivityModel.cs" />
-    <Compile Include="Models\ADAC\ReadSnomedTermModel.cs" />
+    <Compile Include="Models\ADAC\ReadOntologyTermModel.cs" />
     <Compile Include="Models\ADAC\ReadAssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\Biobank\AnnualStatModel.cs" />
     <Compile Include="Models\Biobank\BiobankAnnualStatsModel.cs" />
@@ -1009,7 +1009,7 @@
     <Compile Include="Models\Biobank\AssociatedDataModel.cs" />
     <Compile Include="Models\Biobank\BiobankCollectionsModel.cs" />
     <Compile Include="Models\Biobank\CollectionModel.cs" />
-    <Compile Include="Models\Shared\SnomedTermModel.cs" />
+    <Compile Include="Models\Shared\OntologyTermModel.cs" />
     <Compile Include="Models\Biobank\EditCollectionModel.cs" />
     <Compile Include="Models\Register\RegisterEntityModel.cs" />
     <Compile Include="Models\Account\ForgotPasswordModel.cs" />

@@ -122,13 +122,13 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
-        Task<IEnumerable<SnomedTerm>> ListSnomedTermsAsync(string wildcard = "");
-        Task<IEnumerable<SnomedTerm>> ListSearchableSnomedTermsAsync(SearchDocumentType type, string wildcard = "");
-        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisDescription);
-        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisId, string diagnosisDescription);
-        Task<SnomedTerm> GetSnomedTermByDescription(string description);
-        Task<int> GetSnomedTermCollectionCapabilityCount(string id);
-        Task<bool> IsSnomedTermInUse(string id);
+        Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "");
+        Task<IEnumerable<OntologyTerm>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "");
+        Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);
+        Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription);
+        Task<OntologyTerm> GetOntologyTermByDescription(string description);
+        Task<int> GetOntologyTermCollectionCapabilityCount(string id);
+        Task<bool> IsOntologyTermInUse(string id);
 
         Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);

@@ -8,8 +8,8 @@ namespace Biobanks.Web.Models.Search
     {
         public SearchDocumentType SearchType { get; set; }
         
-        public string SnomedTerm { get; set; }
+        public string OntologyTerm { get; set; }
 
-        public ICollection<SnomedTermModel> Suggestions { get; set; }
+        public ICollection<OntologyTermModel> Suggestions { get; set; }
     }
 }

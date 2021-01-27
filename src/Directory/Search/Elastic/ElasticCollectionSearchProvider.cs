@@ -64,11 +64,11 @@ namespace Biobanks.Search.Elastic
         public IEnumerable<string> ListOntologyTerms(string wildcard = "")
         {
             var collections = _client.Search<CollectionDocument>(s => s
-                .Query(q => q.Wildcard(p => p.SnomedTerm, $"*{wildcard}*"))
+                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*"))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
-                        .Field(p => p.SnomedTerm))));
+                        .Field(p => p.OntologyTerm))));
 
             return collections.Aggregations.Terms("diagnoses").Buckets.Select(x => x.Key);
         }
@@ -217,7 +217,7 @@ namespace Biobanks.Search.Elastic
             return new CollectionSummary
             {
                 CollectionId = document.CollectionId,
-                SnomedTerm = document.SnomedTerm,
+                OntologyTerm = document.OntologyTerm,
                 CollectionTitle = document.CollectionTitle,
                 StartYear = document.StartYear,
                 EndYear = document.EndYear,

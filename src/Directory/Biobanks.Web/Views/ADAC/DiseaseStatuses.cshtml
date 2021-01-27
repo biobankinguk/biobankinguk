@@ -1,6 +1,6 @@
 ﻿@using System.Web.Optimization
 @using Biobanks.Web.Models.ADAC
-@model IEnumerable<ReadSnomedTermModel>
+@model IEnumerable<ReadOntologyTermModel>
 
 @{
 	ViewBag.Title = "Disease statuses";
@@ -9,7 +9,7 @@
 @Html.Partial("_ADACTabs", (string)ViewBag.Title)
 
 <h3>
-	Disease statuses
+	Disease Statuses
 	<a href="#"
 	   class="btn btn-success pull-right"
 	   data-target="#disease-status-modal"
@@ -24,7 +24,7 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>SNOMED ID</th>
+					<th>Ontology Term ID</th>
 					<th>Other Terms</th>
 					<th>Collection and Capability Count</th>
 					<th>@* Actions *@</th>
@@ -32,20 +32,20 @@
 			</thead>
 
 			<tbody>
-				@foreach (var snomedTerm in Model)
+				@foreach (var ontologyTerm in Model)
 				{
-					<tr class="@(snomedTerm.CollectionCapabilityCount > 0 ? "info" : "")">
+					<tr class="@(ontologyTerm.CollectionCapabilityCount > 0 ? "info" : "")">
 						<td>
-							<div class="wrappable-td">@Html.DisplayFor(x => snomedTerm.Description)</div>
+							<div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.Description)</div>
 						</td>
 						<td>
-							@Html.DisplayFor(x => snomedTerm.SnomedTermId)
+							@Html.DisplayFor(x => ontologyTerm.OntologyTermId)
 						</td>
-						<td><div class="wrappable-td">@Html.DisplayFor(x => snomedTerm.OtherTerms)</div></td>
-						<td>@snomedTerm.CollectionCapabilityCount</td>
+						<td><div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.OtherTerms)</div></td>
+						<td>@ontologyTerm.CollectionCapabilityCount</td>
 
 						<td class="text-right">
-							@if (snomedTerm.CollectionCapabilityCount > 0)
+							@if (ontologyTerm.CollectionCapabilityCount > 0)
 							{
 								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
 							}
@@ -55,17 +55,17 @@
 								   class="action-icon"
 								   href="#"
 								   data-target="#disease-status-modal"
-								   data-disease-status="@Json.Encode(snomedTerm)"
+								   data-disease-status="@Json.Encode(ontologyTerm)"
 								   data-bind="click: openModalForEdit">
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
 								<a title="Delete"
 								   class="action-icon delete-confirm"
-								   data-disease-status="&quot;@snomedTerm.Description&quot;"
+								   data-disease-status="&quot;@ontologyTerm.Description&quot;"
 								   href="@Url.Action("DeleteDiseaseStatus", new
                                      {
-                                         snomedTerm.SnomedTermId, snomedTerm.Description
+	                                     OntologyTermId = ontologyTerm.OntologyTermId, ontologyTerm.Description
                                      })">
 									<span class="fa fa-trash labelled-icon"></span>Delete
 								</a>
@@ -111,14 +111,14 @@
 					<div class="row">
 						<div class="col-sm-12">
 
-							<input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().snomedTermId()">
+							<input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().ontologyTermId()">
 
 							<!-- SNOMED ID -->
 							<div class="form-group">
-								<label class="col-sm-3 control-label">SNOMED ID</label>
+								<label class="col-sm-3 control-label">Ontology Term ID</label>
 								<div class="col-sm-9">
-									<input type="text" id="SnomedTermId" name="SnomedTermId" class="form-control"
-										   data-bind="value: modal.diseaseStatus().snomedTermId()" maxlength="20">
+									<input type="text" id="OntologyTermId" name="OntologyTermId" class="form-control"
+										   data-bind="value: modal.diseaseStatus().ontologyTermId()" maxlength="20">
 								</div>
 							</div>
 

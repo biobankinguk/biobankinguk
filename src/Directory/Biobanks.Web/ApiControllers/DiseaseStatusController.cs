@@ -25,13 +25,13 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            return (await _biobankReadService.ListSnomedTermsAsync()).Select(x =>
+            return (await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
 
-                Task.Run(async () => new ReadSnomedTermModel
+                Task.Run(async () => new ReadOntologyTermModel
                 {
-                    SnomedTermId = x.Id,
+                    OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
@@ -43,9 +43,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListSnomedTermsAsync()).Where(x => x.Id == id).First();
+            var model = (await _biobankReadService.ListOntologyTermsAsync()).Where(x => x.Id == id).First();
 
-            if (await _biobankReadService.IsSnomedTermInUse(id))
+            if (await _biobankReadService.IsOntologyTermInUse(id))
             {
                 ModelState.AddModelError("Description", $"The disease status \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -55,7 +55,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteSnomedTermAsync(new SnomedTerm
+            await _biobankWriteService.DeleteOntologyTermAsync(new OntologyTerm
             {
                 Id = model.Id,
                 Value = model.Value
@@ -71,15 +71,15 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(string id, SnomedTermModel model)
+        public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSnomedTermDescriptionAsync(id, model.Description))
+            if (await _biobankReadService.ValidOntologyTermDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use by another disease status. Disease status descriptions must be unique.");
             }
 
-            if (await _biobankReadService.IsSnomedTermInUse(id))
+            if (await _biobankReadService.IsOntologyTermInUse(id))
             {
                 ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
@@ -89,9 +89,9 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateSnomedTermAsync(new SnomedTerm
+            await _biobankWriteService.UpdateOntologyTermAsync(new OntologyTerm
             {
-                Id = model.SnomedTermId,
+                Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms
             });
@@ -106,10 +106,10 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(SnomedTermModel model)
+        public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSnomedTermDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
             }
@@ -119,9 +119,9 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddSnomedTermAsync(new SnomedTerm
+            await _biobankWriteService.AddOntologyTermAsync(new OntologyTerm
             {
-                Id = model.SnomedTermId,
+                Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms
             });

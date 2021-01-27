@@ -30,17 +30,17 @@
             </thead>
 
 			<tbody>
-				@foreach (var snomedTerm in Model.SnomedTermsModel)
+				@foreach (var ontologyTerm in Model.OntologyTermsModel)
 				{
-					<tr class="@(snomedTerm.CollectionCapabilityCount > 0 ? "info" : "")">
+					<tr class="@(ontologyTerm.CollectionCapabilityCount > 0 ? "info" : "")">
 						<td>
-							<div class="wrappable-td">@Html.DisplayFor(x => snomedTerm.Description)</div>
+							<div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.Description)</div>
 						</td>
 						<td>
-                            @Html.DisplayFor(x => snomedTerm.OtherTerms)
+                            @Html.DisplayFor(x => ontologyTerm.OtherTerms)
                         </td>
 						<td>
-                            <a href="@Url.Action("Collections", "Search", new { snomedTerm = snomedTerm.Description })"><center>Search</center></a>
+                            <a href="@Url.Action("Collections", "Search", new { ontologyTerm = ontologyTerm.Description })"><center>Search</center></a>
                         </td>
 					</tr>
 				}

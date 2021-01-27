@@ -147,7 +147,7 @@ namespace Biobanks.Services
                 updatedCapability.DiagnosisCapabilityId,
                 new PartialCapability
                 {
-                    SnomedTerm = updatedCapability.SnomedTerm.Value,
+                    OntologyTerm = updatedCapability.OntologyTerm.Value,
                     Protocols = updatedCapability.SampleCollectionMode.Value,
                     AnnualDonorExpectation = donorExpectation.Key,
                     AnnualDonorExpectationMetadata = donorExpectationMetadata,
@@ -190,7 +190,7 @@ namespace Biobanks.Services
                         sampleSet.SampleSetId,
                         new PartialCollection
                         {
-                            SnomedTerm = collection.SnomedTerm.Value,
+                            OntologyTerm = collection.OntologyTerm.Value,
                             CollectionTitle = collection.Title,
                             StartYear = collection.StartDate.Year.ToString(),
                             CollectionPoint = collection.CollectionPoint.Value,

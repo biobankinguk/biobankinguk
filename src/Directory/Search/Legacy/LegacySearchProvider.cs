@@ -18,17 +18,17 @@ namespace Biobanks.Search.Legacy
             _collections = collections;
         }
 
-        public Result CapabilitySearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
-            => _capabilities.Search(snomedTerm, selectedFacets, maxHits);
+        public Result CapabilitySearchByOntologyTerm(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+            => _capabilities.Search(ontologyTerm, selectedFacets, maxHits);
 
-        public BiobankCapabilityResult CapabilitySearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
-            => _capabilities.Search(biobankExternalId, snomedTerm, selectedFacets);
+        public BiobankCapabilityResult CapabilitySearchByOntologyTermAndBiobank(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
+            => _capabilities.Search(biobankExternalId, ontologyTerm, selectedFacets);
 
-        public Result CollectionSearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
-            => _collections.Search(snomedTerm, selectedFacets, maxHits);
+        public Result CollectionSearchByOntologyTerm(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+            => _collections.Search(ontologyTerm, selectedFacets, maxHits);
 
-        public BiobankCollectionResult CollectionSearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
-            => _collections.Search(biobankExternalId, snomedTerm, selectedFacets);
+        public BiobankCollectionResult CollectionSearchByOntologyTermAndBiobank(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
+            => _collections.Search(biobankExternalId, ontologyTerm, selectedFacets);
 
         public Task<long> CountCapabilitySearchDocuments()
             => _capabilities.Count();
@@ -42,7 +42,7 @@ namespace Biobanks.Search.Legacy
         public Task<List<int>> GetAllSampleSetIds()
             => _collections.ListIds();
 
-        public IEnumerable<string> ListSnomedTerms(SearchDocumentType type, string wildcard = "")
+        public IEnumerable<string> ListOntologyTerms(SearchDocumentType type, string wildcard = "")
             => type == SearchDocumentType.Capability
                 ? _capabilities.ListOntologyTerms(wildcard)
                 : _collections.ListOntologyTerms(wildcard);

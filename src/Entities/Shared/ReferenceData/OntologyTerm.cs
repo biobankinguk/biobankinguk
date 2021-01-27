@@ -6,7 +6,7 @@ namespace Biobanks.Entities.Shared.ReferenceData
     /// <summary>
     /// Represents a term from the SNOMED list.
     /// </summary>
-    public class SnomedTerm
+    public class OntologyTerm
     {
         /// <summary>
         /// This id is the actual code from the SNOMED list

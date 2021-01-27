@@ -3,7 +3,7 @@ using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Models.ADAC
 {
-    public class ReadSnomedTermModel : SnomedTermModel
+    public class ReadOntologyTermModel : OntologyTermModel
     {
         //Sum of all Collections and Capabilities
         public int CollectionCapabilityCount { get; set; }

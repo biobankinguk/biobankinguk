@@ -12,25 +12,25 @@ namespace Biobanks.Search.Elastic
     {
         #region Building the Search Queries
 
-        protected static QueryContainer[] BuildSearchQueries<T>(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
+        protected static QueryContainer[] BuildSearchQueries<T>(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
             where T : BaseDocument
         {
-            var snomedTermQuery = string.IsNullOrWhiteSpace(snomedTerm)
+            var ontologyTermQuery = string.IsNullOrWhiteSpace(ontologyTerm)
                     ? Query<T>.MatchAll()
-                    : Query<T>.Term(p => p.SnomedTerm, snomedTerm.ToLower());
+                    : Query<T>.Term(p => p.OntologyTerm, ontologyTerm.ToLower());
 
             var facetQueries = selectedFacets != null
                     ? BuildFacetQueries(selectedFacets)
                     : Enumerable.Empty<QueryContainer>();
 
-            return facetQueries.Prepend(snomedTermQuery).ToArray();
+            return facetQueries.Prepend(ontologyTermQuery).ToArray();
         }
 
-        protected static QueryContainer[] BuildSearchQueries<T>(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets)
+        protected static QueryContainer[] BuildSearchQueries<T>(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
             where T : BaseDocument
         {
             // Build the list of queries using the base query builder.
-            var queryList = BuildSearchQueries<T>(snomedTerm, selectedFacets).ToList();
+            var queryList = BuildSearchQueries<T>(ontologyTerm, selectedFacets).ToList();
 
             // Add an extra query for the biobankId.
             queryList.Add(Query<T>.Term(p => p.BiobankExternalId, biobankExternalId));

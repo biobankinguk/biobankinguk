@@ -10,11 +10,11 @@ namespace Biobanks.Search.Legacy
     // It should be thrown away when the services are rewritten
     public interface ISearchProvider
     {
-        Result CollectionSearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
-        BiobankCollectionResult CollectionSearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets);
+        Result CollectionSearchByOntologyTerm(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
+        BiobankCollectionResult CollectionSearchByOntologyTermAndBiobank(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets);
         
-        Result CapabilitySearchBySnomedTerm(string snomedTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
-        BiobankCapabilityResult CapabilitySearchBySnomedTermAndBiobank(string biobankExternalId, string snomedTerm, IEnumerable<SelectedFacet> selectedFacets);
+        Result CapabilitySearchByOntologyTerm(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits);
+        BiobankCapabilityResult CapabilitySearchByOntologyTermAndBiobank(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets);
         
         Task<long> CountCollectionSearchDocuments();
         Task<long> CountCapabilitySearchDocuments();
@@ -23,7 +23,7 @@ namespace Biobanks.Search.Legacy
         Task<List<int>> GetAllSampleSetIds();
         Task<List<int>> GetAllCapabilityIds();
 
-        //List SnomedTerms in the index, for a given document type
-        IEnumerable<string> ListSnomedTerms(SearchDocumentType type, string wildcard = "");
+        //List OntologyTerms in the index, for a given document type
+        IEnumerable<string> ListOntologyTerms(SearchDocumentType type, string wildcard = "");
     }
 }

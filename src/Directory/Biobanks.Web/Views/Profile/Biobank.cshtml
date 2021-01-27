@@ -69,16 +69,16 @@
 		</div>
 	}
 
-	@if (Model.CollectionSnomedTerms.Any())
+	@if (Model.CollectionOntologyTerms.Any())
 	{
 		<div class="row">
 			<div class="col-sm-12">
 				<h3>Existing samples:</h3>
 				<ul>
-					@foreach (var snomedTerm in Model.CollectionSnomedTerms)
+					@foreach (var ontologyTerm in Model.CollectionOntologyTerms)
 					{
 						<li>
-							@snomedTerm
+							@ontologyTerm
 						</li>
 					}
 				</ul>
@@ -86,16 +86,16 @@
 		</div>
 	}
 
-	@if (Model.CapabilitySnomedTerms.Any())
+	@if (Model.CapabilityOntologyTerms.Any())
 	{
 		<div class="row">
 			<div class="col-sm-12">
 				<h3>Bespoke collection capabilities:</h3>
 				<ul>
-					@foreach (var snomedTerm in Model.CapabilitySnomedTerms)
+					@foreach (var ontologyTerm in Model.CapabilityOntologyTerms)
 					{
 						<li>
-							@snomedTerm
+							@ontologyTerm
 						</li>
 					}
 				</ul>

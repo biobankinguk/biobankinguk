@@ -2,11 +2,11 @@
 
 namespace Biobanks.Web.Models.Shared
 {
-    public class SnomedTermModel
+    public class OntologyTermModel
     {
         [Required]
         [StringLength(20)]
-        public string SnomedTermId { get; set; }
+        public string OntologyTermId { get; set; }
 
         [Required]
         public string Description { get; set; }

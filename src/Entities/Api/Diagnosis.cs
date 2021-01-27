@@ -26,7 +26,7 @@ namespace Biobanks.Entities.Api
         /// A SNOMED term representing the Diagnosis.
         /// </summary>
         [Required]
-        public SnomedTerm DiagnosisCode { get; set; }
+        public OntologyTerm DiagnosisCode { get; set; }
 
         /// <summary>
         /// Foreign key column.

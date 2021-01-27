@@ -1,17 +1,17 @@
-function DiseaseStatus(snomedTermId, description, otherTerms) {
-    this.snomedTermId = ko.observable(snomedTermId);
+function DiseaseStatus(ontologyTermId, description, otherTerms) {
+    this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.otherTerms = ko.observable(otherTerms);
 }
 
-function DiseaseStatusModal(snomedTermId, description, otherTerms) {
+function DiseaseStatusModal(ontologyTermId, description, otherTerms) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.diseaseStatus = ko.observable(
-        new DiseaseStatus(snomedTermId, description, otherTerms)
+        new DiseaseStatus(ontologyTermId, description, otherTerms)
     );
 }
 
@@ -33,7 +33,7 @@ function AdacDiseaseStatusViewModel() {
     };
 
     this.openModalForAdd = function () {
-        $("#SnomedTermId").prop("readonly", false);
+        $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
         _this.modal.diseaseStatus(new DiseaseStatus("", "", ""));
@@ -43,11 +43,11 @@ function AdacDiseaseStatusViewModel() {
     this.openModalForEdit = function (_, event) {
         var diseaseStatus = $(event.currentTarget).data("disease-status");
 
-        $("#SnomedTermId").prop("readonly", true); // Shouldn't be able to edit SNOMED ID
+        $("#OntologyTermId").prop("readonly", true); // Shouldn't be able to edit SNOMED ID
 
         _this.modal.mode(_this.modal.modalModeEdit);
         _this.modal.diseaseStatus(
-            new DiseaseStatus(diseaseStatus.SnomedTermId, diseaseStatus.Description, diseaseStatus.OtherTerms)
+            new DiseaseStatus(diseaseStatus.OntologyTermId, diseaseStatus.Description, diseaseStatus.OtherTerms)
         );
         _this.showModal();
     };

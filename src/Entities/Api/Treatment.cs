@@ -26,7 +26,7 @@ namespace Biobanks.Entities.Api
         /// A SNOMED term representing the Treatment.
         /// </summary>
         [Required]
-        public SnomedTerm TreatmentCode { get; set; }
+        public OntologyTerm TreatmentCode { get; set; }
 
         /// <summary>
         /// Foreign key column.

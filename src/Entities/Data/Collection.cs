@@ -13,8 +13,8 @@ namespace Biobanks.Entities.Data
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
 
-        public string SnomedTermId { get; set; }
-        public virtual SnomedTerm SnomedTerm { get; set; }
+        public string OntologyTermId { get; set; }
+        public virtual OntologyTerm OntologyTerm { get; set; }
 
         [MaxLength(250)]
         public string Title { get; set; }

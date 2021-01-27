@@ -86,7 +86,7 @@ namespace Biobanks.Directory.Data
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<Sex> Sexes { get; set; }
-        public DbSet<SnomedTerm> SnomedTerms { get; set; }
+        public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
 
@@ -122,7 +122,7 @@ namespace Biobanks.Directory.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Collection>().Property(f => f.StartDate).HasColumnType("datetime2");
-            modelBuilder.Entity<SnomedTerm>().HasIndex(x => x.Value).IsUnique();
+            modelBuilder.Entity<OntologyTerm>().HasIndex(x => x.Value).IsUnique();
         }
     }
 }

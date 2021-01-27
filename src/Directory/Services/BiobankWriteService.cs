@@ -23,7 +23,7 @@ namespace Biobanks.Services
 
         private readonly ILogoStorageProvider _logoStorageProvider;
 
-        private readonly IGenericEFRepository<SnomedTerm> _snomedTermRepository;
+        private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
@@ -80,7 +80,7 @@ namespace Biobanks.Services
         public BiobankWriteService(
             IBiobankReadService biobankReadService,
             ILogoStorageProvider logoStorageProvider,
-            IGenericEFRepository<SnomedTerm> snomedTermRepository,
+            IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
@@ -135,7 +135,7 @@ namespace Biobanks.Services
 
             _logoStorageProvider = logoStorageProvider;
 
-            _snomedTermRepository = snomedTermRepository;
+            _ontologyTermRepository = ontologyTermRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _donorCountRepository = donorCountRepository;
             _collectionPointRepository = collectionPointRepository;
@@ -193,15 +193,15 @@ namespace Biobanks.Services
 
         public async Task<Collection> AddCollectionAsync(
             Collection collection,
-            string snomedTermDescription,
+            string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
-            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(snomedTermDescription);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(ontologyTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
-            collection.SnomedTermId = snomedTerm.Id;
+            collection.OntologyTermId = ontologyTerm.Id;
             collection.LastUpdated = DateTime.Now;
             collection.AssociatedData = associatedData.ToList();
             collection.ConsentRestrictions = consentRestrictions;
@@ -215,7 +215,7 @@ namespace Biobanks.Services
 
         public async Task UpdateCollectionAsync(
             Collection collection,
-            string snomedTermDescription,
+            string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
@@ -228,11 +228,11 @@ namespace Biobanks.Services
             existingCollection.AssociatedData.Clear();
             existingCollection.ConsentRestrictions.Clear();
 
-            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(snomedTermDescription);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(ontologyTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
-            existingCollection.SnomedTermId = snomedTerm.Id;
+            existingCollection.OntologyTermId = ontologyTerm.Id;
             existingCollection.Title = collection.Title;
             existingCollection.Description = collection.Description;
             existingCollection.StartDate = collection.StartDate;
@@ -347,12 +347,12 @@ namespace Biobanks.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(capabilityDTO.Diagnosis);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(capabilityDTO.Diagnosis);
 
             var capability = new DiagnosisCapability
             {
                 OrganisationId = capabilityDTO.OrganisationId,
-                SnomedTermId = snomedTerm.Id,
+                OntologyTermId = ontologyTerm.Id,
                 AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value,
                 AssociatedData = associatedData.ToList(),
                 SampleCollectionModeId = capabilityDTO.SampleCollectionModeId,
@@ -376,9 +376,9 @@ namespace Biobanks.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var snomedTerm = await _biobankReadService.GetSnomedTermByDescription(capabilityDTO.Diagnosis);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(capabilityDTO.Diagnosis);
 
-            existingCapability.SnomedTermId = snomedTerm.Id;
+            existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;
             existingCapability.SampleCollectionModeId = capabilityDTO.SampleCollectionModeId;
             existingCapability.LastUpdated = DateTime.Now;
@@ -685,26 +685,26 @@ namespace Biobanks.Services
             return organisationNetwork;
         }
 
-        public async Task DeleteSnomedTermAsync(SnomedTerm snomedTerm)
+        public async Task DeleteOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            await _snomedTermRepository.DeleteAsync(snomedTerm.Id);
-            await _snomedTermRepository.SaveChangesAsync();
+            await _ontologyTermRepository.DeleteAsync(ontologyTerm.Id);
+            await _ontologyTermRepository.SaveChangesAsync();
         }
 
-        public async Task<SnomedTerm> UpdateSnomedTermAsync(SnomedTerm snomedTerm)
+        public async Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            _snomedTermRepository.Update(snomedTerm);
-            await _snomedTermRepository.SaveChangesAsync();
+            _ontologyTermRepository.Update(ontologyTerm);
+            await _ontologyTermRepository.SaveChangesAsync();
 
-            return snomedTerm;
+            return ontologyTerm;
         }
 
-        public async Task<SnomedTerm> AddSnomedTermAsync(SnomedTerm snomedTerm)
+        public async Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            _snomedTermRepository.Insert(snomedTerm);
-            await _snomedTermRepository.SaveChangesAsync();
+            _ontologyTermRepository.Insert(ontologyTerm);
+            await _ontologyTermRepository.SaveChangesAsync();
 
-            return snomedTerm;
+            return ontologyTerm;
         }
 
         #region RefData: Sample Collection Mode

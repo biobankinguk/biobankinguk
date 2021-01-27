@@ -22,6 +22,6 @@ namespace Biobanks.Entities.Shared.ReferenceData
         /// <summary>
         /// Snomed Terms associated with this Tag.
         /// </summary>
-        public ICollection<SnomedTerm> SnomedTerms { get; set; }
+        public ICollection<OntologyTerm> OntologyTerms { get; set; }
     }
 }
