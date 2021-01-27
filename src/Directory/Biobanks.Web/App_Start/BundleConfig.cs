@@ -242,7 +242,7 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/access-conditions").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-access-conditions.js",
-                "~/Scripts/ADAC/adac-refdata-feedback.js"));
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/biobankactivity").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-biobankactivity.js"));
