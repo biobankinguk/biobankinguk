@@ -12,6 +12,7 @@
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        AnnotationId = c.String(),
                         Name = c.String(),
                         Uri = c.String(),
                     })
@@ -30,6 +31,7 @@
                 .Index(t => t.Publication_Id)
                 .Index(t => t.Annotation_Id);
             
+            AddColumn("dbo.Publications", "Source", c => c.String());
         }
         
         public override void Down()
@@ -38,6 +40,7 @@
             DropForeignKey("dbo.PublicationAnnotations", "Publication_Id", "dbo.Publications");
             DropIndex("dbo.PublicationAnnotations", new[] { "Annotation_Id" });
             DropIndex("dbo.PublicationAnnotations", new[] { "Publication_Id" });
+            DropColumn("dbo.Publications", "Source");
             DropTable("dbo.PublicationAnnotations");
             DropTable("dbo.Annotations");
         }

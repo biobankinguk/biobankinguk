@@ -7,13 +7,13 @@ namespace Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class AddAnnotationIdColumnToAnnotations : IMigrationMetadata
+    public sealed partial class AddAnnotationEntity : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddAnnotationIdColumnToAnnotations));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddAnnotationEntity));
         
         string IMigrationMetadata.Id
         {
-            get { return "202101261125598_AddAnnotationIdColumnToAnnotations"; }
+            get { return "202101271649421_AddAnnotationEntity"; }
         }
         
         string IMigrationMetadata.Source
