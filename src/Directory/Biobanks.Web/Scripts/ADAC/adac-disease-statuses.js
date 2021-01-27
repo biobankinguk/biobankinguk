@@ -51,6 +51,7 @@ function AdacDiseaseStatusViewModel() {
       )
     );
 
+    _this.setPartialEdit($(event.currentTarget).data("partial-edit"));
     _this.showModal();
   };
 
@@ -93,6 +94,18 @@ function AdacDiseaseStatusViewModel() {
             }
         });
     };
+
+    //Turns on/off partial editing of some input fields
+    this.setPartialEdit = function (flag) {
+        if (flag == true) {
+            $("#SnomedIdentifier").prop('readonly', true);
+            $("#Description").prop('readonly', true);
+        }
+        else {
+            $("#SnomedIdentifier").prop('readonly', false);
+            $("#Description").prop('readonly', false);
+        }
+    }
 }
 
 var adacDiseaseStatusVM;

@@ -46,6 +46,16 @@
                         @if (diagnosis.CollectionCapabilityCount > 0)
                         {
                             <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
+                            //Allow editing of 'other terms' only
+                            <a title="Edit"
+                               class="action-icon"
+                               href="#"
+                               data-target="#disease-status-modal"
+                               data-disease-status="@Json.Encode(diagnosis)"
+                               data-bind="click: openModalForEdit"
+                               data-partial-edit="true">
+                                <span class="fa fa-edit labelled-icon"></span>Edit
+                            </a>
                         }
                         else
                         {
@@ -115,7 +125,7 @@
                                 <label class="col-sm-3 control-label">SNOMED ID</label>
                                 <div class="col-sm-9">
                                     <input type="text" id="SnomedIdentifier" name="SnomedIdentifier" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().snomedIdentifier()" maxlength="20">
+                                           data-bind="value: modal.diseaseStatus().snomedIdentifier(), disabled: modal.disableInput()" maxlength="20">
                                 </div>
                             </div>
 
