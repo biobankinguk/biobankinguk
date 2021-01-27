@@ -4,7 +4,7 @@ namespace Biobanks.Search.Dto.Documents
 {
     public class BaseDocument
     {
-        [Keyword(Name = "diagnosis")]
+        [Keyword(Name = "ontologyTerm")]
         public string OntologyTerm { get; set; }
 
         [Keyword(Name = "biobankExternalId")]

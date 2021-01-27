@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -43,20 +44,38 @@ namespace Biobanks.Web.Controllers
             // Cluster Health Status
             ViewBag.Status = await _indexService.GetClusterHealth();
 
-            // Index Sample Counts
-            var model = new SearchIndexModel
+            try
             {
-                TotalSampleSetCount = await _biobankReadService.GetSampleSetCountAsync(),
-                IndexableSampleSetCount = await _biobankReadService.GetIndexableSampleSetCountAsync(),
-                SuspendedSampleSetCount = await _biobankReadService.GetSuspendedSampleSetCountAsync(),
-                CollectionSearchDocumentCount = await _searchProvider.CountCollectionSearchDocuments(),
-                TotalCapabilityCount = await _biobankReadService.GetCapabilityCountAsync(),
-                IndexableCapabilityCount = await _biobankReadService.GetIndexableCapabilityCountAsync(),
-                SuspendedCapabilityCount = await _biobankReadService.GetSuspendedCapabilityCountAsync(),
-                CapabilitySearchDocumentCount = await _searchProvider.CountCapabilitySearchDocuments()
-            };
+                var a = await _biobankReadService.GetSampleSetCountAsync();
+                var b = await _biobankReadService.GetIndexableSampleSetCountAsync();
+                var c = await _biobankReadService.GetSuspendedSampleSetCountAsync();
+                var d = await _searchProvider.CountCollectionSearchDocuments();
+                var e = await _biobankReadService.GetCapabilityCountAsync();
+                var f = await _biobankReadService.GetIndexableCapabilityCountAsync();
+                var g = await _biobankReadService.GetSuspendedCapabilityCountAsync();
+                var h = await _searchProvider.CountCapabilitySearchDocuments();
 
-            return View(model);
+
+                // Index Sample Counts
+                var model = new SearchIndexModel
+                {
+                    TotalSampleSetCount = a,
+                    IndexableSampleSetCount = b,
+                    SuspendedSampleSetCount = c,
+                    CollectionSearchDocumentCount = d,
+                    TotalCapabilityCount = e,
+                    IndexableCapabilityCount = f,
+                    SuspendedCapabilityCount = g,
+                    CapabilitySearchDocumentCount = h
+                };
+
+                return View(model);
+            }
+            catch (Exception e)
+            {
+            }
+
+            return null;
         }
 
         [HttpPost]

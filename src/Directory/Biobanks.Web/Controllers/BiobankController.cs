@@ -1510,7 +1510,7 @@ namespace Biobanks.Web.Controllers
                 await _biobankWriteService.AddCapabilityAsync(new CapabilityDTO
                 {
                     OrganisationId = biobankId,
-                    Diagnosis = model.Diagnosis,
+                    OntologyTerm = model.Diagnosis,
                     BespokeConsentForm = model.BespokeConsentForm,
                     BespokeSOP = model.BespokeSOP,
                     AnnualDonorExpectation = model.AnnualDonorExpectation.Value
@@ -1593,7 +1593,7 @@ namespace Biobanks.Web.Controllers
                 await _biobankWriteService.UpdateCapabilityAsync(new CapabilityDTO
                 {
                     Id = model.Id,
-                    Diagnosis = model.Diagnosis,
+                    OntologyTerm = model.Diagnosis,
                     BespokeConsentForm = model.BespokeConsentForm,
                     BespokeSOP = model.BespokeSOP,
                     AnnualDonorExpectation = model.AnnualDonorExpectation.Value

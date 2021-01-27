@@ -18,7 +18,7 @@
     @Html.Partial("_Facets", new FacetsModel
     {
         Action = Request.RequestContext.RouteData.Values["action"].ToString(),
-        Diagnosis = Model.OntologyTerm,
+        OntologyTerm = Model.OntologyTerm,
         Facets = Model.Facets,
         SelectedFacets = Model.SelectedFacets
     })

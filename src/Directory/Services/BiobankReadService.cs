@@ -504,8 +504,9 @@ namespace Biobanks.Services
             => (await _capabilityRepository.ListAsync()).Select(x => x.DiagnosisCapabilityId);
 
         public async Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexingAsync(
-                IEnumerable<int> sampleSetIds)
-            => await _sampleSetRepository.ListAsync(false,
+            IEnumerable<int> sampleSetIds)
+        {
+            var sampleSets = await _sampleSetRepository.ListAsync(false,
                 x => sampleSetIds.Contains(x.SampleSetId) && !x.Collection.Organisation.IsSuspended,
                 null,
                 x => x.Collection,
@@ -523,7 +524,7 @@ namespace Biobanks.Services
                 x => x.DonorCount,
                 x => x.Sex,
                 x => x.MaterialDetails,
-                x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
+                //x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
                 x => x.MaterialDetails.Select(y => y.CollectionPercentage),
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
@@ -531,6 +532,9 @@ namespace Biobanks.Services
                 x => x.Collection.Organisation.Country,
                 x => x.Collection.Organisation.County
             );
+
+            return sampleSets;
+        }
 
         public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
                 IEnumerable<int> capabilityIds)

@@ -7,7 +7,7 @@ namespace Biobanks.Web.Models.Search
     {
         public string Action { get; set; }
 
-        public string Diagnosis { get; set; }
+        public string OntologyTerm { get; set; }
 
         public IEnumerable<SearchFacetModel> Facets { get; set; }
 
