@@ -13,7 +13,7 @@
             CreateIndex("dbo.OrganisationServiceOfferings", "ServiceOfferingId");
             AddForeignKey("dbo.OrganisationServiceOfferings", "ServiceOfferingId", "dbo.ServiceOfferings", "Id", cascadeDelete: true);
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.OrganisationServiceOfferings", "ServiceOfferingId", "dbo.ServiceOfferings");

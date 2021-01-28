@@ -13,7 +13,7 @@ namespace Biobanks.Directory.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202101261635048_AddApiEntities"; }
+            get { return "202101281543400_AddApiEntities"; }
         }
         
         string IMigrationMetadata.Source

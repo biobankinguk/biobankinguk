@@ -165,7 +165,7 @@
             CreateIndex("dbo.Collections", "SnomedTermId");
             CreateIndex("dbo.DiagnosisCapabilities", "SnomedTermId");
             AddForeignKey("dbo.SnomedTerms", "SnomedTagId", "dbo.SnomedTags");
-            AddForeignKey("dbo.Collections", "SnomedTermId", "dbo.SnomedTerms");
+            AddForeignKey("dbo.Collections", "SnomedTermId", "dbo.SnomedTerms", "Id");
             AddForeignKey("dbo.DiagnosisCapabilities", "SnomedTermId", "dbo.SnomedTerms", "Id");
 
             DropColumn("dbo.SnomedTerms", "DiagnosisId");

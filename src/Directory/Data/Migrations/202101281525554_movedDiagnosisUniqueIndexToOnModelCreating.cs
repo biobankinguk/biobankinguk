@@ -1,6 +1,5 @@
 ﻿namespace Biobanks.Directory.Data.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
     
     public partial class movedDiagnosisUniqueIndexToOnModelCreating : DbMigration
@@ -11,7 +10,7 @@
             AlterColumn("dbo.Diagnosis", "Description", c => c.String(maxLength: 200));
             CreateIndex("dbo.Diagnosis", "Description", unique: true);
         }
-        
+
         public override void Down()
         {
             DropIndex("dbo.Diagnosis", new[] { "Description" });

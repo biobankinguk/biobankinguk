@@ -13,7 +13,7 @@
             RenameIndex(table: "dbo.Collections", name: "IX_SnomedTermId", newName: "IX_OntologyTermId");
             RenameIndex(table: "dbo.DiagnosisCapabilities", name: "IX_SnomedTermId", newName: "IX_OntologyTermId");
         }
-        
+
         public override void Down()
         {
             RenameIndex(table: "dbo.DiagnosisCapabilities", name: "IX_OntologyTermId", newName: "IX_SnomedTermId");

@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class RenameSnomedTerm : IMigrationMetadata
+    public sealed partial class HarmonizeEntities : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RenameSnomedTerm));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(HarmonizeEntities));
         
         string IMigrationMetadata.Id
         {
-            get { return "202101271125099_RenameSnomedTerm"; }
+            get { return "202101281527346_HarmonizeEntities"; }
         }
         
         string IMigrationMetadata.Source

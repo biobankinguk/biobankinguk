@@ -1,5 +1,6 @@
 ﻿namespace Biobanks.Directory.Data.Migrations
 {
+    using System;
     using System.Data.Entity.Migrations;
     
     public partial class AddApiEntities : DbMigration
@@ -19,10 +20,11 @@
                     IndividualReferenceId = c.String(nullable: false, maxLength: 255),
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.SnomedTerms", t => t.DiagnosisCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.DiagnosisCodeOntologyVersionId, cascadeDelete: true)
-                .Index(t => t.DiagnosisCodeId)
                 .Index(t => t.DiagnosisCodeOntologyVersionId);
+
+            AddForeignKey("dbo.LiveDiagnosis", "DiagnosisCodeId", "dbo.SnomedTerms", "Id");
+            CreateIndex("dbo.LiveDiagnosis", "DiagnosisCodeId");
 
             CreateTable(
                 "dbo.OntologyVersions",
@@ -115,22 +117,23 @@
                     IndividualReferenceId = c.String(nullable: false, maxLength: 255),
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.SnomedTerms", t => t.ExtractionProcedureId)
-                .ForeignKey("dbo.SnomedTerms", t => t.ExtractionSiteId)
                 .ForeignKey("dbo.OntologyVersions", t => t.ExtractionSiteOntologyVersionId)
                 .ForeignKey("dbo.MaterialTypes", t => t.MaterialTypeId, cascadeDelete: true)
-                .ForeignKey("dbo.SnomedTerms", t => t.SampleContentId)
                 .ForeignKey("dbo.SampleContentMethods", t => t.SampleContentMethodId)
                 .ForeignKey("dbo.Sexes", t => t.SexId)
                 .ForeignKey("dbo.StorageTemperatures", t => t.StorageTemperatureId)
                 .Index(t => t.MaterialTypeId)
                 .Index(t => t.StorageTemperatureId)
-                .Index(t => t.ExtractionSiteId)
                 .Index(t => t.ExtractionSiteOntologyVersionId)
-                .Index(t => t.ExtractionProcedureId)
-                .Index(t => t.SampleContentId)
                 .Index(t => t.SampleContentMethodId)
                 .Index(t => t.SexId);
+
+            AddForeignKey("dbo.LiveSamples", "ExtractionProcedureId", "dbo.SnomedTerms", "Id");
+            AddForeignKey("dbo.LiveSamples", "ExtractionSiteId", "dbo.SnomedTerms", "Id");
+            AddForeignKey("dbo.LiveSamples", "SampleContentId", "dbo.SnomedTerms", "Id");
+            CreateIndex("dbo.LiveSamples", "ExtractionProcedureId");
+            CreateIndex("dbo.LiveSamples", "ExtractionSiteId");
+            CreateIndex("dbo.LiveSamples", "SampleContentId");
 
             CreateTable(
                 "dbo.StagedDiagnosis",
@@ -145,10 +148,11 @@
                     IndividualReferenceId = c.String(nullable: false, maxLength: 255),
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.SnomedTerms", t => t.DiagnosisCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.DiagnosisCodeOntologyVersionId, cascadeDelete: true)
-                .Index(t => t.DiagnosisCodeId)
                 .Index(t => t.DiagnosisCodeOntologyVersionId);
+
+            AddForeignKey("dbo.StagedDiagnosis", "DiagnosisCodeId", "dbo.SnomedTerms", "Id");
+            CreateIndex("dbo.StagedDiagnosis", "DiagnosisCodeId");
 
             CreateTable(
                 "dbo.StagedDiagnosisDeletes",
@@ -191,22 +195,23 @@
                     IndividualReferenceId = c.String(nullable: false, maxLength: 255),
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.SnomedTerms", t => t.ExtractionProcedureId)
-                .ForeignKey("dbo.SnomedTerms", t => t.ExtractionSiteId)
                 .ForeignKey("dbo.OntologyVersions", t => t.ExtractionSiteOntologyVersionId)
                 .ForeignKey("dbo.MaterialTypes", t => t.MaterialTypeId, cascadeDelete: true)
-                .ForeignKey("dbo.SnomedTerms", t => t.SampleContentId)
                 .ForeignKey("dbo.SampleContentMethods", t => t.SampleContentMethodId)
                 .ForeignKey("dbo.Sexes", t => t.SexId)
                 .ForeignKey("dbo.StorageTemperatures", t => t.StorageTemperatureId)
                 .Index(t => t.MaterialTypeId)
                 .Index(t => t.StorageTemperatureId)
-                .Index(t => t.ExtractionSiteId)
                 .Index(t => t.ExtractionSiteOntologyVersionId)
-                .Index(t => t.ExtractionProcedureId)
-                .Index(t => t.SampleContentId)
                 .Index(t => t.SampleContentMethodId)
                 .Index(t => t.SexId);
+
+            AddForeignKey("dbo.StagedSamples", "ExtractionProcedureId", "dbo.SnomedTerms", "Id");
+            AddForeignKey("dbo.StagedSamples", "ExtractionSiteId", "dbo.SnomedTerms", "Id");
+            AddForeignKey("dbo.StagedSamples", "SampleContentId", "dbo.SnomedTerms", "Id");
+            CreateIndex("dbo.StagedSamples", "ExtractionSiteId");
+            CreateIndex("dbo.StagedSamples", "ExtractionProcedureId");
+            CreateIndex("dbo.StagedSamples", "SampleContentId");
 
             CreateTable(
                 "dbo.StagedTreatmentDeletes",
@@ -231,12 +236,13 @@
                     IndividualReferenceId = c.String(nullable: false, maxLength: 255),
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.SnomedTerms", t => t.TreatmentCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.TreatmentCodeOntologyVersionId, cascadeDelete: true)
                 .ForeignKey("dbo.TreatmentLocations", t => t.TreatmentLocationId)
-                .Index(t => t.TreatmentCodeId)
                 .Index(t => t.TreatmentLocationId)
                 .Index(t => t.TreatmentCodeOntologyVersionId);
+
+            AddForeignKey("dbo.StagedTreatments", "TreatmentCodeId", "dbo.SnomedTerms", "Id");
+            CreateIndex("dbo.StagedTreatments", "TreatmentCodeId");
 
             CreateTable(
                 "dbo.TreatmentLocations",
@@ -261,13 +267,13 @@
                     IndividualReferenceId = c.String(nullable: false, maxLength: 255),
                 })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.SnomedTerms", t => t.TreatmentCodeId, cascadeDelete: true)
                 .ForeignKey("dbo.OntologyVersions", t => t.TreatmentCodeOntologyVersionId, cascadeDelete: true)
                 .ForeignKey("dbo.TreatmentLocations", t => t.TreatmentLocationId)
-                .Index(t => t.TreatmentCodeId)
                 .Index(t => t.TreatmentLocationId)
                 .Index(t => t.TreatmentCodeOntologyVersionId);
 
+            AddForeignKey("dbo.LiveTreatments", "TreatmentCodeId", "dbo.SnomedTerms", "Id");
+            CreateIndex("dbo.LiveTreatments", "TreatmentCodeId");
         }
 
         public override void Down()

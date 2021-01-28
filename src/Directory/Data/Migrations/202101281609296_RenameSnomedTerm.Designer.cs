@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class movedDiagnosisUniqueIndexToOnModelCreating : IMigrationMetadata
+    public sealed partial class RenameSnomedTerm : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(movedDiagnosisUniqueIndexToOnModelCreating));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(RenameSnomedTerm));
         
         string IMigrationMetadata.Id
         {
-            get { return "202012111716283_movedDiagnosisUniqueIndexToOnModelCreating"; }
+            get { return "202101281609296_RenameSnomedTerm"; }
         }
         
         string IMigrationMetadata.Source

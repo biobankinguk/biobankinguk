@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class FixServiceOfferingManyRelation : IMigrationMetadata
+    public sealed partial class RenameRefDataFields : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(FixServiceOfferingManyRelation));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(RenameRefDataFields));
         
         string IMigrationMetadata.Id
         {
-            get { return "202101281118501_FixServiceOfferingManyRelation"; }
+            get { return "202101281608406_RenameRefDataFields"; }
         }
         
         string IMigrationMetadata.Source
