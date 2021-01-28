@@ -33,7 +33,8 @@ namespace Publications.Services
                 Authors = x.Authors,
                 Journal = x.Journal,
                 Year = x.Year,
-                DOI = x.Doi
+                DOI = x.Doi,
+                Source = x.Source
             });
 
             // Add or Update new publications
@@ -55,6 +56,7 @@ namespace Publications.Services
                     older.Journal = newer.Journal;
                     older.Year = newer.Year;
                     older.DOI = newer.DOI;
+                    older.Source = newer.Source;
 
                     _ctx.Update(older);
                 }
