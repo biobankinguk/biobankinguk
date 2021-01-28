@@ -11,7 +11,7 @@ namespace Biobanks.Entities.Data
         public virtual Organisation Organisation { get; set; }
 
         [Key, Column(Order = 1)]
-        public int ServiceId { get; set; }
+        public int ServiceOfferingId { get; set; }
         public virtual ServiceOffering ServiceOffering { get; set; }
     }
 }

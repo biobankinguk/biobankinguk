@@ -127,68 +127,68 @@
             AddPrimaryKey("dbo.Counties", "Id");
             AddForeignKey("dbo.Organisations", "CountyId", "dbo.Counties", "Id");
 
-            //// DonorCount
-            //DropForeignKey("dbo.CollectionSampleSets", "DonorCountId", "dbo.DonorCounts");
-            //DropPrimaryKey("dbo.DonorCounts");
-            //RenameColumn("dbo.DonorCounts", "DonorCountId", "Id");
-            //RenameColumn("dbo.DonorCounts", "Description", "Value");
-            //AddPrimaryKey("dbo.DonorCounts", "Id");
-            //AddForeignKey("dbo.CollectionSampleSets", "DonorCountId", "dbo.DonorCounts", "Id", cascadeDelete: true);
+            // DonorCount
+            DropForeignKey("dbo.CollectionSampleSets", "DonorCountId", "dbo.DonorCounts");
+            DropPrimaryKey("dbo.DonorCounts");
+            RenameColumn("dbo.DonorCounts", "DonorCountId", "Id");
+            RenameColumn("dbo.DonorCounts", "Description", "Value");
+            AddPrimaryKey("dbo.DonorCounts", "Id");
+            AddForeignKey("dbo.CollectionSampleSets", "DonorCountId", "dbo.DonorCounts", "Id", cascadeDelete: true);
 
-            //// HtaStatus
-            //DropForeignKey("dbo.Collections", "HtaStatusId", "dbo.HtaStatus");
-            //DropPrimaryKey("dbo.HtaStatus");
-            //RenameColumn("dbo.HtaStatus", "HtaStatusId", "Id");
-            //RenameColumn("dbo.HtaStatus", "Description", "Value");
-            //AddPrimaryKey("dbo.HtaStatus", "Id");
-            //AddForeignKey("dbo.Collections", "HtaStatusId", "dbo.HtaStatus", "Id");
+            // HtaStatus
+            DropForeignKey("dbo.Collections", "HtaStatusId", "dbo.HtaStatus");
+            DropPrimaryKey("dbo.HtaStatus");
+            RenameColumn("dbo.HtaStatus", "HtaStatusId", "Id");
+            RenameColumn("dbo.HtaStatus", "Description", "Value");
+            AddPrimaryKey("dbo.HtaStatus", "Id");
+            AddForeignKey("dbo.Collections", "HtaStatusId", "dbo.HtaStatus", "Id");
 
-            //// Macroscopic Assessment
-            //DropForeignKey("dbo.MaterialDetails", "MacroscopicAssessmentId", "dbo.MacroscopicAssessments");
-            //DropPrimaryKey("dbo.MacroscopicAssessments");
-            //RenameColumn("dbo.MacroscopicAssessments", "MacroscopicAssessmentId", "Id");
-            //RenameColumn("dbo.MacroscopicAssessments", "Description", "Value");
-            //AddPrimaryKey("dbo.MacroscopicAssessments", "Id");
-            //AddForeignKey("dbo.MaterialDetails", "MacroscopicAssessmentId", "dbo.MacroscopicAssessments", "Id", cascadeDelete: true);
+            // Macroscopic Assessment
+            DropForeignKey("dbo.MaterialDetails", "MacroscopicAssessmentId", "dbo.MacroscopicAssessments");
+            DropPrimaryKey("dbo.MacroscopicAssessments");
+            RenameColumn("dbo.MacroscopicAssessments", "MacroscopicAssessmentId", "Id");
+            RenameColumn("dbo.MacroscopicAssessments", "Description", "Value");
+            AddPrimaryKey("dbo.MacroscopicAssessments", "Id");
+            AddForeignKey("dbo.MaterialDetails", "MacroscopicAssessmentId", "dbo.MacroscopicAssessments", "Id", cascadeDelete: true);
 
-            //// RegistrationReason
-            //DropForeignKey("dbo.OrganisationRegistrationReasons", "RegistrationReasonId", "dbo.RegistrationReasons");
-            //DropPrimaryKey("dbo.RegistrationReasons");
-            //RenameColumn("dbo.RegistrationReasons", "RegistrationReasonId", "Id");
-            //RenameColumn("dbo.RegistrationReasons", "Description", "Value");
-            //AddPrimaryKey("dbo.RegistrationReasons", "Id");
-            //AddForeignKey("dbo.OrganisationRegistrationReasons", "RegistrationReasonId", "dbo.RegistrationReasons", "Id", cascadeDelete: true);
+            // RegistrationReason
+            DropForeignKey("dbo.OrganisationRegistrationReasons", "RegistrationReasonId", "dbo.RegistrationReasons");
+            DropPrimaryKey("dbo.RegistrationReasons");
+            RenameColumn("dbo.RegistrationReasons", "RegistrationReasonId", "Id");
+            RenameColumn("dbo.RegistrationReasons", "Description", "Value");
+            AddPrimaryKey("dbo.RegistrationReasons", "Id");
+            AddForeignKey("dbo.OrganisationRegistrationReasons", "RegistrationReasonId", "dbo.RegistrationReasons", "Id", cascadeDelete: true);
 
-            //// SampleCollectionMode
-            //DropForeignKey("dbo.DiagnosisCapabilities", "SampleCollectionModeId", "dbo.SampleCollectionModes");
-            //DropPrimaryKey("dbo.SampleCollectionModes");
-            //RenameColumn("dbo.SampleCollectionModes", "SampleCollectionModeId", "Id");
-            //RenameColumn("dbo.SampleCollectionModes", "Description", "Value");
-            //AddPrimaryKey("dbo.SampleCollectionModes", "Id");
-            //AddForeignKey("dbo.DiagnosisCapabilities", "SampleCollectionModeId", "dbo.SampleCollectionModes", "Id", cascadeDelete: true);
+            // SampleCollectionMode
+            DropForeignKey("dbo.DiagnosisCapabilities", "SampleCollectionModeId", "dbo.SampleCollectionModes");
+            DropPrimaryKey("dbo.SampleCollectionModes");
+            RenameColumn("dbo.SampleCollectionModes", "SampleCollectionModeId", "Id");
+            RenameColumn("dbo.SampleCollectionModes", "Description", "Value");
+            AddPrimaryKey("dbo.SampleCollectionModes", "Id");
+            AddForeignKey("dbo.DiagnosisCapabilities", "SampleCollectionModeId", "dbo.SampleCollectionModes", "Id", cascadeDelete: true);
 
-            //// ServiceOffering
-            //DropForeignKey("dbo.OrganisationServiceOfferings", "ServiceId", "dbo.ServiceOfferings");
-            //DropIndex("dbo.OrganisationServiceOfferings", new[] { "ServiceId" });
-            //DropPrimaryKey("dbo.ServiceOfferings");
-            //RenameColumn("dbo.ServiceOfferings", "ServiceId", "Id");
-            //RenameColumn("dbo.ServiceOfferings", "Name", "Value");
-            //AddPrimaryKey("dbo.ServiceOfferings", "Id");
-            //CreateIndex("dbo.OrganisationServiceOfferings", "ServiceId");
-            //AddForeignKey("dbo.OrganisationServiceOfferings", "ServiceId", "dbo.ServiceOfferings", "Id");
+            // ServiceOffering
+            DropForeignKey("dbo.OrganisationServiceOfferings", "ServiceId", "dbo.ServiceOfferings");
+            DropIndex("dbo.OrganisationServiceOfferings", new[] { "ServiceId" });
+            DropPrimaryKey("dbo.ServiceOfferings");
+            RenameColumn("dbo.ServiceOfferings", "ServiceId", "Id");
+            RenameColumn("dbo.ServiceOfferings", "Name", "Value");
+            AddPrimaryKey("dbo.ServiceOfferings", "Id");
+            CreateIndex("dbo.OrganisationServiceOfferings", "ServiceId");
+            AddForeignKey("dbo.OrganisationServiceOfferings", "ServiceId", "dbo.ServiceOfferings", "Id");
 
-            //// SnomedTerm
-            //DropIndex("dbo.SnomedTerms", new[] { "Description" });
-            //RenameColumn("dbo.SnomedTerms", "Description", "Value");
-            //CreateIndex("dbo.SnomedTerms", "Value", unique: true);
+            // SnomedTerm
+            DropIndex("dbo.SnomedTerms", new[] { "Description" });
+            RenameColumn("dbo.SnomedTerms", "Description", "Value");
+            CreateIndex("dbo.SnomedTerms", "Value", unique: true);
 
-            //// SopStatus
-            //DropForeignKey("dbo.Networks", "SopStatusId", "dbo.SopStatus");
-            //DropPrimaryKey("dbo.SopStatus");
-            //RenameColumn("dbo.SopStatus", "SopStatusId", "Id");
-            //RenameColumn("dbo.SopStatus", "Description", "Value");
-            //AddPrimaryKey("dbo.SopStatus", "Id");
-            //AddForeignKey("dbo.Networks", "SopStatusId", "dbo.SopStatus", "Id", cascadeDelete: true);
+            // SopStatus
+            DropForeignKey("dbo.Networks", "SopStatusId", "dbo.SopStatus");
+            DropPrimaryKey("dbo.SopStatus");
+            RenameColumn("dbo.SopStatus", "SopStatusId", "Id");
+            RenameColumn("dbo.SopStatus", "Description", "Value");
+            AddPrimaryKey("dbo.SopStatus", "Id");
+            AddForeignKey("dbo.Networks", "SopStatusId", "dbo.SopStatus", "Id", cascadeDelete: true);
         }
 
         public override void Down()

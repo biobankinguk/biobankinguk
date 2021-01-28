@@ -524,7 +524,7 @@ namespace Biobanks.Services
                 x => x.DonorCount,
                 x => x.Sex,
                 x => x.MaterialDetails,
-                //x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
+                x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
                 x => x.MaterialDetails.Select(y => y.CollectionPercentage),
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
@@ -811,30 +811,42 @@ namespace Biobanks.Services
             )).FirstOrDefault();
 
         public async Task<CollectionSampleSet> GetSampleSetByIdForIndexingAsync(int id)
-            => (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
-                x => x.Collection,
-                x => x.Collection.OntologyTerm,
-                x => x.Collection.Organisation,
-                x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network),
-                x => x.Collection.CollectionPoint,
-                x => x.Collection.CollectionStatus,
-                x => x.Collection.ConsentRestrictions,
-                x => x.Collection.HtaStatus,
-                x => x.Collection.AccessCondition,
-                x => x.Collection.CollectionType,
-                x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
-                x => x.AgeRange,
-                x => x.DonorCount,
-                x => x.Sex,
-                x => x.MaterialDetails,
-                x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.MaterialDetails.Select(y => y.CollectionPercentage),
-                x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
-                x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.StorageTemperature),
-                x => x.Collection.Organisation.Country,
-                x => x.Collection.Organisation.County
-            )).FirstOrDefault();
+        {
+            try
+            {
+                var sets = (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
+                    x => x.Collection,
+                    x => x.Collection.OntologyTerm,
+                    x => x.Collection.Organisation,
+                    x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network),
+                    x => x.Collection.CollectionPoint,
+                    x => x.Collection.CollectionStatus,
+                    x => x.Collection.ConsentRestrictions,
+                    x => x.Collection.HtaStatus,
+                    x => x.Collection.AccessCondition,
+                    x => x.Collection.CollectionType,
+                    x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
+                    x => x.AgeRange,
+                    x => x.DonorCount,
+                    x => x.Sex,
+                    x => x.MaterialDetails,
+                    x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
+                    x => x.MaterialDetails.Select(y => y.CollectionPercentage),
+                    x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
+                    x => x.MaterialDetails.Select(y => y.MaterialType),
+                    x => x.MaterialDetails.Select(y => y.StorageTemperature),
+                    x => x.Collection.Organisation.Country,
+                    x => x.Collection.Organisation.County
+                )).FirstOrDefault();
+
+                return sets;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         public bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId)
             => _collectionRepository.List(
@@ -1283,7 +1295,7 @@ namespace Biobanks.Services
         public async Task<int> GetServiceOfferingOrganisationCount(int id)
             => (await _organisationServiceOfferingRepository.ListAsync(
             false,
-             x => x.ServiceId == id)).Count();
+             x => x.ServiceOfferingId == id)).Count();
 
         public async Task<int> GetHtaStatusCollectionCount(int id)
             => (await _collectionRepository.ListAsync(false, x => x.HtaStatusId == id)).Count();

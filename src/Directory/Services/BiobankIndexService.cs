@@ -37,19 +37,23 @@ namespace Biobanks.Services
         {
             var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
 
-            if (string.IsNullOrEmpty(searchBase))
-                return null;
-
-            using (var client = new HttpClient())
+            try
             {
-                // Proxy Call To ElasticSearch Instance
-                var response = await client.GetStringAsync($"{searchBase}/_cluster/health");
-                var clusterHealth = JsonConvert.DeserializeAnonymousType(response, new
+                using (var client = new HttpClient())
                 {
-                    Status = string.Empty
-                });
+                    var response = await client.GetStringAsync($"{searchBase}/_cluster/health");
+                    var clusterHealth = JsonConvert.DeserializeAnonymousType(response, new
+                    {
+                        Status = string.Empty
+                    });
 
-                return clusterHealth.Status;
+                    return clusterHealth.Status;
+                }
+            }
+            catch
+            {
+                // Exception Occurred - Assume Search Is Down
+                return "red";
             }
         }
 

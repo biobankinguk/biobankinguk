@@ -280,7 +280,7 @@ namespace Biobanks.Web.Controllers
             var activeServices =
                 model.ServiceModels.Where(x => x.Active).Select(x => new OrganisationServiceOffering
                 {
-                    ServiceId = x.ServiceOfferingId,
+                    ServiceOfferingId = x.ServiceOfferingId,
                     OrganisationId = biobank.OrganisationId
                 }).ToList();
 
@@ -378,7 +378,7 @@ namespace Biobanks.Web.Controllers
             //mark services as active in the full list
             var services = (await GetAllServicesAsync()).Select(service =>
             {
-                service.Active = bbServices.Any(x => x.ServiceId == service.ServiceOfferingId);
+                service.Active = bbServices.Any(x => x.ServiceOfferingId == service.ServiceOfferingId);
                 return service;
             }).ToList();
 

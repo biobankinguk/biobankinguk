@@ -513,11 +513,11 @@ namespace Biobanks.Services
             foreach (var service in services)
             {
                 //Validate service id first - don't want to go around inserting new unnamed services
-                if (await _serviceOfferingRepository.GetByIdAsync(service.ServiceId) != null)
+                if (await _serviceOfferingRepository.GetByIdAsync(service.ServiceOfferingId) != null)
                 {
                     //now make sure the biobank doesn't already have this service listed
                     if ((await _organisationServiceOfferingRepository.ListAsync(false,
-                        x => x.OrganisationId == service.OrganisationId && x.ServiceId == service.ServiceId))
+                        x => x.OrganisationId == service.OrganisationId && x.ServiceOfferingId == service.ServiceOfferingId))
                         .FirstOrDefault() == null)
                     {
                         _organisationServiceOfferingRepository.Insert(service);
@@ -532,12 +532,12 @@ namespace Biobanks.Services
         {
             //make sure the biobank has this service
             if ((await _organisationServiceOfferingRepository.ListAsync(false,
-                x => x.OrganisationId == biobankId && x.ServiceId == serviceId))
+                x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId))
                 .FirstOrDefault() != null)
             {
                 await
                 _organisationServiceOfferingRepository.DeleteWhereAsync(
-                    x => x.OrganisationId == biobankId && x.ServiceId == serviceId);
+                    x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId);
             }
 
             await _organisationServiceOfferingRepository.SaveChangesAsync();
