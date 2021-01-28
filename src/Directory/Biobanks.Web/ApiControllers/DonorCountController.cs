@@ -129,7 +129,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListDonorCountsAsync()).Where(x => x.DonorCountId == id).First();
+            var model = (await _biobankReadService.ListDonorCountsAsync(true)).Where(x => x.DonorCountId == id).First();
 
             //Getting the name of the reference type as stored in the config
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
