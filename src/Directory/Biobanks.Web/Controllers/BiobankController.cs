@@ -23,11 +23,8 @@ using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
-using Biobanks.Web.Extensions;
 using static System.String;
 using System.Net.Http;
-using System.Xml.Linq;
-using Microsoft.Ajax.Utilities;
 using Directory.Data.Constants;
 
 
@@ -72,7 +69,7 @@ namespace Biobanks.Web.Controllers
 
         #region Biobank details
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Index()
         {
             var model = await GetBiobankDetailsModelAsync();
@@ -148,11 +145,11 @@ namespace Biobanks.Web.Controllers
             request.OrganisationCreatedDate = DateTime.Now;
             request.OrganisationExternalId = biobank.OrganisationExternalId;
             await _biobankWriteService.UpdateOrganisationRegisterRequestAsync(request);
-
+            
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
                     {
-                        new Claim(CustomClaimType.BiobankId, biobank.OrganisationId.ToString())
+                        new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
                     });
 
             Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
@@ -192,7 +189,9 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
                     FeedbackMessageType.Info);
 
-            return Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]) == (int)ActiveOrganisationType.NewBiobank
+            var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
+
+            return activeOrganisationType == (int)ActiveOrganisationType.NewBiobank
                 ? View(await NewBiobankDetailsModelAsync()) //no biobank id means we're dealing with a request
                 : View(await GetBiobankDetailsModelAsync()); //biobank id means we're dealing with an existing biobank
         }
@@ -496,7 +495,7 @@ namespace Biobanks.Web.Controllers
 
         #region Admins
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Admins()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -651,7 +650,7 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> DeleteAdmin(string biobankUserId, string userFullName)
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -674,7 +673,7 @@ namespace Biobanks.Web.Controllers
 
         #region Funders
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Funders()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -781,7 +780,7 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> DeleteFunder(int funderId, string funderName)
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -797,7 +796,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("Funders");
         }
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> SearchFunders(string wildcard)
         {
             var funders = await _biobankReadService.ListFundersAsync(wildcard);
@@ -816,7 +815,7 @@ namespace Biobanks.Web.Controllers
 
         #region Collections
         [HttpGet]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Collections()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -1650,7 +1649,7 @@ namespace Biobanks.Web.Controllers
 
         #region Network Acceptance
 
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> NetworkAcceptance()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -1696,7 +1695,7 @@ namespace Biobanks.Web.Controllers
 
         #region Publications 
         [HttpGet]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Publications()
         {
             //If turned off in site config
@@ -1708,7 +1707,7 @@ namespace Biobanks.Web.Controllers
 
 
         [HttpGet]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> GetPublicationsAjax()
         {
             //If turned off in site config
@@ -1731,7 +1730,9 @@ namespace Biobanks.Web.Controllers
                     Year = x.Year,
                     Journal = x.Journal,
                     DOI = x.DOI,
-                    Approved = x.Accepted
+                    Approved = x.Accepted,
+                    Source = x.Source
+                    
                 });
             }
                 
@@ -1739,7 +1740,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(ClaimType = CustomClaimType.BiobankId)]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> ClaimPublicationAjax(string publicationId, bool accept)
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -1771,7 +1772,8 @@ namespace Biobanks.Web.Controllers
                     Year = publication.Year,
                     Journal = publication.Journal,
                     DOI = publication.DOI,
-                    Approved = publication.Accepted
+                    Approved = publication.Accepted,
+                    Source = publication.Source
                 });
             }
         }
@@ -1843,7 +1845,7 @@ namespace Biobanks.Web.Controllers
             if (endQuarter == 0)
                 endQuarter = ((DateTime.Today.Month + 2) / 3);
             if (reportPeriod == 0)
-                reportPeriod = 10;
+                reportPeriod = 5;
 
             var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
             return View(model);

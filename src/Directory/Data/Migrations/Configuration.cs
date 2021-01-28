@@ -167,6 +167,10 @@ namespace Directory.Data.Migrations
                             Value = "Search the Directory",
                         },
                         new Config {
+                            Key = "site.homepage.searchsubtitle",
+                            Value = "Search for existing banked samples or for a group to collect samples on your behalf",
+                        },
+                        new Config {
                             Key = "site.homepage.resourceregistration",
                             Value = @"###Registering a sample resource
 
@@ -190,7 +194,7 @@ namespace Directory.Data.Migrations
                         new Config
                         {
                             Key = "site.homepage.searchradiosamplescollected",
-                            Value = "Require samples collected",
+                            Value = "For a group to collect samples on your behalf",
                             Description = "Set require samples collected text",
                             ReadOnly = false,
                         },

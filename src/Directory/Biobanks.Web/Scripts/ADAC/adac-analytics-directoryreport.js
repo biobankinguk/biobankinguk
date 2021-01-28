@@ -1,5 +1,8 @@
 ﻿
 $(function () {
+	// Turn on tooltips
+	$('[data-toggle="tooltip"]').tooltip();
+
 	//****** Overall Stats *******
 
 	//Total Number of Sessions
