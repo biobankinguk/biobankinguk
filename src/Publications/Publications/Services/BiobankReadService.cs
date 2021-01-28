@@ -35,7 +35,7 @@ namespace Publications.Services
             => (await ListBiobanksAsync()).Select(x => x.OrganisationId).ToList();
 
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _ctx.Publications.Where(x => x.OrganisationId == biobankId).ToListAsync();
+            => await _ctx.Publications.Where(x => x.OrganisationId == biobankId).Include(a => a.PublicationAnnotations).ThenInclude(b => b.Annotation).ToListAsync();
 
         //Uses Publication Id from EF
         public async Task<IEnumerable<PublicationAnnotation>> GetPublicationAnnotations(int publicationId)
