@@ -21,7 +21,7 @@ namespace Publications.Services
         }
 
 
-        public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDto> annotations)
+        public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDTO> annotations)
         {
 
             var existingPublications = await _biobankReadService.GetPublicationById(publicationId);
