@@ -781,6 +781,22 @@ namespace Biobanks.Web.Controllers
 
         #region Reference Datasets
 
+        public ActionResult AddRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
+        {
+            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been added successfully.", FeedbackMessageType.Success);
+            return Redirect(feedback.RedirectUrl);
+        }
+        public ActionResult EditRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
+        {
+            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been edited successfully.", FeedbackMessageType.Success);
+            return Redirect(feedback.RedirectUrl);
+        }
+        public ActionResult DeleteRefDataSuccessFeedbackAjax(RefDataFeedbackModel feedback)
+        {
+            SetTemporaryFeedbackMessage($"The {feedback.RefDataType.ToLower()} \"{feedback.Name}\" has been deleted successfully.", FeedbackMessageType.Success);
+            return Redirect(feedback.RedirectUrl);
+        }
+
         #region RefData: Access Conditions
         public async Task<ActionResult> AccessConditions()
         {
@@ -802,40 +818,6 @@ namespace Biobanks.Web.Controllers
             {
                 AccessConditions = models
             });
-        }
-
-
-        public async Task<ActionResult> DeleteAccessCondition(AccessConditionModel model)
-        {
-            if (await _biobankReadService.IsAccessConditionInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AccessConditions");
-            }
-
-            await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
-            {
-                Id = model.Id
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The access condition \"{model.Description}\" was deleted successfully.",
-                    FeedbackMessageType.Success);
-
-            return RedirectToAction("AccessConditions");
-        }
-
-        public ActionResult AddAccessConditionSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The access condition \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AccessConditions");
-        }
-
-        public ActionResult EditAccessConditionSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The access condition \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AccessConditions");
         }
         #endregion
 
@@ -861,37 +843,7 @@ namespace Biobanks.Web.Controllers
             });
 
         }
-        public async Task<ActionResult> DeleteAgeRange(AgeRangeModel model)
-        {
-            if (await _biobankReadService.IsAgeRangeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The age range \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("AgeRanges");
-            }
-
-            await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            SetTemporaryFeedbackMessage($"The age range  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AgeRanges");
-
-        }
-
-        public ActionResult AddAgeRangeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The age range \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AgeRanges");
-        }
-
-        public ActionResult EditAgeRangeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The age range \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AgeRanges");
-        }
+        
         #endregion
         #region RefData: AssociatedDataProcurementTimeFrame
         public async Task<ActionResult> AssociatedDataProcurementTimeFrame()
@@ -914,64 +866,6 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        public async Task<ActionResult> DeleteAssociatedDataProcurementTimeFrame(Models.Shared.AssociatedDataProcurementTimeFrameModel model)
-        {
-            //Validate min amount of time frames
-            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-            if (timeFrames.Count() <= 2)
-            {
-                SetTemporaryFeedbackMessage($"A minimum amount of 2 time frames are allowed.", FeedbackMessageType.Warning);
-                return RedirectToAction("AssociatedDataProcurementTimeFrame");
-            }
-
-            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data procurement time frame \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AssociatedDataProcurementTimeFrame");
-            }
-
-            await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
-            {
-                Id = model.Id,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
-
-        public ActionResult EditAssociatedDataProcurementTimeFrameSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
-        public ActionResult AddAssociatedDataProcurementTimeFrameSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data procurement time frame \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
-
-        public ActionResult AddAssociatedDataProcurementTimeFrameOverflow()
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"A maximum amount of 5 time frames are allowed.", FeedbackMessageType.Warning);
-
-            return RedirectToAction("AssociatedDataProcurementTimeFrame");
-        }
         #endregion
 
         #region RefData: AnnualStatistics
@@ -1007,40 +901,6 @@ namespace Biobanks.Web.Controllers
 
         }
 
-        public async Task<ActionResult> DeleteAnnualStatistic(AnnualStatisticModel model)
-        {
-            if (await _biobankReadService.IsAnnualStatisticInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The annual statistic \"{model.Name}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("AnnualStatistics");
-            }
-
-            var annualStatistic = new AnnualStatistic
-            {
-                Id = model.Id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Value = model.Name
-            };
-
-            await _biobankWriteService.DeleteAnnualStatisticAsync(annualStatistic);
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The annual statistics type \"{model.Name}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AnnualStatistics");
-        }
-
-        public ActionResult AddAnnualStatisticSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The annual statistic \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AnnualStatistics");
-        }
-
-        public ActionResult EditAnnualStatisticSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The annual statistic \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("AnnualStatistics");
-        }
-
         #endregion
 
         #region RefData: Material Types
@@ -1064,49 +924,6 @@ namespace Biobanks.Web.Controllers
 
         }
 
-        public async Task<ActionResult> DeleteMaterialType(MaterialTypeModel model)
-        {
-            if (await _biobankReadService.IsMaterialTypeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The material type \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("MaterialTypes");
-            }
-
-            await _biobankWriteService.DeleteMaterialTypeAsync(new MaterialType
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The material type \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("MaterialTypes");
-        }
-
-        public ActionResult EditMaterialTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The material type \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("MaterialTypes");
-        }
-
-        public ActionResult AddMaterialTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The material type \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("MaterialTypes");
-        }
         #endregion
 
         #region RefData: Disease Status
@@ -1125,9 +942,9 @@ namespace Biobanks.Web.Controllers
             ));
         }
 
-        public async Task<ActionResult> DeleteDiseaseStatus(OntologyTermModel model)
+        public async Task<ActionResult> DeleteDiseaseStatus(DiagnosisModel model)
         {
-            if (await _biobankReadService.IsOntologyTermInUse(model.OntologyTermId))
+            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
             {
                 SetTemporaryFeedbackMessage(
                     $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
@@ -1135,14 +952,15 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("DiseaseStatuses");
             }
 
-            await _biobankWriteService.DeleteOntologyTermAsync(new OntologyTerm
+            await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
             {
-                Id = model.OntologyTermId,
-                Value = model.Description
+                DiagnosisId = model.Id,
+                Description = model.Description
             });
 
             //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
+            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
+                FeedbackMessageType.Success);
 
             return RedirectToAction("DiseaseStatuses");
         }
@@ -1195,42 +1013,9 @@ namespace Biobanks.Web.Controllers
             else
             {
                 return RedirectToAction("LockedRef");
-            }
-        }
-
-        public async Task<ActionResult> DeleteCollectionPercentage(CollectionPercentageModel model)
-        {
-            if (await _biobankReadService.IsCollectionPercentageInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The collection percentage \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionPercentage");
-            }
-
-            await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = 0,
-                UpperBound = 1
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The collection percentage  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
             return RedirectToAction("CollectionPercentages");
         }
 
-        public ActionResult AddCollectionPercentageSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection percentage \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPercentages");
-        }
-
-        public ActionResult EditCollectionPercentageSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection percentage \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPercentages");
-        }
         #endregion
 
         #region RefData: Collection Points
@@ -1254,37 +1039,6 @@ namespace Biobanks.Web.Controllers
                 CollectionPoints = models
             });
         }
-
-        public async Task<ActionResult> DeleteCollectionPoint(CollectionPointModel model)
-        {
-            if (await _biobankReadService.IsCollectionPointInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The collection point \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionPoints");
-            }
-
-            await _biobankWriteService.DeleteCollectionPointAsync(new CollectionPoint
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The collection point  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPoints");
-        }
-
-        public ActionResult AddCollectionPointSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection point \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPoints");
-        }
-
-        public ActionResult EditCollectionPointSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The collection point \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("CollectionPoints");
         }
         #endregion
 
@@ -1309,45 +1063,9 @@ namespace Biobanks.Web.Controllers
             return View(new DonorCountsModel()
             {
                 DonorCounts = models
-            });
-        }
-
-        public async Task<ActionResult> DeleteDonorCount(DonorCountModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
-
-            if (await _biobankReadService.IsDonorCountInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("DonorCount");
-            }
-
-            await _biobankWriteService.DeleteDonorCountAsync(new DonorCount
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = 0,
-                UpperBound = 1
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
             return RedirectToAction("DonorCounts");
         }
 
-        public ActionResult AddDonorCountSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("DonorCounts");
-        }
-
-        public ActionResult EditDonorCountSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("DonorCounts");
-        }
         #endregion
 
         #region RefData: Collection Type
@@ -1370,49 +1088,6 @@ namespace Biobanks.Web.Controllers
                      .ToList()
             });
         }
-
-        public async Task<ActionResult> DeleteCollectionType(Models.Shared.CollectionTypeModel model)
-        {
-            if (await _biobankReadService.IsCollectionTypeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The collection type \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionType");
-            }
-
-            await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
-            {
-                Id = model.Id,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The collection type \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionType");
-
-        }
-
-        public ActionResult EditCollectionTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The collection type \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionType");
-        }
-
-        public ActionResult AddCollectionTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The consent restriction \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionType");
         }
         #endregion
 
@@ -1442,42 +1117,7 @@ namespace Biobanks.Web.Controllers
                 StorageTemperatures = models
             });
         }
-
-        public async Task<ActionResult> DeleteStorageTemperature(StorageTemperatureModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.StorageTemperatureName);
-            if (await _biobankReadService.IsStorageTemperatureInUse(model.Id))
-            {
-
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Value}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("StorageTemperatures");
-            }
-
-            await _biobankWriteService.DeleteStorageTemperatureAsync(new StorageTemperature
-            {
-                Id = model.Id,
-                Value = model.Value,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Value}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("StorageTemperatures");
         }
-
-        public ActionResult AddStorageTemperatureSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("StorageTemperatures");
-        }
-
-        public ActionResult EditStorageTemperatureSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("StorageTemperatures");
-        }
-        
         #endregion
 
         #region RefData: Assocaited Data Types
@@ -1510,51 +1150,9 @@ namespace Biobanks.Web.Controllers
             {
                 AssociatedDataTypes = model,
                 AssociatedDataTypeGroups = groups
-            });
-        }
-
-        public async Task<ActionResult> DeleteAssociatedDataType(AssociatedDataTypeModel model)
-        {
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data type \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AssociatedDataTypes");
-            }
-
-            await _biobankWriteService.DeleteAssociatedDataTypeAsync(new AssociatedDataType
-            {
-                Id = model.Id,
-                Value = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data type \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypes");
-            }
-
-        public ActionResult EditAssociatedDataTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
             return RedirectToAction("AssociatedDataTypes");
         }
 
-        public ActionResult AddAssociatedDataTypeSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypes");
-        }
         #endregion
 
         #region RefData: Associated Data Type Groups
@@ -1573,49 +1171,6 @@ namespace Biobanks.Web.Controllers
                     }).Result)
 
                     .ToList()
-            });
-        }
-        public async Task<ActionResult> DeleteAssociatedDataTypeGroup(AssociatedDataTypeGroupModel model)
-        {
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(model.AssociatedDataTypeGroupId))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The associated data type group \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AssociatedDataTypeGroups");
-            }
-
-            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
-            {
-                Id = model.AssociatedDataTypeGroupId,
-                Value = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The associated data type group \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypeGroups");
-        }
-       
-        public ActionResult AddAssociatedDataTypeGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type group \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AssociatedDataTypeGroups");
-        }
-
-  
-        public ActionResult EditAssociatedDataTypeGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The associated data type group \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
             return RedirectToAction("AssociatedDataTypeGroups");
         }
 
@@ -1638,51 +1193,9 @@ namespace Biobanks.Web.Controllers
                 }).Result)
 
                     .ToList()
-            });
-        }
-
-        public async Task<ActionResult> DeleteConsentRestriction(Models.Shared.ConsentRestrictionModel model)
-        {
-            if (await _biobankReadService.IsConsentRestrictionInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The consent restriction \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("ConsentRestriction");
-            }
-
-            await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
-            {
-                Id = model.Id,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The consent restriction \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
             return RedirectToAction("ConsentRestriction");
         }
 
-        public ActionResult EditConsentRestrictionSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The consent restriction \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ConsentRestriction");
-        }
-
-        public ActionResult AddConsentRestrictionSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The consent restriction \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ConsentRestriction");
-        }
         #endregion
 
         #region RefData: Collection Status
@@ -1704,48 +1217,6 @@ namespace Biobanks.Web.Controllers
                     .ToList()
             });
         }
-
-        public async Task<ActionResult> DeleteCollectionStatus(Models.Shared.CollectionStatusModel model)
-        {
-            if (await _biobankReadService.IsCollectionStatusInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The collection status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("CollectionStatus");
-            }
-
-            await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
-            {
-                Id = model.Id,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The collection status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionStatus");
-        }
-
-        public ActionResult EditCollectionStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The collection status \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionStatus");
-        }
-
-        public ActionResult AddCollectionStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The collection status \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("CollectionStatus");
         }
         #endregion 
 
@@ -1766,49 +1237,6 @@ namespace Biobanks.Web.Controllers
 
                     .ToList()
             });
-        }
-
-        public async Task<ActionResult> DeleteAnnualStatisticGroup(AnnualStatisticGroupModel model)
-        {
-            if (await _biobankReadService.IsAnnualStatisticGroupInUse(model.AnnualStatisticGroupId))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The annual statistic group \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("AnnualStatisticGroups");
-            }
-
-            await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
-            {
-                Id = model.AnnualStatisticGroupId,
-                Value = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The annual statistic group \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AnnualStatisticGroups");
-        }
-
-        public ActionResult EditAnnualStatisticGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The annual statistic group \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AnnualStatisticGroups");
-        }
-
-        public ActionResult AddAnnualStatisticGroupSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The annual statistic group \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("AnnualStatisticGroups");
         }
 
         #endregion
@@ -1834,39 +1262,6 @@ namespace Biobanks.Web.Controllers
                 SampleCollectionModes = models
             });
         }
-
-        public async Task<ActionResult> DeleteSampleCollectionMode(SampleCollectionModeModel model)
-        {
-            if (await _biobankReadService.IsSampleCollectionModeInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The sample collection mode \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("SampleCollectionModes");
-            }
-
-            var mode = new SampleCollectionMode
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.DeleteSampleCollectionModeAsync(mode);
-
-            // Success
-            SetTemporaryFeedbackMessage($"The sample colelction mode  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SampleCollectionModes");
-        }
-
-        public ActionResult AddSampleCollectionModeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sameple collection mode \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SampleCollectionModes");
-        }
-
-        public ActionResult EditSampleCollectionModeSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sample collection mode \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SampleCollectionModes");
         }
         #endregion
 
@@ -1889,41 +1284,6 @@ namespace Biobanks.Web.Controllers
                     .ToList()
             });
         }
-
-        public async Task<ActionResult> DeleteSex(SexModel model)
-        {
-            if (await _biobankReadService.IsSexInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The sex \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("Sexes");
-            }
-
-            await _biobankWriteService.DeleteSexAsync(new Sex
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The sex \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Sexes");
-        }
-
-        public ActionResult AddSexSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sex \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("Sexes");
-        }
-
-        public ActionResult EditSexSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sex \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("Sexes");
         }
         #endregion
 
@@ -1945,48 +1305,6 @@ namespace Biobanks.Web.Controllers
                      .ToList()
             });
         }
-
-        public ActionResult AddCountrySuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The country \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Country");
-        }
-
-        public ActionResult EditCountrySuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The country \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Country");
-        }
-
-        public async Task<ActionResult> DeleteCountry(Models.Shared.CountryModel model)
-        {
-            if (await _biobankReadService.IsCountryInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The country \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("Country");
-            }
-
-            await _biobankWriteService.DeleteCountryAsync(new Country
-            {
-                Id = model.Id,
-                Value = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The country \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("Country");
         }
         #endregion
 
@@ -2021,40 +1339,6 @@ namespace Biobanks.Web.Controllers
             else
             {
                 return RedirectToAction("LockedRef");
-            }
-        }
-
-        public async Task<ActionResult> DeleteCounty(CountyModel model)
-        {
-            if (await _biobankReadService.IsCountyInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The county \"{model.Name}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("Country");
-            }
-
-            var county = new County
-            {
-                Id = model.Id,
-                CountryId = model.CountryId,
-                Value = model.Name
-            };
-
-            await _biobankWriteService.DeleteCountyAsync(county);
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The county type \"{model.Name}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("County");
-        }
-
-        public ActionResult AddCountySuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The county \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("County");
-        }
-
-        public ActionResult EditCountySuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The county \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
             return RedirectToAction("County");
         }
 
@@ -2079,40 +1363,9 @@ namespace Biobanks.Web.Controllers
             return View(new SopStatusesModel()
             {
                 SopStatuses = models
-            });
-        }
-
-        public async Task<ActionResult> DeleteSopStatus(SopStatusModel model)
-        {
-            if (await _biobankReadService.IsSopStatusInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The sop status \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("SopStatus");
-            }
-
-            await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The sop status  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
             return RedirectToAction("SopStatus");
         }
 
-        public ActionResult AddSopStatusSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sop status \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SopStatus");
-        }
-
-        public ActionResult EditSopStatusSuccess(string name)
-        {
-            SetTemporaryFeedbackMessage($"The sop status \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("SopStatus");
-        }
         #endregion
 
         #region RefData: Registration Reason
@@ -2131,51 +1384,9 @@ namespace Biobanks.Web.Controllers
                 }).Result)
 
                     .ToList()
-            });
-        }
-
-        public async Task<ActionResult> DeleteRegistrationReason(Models.Shared.RegistrationReasonModel model)
-        {
-            if (await _biobankReadService.IsRegistrationReasonInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The registration reason \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("RegistrationReason");
-            }
-
-            await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
-            {
-                Id = model.Id,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The registration reason \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
             return RedirectToAction("RegistrationReason");
         }
 
-        public ActionResult EditRegistrationReasonSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The registration reason \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("RegistrationReason");
-        }
-
-        public ActionResult AddRegistrationReasonSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The registration reason \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("RegistrationReason");
-        }
         #endregion
 
         #region RefData: Macroscopic Assessment
@@ -2199,46 +1410,6 @@ namespace Biobanks.Web.Controllers
                 MacroscopicAssessments = models
             });
         }
-
-        public async Task<ActionResult> DeleteMacroscopicAssessment(MacroscopicAssessmentModel model)
-        {
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
-
-            if (await _biobankReadService.IsMacroscopicAssessmentInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently in use, and cannot be deleted.", FeedbackMessageType.Danger);
-                return RedirectToAction("MacroscopicAssessments");
-            }
-
-            if ((await _biobankReadService.ListMacroscopicAssessmentsAsync()).Count() <= 1)
-            {
-                SetTemporaryFeedbackMessage($"The {currentReferenceName.Value} \"{model.Description}\" is currently the last entry and cannot be deleted", FeedbackMessageType.Danger);
-                return RedirectToAction("MacroscopicAssessments");
-            }
-
-            await _biobankWriteService.DeleteMacroscopicAssessmentAsync(new MacroscopicAssessment
-            {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder
-            });
-
-            // Success
-            SetTemporaryFeedbackMessage($"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("MacroscopicAssessments");
-        }
-
-        public ActionResult AddMacroscopicAssessmentSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been added successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("MacroscopicAssessments");
-        }
-
-        public ActionResult EditMacroscopicAssessmentSuccess(string name, string referencename)
-        {
-            SetTemporaryFeedbackMessage($"The {referencename} \"{name}\" has been edited successfully.", FeedbackMessageType.Success);
-            return RedirectToAction("MacroscopicAssessments");
         }
         #endregion
 
@@ -2268,49 +1439,6 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("LockedRef");
             }
         }
-
-
-        public async Task<ActionResult> DeleteHtaStatus(Models.Shared.HtaStatusModel model)
-        {
-            if (await _biobankReadService.IsHtaStatusInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The hta status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("HtaStatus");
-            }
-
-            await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
-            {
-                Id = model.Id,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The hta status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("HtaStatus");
-        }
-
-        public ActionResult EditHtaStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The hta status \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("HtaStatus");
-        }
-
-        public ActionResult AddHtaStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The hta status \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("HtaStatus");
         }
 
         #endregion
@@ -2334,48 +1462,6 @@ namespace Biobanks.Web.Controllers
 
                     .ToList()
             });
-        }
-        public async Task<ActionResult> DeleteServiceOffering(Models.Shared.ServiceOfferingModel model)
-        {
-            if (await _biobankReadService.IsServiceOfferingInUse(model.Id))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The service offering \"{model.Name}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("ServiceOffering");
-            }
-
-            await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
-            {
-                Id = model.Id,
-                Value = model.Name
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The service offering \"{model.Name}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ServiceOffering");
-        }
-
-        public ActionResult EditServiceOfferingSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The service offering \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ServiceOffering");
-        }
-
-        public ActionResult AddServiceOfferingSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The service offering \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("ServiceOffering");
         }
 
         #endregion

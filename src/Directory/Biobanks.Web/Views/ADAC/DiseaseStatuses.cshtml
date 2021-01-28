@@ -44,38 +44,48 @@
 						<td><div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.OtherTerms)</div></td>
 						<td>@ontologyTerm.CollectionCapabilityCount</td>
 
-						<td class="text-right">
-							@if (ontologyTerm.CollectionCapabilityCount > 0)
-							{
-								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
-							}
-							else
-							{
-								<a title="Edit"
-								   class="action-icon"
-								   href="#"
-								   data-target="#disease-status-modal"
-								   data-disease-status="@Json.Encode(ontologyTerm)"
-								   data-bind="click: openModalForEdit">
-									<span class="fa fa-edit labelled-icon"></span>Edit
-								</a>
+                    <td class="text-right">
+                        @if (ontologyTerm.CollectionCapabilityCount > 0)
+                        {
+                            <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
+                            //Allow editing of 'other terms' only
+                            <a title="Edit"
+                               class="action-icon"
+                               href="#"
+                               data-target="#disease-status-modal"
+                               data-disease-status="@Json.Encode(ontologyTerm)"
+                               data-bind="click: openModalForEdit"
+                               data-partial-edit="true">
+                                <span class="fa fa-edit labelled-icon"></span>Edit
+                            </a>
+                        }
+                        else
+                        {
+                            <a title="Edit"
+                               class="action-icon"
+                               href="#"
+                               data-target="#disease-status-modal"
+                               data-disease-status="@Json.Encode(ontologyTerm)"
+                               data-bind="click: openModalForEdit">
+                                <span class="fa fa-edit labelled-icon"></span>Edit
+                            </a>
 
-								<a title="Delete"
-								   class="action-icon delete-confirm"
-								   data-disease-status="&quot;@ontologyTerm.Description&quot;"
-								   href="@Url.Action("DeleteDiseaseStatus", new
-                                     {
-	                                     OntologyTermId = ontologyTerm.OntologyTermId, ontologyTerm.Description
-                                     })">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
-							}
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</div>
+                            <a title="Delete"
+                               class="action-icon delete-confirm"
+                               data-refdata-model="@Json.Encode(ontologyTerm)"
+                               data-resource-url="/api/DiseaseStatus"
+                               data-success-redirect="@Url.Action("DiseaseStatuses")"
+                               data-refdata-type="Disease status"
+                               href="#">
+                                <span class="fa fa-trash labelled-icon"></span>Delete
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal -->
@@ -100,11 +110,11 @@
 				</div>
 			</div>
 
-			<form id="modal-disease-status-form"
-				  data-resource-url="/api/DiseaseStatus"
-				  data-update-success-redirect="@Url.Action("EditDiseaseStatusSuccess")"
-				  data-add-success-redirect="@Url.Action("AddDiseaseStatusSuccess")"
-				  class="form-horizontal">
+            <form id="modal-disease-status-form"
+                  data-resource-url="/api/DiseaseStatus"
+                  data-success-redirect="@Url.Action("DiseaseStatuses")"
+                  data-refdata-type="Disease status"
+                  class="form-horizontal">
 
 				<div class="modal-body">
 
