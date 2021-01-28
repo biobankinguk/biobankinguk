@@ -302,8 +302,8 @@
             RenameColumn("dbo.Countries", "Id", "CountryId");
             RenameColumn("dbo.Countries", "Value", "Name");
             AddPrimaryKey("dbo.Countries", "CountryId");
-            AddForeignKey("dbo.Counties", "CountryId", "dbo.Countries");
-            AddForeignKey("dbo.Organisations", "CountryId", "dbo.Countries");
+            AddForeignKey("dbo.Counties", "CountryId", "dbo.Countries", "CountryId");
+            AddForeignKey("dbo.Organisations", "CountryId", "dbo.Countries", "CountryId");
 
             // County
             DropForeignKey("dbo.Organisations", "CountyId", "dbo.Counties");

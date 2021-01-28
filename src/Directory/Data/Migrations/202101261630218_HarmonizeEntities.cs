@@ -108,10 +108,10 @@
         private void HarmonizeMaterialTypeDown()
         {
             DropForeignKey("dbo.MaterialDetails", "MaterialTypeId", "dbo.MaterialTypes");
-            DropForeignKey("dbo.MaterialTypeGroupMaterialTypes", "MaterialType_Id", "dbo.MaterialTypes");
-            DropForeignKey("dbo.MaterialTypeGroupMaterialTypes", "MaterialTypeGroup_Id", "dbo.MaterialTypeGroups");
-            DropIndex("dbo.MaterialTypeGroupMaterialTypes", new[] { "MaterialType_Id" });
-            DropIndex("dbo.MaterialTypeGroupMaterialTypes", new[] { "MaterialTypeGroup_Id" });
+            DropForeignKey("dbo.MaterialTypeGroupMaterialTypes", "MaterialTypeId", "dbo.MaterialTypes");
+            DropForeignKey("dbo.MaterialTypeGroupMaterialTypes", "MaterialTypeGroupId", "dbo.MaterialTypeGroups");
+            DropIndex("dbo.MaterialTypeGroupMaterialTypes", new[] { "MaterialTypeId" });
+            DropIndex("dbo.MaterialTypeGroupMaterialTypes", new[] { "MaterialTypeGroupId" });
             DropPrimaryKey("dbo.MaterialTypes");
 
             RenameColumn("dbo.MaterialTypes", "Id", "MaterialTypeId");
