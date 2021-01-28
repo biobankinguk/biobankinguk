@@ -7,54 +7,54 @@ namespace Biobanks.SubmissionApi.Services.Contracts
     /// <summary>
     /// Service for handling Snomed Term reference data.
     /// </summary>
-    public interface ISnomedTermService
+    public interface IOntologyTermService
     {
         /// <summary>
         /// Get a Snomed Term entity.
         /// </summary>
-        /// <param name="snomedTermId">The ID of the Snomed Term to fetch.</param>
+        /// <param name="ontologyTermId">The ID of the Snomed Term to fetch.</param>
         /// <returns>The requested Snomed Term.</returns>
-        Task<SnomedTerm> Get(string snomedTermId);
+        Task<OntologyTerm> Get(string ontologyTermId);
 
         /// <summary>
         /// Get a list of Snomed Term entities.
         /// </summary>
         /// <returns>A list of Snomed Term entities.</returns>
-        Task<IEnumerable<SnomedTerm>> List();
+        Task<IEnumerable<OntologyTerm>> List();
 
         /// <summary>
         /// Inserts a new Snomed Term entity into the repository.
         /// </summary>
-        /// <param name="snomedTerm">The Snomed Term object to insert.</param>
+        /// <param name="ontologyTerm">The Snomed Term object to insert.</param>
         /// <returns>The created Snomed Term.</returns>
-        Task<SnomedTerm> Create(SnomedTerm snomedTerm);
+        Task<OntologyTerm> Create(OntologyTerm ontologyTerm);
         
         /// <summary>
         /// Updates an existing Snomed Term entity in the respository.
         /// </summary>
-        /// <param name="snomedTerm">The Snomed Term object to update.</param>
+        /// <param name="ontologyTerm">The Snomed Term object to update.</param>
         /// <returns></returns>
-        Task Update(SnomedTerm snomedTerm);
+        Task Update(OntologyTerm ontologyTerm);
 
         /// <summary>
         /// Get a Snomed Term entity.
         /// </summary>
         /// <param name="value">The value of the Snomed Term to fetch.</param>
         /// <returns>The requested Snomed Term.</returns>
-        Task<SnomedTerm> GetByValue(string value);
+        Task<OntologyTerm> GetByValue(string value);
 
         /// <summary>
         /// Adds the givern Snomed Terms to the repository.
         /// </summary>
-        /// <param name="snomedTerms">Snomed Terms to be added to the repository.</param>
+        /// <param name="ontologyTerms">Snomed Terms to be added to the repository.</param>
         /// <returns></returns>
-        Task Create(IList<SnomedTerm> snomedTerms);
+        Task Create(IList<OntologyTerm> ontologyTerms);
         
         /// <summary>
         /// Updates the given Snomed Terms in the repository.
         /// </summary>
-        /// <param name="snomedTerms">The Snomed Terms to update in the repository.</param>
+        /// <param name="ontologyTerms">The Snomed Terms to update in the repository.</param>
         /// <returns></returns>
-        Task Update(List<SnomedTerm> snomedTerms);
+        Task Update(List<OntologyTerm> ontologyTerms);
     }
 }

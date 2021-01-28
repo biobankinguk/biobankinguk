@@ -15,7 +15,7 @@ namespace Biobanks.Data
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
         public DbSet<Sex> Sexes { get; set; }
-        public DbSet<SnomedTerm> SnomedTerms { get; set; }
+        public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         public DbSet<TreatmentLocation> TreatmentLocations { get; set; }

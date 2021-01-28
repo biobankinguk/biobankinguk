@@ -25,9 +25,10 @@ namespace Biobanks.SubmissionApi.Services
                 .ToListAsync();
 
         /// <inheritdoc />
-        public async Task<SnomedTag> Get(int snomedTagId)
+        public async Task<SnomedTag> Get(int 
+            snomedTagId)
             => await _db.SnomedTags
-                .Include(st => st.SnomedTerms)
+                .Include(st => st.OntologyTerms)
                 .FirstOrDefaultAsync(st => st.Id == snomedTagId);
 
         /// <inheritdoc />

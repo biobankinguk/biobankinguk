@@ -123,7 +123,7 @@ namespace Biobanks.SubmissionApi
             services.AddTransient<ISampleContentMethodService, SampleContentMethodService>();
             services.AddTransient<ISexService, SexService>();
             services.AddTransient<ISnomedTagService, SnomedTagService>();
-            services.AddTransient<ISnomedTermService, SnomedTermService>();
+            services.AddTransient<IOntologyTermService, OntologyTermService>();
             services.AddTransient<IStorageTemperatureService, StorageTemperatureService>();
             services.AddTransient<ITreatmentLocationService, TreatmentLocationService>();
 

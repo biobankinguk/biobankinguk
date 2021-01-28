@@ -14,14 +14,14 @@ namespace Biobanks.SubmissionApi.Controllers.ReferenceData
     /// <inheritdoc />
     [Route("[controller]")]
     [ApiController]
-    public class SnomedTermController : ControllerBase
+    public class OntologyTermController : ControllerBase
     {
-        private readonly ISnomedTermService _snomedTermService;
+        private readonly IOntologyTermService _ontologyTermService;
 
         /// <inheritdoc />
-        public SnomedTermController(ISnomedTermService snomedTermService)
+        public OntologyTermController(IOntologyTermService ontologyTermService)
         {
-            _snomedTermService = snomedTermService;
+            _ontologyTermService = ontologyTermService;
         }
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace Biobanks.SubmissionApi.Controllers.ReferenceData
         /// </summary>
         /// <returns>A list of Snomed Terms.</returns>
         [HttpGet]
-        [SwaggerResponse(200, Type = typeof(IEnumerable<SnomedTerm>))]
-        public async Task<IActionResult> Get() => Ok(await _snomedTermService.List());
+        [SwaggerResponse(200, Type = typeof(IEnumerable<OntologyTerm>))]
+        public async Task<IActionResult> Get() => Ok(await _ontologyTermService.List());
 
         /// <summary>
         /// Gets a specific Snomed Term.
@@ -42,9 +42,9 @@ namespace Biobanks.SubmissionApi.Controllers.ReferenceData
         [SwaggerResponse(404, "Snomed Term with provided id does not exist.")]
         public async Task<IActionResult> Get(string id)
         {
-            var snomedTerm = await _snomedTermService.Get(id);
-            if (snomedTerm != null)
-                return Ok(snomedTerm);
+            var ontologyTerm = await _ontologyTermService.Get(id);
+            if (ontologyTerm != null)
+                return Ok(ontologyTerm);
 
             return NotFound();
         }
@@ -58,19 +58,19 @@ namespace Biobanks.SubmissionApi.Controllers.ReferenceData
         [HttpPut("{id}")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = CustomRoles.SuperAdmin)]
-        public async Task<IActionResult> Put(string id, [FromBody] SnomedTerm model)
+        public async Task<IActionResult> Put(string id, [FromBody] OntologyTerm model)
         {
             model.Id = id;
             
             // insert if it doesn't already exist
-            if (await _snomedTermService.Get(id) == null)
+            if (await _ontologyTermService.Get(id) == null)
             {
-                await _snomedTermService.Create(model);
+                await _ontologyTermService.Create(model);
                 return CreatedAtAction("Get", new {id = model.Id}, model);
             }
 
             // else update existing entity
-            await _snomedTermService.Update(model);
+            await _ontologyTermService.Update(model);
             return Ok(model);
         }
 
@@ -82,13 +82,13 @@ namespace Biobanks.SubmissionApi.Controllers.ReferenceData
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = CustomRoles.SuperAdmin)]
-        public async Task<IActionResult> Post([FromBody] SnomedTerm model)
+        public async Task<IActionResult> Post([FromBody] OntologyTerm model)
         {
             //check we're maintaining unique values
-            if (await _snomedTermService.GetByValue(model.Description) != null)
-                return StatusCode((int)HttpStatusCode.Conflict, model.Description);
+            if (await _ontologyTermService.GetByValue(model.Value) != null)
+                return StatusCode((int)HttpStatusCode.Conflict, model.Value);
 
-            await _snomedTermService.Create(model);
+            await _ontologyTermService.Create(model);
 
             return CreatedAtAction("Get", new { id = model.Id }, model);
         }
@@ -101,16 +101,16 @@ namespace Biobanks.SubmissionApi.Controllers.ReferenceData
         [HttpPost("batch")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = CustomRoles.SuperAdmin)]
-        public async Task<IActionResult> PostBatch([FromBody] IList<SnomedTerm> models)
+        public async Task<IActionResult> PostBatch([FromBody] IList<OntologyTerm> models)
         {
             if (models == null || models.Count == 0) return BadRequest("Request body expected.");
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var updates = new List<SnomedTerm>();
+            var updates = new List<OntologyTerm>();
 
             //separate lists for creation and update
             var inArray = models.Select(x => x.Id).ToArray();
-            var existing = (await _snomedTermService.List())
+            var existing = (await _ontologyTermService.List())
                 .Where(x => inArray.Contains(x.Id)).ToList();
 
             existing.ForEach(x =>
@@ -120,8 +120,8 @@ namespace Biobanks.SubmissionApi.Controllers.ReferenceData
                 updates.Add(m);
             });
 
-            await _snomedTermService.Create(models);
-            await _snomedTermService.Update(updates);
+            await _ontologyTermService.Create(models);
+            await _ontologyTermService.Update(updates);
             return Ok();
         }
     }
