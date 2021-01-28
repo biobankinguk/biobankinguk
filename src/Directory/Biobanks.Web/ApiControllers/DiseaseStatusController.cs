@@ -84,7 +84,10 @@ namespace Biobanks.Web.ApiControllers
 
             if (await _biobankReadService.IsDiagnosisInUse(id))
             {
-                ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
+                //Allow editing of only Other terms field if diagnosis in use
+                var diagnosis = (await _biobankReadService.ListDiagnosesAsync()).Where(x => x.DiagnosisId == id).First();
+                if ((diagnosis.SnomedIdentifier != model.SnomedIdentifier) || (diagnosis.Description != model.Description))
+                    ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
 
             if (!ModelState.IsValid)

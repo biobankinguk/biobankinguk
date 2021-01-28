@@ -46,6 +46,16 @@
                         @if (diagnosis.CollectionCapabilityCount > 0)
                         {
                             <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
+                            //Allow editing of 'other terms' only
+                            <a title="Edit"
+                               class="action-icon"
+                               href="#"
+                               data-target="#disease-status-modal"
+                               data-disease-status="@Json.Encode(diagnosis)"
+                               data-bind="click: openModalForEdit"
+                               data-partial-edit="true">
+                                <span class="fa fa-edit labelled-icon"></span>Edit
+                            </a>
                         }
                         else
                         {
