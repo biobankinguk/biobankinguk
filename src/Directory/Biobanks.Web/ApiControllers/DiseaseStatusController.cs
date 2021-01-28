@@ -82,8 +82,8 @@ namespace Biobanks.Web.ApiControllers
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {
                 //Allow editing of only Other terms field if diagnosis in use
-                var diagnosis = (await _biobankReadService.ListDiagnosesAsync()).Where(x => x.DiagnosisId == id).First();
-                if ((diagnosis.SnomedIdentifier != model.SnomedIdentifier) || (diagnosis.Description != model.Description))
+                var diagnosis = (await _biobankReadService.ListOntologyTermsAsync()).Where(x => x.Id == id).First();
+                if ((diagnosis.Value != model.Description) || (diagnosis.Value != model.Description))
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
 

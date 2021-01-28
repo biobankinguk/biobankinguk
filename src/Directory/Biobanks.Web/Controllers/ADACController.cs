@@ -942,9 +942,9 @@ namespace Biobanks.Web.Controllers
             ));
         }
 
-        public async Task<ActionResult> DeleteDiseaseStatus(DiagnosisModel model)
+        public async Task<ActionResult> DeleteDiseaseStatus(OntologyTermModel model)
         {
-            if (await _biobankReadService.IsDiagnosisInUse(model.Id))
+            if (await _biobankReadService.IsOntologyTermInUse(model.OntologyTermId))
             {
                 SetTemporaryFeedbackMessage(
                     $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
@@ -952,10 +952,10 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("DiseaseStatuses");
             }
 
-            await _biobankWriteService.DeleteDiagnosisAsync(new Diagnosis
+            await _biobankWriteService.DeleteOntologyTermAsync(new OntologyTerm()
             {
-                DiagnosisId = model.Id,
-                Description = model.Description
+                Id = model.OntologyTermId,
+                Value = model.Description
             });
 
             //Everything went A-OK!
@@ -1013,6 +1013,8 @@ namespace Biobanks.Web.Controllers
             else
             {
                 return RedirectToAction("LockedRef");
+            }
+
             return RedirectToAction("CollectionPercentages");
         }
 
@@ -1039,33 +1041,33 @@ namespace Biobanks.Web.Controllers
                 CollectionPoints = models
             });
         }
-        }
+
         #endregion
 
         #region RefData: Donor Counts
+
         public async Task<ActionResult> DonorCounts()
         {
             var models = (await _biobankReadService.ListDonorCountsAsync(true))
                 .Select(x =>
                     Task.Run(async () => new DonorCountModel()
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder,
-                        LowerBound = x.LowerBound,
-                        UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
-                    })
-                    .Result
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            SortOrder = x.SortOrder,
+                            LowerBound = x.LowerBound,
+                            UpperBound = x.UpperBound,
+                            SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
+                        })
+                        .Result
                 )
                 .ToList();
 
             return View(new DonorCountsModel()
             {
                 DonorCounts = models
-            return RedirectToAction("DonorCounts");
+            });
         }
-
         #endregion
 
         #region RefData: Collection Type
@@ -1087,7 +1089,6 @@ namespace Biobanks.Web.Controllers
 
                      .ToList()
             });
-        }
         }
         #endregion
 
@@ -1117,10 +1118,10 @@ namespace Biobanks.Web.Controllers
                 StorageTemperatures = models
             });
         }
-        }
         #endregion
 
         #region RefData: Assocaited Data Types
+
         public async Task<ActionResult> AssociatedDataTypes()
         {
             var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
@@ -1132,26 +1133,30 @@ namespace Biobanks.Web.Controllers
                 .ToList();
             var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Select(x =>
 
-            Task.Run(async () => new AssociatedDataTypeModel
-            {
-                Id = x.Id,
-                Name = x.Value,
-                Message = x.Message,
-                CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.Id),
-                AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                AssociatedDataTypeGroupName = groups.Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()?.Name,
+                    Task.Run(async () => new AssociatedDataTypeModel
+                    {
+                        Id = x.Id,
+                        Name = x.Value,
+                        Message = x.Message,
+                        CollectionCapabilityCount =
+                            await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.Id),
+                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
+                        AssociatedDataTypeGroupName = groups
+                            .Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()
+                            ?.Name,
 
-            }).Result)
+                    }).Result)
 
-               .ToList();
+                .ToList();
 
 
             return View(new AssociatedDataTypesModel
             {
                 AssociatedDataTypes = model,
                 AssociatedDataTypeGroups = groups
-            return RedirectToAction("AssociatedDataTypes");
+            });
         }
+
 
         #endregion
 
@@ -1163,15 +1168,16 @@ namespace Biobanks.Web.Controllers
                 AssociatedDataTypeGroups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
                     .Select(x =>
 
-                    Task.Run(async () => new ReadAssociatedDataTypeGroupModel
-                    {
-                        AssociatedDataTypeGroupId = x.Id,
-                        Name = x.Value,
-                        AssociatedDataTypeGroupCount = await _biobankReadService.GetAssociatedDataTypeGroupCount(x.Id)
-                    }).Result)
+                        Task.Run(async () => new ReadAssociatedDataTypeGroupModel
+                        {
+                            AssociatedDataTypeGroupId = x.Id,
+                            Name = x.Value,
+                            AssociatedDataTypeGroupCount =
+                                await _biobankReadService.GetAssociatedDataTypeGroupCount(x.Id)
+                        }).Result)
 
                     .ToList()
-            return RedirectToAction("AssociatedDataTypeGroups");
+            });
         }
 
         #endregion
@@ -1184,16 +1190,16 @@ namespace Biobanks.Web.Controllers
                 ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
                     .Select(x =>
 
-                Task.Run(async () => new ReadConsentRestrictionModel
-                {
-                    Id = x.Id,
-                    Description = x.Value,
-                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
-                    SortOrder = x.SortOrder
-                }).Result)
+                        Task.Run(async () => new ReadConsentRestrictionModel
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
+                            SortOrder = x.SortOrder
+                        }).Result)
 
                     .ToList()
-            return RedirectToAction("ConsentRestriction");
+            });
         }
 
         #endregion
@@ -1216,7 +1222,6 @@ namespace Biobanks.Web.Controllers
 
                     .ToList()
             });
-        }
         }
         #endregion 
 
@@ -1262,7 +1267,6 @@ namespace Biobanks.Web.Controllers
                 SampleCollectionModes = models
             });
         }
-        }
         #endregion
 
         #region RefData: Sexes
@@ -1284,7 +1288,6 @@ namespace Biobanks.Web.Controllers
                     .ToList()
             });
         }
-        }
         #endregion
 
         #region RefData: Country
@@ -1304,7 +1307,6 @@ namespace Biobanks.Web.Controllers
 
                      .ToList()
             });
-        }
         }
         #endregion
 
@@ -1339,6 +1341,8 @@ namespace Biobanks.Web.Controllers
             else
             {
                 return RedirectToAction("LockedRef");
+            }
+
             return RedirectToAction("County");
         }
 
@@ -1363,7 +1367,7 @@ namespace Biobanks.Web.Controllers
             return View(new SopStatusesModel()
             {
                 SopStatuses = models
-            return RedirectToAction("SopStatus");
+            });
         }
 
         #endregion
@@ -1376,15 +1380,15 @@ namespace Biobanks.Web.Controllers
                 RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
                     .Select(x =>
 
-                Task.Run(async () => new ReadRegistrationReasonModel
-                {
-                    Id = x.Id,
-                    Description = x.Value,
-                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
-                }).Result)
+                        Task.Run(async () => new ReadRegistrationReasonModel
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
+                        }).Result)
 
                     .ToList()
-            return RedirectToAction("RegistrationReason");
+            });
         }
 
         #endregion
@@ -1409,7 +1413,6 @@ namespace Biobanks.Web.Controllers
             {
                 MacroscopicAssessments = models
             });
-        }
         }
         #endregion
 
@@ -1438,7 +1441,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-        }
         }
 
         #endregion
