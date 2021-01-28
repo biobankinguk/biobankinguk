@@ -60,11 +60,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-service-offering="&quot;@serviceOffering.Name&quot;"
-                                   href="@Url.Action("DeleteServiceOffering", new
-                                     {
-                                         serviceOffering.Id, serviceOffering.Name, serviceOffering.SortOrder
-                                     })">
+                                   data-refdata-model="@Json.Encode(serviceOffering)"
+                                   data-resource-url="/api/ServiceOffering"
+                                   data-success-redirect="@Url.Action("ServiceOffering")"
+                                   data-refdata-type="Service Offering"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -99,8 +99,8 @@
 
             <form id="modal-service-offering-form"
                   data-resource-url="/api/ServiceOffering"
-                  data-update-success-redirect="@Url.Action("EditServiceOfferingSuccess")"
-                  data-add-success-redirect="@Url.Action("AddServiceOfferingSuccess")"
+                  data-success-redirect="@Url.Action("ServiceOffering")"
+                  data-refdata-type="Service Offering"
                   class="form-horizontal">
 
                 <div class="modal-body">

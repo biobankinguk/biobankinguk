@@ -55,40 +55,15 @@ function AdacAssociatedDataTypeGroupViewModel() {
         var form = $(e.target); // get form as a jquery object
 
         // Get Action Type
-        var resourceUrl = form.data("resource-url")
         var action = _this.modal.mode();
         if (action == 'Add') {
-            var ajaxType = 'POST'
-            var url = resourceUrl;
+            addRefData(_this, form.data("resource-url"), form.serialize(),
+                form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
         } else if (action == 'Update') {
-            var ajaxType = 'PUT';
-            var url = resourceUrl + '/' + $(e.target.AssociatedDataTypeGroupId).val();
+            editRefData(_this, form.data("resource-url") + '/' + $(e.target.AssociatedDataTypeGroupId).val(),
+                form.serialize(), form.data("success-redirect"), form.data("refdata-type"));
         }
-        var successRedirect = action.toLowerCase() + "-success-redirect";
-
-        // Make AJAX Call
-        $.ajax({
-            url: url,
-            type: ajaxType,
-            dataType: 'json',
-            data: form.serialize(),
-            success: function (data, textStatus, xhr) {
-                _this.dialogErrors.removeAll();
-                if (data.success) {
-                    _this.hideModal();
-                    window.location.href =
-                        form.data(successRedirect) + "?Name=" + data.name;
-                }
-                else {
-                    if (Array.isArray(data.errors)) {
-                        for (var error of data.errors) {
-                            _this.dialogErrors.push(error);
-                        }
-                    }
-                }
-            }
-        });
-    };
+    };  
 }
 
 var adacAssociatedDataTypeGroupVM;
@@ -163,11 +138,16 @@ $(function () {
 
     $(".delete-confirm").click(function (e) {
         e.preventDefault();
+
         var $link = $(this);
-        bootbox.confirm(
-            "Are you sure you want to delete " + $link.data("associated-groups") + "?",
+        var linkData = $link.data("refdata-model")
+        var url = $link.data("resource-url") + "/" + linkData.AssociatedDataTypeGroupId;
+
+        bootbox.confirm("Are you sure you want to delete " + linkData.Name + "?",
             function (confirmation) {
-                confirmation && window.location.assign($link.attr("href"));
+                if (confirmation) {
+                    deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
+                }
             }
         );
     });

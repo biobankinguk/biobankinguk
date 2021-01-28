@@ -60,11 +60,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-hta-status="&quot;@hta.Description&quot;"
-                                   href="@Url.Action("DeleteHtaStatus", new
-                                     {
-                                         hta.Id, hta.Description, hta.SortOrder
-                                     })">
+                                   data-refdata-model="@Json.Encode(hta)"
+                                   data-resource-url="/api/HtaStatus"
+                                   data-success-redirect="@Url.Action("HtaStatuses")"
+                                   data-refdata-type="Hta Status"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -99,8 +99,8 @@
 
             <form id="modal-hta-status-form"
                   data-resource-url="/api/HtaStatus"
-                  data-update-success-redirect="@Url.Action("EditHtaStatusSuccess")"
-                  data-add-success-redirect="@Url.Action("AddHtaStatusSuccess")"
+                  data-success-redirect="@Url.Action("HtaStatuses")"
+                  data-refdata-type="Hta Status"
                   class="form-horizontal">
 
                 <div class="modal-body">

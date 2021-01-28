@@ -71,17 +71,15 @@
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-								<a title="Delete"
-								   class="action-icon delete-confirm"
-								   data-preservation-type="@type.Description"
-								   href="@Url.Action("DeletePreservationType", new
-								{
-									type.Id,
-									type.Description,
-									type.SortOrder
-								})">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(type)"
+                                   data-resource-url="/api/PreservationType"
+                                   data-success-redirect="@Url.Action("PreservationTypes")"
+                                   data-refdata-type="Preservation Type"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
 							}
 						</td>
 					</tr>
@@ -117,8 +115,8 @@
 			<!-- Modal Form -->
 			<form id="modal-preservation-types-form"
 				  data-resource-url="/api/PreservationType"
-				  data-update-success-redirect="@Url.Action("EditPreservationTypeSuccess")"
-                  data-add-success-redirect="@Url.Action("AddPreservationTypeSuccess")"
+				  data-success-redirect="@Url.Action("PreservationTypes")"
+                  data-refdata-type="Preservation Type"
 				  class="form-horizontal">
 				<div class="modal-body">
 					<div class="row">

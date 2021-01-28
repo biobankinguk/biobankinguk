@@ -70,11 +70,11 @@
 
                             <a title="Delete"
                                class="action-icon delete-confirm"
-                               data-disease-status="&quot;@diagnosis.Description&quot;"
-                               href="@Url.Action("DeleteDiseaseStatus", new
-                                     {
-                                         diagnosis.Id, diagnosis.Description
-                                     })">
+                               data-refdata-model="@Json.Encode(diagnosis)"
+                               data-resource-url="/api/DiseaseStatus"
+                               data-success-redirect="@Url.Action("DiseaseStatuses")"
+                               data-refdata-type="Disease status"
+                               href="#">
                                 <span class="fa fa-trash labelled-icon"></span>Delete
                             </a>
                         }
@@ -110,8 +110,8 @@
 
             <form id="modal-disease-status-form"
                   data-resource-url="/api/DiseaseStatus"
-                  data-update-success-redirect="@Url.Action("EditDiseaseStatusSuccess")"
-                  data-add-success-redirect="@Url.Action("AddDiseaseStatusSuccess")"
+                  data-success-redirect="@Url.Action("DiseaseStatuses")"
+                  data-refdata-type="Disease status"
                   class="form-horizontal">
 
                 <div class="modal-body">

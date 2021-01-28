@@ -57,15 +57,15 @@
 								<span class="fa fa-edit labelled-icon"></span>Edit
 							</a>
 
-							<a title="Delete"
-							   class="action-icon delete-confirm"
-							   data-sex="&quot;@sex.Description&quot;"
-							   href="@Url.Action("DeleteSex", new
-                                     {
-                                         sex.Id, sex.Description, sex.SortOrder
-                                     })">
-								<span class="fa fa-trash labelled-icon"></span>Delete
-							</a>
+                            <a title="Delete"
+                               class="action-icon delete-confirm"
+                               data-refdata-model="@Json.Encode(sex)"
+                               data-resource-url="/api/Sex"
+                               data-success-redirect="@Url.Action("Sexes")"
+                               data-refdata-type="Sex"
+                               href="#">
+                                <span class="fa fa-trash labelled-icon"></span>Delete
+                            </a>
 						}
 					</td>
 				</tr>
@@ -99,8 +99,8 @@
 
             <form id="modal-sex-form"
                   data-resource-url="/api/Sex"
-                  data-update-success-redirect="@Url.Action("EditSexSuccess")"
-                  data-add-success-redirect="@Url.Action("AddSexSuccess")"
+                  data-success-redirect="@Url.Action("Sexes")"
+                  data-refdata-type="Sex"
                   class="form-horizontal">
 
                 <div class="modal-body">

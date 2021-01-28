@@ -58,17 +58,15 @@
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-								<a title="Delete"
-									class="action-icon delete-confirm"
-									data-age-range="@type.Description"
-									href="@Url.Action("DeleteAgeRange", new
-									{
-										type.Id,
-										type.Description,
-										type.SortOrder
-									})">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-age-range="@Json.Encode(type)"
+                                   data-resource-url="/api/AgeRange"
+                                   data-success-redirect="@Url.Action("AgeRanges")"
+                                   data-refdata-type="Age Range"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
 							}
 						</td>
 					</tr>
@@ -104,8 +102,8 @@
 			<!-- Modal Form -->
             <form id="modal-age-ranges-form" 
 				  data-resource-url="/api/AgeRange"
-                  data-update-success-redirect="@Url.Action("EditAgeRangeSuccess")"
-                  data-add-success-redirect="@Url.Action("AddAgeRangeSuccess")"
+                  data-success-redirect="@Url.Action("AgeRanges")"
+				  data-refdata-type="Age Range"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
