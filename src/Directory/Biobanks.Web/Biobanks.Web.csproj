@@ -567,6 +567,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\ADAC\adac-tabs.js" />
     <Content Include="Scripts\Shared\mdd-editor.js" />
     <Content Include="Scripts\ADAC\adac-associated-data-type-group.js" />
     <Content Include="Scripts\ADAC\adac-collection-points.js" />
