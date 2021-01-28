@@ -41,6 +41,7 @@ namespace PublicationsAzureFunctions
             builder.Services.AddScoped<IPublicationService, PublicationService>();
             builder.Services.AddScoped<IAnnotationService, AnnotationService>();
             builder.Services.AddScoped<IBiobankReadService, BiobankReadService>();
+            builder.Services.AddScoped<IRecommendationsService, RecommendationsService>();
             builder.Services.AddTransient<FetchPublicationsService>();
             builder.Services.AddTransient<FetchAnnotationsService>();
         }
