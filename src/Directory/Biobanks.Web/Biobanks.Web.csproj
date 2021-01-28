@@ -464,6 +464,7 @@
     <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
+    <Content Include="Scripts\ADAC\adac-refdata-utility.js" />
     <Content Include="Scripts\ADAC\adac-sample-resource-config.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -900,6 +901,7 @@
     <Compile Include="Models\Shared\ConsentRestrictionModel.cs" />
     <Compile Include="Models\Shared\AssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\Shared\CountryModel.cs" />
+    <Compile Include="Models\Shared\RefDataFeedbackModel.cs" />
     <Compile Include="Models\Shared\RegistrationReasonModel.cs" />
     <Compile Include="Models\Shared\ServiceOfferingModel.cs" />
     <Compile Include="Models\Shared\SexModel.cs" />
