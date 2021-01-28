@@ -85,6 +85,11 @@ namespace Biobanks.Search.Elastic
                         .Size(SizeLimits.SizeMax)
                         .Aggregations(a => BuildCollectionSearchAggregations()));
 
+            if (!searchResult.IsValid)
+                throw new ApplicationException(
+                    $"Search Error: {searchResult.DebugInformation}",
+                    searchResult.OriginalException);
+
             // Collect Biobanks Results
             var biobanks = ExtractBiobankSearchSummaries(searchResult);
 

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Directory.Entity.Data;
 
 namespace Biobanks.Entities.Data
 {
@@ -27,8 +28,11 @@ namespace Biobanks.Entities.Data
 
         public bool? Accepted { get; set; }
 
+        public string Source { get; set; }
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
+
+        public virtual ICollection<Annotation> Annotations { get; set; }
     
     }
 }

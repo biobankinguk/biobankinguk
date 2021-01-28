@@ -24,7 +24,8 @@ namespace Biobanks.Directory.Data.Caching
         {
             var val = _cache.Get(cacheKey);
             
-            if(val == null) throw new KeyNotFoundException();
+            if(val == null) throw new KeyNotFoundException(
+                $"{cacheKey} requested but not found.");
 
             return (T)val;
         }

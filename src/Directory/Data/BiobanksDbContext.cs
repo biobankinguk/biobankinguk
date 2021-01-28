@@ -4,6 +4,7 @@ using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
+using Directory.Entity.Data;
 
 namespace Biobanks.Directory.Data
 {
@@ -80,7 +81,7 @@ namespace Biobanks.Directory.Data
 
         // Biobank Publications
         public DbSet<Publication> Publications { get; set; }
-
+        public DbSet<Annotation> Annotations { get; set; }
 
         /* Shared Reference Data */
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
@@ -114,6 +115,8 @@ namespace Biobanks.Directory.Data
         public DbSet<LiveSample> Samples { get; set; }
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
+
+
 
 
         public BiobanksDbContext() : base("Biobanks") { }

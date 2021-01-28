@@ -23,7 +23,7 @@ namespace Biobanks.Web.Filters
                 //which claim type? is it one we handle when missing?
                 switch (((MissingClaimTypeResult)filterContext.Result).ExpectedClaimType)
                 {
-                    case CustomClaimType.BiobankId:
+                    case CustomClaimType.Biobank:
                         //We were sufficiently authorised to have BiobankAdmin Role
                         //But no BiobankId claim: Biobank Details need completing!
                         filterContext.Result = new RedirectToRouteResult(
@@ -35,7 +35,7 @@ namespace Biobanks.Web.Filters
                             });
                         break;
 
-                    case CustomClaimType.NetworkId:
+                    case CustomClaimType.Network:
                         //We were sufficiently authorised to have NetworkAdmin Role
                         //But no NetworkId claim: Network Details need completing!
                         filterContext.Result = new RedirectToRouteResult(

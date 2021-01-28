@@ -388,6 +388,21 @@ namespace Biobanks.Services
                 false,
                 x => x.AcceptedDate == null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
 
+        public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync()
+            //Show all that are accepted but not yet created
+            //filter by no created date, but an existing accepted date
+            => await _organisationRegisterRequestRepository.ListAsync(
+                false,
+                x => x.AcceptedDate != null && x.DeclinedDate == null && x.OrganisationCreatedDate == null);
+
+        public async Task<IEnumerable<NetworkRegisterRequest>> ListAcceptedNetworkRegisterRequestAsync()
+            //Show all that are accepted but not yet created
+            //filter by no created date, but an existing accepted date
+            => await _networkRegisterRequestRepository.ListAsync(
+                false,
+                x => x.AcceptedDate != null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
+
+
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync()
             //Show all that are "closed"
             //(i.e. declined or accepted)
@@ -1497,6 +1512,7 @@ namespace Biobanks.Services
 
         public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
             => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
+
 
     }
 }

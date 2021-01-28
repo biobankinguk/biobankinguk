@@ -352,13 +352,13 @@ namespace Biobanks.Search.Dto.Facets
             => FacetDetails.Where(x => x.SearchTypes.Contains(searchType)).ToList();
 
         public static string GetFacetLabel(string facetName)
-            => FacetDetails.First(x => x.Name == facetName)?.Label;
+            => FacetDetails.FirstOrDefault(x => x.Name == facetName)?.Label;
 
         public static string GetFacetSlug(string facetName)
-            => FacetDetails.First(x => x.Name == facetName)?.Slug;
+            => FacetDetails.FirstOrDefault(x => x.Name == facetName)?.Slug;
 
         public static string GetFacetName(string facetSlug)
-            => FacetDetails.First(x => x.Slug == facetSlug)?.Name;
+            => FacetDetails.FirstOrDefault(x => x.Slug == facetSlug)?.Name;
 
         public static SearchType GetSearchType<T>(ISearchResponse<T> searchResponse) where T : class
             => typeof(SearchResponse<CollectionDocument>) == searchResponse.GetType()

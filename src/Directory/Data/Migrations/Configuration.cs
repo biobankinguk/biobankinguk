@@ -64,6 +64,16 @@ namespace Biobanks.Directory.Data.Migrations
                             ReadOnly = false
                         },
 
+                        // Enable/Disable Registration Emails
+                        new Config
+                        {
+                            Key = "site.email.registration",
+                            Value = "true",
+                            Name = "Allow registration emails to be sent",
+                            Description = "Enable/Disable whether registration emails are to be sent",
+                            ReadOnly = false
+                        },
+
                         // Show Counties
                         new Config
                         {
@@ -216,6 +226,16 @@ namespace Biobanks.Directory.Data.Migrations
                         {
                             Key = "site.register.network.description",
                             Value = "If you are a network, such as the Confederation of Cancer Biobanks, you can register below.",
+                        },
+                        new Config
+                        {
+                            Key = "site.register.help.show",
+                            Value = "false",
+                        },
+                        new Config
+                        {
+                            Key = "site.register.help.url",
+                            Value = "https://biobankinguk.org/share/",
                         },
 
                         /** Sample Resource Config**/

@@ -18,6 +18,10 @@ namespace Biobanks.Directory.Data.Constants
         public const string FundersFreeText = "site.display.funders.freetext";
 
         public const string ContactThirdParty = "site.display.thirdparty";
+
+        //Email Config
+        public const string RegistrationEmails = "site.email.registration";
+
         //Trusted Biobank Config
         public const string TrustBiobanks = "site.display.trusted.biobanks";
 
@@ -35,6 +39,8 @@ namespace Biobanks.Directory.Data.Constants
         public const string RegisterBiobankDescription = "site.register.biobank.description";
         public const string RegisterNetworkTitle = "site.register.network.title";
         public const string RegisterNetworkDescription = "site.register.network.description";
+        public const string EnableRegisterRegistrationHelpUrl = "site.register.help.show";
+        public const string RegisterRegistrationHelpUrl = "site.register.help.url";
 
         //Editable Termspage
         public const string TermpageInfo = "site.termpage.pageinfo";
