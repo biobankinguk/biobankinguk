@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Publications.Services.Contracts;
+using Publications.Services.Hosted;
+using Publications.Services;
+using System.Threading;
 
 namespace PublicationsAzureFunctions
 {
@@ -15,10 +18,14 @@ namespace PublicationsAzureFunctions
     {
 
         private IRecommendationsService _recommendationsService;
-
-        public Testing(IRecommendationsService recommendationsService)
+        private FetchAnnotationsService _fetchAnnotationsService;
+        private FetchPublicationsService _fetchPublicationsService;
+        private readonly CancellationToken cancellationToken;
+        public Testing(IRecommendationsService recommendationsService, FetchPublicationsService fetchPublicationsService, FetchAnnotationsService fetchAnnotationsService)
         {
             _recommendationsService = recommendationsService;
+            _fetchPublicationsService = fetchPublicationsService;
+            _fetchAnnotationsService = fetchAnnotationsService;
         }
 
         [FunctionName("Testing")]
@@ -26,7 +33,6 @@ namespace PublicationsAzureFunctions
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-
             var test = await _recommendationsService.CalculateRecommendation("27658825", "MED");
             return new OkObjectResult("Done");
         }

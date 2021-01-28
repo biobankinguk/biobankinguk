@@ -26,15 +26,17 @@ namespace Publications.Services
 
             var intersection = hs1.Intersect(hs2);
             var union = hs1.Union(hs2);
+            
+            var jaccardIndex = (float)intersection.Count() / union.Count();
 
-            var jaccardDistance = (float)union.Count() - intersection.Count() / union.Count();
-
+            //var jaccardDistance = (float)union.Count() - intersection.Count() / union.Count();
+            //Can multiply jaccardIndex by 100 to give percentage
             // Alternative to pythons sorted method -> sorts intersection IEnumerable in ascending order
             intersection.OrderBy(x => x);
 
             var result = new JaccardIndexDTO
             {
-                JaccardIndex = 1.0 - jaccardDistance,
+                JaccardIndex = jaccardIndex,
                 CommonAnnotations = string.Join(", ", intersection)
             };
 
@@ -57,31 +59,38 @@ namespace Publications.Services
                 }
             }
 
-            //Get all publications and annotations in db for every biobank
             var biobankList = await _biobankReadService.GetOrganisationIds();
 
             var annotationListB = new List<string>();
-            
+
             foreach (var biobank in biobankList)
             {
+                //Clear the annotation list for each biobank
+                annotationListB.Clear();
                 var publicationList = await _biobankReadService.ListOrganisationPublications(biobank);
-                foreach (var publication in publicationList)
-                {
-                    foreach (var annotation in publication.PublicationAnnotations)
-                    {
-                        annotationListB.Add(annotation.Annotation.Name);
-                    }
-                }
-                //Here annotationsList should be a list of strings of every annotation for that biobank
-                var response = await JaccardSimilarity(publicationsAnnotationListA, annotationListB);
 
-                var recommendation = new JaccardIndexDTO
-                {
-                    OrganisationId = biobank,
-                    JaccardIndex = response.JaccardIndex,
-                    CommonAnnotations = response.CommonAnnotations
-                };
-                recommendationsList.Add(recommendation);
+                    foreach (var publication in publicationList)
+                    {
+                        foreach (var annotation in publication.PublicationAnnotations)
+                        {
+                            annotationListB.Add(annotation.Annotation.Name);
+                        }
+                    }
+                    
+                    //Only create a recommendation object if the biobank has publications which contain annotations
+                    if (annotationListB.Count() > 0)
+                    {
+                        var response = await JaccardSimilarity(publicationsAnnotationListA, annotationListB);
+
+                        var recommendation = new JaccardIndexDTO
+                        {
+                            OrganisationId = biobank,
+                            JaccardIndex = response.JaccardIndex,
+                            CommonAnnotations = response.CommonAnnotations
+                        };
+                        recommendationsList.Add(recommendation);
+                    }
+
             }
 
             return recommendationsList.OrderByDescending(x => x.JaccardIndex).ToList();
