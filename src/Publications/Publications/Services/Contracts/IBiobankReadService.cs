@@ -17,5 +17,7 @@ namespace Publications.Services.Contracts
 
         Task<Annotation> GetAnnotationById(int annotationId);
 
+        Task<IEnumerable<Publication>> ListPublications();
+
     }
 }

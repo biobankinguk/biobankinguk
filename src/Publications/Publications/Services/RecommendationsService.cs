@@ -96,5 +96,68 @@ namespace Publications.Services
             return recommendationsList.OrderByDescending(x => x.JaccardIndex).ToList();
         }
 
+        public async Task<List<JaccardIndexDTO>> CalculateRecommendationByPublication(string publicationId, string source)
+        {
+            var recommendationsList = new List<JaccardIndexDTO>();
+            //Get all annotations for a specific publication
+            var annotationDTO = await _epmcService.GetPublicationAnnotations(publicationId, source);
+
+            //Put all annotations for given publication into a list of strings
+            var publicationsAnnotationListA = new List<string>();
+            foreach (var annotation in annotationDTO)
+            {
+                foreach (var tag in annotation.Tags)
+                {
+                    publicationsAnnotationListA.Add(tag.Name);
+                }
+            }
+
+            //Get all publications from directory
+            var publications = await _biobankReadService.ListPublications();
+            var annotationListB = new List<string>();
+            foreach (var publication in publications)
+            {
+                annotationListB.Clear();
+                foreach (var annotation in publication.PublicationAnnotations)
+                {
+                    annotationListB.Add(annotation.Annotation.Name);
+                }
+
+
+                //Only create a recommendation object if the biobank has publications which contain annotations
+                if (annotationListB.Count() > 0)
+                {
+                    var response = await JaccardSimilarity(publicationsAnnotationListA, annotationListB);
+
+                    var recommendation = new JaccardIndexDTO
+                    {
+                        OrganisationId = publication.OrganisationId,
+                        JaccardIndex = response.JaccardIndex,
+                        CommonAnnotations = response.CommonAnnotations,
+                        Publication = publication
+                    };
+                    recommendationsList.Add(recommendation);
+                }
+
+            }
+
+            var uniqBiobank = new HashSet<int>();
+            var uniqResult = new List<JaccardIndexDTO>();
+
+            var result = recommendationsList.OrderByDescending(x => x.JaccardIndex).ToList();
+
+            foreach (var p in result)
+            {
+                if (!uniqBiobank.Contains(p.OrganisationId))
+                {
+                    uniqBiobank.Add(p.OrganisationId);
+                    uniqResult.Add(p);
+                }
+            }
+
+
+            return uniqResult;
+        }
+
     }
 }
