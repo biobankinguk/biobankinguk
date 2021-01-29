@@ -1074,3 +1074,8 @@ div.info div {
     margin-bottom: 10px;
     margin-top: 10px;
 }
+
+.dropdown-toggle:hover {
+    cursor: pointer;
+}
+
