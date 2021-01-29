@@ -9,5 +9,7 @@ namespace Publications.Services.Contracts
     public interface IRecommendationsService
     {
         Task<List<JaccardIndexDTO>> CalculateRecommendation(string publicationId, string source);
+
+        Task<List<JaccardIndexDTO>> CalculateRecommendationByPublication(string publicationId, string source);
     }
 }

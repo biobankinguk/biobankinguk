@@ -12,8 +12,7 @@ using Publications.Services.Hosted;
 namespace PublicationsAzureFunctions
 {
     public class BatchFunction
-    {
-        
+    {   
         private FetchPublicationsService _fetchPublicationsService;
         private FetchAnnotationsService _fetchAnnotationsService;
         private readonly CancellationToken cancellationToken;
