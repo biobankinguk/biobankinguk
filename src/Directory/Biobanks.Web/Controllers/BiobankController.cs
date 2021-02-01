@@ -34,7 +34,6 @@ namespace Biobanks.Web.Controllers
     [SuspendedWarning]
     public class BiobankController : ApplicationBaseController
     {
-        private bool _testValue = false;
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
