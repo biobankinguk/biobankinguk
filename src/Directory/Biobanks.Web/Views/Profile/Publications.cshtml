@@ -20,40 +20,49 @@
 </h3>
 
 <div class="row">
-	<div class="col-md-12">
-		@if (Model.Publications.Any())
-		{
-			<table id="biobank-publications" class="table table-striped table-hover" style="width:100%">
-				<thead>
-					<tr>
-						<th>Title</th>
-						<th>Authors</th>
-						<th>Year</th>
-						<th>Journal</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var publication in Model.Publications)
-					{
-						<tr>
-							<td>@publication.Title</td>
-							<td>@publication.Authors</td>
-							<td>@publication.Year</td>
-							<td>@publication.Journal</td>
-							<td>
-								<span><a class="btn btn-block btn-primary" href="https://doi.org/@publication.DOI" target="_blank">Link</a></span>
-							</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		}
-		else
-		{
-			<div class="alert alert-info">
-				There are no publications here yet. Associated publications are added periodically.
-			</div>
-		}
-	</div>
+    <div class="col-md-12">
+        @if (Model.IncludePublications)
+        {
+            if (Model.Publications.Any())
+            {
+                <table id="biobank-publications" class="table table-striped table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Authors</th>
+                            <th>Year</th>
+                            <th>Journal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var publication in Model.Publications)
+                        {
+                            <tr>
+                                <td>@publication.Title</td>
+                                <td>@publication.Authors</td>
+                                <td>@publication.Year</td>
+                                <td>@publication.Journal</td>
+                                <td>
+                                    <span><a class="btn btn-block btn-primary" href="https://doi.org/@publication.DOI" target="_blank">Link</a></span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    There are no publications here yet. Associated publications are added periodically.
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">
+                Publications have been disabled by the administrators of this biobank.
+            </div>
+        }
+    </div>
 </div>
