@@ -1495,6 +1495,11 @@ namespace Directory.Services
         public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
             => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
 
-
+        public async Task<bool> OrganisationIncludesPublications(int biobankId)
+        {
+            //Include publications for biobanks except explicitly turned off
+            return (await GetBiobankByIdAsync(biobankId)).IncludePublications ?? true;
+        }
+           
     }
 }
