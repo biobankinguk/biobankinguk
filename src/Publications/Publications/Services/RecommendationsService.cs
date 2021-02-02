@@ -31,6 +31,7 @@ namespace Publications.Services
 
             //var jaccardDistance = (float)union.Count() - intersection.Count() / union.Count();
             //Can multiply jaccardIndex by 100 to give percentage
+            //Can minus the jaccardIndex from 1 to give Jaccard Distance
             // Alternative to pythons sorted method -> sorts intersection IEnumerable in ascending order
             intersection.OrderBy(x => x);
 

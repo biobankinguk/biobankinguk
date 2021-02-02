@@ -21,11 +21,13 @@ namespace PublicationsAzureFunctions
         private FetchAnnotationsService _fetchAnnotationsService;
         private FetchPublicationsService _fetchPublicationsService;
         private readonly CancellationToken cancellationToken;
-        public Testing(IRecommendationsService recommendationsService, FetchPublicationsService fetchPublicationsService, FetchAnnotationsService fetchAnnotationsService)
+        private IBiobankReadService _biobankReadService;
+        public Testing(IRecommendationsService recommendationsService, FetchPublicationsService fetchPublicationsService, FetchAnnotationsService fetchAnnotationsService, IBiobankReadService biobankReadService)
         {
             _recommendationsService = recommendationsService;
             _fetchPublicationsService = fetchPublicationsService;
             _fetchAnnotationsService = fetchAnnotationsService;
+            _biobankReadService = biobankReadService;
         }
 
         [FunctionName("Testing")]
@@ -33,7 +35,8 @@ namespace PublicationsAzureFunctions
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            var test = await _recommendationsService.CalculateRecommendationByPublication("27658825", "MED");
+            //var test = await _recommendationsService.CalculateRecommendation("27658825", "MED");
+            var test = await _biobankReadService.Test();
             return new OkObjectResult("Done");
         }
     }

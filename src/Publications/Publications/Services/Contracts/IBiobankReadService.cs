@@ -1,6 +1,7 @@
 ﻿using Directory.Data.Entities;
 using Publications.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Publications.Services.Contracts
@@ -18,6 +19,8 @@ namespace Publications.Services.Contracts
         Task<Annotation> GetAnnotationById(int annotationId);
 
         Task<IEnumerable<Publication>> ListPublications();
+
+        Task<IQueryable<string>> Test();
 
     }
 }
