@@ -11,19 +11,17 @@ namespace Biobanks.DataSeed.Services
     public class CountriesWebService : IDisposable
     {
         private readonly HttpClient _client;
-        private Uri _uri;
-        private IConfiguration _configuration;
-
+        private readonly Uri _uri;
+        
         public CountriesWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
-            _configuration = configuration;
-            _uri = new Uri(_configuration["CountriesApiKey"]);
+            _uri = new Uri(configuration["CountriesApiKey"]);
         }
 
-        public IEnumerable<CountriesDTO> ListCountries()
+        public async Task<IEnumerable<CountriesDTO>> ListCountriesAsync()
         {
-            var response = _client.GetStringAsync(_uri).Result;
+            var response = await _client.GetStringAsync(_uri);
             var result = JsonConvert.DeserializeObject<IEnumerable<CountriesDTO>>(response);
 
             return result;

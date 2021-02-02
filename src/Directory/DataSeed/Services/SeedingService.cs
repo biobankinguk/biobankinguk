@@ -73,7 +73,7 @@ namespace Biobanks.DataSeed.Services
                 
                 /* API Specific */
                 SeedCsv<Ontology>,
-                //SeedCsv<OntologyVersion>,
+                SeedCsv<OntologyVersion>,
                 SeedCsv<SampleContentMethod>,
                 SeedCsv<Status>,
                 SeedCsv<TreatmentLocation>,
@@ -132,7 +132,7 @@ namespace Biobanks.DataSeed.Services
             if (seedUN)
             {
                 Seed(
-                    _countriesWebService.ListCountries().Select(x => new Country
+                    _countriesWebService.ListCountriesAsync().Result.Select(x => new Country
                         {
                             Value = x.CountryName
                         }
