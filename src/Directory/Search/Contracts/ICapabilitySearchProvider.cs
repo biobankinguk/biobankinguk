@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Results;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 
-namespace Directory.Search.Contracts
+namespace Biobanks.Search.Contracts
 {
     /// <summary>
     /// Search (Read) methods against an index of Capabilities

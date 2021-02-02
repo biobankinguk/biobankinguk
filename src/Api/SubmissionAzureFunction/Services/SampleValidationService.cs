@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 
-using StagedSample = LegacyData.Entities.StagedSample;
+using StagedSample = Biobanks.LegacyData.Entities.StagedSample;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {

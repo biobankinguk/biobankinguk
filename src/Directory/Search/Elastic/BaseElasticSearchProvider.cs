@@ -1,36 +1,36 @@
 using System.Collections.Generic;
 using System.Linq;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Documents;
-using Directory.Search.Constants;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.Facets;
 using Nest;
 using Newtonsoft.Json;
 
-namespace Directory.Search.Elastic
+namespace Biobanks.Search.Elastic
 {
     public abstract class BaseElasticSearchProvider
     {
         #region Building the Search Queries
 
-        protected static QueryContainer[] BuildSearchQueries<T>(string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
+        protected static QueryContainer[] BuildSearchQueries<T>(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
             where T : BaseDocument
         {
-            var diagnosisQuery = string.IsNullOrWhiteSpace(diagnosis)
+            var ontologyTermQuery = string.IsNullOrWhiteSpace(ontologyTerm)
                     ? Query<T>.MatchAll()
-                    : Query<T>.Term(p => p.Diagnosis, diagnosis.ToLower());
+                    : Query<T>.Term(p => p.OntologyTerm, ontologyTerm.ToLower());
 
             var facetQueries = selectedFacets != null
                     ? BuildFacetQueries(selectedFacets)
                     : Enumerable.Empty<QueryContainer>();
 
-            return facetQueries.Prepend(diagnosisQuery).ToArray();
+            return facetQueries.Prepend(ontologyTermQuery).ToArray();
         }
 
-        protected static QueryContainer[] BuildSearchQueries<T>(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
+        protected static QueryContainer[] BuildSearchQueries<T>(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
             where T : BaseDocument
         {
             // Build the list of queries using the base query builder.
-            var queryList = BuildSearchQueries<T>(diagnosis, selectedFacets).ToList();
+            var queryList = BuildSearchQueries<T>(ontologyTerm, selectedFacets).ToList();
 
             // Add an extra query for the biobankId.
             queryList.Add(Query<T>.Term(p => p.BiobankExternalId, biobankExternalId));

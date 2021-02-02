@@ -1,11 +1,11 @@
 ﻿using Nest;
 
-namespace Directory.Search.Dto.Documents
+namespace Biobanks.Search.Dto.Documents
 {
     public class BaseDocument
     {
-        [Keyword(Name = "diagnosis")]
-        public string Diagnosis { get; set; }
+        [Keyword(Name = "ontologyTerm")]
+        public string OntologyTerm { get; set; }
 
         [Keyword(Name = "biobankExternalId")]
         public string BiobankExternalId { get; set; }

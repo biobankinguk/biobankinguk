@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Directory.Entity.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Models.Profile
@@ -37,9 +38,9 @@ namespace Biobanks.Web.Models.Profile
 
         public ICollection<NetworkMemberModel> NetworkMembers { get; set; }
 
-        public ICollection<string> CapabilityDiagnoses { get; set; }
+        public ICollection<string> CapabilityOntologyTerms { get; set; }
 
-        public ICollection<string> CollectionDiagnoses { get; set; }
+        public ICollection<string> CollectionOntologyTerms { get; set; }
 
         public ICollection<string> Services { get; set; }
 

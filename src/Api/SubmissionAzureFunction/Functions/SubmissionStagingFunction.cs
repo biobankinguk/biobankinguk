@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
-using Sample = LegacyData.Entities.Sample;
+using Sample = Biobanks.LegacyData.Entities.Sample;
 
 namespace Biobanks.SubmissionAzureFunction
 {

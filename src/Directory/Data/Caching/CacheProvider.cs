@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Caching;
 
-namespace Directory.Data.Caching
+namespace Biobanks.Directory.Data.Caching
 {
     public class CacheProvider : ICacheProvider
     {

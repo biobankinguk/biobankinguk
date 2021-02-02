@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Directory.Identity.Contracts;
 
-namespace Directory.Identity.Data.Entities
+namespace Biobanks.Identity.Data.Entities
 {
     public class ApplicationUser : IdentityUser<string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {

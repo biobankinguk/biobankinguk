@@ -5,17 +5,20 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Directory.Data;
-using Directory.Entity.Data;
+using Biobanks.Directory.Data;
+using Biobanks.Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
-using Directory.DataSeed.Services;
+using Biobanks.DataSeed.Services;
 using System.Security.Cryptography.X509Certificates;
-using Directory.DataSeed.Dto;
+using Biobanks.DataSeed.Dto;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using CsvHelper.Configuration;
 
-namespace Directory.DataSeed.Services
+namespace Biobanks.DataSeed.Services
 {
     internal class SeedingService : IHostedService
     {
@@ -40,14 +43,14 @@ namespace Directory.DataSeed.Services
             ["ConsentRestrictions"] = typeof(ConsentRestriction),
             ["Counties"] = typeof(County),
             ["Countries"] = typeof(Country),
-            ["Diagnosis"] = typeof(Diagnosis),
+            //["SnomedTerms"] = typeof(SnomedTerm), // Should this be seeded here?
             ["DonorCounts"] = typeof(DonorCount),
             ["Funders"] = typeof(Funder),
             ["Sexes"] = typeof(Sex),
             ["HtaStatus"] = typeof(HtaStatus),
             ["MaterialTypes"] = typeof(MaterialType),
             ["MacroscopicAssessments"] = typeof(MacroscopicAssessment),
-            ["PreservationTypes"] = typeof(PreservationType),
+            ["StorageTemperatures"] = typeof(StorageTemperature),
             ["RegistrationReasons"] = typeof(RegistrationReason),
             ["SampleCollectionModes"] = typeof(SampleCollectionMode),
             ["ServiceOfferings"] = typeof(ServiceOffering),
@@ -160,8 +163,8 @@ namespace Directory.DataSeed.Services
             foreach (dynamic x in csvRecords)
                 _db.Counties.Add(new County
                 {
-                    Name = x.Name,
-                    Country = countries.Single(y => y.CountryId == x.CountryId)
+                    Value = x.Value,
+                    Country = countries.Single(y => y.Id == x.CountryId)
                 });
 
             _db.SaveChanges();
@@ -180,7 +183,7 @@ namespace Directory.DataSeed.Services
                 foreach (CountriesDTO country in countries)
                     _db.Countries.Add(new Country
                     {
-                        Name = country.CountryName
+                        Value = country.CountryName
                     });
                 configEntity.Value = "false";
                 _db.SaveChanges();
@@ -198,10 +201,15 @@ namespace Directory.DataSeed.Services
 
         private List<object> Read(string tableName, Type type)
         {
+            var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+            {
+                IgnoreReferences = true
+            };
+
             //TODO catch and write to console that file not found, but move on. Allow user to decide which tables to populate
             using (var reader = new StreamReader($"data/{tableName}.csv"))
             {
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                using (var csv = new CsvReader(reader, config))
                 {
                     return csv.GetRecords(type).ToList();
                 }

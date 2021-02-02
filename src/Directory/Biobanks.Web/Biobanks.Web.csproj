@@ -444,7 +444,7 @@
     <Compile Include="ApiControllers\HtaStatusController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
-    <Compile Include="ApiControllers\PreservationTypeController.cs" />
+    <Compile Include="ApiControllers\StorageTemperatureController.cs" />
     <Compile Include="ApiControllers\RegistrationReasonController.cs" />
     <Compile Include="ApiControllers\SampleCollectionModeController.cs" />
     <Compile Include="ApiControllers\ServiceOfferingController.cs" />
@@ -591,7 +591,7 @@
     <Content Include="Scripts\ADAC\adac-macro-assessments.js" />
     <Content Include="Scripts\ADAC\adac-sample-collection-modes.js" />
     <Content Include="Scripts\ADAC\adac-access-conditions.js" />
-    <Content Include="Scripts\ADAC\adac-preservation-types.js" />
+    <Content Include="Scripts\ADAC\adac-storage-temperatures.js" />
     <Content Include="Scripts\ADAC\adac-registration-reasons.js" />
     <Content Include="Scripts\ADAC\adac-service-offering.js" />
     <Content Include="Scripts\ADAC\adac-site-config.js" />
@@ -644,7 +644,7 @@
     <Content Include="Views\ADAC\AssociatedDataTypes.cshtml" />
     <Content Include="Views\ADAC\ConsentRestriction.cshtml" />
     <Content Include="Views\ADAC\Sexes.cshtml" />
-    <Content Include="Views\ADAC\PreservationTypes.cshtml" />
+    <Content Include="Views\ADAC\StorageTemperatures.cshtml" />
     <Content Include="Views\ADAC\CollectionPoints.cshtml" />
     <Content Include="Views\ADAC\CollectionPercentages.cshtml" />
     <Content Include="Views\ADAC\AgeRanges.cshtml" />
@@ -874,7 +874,7 @@
     <Compile Include="Models\ADAC\ReadCollectionTypeModel.cs" />
     <Compile Include="Models\ADAC\ReadMaterialTypeModel.cs" />
     <Compile Include="Models\ADAC\AssociatedDataTypesModel.cs" />
-    <Compile Include="Models\ADAC\PreservationTypesModel.cs" />
+    <Compile Include="Models\ADAC\StorageTemperaturesModel.cs" />
     <Compile Include="Models\ADAC\ConsentRestrictionModel.cs" />
     <Compile Include="Models\ADAC\ReadConsentRestrictionModel.cs" />
     <Compile Include="Models\ADAC\ReadRegistrationReasonModel.cs" />
@@ -931,10 +931,9 @@
     <Compile Include="HtmlHelpers\MarkdownHelper.cs" />
     <Compile Include="HtmlHelpers\VersionHelper.cs" />
     <Compile Include="Results\HttpForbiddenResult.cs" />
-    <Compile Include="Models\ADAC\DiagnosesModel.cs" />
     <Compile Include="HangfireJobActivator\HangfireWindsorJobActivator.cs" />
     <Compile Include="Models\ADAC\BiobankActivityModel.cs" />
-    <Compile Include="Models\ADAC\ReadDiagnosisModel.cs" />
+    <Compile Include="Models\ADAC\ReadOntologyTermModel.cs" />
     <Compile Include="Models\ADAC\ReadAssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\Biobank\AnnualStatModel.cs" />
     <Compile Include="Models\Biobank\BiobankAnnualStatsModel.cs" />
@@ -1013,7 +1012,7 @@
     <Compile Include="Models\Biobank\AssociatedDataModel.cs" />
     <Compile Include="Models\Biobank\BiobankCollectionsModel.cs" />
     <Compile Include="Models\Biobank\CollectionModel.cs" />
-    <Compile Include="Models\Shared\DiagnosisModel.cs" />
+    <Compile Include="Models\Shared\OntologyTermModel.cs" />
     <Compile Include="Models\Biobank\EditCollectionModel.cs" />
     <Compile Include="Models\Register\RegisterEntityModel.cs" />
     <Compile Include="Models\Account\ForgotPasswordModel.cs" />
@@ -1099,9 +1098,9 @@
       <Project>{f087cd21-d746-4f63-84b1-9038e471e258}</Project>
       <Name>Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Entity\Entity.csproj">
-      <Project>{010998f1-7e90-4866-ae10-b6b73122c103}</Project>
-      <Name>Entity</Name>
+    <ProjectReference Include="..\..\Entities\Entities.csproj">
+      <Project>{5E3E4EB7-4168-473A-B76F-36B95AD45678}</Project>
+      <Name>Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\Identity\Identity.csproj">
       <Project>{68b365e5-3acb-4353-b09d-539154287278}</Project>

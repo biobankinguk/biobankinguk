@@ -1,8 +1,8 @@
 using System.Data.Entity;
+using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Directory.Identity.Data.Entities;
 
-namespace Directory.Identity.Data
+namespace Biobanks.Identity.Data
 {
     public class UserStoreDbContext : IdentityDbContext<ApplicationUser, ApplicationRole,
             string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>

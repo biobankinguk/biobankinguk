@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.Search;
-using Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {
@@ -23,51 +20,38 @@ namespace Biobanks.Web.Controllers
             _biobankReadService = biobankReadService;
         }
 
-        private async Task<TermPageModel> PopulateTermPageModel(TermPageModel model)
+        // GET: Term
+        public async Task<ActionResult> Index()
         {
-            //Populate Term Page Info
-            model.TermpageContentModel = new TermpageContentModel
+            // Term Page Info
+            var termContentModel = new TermpageContentModel
             {
                 PageInfo = Config.Get(ConfigKey.TermpageInfo, "")
             };
 
-            //Populate Diagnoses Model
             // List of Unique Diagnoses With Sample Sets
-            var diagnoses = (await _biobankReadService.ListCollectionsAsync())
+            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.DiagnosisId)
-                .Select(x => x.First().Diagnosis);
+                .GroupBy(x => x.OntologyTermId)
+                .Select(x => x.First().OntologyTerm);
 
-            model.DiagnosesModel = new List<DiagnosesModel>();
-
-                var diagnosesModel = new DiagnosesModel
+            var ontologyTermsModel = ontologyTerms.Select(x => 
+                
+                Task.Run(async () => new ReadOntologyTermModel
                 {
-                    Diagnoses = diagnoses
-                        .Select(x =>
-                        Task.Run(async () => new ReadDiagnosisModel
-                    {
-                        Id = x.DiagnosisId,
-                        SnomedIdentifier = x.SnomedIdentifier,
-                        Description = x.Description,
-                        CollectionCapabilityCount = await _biobankReadService.GetDiagnosisCollectionCapabilityCount(x.DiagnosisId),
-                        OtherTerms = x.OtherTerms
-                    })
-                    .Result
-                    )
-                    .ToList()
-                };
-                model.DiagnosesModel.Add(diagnosesModel);
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            );
 
-        
-            return model;
-        }
-
-
-        // GET: Term
-        public async Task<ActionResult> Index()
-        {
-            return View((TermPageModel)(await PopulateTermPageModel(new TermPageModel())));
-
+            return View(new TermPageModel
+            {
+                OntologyTermsModel = ontologyTermsModel,
+                TermpageContentModel = termContentModel,
+            });
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Biobanks.Common.Data.Entities;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Models;
 using Biobanks.SubmissionApi.Models;
 

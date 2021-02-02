@@ -4,7 +4,7 @@ namespace Biobanks.Web.Models.Search
 {
     public class DetailedCollectionSearchModel
     {
-        public string Diagnosis { get; set; }
+        public string OntologyTerm { get; set; }
         public string SelectedFacets { get; set; }
 
         public int BiobankId { get; set; }

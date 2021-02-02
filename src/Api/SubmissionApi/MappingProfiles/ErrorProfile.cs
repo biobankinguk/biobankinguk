@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Biobanks.Common.Data.Entities;
+using Biobanks.Entities.Api;
 using Biobanks.SubmissionApi.Models;
 using Newtonsoft.Json.Linq;
 

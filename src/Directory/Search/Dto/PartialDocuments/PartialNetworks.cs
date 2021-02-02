@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Directory.Search.Dto.Documents;
+using Biobanks.Search.Dto.Documents;
 
-namespace Directory.Search.Dto.PartialDocuments
+namespace Biobanks.Search.Dto.PartialDocuments
 {
     public class PartialNetworks
     {

@@ -4,18 +4,16 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
-using Directory.Data.Repositories;
-using Directory.Services.Dto;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Data.Repositories;
 using System.IO;
 using AutoMapper;
-using Nest;
-using AutoMapper.Internal;
-using System.Runtime.InteropServices;
-using Directory.Services.Extensions;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 
-namespace Directory.Services
+namespace Biobanks.Services
 {
     public class BiobankWriteService : IBiobankWriteService
     {
@@ -25,14 +23,14 @@ namespace Directory.Services
 
         private readonly ILogoStorageProvider _logoStorageProvider;
 
-        private readonly IGenericEFRepository<Diagnosis> _diagnosisRepository;
+        private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
-        private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
+        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
@@ -82,7 +80,7 @@ namespace Directory.Services
         public BiobankWriteService(
             IBiobankReadService biobankReadService,
             ILogoStorageProvider logoStorageProvider,
-            IGenericEFRepository<Diagnosis> diagnosisRepository,
+            IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
@@ -97,7 +95,7 @@ namespace Directory.Services
             IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
-            IGenericEFRepository<PreservationType> preservationTypeRepository,
+            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
@@ -137,13 +135,13 @@ namespace Directory.Services
 
             _logoStorageProvider = logoStorageProvider;
 
-            _diagnosisRepository = diagnosisRepository;
+            _ontologyTermRepository = ontologyTermRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _donorCountRepository = donorCountRepository;
             _collectionPointRepository = collectionPointRepository;
             _ageRangeRepository = ageRangeRepository;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
-            _preservationTypeRepository = preservationTypeRepository;
+            _storageTemperatureRepository = storageTemperatureRepository;
             _sopStatusRepository = sopStatusRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
@@ -195,15 +193,15 @@ namespace Directory.Services
 
         public async Task<Collection> AddCollectionAsync(
             Collection collection,
-            string diagnosisDescription,
+            string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(diagnosisDescription);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(ontologyTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
-                        x => consentRestrictionIds.Contains(x.ConsentRestrictionId))).ToList();
+                        x => consentRestrictionIds.Contains(x.Id))).ToList();
 
-            collection.DiagnosisId = diagnosis.DiagnosisId;
+            collection.OntologyTermId = ontologyTerm.Id;
             collection.LastUpdated = DateTime.Now;
             collection.AssociatedData = associatedData.ToList();
             collection.ConsentRestrictions = consentRestrictions;
@@ -217,7 +215,7 @@ namespace Directory.Services
 
         public async Task UpdateCollectionAsync(
             Collection collection,
-            string diagnosisDescription,
+            string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
@@ -230,11 +228,11 @@ namespace Directory.Services
             existingCollection.AssociatedData.Clear();
             existingCollection.ConsentRestrictions.Clear();
 
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(diagnosisDescription);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(ontologyTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
-                        x => consentRestrictionIds.Contains(x.ConsentRestrictionId))).ToList();
+                        x => consentRestrictionIds.Contains(x.Id))).ToList();
 
-            existingCollection.DiagnosisId = diagnosis.DiagnosisId;
+            existingCollection.OntologyTermId = ontologyTerm.Id;
             existingCollection.Title = collection.Title;
             existingCollection.Description = collection.Description;
             existingCollection.StartDate = collection.StartDate;
@@ -349,12 +347,12 @@ namespace Directory.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(capabilityDTO.Diagnosis);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(capabilityDTO.OntologyTerm);
 
             var capability = new DiagnosisCapability
             {
                 OrganisationId = capabilityDTO.OrganisationId,
-                DiagnosisId = diagnosis.DiagnosisId,
+                OntologyTermId = ontologyTerm.Id,
                 AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value,
                 AssociatedData = associatedData.ToList(),
                 SampleCollectionModeId = capabilityDTO.SampleCollectionModeId,
@@ -378,9 +376,9 @@ namespace Directory.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var diagnosis = await _biobankReadService.GetDiagnosisByDescription(capabilityDTO.Diagnosis);
+            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(capabilityDTO.OntologyTerm);
 
-            existingCapability.DiagnosisId = diagnosis.DiagnosisId;
+            existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;
             existingCapability.SampleCollectionModeId = capabilityDTO.SampleCollectionModeId;
             existingCapability.LastUpdated = DateTime.Now;
@@ -515,11 +513,11 @@ namespace Directory.Services
             foreach (var service in services)
             {
                 //Validate service id first - don't want to go around inserting new unnamed services
-                if (await _serviceOfferingRepository.GetByIdAsync(service.ServiceId) != null)
+                if (await _serviceOfferingRepository.GetByIdAsync(service.ServiceOfferingId) != null)
                 {
                     //now make sure the biobank doesn't already have this service listed
                     if ((await _organisationServiceOfferingRepository.ListAsync(false,
-                        x => x.OrganisationId == service.OrganisationId && x.ServiceId == service.ServiceId))
+                        x => x.OrganisationId == service.OrganisationId && x.ServiceOfferingId == service.ServiceOfferingId))
                         .FirstOrDefault() == null)
                     {
                         _organisationServiceOfferingRepository.Insert(service);
@@ -534,12 +532,12 @@ namespace Directory.Services
         {
             //make sure the biobank has this service
             if ((await _organisationServiceOfferingRepository.ListAsync(false,
-                x => x.OrganisationId == biobankId && x.ServiceId == serviceId))
+                x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId))
                 .FirstOrDefault() != null)
             {
                 await
                 _organisationServiceOfferingRepository.DeleteWhereAsync(
-                    x => x.OrganisationId == biobankId && x.ServiceId == serviceId);
+                    x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId);
             }
 
             await _organisationServiceOfferingRepository.SaveChangesAsync();
@@ -687,26 +685,26 @@ namespace Directory.Services
             return organisationNetwork;
         }
 
-        public async Task DeleteDiagnosisAsync(Diagnosis diagnosis)
+        public async Task DeleteOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            await _diagnosisRepository.DeleteAsync(diagnosis.DiagnosisId);
-            await _diagnosisRepository.SaveChangesAsync();
+            await _ontologyTermRepository.DeleteAsync(ontologyTerm.Id);
+            await _ontologyTermRepository.SaveChangesAsync();
         }
 
-        public async Task<Diagnosis> UpdateDiagnosisAsync(Diagnosis diagnosis)
+        public async Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            _diagnosisRepository.Update(diagnosis);
-            await _diagnosisRepository.SaveChangesAsync();
+            _ontologyTermRepository.Update(ontologyTerm);
+            await _ontologyTermRepository.SaveChangesAsync();
 
-            return diagnosis;
+            return ontologyTerm;
         }
 
-        public async Task<Diagnosis> AddDiagnosisAsync(Diagnosis diagnosis)
+        public async Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            _diagnosisRepository.Insert(diagnosis);
-            await _diagnosisRepository.SaveChangesAsync();
+            _ontologyTermRepository.Insert(ontologyTerm);
+            await _ontologyTermRepository.SaveChangesAsync();
 
-            return diagnosis;
+            return ontologyTerm;
         }
 
         #region RefData: Sample Collection Mode
@@ -725,20 +723,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                sampleCollectionMode.Description =
+                sampleCollectionMode.Value =
                     modes
-                        .Where(x => x.SampleCollectionModeId == sampleCollectionMode.SampleCollectionModeId)
+                        .Where(x => x.Id == sampleCollectionMode.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldMode = modes.Where(x => x.SampleCollectionModeId == sampleCollectionMode.SampleCollectionModeId).First();
+            var oldMode = modes.Where(x => x.Id == sampleCollectionMode.Id).First();
             var reverse = (oldMode.SortOrder < sampleCollectionMode.SortOrder);
 
             var newOrder = modes
                     .Prepend(sampleCollectionMode)
-                    .GroupBy(x => x.SampleCollectionModeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -763,7 +761,7 @@ namespace Directory.Services
 
         public async Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollectionMode)
         {
-            await _sampleCollectionModeRepository.DeleteAsync(sampleCollectionMode.SampleCollectionModeId);
+            await _sampleCollectionModeRepository.DeleteAsync(sampleCollectionMode.Id);
             await _sampleCollectionModeRepository.SaveChangesAsync();
         }
         #endregion
@@ -784,20 +782,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionPoint.Description =
+                collectionPoint.Value =
                     points
-                        .Where(x => x.CollectionPointId == collectionPoint.CollectionPointId)
+                        .Where(x => x.Id == collectionPoint.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldPoint = points.Where(x => x.CollectionPointId == collectionPoint.CollectionPointId).First();
+            var oldPoint = points.Where(x => x.Id == collectionPoint.Id).First();
             var reverse = (oldPoint.SortOrder < collectionPoint.SortOrder);
 
             var newOrder = points
                     .Prepend(collectionPoint)
-                    .GroupBy(x => x.CollectionPointId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -822,7 +820,7 @@ namespace Directory.Services
 
         public async Task DeleteCollectionPointAsync(CollectionPoint collectionPoint)
         {
-            await _collectionPointRepository.DeleteAsync(collectionPoint.CollectionPointId);
+            await _collectionPointRepository.DeleteAsync(collectionPoint.Id);
             await _collectionPointRepository.SaveChangesAsync();
         }
         #endregion
@@ -843,20 +841,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionPercentage.Description =
+                collectionPercentage.Value =
                     percentages
-                        .Where(x => x.CollectionPercentageId == collectionPercentage.CollectionPercentageId)
+                        .Where(x => x.Id == collectionPercentage.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldPercentage = percentages.Where(x => x.CollectionPercentageId == collectionPercentage.CollectionPercentageId).First();
+            var oldPercentage = percentages.Where(x => x.Id == collectionPercentage.Id).First();
             var reverse = (oldPercentage.SortOrder < collectionPercentage.SortOrder);
 
             var newOrder = percentages
                     .Prepend(collectionPercentage)
-                    .GroupBy(x => x.CollectionPercentageId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -881,7 +879,7 @@ namespace Directory.Services
 
         public async Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage)
         {
-            await _collectionPercentageRepository.DeleteAsync(collectionPercentage.CollectionPercentageId);
+            await _collectionPercentageRepository.DeleteAsync(collectionPercentage.Id);
             await _collectionPercentageRepository.SaveChangesAsync();
         }
         #endregion
@@ -902,20 +900,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                consentRestriction.Description =
+                consentRestriction.Value =
                     restrictions
-                        .Where(x => x.ConsentRestrictionId == consentRestriction.ConsentRestrictionId)
+                        .Where(x => x.Id == consentRestriction.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldRestriction = restrictions.Where(x => x.ConsentRestrictionId == consentRestriction.ConsentRestrictionId).First();
+            var oldRestriction = restrictions.Where(x => x.Id == consentRestriction.Id).First();
             var reverse = (oldRestriction.SortOrder < consentRestriction.SortOrder);
 
             var newOrder = restrictions
                     .Prepend(consentRestriction)
-                    .GroupBy(x => x.ConsentRestrictionId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -940,7 +938,7 @@ namespace Directory.Services
 
         public async Task DeleteConsentRestrictionAsync(ConsentRestriction consentRestriction)
         {
-            await _consentRestrictionRepository.DeleteAsync(consentRestriction.ConsentRestrictionId);
+            await _consentRestrictionRepository.DeleteAsync(consentRestriction.Id);
             await _consentRestrictionRepository.SaveChangesAsync();
         }
         #endregion
@@ -961,20 +959,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                donorCount.Description =
+                donorCount.Value =
                     donorCounts
-                        .Where(x => x.DonorCountId == donorCount.DonorCountId)
+                        .Where(x => x.Id == donorCount.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldCount = donorCounts.Where(x => x.DonorCountId == donorCount.DonorCountId).First();
+            var oldCount = donorCounts.Where(x => x.Id == donorCount.Id).First();
             var reverse = (oldCount.SortOrder < donorCount.SortOrder);
 
             var newOrder = donorCounts
                     .Prepend(donorCount)
-                    .GroupBy(x => x.DonorCountId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -999,7 +997,7 @@ namespace Directory.Services
 
         public async Task DeleteDonorCountAsync(DonorCount donorCount)
         {
-            await _donorCountRepository.DeleteAsync(donorCount.DonorCountId);
+            await _donorCountRepository.DeleteAsync(donorCount.Id);
             await _donorCountRepository.SaveChangesAsync();
         }
         #endregion
@@ -1020,20 +1018,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                macroscopicAssessment.Description =
+                macroscopicAssessment.Value =
                     assessments
-                        .Where(x => x.MacroscopicAssessmentId == macroscopicAssessment.MacroscopicAssessmentId)
+                        .Where(x => x.Id == macroscopicAssessment.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldAssessment = assessments.Where(x => x.MacroscopicAssessmentId == macroscopicAssessment.MacroscopicAssessmentId).First();
+            var oldAssessment = assessments.Where(x => x.Id == macroscopicAssessment.Id).First();
             var reverse = (oldAssessment.SortOrder < macroscopicAssessment.SortOrder);
 
             var newOrder = assessments
                     .Prepend(macroscopicAssessment)
-                    .GroupBy(x => x.MacroscopicAssessmentId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1058,7 +1056,7 @@ namespace Directory.Services
 
         public async Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment)
         {
-            await _macroscopicAssessmentRepository.DeleteAsync(macroscopicAssessment.MacroscopicAssessmentId);
+            await _macroscopicAssessmentRepository.DeleteAsync(macroscopicAssessment.Id);
             await _macroscopicAssessmentRepository.SaveChangesAsync();
         }
         #endregion
@@ -1079,20 +1077,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                ageRange.Description =
+                ageRange.Value =
                     types
-                        .Where(x => x.AgeRangeId == ageRange.AgeRangeId)
+                        .Where(x => x.Id == ageRange.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.AgeRangeId == ageRange.AgeRangeId).First();
+            var oldType = types.Where(x => x.Id == ageRange.Id).First();
             var reverse = (oldType.SortOrder < ageRange.SortOrder);
 
             var newOrder = types
                     .Prepend(ageRange)
-                    .GroupBy(x => x.AgeRangeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1117,7 +1115,7 @@ namespace Directory.Services
 
         public async Task DeleteAgeRangeAsync(AgeRange ageRange)
         {
-            await _ageRangeRepository.DeleteAsync(ageRange.AgeRangeId);
+            await _ageRangeRepository.DeleteAsync(ageRange.Id);
             await _ageRangeRepository.SaveChangesAsync();
         }
         #endregion
@@ -1138,20 +1136,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                sopStatus.Description =
+                sopStatus.Value =
                     statuses
-                        .Where(x => x.SopStatusId == sopStatus.SopStatusId)
+                        .Where(x => x.Id == sopStatus.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.SopStatusId == sopStatus.SopStatusId).First();
+            var oldStatus = statuses.Where(x => x.Id == sopStatus.Id).First();
             var reverse = (oldStatus.SortOrder < sopStatus.SortOrder);
 
             var newOrder = statuses
                     .Prepend(sopStatus)
-                    .GroupBy(x => x.SopStatusId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1176,7 +1174,7 @@ namespace Directory.Services
 
         public async Task DeleteSopStatusAsync(SopStatus sopStatus)
         {
-            await _sopStatusRepository.DeleteAsync(sopStatus.SopStatusId);
+            await _sopStatusRepository.DeleteAsync(sopStatus.Id);
             await _sopStatusRepository.SaveChangesAsync();
         }
         #endregion
@@ -1197,20 +1195,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                accessCondition.Description =
+                accessCondition.Value =
                     conditions
-                        .Where(x => x.AccessConditionId == accessCondition.AccessConditionId)
+                        .Where(x => x.Id == accessCondition.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldCondition = conditions.Where(x => x.AccessConditionId == accessCondition.AccessConditionId).First();
+            var oldCondition = conditions.Where(x => x.Id == accessCondition.Id).First();
             var reverse = (oldCondition.SortOrder < accessCondition.SortOrder);
 
             var newOrder = conditions
                     .Prepend(accessCondition)
-                    .GroupBy(x => x.AccessConditionId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1235,7 +1233,7 @@ namespace Directory.Services
 
         public async Task DeleteAccessConditionAsync(AccessCondition accessCondition)
         {
-            await _accessConditionRepository.DeleteAsync(accessCondition.AccessConditionId);
+            await _accessConditionRepository.DeleteAsync(accessCondition.Id);
             await _accessConditionRepository.SaveChangesAsync();
         }
         #endregion
@@ -1259,7 +1257,7 @@ namespace Directory.Services
 
         public async Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic)
         {
-            await _annualStatisticRepository.DeleteAsync(annualStatistic.AnnualStatisticId);
+            await _annualStatisticRepository.DeleteAsync(annualStatistic.Id);
             await _annualStatisticRepository.SaveChangesAsync();
         }
         #endregion
@@ -1280,20 +1278,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionStatus.Description =
+                collectionStatus.Value =
                     statuses
-                        .Where(x => x.CollectionStatusId == collectionStatus.CollectionStatusId)
+                        .Where(x => x.Id == collectionStatus.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.CollectionStatusId == collectionStatus.CollectionStatusId).First();
+            var oldStatus = statuses.Where(x => x.Id == collectionStatus.Id).First();
             var reverse = (oldStatus.SortOrder < collectionStatus.SortOrder);
 
             var newOrder = statuses
                     .Prepend(collectionStatus)
-                    .GroupBy(x => x.CollectionStatusId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1318,7 +1316,7 @@ namespace Directory.Services
 
         public async Task DeleteCollectionStatusAsync(CollectionStatus collectionStatus)
         {
-            await _collectionStatusRepository.DeleteAsync(collectionStatus.CollectionStatusId);
+            await _collectionStatusRepository.DeleteAsync(collectionStatus.Id);
             await _collectionStatusRepository.SaveChangesAsync();
         }
         #endregion
@@ -1339,20 +1337,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                timeframe.Description =
+                timeframe.Value =
                     procurements
-                        .Where(x => x.AssociatedDataProcurementTimeframeId == timeframe.AssociatedDataProcurementTimeframeId)
+                        .Where(x => x.Id == timeframe.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldTimeframe = procurements.Where(x => x.AssociatedDataProcurementTimeframeId == timeframe.AssociatedDataProcurementTimeframeId).First();
+            var oldTimeframe = procurements.Where(x => x.Id == timeframe.Id).First();
             var reverse = (oldTimeframe.SortOrder < timeframe.SortOrder);
 
             var newOrder = procurements
                     .Prepend(timeframe)
-                    .GroupBy(x => x.AssociatedDataProcurementTimeframeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1377,7 +1375,7 @@ namespace Directory.Services
 
         public async Task DeleteAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
         {
-            await _associatedDataProcurementTimeFrameRepository.DeleteAsync(associatedDataProcurementTimeframe.AssociatedDataProcurementTimeframeId);
+            await _associatedDataProcurementTimeFrameRepository.DeleteAsync(associatedDataProcurementTimeframe.Id);
             await _associatedDataProcurementTimeFrameRepository.SaveChangesAsync();
         }
         #endregion
@@ -1398,20 +1396,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                htaStatus.Description =
+                htaStatus.Value =
                     statuses
-                        .Where(x => x.HtaStatusId == htaStatus.HtaStatusId)
+                        .Where(x => x.Id == htaStatus.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.HtaStatusId == htaStatus.HtaStatusId).First();
+            var oldStatus = statuses.Where(x => x.Id == htaStatus.Id).First();
             var reverse = (oldStatus.SortOrder < htaStatus.SortOrder);
 
             var newOrder = statuses
                     .Prepend(htaStatus)
-                    .GroupBy(x => x.HtaStatusId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1436,41 +1434,41 @@ namespace Directory.Services
 
         public async Task DeleteHtaStatusAsync(HtaStatus htaStatus)
         {
-            await _htaStatusRepository.DeleteAsync(htaStatus.HtaStatusId);
+            await _htaStatusRepository.DeleteAsync(htaStatus.Id);
             await _htaStatusRepository.SaveChangesAsync();
         }
         #endregion
 
-        #region RefData: Preservation Types
-        public async Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType)
+        #region RefData: Storage Temperature
+        public async Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature)
         {
-            _preservationTypeRepository.Insert(preservationType);
-            await _preservationTypeRepository.SaveChangesAsync();
+            _storageTemperatureRepository.Insert(storageTemperature);
+            await _storageTemperatureRepository.SaveChangesAsync();
 
-            return preservationType;
+            return storageTemperature;
         }
 
-        public async Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false)
+        public async Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly = false)
         {
-            var types = await _biobankReadService.ListPreservationTypesAsync();
+            var types = await _biobankReadService.ListStorageTemperaturesAsync();
 
             // If only updating sortOrder
             if (sortOnly)
             {
-                preservationType.Description =
+                storageTemperature.Value =
                     types
-                        .Where(x => x.PreservationTypeId == preservationType.PreservationTypeId)
+                        .Where(x => x.Id == storageTemperature.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.PreservationTypeId == preservationType.PreservationTypeId).First();
-            var reverse = (oldType.SortOrder < preservationType.SortOrder);
+            var oldType = types.Where(x => x.Id == storageTemperature.Id).First();
+            var reverse = (oldType.SortOrder < storageTemperature.SortOrder);
 
             var newOrder = types
-                    .Prepend(preservationType)
-                    .GroupBy(x => x.PreservationTypeId)
+                    .Prepend(storageTemperature)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1486,24 +1484,24 @@ namespace Directory.Services
                     return x;
                 })
                 .ToList()
-                .ForEach(_preservationTypeRepository.Update);
+                .ForEach(_storageTemperatureRepository.Update);
 
-            await _preservationTypeRepository.SaveChangesAsync();
+            await _storageTemperatureRepository.SaveChangesAsync();
 
-            return preservationType;
+            return storageTemperature;
         }
 
-        public async Task DeletePreservationTypeAsync(PreservationType preservationType)
+        public async Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature)
         {
-            await _preservationTypeRepository.DeleteAsync(preservationType.PreservationTypeId);
-            await _preservationTypeRepository.SaveChangesAsync();
+            await _storageTemperatureRepository.DeleteAsync(storageTemperature.Id);
+            await _storageTemperatureRepository.SaveChangesAsync();
         }
         #endregion
 
         #region RefData: Material Type
         public async Task DeleteMaterialTypeAsync(MaterialType materialType)
         {
-            await _materialTypeRepository.DeleteAsync(materialType.MaterialTypeId);
+            await _materialTypeRepository.DeleteAsync(materialType.Id);
             await _materialTypeRepository.SaveChangesAsync();
         }
 
@@ -1514,20 +1512,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                materialType.Description =
+                materialType.Value =
                     types
-                        .Where(x => x.MaterialTypeId == materialType.MaterialTypeId)
+                        .Where(x => x.Id == materialType.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = types.Where(x => x.MaterialTypeId == materialType.MaterialTypeId).First();
+            var oldType = types.Where(x => x.Id == materialType.Id).First();
             var reverse = (oldType.SortOrder < materialType.SortOrder);
 
             var newOrder = types
                     .Prepend(materialType)
-                    .GroupBy(x => x.MaterialTypeId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1562,7 +1560,7 @@ namespace Directory.Services
         #region RefData: Collection Type
         public async Task DeleteCollectionTypeAsync(CollectionType collectionType)
         {
-            await _collectionTypeRepository.DeleteAsync(collectionType.CollectionTypeId);
+            await _collectionTypeRepository.DeleteAsync(collectionType.Id);
             await _collectionTypeRepository.SaveChangesAsync();
         }
 
@@ -1573,17 +1571,17 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                collectionType.Description =
+                collectionType.Value =
                     types
-                        .Where(x => x.CollectionTypeId == collectionType.CollectionTypeId)
+                        .Where(x => x.Id == collectionType.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Insert respecting Sort Order
             types
                 .Prepend(collectionType)          // Add new item
-                .GroupBy(x => x.CollectionTypeId) // Remove old item of same ID
+                .GroupBy(x => x.Id) // Remove old item of same ID
                 .Select(x => x.First())
                 .OrderByDescending(x => x.SortOrder)    // Order giving priority to new item
                 .Reverse()
@@ -1625,20 +1623,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                serviceOffering.Name =
+                serviceOffering.Value =
                     offerings
-                        .Where(x => x.ServiceId == serviceOffering.ServiceId)
+                        .Where(x => x.Id == serviceOffering.Id)
                         .First()
-                        .Name;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldStatus = offerings.Where(x => x.ServiceId == serviceOffering.ServiceId).First();
+            var oldStatus = offerings.Where(x => x.Id == serviceOffering.Id).First();
             var reverse = (oldStatus.SortOrder < serviceOffering.SortOrder);
 
             var newOrder = offerings
                     .Prepend(serviceOffering)
-                    .GroupBy(x => x.ServiceId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1663,7 +1661,7 @@ namespace Directory.Services
       
         public async Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering)
         {
-            await _serviceOfferingRepository.DeleteAsync(serviceOffering.ServiceId);
+            await _serviceOfferingRepository.DeleteAsync(serviceOffering.Id);
             await _serviceOfferingRepository.SaveChangesAsync();
         }
         #endregion
@@ -1684,20 +1682,20 @@ namespace Directory.Services
             // If only updating sortOrder
             if (sortOnly)
             {
-                sex.Description =
+                sex.Value =
                     sexes
-                        .Where(x => x.SexId == sex.SexId)
+                        .Where(x => x.Id == sex.Id)
                         .First()
-                        .Description;
+                        .Value;
             }
 
             // Add new item, remove old
-            var oldType = sexes.Where(x => x.SexId == sex.SexId).First();
+            var oldType = sexes.Where(x => x.Id == sex.Id).First();
             var reverse = (oldType.SortOrder < sex.SortOrder);
 
             var newOrder = sexes
                     .Prepend(sex)
-                    .GroupBy(x => x.SexId)
+                    .GroupBy(x => x.Id)
                     .Select(x => x.First());
 
             // Sort depending on direction of change
@@ -1722,7 +1720,7 @@ namespace Directory.Services
 
         public async Task DeleteSexAsync(Sex sex)
         {
-            await _sexRepository.DeleteAsync(sex.SexId);
+            await _sexRepository.DeleteAsync(sex.Id);
             await _sexRepository.SaveChangesAsync();
         }
         #endregion
@@ -1742,7 +1740,7 @@ namespace Directory.Services
         //delete adt
         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
         {
-            await _associatedDataTypeRepository.DeleteAsync(associatedDataType.AssociatedDataTypeId);
+            await _associatedDataTypeRepository.DeleteAsync(associatedDataType.Id);
             await _associatedDataTypeRepository.SaveChangesAsync();
         }
         public async Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
@@ -1780,7 +1778,7 @@ namespace Directory.Services
 
         public async Task DeleteCountryAsync(Country country)
         {
-            await _countryRepository.DeleteAsync(country.CountryId);
+            await _countryRepository.DeleteAsync(country.Id);
             await _countryRepository.SaveChangesAsync();
         }
         #endregion
@@ -1801,7 +1799,7 @@ namespace Directory.Services
         }
         public async Task DeleteCountyAsync(County county)
         {
-            await _countyRepository.DeleteAsync(county.CountyId);
+            await _countyRepository.DeleteAsync(county.Id);
             await _countyRepository.SaveChangesAsync();
         }
 
@@ -1809,7 +1807,7 @@ namespace Directory.Services
         
         public async Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason)
         {
-            await _registrationReasonRepository.DeleteAsync(registrationReason.RegistrationReasonId);
+            await _registrationReasonRepository.DeleteAsync(registrationReason.Id);
             await _registrationReasonRepository.SaveChangesAsync();
         }
         public async Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason)
@@ -2003,7 +2001,7 @@ namespace Directory.Services
 
         public async Task DeleteAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup)
         {
-            await _associatedDataTypeGroupRepository.DeleteAsync(associatedDataTypeGroup.AssociatedDataTypeGroupId);
+            await _associatedDataTypeGroupRepository.DeleteAsync(associatedDataTypeGroup.Id);
             await _associatedDataTypeGroupRepository.SaveChangesAsync();
         }
 
@@ -2023,7 +2021,7 @@ namespace Directory.Services
         }
         public async Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
         {
-            await _annualStatisticGroupRepository.DeleteAsync(annualStatisticGroup.AnnualStatisticGroupId);
+            await _annualStatisticGroupRepository.DeleteAsync(annualStatisticGroup.Id);
             await _annualStatisticGroupRepository.SaveChangesAsync();
         }
 

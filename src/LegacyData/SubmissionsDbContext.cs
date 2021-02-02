@@ -1,17 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Data.Entities.ReferenceData;
+﻿using Biobanks.Entities.Api;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 
 // Legacy Entities Used To Support EF 3.1
-using LiveSample = LegacyData.Entities.LiveSample;
-using StagedSample = LegacyData.Entities.StagedSample;
-using MaterialType = LegacyData.Entities.MaterialType;
-using MaterialTypeGroup = LegacyData.Entities.MaterialTypeGroup;
-using MaterialTypeMaterialTypeGroup = LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
+using LiveSample = Biobanks.LegacyData.Entities.LiveSample;
+using StagedSample = Biobanks.LegacyData.Entities.StagedSample;
+using MaterialType = Biobanks.LegacyData.Entities.MaterialType;
+using MaterialTypeGroup = Biobanks.LegacyData.Entities.MaterialTypeGroup;
+using MaterialTypeMaterialTypeGroup = Biobanks.LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
 
-namespace LegacyData
+namespace Biobanks.LegacyData
 {
-    public class SubmissionsDbContext : DbContext
+    public class BiobanksDbContext : DbContext
     {
         public DbSet<Status> Statuses { get; set; }
 
@@ -24,7 +25,7 @@ namespace LegacyData
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<MaterialTypeMaterialTypeGroup> MaterialTypeMaterialTypeGroup { get; set; }
         public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
-        public DbSet<SnomedTerm> SnomedTerms { get; set; }
+        public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
@@ -66,7 +67,7 @@ namespace LegacyData
                     x.TreatmentCodeId
                 }).IsUnique();
 
-            model.Entity<LiveSample>()
+            model.Entity<Entities.LiveSample>()
                 .HasIndex(x => new
                 {
                     x.OrganisationId,
@@ -92,7 +93,7 @@ namespace LegacyData
                     x.TreatmentCodeId
                 }).IsUnique();
 
-            model.Entity<StagedSample>()
+            model.Entity<Entities.StagedSample>()
                 .HasIndex(x => new
                 {
                     x.OrganisationId,
@@ -102,25 +103,25 @@ namespace LegacyData
                 }).IsUnique();
 
             // Join Entity Many-Many Relationship - Required for EF 3.1
-            model.Entity<MaterialTypeMaterialTypeGroup>()
+            model.Entity<Entities.JoinEntities.MaterialTypeMaterialTypeGroup>()
                 .HasKey(x => new
                 {
                     x.MaterialTypeId,
                     x.MaterialTypeGroupId
                 });
 
-            model.Entity<MaterialTypeMaterialTypeGroup>()
+            model.Entity<Entities.JoinEntities.MaterialTypeMaterialTypeGroup>()
                 .HasOne(x => x.MaterialType)
                 .WithMany(x => x.MaterialTypeGroups)
                 .HasForeignKey(x => x.MaterialTypeId);
 
-            model.Entity<MaterialTypeMaterialTypeGroup>()
+            model.Entity<Entities.JoinEntities.MaterialTypeMaterialTypeGroup>()
                 .HasOne(x => x.MaterialTypeGroup)
                 .WithMany(x => x.MaterialTypes)
                 .HasForeignKey(x => x.MaterialTypeGroupId);
         }
 
-        public SubmissionsDbContext(DbContextOptions options) : base(options) { }
+        public BiobanksDbContext(DbContextOptions options) : base(options) { }
 
     }
 

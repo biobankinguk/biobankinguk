@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using System.Web.Mvc;
-using Directory.Identity;
+using Biobanks.Identity;
 
 namespace Biobanks.Web.Views
 {

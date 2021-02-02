@@ -2,16 +2,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Directory.Identity.Data.Entities;
-using Directory.Identity.Services;
-using Directory.Identity.Contracts;
-using Directory.Identity.Constants;
-using Directory.Services.Contracts;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Identity.Services;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Constants;
+using Biobanks.Services.Contracts;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Newtonsoft.Json;
 
-namespace Directory.Services
+namespace Biobanks.Services
 {
     public class CustomClaimsManager
     {

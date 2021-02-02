@@ -1,4 +1,4 @@
-namespace Directory.Data.Caching
+namespace Biobanks.Directory.Data.Caching
 {
     public static class CacheKeys
     {

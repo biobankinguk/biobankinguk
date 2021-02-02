@@ -1,6 +1,6 @@
 ﻿@using System.Linq
 @using System.Web.Optimization
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model Biobanks.Web.Models.Biobank.CollectionModel
 @{
 	ViewBag.Title = "Collection";
@@ -54,7 +54,7 @@
 				</tr>
 				<tr>
 					<td><strong>Disease status</strong></td>
-					<td>@Model.Diagnosis</td>
+					<td>@Model.OntologyTerm</td>
 				</tr>
 				<tr>
 					<td><strong>Year started</strong></td>
@@ -142,7 +142,7 @@
 						<th>Sex</th>
 						<th>Age</th>
 						<th>Material types</th>
-						<th>@App.Config[ConfigKey.PreservationTypeName]</th>
+						<th>@App.Config[ConfigKey.StorageTemperatureName]</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -153,7 +153,7 @@
 							<td>@sampleSet.Sex</td>
 							<td>@sampleSet.Age</td>
 							<td>@sampleSet.MaterialTypes</td>
-							<td>@sampleSet.PreservationTypes</td>
+							<td>@sampleSet.StorageTemperatures</td>
 						</tr>
 					}
 				</tbody>

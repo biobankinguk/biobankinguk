@@ -1,20 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.Text.Json;
-using System.IO;
+using Biobanks.DataSeed.Dto;
 using Newtonsoft.Json;
-using Directory.DataSeed.Dto;
-using Directory.Entity.Data;
-using Directory.Data.Constants;
-using Directory.Services.Contracts;
 
-namespace Directory.DataSeed.Services
+namespace Biobanks.DataSeed.Services
 {
     public class CountriesWebService : IDisposable
     {

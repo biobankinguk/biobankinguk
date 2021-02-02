@@ -531,8 +531,8 @@
       },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
-        "resolved": "4.7.0",
-        "contentHash": "0YFqjhp/mYkDGpU0Ye1GjE53HMp9UVfGN7seGpAMttAC0C40v5gw598jCgpbBLMmCo0E5YRLBv5Z2doypO49ZQ=="
+        "resolved": "5.0.0",
+        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
@@ -661,23 +661,23 @@
       "Biobanks.Directory.Data": {
         "type": "Project",
         "dependencies": {
-          "Biobanks.Directory.Entity": "1.0.0",
+          "Biobanks.Entities": "1.0.0",
           "EntityFramework": "6.4.4",
           "Newtonsoft.Json": "12.0.3",
           "System.Runtime.Caching": "4.7.0"
         }
       },
-      "Biobanks.Directory.Entity": {
+      "Biobanks.Entities": {
         "type": "Project",
         "dependencies": {
-          "EntityFramework": "6.4.4"
+          "Microsoft.CSharp": "4.7.0",
+          "System.ComponentModel.Annotations": "5.0.0"
         }
       },
-      "Biobanks.Directory.Identity": {
+      "Biobanks.Identity": {
         "type": "Project",
         "dependencies": {
           "Biobanks.Directory.Data": "1.0.0",
-          "Biobanks.Directory.Entity": "1.0.0",
           "EntityFramework": "6.4.4",
           "Microsoft.AspNet.Identity.Core": "2.2.3",
           "Microsoft.AspNet.Identity.EntityFramework": "2.2.3",
@@ -686,7 +686,7 @@
           "Newtonsoft.Json": "12.0.3"
         }
       },
-      "Biobanks.Directory.Search": {
+      "Biobanks.Search": {
         "type": "Project",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
@@ -694,14 +694,13 @@
           "Newtonsoft.Json": "12.0.3"
         }
       },
-      "Biobanks.Directory.Services": {
+      "Biobanks.Services": {
         "type": "Project",
         "dependencies": {
           "AutoMapper": "10.0.0",
           "Biobanks.Directory.Data": "1.0.0",
-          "Biobanks.Directory.Entity": "1.0.0",
-          "Biobanks.Directory.Identity": "1.0.0",
-          "Biobanks.Directory.Search": "1.0.0",
+          "Biobanks.Identity": "1.0.0",
+          "Biobanks.Search": "1.0.0",
           "Castle.Core": "4.4.1",
           "ExcelDataReader.DataSet": "3.6.0",
           "HangFire": "1.7.11",

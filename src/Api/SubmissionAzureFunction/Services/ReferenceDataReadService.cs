@@ -2,26 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using LegacyData;
+using Biobanks.LegacyData;
 
-using MaterialType = LegacyData.Entities.MaterialType;
-using MaterialTypeGroup = LegacyData.Entities.MaterialTypeGroup;
-using MaterialTypeMaterialTypeGroup = LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
+using MaterialType = Biobanks.LegacyData.Entities.MaterialType;
+using MaterialTypeGroup = Biobanks.LegacyData.Entities.MaterialTypeGroup;
+using MaterialTypeMaterialTypeGroup = Biobanks.LegacyData.Entities.JoinEntities.MaterialTypeMaterialTypeGroup;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class ReferenceDataReadService : IReferenceDataReadService
     {
         private readonly IMemoryCache _cache;
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         public ReferenceDataReadService(
-            IMemoryCache cache, SubmissionsDbContext db)
+            IMemoryCache cache, BiobanksDbContext db)
         {
             _cache = cache;
             _db = db;
@@ -42,13 +43,13 @@ namespace Biobanks.SubmissionAzureFunction.Services
             => (await ListSnomedTags())
                 .Where(x => values.Contains(x.Value));
 
-        public async Task<IEnumerable<SnomedTerm>> ListSnomedTerms()
+        public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms()
         {
-            if (_cache.TryGetValue(CacheKeys.SnomedTerms, out IEnumerable<SnomedTerm> cacheEntry)) return cacheEntry;
+            if (_cache.TryGetValue(CacheKeys.OntologyTerms, out IEnumerable<OntologyTerm> cacheEntry)) return cacheEntry;
 
-            cacheEntry = await _db.SnomedTerms.Include(x => x.SnomedTag).AsNoTracking().ToListAsync();
+            cacheEntry = await _db.OntologyTerms.Include(x => x.SnomedTag).AsNoTracking().ToListAsync();
 
-            _cache.Set(CacheKeys.SnomedTerms, cacheEntry);
+            _cache.Set(CacheKeys.OntologyTerms, cacheEntry);
 
             return cacheEntry;
         }
@@ -64,7 +65,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
             return cacheEntry;
         }
 
-        private async Task<SnomedTerm> SnomedLookup(
+        private async Task<OntologyTerm> SnomedLookup(
             string searchQuery, string field, IReadOnlyCollection<string> tags = null)
         {
             //add the tag filter if necessary
@@ -75,11 +76,11 @@ namespace Biobanks.SubmissionAzureFunction.Services
                 if (snomedTags == null) throw new Exception($"Could not find the requested SnomedTags: {tags}");
             }
 
-            var allTerms = await ListSnomedTerms();
+            var allTerms = await ListOntologyTerms();
 
             if (snomedTags == null || !snomedTags.Any()) return 
                     nameof(OntologyField.Description).Equals(field, StringComparison.CurrentCultureIgnoreCase) ?
-                    allTerms.FirstOrDefault(t => t.Description == searchQuery) :
+                    allTerms.FirstOrDefault(t => t.Value == searchQuery) :
                     allTerms.FirstOrDefault(t => t.Id == searchQuery);
             allTerms.FirstOrDefault(t => t.Id == searchQuery);
 
@@ -88,23 +89,23 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             return
                 nameof(OntologyField.Description).Equals(field, StringComparison.CurrentCultureIgnoreCase) ?
-                termsForTag.FirstOrDefault(t => t.Description == searchQuery) :
+                termsForTag.FirstOrDefault(t => t.Value == searchQuery) :
                 termsForTag.FirstOrDefault(t => t.Id == searchQuery);
         }
 
-        public async Task<SnomedTerm> GetSnomed(string value, string field)
+        public async Task<OntologyTerm> GetSnomed(string value, string field)
             => await SnomedLookup(value, field);
 
-        public async Task<SnomedTerm> GetSnomedDiagnosis(string value, string field)
+        public async Task<OntologyTerm> GetSnomedDiagnosis(string value, string field)
             => await SnomedLookup(value, field, new[] {"Disease"});
 
-        public async Task<SnomedTerm> GetSnomedTreatment(string value, string field)
+        public async Task<OntologyTerm> GetSnomedTreatment(string value, string field)
             => await SnomedLookup(value, field, new[] {"Treatment"});
 
-        public async Task<SnomedTerm> GetSnomedBodyOrgan(string value, string field)
+        public async Task<OntologyTerm> GetSnomedBodyOrgan(string value, string field)
             => await SnomedLookup(value, field, new[] {"Body Organ"});
 
-        public async Task<SnomedTerm> GetSnomedExtractionProcedure(string value, string field)
+        public async Task<OntologyTerm> GetSnomedExtractionProcedure(string value, string field)
             => await SnomedLookup(value, field, new[] {"Extraction Procedure"});
 
         public async Task<IEnumerable<MaterialType>> ListMaterialTypes()

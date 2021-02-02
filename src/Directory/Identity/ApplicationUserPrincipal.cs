@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using Directory.Identity.Constants;
+using Biobanks.Identity.Constants;
 using Newtonsoft.Json;
 
-namespace Directory.Identity
+namespace Biobanks.Identity
 {
     public class ApplicationUserPrincipal : ClaimsPrincipal
     {

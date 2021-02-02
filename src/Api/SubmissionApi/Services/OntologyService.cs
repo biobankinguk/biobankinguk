@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
-using Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class OntologyService : IOntologyService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public OntologyService(SubmissionsDbContext db)
+        public OntologyService(BiobanksDbContext db)
         {
             _db = db;
         }

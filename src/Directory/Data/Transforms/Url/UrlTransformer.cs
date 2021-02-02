@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Directory.Data.Transforms.Url
+namespace Biobanks.Directory.Data.Transforms.Url
 {
     public static class UrlTransformer
     {
