@@ -60,7 +60,12 @@ namespace Publications.Services
                 }
             }
 
-            var biobankList = await _biobankReadService.GetOrganisationIds();
+            //Gets Biobank Ids with at least one matching annotation to the searched publication
+            var biobankList = await _biobankReadService.GetOrganisationIdWithMatchingAnnotations(publicationsAnnotationListA);
+            if (biobankList.Count() < 1)
+            {
+                return null;
+            }
 
             var annotationListB = new List<string>();
 
@@ -68,15 +73,7 @@ namespace Publications.Services
             {
                 //Clear the annotation list for each biobank
                 annotationListB.Clear();
-                var publicationList = await _biobankReadService.ListOrganisationPublications(biobank);
-
-                    foreach (var publication in publicationList)
-                    {
-                        foreach (var annotation in publication.PublicationAnnotations)
-                        {
-                            annotationListB.Add(annotation.Annotation.Name);
-                        }
-                    }
+                annotationListB = await _biobankReadService.GetBiobankAnnotations(biobank);
                     
                     //Only create a recommendation object if the biobank has publications which contain annotations
                     if (annotationListB.Count() > 0)

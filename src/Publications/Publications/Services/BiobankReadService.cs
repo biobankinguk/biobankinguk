@@ -52,7 +52,8 @@ namespace Publications.Services
         public async Task<Annotation> GetAnnotationById(int annotationId)
             => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
 
-        public async Task<IQueryable<string>> Test()
+        //Gets all Annotations for a specific biobank
+        public async Task<List<string>> GetBiobankAnnotations(int OrganisationId)
         {
             var query =
                from Annotations in _ctx.Annotations
@@ -61,10 +62,25 @@ namespace Publications.Services
                join Publications in _ctx.Publications on new { Publication_Id = PublicationAnnotations.Publication_Id } equals new { Publication_Id = Publications.Id } into Publications_join
                from Publications in Publications_join.DefaultIfEmpty()
                where
-                 (new string[] { "cancer", "gene" }).Contains(Annotations.Name)
+                 Publications.OrganisationId == OrganisationId /*&& annotationsList.Contains(Annotations.Name) */
                select Annotations.Name;
 
-            return query;
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<int>> GetOrganisationIdWithMatchingAnnotations(List<string> annotationsList)
+        {
+            var query =
+               from Annotations in _ctx.Annotations
+               join PublicationAnnotations in _ctx.PublicationAnnotations on new { Id = Annotations.Id } equals new { Id = PublicationAnnotations.Annotation_Id } into PublicationAnnotations_join
+               from PublicationAnnotations in PublicationAnnotations_join.DefaultIfEmpty()
+               join Publications in _ctx.Publications on new { Publication_Id = PublicationAnnotations.Publication_Id } equals new { Publication_Id = Publications.Id } into Publications_join
+               from Publications in Publications_join.DefaultIfEmpty()
+               where
+                 annotationsList.Contains(Annotations.Name)
+               select Publications.OrganisationId;
+
+            return await query.Distinct().ToListAsync();
         }
     }
 }

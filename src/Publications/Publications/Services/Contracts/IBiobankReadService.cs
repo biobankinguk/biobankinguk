@@ -20,7 +20,9 @@ namespace Publications.Services.Contracts
 
         Task<IEnumerable<Publication>> ListPublications();
 
-        Task<IQueryable<string>> Test();
+        Task<List<string>> GetBiobankAnnotations(int OrganisationId);
+
+        Task<List<int>> GetOrganisationIdWithMatchingAnnotations(List<string> annotationsList);
 
     }
 }
