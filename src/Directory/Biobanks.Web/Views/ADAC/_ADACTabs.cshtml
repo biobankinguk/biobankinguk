@@ -1,8 +1,11 @@
 ﻿@using Biobanks.Directory.Data.Constants;
+@using System.Web.Optimization
 @model string
 
+@Scripts.Render("~/bundles/adac/tabs")
+
 <div class="row">
-	<div class="col-md-12">
+    <div class="col-md-12">
         <ul class="nav nav-tabs">
             <li role="presentation"
                 class="@(Model == "Requests" ? "active" : "true")">
@@ -34,7 +37,7 @@
                     Reference Data
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu refdata-menu">
+                <ul class="dropdown-menu refdata-menu" id="refdropdown">
                     <li role="presentation"
                         class="@(Model == "Access Conditions" ? "active" : "true")">
                         @Html.ActionLink("Access Conditions", "AccessConditions")
@@ -223,6 +226,13 @@
                 </li>
             }
 
-            </ul>
+        </ul>
     </div>
 </div>
+
+
+
+
+
+
+
