@@ -1,4 +1,4 @@
-AgeRangeId,Description,SortOrder
+Id,Value,SortOrder
 1,Neonate (0 - 1 month),2
 2,Infant (1 month - 2 years),3
 3,Young child (2 - 6 years),4

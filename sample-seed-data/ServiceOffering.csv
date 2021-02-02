@@ -1,4 +1,4 @@
-ServiceId,Name,SortOrder
+Id,Value,SortOrder
 1,Immunohistochemistry - staining,8
 2,Immunohistochemistry - scoring,7
 3,Nucleic acid extraction,11

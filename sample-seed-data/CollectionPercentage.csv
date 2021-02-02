@@ -1,4 +1,4 @@
-CollectionPercentageId,Description,SortOrder,LowerBound,UpperBound
+Id,Value,SortOrder,LowerBound,UpperBound
 1,0 - 10%,1,0.00,10.50
 2,11 - 25%,2,10.50,25.50
 3,26 - 50%,3,25.50,50.50
