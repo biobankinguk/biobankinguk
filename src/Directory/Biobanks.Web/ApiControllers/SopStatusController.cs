@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -29,10 +30,10 @@ namespace Biobanks.Web.ApiControllers
                 .Select(x =>
                     Task.Run(async () => new SopStatusModel()
                     {
-                        Id = x.SopStatusId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.SopStatusId)//GetCollectionPointUsageCount(x.CollectionPointId)
+                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.Id)//GetCollectionPointUsageCount(x.CollectionPointId)
                     })
                     .Result
                 )
@@ -57,8 +58,8 @@ namespace Biobanks.Web.ApiControllers
 
             var status = new SopStatus
             {
-                SopStatusId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 
@@ -96,8 +97,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateSopStatusAsync(new SopStatus
             {
-                SopStatusId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -113,12 +114,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListSopStatusesAsync()).Where(x => x.SopStatusId == id).First();
+            var model = (await _biobankReadService.ListSopStatusesAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsSopStatusInUse(id))
             {
-                ModelState.AddModelError("SopStatus", $"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("SopStatus", $"The access condition \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -128,8 +129,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteSopStatusAsync(new SopStatus
             {
-                SopStatusId = model.SopStatusId,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder
             });
 
@@ -137,7 +138,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -147,8 +148,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateSopStatusAsync(new SopStatus
             {
-                SopStatusId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             },
             true);

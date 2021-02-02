@@ -4,9 +4,9 @@ using System.Web.Mvc;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.Search;
-using Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {
@@ -30,18 +30,18 @@ namespace Biobanks.Web.Controllers
             };
 
             // List of Unique Diagnoses With Sample Sets
-            var snomedTerms = (await _biobankReadService.ListCollectionsAsync())
+            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.SnomedTermId)
-                .Select(x => x.First().SnomedTerm);
+                .GroupBy(x => x.OntologyTermId)
+                .Select(x => x.First().OntologyTerm);
 
-            var snomedTermsModel = snomedTerms.Select(x => 
+            var ontologyTermsModel = ontologyTerms.Select(x => 
                 
-                Task.Run(async () => new ReadSnomedTermModel
+                Task.Run(async () => new ReadOntologyTermModel
                 {
-                    SnomedTermId = x.Id,
-                    Description = x.Description,
-                    CollectionCapabilityCount = await _biobankReadService.GetSnomedTermCollectionCapabilityCount(x.Id),
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
@@ -49,7 +49,7 @@ namespace Biobanks.Web.Controllers
 
             return View(new TermPageModel
             {
-                SnomedTermsModel = snomedTermsModel,
+                OntologyTermsModel = ontologyTermsModel,
                 TermpageContentModel = termContentModel,
             });
         }

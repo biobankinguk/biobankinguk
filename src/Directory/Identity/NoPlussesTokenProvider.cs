@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Directory.Identity
+namespace Biobanks.Identity
 {
     
     /// <inheritdoc />

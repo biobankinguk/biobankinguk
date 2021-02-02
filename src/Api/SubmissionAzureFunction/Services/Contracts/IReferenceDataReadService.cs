@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities.Api.ReferenceData;
-using Entities.Shared.ReferenceData;
-using MaterialType = LegacyData.Entities.MaterialType;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using MaterialType = Biobanks.LegacyData.Entities.MaterialType;
 
 namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 {
@@ -19,21 +19,21 @@ namespace Biobanks.SubmissionAzureFunction.Services.Contracts
         //Snomed by Tag
         Task<IEnumerable<SnomedTag>> ListSnomedTags();
 
-        Task<IEnumerable<SnomedTerm>> ListSnomedTerms();
+        Task<IEnumerable<OntologyTerm>> ListOntologyTerms();
 
         Task<IEnumerable<StorageTemperature>> ListStorageTemperatures();
 
         Task<IEnumerable<TreatmentLocation>> ListTreatmentLocations();
 
-        Task<SnomedTerm> GetSnomed(string value, string field);
+        Task<OntologyTerm> GetSnomed(string value, string field);
 
-        Task<SnomedTerm> GetSnomedDiagnosis(string value, string field);
+        Task<OntologyTerm> GetSnomedDiagnosis(string value, string field);
 
-        Task<SnomedTerm> GetSnomedTreatment(string value, string field);
+        Task<OntologyTerm> GetSnomedTreatment(string value, string field);
 
-        Task<SnomedTerm> GetSnomedBodyOrgan(string value, string field);
+        Task<OntologyTerm> GetSnomedBodyOrgan(string value, string field);
 
-        Task<SnomedTerm> GetSnomedExtractionProcedure(string value, string field);
+        Task<OntologyTerm> GetSnomedExtractionProcedure(string value, string field);
 
         Task<MaterialType> GetMaterialTypeWithGroups(string value);
 

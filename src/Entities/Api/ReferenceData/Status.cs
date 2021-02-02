@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Entities.Api.ReferenceData
+namespace Biobanks.Entities.Api.ReferenceData
 {
     public class Status
     {

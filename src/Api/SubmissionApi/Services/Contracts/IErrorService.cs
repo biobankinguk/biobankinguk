@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Types;
 
 namespace Biobanks.SubmissionApi.Services.Contracts

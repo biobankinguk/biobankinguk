@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Caching;
 
-namespace Directory.Data.Caching
+namespace Biobanks.Directory.Data.Caching
 {
     public class CacheProvider : ICacheProvider
     {
@@ -24,7 +24,8 @@ namespace Directory.Data.Caching
         {
             var val = _cache.Get(cacheKey);
             
-            if(val == null) throw new KeyNotFoundException();
+            if(val == null) throw new KeyNotFoundException(
+                $"{cacheKey} requested but not found.");
 
             return (T)val;
         }

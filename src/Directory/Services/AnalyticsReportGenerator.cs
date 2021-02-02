@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using Directory.Services.Contracts;
 using System.Threading.Tasks;
-using Directory.Services.Dto;
-using System.Linq;
 using System.Net.Http;
-using AutoMapper;
 using System.Configuration;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 using Newtonsoft.Json;
 
-namespace Directory.Services
+namespace Biobanks.Services
 {
     public class AnalyticsReportGenerator : IDisposable, IAnalyticsReportGenerator
     {

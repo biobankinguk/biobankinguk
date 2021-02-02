@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Search.Legacy;
-using Directory.Services.Extensions;
-using Directory.Services.Contracts;
+using Biobanks.Search.Legacy;
 using Castle.Core.Internal;
 using Hangfire;
 using Newtonsoft.Json;
-using Directory.Search.Dto.PartialDocuments;
-using Directory.Search.Dto.Documents;
+using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Search.Dto.Documents;
 using System.Configuration;
 using System.Net.Http;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Extensions;
 
-namespace Directory.Services
+namespace Biobanks.Services
 {
     public class BiobankIndexService : IBiobankIndexService
     {
@@ -37,19 +37,23 @@ namespace Directory.Services
         {
             var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
 
-            if (string.IsNullOrEmpty(searchBase))
-                return null;
-
-            using (var client = new HttpClient())
+            try
             {
-                // Proxy Call To ElasticSearch Instance
-                var response = await client.GetStringAsync($"{searchBase}/_cluster/health");
-                var clusterHealth = JsonConvert.DeserializeAnonymousType(response, new
+                using (var client = new HttpClient())
                 {
-                    Status = string.Empty
-                });
+                    var response = await client.GetStringAsync($"{searchBase}/_cluster/health");
+                    var clusterHealth = JsonConvert.DeserializeAnonymousType(response, new
+                    {
+                        Status = string.Empty
+                    });
 
-                return clusterHealth.Status;
+                    return clusterHealth.Status;
+                }
+            }
+            catch
+            {
+                // Exception Occurred - Assume Search Is Down
+                return "red";
             }
         }
 
@@ -92,16 +96,16 @@ namespace Directory.Services
                 new PartialSampleSet
                 {
                     Sex = updatedSampleSet.Sex.Value,
-                    AgeRange = updatedSampleSet.AgeRange.Description,
+                    AgeRange = updatedSampleSet.AgeRange.Value,
                     AgeRangeMetadata = JsonConvert.SerializeObject(new
                     {
-                        Name = updatedSampleSet.AgeRange.Description,
+                        Name = updatedSampleSet.AgeRange.Value,
                         updatedSampleSet.AgeRange.SortOrder
                     }),
-                    DonorCount = updatedSampleSet.DonorCount.Description,
+                    DonorCount = updatedSampleSet.DonorCount.Value,
                     DonorCountMetadata = JsonConvert.SerializeObject(new
                     {
-                        Name = updatedSampleSet.DonorCount.Description,
+                        Name = updatedSampleSet.DonorCount.Value,
                         updatedSampleSet.DonorCount.SortOrder
                     }),
                     MaterialPreservationDetails = updatedSampleSet.MaterialDetails
@@ -114,12 +118,12 @@ namespace Directory.Services
                                 Name = x.StorageTemperature.Value,
                                 x.StorageTemperature.SortOrder
                             }),
-                            MacroscopicAssessment = x.MacroscopicAssessment.Description,
-                            PercentageOfSampleSet = x.CollectionPercentage.Description
+                            MacroscopicAssessment = x.MacroscopicAssessment.Value,
+                            PercentageOfSampleSet = x.CollectionPercentage.Value
                         }),
                     SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
-                        updatedSampleSet.DonorCount.Description, 
-                        updatedSampleSet.AgeRange.Description,
+                        updatedSampleSet.DonorCount.Value, 
+                        updatedSampleSet.AgeRange.Value,
                         updatedSampleSet.Sex.Value,
                         updatedSampleSet.MaterialDetails)
                 }));
@@ -147,17 +151,17 @@ namespace Directory.Services
                 updatedCapability.DiagnosisCapabilityId,
                 new PartialCapability
                 {
-                    SnomedTerm = updatedCapability.SnomedTerm.Description,
-                    Protocols = updatedCapability.SampleCollectionMode.Description,
+                    OntologyTerm = updatedCapability.OntologyTerm.Value,
+                    Protocols = updatedCapability.SampleCollectionMode.Value,
                     AnnualDonorExpectation = donorExpectation.Key,
                     AnnualDonorExpectationMetadata = donorExpectationMetadata,
                     AssociatedData = updatedCapability.AssociatedData.Select(ad => new AssociatedDataDocument
                     {
-                        Text = ad.AssociatedDataType.Description,
-                        Timeframe = ad.AssociatedDataProcurementTimeframe.Description,
+                        Text = ad.AssociatedDataType.Value,
+                        Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
                         TimeframeMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = ad.AssociatedDataProcurementTimeframe.Description,
+                            Name = ad.AssociatedDataProcurementTimeframe.Value,
                             ad.AssociatedDataProcurementTimeframe.SortOrder
                         })
                     })
@@ -190,22 +194,22 @@ namespace Directory.Services
                         sampleSet.SampleSetId,
                         new PartialCollection
                         {
-                            SnomedTerm = collection.SnomedTerm.Description,
+                            OntologyTerm = collection.OntologyTerm.Value,
                             CollectionTitle = collection.Title,
                             StartYear = collection.StartDate.Year.ToString(),
-                            CollectionPoint = collection.CollectionPoint.Description,
-                            CollectionStatus = collection.CollectionStatus.Description,
+                            CollectionPoint = collection.CollectionPoint.Value,
+                            CollectionStatus = collection.CollectionStatus.Value,
                             ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
-                            HTA = collection.HtaStatus != null ? collection.HtaStatus.Description : "not recorded",
-                            AccessCondition = collection.AccessCondition.Description,
-                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Description : string.Empty,
+                            HTA = collection.HtaStatus != null ? collection.HtaStatus.Value : "not recorded",
+                            AccessCondition = collection.AccessCondition.Value,
+                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
                             AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
                             {
-                                Text = ad.AssociatedDataType.Description,
-                                Timeframe = ad.AssociatedDataProcurementTimeframe.Description,
+                                Text = ad.AssociatedDataType.Value,
+                                Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
                                 TimeframeMetadata = JsonConvert.SerializeObject(new
                                 {
-                                    Name = ad.AssociatedDataProcurementTimeframe.Description,
+                                    Name = ad.AssociatedDataProcurementTimeframe.Value,
                                     ad.AssociatedDataProcurementTimeframe.SortOrder
                                 })
                             })
@@ -223,7 +227,7 @@ namespace Directory.Services
                 Biobank = biobank.Name,
                 BiobankServices = biobank.OrganisationServiceOfferings.Select(x => new BiobankServiceDocument
                 {
-                    Name = x.ServiceOffering.Name
+                    Name = x.ServiceOffering.Value
                 })
             };
 

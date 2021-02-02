@@ -1,13 +1,13 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
-using Directory.Data.Constants;
-using Entities.Shared.ReferenceData;
+using Biobanks.Directory.Data.Constants;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -150,11 +150,11 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder
             });
 
-            // Success
+            //Everything went A-OK!
             return Json(new
             {
-                msg = $"The {currentReferenceName.Value}  \"{model.Value}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Value,
             });
         }
 

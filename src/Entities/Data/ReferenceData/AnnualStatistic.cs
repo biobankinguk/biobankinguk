@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class AnnualStatistic
     {
-        public int AnnualStatisticId { get;set; }
-        public string Name { get; set; }
+        public int Id { get;set; }
+        public string Value { get; set; }
 
         public int AnnualStatisticGroupId { get; set; }
 

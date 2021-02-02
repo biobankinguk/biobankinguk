@@ -1,5 +1,5 @@
 @using System.Web.Optimization
-@using Directory.Search.Constants
+@using Biobanks.Search.Constants
 @model Biobanks.Web.Models.Search.NoResultsModel
 
 @{
@@ -24,9 +24,9 @@
     @Scripts.Render("~/bundles/search")
 }
 
-<h2 class="search">@ViewBag.Title: <small>@Model.SnomedTerm</small></h2>
+<h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>
 
-@if (!string.IsNullOrEmpty(Model.SnomedTerm))
+@if (!string.IsNullOrEmpty(Model.OntologyTerm))
 {
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">

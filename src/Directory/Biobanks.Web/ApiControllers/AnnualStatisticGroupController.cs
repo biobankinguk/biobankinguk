@@ -1,11 +1,12 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -31,9 +32,9 @@ namespace Biobanks.Web.ApiControllers
 
                 Task.Run(async () => new ReadAnnualStatisticGroupModel
                 {
-                    AnnualStatisticGroupId = x.AnnualStatisticGroupId,
-                    Name = x.Name,
-                    AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.AnnualStatisticGroupId)
+                    AnnualStatisticGroupId = x.Id,
+                    Name = x.Value,
+                    AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.Id)
                 }).Result)
 
                 .ToList();
@@ -45,7 +46,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAnnualStatisticGroupsAsync()).Where(x => x.AnnualStatisticGroupId == id).First();
+            var model = (await _biobankReadService.ListAnnualStatisticGroupsAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsAnnualStatisticGroupInUse(id))
             {
@@ -59,15 +60,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAnnualStatisticGroupAsync(new AnnualStatisticGroup
             {
-                AnnualStatisticGroupId = id,
-                Name = model.Name
+                Id = id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Name
+                name = model.Value
             });
         }
 
@@ -93,8 +94,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateAnnualStatisticGroupAsync(new AnnualStatisticGroup
             {
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Name = model.Name
+                Id = model.AnnualStatisticGroupId,
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -122,7 +123,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddAnnualStatisticGroupAsync(new AnnualStatisticGroup
             {
-                Name = model.Name
+                Value = model.Name
             });
 
             //Everything went A-OK!

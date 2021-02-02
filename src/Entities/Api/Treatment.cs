@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Entities.Api.Contracts;
-using Entities.Api.ReferenceData;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Api.Contracts;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Entities.Api
+namespace Biobanks.Entities.Api
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>
@@ -26,7 +26,7 @@ namespace Entities.Api
         /// A SNOMED term representing the Treatment.
         /// </summary>
         [Required]
-        public SnomedTerm TreatmentCode { get; set; }
+        public OntologyTerm TreatmentCode { get; set; }
 
         /// <summary>
         /// Foreign key column.

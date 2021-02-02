@@ -1,6 +1,6 @@
 ﻿@using System.Configuration
 @using Biobanks.Web.Models.Home
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model HomepageContentModel
 @using (Html.BeginForm("Unified", "Search", null, FormMethod.Get))
 {
@@ -16,7 +16,7 @@
             <div class="circle circle-blue">1</div>
         </div>
         <div class="col-lg-10">
-            Search for existing banked samples or search to create a new collection
+            @Model.SearchSubTitle
             <div class="search-info row-buffer">
                 <fieldset>
                     <legend class="sr-only">Search for</legend>

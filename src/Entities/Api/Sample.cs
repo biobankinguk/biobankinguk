@@ -1,12 +1,12 @@
-﻿using Entities.Api.Contracts;
-using Entities.Api.ReferenceData;
-using Entities.Shared.ReferenceData;
+﻿using Biobanks.Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Biobanks.Entities.Api.Contracts;
+using Biobanks.Entities.Api.ReferenceData;
 
-namespace Entities.Api
+namespace Biobanks.Entities.Api
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>
@@ -66,7 +66,7 @@ namespace Entities.Api
         /// A SNOMED term representing the site of extraction of this tissue sample.
         /// Tissue Sample only.
         /// </summary>
-        public SnomedTerm ExtractionSite { get; set; }
+        public OntologyTerm ExtractionSite { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -86,7 +86,7 @@ namespace Entities.Api
         /// A SNOMED term for the sample extraction procedure.
         /// Extracted Samples only.
         /// </summary>
-        public SnomedTerm ExtractionProcedure { get; set; }
+        public OntologyTerm ExtractionProcedure { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -96,7 +96,7 @@ namespace Entities.Api
         /// A SNOMED term describing the sample content.
         /// Exracted Samples only.
         /// </summary>
-        public SnomedTerm SampleContent { get; set; }
+        public OntologyTerm SampleContent { get; set; }
 
         /// <summary>
         /// Foreign key column.

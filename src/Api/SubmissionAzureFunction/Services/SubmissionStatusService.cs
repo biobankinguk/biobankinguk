@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using LegacyData;
+using Biobanks.LegacyData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class SubmissionStatusService : ISubmissionStatusService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
         private readonly IMapper _mapper;
 
-        public SubmissionStatusService(IMapper mapper, SubmissionsDbContext db)
+        public SubmissionStatusService(IMapper mapper, BiobanksDbContext db)
         {
             _db = db;
             _mapper = mapper;

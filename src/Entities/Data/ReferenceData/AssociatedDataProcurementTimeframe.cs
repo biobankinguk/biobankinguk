@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class AssociatedDataProcurementTimeframe
     {
-        public int AssociatedDataProcurementTimeframeId { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string Value { get; set; }
 
         [MaxLength(10)]
         [Required]

@@ -1,5 +1,5 @@
 using System.Web.Mvc;
-using Directory.Identity;
+using Biobanks.Identity;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Utilities;
 using System.Collections.Generic;

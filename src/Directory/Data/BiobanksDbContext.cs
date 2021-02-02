@@ -1,10 +1,12 @@
 using System.Data.Entity;
-using Entities.Api;
-using Entities.Api.ReferenceData;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Api;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Directory.Entity.Data;
 
-namespace Directory.Data
+namespace Biobanks.Directory.Data
 {
     public class BiobanksDbContext : DbContext
     {
@@ -79,13 +81,13 @@ namespace Directory.Data
 
         // Biobank Publications
         public DbSet<Publication> Publications { get; set; }
-
+        public DbSet<Annotation> Annotations { get; set; }
 
         /* Shared Reference Data */
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<Sex> Sexes { get; set; }
-        public DbSet<SnomedTerm> SnomedTerms { get; set; }
+        public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
 
@@ -115,13 +117,15 @@ namespace Directory.Data
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
 
 
+
+
         public BiobanksDbContext() : base("Biobanks") { }
         public BiobanksDbContext(string connectionString) : base(connectionString) { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Collection>().Property(f => f.StartDate).HasColumnType("datetime2");
-            modelBuilder.Entity<SnomedTerm>().HasIndex(x => x.Description).IsUnique();
+            modelBuilder.Entity<OntologyTerm>().HasIndex(x => x.Value).IsUnique();
         }
     }
 }

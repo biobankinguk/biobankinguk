@@ -1,4 +1,4 @@
-﻿@using Directory.Data.Constants
+﻿@using Biobanks.Directory.Data.Constants
 @model Biobanks.Web.Models.Search.DetailedCollectionSearchModel
 @{
     ViewBag.Title = $"Collection Search Results in {Model.BiobankName}";
@@ -10,7 +10,7 @@
     <div class="col-sm-12">
         <ul class="breadcrumb">
             <li><a href="/">Home</a><span class="divider"></span></li>
-            <li><a href="@Url.Action("Collections", "Search", new { Model.SnomedTerm, Model.SelectedFacets })">Search</a><span class="divider"></span></li>
+            <li><a href="@Url.Action("Collections", "Search", new { OntologyTerm = Model.OntologyTerm, Model.SelectedFacets })">Search</a><span class="divider"></span></li>
             <li class="active">Search Detail</li>
         </ul>
     </div>
@@ -39,7 +39,7 @@
     <div class="well results-well">
         <div class="row">
             <div class="col-sm-6">
-                <h3>@collection.SnomedTerm</h3>
+                <h3>@collection.OntologyTerm</h3>
                 @if (!string.IsNullOrEmpty(collection.CollectionTitle))
                 {
                     <h4>@collection.CollectionTitle</h4>

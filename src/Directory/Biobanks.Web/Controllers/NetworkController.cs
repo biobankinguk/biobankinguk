@@ -5,23 +5,25 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Entities.Data;
-using Directory.Identity.Data.Entities;
-using Directory.Identity.Contracts;
-using Directory.Identity.Constants;
-using Directory.Services;
+using Biobanks.Entities.Data;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Constants;
+using Biobanks.Services;
 using Biobanks.Web.Models.Network;
-using Directory.Data.Transforms.Url;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Data.Transforms.Url;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using System.Net.Http;
 using AutoMapper;
-using Directory.Services.Dto;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Services.Dto;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
+using Newtonsoft.Json;
 
 namespace Biobanks.Web.Controllers
 {
@@ -61,7 +63,7 @@ namespace Biobanks.Web.Controllers
 
         #region Details
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> Index()
         {
             return View(await GetNetworkDetailsModelAsync());
@@ -73,7 +75,9 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
                     FeedbackMessageType.Info);
 
-            return Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]) == (int)ActiveOrganisationType.NewNetwork
+            var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
+
+            return activeOrganisationType == (int)ActiveOrganisationType.NewNetwork
                 ? View(await NewNetworkDetailsModelAsync()) //no network id means we're dealing with a request
                 : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network
         }
@@ -186,7 +190,7 @@ namespace Biobanks.Web.Controllers
                 //add a claim now that they're associated with the network
                 _claimsManager.AddClaims(new List<Claim>
                 {
-                    new Claim(CustomClaimType.NetworkId, network.NetworkId.ToString())
+                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(network.NetworkId, network.Name)))
                 });
 
                 //Logo upload (now we have the id, we can form the filename)
@@ -252,7 +256,7 @@ namespace Biobanks.Web.Controllers
         {
             var allSopStatuses = (List<SopStatus>) await _biobankReadService.ListSopStatusesAsync();
             return
-                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.SopStatusId, status.Description))
+                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
                     .ToList();
         }
 
@@ -367,7 +371,7 @@ namespace Biobanks.Web.Controllers
 
         #region Admins
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> Admins()
         {
             var networkId = SessionHelper.GetNetworkId(Session);
@@ -431,7 +435,7 @@ namespace Biobanks.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<JsonResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
         {
             if (!ModelState.IsValid)
@@ -519,7 +523,7 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName)
         {
             //remove them from the network
@@ -538,7 +542,7 @@ namespace Biobanks.Web.Controllers
 
         #region Biobank membership
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> Biobanks()
         {
             var networkId = SessionHelper.GetNetworkId(Session);
@@ -571,7 +575,7 @@ namespace Biobanks.Web.Controllers
             return View(model);
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> DeleteBiobank(int biobankId, string biobankName)
         {
             try
@@ -589,7 +593,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("Biobanks");
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public ActionResult AddBiobank()
         {
             return View(new AddBiobankToNetworkModel());
@@ -597,7 +601,7 @@ namespace Biobanks.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model)
         {
             //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
@@ -703,7 +707,7 @@ namespace Biobanks.Web.Controllers
             return View(model);
         }
 
-        [Authorize(ClaimType = CustomClaimType.NetworkId)]
+        [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<JsonResult> SearchBiobanks(string wildcard)
         {
             var biobanks = await _biobankReadService.ListBiobanksAsync(wildcard, false);

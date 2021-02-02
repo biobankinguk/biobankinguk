@@ -1,9 +1,10 @@
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Biobanks.Entities.Data.ReferenceData;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data
 {
     public class Collection
     {
@@ -12,8 +13,8 @@ namespace Entities.Data
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
 
-        public string SnomedTermId { get; set; }
-        public virtual SnomedTerm SnomedTerm { get; set; }
+        public string OntologyTermId { get; set; }
+        public virtual OntologyTerm OntologyTerm { get; set; }
 
         [MaxLength(250)]
         public string Title { get; set; }

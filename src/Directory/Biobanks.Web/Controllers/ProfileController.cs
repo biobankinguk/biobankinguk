@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Entities.Data;
-using Directory.Identity.Constants;
-using Directory.Services.Contracts;
+using Biobanks.Entities.Data;
+using Biobanks.Identity.Constants;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.Profile;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
+using System;
 
 namespace Biobanks.Web.Controllers
 {
@@ -39,7 +40,7 @@ namespace Biobanks.Web.Controllers
             if (bb.IsSuspended)
             {
                 //Allow ADAC or this Biobank's admins to view the profile
-                if (CurrentUser.BiobankIds.Contains(bb.OrganisationId.ToString()) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
+                if (CurrentUser.Biobanks.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
                     User.IsInRole(Role.ADAC.ToString()))
                 {
                     //But alert them that the bb is suspended
@@ -68,8 +69,8 @@ namespace Biobanks.Web.Controllers
                 AddressLine4 = bb.AddressLine4,
                 City = bb.City,
                 PostCode = bb.PostCode,
-                CountyName = bb.County?.Name,
-                CountryName = bb.Country.Name,
+                CountyName = bb.County?.Value,
+                CountryName = bb.Country.Value,
                 ContactNumber = bb.ContactNumber,
                 LastUpdated = bb.LastUpdated,
                 NetworkMembers = (await _biobankReadService.GetNetworksByBiobankIdAsync(bb.OrganisationId)).Select(
@@ -80,33 +81,33 @@ namespace Biobanks.Web.Controllers
                         Logo = x.Logo,
                         Description = x.Description
                     }).ToList(),
-                CapabilitySnomedTerms = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
+                CapabilityOntologyTerms = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
                     x => new CapabilityModel
                     {
                         Id = x.DiagnosisCapabilityId,
-                        SnomedTerm = x.SnomedTerm.Description,
-                        Protocols = x.SampleCollectionMode.Description
+                        OntologyTerm = x.OntologyTerm.Value,
+                        Protocols = x.SampleCollectionMode.Value
                     })
-                    .Select(x => x.SnomedTerm)
+                    .Select(x => x.OntologyTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                CollectionSnomedTerms = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
+                CollectionOntologyTerms = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,
-                        SnomedTerm = x.SnomedTerm.Description,
+                        OntologyTerm = x.OntologyTerm.Value,
                         SampleSetsCount = x.SampleSets.Count,
                         StartYear = x.StartDate.Year,
                         MaterialTypes = GetMaterialTypeSummary(x.SampleSets)
                     })
-                    .Select(x => x.SnomedTerm)
+                    .Select(x => x.OntologyTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
                 Services = (await _biobankReadService.ListBiobankServiceOfferingsAsync(bb.OrganisationId))
                     .OrderBy(x => x.ServiceOffering.SortOrder)
-                    .Select(x => x.ServiceOffering.Name)
+                    .Select(x => x.ServiceOffering.Value)
                     .ToList(),
                
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
@@ -128,7 +129,7 @@ namespace Biobanks.Web.Controllers
                 Url = nw.Url,
                 Logo = nw.Logo,
                 ContactEmail = nw.Email,
-                SopStatus = nw.SopStatus.Description,
+                SopStatus = nw.SopStatus.Value,
                 BiobankMembers = (await _biobankReadService.GetBiobanksByNetworkIdAsync(id)).Select(
                     x => new BiobankMemberModel
                     {

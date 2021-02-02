@@ -1,6 +1,6 @@
-using Directory.Identity.Contracts;
-using Directory.Identity.Data.Entities;
-using Directory.Identity.Constants;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Identity.Constants;
 using Microsoft.AspNet.Identity;
 using Postal;
 using SendGrid;
@@ -12,7 +12,7 @@ using System;
 using System.Diagnostics;
 using System.Configuration;
 
-namespace Directory.Services
+namespace Biobanks.Services
 {
     public class SendGridEmailService : Contracts.IEmailService
     {

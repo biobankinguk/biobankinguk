@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Biobanks.DataSeed.Dto;
 using Newtonsoft.Json;
-using Directory.DataSeed.Dto;
 
-namespace Directory.DataSeed.Services
+namespace Biobanks.DataSeed.Services
 {
     public class CountriesWebService : IDisposable
     {

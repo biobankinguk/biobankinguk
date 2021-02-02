@@ -1,6 +1,6 @@
 ﻿
 @using System.Web.Optimization
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model  Biobanks.Web.Models.ADAC.DirectoryAnalyticReport
 
 @{
@@ -18,24 +18,33 @@
         <label for="Year" class="col-sm-4 control-label required">
             Year
         </label>
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             @Html.TextBoxFor(x => x.Year, new { @class = "form-control", autocomplete = "off" })
+        </div>
+        <div class="col-sm-1">
+            <span class="fa fa-info-circle labelled-icon" data-toggle="tooltip" data-placement="right" title="Year the reporting period should end"></span>
         </div>
     </div>
     <div class="form-group">
         <label for="EndQuarter" class="col-sm-4 control-label required">
             End Quarter
         </label>
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             @Html.TextBoxFor(x => x.EndQuarter, new { @class = "form-control", autocomplete = "off" })
+        </div>
+        <div class="col-sm-1">
+            <span class="fa fa-info-circle labelled-icon" data-toggle="tooltip" data-placement="right" title="Quarter in which the reporting period should end"></span>
         </div>
     </div>
     <div class="form-group">
         <label for="ReportPeriod" class="col-sm-4 control-label required">
             Report Period
         </label>
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             @Html.TextBoxFor(x => x.ReportPeriod, new { @class = "form-control", autocomplete = "off" })
+        </div>
+        <div class="col-sm-1">
+            <span class="fa fa-info-circle labelled-icon" data-toggle="tooltip" data-placement="right" title="Number of quarters the reports should cover"></span>
         </div>
     </div>
 

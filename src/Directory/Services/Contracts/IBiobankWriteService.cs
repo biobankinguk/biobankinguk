@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Services.Dto;
 using System.IO;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Services.Dto;
 
-namespace Directory.Services.Contracts
+namespace Biobanks.Services.Contracts
 {
     public interface IBiobankWriteService
     {
-        Task<Collection> AddCollectionAsync(Collection collection, string diagnosisDescription, 
+        Task<Collection> AddCollectionAsync(Collection collection, string ontologyTermDescription, 
             IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
-        Task UpdateCollectionAsync(Collection collection, string diagnosisDescription,
+        Task UpdateCollectionAsync(Collection collection, string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
         Task<bool> DeleteCollectionAsync(int id);
         Task<bool> DeleteAPICollectionAsync(int id);
@@ -63,9 +64,9 @@ namespace Directory.Services.Contracts
         Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request);
         Task<NetworkRegisterRequest> UpdateNetworkRegisterRequestAsync(NetworkRegisterRequest request);
 
-        Task DeleteSnomedTermAsync(SnomedTerm diagnosis);
-        Task<SnomedTerm> UpdateSnomedTermAsync(SnomedTerm diagnosis);
-        Task<SnomedTerm> AddSnomedTermAsync(SnomedTerm diagnosis);
+        Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
+        Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
+        Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis);
         
         Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType);
         Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);

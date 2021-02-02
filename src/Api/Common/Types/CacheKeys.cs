@@ -7,7 +7,7 @@
         public static string SampleContentMethods = "SampleContentMethods";
         public static string Sex = "Sex";
         public static string SnomedTags = "SnomedTags";
-        public static string SnomedTerms = "SnomedTerms";
+        public static string OntologyTerms = "OntologyTerms";
         public static string StorageTemperatures = "StorageTemperatures";
         public static string TreatmentLocations = "TreatmentLocations";
         public static string Ontologies = "Ontologies";

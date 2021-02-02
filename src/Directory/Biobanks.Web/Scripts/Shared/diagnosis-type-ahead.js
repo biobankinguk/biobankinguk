@@ -13,7 +13,7 @@ $(function() {
         //    }
         //},
         remote: {
-            url: '/Search/ListSnomedTerms?wildcard=%QUERY',
+            url: '/Search/ListOntologyTerms?wildcard=%QUERY',
             filter: function (x) {
                 return $.map(x, function (item) {
                     return {

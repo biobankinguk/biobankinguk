@@ -5,17 +5,20 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Directory.Data;
+using Biobanks.Directory.Data;
+using Biobanks.Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.DataSeed.Services;
+using System.Security.Cryptography.X509Certificates;
+using Biobanks.DataSeed.Dto;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using CsvHelper.Configuration;
-using Entities.Api.ReferenceData;
 
-namespace Directory.DataSeed.Services
+namespace Biobanks.DataSeed.Services
 {
     internal class SeedingService : IHostedService
     {

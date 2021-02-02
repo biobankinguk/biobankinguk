@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -29,12 +30,12 @@ namespace Biobanks.Web.ApiControllers
                 .Select(x =>
                     Task.Run(async () => new CollectionPercentageModel()
                     {
-                        Id = x.CollectionPercentageId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.CollectionPercentageId)
+                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -60,8 +61,8 @@ namespace Biobanks.Web.ApiControllers
 
             var percentage = new CollectionPercentage
             {
-                CollectionPercentageId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound,
@@ -101,8 +102,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
             {
-                CollectionPercentageId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound
@@ -120,12 +121,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCollectionPercentagesAsync()).Where(x => x.CollectionPercentageId == id).First();
+            var model = (await _biobankReadService.ListCollectionPercentagesAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsCollectionPercentageInUse(id))
             {
-                ModelState.AddModelError("CollectionPercentage", $"The collection percentage \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("CollectionPercentage", $"The collection percentage \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -135,8 +136,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
             {
-                CollectionPercentageId = model.CollectionPercentageId,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder,
                 LowerBound = 0,
                 UpperBound = 1
@@ -146,7 +147,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -156,8 +157,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
             {
-                CollectionPercentageId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound

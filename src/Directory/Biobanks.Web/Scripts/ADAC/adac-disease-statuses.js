@@ -1,17 +1,17 @@
-function DiseaseStatus(snomedTermId, description, otherTerms) {
-    this.snomedTermId = ko.observable(snomedTermId);
+function DiseaseStatus(ontologyTermId, description, otherTerms) {
+    this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.otherTerms = ko.observable(otherTerms);
 }
 
-function DiseaseStatusModal(snomedTermId, description, otherTerms) {
+function DiseaseStatusModal(ontologyTermId, description, otherTerms) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.diseaseStatus = ko.observable(
-        new DiseaseStatus(snomedTermId, description, otherTerms)
+        new DiseaseStatus(ontologyTermId, description, otherTerms)
     );
 }
 
@@ -33,64 +33,57 @@ function AdacDiseaseStatusViewModel() {
     };
 
     this.openModalForAdd = function () {
-        $("#SnomedTermId").prop("readonly", false);
+        $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
         _this.modal.diseaseStatus(new DiseaseStatus("", "", ""));
         _this.showModal();
     };
 
-    this.openModalForEdit = function (_, event) {
-        var diseaseStatus = $(event.currentTarget).data("disease-status");
+  this.openModalForEdit = function (_, event) {
+    _this.modal.mode(_this.modal.modalModeEdit);
 
-        $("#SnomedTermId").prop("readonly", true); // Shouldn't be able to edit SNOMED ID
+    var diseaseStatus = $(event.currentTarget).data("disease-status");
+    _this.modal.diseaseStatus(
+      new DiseaseStatus(
+        diseaseStatus.Id,
+        diseaseStatus.SnomedIdentifier,
+          diseaseStatus.Description,
+          diseaseStatus.OtherTerms
 
-        _this.modal.mode(_this.modal.modalModeEdit);
-        _this.modal.diseaseStatus(
-            new DiseaseStatus(diseaseStatus.SnomedTermId, diseaseStatus.Description, diseaseStatus.OtherTerms)
-        );
-        _this.showModal();
-    };
+      )
+    );
+
+    _this.setPartialEdit($(event.currentTarget).data("partial-edit"));
+    _this.showModal();
+  };
 
     this.modalSubmit = function (e) {
         e.preventDefault();
         var form = $(e.target); // get form as a jquery object
 
         // Get Action Type
-        var resourceUrl = form.data("resource-url")
         var action = _this.modal.mode();
         if (action == 'Add') {
-            var ajaxType = 'POST'
-            var url = resourceUrl;
+            addRefData(_this, form.data("resource-url"), form.serialize(),
+                form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
         } else if (action == 'Update') {
-            var ajaxType = 'PUT';
-            var url = resourceUrl + '/' + $(e.target.Id).val();
+            editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
+                form.data("success-redirect"), form.data("refdata-type"));
         }
-        var successRedirect = action.toLowerCase() + "-success-redirect";
-
-        // Make AJAX Call
-        $.ajax({
-            url: url,
-            type: ajaxType,
-            dataType: 'json',
-            data: form.serialize(),
-            success: function (data, textStatus, xhr) {
-                _this.dialogErrors.removeAll();
-                if (data.success) {
-                    _this.hideModal();
-                    window.location.href =
-                        form.data(successRedirect) + "?Name=" + data.name;
-                }
-                else {
-                    if (Array.isArray(data.errors)) {
-                        for (var error of data.errors) {
-                            _this.dialogErrors.push(error);
-                        }
-                    }
-                }
-            }
-        });
     };
+
+    //Turns on/off partial editing of some input fields
+    this.setPartialEdit = function (flag) {
+        if (flag == true) {
+            $("#SnomedIdentifier").prop('readonly', true);
+            $("#Description").prop('readonly', true);
+        }
+        else {
+            $("#SnomedIdentifier").prop('readonly', false);
+            $("#Description").prop('readonly', false);
+        }
+    }
 }
 
 var adacDiseaseStatusVM;
@@ -164,16 +157,21 @@ $(function () {
         adacDiseaseStatusVM.modalSubmit(e);
     });
 
-    $(".delete-confirm").click(function (e) {
-        e.preventDefault();
-        var $link = $(this);
-        bootbox.confirm(
-            "Are you sure you want to delete " + $link.data("disease-status") + "?",
-            function (confirmation) {
-                confirmation && window.location.assign($link.attr("href"));
-            }
-        );
-    });
+  $(".delete-confirm").click(function (e) {
+      e.preventDefault();
+
+      var $link = $(this);
+      var linkData = $link.data("refdata-model")
+      var url = $link.data("resource-url") + "/" + linkData.Id;
+
+      bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
+          function (confirmation) {
+              if (confirmation) {
+                  deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
+              }
+          }
+      );
+  });
 
     adacDiseaseStatusVM = new AdacDiseaseStatusViewModel();
 

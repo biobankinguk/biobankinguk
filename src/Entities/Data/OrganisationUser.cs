@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data
 {
     public class OrganisationUser //M <-> M map for Organisations and Organisation Users
     {

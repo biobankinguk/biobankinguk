@@ -1,8 +1,9 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 
@@ -28,18 +29,18 @@ namespace Biobanks.Web.ApiControllers
             var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
                 .Select(x => new AssociatedDataTypeGroupModel
                 {
-                    AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                    Name = x.Description,
+                    AssociatedDataTypeGroupId = x.Id,
+                    Name = x.Value,
                 })
                 .ToList();
             var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Select(x =>
 
             Task.Run(async () => new AssociatedDataTypeModel
             {
-                Id = x.AssociatedDataTypeId,
-                Name = x.Description,
+                Id = x.Id,
+                Name = x.Value,
                 Message = x.Message,
-                CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.AssociatedDataTypeId),
+                CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.Id),
                 AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
                 AssociatedDataTypeGroupName = groups.Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()?.Name,
 
@@ -58,11 +59,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Where(x => x.AssociatedDataTypeId == id).First();
+            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsAssociatedDataTypeInUse(id))
             {
-                ModelState.AddModelError("AssociatedDataTypes", $"The associated data type \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("AssociatedDataTypes", $"The associated data type \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -72,15 +73,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAssociatedDataTypeAsync(new AssociatedDataType
             {
-                AssociatedDataTypeId = id,
-                Description = model.Description
+                Id = id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -106,9 +107,9 @@ namespace Biobanks.Web.ApiControllers
 
             var associatedDataTypes = new AssociatedDataType
             {
-                AssociatedDataTypeId = id,
+                Id = id,
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name,
+                Value = model.Name,
                 Message = model.Message
 
             };
@@ -140,9 +141,9 @@ namespace Biobanks.Web.ApiControllers
 
             var associatedDataType = new AssociatedDataType
             {
-                AssociatedDataTypeId = model.Id,
+                Id = model.Id,
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
-                Description = model.Name,
+                Value = model.Name,
                 Message = model.Message
             };
 

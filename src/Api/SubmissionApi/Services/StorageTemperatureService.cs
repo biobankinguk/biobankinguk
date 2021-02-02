@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities.Api.ReferenceData;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Data;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class StorageTemperatureService : IStorageTemperatureService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public StorageTemperatureService(SubmissionsDbContext db)
+        public StorageTemperatureService(BiobanksDbContext db)
         {
             _db = db;
         }

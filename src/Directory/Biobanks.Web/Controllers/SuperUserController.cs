@@ -1,8 +1,9 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Search.Legacy;
-using Directory.Services.Contracts;
+using Biobanks.Search.Legacy;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.SuperUser;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Filters;
@@ -43,18 +44,24 @@ namespace Biobanks.Web.Controllers
             // Cluster Health Status
             ViewBag.Status = await _indexService.GetClusterHealth();
 
-            // Index Sample Counts
-            var model = new SearchIndexModel
+            // View Model (Default View Shows No Data)
+            var model = new SearchIndexModel();
+
+            // Prevent Error Propagation When Search Index Is Down
+            try
             {
-                TotalSampleSetCount = await _biobankReadService.GetSampleSetCountAsync(),
-                IndexableSampleSetCount = await _biobankReadService.GetIndexableSampleSetCountAsync(),
-                SuspendedSampleSetCount = await _biobankReadService.GetSuspendedSampleSetCountAsync(),
-                CollectionSearchDocumentCount = await _searchProvider.CountCollectionSearchDocuments(),
-                TotalCapabilityCount = await _biobankReadService.GetCapabilityCountAsync(),
-                IndexableCapabilityCount = await _biobankReadService.GetIndexableCapabilityCountAsync(),
-                SuspendedCapabilityCount = await _biobankReadService.GetSuspendedCapabilityCountAsync(),
-                CapabilitySearchDocumentCount = await _searchProvider.CountCapabilitySearchDocuments()
-            };
+                model.TotalSampleSetCount = await _biobankReadService.GetSampleSetCountAsync();
+                model.IndexableSampleSetCount = await _biobankReadService.GetIndexableSampleSetCountAsync();
+                model.SuspendedSampleSetCount = await _biobankReadService.GetSuspendedSampleSetCountAsync();
+                model.CollectionSearchDocumentCount = await _searchProvider.CountCollectionSearchDocuments();
+                model.TotalCapabilityCount = await _biobankReadService.GetCapabilityCountAsync();
+                model.IndexableCapabilityCount = await _biobankReadService.GetIndexableCapabilityCountAsync();
+                model.SuspendedCapabilityCount = await _biobankReadService.GetSuspendedCapabilityCountAsync();
+                model.CapabilitySearchDocumentCount = await _searchProvider.CountCapabilitySearchDocuments();
+            }
+            catch
+            {
+            }
 
             return View(model);
         }

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data
 {
     public class OrganisationNetwork
     {

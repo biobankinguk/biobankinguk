@@ -2,7 +2,7 @@
 @using System.Configuration
 @using System.Linq
 @using System.Web.Optimization
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model Biobanks.Web.Models.Profile.BiobankModel
 
 @{
@@ -24,61 +24,61 @@
 
 <div class="@(!string.IsNullOrEmpty(Model.Logo) ? "col-sm-10" : "col-sm-12")" itemscope itemtype="http://schema.org/Organization">
 
-	<h2>
-		@* TODO: we are assuming legalName = name; consider separation? *@
-		<span itemprop="name legalName">@Model.Name</span>
-		@if (!string.IsNullOrEmpty(Model.Url))
-		{
-			<br />
-			<span class="small" itemprop="url">@Html.DisplayFor(x => x.Url)</span>
-		}
-		<span class="pull-right">@Html.Partial("_ContactButton", Model.ExternalId)</span>
-	</h2>
+    <h2>
+        @* TODO: we are assuming legalName = name; consider separation? *@
+        <span itemprop="name legalName">@Model.Name</span>
+        @if (!string.IsNullOrEmpty(Model.Url))
+        {
+            <br />
+            <span class="small" itemprop="url">@Html.DisplayFor(x => x.Url)</span>
+        }
+        <span class="pull-right">@Html.Partial("_ContactButton", Model.ExternalId)</span>
+    </h2>
 
-	@* schema.org/Bioschemas metadata that isn't useful to display to humans *@
-	<link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
-	<link itemprop="url" href="@Request.Url.PathAndQuery" />
-	<link itemprop="topic" href="http://edamontology.org/topic_2229"> @* 'Cell biology' *@
-	<meta itemprop="sameAs" content="@Request.Url.PathAndQuery" />
-	<meta itemprop="identifier" content="@Model.ExternalId" />
-	<meta itemprop="status" content="active" />
-	@if (!string.IsNullOrEmpty(Model.Logo))
-	{
-		<link itemprop="logo" href="@Model.Logo" />
-	}
-	@if (Model.LastUpdated.HasValue)
-	{
-		// yyyy-MM-dd is ISO-8601 format for dates. Be great if .NET had a method for this!
-		<meta itemprop="dateModified" content="@Model.LastUpdated.Value.ToString("yyyy-MM-dd")" />
-	}
+    @* schema.org/Bioschemas metadata that isn't useful to display to humans *@
+    <link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
+    <link itemprop="url" href="@Request.Url.PathAndQuery" />
+    <link itemprop="topic" href="http://edamontology.org/topic_2229"> @* 'Cell biology' *@
+    <meta itemprop="sameAs" content="@Request.Url.PathAndQuery" />
+    <meta itemprop="identifier" content="@Model.ExternalId" />
+    <meta itemprop="status" content="active" />
+    @if (!string.IsNullOrEmpty(Model.Logo))
+    {
+        <link itemprop="logo" href="@Model.Logo" />
+    }
+    @if (Model.LastUpdated.HasValue)
+    {
+        // yyyy-MM-dd is ISO-8601 format for dates. Be great if .NET had a method for this!
+        <meta itemprop="dateModified" content="@Model.LastUpdated.Value.ToString("yyyy-MM-dd")" />
+    }
 
-	<p class="description" itemprop="description">@Model.Description</p>
+    <p class="description" itemprop="description">@Model.Description</p>
 
-	@if (Model.Services.Any())
-	{
-		<div class="row">
-			<div class="col-sm-12">
-				<h4>@Html.DisplayNameFor(x => x.Services)</h4>
-				<ul>
-					@foreach (var service in Model.Services)
-					{
-						<li>@service</li>
-					}
-				</ul>
-			</div>
-		</div>
-	}
+    @if (Model.Services.Any())
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <h4>@Html.DisplayNameFor(x => x.Services)</h4>
+                <ul>
+                    @foreach (var service in Model.Services)
+                    {
+                        <li>@service</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
 
-	@if (Model.CollectionSnomedTerms.Any())
+	@if (Model.CollectionOntologyTerms.Any())
 	{
 		<div class="row">
 			<div class="col-sm-12">
 				<h3>Existing samples:</h3>
 				<ul>
-					@foreach (var snomedTerm in Model.CollectionSnomedTerms)
+					@foreach (var ontologyTerm in Model.CollectionOntologyTerms)
 					{
 						<li>
-							@snomedTerm
+							@ontologyTerm
 						</li>
 					}
 				</ul>
@@ -86,16 +86,16 @@
 		</div>
 	}
 
-	@if (Model.CapabilitySnomedTerms.Any())
+	@if (Model.CapabilityOntologyTerms.Any())
 	{
 		<div class="row">
 			<div class="col-sm-12">
 				<h3>Bespoke collection capabilities:</h3>
 				<ul>
-					@foreach (var snomedTerm in Model.CapabilitySnomedTerms)
+					@foreach (var ontologyTerm in Model.CapabilityOntologyTerms)
 					{
 						<li>
-							@snomedTerm
+							@ontologyTerm
 						</li>
 					}
 				</ul>
@@ -103,42 +103,42 @@
 		</div>
 	}
 
-	@if (Model.NetworkMembers.Any())
-	{
-		<div class="row">
-			<div class="col-sm-12">
-				<h3>Networks</h3>
-				<ul>
-					@foreach (var network in Model.NetworkMembers)
-					{
-						<li itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
-							<a href="@Url.Action("Network", "Profile", new { network.Id })" itemprop="name legalName">@network.Name</a>
-							<span class="hidden" itemprop="description">@network.Description</span>
-							<link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
-							<link itemprop="sameAs" href="@Url.Action("Network", "Profile", new { network.Id }) /">
-							<link itemprop="topic" href="http://edamontology.org/topic_2229" /> @* 'Cell biology' TODO: for networks this may be different? *@
-							<meta itemprop="type" content="consortium" /> @* TODO: all networks are presumaly consirtiums but also maybe other things? *@
-							<meta itemprop="status" content="active" />
-						</li>
-					}
-				</ul>
-			</div>
-		</div>
-	}
+    @if (Model.NetworkMembers.Any())
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Networks</h3>
+                <ul>
+                    @foreach (var network in Model.NetworkMembers)
+                    {
+                        <li itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
+                            <a href="@Url.Action("Network", "Profile", new { network.Id })" itemprop="name legalName">@network.Name</a>
+                            <span class="hidden" itemprop="description">@network.Description</span>
+                            <link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
+                            <link itemprop="sameAs" href="@Url.Action("Network", "Profile", new { network.Id }) /">
+                            <link itemprop="topic" href="http://edamontology.org/topic_2229" /> @* 'Cell biology' TODO: for networks this may be different? *@
+                            <meta itemprop="type" content="consortium" /> @* TODO: all networks are presumaly consirtiums but also maybe other things? *@
+                            <meta itemprop="status" content="active" />
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
 
-	<h3>Contact Information</h3>
-	<div class="col-sm-12">
-		<dl class="dl-horizontal dt-left">
-			<dt>Email: </dt>
-			<dd itemprop="email"><a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></dd>
+    <h3>Contact Information</h3>
+    <div class="col-sm-12">
+        <dl class="dl-horizontal dt-left">
+            <dt>Email: </dt>
+            <dd itemprop="email"><a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></dd>
 
-			@if (!string.IsNullOrWhiteSpace(Model.ContactNumber))
-			{
-				<dt>Telephone: </dt>
-				<dd itemprop="telephone">@Model.ContactNumber</dd>
-			}
+            @if (!string.IsNullOrWhiteSpace(Model.ContactNumber))
+            {
+                <dt>Telephone: </dt>
+                <dd itemprop="telephone">@Model.ContactNumber</dd>
+            }
 
-			<dt>Address: </dt>
+            <dt>Address: </dt>
             <dd itemprop="location" itemscope itemtype="http://schema.org/PostalAddress">
                 <br />
                 <span itemprop="streetAddress">
@@ -175,10 +175,16 @@
                 }
 
             </dd>
-		</dl>
-	</div>
+        </dl>
+    </div>
 
-	<h3>Annual Statistics</h3>
+	@if (Model.LastUpdated.HasValue)
+	{
+		<h4>Last Updated: @Model.LastUpdated</h4>
+		<br />
+	}
+    
+    <h3>Annual Statistics</h3>
 	<div class="row">
 		<table class="table table-striped">
 			<thead>
@@ -186,7 +192,7 @@
 					<th rowspan="2">Year</th>
 					@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
 					{
-						<th colspan="@annualStatsGroup.AnnualStatistics.Count" class="text-center">@annualStatsGroup.Name</th>
+						<th colspan="@annualStatsGroup.AnnualStatistics.Count" class="text-center">@annualStatsGroup.Value</th>
 					}
 				</tr>
 
@@ -195,7 +201,7 @@
 					{
 						foreach (var annualStat in annualStatsGroup.AnnualStatistics)
 						{
-							<th class="text-center">@annualStat.Name</th>
+							<th class="text-center">@annualStat.Value</th>
 						}
 					}
 				</tr>
@@ -210,7 +216,7 @@
 						{
 							foreach (var annualStat in annualStatsGroup.AnnualStatistics)
 							{
-								var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.AnnualStatisticId && bas.Year == year)?.Value;
+								var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.Id && bas.Year == year)?.Value;
 								<td class="text-center">@(statValue != null ? statValue.ToString() : "N/A")</td>
 							}
 						}

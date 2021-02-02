@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Extensions;
 using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
-using LegacyData;
+using Biobanks.LegacyData;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -17,9 +17,9 @@ namespace Biobanks.SubmissionAzureFunction.Services
     public class DiagnosisWriteService : IDiagnosisWriteService
     {
         private readonly IDiagnosisValidationService _diagnosisValidationService;
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
-        public DiagnosisWriteService(IDiagnosisValidationService diagnosisValidationService, SubmissionsDbContext db)
+        public DiagnosisWriteService(IDiagnosisValidationService diagnosisValidationService, BiobanksDbContext db)
         {
             _diagnosisValidationService = diagnosisValidationService;
             _db = db;

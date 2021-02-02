@@ -1,11 +1,11 @@
-using Directory.Identity.Contracts;
-using Directory.Identity.Data.Entities;
-using Directory.Identity.Data;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Data;
+using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 
-namespace Directory.Identity.Services
+namespace Biobanks.Identity.Services
 {
     public class ApplicationRoleManager : RoleManager<ApplicationRole>, IApplicationRoleManager<ApplicationRole>
     {

@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Search.Contracts;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Documents;
-using Directory.Search.Dto.Results;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 using Elasticsearch.Net;
 using Nest;
-using DirectorySearchResult = Directory.Search.Dto.Results.Result;
-using Directory.Search.Constants;
+using DirectorySearchResult = Biobanks.Search.Dto.Results.Result;
+using Result = Biobanks.Search.Dto.Results.Result;
 
-namespace Directory.Search.Elastic
+namespace Biobanks.Search.Elastic
 {
     // TODO major renaming work
     // biobank -> organisation
@@ -63,17 +64,17 @@ namespace Directory.Search.Elastic
         public IEnumerable<string> ListOntologyTerms(string wildcard = "")
         {
             var collections = _client.Search<CollectionDocument>(s => s
-                .Query(q => q.Wildcard(p => p.SnomedTerm, $"*{wildcard}*"))
+                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*"))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
-                        .Field(p => p.SnomedTerm))));
+                        .Field(p => p.OntologyTerm))));
 
             return collections.Aggregations.Terms("diagnoses").Buckets.Select(x => x.Key);
         }
 
         /// <inheritdoc />
-        public DirectorySearchResult Search(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+        public Result Search(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
         {
             var searchResult =
                 _client.Search<CollectionDocument>(
@@ -84,6 +85,11 @@ namespace Directory.Search.Elastic
                         .Size(SizeLimits.SizeMax)
                         .Aggregations(a => BuildCollectionSearchAggregations()));
 
+            if (!searchResult.IsValid)
+                throw new ApplicationException(
+                    $"Search Error: {searchResult.DebugInformation}",
+                    searchResult.OriginalException);
+
             // Collect Biobanks Results
             var biobanks = ExtractBiobankSearchSummaries(searchResult);
 
@@ -93,7 +99,7 @@ namespace Directory.Search.Elastic
 
             var facets = searchFacets.Where(x => x.Name != "consentRestrictions").Append(consentFacet);
 
-            return new DirectorySearchResult
+            return new Result
             {
                 Biobanks = biobanks,
                 Facets = facets
@@ -216,7 +222,7 @@ namespace Directory.Search.Elastic
             return new CollectionSummary
             {
                 CollectionId = document.CollectionId,
-                SnomedTerm = document.SnomedTerm,
+                OntologyTerm = document.OntologyTerm,
                 CollectionTitle = document.CollectionTitle,
                 StartYear = document.StartYear,
                 EndYear = document.EndYear,

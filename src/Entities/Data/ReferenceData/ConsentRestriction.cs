@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class ConsentRestriction
     {
-        public int ConsentRestrictionId { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string Value { get; set; }
 
         public int SortOrder { get; set; }
 

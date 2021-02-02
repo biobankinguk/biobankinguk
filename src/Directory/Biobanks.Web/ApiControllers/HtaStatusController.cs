@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -31,9 +32,9 @@ namespace Biobanks.Web.ApiControllers
 
                     Task.Run(async () => new Models.ADAC.ReadHtaStatusModel
                     {
-                        Id = x.HtaStatusId,
-                        Description = x.Description,
-                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.HtaStatusId),
+                        Id = x.Id,
+                        Description = x.Value,
+                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
@@ -47,11 +48,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListHtaStatusesAsync()).Where(x => x.HtaStatusId == id).First();
+            var model = (await _biobankReadService.ListHtaStatusesAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsHtaStatusInUse(id))
             {
-                ModelState.AddModelError("HtaStatus", $"The hta status \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("HtaStatus", $"The hta status \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -61,15 +62,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteHtaStatusAsync(new HtaStatus
             {
-                HtaStatusId = model.HtaStatusId,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description
+                name = model.Value
             });
         }
 
@@ -95,8 +96,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
             {
-                HtaStatusId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -125,7 +126,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddHtaStatusAsync(new HtaStatus
             {
-                Description = model.Description,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -143,8 +144,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateHtaStatusAsync(new HtaStatus
             {
-                HtaStatusId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             },
             true);

@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Services.Contracts;
-using Entities.Data;
+using Biobanks.Services.Contracts;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
 
 using ServiceOfferingModel = Biobanks.Web.Models.Shared.ServiceOfferingModel;
@@ -32,9 +33,9 @@ namespace Biobanks.Web.ApiControllers
 
             Task.Run(async () => new ReadServiceOfferingModel
             {
-                Id = x.ServiceId,
-                Name = x.Name,
-                OrganisationCount = await _biobankReadService.GetServiceOfferingOrganisationCount(x.ServiceId),
+                Id = x.Id,
+                Name = x.Value,
+                OrganisationCount = await _biobankReadService.GetServiceOfferingOrganisationCount(x.Id),
                 SortOrder = x.SortOrder
             }).Result)
 
@@ -47,12 +48,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListServiceOfferingsAsync()).Where(x => x.ServiceId == id).First();
+            var model = (await _biobankReadService.ListServiceOfferingsAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsServiceOfferingInUse(id))
             {
-                ModelState.AddModelError("ServiceOffering", $"The service offering \"{model.Name}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("ServiceOffering", $"The service offering \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -62,15 +63,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
             {
-                ServiceId = model.ServiceId,
-                Name = model.Name
+                Id = model.Id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Name
+                name = model.Value
             });
 
         }
@@ -99,8 +100,8 @@ namespace Biobanks.Web.ApiControllers
             // Update Service Offering
             await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
             {
-                ServiceId = id,
-                Name = model.Name,
+                Id = id,
+                Value = model.Name,
                 SortOrder = model.SortOrder
             });
 
@@ -130,7 +131,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddServiceOfferingAsync(new ServiceOffering
             {
-                Name = model.Name,
+                Value = model.Name,
                 SortOrder = model.SortOrder
             });
             //Everything went A-OK!
@@ -147,8 +148,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
             {
-                ServiceId = id,
-                Name = model.Name,
+                Id = id,
+                Value = model.Name,
                 SortOrder = model.SortOrder
             },
             true);

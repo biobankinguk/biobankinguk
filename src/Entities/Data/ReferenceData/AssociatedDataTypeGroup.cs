@@ -1,14 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class AssociatedDataTypeGroup
     {
-        public int AssociatedDataTypeGroupId { get; set; }
+        public int Id { get; set; }
+        
         [Required]
-        public string Description { get; set; }
+        public string Value { get; set; }
 
         public virtual ICollection<AssociatedDataType> AssociatedDataTypes { get; set; }
     }

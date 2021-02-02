@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -29,10 +30,10 @@ namespace Biobanks.Web.ApiControllers
                 .Select(x =>
                     Task.Run(async () => new SampleCollectionModeModel
                     {
-                        Id = x.SampleCollectionModeId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.SampleCollectionModeId)
+                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -58,8 +59,8 @@ namespace Biobanks.Web.ApiControllers
 
             var mode = new SampleCollectionMode
             {
-                SampleCollectionModeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 
@@ -96,8 +97,8 @@ namespace Biobanks.Web.ApiControllers
             
            var mode = new SampleCollectionMode
             {
-                SampleCollectionModeId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 
@@ -115,11 +116,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListSampleCollectionModeAsync()).Where(x => x.SampleCollectionModeId == id).First();
+            var model = (await _biobankReadService.ListSampleCollectionModeAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsSampleCollectionModeInUse(id))
             {
-                ModelState.AddModelError("SampleCollectionModes", $"This sample collection mode \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("SampleCollectionModes", $"This sample collection mode \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -129,8 +130,8 @@ namespace Biobanks.Web.ApiControllers
 
             var mode = new SampleCollectionMode
             {
-                SampleCollectionModeId = model.SampleCollectionModeId,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder
             };
 
@@ -140,7 +141,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -150,8 +151,8 @@ namespace Biobanks.Web.ApiControllers
         {
             var mode = new SampleCollectionMode
             {
-                SampleCollectionModeId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 

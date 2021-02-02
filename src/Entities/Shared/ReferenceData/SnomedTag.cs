@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Shared.ReferenceData
+namespace Biobanks.Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Sniomed Tag entity.
@@ -22,6 +22,6 @@ namespace Entities.Shared.ReferenceData
         /// <summary>
         /// Snomed Terms associated with this Tag.
         /// </summary>
-        public ICollection<SnomedTerm> SnomedTerms { get; set; }
+        public ICollection<OntologyTerm> OntologyTerms { get; set; }
     }
 }

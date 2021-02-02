@@ -9,7 +9,7 @@
     <div class="col-sm-12">
         <ul class="breadcrumb">
             <li><a href="/">Home</a><span class="divider"></span></li>
-            <li><a href="@Url.Action("Capabilities", "Search", new {Model.Diagnosis, Model.SelectedFacets})">Search</a><span class="divider"></span></li>
+            <li><a href="@Url.Action("Capabilities", "Search", new {Diagnosis = Model.OntologyTerm, Model.SelectedFacets})">Search</a><span class="divider"></span></li>
             <li class="active">Search Detail</li>
         </ul>
     </div>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Directory.Search.Dto.Results
+namespace Biobanks.Search.Dto.Results
 {
     public class BiobankSummary
     {

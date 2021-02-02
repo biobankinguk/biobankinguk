@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Api.ReferenceData
+namespace Biobanks.Entities.Api.ReferenceData
 {
     /// <summary>
     /// Treatment Location entity.

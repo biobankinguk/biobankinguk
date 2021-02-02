@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Extensions;
 using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using LegacyData;
+using Biobanks.LegacyData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class TreatmentWriteService : ITreatmentWriteService
     {
         private readonly ITreatmentValidationService _treatmentValidationService;
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
-        public TreatmentWriteService(ITreatmentValidationService treatmentValidationService, SubmissionsDbContext db)
+        public TreatmentWriteService(ITreatmentValidationService treatmentValidationService, BiobanksDbContext db)
         {
             _treatmentValidationService = treatmentValidationService;
             _db = db;

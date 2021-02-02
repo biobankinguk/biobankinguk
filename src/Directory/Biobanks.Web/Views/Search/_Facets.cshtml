@@ -1,7 +1,7 @@
 ﻿@using Biobanks.Web.Models.Search
 @using Castle.Core.Internal
 @using Newtonsoft.Json
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model FacetsModel
 
 <div class="col-sm-4">
@@ -96,7 +96,7 @@
 											<li>
 												<a href="@Url.Action(Model.Action, "Search", new
 														 {
-															 diagnosis = Model.Diagnosis,
+															 diagnosis = Model.OntologyTerm,
 															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
 															 {
 																 facetValue.FacetId
@@ -113,7 +113,7 @@
 											<li>
 												<a href="@Url.Action(Model.Action, "Search", new
 														 {
-															 diagnosis = Model.Diagnosis,
+															 diagnosis = Model.OntologyTerm,
 															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
 																 x => x != facetValue.FacetId))
 														 })">

@@ -8,7 +8,7 @@ namespace Biobanks.Web.Models.Biobank
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string SnomedTerm { get; set; }
+        public string OntologyTerm { get; set; }
         public DateTime StartDate { get; set; }
         public string AccessCondition { get; set; }
         public string CollectionType { get; set; }

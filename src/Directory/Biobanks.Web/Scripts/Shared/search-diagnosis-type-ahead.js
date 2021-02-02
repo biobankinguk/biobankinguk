@@ -13,7 +13,7 @@ $(function() {
         //    }
         //},
         remote: {
-            url: '/Search/SearchSnomedTerms',
+            url: '/Search/SearchOntologyTerms',
             replace: function(url, query) {
                 var type = $("input[name='searchRadio']:checked").val();
                 return url += '?searchDocumentType=' + type + '&wildcard=' + query;

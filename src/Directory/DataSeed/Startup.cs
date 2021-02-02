@@ -1,10 +1,12 @@
-using Directory.Data;
-using Directory.DataSeed.Services;
+using Biobanks.Directory.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Directory.Data.Repositories;
+using Biobanks.DataSeed.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Directory.Services.Contracts;
-using Directory.Services;
+using Biobanks.Services.Contracts;
+using Biobanks.Services;
 using System;
 
 namespace Directory.DataSeed

@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -30,9 +31,9 @@ namespace Biobanks.Web.ApiControllers
 
                 Task.Run(async () => new Models.ADAC.ReadCollectionStatusModel
                 {
-                    Id = x.CollectionStatusId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.CollectionStatusId),
+                    Id = x.Id,
+                    Description = x.Value,
+                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -45,12 +46,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCollectionStatusesAsync()).Where(x => x.CollectionStatusId == id).First();
+            var model = (await _biobankReadService.ListCollectionStatusesAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsCollectionStatusInUse(id))
             {
-                ModelState.AddModelError("CollectionStatus", $"The collection status \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("CollectionStatus", $"The collection status \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -60,15 +61,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCollectionStatusAsync(new CollectionStatus
             {
-                CollectionStatusId = model.CollectionStatusId,
-                Description = model.Description
+                Id = model.Id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description
+                name = model.Value
             });
 
         }
@@ -96,8 +97,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateCollectionStatusAsync(new CollectionStatus
             {
-                CollectionStatusId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -126,7 +127,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddCollectionStatusAsync(new CollectionStatus
             {
-                Description = model.Description,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -144,8 +145,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateCollectionStatusAsync(new CollectionStatus
             {
-                CollectionStatusId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             }, 
             true);

@@ -8,16 +8,16 @@ using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Z.EntityFramework.Plus;
-using LegacyData;
+using Biobanks.LegacyData;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class SubmissionExpiryService : ISubmissionExpiryService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
         private readonly int _expiryDays = 0;
 
-        public SubmissionExpiryService(SubmissionsDbContext db, IOptions<ConfigModel> config)
+        public SubmissionExpiryService(BiobanksDbContext db, IOptions<ConfigModel> config)
         {
             _db = db;
             _expiryDays = config.Value.ExpiryDays;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Biobanks.Common.Exceptions;
-using Entities.Api.Contracts;
+using Biobanks.Entities.Api.Contracts;
 
 namespace Biobanks.Common.Extensions
 {

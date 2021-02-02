@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Identity.Data.Entities;
-using Directory.Services.Dto;
-using Directory.Search.Constants;
-using Entities.Data;
-using Entities.Shared.ReferenceData;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Search.Constants;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Services.Dto;
 
-namespace Directory.Services.Contracts
+namespace Biobanks.Services.Contracts
 {
     public interface IBiobankReadService
     {
@@ -121,13 +122,13 @@ namespace Directory.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
-        Task<IEnumerable<SnomedTerm>> ListSnomedTermsAsync(string wildcard = "");
-        Task<IEnumerable<SnomedTerm>> ListSearchableSnomedTermsAsync(SearchDocumentType type, string wildcard = "");
-        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisDescription);
-        Task<bool> ValidSnomedTermDescriptionAsync(string diagnosisId, string diagnosisDescription);
-        Task<SnomedTerm> GetSnomedTermByDescription(string description);
-        Task<int> GetSnomedTermCollectionCapabilityCount(string id);
-        Task<bool> IsSnomedTermInUse(string id);
+        Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "");
+        Task<IEnumerable<OntologyTerm>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "");
+        Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);
+        Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription);
+        Task<OntologyTerm> GetOntologyTermByDescription(string description);
+        Task<int> GetOntologyTermCollectionCapabilityCount(string id);
+        Task<bool> IsOntologyTermInUse(string id);
 
         Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
@@ -181,7 +182,9 @@ namespace Directory.Services.Contracts
         Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdAsync(int networkId);
         Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdForIndexingAsync(int networkId);
         Task<IEnumerable<Network>> ListNetworksAsync();
+        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync();
         Task<IEnumerable<OrganisationRegisterRequest>> ListOpenBiobankRegisterRequestsAsync();
+        Task<IEnumerable<NetworkRegisterRequest>> ListAcceptedNetworkRegisterRequestAsync();
         Task<IEnumerable<NetworkRegisterRequest>> ListOpenNetworkRegisterRequestsAsync();
 
         Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync();

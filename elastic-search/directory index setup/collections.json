@@ -16,7 +16,7 @@
   },
   "mappings": {
     "properties": {
-      "diagnosis": {
+      "ontologyTerm": {
         "type": "keyword",
         "normalizer": "string_lowercase"
       },

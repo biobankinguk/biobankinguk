@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -30,9 +31,9 @@ namespace Biobanks.Web.ApiControllers
 
                 Task.Run(async () => new Models.ADAC.ReadConsentRestrictionModel
                 {
-                    Id = x.ConsentRestrictionId,
-                    Description = x.Description,
-                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.ConsentRestrictionId),
+                    Id = x.Id,
+                    Description = x.Value,
+                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -45,12 +46,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListConsentRestrictionsAsync()).Where(x => x.ConsentRestrictionId == id).First();
+            var model = (await _biobankReadService.ListConsentRestrictionsAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsConsentRestrictionInUse(id))
             {
-                ModelState.AddModelError("ConsentRestriction", $"The consent restriction \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("ConsentRestriction", $"The consent restriction \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -60,15 +61,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
             {
-                ConsentRestrictionId = id,
-                Description = model.Description
+                Id = id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description
+                name = model.Value
             });
         }
 
@@ -95,8 +96,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
             {
-                ConsentRestrictionId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -113,7 +114,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(ConsentRestrictionModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSnomedTermDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Consent restriction descriptions must be unique.");
             }
@@ -125,7 +126,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddConsentRestrictionAsync(new ConsentRestriction
             {
-                Description = model.Description,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -143,8 +144,8 @@ namespace Biobanks.Web.ApiControllers
         {
             await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
             {
-                ConsentRestrictionId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             },
             true);

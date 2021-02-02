@@ -153,73 +153,96 @@ namespace Biobanks.Web
             //ADAC Admin
             bundles.Add(new ScriptBundle("~/bundles/adac/disease-statuses").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-disease-statuses.js"));
+                "~/Scripts/ADAC/adac-disease-statuses.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/material-types").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-material-types.js"));
+                "~/Scripts/ADAC/adac-material-types.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sexes").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-sexes.js"));
+                "~/Scripts/ADAC/adac-sexes.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/country").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-country.js"));
+                "~/Scripts/ADAC/adac-country.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/county").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-county.js"));
+                "~/Scripts/ADAC/adac-county.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/associated-data-types").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-associated-data-types.js"));
+                "~/Scripts/ADAC/adac-associated-data-types.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/associated-data-type-groups").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-associated-data-type-group.js"));
+                "~/Scripts/ADAC/adac-associated-data-type-group.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/registration-reasons").Include(
                  "~/Scripts/bootbox*",
-                 "~/Scripts/ADAC/adac-registration-reasons.js"));
+                 "~/Scripts/ADAC/adac-registration-reasons.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/collection-percentages").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-collection-percentages.js"));
+                "~/Scripts/ADAC/adac-collection-percentages.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/collection-points").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-collection-points.js"));
+                "~/Scripts/ADAC/adac-collection-points.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sample-collection-modes").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-sample-collection-modes.js"));
+                "~/Scripts/ADAC/adac-sample-collection-modes.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/collection-type").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-collection-type.js"));
+                "~/Scripts/ADAC/adac-collection-type.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/consent-restriction").Include(
                "~/Scripts/bootbox*",
-               "~/Scripts/ADAC/adac-consent-restriction.js"));
+               "~/Scripts/ADAC/adac-consent-restriction.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/hta-status").Include(
                "~/Scripts/bootbox*",
-               "~/Scripts/ADAC/adac-hta-status.js"));
+               "~/Scripts/ADAC/adac-hta-status.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/collection-status").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-collection-status.js"));
+                "~/Scripts/ADAC/adac-collection-status.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/associated-data-procurement-time-frame").Include(
                "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-associated-data-procurement-time-frame.js"));
+                "~/Scripts/ADAC/adac-associated-data-procurement-time-frame.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/service-offering").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-service-offering.js"));
+                "~/Scripts/ADAC/adac-service-offering.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/macro-assessments").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-macro-assessments.js"));
+                "~/Scripts/ADAC/adac-macro-assessments.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/donor-counts").Include(
                "~/Scripts/bootbox*",
-               "~/Scripts/ADAC/adac-donor-counts.js"));
+               "~/Scripts/ADAC/adac-donor-counts.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/storage-temperatures").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-storage-temperatures.js"));
+                "~/Scripts/ADAC/adac-storage-temperatures.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sop-status").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-sop-status.js"));
+                "~/Scripts/ADAC/adac-sop-status.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/age-ranges").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-age-ranges.js"));
+                "~/Scripts/ADAC/adac-age-ranges.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/access-conditions").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-access-conditions.js"));
+                "~/Scripts/ADAC/adac-access-conditions.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/biobankactivity").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-biobankactivity.js"));
@@ -244,10 +267,15 @@ namespace Biobanks.Web
                 "~/Scripts/ADAC/adac-historical.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/annual-statistics").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-annual-statistics.js"));
+                "~/Scripts/ADAC/adac-annual-statistics.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/annual-statistic-group").Include(
                 "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-annual-statistic-group.js"));
+                "~/Scripts/ADAC/adac-annual-statistic-group.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/adac/tabs").Include(
+                "~/Scripts/ADAC/adac-tabs.js"));
 
             // Site Config
             bundles.Add(new ScriptBundle("~/bundles/adac/site-config").Include(
@@ -258,6 +286,11 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/sample-resource-config").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sample-resource-config.js"));
+
+            // Register Pages Config
+            bundles.Add(new ScriptBundle("~/bundles/adac/register-pages-config").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-register-pages-config.js"));
 
             // Search
             bundles.Add(new ScriptBundle("~/bundles/search").Include(

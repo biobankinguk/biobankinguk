@@ -1,4 +1,4 @@
-﻿@using Directory.Data.Constants;
+﻿@using Biobanks.Directory.Data.Constants;
 @using System.Web.Optimization
 @model Biobanks.Web.Models.ADAC.StorageTemperaturesModel
 
@@ -71,17 +71,15 @@
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-								<a title="Delete"
-								   class="action-icon delete-confirm"
-								   data-storage-temperature="@type.Value"
-								   href="@Url.Action("DeleteStorageTemperature", new
-								{
-									type.Id,
-									type.Value,
-									type.SortOrder
-								})">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(type)"
+                                   data-resource-url="/api/StorageTemperature"
+                                   data-success-redirect="@Url.Action("StorageTemperatures")"
+                                   data-refdata-type="Storage Temperature"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
 							}
 						</td>
 					</tr>
@@ -117,8 +115,8 @@
 			<!-- Modal Form -->
 			<form id="modal-storage-temperatures-form"
 				  data-resource-url="/api/StorageTemperature"
-				  data-update-success-redirect="@Url.Action("EditStorageTemperatureSuccess")"
-                  data-add-success-redirect="@Url.Action("AddStorageTemperatureSuccess")"
+				  data-success-redirect="@Url.Action("StorageTemperatures")"
+                  data-refdata-type="Storage Temperature"
 				  class="form-horizontal">
 				<div class="modal-body">
 					<div class="row">

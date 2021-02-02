@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity.Migrations;
-using Directory.Identity.Constants;
-using Directory.Identity.Data.Entities;
+using Biobanks.Identity.Constants;
+using Biobanks.Identity.Data.Entities;
 
-namespace Directory.Identity.Data.Migrations
+namespace Biobanks.Identity.Data.Migrations
 {
     internal sealed class Configuration : DbMigrationsConfiguration<UserStoreDbContext>
     {

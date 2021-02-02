@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Directory.Identity.Contracts
+namespace Biobanks.Identity.Contracts
 {
     public interface IApplicationUserManager<TUser, TKey, TIdentityResult>
     {

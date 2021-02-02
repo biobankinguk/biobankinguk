@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public string SnomedTerm { get; set; }
+        public string OntologyTerm { get; set; }
 
         public int StartYear { get; set; }
 

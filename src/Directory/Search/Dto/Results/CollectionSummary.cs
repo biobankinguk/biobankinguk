@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Directory.Search.Dto.Results
+namespace Biobanks.Search.Dto.Results
 {
     public class CollectionSummary
     {
@@ -10,7 +10,7 @@ namespace Directory.Search.Dto.Results
         }
 
         public int CollectionId { get; set; }
-        public string SnomedTerm { get; set; }
+        public string OntologyTerm { get; set; }
         public string CollectionTitle { get; set; }
 
         public string StartYear { get; set; }

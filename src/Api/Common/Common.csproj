@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Biobanks.Common</RootNamespace>
     <VersionPrefix>2.1.0</VersionPrefix>
+    <AssemblyName>Biobanks.Common</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

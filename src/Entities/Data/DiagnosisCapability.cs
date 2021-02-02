@@ -1,8 +1,9 @@
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
+using Biobanks.Entities.Data.ReferenceData;
 
-namespace Entities.Data
+namespace Biobanks.Entities.Data
 {
     public class DiagnosisCapability
     {
@@ -11,8 +12,8 @@ namespace Entities.Data
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
 
-        public string SnomedTermId { get; set; }
-        public virtual SnomedTerm SnomedTerm { get; set; }
+        public string OntologyTermId { get; set; }
+        public virtual OntologyTerm OntologyTerm { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

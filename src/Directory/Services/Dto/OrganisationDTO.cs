@@ -1,4 +1,4 @@
-namespace Directory.Services.Dto
+namespace Biobanks.Services.Dto
 {
     public class OrganisationDTO
     {

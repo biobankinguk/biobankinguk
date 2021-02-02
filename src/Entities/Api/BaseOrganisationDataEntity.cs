@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Api
+namespace Biobanks.Entities.Api
 {
     /// <summary>
     /// Common properties for all data owned by organisations.

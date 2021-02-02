@@ -4,13 +4,13 @@ using System.Data.Entity.Validation;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Entities.Data;
+using Biobanks.Entities.Data;
 using Newtonsoft.Json;
 using System.Data.Entity.Migrations;
-using Directory.Data.Transforms.Url;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Transforms.Url;
+using Biobanks.Directory.Data.Constants;
 
-namespace Directory.Data.Migrations
+namespace Biobanks.Directory.Data.Migrations
 {
     internal sealed class Configuration : DbMigrationsConfiguration<BiobanksDbContext>
     {
@@ -61,6 +61,16 @@ namespace Directory.Data.Migrations
                             Value = "true",
                             Name = "Allow third party contact",
                             Description = "Enable/Disable third party contact in Contact List",
+                            ReadOnly = false
+                        },
+
+                        // Enable/Disable Registration Emails
+                        new Config
+                        {
+                            Key = "site.email.registration",
+                            Value = "true",
+                            Name = "Allow registration emails to be sent",
+                            Description = "Enable/Disable whether registration emails are to be sent",
                             ReadOnly = false
                         },
 
@@ -157,6 +167,10 @@ namespace Directory.Data.Migrations
                             Value = "Search the Directory",
                         },
                         new Config {
+                            Key = "site.homepage.searchsubtitle",
+                            Value = "Search for existing banked samples or for a group to collect samples on your behalf",
+                        },
+                        new Config {
                             Key = "site.homepage.resourceregistration",
                             Value = @"###Registering a sample resource
 
@@ -180,7 +194,7 @@ namespace Directory.Data.Migrations
                         new Config
                         {
                             Key = "site.homepage.searchradiosamplescollected",
-                            Value = "Require samples collected",
+                            Value = "For a group to collect samples on your behalf",
                             Description = "Set require samples collected text",
                             ReadOnly = false,
                         },
@@ -212,6 +226,16 @@ namespace Directory.Data.Migrations
                         {
                             Key = "site.register.network.description",
                             Value = "If you are a network, such as the Confederation of Cancer Biobanks, you can register below.",
+                        },
+                        new Config
+                        {
+                            Key = "site.register.help.show",
+                            Value = "false",
+                        },
+                        new Config
+                        {
+                            Key = "site.register.help.url",
+                            Value = "https://biobankinguk.org/share/",
                         },
 
                         /** Sample Resource Config**/

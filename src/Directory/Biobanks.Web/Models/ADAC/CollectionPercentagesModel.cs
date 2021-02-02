@@ -1,4 +1,4 @@
-﻿using Directory.Data.Migrations;
+﻿using Biobanks.Directory.Data.Migrations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

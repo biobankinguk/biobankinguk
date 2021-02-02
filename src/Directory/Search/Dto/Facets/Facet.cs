@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Directory.Search.Dto.Facets
+namespace Biobanks.Search.Dto.Facets
 {
     public class Facet
     {

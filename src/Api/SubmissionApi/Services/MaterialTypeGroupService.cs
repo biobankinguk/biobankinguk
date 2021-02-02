@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities.Shared.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Data;
+using Biobanks.Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class MaterialTypeGroupService : IMaterialTypeGroupService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public MaterialTypeGroupService(SubmissionsDbContext db)
+        public MaterialTypeGroupService(BiobanksDbContext db)
         {
             _db = db;
         }

@@ -39,6 +39,8 @@ namespace Publications
         public int Year { get; set; }
 
         public string Doi { get; set; }
+        
+        public string Source { get; set; }
 
     }
 }

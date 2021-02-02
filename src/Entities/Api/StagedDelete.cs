@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Entities.Api
+namespace Biobanks.Entities.Api
 {
     /// <summary>
     /// So we can stage record ids to be deleted

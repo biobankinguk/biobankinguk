@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using Entities.Api;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Models;
 
 namespace Biobanks.SubmissionApi.MappingProfiles

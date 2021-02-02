@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Entities.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Models.Biobank
 {
