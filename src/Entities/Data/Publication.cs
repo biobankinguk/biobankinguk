@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Directory.Entity.Data;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Entities.Data
 {

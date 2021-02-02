@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Entities.Data.ReferenceData
 {
     public class Funder
     {
-        public int FunderId { get; set; }
+        public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Value { get; set; }
 
         public virtual ICollection<Organisation> Organisations { get; set; }
     }

@@ -692,8 +692,8 @@ namespace Biobanks.Web.Controllers
             => (await _biobankReadService.ListBiobankFundersAsync(biobankId))
                 .Select(bbFunder => new FunderModel
                 {
-                    FunderId = bbFunder.FunderId,
-                    Name = bbFunder.Name
+                    FunderId = bbFunder.Id,
+                    Name = bbFunder.Value
                 }).ToList();
 
         public async Task<JsonResult> GetFundersAjax(int biobankId, int timeStamp = 0)
@@ -746,7 +746,7 @@ namespace Biobanks.Web.Controllers
                     // Add Funder to Database
                     await _biobankWriteService.AddFunderAsync(new Funder
                     {
-                        Name = model.FunderName
+                        Value = model.FunderName
                     });
 
                     // Retrieve Funder (ensures no null values)
@@ -769,13 +769,13 @@ namespace Biobanks.Web.Controllers
 
             //Add the funder/biobank relationship
             await _biobankWriteService.AddFunderToBiobankAsync(
-                funder.FunderId, SessionHelper.GetBiobankId(Session));
+                funder.Id, SessionHelper.GetBiobankId(Session));
 
             //return success, and enough details for adding to the viewmodel's list
             return Json(new
             {
                 success = true,
-                funderId = funder.FunderId,
+                funderId = funder.Id,
                 name = model.FunderName
             });
         }
@@ -804,8 +804,8 @@ namespace Biobanks.Web.Controllers
             var funderResults = funders
                 .Select(x => new
                 {
-                    Id = x.FunderId,
-                    Name = x.Name
+                    Id = x.Id,
+                    Name = x.Value
                 }).ToList();
 
             return Json(funderResults, JsonRequestBehavior.AllowGet);
