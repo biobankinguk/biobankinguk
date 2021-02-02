@@ -79,7 +79,7 @@ namespace Biobanks.DataSeed.Services
                 SeedCsv<TreatmentLocation>,
 
                 /* Shared */
-                //SeedCsv<MaterialTypeGroups>
+                SeedCsv<MaterialTypeGroup>,
                 SeedCsv<MaterialType>,
                 SeedCsv<Sex>,
                 SeedCsv<OntologyTerm>,
