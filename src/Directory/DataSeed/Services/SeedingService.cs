@@ -14,6 +14,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Biobanks.DataSeed.Services;
 using System.Security.Cryptography.X509Certificates;
 using Biobanks.DataSeed.Dto;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using CsvHelper.Configuration;
@@ -78,9 +79,10 @@ namespace Biobanks.DataSeed.Services
                 SeedCsv<TreatmentLocation>,
 
                 /* Shared */
+                //SeedCsv<MaterialTypeGroups>
                 SeedCsv<MaterialType>,
                 SeedCsv<Sex>,
-                SeedCsv<SnomedTerm>,
+                SeedCsv<OntologyTerm>,
                 SeedCsv<StorageTemperature>,
             };
         }
@@ -132,7 +134,7 @@ namespace Biobanks.DataSeed.Services
                 Seed(
                     _countriesWebService.ListCountries().Select(x => new Country
                         {
-                            Name = x.CountryName
+                            Value = x.CountryName
                         }
                     )
                 );
@@ -157,8 +159,8 @@ namespace Biobanks.DataSeed.Services
                 Seed(
                     ReadCsv<County>().Select(x => new County
                     {
-                        Name = x.Name,
-                        Country = countries.Single(y => y.CountryId == x.CountryId)
+                        Value = x.Value,
+                        Country = countries.Single(y => y.Id == x.CountryId)
                     })
                 );
             }
