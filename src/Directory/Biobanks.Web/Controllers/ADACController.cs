@@ -542,8 +542,8 @@ namespace Biobanks.Web.Controllers
 
                         Task.Run(async () => new FunderModel
                         {
-                            FunderId = x.FunderId,
-                            Name = x.Name
+                            FunderId = x.Id,
+                            Name = x.Value
                         }).Result)
 
                     .ToList()
@@ -590,8 +590,8 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.UpdateFunderAsync(new Funder
             {
-                FunderId = model.FunderId,
-                Name = model.Name
+                Id = model.FunderId,
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -628,7 +628,7 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.AddFunderAsync(new Funder
             {
-                Name = model.Name,
+                Value = model.Name,
             });
 
             //Everything went A-OK!

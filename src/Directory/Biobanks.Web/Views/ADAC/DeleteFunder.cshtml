@@ -1,17 +1,17 @@
 @using System.Web.Optimization
-@model Biobanks.Entities.Data.Funder
+@model Biobanks.Entities.Data.ReferenceData.Funder
 
 @{
     ViewBag.Title = "Delete Funder";
 }
 
-<h3>Delete Funder - @Model.Name</h3>
+<h3>Delete Funder - @Model.Value</h3>
 
 <div class="alert alert-warning feedback-message">
     <p>Warning: Please read the following carefully before proceeding!</p>
 </div>
 
-<p>This action is permanent and cannot be reversed. If you continue, the following data will be permanently deleted for Funder '@Model.Name': </p>
+<p>This action is permanent and cannot be reversed. If you continue, the following data will be permanently deleted for Funder '@Model.Value': </p>
 <ul>
     <li>The Funder from the Funders list profile</li>
     <li>The data associating the funder with existing funders/networks</li>
@@ -24,11 +24,11 @@
     new { @class = "form-horizontal", enctype = "multipart/form-data" }))
 {
 
-    @Html.HiddenFor(x => x.FunderId)
-    @Html.HiddenFor(x => x.Name)
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.Value)
     <div class="form-group">
         <div class="col-sm-4">
-            <input class="delete-confirm-input form-control" data-confirmtext="@Model.Name" />
+            <input class="delete-confirm-input form-control" data-confirmtext="@Model.Value" />
         </div>
     </div>
 

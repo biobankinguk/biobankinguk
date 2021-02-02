@@ -4,7 +4,6 @@ using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
-using Directory.Entity.Data;
 
 namespace Biobanks.Directory.Data
 {

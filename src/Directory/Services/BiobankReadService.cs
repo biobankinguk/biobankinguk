@@ -282,12 +282,12 @@ namespace Biobanks.Services
                 .FirstOrDefault();
 
         public async Task<Funder> GetFunderbyName(string name)
-            => (await _funderRepository.ListAsync(false, x => x.Name == name)).SingleOrDefault();
+            => (await _funderRepository.ListAsync(false, x => x.Value == name)).SingleOrDefault();
 
         public async Task<IEnumerable<Funder>> ListFundersAsync(string wildcard) =>
             (await _funderRepository.ListAsync(
                 false,
-                x => x.Name.Contains(wildcard)))
+                x => x.Value.Contains(wildcard)))
             .ToList();
 
         #region RefData: County
