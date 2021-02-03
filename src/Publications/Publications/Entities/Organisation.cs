@@ -52,6 +52,6 @@ namespace Directory.Data.Entities
         public Guid? AnonymousIdentifier { get; set; } = new Guid();
 
         public string OtherRegistrationReason { get; set; }
-        public bool? IncludePublications { get; set; }
+        public bool ExcludePublications { get; set; }
     }
 }

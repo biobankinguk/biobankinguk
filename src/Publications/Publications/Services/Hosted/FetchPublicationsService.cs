@@ -39,7 +39,7 @@ namespace Publications.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // Call directory for all active organisation
-            var biobanks = (await _biobankReadService.ListBiobanksAsync()).Where(x => x.IncludePublications != false).ToList();
+            var biobanks = (await _biobankReadService.ListBiobanksAsync()).Where(x => !x.ExcludePublications).ToList();
 
             _logger.LogInformation($"Fetching publications for {biobanks.Count()} organisations");
 
