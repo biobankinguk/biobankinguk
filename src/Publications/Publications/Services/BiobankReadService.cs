@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Publications.Entities;
 using Publications.Services.Contracts;
+using Publications.Services.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,35 +53,27 @@ namespace Publications.Services
         public async Task<Annotation> GetAnnotationById(int annotationId)
             => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
 
-        //Gets all Annotations for a specific biobank
-        public async Task<List<string>> GetBiobankAnnotations(int OrganisationId)
+        //Gets all Annotations for every biobank in db
+        public async Task<IEnumerable<TestDTO>> GetBiobankAnnotations()
         {
             var query =
-               from Annotations in _ctx.Annotations
-               join PublicationAnnotations in _ctx.PublicationAnnotations on new { Id = Annotations.Id } equals new { Id = PublicationAnnotations.Annotation_Id } into PublicationAnnotations_join
-               from PublicationAnnotations in PublicationAnnotations_join.DefaultIfEmpty()
-               join Publications in _ctx.Publications on new { Publication_Id = PublicationAnnotations.Publication_Id } equals new { Publication_Id = Publications.Id } into Publications_join
-               from Publications in Publications_join.DefaultIfEmpty()
-               where
-                 Publications.OrganisationId == OrganisationId /*&& annotationsList.Contains(Annotations.Name) */
-               select Annotations.Name;
+                from Annotations in _ctx.Annotations
+                join PublicationAnnotations in _ctx.PublicationAnnotations on new { Id = Annotations.Id } equals new { Id = PublicationAnnotations.Annotation_Id } into PublicationAnnotations_join
+                from PublicationAnnotations in PublicationAnnotations_join.DefaultIfEmpty()
+                join Publications in _ctx.Publications on new { Publication_Id = PublicationAnnotations.Publication_Id } equals new { Publication_Id = Publications.Id } into Publications_join
+                from Publications in Publications_join.DefaultIfEmpty()
+                orderby
+                  Publications.OrganisationId
+                select new TestDTO
+                {
+                    Annotation = Annotations.Name,
+                    OrganisationId = (int?)Publications.OrganisationId
+                };
+            var annotationList = await query.ToListAsync();
 
-            return await query.ToListAsync();
-        }
+            var result = annotationList.GroupBy(i => i.OrganisationId).Select(x => new TestDTO { OrganisationId = x.Key, Annotations = x.Select(e => e.Annotation).ToList() });
 
-        public async Task<List<int>> GetOrganisationIdWithMatchingAnnotations(List<string> annotationsList)
-        {
-            var query =
-               from Annotations in _ctx.Annotations
-               join PublicationAnnotations in _ctx.PublicationAnnotations on new { Id = Annotations.Id } equals new { Id = PublicationAnnotations.Annotation_Id } into PublicationAnnotations_join
-               from PublicationAnnotations in PublicationAnnotations_join.DefaultIfEmpty()
-               join Publications in _ctx.Publications on new { Publication_Id = PublicationAnnotations.Publication_Id } equals new { Publication_Id = Publications.Id } into Publications_join
-               from Publications in Publications_join.DefaultIfEmpty()
-               where
-                 annotationsList.Contains(Annotations.Name)
-               select Publications.OrganisationId;
-
-            return await query.Distinct().ToListAsync();
+            return result;
         }
     }
 }

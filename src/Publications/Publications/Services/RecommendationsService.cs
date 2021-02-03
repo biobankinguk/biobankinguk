@@ -59,37 +59,21 @@ namespace Publications.Services
                     publicationsAnnotationListA.Add(tag.Name);
                 }
             }
-
-            //Gets Biobank Ids with at least one matching annotation to the searched publication
-            var biobankList = await _biobankReadService.GetOrganisationIdWithMatchingAnnotations(publicationsAnnotationListA);
-            if (biobankList.Count() < 1)
+            
+            var biobankAnnotations = await _biobankReadService.GetBiobankAnnotations();
+            
+            foreach (var t in biobankAnnotations)
             {
-                return null;
-            }
+                var response = await JaccardSimilarity(publicationsAnnotationListA, t.Annotations);
 
-            var annotationListB = new List<string>();
-
-            foreach (var biobank in biobankList)
-            {
-                //Clear the annotation list for each biobank
-                annotationListB.Clear();
-                annotationListB = await _biobankReadService.GetBiobankAnnotations(biobank);
-                    
-                    //Only create a recommendation object if the biobank has publications which contain annotations
-                    if (annotationListB.Count() > 0)
-                    {
-                        var response = await JaccardSimilarity(publicationsAnnotationListA, annotationListB);
-
-                        var recommendation = new JaccardIndexDTO
-                        {
-                            OrganisationId = biobank,
-                            JaccardIndex = response.JaccardIndex,
-                            CommonAnnotations = response.CommonAnnotations
-                        };
-                        recommendationsList.Add(recommendation);
-                    }
-
-            }
+                var recommendation = new JaccardIndexDTO
+                {
+                    OrganisationId = (int)t.OrganisationId,
+                    JaccardIndex = response.JaccardIndex,
+                    CommonAnnotations = response.CommonAnnotations
+                };
+                recommendationsList.Add(recommendation);
+            } 
 
             return recommendationsList.OrderByDescending(x => x.JaccardIndex).ToList();
         }

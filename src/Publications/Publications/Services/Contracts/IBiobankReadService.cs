@@ -1,5 +1,6 @@
 ﻿using Directory.Data.Entities;
 using Publications.Entities;
+using Publications.Services.Dto;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,9 +21,7 @@ namespace Publications.Services.Contracts
 
         Task<IEnumerable<Publication>> ListPublications();
 
-        Task<List<string>> GetBiobankAnnotations(int OrganisationId);
-
-        Task<List<int>> GetOrganisationIdWithMatchingAnnotations(List<string> annotationsList);
+        Task<IEnumerable<TestDTO>> GetBiobankAnnotations();
 
     }
 }
