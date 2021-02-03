@@ -1,14 +1,17 @@
 ﻿@using System.Linq
 @using System.Web.Optimization
+@model int
 @{
-	ViewBag.Title = "Publications";
+    ViewBag.Title = "Publications";
 }
 
 @Html.Partial("_BiobankTabs", "Publications")
 
 <h3>
-	@ViewBag.Title
+    @ViewBag.Title
 </h3>
+
+<span id="BiobankId" data-biobank-id="@Model"></span>
 
 <div class="row">
     <div class="col-md-12">
@@ -30,6 +33,6 @@
 
 @section FooterScripts
 {
-	@Scripts.Render("~/bundles/datatables")
-	@Scripts.Render("~/bundles/biobank/publications")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/biobank/publications")
 }

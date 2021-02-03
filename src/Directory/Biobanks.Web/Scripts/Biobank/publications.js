@@ -142,25 +142,31 @@ $(function () {
     });
 
     table.buttons().container().prependTo(controls);
-    $.getJSON('IncludePublicationsAjax', function (data) {
-        if (data.success) {
-            if (data.status) {
-                $('#IncludePublications').prop('checked', true);
-                $('#biobank-publications_wrapper').show();
-            }
-            else {
-                $('#IncludePublications').prop('checked', false);
-                $('#biobank-publications_wrapper').hide();
-            }
+    $.getJSON('/api/Biobank/IncludePublications/' + biobankId, function (data) {
+        if (data) {
+            $('#IncludePublications').prop('checked', true);
+            $('#biobank-publications_wrapper').show();
+        }
+        else {
+            $('#IncludePublications').prop('checked', false);
+            $('#biobank-publications_wrapper').hide();
         }
     });
 });
 
 
 $('#IncludePublications').change(function () {
-    if (this.checked)
+    var val = this.checked;
+    if (val)
         $('#biobank-publications_wrapper').show();
     else
         $('#biobank-publications_wrapper').hide();
-    $.post('IncludePublicationsAjax', { value: this.checked });
+
+    $.ajax({
+        url: '/api/Biobank/IncludePublications/' + biobankId + '/' + val,
+        type: 'PUT'
+    });
 });
+
+//Biobank Id
+var biobankId = $('#BiobankId').data("biobank-id");
