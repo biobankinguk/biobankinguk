@@ -57,15 +57,15 @@
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-								<a title="Delete"
-								   class="action-icon delete-confirm"
-								   data-material-type="&quot;@materialType.Description&quot;"
-								   href="@Url.Action("DeleteMaterialType", new
-                                         {
-                                             materialType.Id, materialType.Description, materialType.SortOrder
-                                         })">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(materialType)"
+                                   data-resource-url="/api/MaterialType"
+                                   data-success-redirect="@Url.Action("MaterialTypes")"
+                                   data-refdata-type="Material Type"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
 							}
 						</td>
 					</tr>
@@ -100,8 +100,8 @@
             <!-- Modal Form -->
             <form id="modal-material-type-form"
                   data-resource-url="/api/MaterialType"
-                  data-update-success-redirect="@Url.Action("EditMaterialTypeSuccess")"
-                  data-add-success-redirect="@Url.Action("AddMaterialTypeSuccess")"
+                  data-success-redirect="@Url.Action("MaterialTypes")"
+                  data-refdata-type="Material Type"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

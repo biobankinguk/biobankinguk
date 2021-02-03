@@ -71,13 +71,11 @@
 
                                     <a title="Delete"
                                        class="action-icon delete-confirm"
-                                       data-associated-types="@item.Name"
-                                       href="@Url.Action("DeleteAssociatedDataType", new
-										 {
-											 item.Id,
-											 item.Name,
-											 item.AssociatedDataTypeGroupId
-										 })">
+                                       data-refdata-model="@Json.Encode(item)"
+                                       data-resource-url="/api/AssociatedDataType"
+                                       data-success-redirect="@Url.Action("AssociatedDataTypes")"
+                                       data-refdata-type="Associated Data Type"
+                                       href="#">
                                         <span class="fa fa-trash labelled-icon"></span>Delete
                                     </a>
                                 }
@@ -119,8 +117,8 @@
             <!-- Modal Form -->
             <form id="modal-associated-types-form" 
 				  data-resource-url="/api/AssociatedDataType"
-                  data-update-success-redirect="@Url.Action("EditAssociatedDataTypeSuccess")"
-                  data-add-success-redirect="@Url.Action("AddAssociatedDataTypeSuccess")"
+                  data-success-redirect="@Url.Action("AssociatedDataTypes")"
+                  data-refdata-type="Associated Data Type"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

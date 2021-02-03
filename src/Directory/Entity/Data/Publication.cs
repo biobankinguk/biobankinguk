@@ -27,8 +27,11 @@ namespace Directory.Entity.Data
 
         public bool? Accepted { get; set; }
 
+        public string Source { get; set; }
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
+
+        public virtual ICollection<Annotation> Annotations { get; set; }
     
     }
 }

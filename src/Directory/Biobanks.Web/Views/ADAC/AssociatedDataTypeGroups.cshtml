@@ -55,11 +55,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-associated-groups="&quot;@asg.Name&quot;"
-                                   href="@Url.Action("DeleteAssociatedDataTypeGroup", new
-                                     {
-                                         asg.AssociatedDataTypeGroupId, asg.Name
-                                     })">
+                                   data-refdata-model="@Json.Encode(asg)"
+                                   data-resource-url="/api/AssociatedDataTypeGroup"
+                                   data-success-redirect="@Url.Action("AssociatedDataTypeGroups")"
+                                   data-refdata-type="Associated Data Type Group"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -95,8 +95,8 @@
 
             <form id="modal-associated-groups-form"
                   data-resource-url="/api/AssociatedDataTypeGroup"
-                  data-update-success-redirect="@Url.Action("EditAssociatedDataTypeGroupSuccess")"
-                  data-add-success-redirect="@Url.Action("AddAssociatedDataTypeGroupSuccess")"
+                  data-success-redirect="@Url.Action("AssociatedDataTypeGroups")"
+                  data-refdata-type="Associated Data Type Group"
                   class="form-horizontal">
 
                 <div class="modal-body">

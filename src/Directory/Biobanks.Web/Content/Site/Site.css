@@ -1075,6 +1075,11 @@ div.info div {
     margin-top: 10px;
 }
 
+.dropdown-toggle:hover {
+    cursor: pointer;
+}
+
+
 /*Toggle switch*/
 /* The switch - the box around the slider */
 .switch {

@@ -1730,7 +1730,9 @@ namespace Biobanks.Web.Controllers
                     Year = x.Year,
                     Journal = x.Journal,
                     DOI = x.DOI,
-                    Approved = x.Accepted
+                    Approved = x.Accepted,
+                    Source = x.Source
+                    
                 });
             }
                 
@@ -1770,7 +1772,8 @@ namespace Biobanks.Web.Controllers
                     Year = publication.Year,
                     Journal = publication.Journal,
                     DOI = publication.DOI,
-                    Approved = publication.Accepted
+                    Approved = publication.Accepted,
+                    Source = publication.Source
                 });
             }
         }

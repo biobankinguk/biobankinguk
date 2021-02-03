@@ -57,17 +57,15 @@
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-								<a title="Delete"
-								   class="action-icon delete-confirm"
-								   data-collection-mode="@mode.Description"
-								   href="@Url.Action("DeleteSampleCollectionMode", new
-											{
-												mode.Id,
-												mode.Description,
-												mode.SortOrder
-											})">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(mode)"
+                                   data-resource-url="/api/SampleCollectionMode"
+                                   data-success-redirect="@Url.Action("SampleCollectionModes")"
+                                   data-refdata-type="Sample Collection Mode"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
 							}
 						</td>
 					</tr>
@@ -104,8 +102,8 @@
 			<!-- Modal Form -->
             <form id="modal-collection-modes-form" 
 				  data-resource-url="/api/SampleCollectionMode"
-                  data-update-success-redirect="@Url.Action("EditSampleCollectionModeSuccess")"
-                  data-add-success-redirect="@Url.Action("AddSampleCollectionModeSuccess")"
+                  data-success-redirect="@Url.Action("SampleCollectionModes")"
+                  data-refdata-type="Sample Collection Mode"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

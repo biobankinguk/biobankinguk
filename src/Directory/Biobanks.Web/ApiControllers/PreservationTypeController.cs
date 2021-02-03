@@ -151,11 +151,11 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder
             });
 
-            // Success
+            //Everything went A-OK!
             return Json(new
             {
-                msg = $"The {currentReferenceName.Value}  \"{model.Description}\" was deleted successfully.",
-                type = FeedbackMessageType.Success
+                success = true,
+                name = model.Description,
             });
         }
 

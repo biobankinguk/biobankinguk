@@ -18,6 +18,10 @@ namespace Directory.Data.Constants
         public const string FundersFreeText = "site.display.funders.freetext";
 
         public const string ContactThirdParty = "site.display.thirdparty";
+
+        //Email Config
+        public const string RegistrationEmails = "site.email.registration";
+
         //Trusted Biobank Config
         public const string TrustBiobanks = "site.display.trusted.biobanks";
 

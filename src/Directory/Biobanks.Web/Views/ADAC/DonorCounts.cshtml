@@ -78,13 +78,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-donor-count="@donor.Description"
-                                   href="@Url.Action("DeleteDonorCount", new
-											{
-												donor.Id,
-												donor.Description,
-												donor.SortOrder
-											})">
+                                   data-refdata-model="@Json.Encode(donor)"
+                                   data-resource-url="/api/DonorCount"
+                                   data-success-redirect="@Url.Action("DonorCounts")"
+                                   data-refdata-type="Donor Count"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -122,8 +120,8 @@
             <!-- Modal Form -->
             <form id="modal-donor-counts-form"
                   data-resource-url="/api/DonorCount"
-                  data-update-success-redirect="@Url.Action("EditDonorCountSuccess")"
-                  data-add-success-redirect="@Url.Action("AddDonorCountSuccess")"
+                  data-success-redirect="@Url.Action("DonorCounts")"
+                  data-refdata-type="Donor Count"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

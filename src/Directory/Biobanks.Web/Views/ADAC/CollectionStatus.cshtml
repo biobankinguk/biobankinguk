@@ -60,11 +60,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-collection-status="&quot;@collectionStatus.Description&quot;"
-                                   href="@Url.Action("DeleteCollectionStatus", new
-                                     {
-                                         collectionStatus.Id, collectionStatus.Description, collectionStatus.SortOrder
-                                     })">
+                                   data-refdata-model="@Json.Encode(collectionStatus)"
+                                   data-resource-url="/api/CollectionStatus"
+                                   data-success-redirect="@Url.Action("CollectionStatus")"
+                                   data-refdata-type="Collection Status"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -99,8 +99,8 @@
 
             <form id="modal-collection-status-form"
                   data-resource-url="/api/CollectionStatus"
-                  data-update-success-redirect="@Url.Action("EditCollectionStatusSuccess")"
-                  data-add-success-redirect="@Url.Action("AddCollectionStatusSuccess")"
+                  data-success-redirect="@Url.Action("CollectionStatus")"
+                  data-refdata-type="Collection Status"
                   class="form-horizontal">
 
                 <div class="modal-body">

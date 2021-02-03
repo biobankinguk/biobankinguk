@@ -58,13 +58,11 @@
 
 							<a title="Delete"
 							   class="action-icon delete-confirm"
-							   data-access-condition="@type.Description"
-							   href="@Url.Action("DeleteAccessCondition", new
-								{
-									type.Id,
-									type.Description,
-									type.SortOrder
-								})">
+							   data-refdata-model="@Json.Encode(type)"
+							   data-resource-url="/api/AccessCondition"
+							   data-success-redirect="@Url.Action("AccessConditions")"
+							   data-refdata-type="Access Condition"
+							   href="#">
 								<span class="fa fa-trash labelled-icon"></span>Delete
 							</a>
 						}
@@ -102,8 +100,8 @@
 			<!-- Modal Form -->
             <form id="modal-access-conditions-form" 
 				  data-resource-url="/api/AccessCondition"
-                  data-update-success-redirect="@Url.Action("EditAccessConditionSuccess")"
-                  data-add-success-redirect="@Url.Action("AddAccessConditionSuccess")"
+				  data-success-redirect="@Url.Action("AccessConditions")"
+				  data-refdata-type="Access Condition"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
