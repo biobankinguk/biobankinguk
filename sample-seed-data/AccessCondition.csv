@@ -1,4 +1,4 @@
-AccessConditionId,Description,SortOrder
+Id,Value,SortOrder
 1,Closed to access,6
 2,Access restricted at present,5
 3,Open to applicants,1

@@ -1,4 +1,4 @@
-AssociatedDataTypeId,Description,Message,AssociatedDataTypeGroupId
+Id,Value,Message,AssociatedDataTypeGroupId
 1,Biomarker datasets,Results of an assay of anything that can be used as an indicator of a particular disease state or some other physiological state,2
 2,Clinical records,Data obtained from accessing clinical records,3
 3,Cold ischemic time,Data indicating the time between the chilling the sample after its blood supply has been reduced or cut off and the time it is warmed by having its blood supply restored,1

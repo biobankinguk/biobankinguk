@@ -1,4 +1,4 @@
-SopStatusId,Description,SortOrder
+Id,Value,SortOrder
 1,Common SOPs in place and accreditation performed,1
 2,"Common SOPs in place, self assessment in place",2
 3,"Common SOPs in place, no assessment of accreditation",3

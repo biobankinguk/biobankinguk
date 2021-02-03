@@ -30,6 +30,7 @@ namespace Biobanks.Entities.Shared.ReferenceData
         /// Foreign key column.
         /// </summary>
         public int? SnomedTagId { get; set; }
+        
         /// <summary>
         /// A Biobanks Phase 2 specific "category" tag.
         /// </summary>

@@ -1,4 +1,4 @@
-AssociatedDataProcurementTimeframeId,Description,SortOrder,DisplayValue
+Id,Value,SortOrder,DisplayValue
 1,Immediate,1,Immediate
 2,0 - 3 months,2,0-3
 3,3 - 6 months,3,3-6

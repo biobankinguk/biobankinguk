@@ -1,4 +1,4 @@
-MacroscopicAssessmentId,Description,SortOrder
+Id,Value,SortOrder
 1,Affected,1
 2,Non-affected,2
 3,Not applicable,3

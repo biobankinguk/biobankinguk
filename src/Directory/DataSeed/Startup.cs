@@ -3,7 +3,6 @@ using Biobanks.Entities.Data;
 using Biobanks.Directory.Data.Repositories;
 using Biobanks.DataSeed.Services;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Biobanks.Services.Contracts;
@@ -15,6 +14,7 @@ namespace Directory.DataSeed
     public class Startup
     {
         public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -48,15 +48,15 @@ namespace Directory.DataSeed
             services.AddHttpClient();
 
         }
+
         /// <summary>
         /// Configure Startup Services
         /// </summary>
         public static void Configure(HostBuilderContext context, IServiceCollection services)
         {
-            services.AddHostedService<SeedingService>();
-            services.AddSingleton<CountriesWebService>();
             services.AddScoped<IBiobankReadService, BiobankReadService>();
-
+            services.AddSingleton<CountriesWebService>();
+            services.AddHostedService<SeedingService>();
         }
     }
 }
