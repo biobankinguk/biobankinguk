@@ -145,51 +145,22 @@ $(function () {
     $.getJSON('IncludePublicationsAjax', function (data) {
         if (data.success) {
             if (data.status) {
-                togglePubBtn("on");
+                $('#IncludePublications').prop('checked', true);
                 $('#biobank-publications_wrapper').show();
             }
             else {
-                togglePubBtn("off");
+                $('#IncludePublications').prop('checked', false);
                 $('#biobank-publications_wrapper').hide();
             }
         }
     });
 });
 
-//toggle enable/disable publications button
-function togglePubBtn(val) {
-    var $onBtn = $("#on-btn");
-    var $offBtn = $("#off-btn");
-    var $btnGroup = $('.btn-toggle');
 
-    if (val == "on") {
-        $offBtn.removeClass("btn-primary active")
-        $offBtn.addClass("btn-default")
-        $onBtn.removeClass("btn-default")
-        $onBtn.addClass("btn-primary active")
-        return true;
-    }
-    else if (val == "off") {
-        $onBtn.removeClass("btn-primary active")
-        $onBtn.addClass("btn-default")
-        $offBtn.removeClass("btn-default")
-        $offBtn.addClass("btn-primary active")
-        return false;
-    }
-    else {
-        var $btnGroup = $('.btn-toggle');
-        $btnGroup.find('.btn').toggleClass('active');
-        $btnGroup.find('.btn').toggleClass('btn-primary');
-        $btnGroup.find('.btn').toggleClass('btn-default');
-        return $($btnGroup.find('.active')).data("incl-publications");
-    }
-}
-
-$('.btn-toggle').click(function () {
-    var btnVal = togglePubBtn();
-    if (btnVal)
+$('#IncludePublications').change(function () {
+    if (this.checked)
         $('#biobank-publications_wrapper').show();
     else
         $('#biobank-publications_wrapper').hide();
-    $.post('IncludePublicationsAjax', { value: btnVal });
+    $.post('IncludePublicationsAjax', { value: this.checked });
 });
