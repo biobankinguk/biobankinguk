@@ -5,7 +5,7 @@ namespace Biobanks.Web.Models.Profile
     public class BiobankPublicationsModel
     {
         public string ExternalId { get; set; }
-        public bool IncludePublications { get; set; }
+        public bool ExcludePublications { get; set; }
 
         public ICollection<BiobankPublicationModel> Publications{ get; set; }
     }

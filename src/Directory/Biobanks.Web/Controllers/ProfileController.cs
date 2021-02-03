@@ -167,7 +167,7 @@ namespace Biobanks.Web.Controllers
                 var model = new BiobankPublicationsModel
                 {
                     ExternalId = bb.OrganisationExternalId,
-                    IncludePublications = bb.IncludePublications ?? true,
+                    ExcludePublications = bb.ExcludePublications,
                     Publications = publications.Select(x => new BiobankPublicationModel
                     {
                         Title = x.Title,
