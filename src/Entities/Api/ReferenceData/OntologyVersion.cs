@@ -27,6 +27,7 @@ namespace Biobanks.Entities.Api.ReferenceData
         /// <summary>
         /// Ontology to which the version relates.
         /// </summary>
-        public virtual Ontology Ontology { get; set; }
+        [Required]
+        public Ontology Ontology { get; set; }
     }
 }

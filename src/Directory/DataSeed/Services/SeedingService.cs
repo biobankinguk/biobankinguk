@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data;
@@ -69,7 +70,7 @@ namespace Biobanks.DataSeed.Services
                 
                 /* API Specific */
                 SeedCsv<Ontology>,
-                SeedCsv<OntologyVersion>,
+                SeedOntologyVersion,
                 SeedCsv<SampleContentMethod>,
                 SeedCsv<Status>,
                 SeedCsv<TreatmentLocation>,
@@ -160,6 +161,21 @@ namespace Biobanks.DataSeed.Services
                     })
                 );
             }
+        }
+
+        private void SeedOntologyVersion()
+        {
+            var ontologies = _db.Set<Ontology>().ToList();
+
+            Seed(
+                ReadCsv<OntologyVersion>()
+                    .Select(x =>
+                    {
+                        x.Ontology = ontologies.FirstOrDefault(y => y.Id == x.OntologyId);
+                        return x;
+                    })
+                    .Where(x => x.Ontology != null)
+            );
         }
 
         private void Seed<T>(IEnumerable<T> entities) where T : class
