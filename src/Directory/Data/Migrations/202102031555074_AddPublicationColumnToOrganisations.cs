@@ -3,11 +3,11 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddPublicationsColumnToOrganisations : DbMigration
+    public partial class AddPublicationColumnToOrganisations : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.Organisations", "ExcludePublications", c => c.Boolean(nullable:false));
+            AddColumn("dbo.Organisations", "ExcludePublications", c => c.Boolean(nullable: false));
         }
         
         public override void Down()

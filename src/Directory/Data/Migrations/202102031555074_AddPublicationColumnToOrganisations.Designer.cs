@@ -7,13 +7,13 @@ namespace Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class AddPublicationsColumnToOrganisations : IMigrationMetadata
+    public sealed partial class AddPublicationColumnToOrganisations : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddPublicationsColumnToOrganisations));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddPublicationColumnToOrganisations));
         
         string IMigrationMetadata.Id
         {
-            get { return "202102011110305_AddPublicationsColumnToOrganisations"; }
+            get { return "202102031555074_AddPublicationColumnToOrganisations"; }
         }
         
         string IMigrationMetadata.Source
