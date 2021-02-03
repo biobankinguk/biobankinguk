@@ -1805,7 +1805,7 @@ namespace Biobanks.Web.Controllers
             else
             {
                 var biobank = _mapper.Map<OrganisationDTO>(await _biobankReadService.GetBiobankByIdAsync(biobankId));
-                biobank.IncludePublications = value;
+                biobank.ExcludePublications = !value;
                 await _biobankWriteService.UpdateBiobankAsync(biobank);
 
                 return Json(new { success = true });
