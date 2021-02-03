@@ -6,14 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data;
-using Biobanks.Entities.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
-using Biobanks.DataSeed.Services;
-using System.Security.Cryptography.X509Certificates;
-using Biobanks.DataSeed.Dto;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -202,7 +198,7 @@ namespace Biobanks.DataSeed.Services
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                filePath = $"{ _dataDir }/{ typeof(T).Name }.csv";
+                filePath = Path.Combine(_dataDir, typeof(T).Name) + ".csv";
             }
 
             using (var stream = new StreamReader(filePath))
