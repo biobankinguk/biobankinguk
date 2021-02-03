@@ -7,12 +7,12 @@
     {
         public override void Up()
         {
-            AddColumn("dbo.Organisations", "IncludePublications", c => c.Boolean());
+            AddColumn("dbo.Organisations", "ExcludePublications", c => c.Boolean(nullable:false));
         }
         
         public override void Down()
         {
-            DropColumn("dbo.Organisations", "IncludePublications");
+            DropColumn("dbo.Organisations", "ExcludePublications");
         }
     }
 }

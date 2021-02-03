@@ -42,6 +42,6 @@ namespace Directory.Services.Dto
 
         // registration reasons
         public string OtherRegistrationReason { get; set; }
-        public bool? IncludePublications { get; set; }
+        public bool ExcludePublications { get; set; }
     }
 }

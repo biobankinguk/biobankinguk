@@ -54,7 +54,7 @@ namespace Directory.Entity.Data
 
         public string OtherRegistrationReason { get; set; }
 
-        public bool? IncludePublications { get; set; }
+        public bool ExcludePublications { get; set; }
 
         //1 -> M Navigation properties?
         public virtual ICollection<OrganisationNetwork> OrganisationNetworks { get; set; }
