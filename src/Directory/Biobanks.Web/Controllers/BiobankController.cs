@@ -1702,7 +1702,7 @@ namespace Biobanks.Web.Controllers
             if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
                 return HttpNotFound();
 
-            return View();
+            return View(SessionHelper.GetBiobankId(Session));
         }
 
 
@@ -1772,43 +1772,6 @@ namespace Biobanks.Web.Controllers
                     DOI = publication.DOI,
                     Approved = publication.Accepted
                 });
-            }
-        }
-
-        [HttpGet]
-        [Authorize(ClaimType = CustomClaimType.Biobank)]
-        public async Task<JsonResult> IncludePublicationsAjax()
-        {
-            var biobankId = SessionHelper.GetBiobankId(Session);
-
-            if (biobankId == 0)
-            {
-                return Json(new { success = false });
-            }
-            else
-            {
-                var inclPubs = await _biobankReadService.OrganisationIncludesPublications(biobankId);
-                return Json(new { success = true, status = inclPubs },JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
-        [Authorize(ClaimType = CustomClaimType.Biobank)]
-        public async Task<JsonResult> IncludePublicationsAjax(bool value)
-        {
-            var biobankId = SessionHelper.GetBiobankId(Session);
-
-            if (biobankId == 0)
-            {
-                return Json(new { success = false });
-            }
-            else
-            {
-                var biobank = _mapper.Map<OrganisationDTO>(await _biobankReadService.GetBiobankByIdAsync(biobankId));
-                biobank.ExcludePublications = !value;
-                await _biobankWriteService.UpdateBiobankAsync(biobank);
-
-                return Json(new { success = true });
             }
         }
         #endregion
