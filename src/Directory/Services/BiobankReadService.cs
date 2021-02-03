@@ -1496,7 +1496,7 @@ namespace Directory.Services
             => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
 
         public async Task<bool> OrganisationIncludesPublications(int biobankId)
-            => (await GetBiobankByIdAsync(biobankId)).IncludePublications ?? true;
+            => (!(await GetBiobankByIdAsync(biobankId)).ExcludePublications);
 
     }
 }
