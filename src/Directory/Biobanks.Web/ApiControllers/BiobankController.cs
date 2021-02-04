@@ -1,8 +1,8 @@
 ﻿using System.Web.Http;
-using Directory.Services.Contracts;
 using System.Threading.Tasks;
 using AutoMapper;
-using Directory.Services.Dto;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.ApiControllers
 {

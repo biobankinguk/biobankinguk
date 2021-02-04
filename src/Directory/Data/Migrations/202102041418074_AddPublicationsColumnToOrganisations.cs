@@ -1,9 +1,9 @@
-﻿namespace Directory.Data.Migrations
+﻿namespace Biobanks.Directory.Data.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddPublicationColumnToOrganisations : DbMigration
+    public partial class AddPublicationsColumnToOrganisations : DbMigration
     {
         public override void Up()
         {
