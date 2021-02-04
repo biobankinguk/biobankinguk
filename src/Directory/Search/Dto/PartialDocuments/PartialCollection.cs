@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using Directory.Search.Dto.Documents;
+using Biobanks.Search.Dto.Documents;
 using Nest;
 
-namespace Directory.Search.Dto.PartialDocuments
+namespace Biobanks.Search.Dto.PartialDocuments
 {
     public class PartialCollection
     {
-        [Text(Name = "diagnosis")]
-        public string Diagnosis { get; set; }
+        [Text(Name = "ontologyTerm")]
+        public string OntologyTerm { get; set; }
 
         [Keyword(Name = "collectionTitle")]
         public string CollectionTitle { get; set; }

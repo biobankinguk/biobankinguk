@@ -86,7 +86,7 @@
     <mvcSiteMapNode title="Hta Statuses" controller="ADAC" action="HtaStatus"/>
     <mvcSiteMapNode title="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
     <mvcSiteMapNode title="Material Types" controller="ADAC" action="MaterialTypes"/>
-    <mvcSiteMapNode title="Preservation Types" controller="ADAC" action="PreservationTypes"/>
+    <mvcSiteMapNode title="Storage Temperatures" controller="ADAC" action="StorageTemperatures"/>
     <mvcSiteMapNode title="Sample Collection Modes" controller="ADAC" action="SampleCollectionModes"/>
     <mvcSiteMapNode title="Sexes" controller="ADAC" action="Sexes"/>
     <mvcSiteMapNode title="Service Offerings" controller="ADAC" action="ServiceOffering"/>

@@ -5,23 +5,24 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Directory.Entity.Data;
-using Directory.Identity.Data.Entities;
-using Directory.Identity.Contracts;
-using Directory.Identity.Constants;
-using Directory.Services;
+using Biobanks.Entities.Data;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Constants;
+using Biobanks.Services;
 using Biobanks.Web.Models.Network;
-using Directory.Data.Transforms.Url;
-using Directory.Services.Contracts;
+using Biobanks.Directory.Data.Transforms.Url;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using System.Net.Http;
 using AutoMapper;
-using Directory.Services.Dto;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Services.Dto;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 using Newtonsoft.Json;
 
 namespace Biobanks.Web.Controllers
@@ -255,7 +256,7 @@ namespace Biobanks.Web.Controllers
         {
             var allSopStatuses = (List<SopStatus>) await _biobankReadService.ListSopStatusesAsync();
             return
-                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.SopStatusId, status.Description))
+                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
                     .ToList();
         }
 

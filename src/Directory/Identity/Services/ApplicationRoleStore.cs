@@ -1,8 +1,8 @@
-using Directory.Identity.Data;
-using Directory.Identity.Data.Entities;
+using Biobanks.Identity.Data;
+using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace Directory.Identity.Services
+namespace Biobanks.Identity.Services
 {
     public class ApplicationRoleStore : RoleStore<ApplicationRole, string, ApplicationUserRole>
     {

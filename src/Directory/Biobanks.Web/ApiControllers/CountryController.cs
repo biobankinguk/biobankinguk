@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.Shared;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -32,9 +33,9 @@ namespace Biobanks.Web.ApiControllers
 
                 Task.Run(async () => new Models.ADAC.ReadCountryModel
                 {
-                    Id = x.CountryId,
-                    Name = x.Name,
-                    CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.CountryId)
+                    Id = x.Id,
+                    Name = x.Value,
+                    CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.Id)
                 }).Result)
 
                 .ToList();
@@ -59,7 +60,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.AddCountryAsync(new Country
             {
-                Name = model.Name
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -92,8 +93,8 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateCountryAsync(new Country
             {
-                CountryId = id,
-                Name = model.Name
+                Id = id,
+                Value = model.Name
             });
 
             //Everything went A-OK!
@@ -108,11 +109,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCountriesAsync()).Where(x => x.CountryId == id).First();
+            var model = (await _biobankReadService.ListCountriesAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsCountryInUse(id))
             {
-                ModelState.AddModelError("Name", $"The country \"{model.Name}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("Name", $"The country \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -122,15 +123,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteCountryAsync(new Country
             {
-                CountryId = model.CountryId,
-                Name = model.Name
+                Id = model.Id,
+                Value = model.Value
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Name
+                name = model.Value
             });
         }
     }

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Directory.Entity.Data;
-using Directory.Search.Dto.Results;
-using Directory.Services.Dto;
+using Biobanks.Entities.Data;
+using Biobanks.Search.Dto.Results;
+using Biobanks.Services.Dto;
 using Biobanks.Web.AutoMapper;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Biobank;
@@ -41,12 +41,12 @@ namespace Biobanks.Web
                     .ForMember(dest => dest.LogoName, opts => opts.MapFrom(src => src.Logo));
 
                 cfg.CreateMap<DiagnosisCapability, DetailedCapabilitySearchCapabilityModel>()
-                    .ForMember(dest => dest.Protocols, opts => opts.MapFrom(src => src.SampleCollectionMode.Description))
-                    .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.Diagnosis.Description))
+                    .ForMember(dest => dest.Protocols, opts => opts.MapFrom(src => src.SampleCollectionMode.Value))
+                    .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.OntologyTerm.Value))
                     .ForMember(dest => dest.AssociatedData,
                         opts => opts.MapFrom(src => src.AssociatedData.Select(
-                            x => new KeyValuePair<string, string>(x.AssociatedDataType.Description,
-                                x.AssociatedDataProcurementTimeframe.Description))));
+                            x => new KeyValuePair<string, string>(x.AssociatedDataType.Value,
+                                x.AssociatedDataProcurementTimeframe.Value))));
 
                 cfg.CreateMap<CopySampleSetModel, AddSampleSetModel>();
 

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Search.Contracts;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Results;
-using Directory.Search.Constants;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 
-namespace Directory.Search.Legacy
+namespace Biobanks.Search.Legacy
 {
     public class LegacySearchProvider : ISearchProvider
     {
@@ -18,17 +18,17 @@ namespace Directory.Search.Legacy
             _collections = collections;
         }
 
-        public Result CapabilitySearchByDiagnosis(string diagnosis, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
-            => _capabilities.Search(diagnosis, selectedFacets, maxHits);
+        public Result CapabilitySearchByOntologyTerm(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+            => _capabilities.Search(ontologyTerm, selectedFacets, maxHits);
 
-        public BiobankCapabilityResult CapabilitySearchByDiagnosisAndBiobank(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
-            => _capabilities.Search(biobankExternalId, diagnosis, selectedFacets);
+        public BiobankCapabilityResult CapabilitySearchByOntologyTermAndBiobank(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
+            => _capabilities.Search(biobankExternalId, ontologyTerm, selectedFacets);
 
-        public Result CollectionSearchByDiagnosis(string diagnosis, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
-            => _collections.Search(diagnosis, selectedFacets, maxHits);
+        public Result CollectionSearchByOntologyTerm(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+            => _collections.Search(ontologyTerm, selectedFacets, maxHits);
 
-        public BiobankCollectionResult CollectionSearchByDiagnosisAndBiobank(string biobankExternalId, string diagnosis, IEnumerable<SelectedFacet> selectedFacets)
-            => _collections.Search(biobankExternalId, diagnosis, selectedFacets);
+        public BiobankCollectionResult CollectionSearchByOntologyTermAndBiobank(string biobankExternalId, string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets)
+            => _collections.Search(biobankExternalId, ontologyTerm, selectedFacets);
 
         public Task<long> CountCapabilitySearchDocuments()
             => _capabilities.Count();
@@ -42,7 +42,7 @@ namespace Directory.Search.Legacy
         public Task<List<int>> GetAllSampleSetIds()
             => _collections.ListIds();
 
-        public IEnumerable<string> ListDiagnoses(SearchDocumentType type, string wildcard = "")
+        public IEnumerable<string> ListOntologyTerms(SearchDocumentType type, string wildcard = "")
             => type == SearchDocumentType.Capability
                 ? _capabilities.ListOntologyTerms(wildcard)
                 : _collections.ListOntologyTerms(wildcard);

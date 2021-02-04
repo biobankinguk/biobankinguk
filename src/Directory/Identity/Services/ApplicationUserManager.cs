@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Identity.Data;
-using Directory.Identity.Contracts;
-using Directory.Identity.Data.Entities;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Data;
+using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.DataProtection;
 
-namespace Directory.Identity.Services
+namespace Biobanks.Identity.Services
 {
     public class ApplicationUserManager : UserManager<ApplicationUser, string>, IApplicationUserManager<ApplicationUser, string, IdentityResult>
     {

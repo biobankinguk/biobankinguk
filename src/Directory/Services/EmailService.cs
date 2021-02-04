@@ -1,6 +1,6 @@
-using Directory.Identity.Contracts;
-using Directory.Identity.Constants;
-using Directory.Identity.Data.Entities;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Constants;
+using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity;
 using Postal;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Configuration;
 
-namespace Directory.Services
+namespace Biobanks.Services
 {
     public class EmailService : Contracts.IEmailService
     {

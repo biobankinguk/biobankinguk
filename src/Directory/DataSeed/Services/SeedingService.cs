@@ -5,218 +5,222 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Directory.Data;
-using Directory.Entity.Data;
+using Biobanks.Directory.Data;
 using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
-using Directory.DataSeed.Services;
-using System.Security.Cryptography.X509Certificates;
-using Directory.DataSeed.Dto;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using CsvHelper.Configuration;
 
-namespace Directory.DataSeed.Services
+namespace Biobanks.DataSeed.Services
 {
     internal class SeedingService : IHostedService
     {
-        private const string _dataDir = "data/";
-
-        // Some tables depend on others existing first, so we have to leave them til last
-        // And use custom methods to handle their relationships
-        // It's initialised in the constructor, as it depends on member methods
-        public Dictionary<string, Action> LeaveTilLast;
-
-        public Dictionary<string, Type> ValidTables = new Dictionary<string, Type>
-        {
-            ["AccessConditions"] = typeof(AccessCondition),
-            ["AgeRanges"] = typeof(AgeRange),
-            ["AnnualStatisticGroups"] = typeof(AnnualStatisticGroup),
-            ["AssociatedDataProcurementTimeframes"] = typeof(AssociatedDataProcurementTimeframe),
-            ["AssociatedDataTypeGroups"] = typeof(AssociatedDataTypeGroup),
-            ["CollectionPercentages"] = typeof(CollectionPercentage),
-            ["CollectionPoints"] = typeof(CollectionPoint),
-            ["CollectionStatus"] = typeof(CollectionStatus),
-            ["CollectionTypes"] = typeof(CollectionType),
-            ["ConsentRestrictions"] = typeof(ConsentRestriction),
-            ["Counties"] = typeof(County),
-            ["Countries"] = typeof(Country),
-            ["Diagnosis"] = typeof(Diagnosis),
-            ["DonorCounts"] = typeof(DonorCount),
-            ["Funders"] = typeof(Funder),
-            ["Sexes"] = typeof(Sex),
-            ["HtaStatus"] = typeof(HtaStatus),
-            ["MaterialTypes"] = typeof(MaterialType),
-            ["MacroscopicAssessments"] = typeof(MacroscopicAssessment),
-            ["PreservationTypes"] = typeof(PreservationType),
-            ["RegistrationReasons"] = typeof(RegistrationReason),
-            ["SampleCollectionModes"] = typeof(SampleCollectionMode),
-            ["ServiceOfferings"] = typeof(ServiceOffering),
-            ["SopStatus"] = typeof(SopStatus)
-        };
+        private const string _dataDir = "data";
 
         private readonly ILogger<SeedingService> _logger;
         private readonly BiobanksDbContext _db;
         private readonly CountriesWebService _countriesWebService;
+        private readonly CsvConfiguration _csvConfiguration;
+
+        private IEnumerable<Action> _seedActions;
 
         public SeedingService(ILogger<SeedingService> logger, BiobanksDbContext db, CountriesWebService countriesWebService)
         {
-            _logger = logger;
             _db = db;
+            _logger = logger;
             _countriesWebService = countriesWebService;
 
-            // Populate LeaveTilLast in here, as it depends on member methods
-            LeaveTilLast = new Dictionary<string, Action>
-            { 
+            // Configure CsvReader
+            _csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture)
+            {
+                IgnoreReferences = true
+            };
+
+            // List Order Determines Seed Order
+            _seedActions = new List<Action>
+            {
+                /* Directory Specific */
+                SeedCountries,
+                SeedCounties,
+                SeedCsv<AccessCondition>,
+                SeedCsv<AgeRange>,
+                SeedCsv<AnnualStatisticGroup>,
+                SeedAnnualStatistics,
+                SeedCsv<AssociatedDataProcurementTimeframe>,
+                SeedCsv<AssociatedDataTypeGroup>,
+                SeedAssociatedDataTypes,
+                SeedCsv<CollectionPercentage>,
+                SeedCsv<CollectionPoint>,
+                SeedCsv<CollectionStatus>,
+                SeedCsv<CollectionType>,
+                SeedCsv<ConsentRestriction>,
+                SeedCsv<DonorCount>,
+                SeedCsv<Funder>,
+                SeedCsv<HtaStatus>,
+                SeedCsv<MacroscopicAssessment>,
+                SeedCsv<RegistrationReason>,
+                SeedCsv<SampleCollectionMode>,
+                SeedCsv<ServiceOffering>,
+                SeedCsv<SopStatus>,
                 
-                ["AnnualStatistics"] = SeedAnnualStatistics,
-                ["AssociatedDataTypes"] = SeedAssociatedDataTypes,
-                ["Counties"] = SeedCounties
+                /* API Specific */
+                SeedCsv<Ontology>,
+                SeedOntologyVersion,
+                SeedCsv<SampleContentMethod>,
+                SeedCsv<Status>,
+                SeedCsv<TreatmentLocation>,
+
+                /* Shared */
+                SeedCsv<MaterialTypeGroup>,
+                SeedCsv<MaterialType>,
+                SeedCsv<Sex>,
+                SeedCsv<OntologyTerm>,
+                SeedCsv<StorageTemperature>,
             };
         }
 
-        private async void DataSeeding()
+        public Task StartAsync(CancellationToken cancellationToken) 
         {
-            //todo handle existing data
-            //todo look into only seeding certain tables. Only needs ot be done if this scenario comes up though
-            foreach (var s in ValidTables)
-             if (s.Key != "Countries") Seed(s.Key);
-                
-            //gives user option to get seed UN countries vs UK countries
-            await SeedCountries();
+            foreach (var seedAction in _seedActions)
+            {
+                seedAction();
+            }
 
-            // Now do the ones we left
-            foreach (var s in LeaveTilLast)
-                s.Value();
+            return Task.CompletedTask;
+        }
+            
+        public Task StopAsync(CancellationToken cancellationToken) 
+            => Task.CompletedTask;
 
-            Console.WriteLine("All done!");
-            Console.WriteLine("Please sanity check Counties and Countries.");
+        private void SeedAnnualStatistics() 
+        {
+            Seed(
+                ReadCsv<AnnualStatistic>().Select(x =>
+                    {
+                        x.AnnualStatisticGroup = null;  // Prevents foreign key duplications
+                        return x;
+                    }
+                )
+            );
         }
 
-        public void Seed(string tableName)
+        private void SeedAssociatedDataTypes() 
         {
-            // Skip any we need to leave til the end,
-            // and use custom methods for
-            if (LeaveTilLast.Keys.Contains(tableName)) return;
-
-            var entityType = ValidTables[tableName];
-
-            //TODO check if there are any records - if so, log and move on
-            //var existingEntities =  _db.Set(entityType).AsNoTracking();
-
-            var entities = Read(tableName);
-
-            Console.WriteLine($@"Writing {entities.Count()} entries to {tableName}");
-
-            foreach (var x in entities)
-                _db.Set(entityType).Add(x);
-
-            _db.SaveChanges();
+            Seed(
+                ReadCsv<AssociatedDataType>().Select(x =>
+                    {
+                        x.AssociatedDataTypeGroup = null;  // Prevents foreign key duplications
+                        return x;
+                    }
+                )
+            );
         }
 
-        private void SeedAnnualStatistics()
+        private void SeedCountries() 
         {
-            Read("AnnualStatistics", typeof(AnnualStatistic))
-                .Select(x => (AnnualStatistic)x)
-                .ToList()
-                .ForEach(x =>
-                {
-                    x.AnnualStatisticGroup = null; // Prevents foreign key duplications
-                    _db.AnnualStatistics.Add(x);
-                });
+            var seedUN = Prompt.GetYesNo("Would you like to seed UN Countries?", false);
+            
+            // Seed Countries
+            if (seedUN)
+            {
+                Seed(
+                    _countriesWebService.ListCountriesAsync().Result.Select(x => new Country
+                        {
+                            Value = x.CountryName
+                        }
+                    )
+                );
+            }
+            else
+            {
+                SeedCsv<Country>();
+            }
 
-            _db.SaveChanges();
-        }
-
-        private void SeedAssociatedDataTypes()
-        {
-            Read("AssociatedDataTypes", typeof(AssociatedDataType))
-                .Select(x => (AssociatedDataType)x)
-                .ToList()
-                .ForEach(x =>
-                {
-                    x.AssociatedDataTypeGroup = null; // Prevents foreign key duplications
-                    _db.AssociatedDataTypes.Add(x);
-                });
-
-            _db.SaveChanges();
+            // Update Config Value
+            WriteConfig("site.display.counties", !seedUN ? "true" : "false");
         }
 
         private void SeedCounties()
         {
-            var configEntity = _db.Configs.FirstOrDefault(item => item.Key == "site.display.counties");
-            if (configEntity.Value == "false") return;
-            var tableName = "Counties";
+            if (ReadConfig("site.display.counties") == "true")
+            {
+                // References Of All Seeded Countries
+                var countries = _db.Set<Country>().ToList();
 
-            var csvRecords = Read(tableName);
+                // Seed Counties From Csv - Linking With Existing Countries
+                Seed(
+                    ReadCsv<County>().Select(x => new County
+                    {
+                        Value = x.Value,
+                        Country = countries.Single(y => y.Id == x.CountryId)
+                    })
+                );
+            }
+        }
 
-            // ok, but we're gonna need to link Counties to Countries by Id
-            // We also have to assume the ID's are right!
-            // TODO: better system based on name lookup?
+        private void SeedOntologyVersion()
+        {
+            var ontologies = _db.Set<Ontology>().ToList();
 
-            var countries = _db.Countries.ToList();
+            Seed(
+                ReadCsv<OntologyVersion>()
+                    .Select(x =>
+                    {
+                        x.Ontology = ontologies.FirstOrDefault(y => y.Id == x.OntologyId);
+                        return x;
+                    })
+                    .Where(x => x.Ontology != null)
+            );
+        }
 
-            Console.WriteLine($@"Writing {csvRecords.Count()} entries to {tableName}");
+        private void Seed<T>(IEnumerable<T> entities) where T : class
+        {
+            var set = _db.Set<T>();
+            
+            if (set.Any())
+            {
+                _logger.LogInformation($"{ typeof(T).Name }: { set.Count() } entries already exist");
+            }
+            else
+            {
+                _logger.LogInformation($"{ typeof(T).Name }: Writing { entities.Count() } entries");
+                set.AddRange(entities);
+                _db.SaveChanges();
+            }
+        }
 
-            foreach (dynamic x in csvRecords)
-                _db.Counties.Add(new County
-                {
-                    Name = x.Name,
-                    Country = countries.Single(y => y.CountryId == x.CountryId)
-                });
+        private void SeedCsv<T>() where T : class
+        {
+            Seed(ReadCsv<T>());
+        }
 
+        private void WriteConfig(string key, string value)
+        {
+            _db.Configs.FirstOrDefault(x => x.Key == key).Value = value;
             _db.SaveChanges();
         }
 
-        private async Task SeedCountries()
+        private string ReadConfig(string key)
         {
-            var configEntity = _db.Configs.FirstOrDefault(item => item.Key == "site.display.counties");
-            var reply = Prompt.GetYesNo("Would you like to seed UN Countries?", false);
-            if (reply) //Seed UN Countries
-            {
-                List<CountriesDTO> countries = await _countriesWebService.GetCountries();
-                var tableName = "Countries";
-                Console.WriteLine($@"Writing {countries.Count()} UN Country entries to {tableName}");
-
-                foreach (CountriesDTO country in countries)
-                    _db.Countries.Add(new Country
-                    {
-                        Name = country.CountryName
-                    });
-                configEntity.Value = "false";
-                _db.SaveChanges();
-               
-            }
-           else if (!reply) //Seed CSV Countries
-           {
-                Seed("Countries");
-                configEntity.Value = "true";
-                _db.SaveChanges();
-
-            }
-
+            return _db.Configs.FirstOrDefault(x => x.Key == key).Value;
         }
 
-        private List<object> Read(string tableName, Type type)
+        private IEnumerable<T> ReadCsv<T>(string filePath = "") where T : class
         {
-            //TODO catch and write to console that file not found, but move on. Allow user to decide which tables to populate
-            using (var reader = new StreamReader($"data/{tableName}.csv"))
+            if (string.IsNullOrEmpty(filePath))
             {
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                {
-                    return csv.GetRecords(type).ToList();
-                }
+                filePath = Path.Combine(_dataDir, typeof(T).Name) + ".csv";
+            }
+
+            using (var stream = new StreamReader(filePath))
+            using (var reader = new CsvReader(stream, _csvConfiguration))
+            {
+                return reader.GetRecords<T>().ToList();
             }
         }
-        
-        private List<object> Read(string tableName)
-            => Read(tableName, ValidTables[tableName]);
-
-        public async Task StartAsync(CancellationToken cancellationToken)
-            => DataSeeding();
-
-        public Task StopAsync(CancellationToken cancellationToken)
-            => Task.CompletedTask;
-
     }
 }
-

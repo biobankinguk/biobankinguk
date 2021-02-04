@@ -1,0 +1,11 @@
+Id,Value,SortOrder
+1,Case-control,3
+2,Cohort,4
+3,Cross-sectional,5
+4,Longitudinal,6
+5,Twin-study,9
+6,Quality control,8
+7,Population-based,7
+8,Disease specific,1
+9,Birth cohort,2
+10,Clinical Trial,10

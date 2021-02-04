@@ -1,4 +1,4 @@
-﻿namespace Directory.Search.Dto.Facets
+﻿namespace Biobanks.Search.Dto.Facets
 {
     public class FacetValue
     {

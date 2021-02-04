@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Contracts;
+using Biobanks.Entities.Api.Contracts;
 
 namespace Biobanks.SubmissionAzureFunction.Dtos
 {

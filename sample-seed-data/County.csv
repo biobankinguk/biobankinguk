@@ -1,0 +1,115 @@
+Id,Value,CountryId
+1,Avon,1
+2,Bedfordshire,1
+3,Berkshire,1
+4,Bristol,1
+5,Buckinghamshire,1
+6,Cambridgeshire,1
+7,Cheshire,1
+8,Cleveland,1
+9,Cornwall,1
+10,Cumbria,1
+11,Derbyshire,1
+12,Devon,1
+13,Dorset,1
+14,Durham,1
+15,East Riding of Yorkshire,1
+16,East Sussex,1
+17,Essex,1
+18,Gloucestershire,1
+19,Greater Manchester,1
+20,Hampshire,1
+21,Herefordshire,1
+22,Hertfordshire,1
+23,Humberside,1
+24,Isle of Wight,1
+25,Isles of Scilly,1
+26,Kent,1
+27,Lancashire,1
+28,Leicestershire,1
+29,Lincolnshire,1
+30,London,1
+31,Merseyside,1
+32,Middlesex,1
+33,Norfolk,1
+34,North Yorkshire,1
+35,North East Lincolnshire,1
+36,Northamptonshire,1
+37,Northumberland,1
+38,Nottinghamshire,1
+39,Oxfordshire,1
+40,Rutland,1
+41,Shropshire,1
+42,Somerset,1
+43,South Yorkshire,1
+44,Staffordshire,1
+45,Suffolk,1
+46,Surrey,1
+47,Tyne and Wear,1
+48,Warwickshire,1
+49,West Midlands,1
+50,West Sussex,1
+51,West Yorkshire,1
+52,Wiltshire,1
+53,Worcestershire,1
+54,Antrim,4
+55,Armagh,4
+56,Down,4
+57,Fermanagh,4
+58,Londonderry,4
+59,Tyrone,4
+60,Aberdeen City,3
+61,Aberdeenshire,3
+62,Angus,3
+63,Argyll and Bute,3
+64,Banffshire,3
+65,Borders,3
+66,Clackmannan,3
+67,Dumfries and Galloway,3
+68,East Ayrshire,3
+69,East Dunbartonshire,3
+70,East Lothian,3
+71,East Renfrewshire,3
+72,Edinburgh City,3
+73,Falkirk,3
+74,Fife,3
+75,Glasgow (City of),3
+76,Highland,3
+77,Inverclyde,3
+78,Midlothian,3
+79,Moray,3
+80,North Ayrshire,3
+81,North Lanarkshire,3
+82,Orkney,3
+83,Perthshire and Kinross,3
+84,Renfrewshire,3
+85,Roxburghshire,3
+86,Shetland,3
+87,South Ayrshire,3
+88,South Lanarkshire,3
+89,Stirling,3
+90,West Dunbartonshire,3
+91,West Lothian,3
+92,Western Isles,3
+93,Blaenau Gwent,2
+94,Bridgend,2
+95,Caerphilly,2
+96,Cardiff,2
+97,Carmarthenshire,2
+98,Ceredigion,2
+99,Conwy,2
+100,Denbighshire,2
+101,Flintshire,2
+102,Gwynedd,2
+103,Isle of Anglesey,2
+104,Merthyr Tydfil,2
+105,Monmouthshire,2
+106,Neath Port Talbot,2
+107,Newport,2
+108,Pembrokeshire,2
+109,Powys,2
+110,Rhondda Cynon Taff,2
+111,Swansea,2
+112,Torfaen,2
+113,The Vale of Glamorgan,2
+114,Wrexham,2

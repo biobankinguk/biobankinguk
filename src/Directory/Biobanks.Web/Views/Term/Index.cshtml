@@ -29,25 +29,22 @@
                 </tr>
             </thead>
 
-            <tbody>
-                @foreach (var diagnosisModel in Model.DiagnosesModel)
-                {
-                    foreach (var diagnosis in diagnosisModel.Diagnoses)
-                    {
-                        if (diagnosis.CollectionCapabilityCount > 0)
-                        {
-                            <tr class="@(diagnosis.CollectionCapabilityCount > 0 ? "info" : "")">
-                                <td>
-                                    <div class="wrappable-td">@Html.DisplayFor(x => diagnosis.Description)</div>
-                                </td>
-                                <td>@Html.DisplayFor(x => diagnosis.OtherTerms)</td>
-                                <td><a href="@Url.Action("Collections", "Search", new {diagnosis = diagnosis.Description})"><center>Search</center></a></td>
-                            </tr>
-                        }
-                    }
-
-                }
-            </tbody>
+			<tbody>
+				@foreach (var ontologyTerm in Model.OntologyTermsModel)
+				{
+					<tr class="@(ontologyTerm.CollectionCapabilityCount > 0 ? "info" : "")">
+						<td>
+							<div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.Description)</div>
+						</td>
+						<td>
+                            @Html.DisplayFor(x => ontologyTerm.OtherTerms)
+                        </td>
+						<td>
+                            <a href="@Url.Action("Collections", "Search", new { ontologyTerm = ontologyTerm.Description })"><center>Search</center></a>
+                        </td>
+					</tr>
+				}
+			</tbody>
         </table>
     </div>
 </div>

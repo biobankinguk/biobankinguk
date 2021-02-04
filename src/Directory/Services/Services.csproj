@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Directory.Services</RootNamespace>
-    <AssemblyName>Biobanks.Directory.Services</AssemblyName>
+    <RootNamespace>Biobanks.Directory.Services</RootNamespace>
+    <AssemblyName>Biobanks.Services</AssemblyName>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Entity\Entity.csproj" />
     <ProjectReference Include="..\Identity\Identity.csproj" />
     <ProjectReference Include="..\Search\Search.csproj" />
   </ItemGroup>

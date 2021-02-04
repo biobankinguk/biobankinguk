@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Directory.Data.Repositories
+namespace Biobanks.Directory.Data.Repositories
 {
     public interface IGenericEFRepository<TEntity>
     {

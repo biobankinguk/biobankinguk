@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Data;
+using Biobanks.Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class SnomedTagService : ISnomedTagService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public SnomedTagService(SubmissionsDbContext db)
+        public SnomedTagService(BiobanksDbContext db)
         {
             _db = db;
         }
@@ -25,9 +25,10 @@ namespace Biobanks.SubmissionApi.Services
                 .ToListAsync();
 
         /// <inheritdoc />
-        public async Task<SnomedTag> Get(int snomedTagId)
+        public async Task<SnomedTag> Get(int 
+            snomedTagId)
             => await _db.SnomedTags
-                .Include(st => st.SnomedTerms)
+                .Include(st => st.OntologyTerms)
                 .FirstOrDefaultAsync(st => st.Id == snomedTagId);
 
         /// <inheritdoc />

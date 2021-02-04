@@ -1,7 +1,7 @@
-using Directory.Search.Exceptions;
+using Biobanks.Search.Exceptions;
 using Nest;
 
-namespace Directory.Search.Elastic
+namespace Biobanks.Search.Elastic
 {
     public abstract class BaseElasticIndexProvider
     {

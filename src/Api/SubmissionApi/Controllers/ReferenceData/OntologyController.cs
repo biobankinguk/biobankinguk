@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Common.Auth;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.SubmissionApi.Models;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;

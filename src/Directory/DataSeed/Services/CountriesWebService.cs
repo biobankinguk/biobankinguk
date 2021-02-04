@@ -1,44 +1,29 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.Text.Json;
-using System.IO;
+using Biobanks.DataSeed.Dto;
 using Newtonsoft.Json;
-using Directory.DataSeed.Dto;
-using Directory.Entity.Data;
-using Directory.Data.Constants;
-using Directory.Services.Contracts;
 
-namespace Directory.DataSeed.Services
+namespace Biobanks.DataSeed.Services
 {
     public class CountriesWebService : IDisposable
     {
         private readonly HttpClient _client;
-        private Uri _uri;
-        private IConfiguration _configuration;
+        private readonly Uri _uri;
+        
         public CountriesWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _client = httpClientFactory.CreateClient();
-            _configuration = configuration;
-            _uri = new Uri(_configuration["CountriesApiKey"]);
-
+            _uri = new Uri(configuration["CountriesApiKey"]);
         }
 
-        public async Task<List<CountriesDTO>> GetCountries()
+        public async Task<IEnumerable<CountriesDTO>> ListCountriesAsync()
         {
-            List<CountriesDTO> result = await Search();
-            return result; 
-        }
-        private async Task<List<CountriesDTO>> Search()
-        {
+            var response = await _client.GetStringAsync(_uri);
+            var result = JsonConvert.DeserializeObject<IEnumerable<CountriesDTO>>(response);
 
-            string response = await _client.GetStringAsync(_uri);
-            List<CountriesDTO> result = JsonConvert.DeserializeObject<List<CountriesDTO>>(response);
             return result;
         }
 
@@ -46,6 +31,5 @@ namespace Directory.DataSeed.Services
         {
             _client.Dispose();
         }
-
     }
 }

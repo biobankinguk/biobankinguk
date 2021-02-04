@@ -1,6 +1,6 @@
 ﻿@using System
 @using System.Linq
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model Biobanks.Web.Models.Biobank.AbstractCRUDSampleSetModel
 
 <div class="col-sm-10 col-sm-offset-1">
@@ -87,7 +87,7 @@
             <thead>
 				<tr>
 					<th>Material type</th>
-					<th>@App.Config[ConfigKey.PreservationTypeName]</th>
+					<th>@App.Config[ConfigKey.StorageTemperatureName]</th>
 
 					@if (Model.ShowMacroscopicAssessment)
 					{
@@ -110,7 +110,7 @@
                   }">
 				<tr>
 					<td data-bind="text: materialTypeDescription"></td>
-					<td data-bind="text: preservationTypeDescription"></td>
+					<td data-bind="text: storageTemperatureDescription"></td>
                     @if (Model.ShowMacroscopicAssessment)
 					{
 					    <td data-bind="text: macroscopicAssessmentDescription"></td>
@@ -162,7 +162,7 @@
                 <div class="col-sm-12">
                     <ul class="list-unstyled alert alert-danger">
                         <li data-bind="validationMessage: modal.materialPreservationDetail().materialType"></li>
-                        <li data-bind="validationMessage: modal.materialPreservationDetail().preservationType"></li>
+                        <li data-bind="validationMessage: modal.materialPreservationDetail().storageTemperature"></li>
                         <li data-bind="validationMessage: modal.materialPreservationDetail().macroscopicAssessment"></li>
                         <li data-bind="validationMessage: modal.materialPreservationDetail().isDuplicate"></li>
                     </ul>
@@ -191,27 +191,27 @@
 							</div>
 						</div>
 
-						<!-- Preservation Type -->
+						<!-- Storage Temperature -->
 						<div class="col-sm-12 form-group">
-							<label class="control-label required">@App.Config[ConfigKey.PreservationTypeName]</label>
+							<label class="control-label required">@App.Config[ConfigKey.StorageTemperatureName]</label>
 							<p class="help-block col-sm-12">
 								<span class="fa fa-info-circle"></span>
 								Select how the samples are currently stored.
 								If there is something missing please contact us.
 							</p>
 							<div class="col-sm-12">
-								<div class="col-sm-6" data-bind="foreach: lookup.preservationTypes.slice(0, lookup.preservationTypes().length / 2)">
+								<div class="col-sm-6" data-bind="foreach: lookup.storageTemperatures.slice(0, lookup.storageTemperatures().length / 2)">
 									<div class="radio">
 										<label data-bind="validationOptions: {insertMessages: false}">
-											<input type="radio" name="radPreservation" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().preservationType">
+											<input type="radio" name="radPreservation" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().storageTemperature">
 											<span data-bind="text: $data.label"></span>
 										</label>
 									</div>
 								</div>
-								<div class="col-sm-6" data-bind="foreach: lookup.preservationTypes.slice(lookup.preservationTypes().length / 2)">
+								<div class="col-sm-6" data-bind="foreach: lookup.storageTemperatures.slice(lookup.storageTemperatures().length / 2)">
 									<div class="radio">
 										<label data-bind="validationOptions: {insertMessages: false}">
-											<input type="radio" name="radPreservation" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().preservationType">
+											<input type="radio" name="radPreservation" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().storageTemperature">
 											<span data-bind="text: $data.label"></span>
 										</label>
 									</div>
@@ -241,8 +241,6 @@
 							</div>
 						}
 
-
-
 						<!-- Percentage -->
 						@if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
 						{
@@ -250,7 +248,7 @@
 								<label for="percentage" class="control-label">Percentage</label>
 								<p class="help-block col-sm-12">
 									<span class="fa fa-info-circle"></span>
-									Please estimate the percentage of individuals in this collection who have samples with this selected combination of material type, @App.Config[ConfigKey.PreservationTypeName] and macroscopic assessment.
+									Please estimate the percentage of individuals in this collection who have samples with this selected combination of material type, @App.Config[ConfigKey.StorageTemperatureName] and macroscopic assessment.
 								</p>
 								<div class="col-sm-12">
 									<div class="col-sm-12">

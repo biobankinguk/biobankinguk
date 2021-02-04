@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 
 namespace Biobanks.Web.Models.Biobank
 {
@@ -71,7 +71,7 @@ namespace Biobanks.Web.Models.Biobank
         {
             if (modelState != null && modelState.IsValid)
             {
-                if (!await biobankReadService.ValidDiagnosisDescriptionAsync(Diagnosis))
+                if (!await biobankReadService.ValidOntologyTermDescriptionAsync(Diagnosis))
                 {
                     modelState.AddModelError("Diagnosis",
                         "Please enter a valid Diagnosis or select one from the type ahead results.");

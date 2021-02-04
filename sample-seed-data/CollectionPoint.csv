@@ -1,0 +1,5 @@
+Id,Value,SortOrder
+1,Pre-diagnosis,1
+2,During diagnosis,3
+3,Post-diagnosis,2
+4,Multiple points in patient pathway,4

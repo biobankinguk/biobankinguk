@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Directory.Search.Dto.Facets
+namespace Biobanks.Search.Dto.Facets
 {
     public static class Facets
     {
@@ -69,9 +69,9 @@ namespace Directory.Search.Dto.Facets
             },
             new FacetDetailSummary
             {
-                Label = "Preservation Type",
-                Name = "preservationType",
-                Slug = "pret"
+                Label = "Storage Temperature",
+                Name = "storageTemperature",
+                Slug = "stmp"
             },
             new FacetDetailSummary
             {

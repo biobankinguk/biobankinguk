@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Common.Auth;
-using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Models;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.EqualityComparers;

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Directory.Identity</RootNamespace>
-    <AssemblyName>Biobanks.Directory.Identity</AssemblyName>
+    <RootNamespace>Biobanks.Identity</RootNamespace>
+    <AssemblyName>Biobanks.Identity</AssemblyName>
     <EmbeddedResourceUseDependentUponConvention>true</EmbeddedResourceUseDependentUponConvention>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Entity\Entity.csproj" />
   </ItemGroup>
 
 </Project>

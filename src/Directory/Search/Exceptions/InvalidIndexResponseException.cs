@@ -1,6 +1,6 @@
 using System;
 
-namespace Directory.Search.Exceptions
+namespace Biobanks.Search.Exceptions
 {
     public class InvalidIndexResponseException : Exception
     {

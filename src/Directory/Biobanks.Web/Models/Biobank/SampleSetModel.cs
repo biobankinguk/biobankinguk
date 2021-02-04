@@ -20,6 +20,6 @@ namespace Biobanks.Web.Models.Biobank
         public string CollectionPercentage { get; set; }
         public string MacroscopicAssessment { get; set; }
         public string MaterialType { get; set; }
-        public string PreservationType { get; set; }
+        public string StorageTemperature { get; set; }
     }
 }

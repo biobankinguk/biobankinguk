@@ -2,7 +2,7 @@
 @using System.Configuration
 @using System.Linq
 @using System.Web.Optimization
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model Biobanks.Web.Models.Profile.BiobankModel
 
 @{
@@ -69,39 +69,39 @@
         </div>
     }
 
-    @if (Model.CollectionDiagnoses.Any())
-    {
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>Existing samples:</h3>
-                <ul>
-                    @foreach (var diagnosis in Model.CollectionDiagnoses)
-                    {
-                        <li>
-                            @diagnosis
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-    }
+	@if (Model.CollectionOntologyTerms.Any())
+	{
+		<div class="row">
+			<div class="col-sm-12">
+				<h3>Existing samples:</h3>
+				<ul>
+					@foreach (var ontologyTerm in Model.CollectionOntologyTerms)
+					{
+						<li>
+							@ontologyTerm
+						</li>
+					}
+				</ul>
+			</div>
+		</div>
+	}
 
-    @if (Model.CapabilityDiagnoses.Any())
-    {
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>Bespoke collection capabilities:</h3>
-                <ul>
-                    @foreach (var diagnosis in Model.CapabilityDiagnoses)
-                    {
-                        <li>
-                            @diagnosis
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-    }
+	@if (Model.CapabilityOntologyTerms.Any())
+	{
+		<div class="row">
+			<div class="col-sm-12">
+				<h3>Bespoke collection capabilities:</h3>
+				<ul>
+					@foreach (var ontologyTerm in Model.CapabilityOntologyTerms)
+					{
+						<li>
+							@ontologyTerm
+						</li>
+					}
+				</ul>
+			</div>
+		</div>
+	}
 
     @if (Model.NetworkMembers.Any())
     {
@@ -178,53 +178,53 @@
         </dl>
     </div>
 
-    @if (Model.LastUpdated.HasValue)
-    {
-        <h4>Last Updated: @Model.LastUpdated</h4>
-        <br />
-    }
+	@if (Model.LastUpdated.HasValue)
+	{
+		<h4>Last Updated: @Model.LastUpdated</h4>
+		<br />
+	}
     
     <h3>Annual Statistics</h3>
-    <div class="row">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th rowspan="2">Year</th>
-                    @foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
-                    {
-                        <th colspan="@annualStatsGroup.AnnualStatistics.Count" class="text-center">@annualStatsGroup.Name</th>
-                    }
-                </tr>
+	<div class="row">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th rowspan="2">Year</th>
+					@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
+					{
+						<th colspan="@annualStatsGroup.AnnualStatistics.Count" class="text-center">@annualStatsGroup.Value</th>
+					}
+				</tr>
 
-                <tr>
-                    @foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
-                    {
-                        foreach (var annualStat in annualStatsGroup.AnnualStatistics)
-                        {
-                            <th class="text-center">@annualStat.Name</th>
-                        }
-                    }
-                </tr>
-            </thead>
+				<tr>
+					@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
+					{
+						foreach (var annualStat in annualStatsGroup.AnnualStatistics)
+						{
+							<th class="text-center">@annualStat.Value</th>
+						}
+					}
+				</tr>
+			</thead>
 
-            <tbody>
-                @for (var year = int.Parse(ConfigurationManager.AppSettings["AnnualStatsStartYear"]); year <= DateTime.Now.Year; year++)
-                {
-                    <tr>
-                        <td>@year</td>
-                        @foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
-                        {
-                            foreach (var annualStat in annualStatsGroup.AnnualStatistics)
-                            {
-                                var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.AnnualStatisticId && bas.Year == year)?.Value;
-                                <td class="text-center">@(statValue != null ? statValue.ToString() : "N/A")</td>
-                            }
-                        }
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+			<tbody>
+				@for (var year = int.Parse(ConfigurationManager.AppSettings["AnnualStatsStartYear"]); year <= DateTime.Now.Year; year++)
+				{
+					<tr>
+						<td>@year</td>
+						@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
+						{
+							foreach (var annualStat in annualStatsGroup.AnnualStatistics)
+							{
+								var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.Id && bas.Year == year)?.Value;
+								<td class="text-center">@(statValue != null ? statValue.ToString() : "N/A")</td>
+							}
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
 
 </div>
 

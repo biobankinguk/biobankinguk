@@ -2,15 +2,15 @@ using System;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Entity.Data;
-using Directory.Identity.Contracts;
-using Directory.Identity.Data.Entities;
-using Directory.Services.Contracts;
+using Biobanks.Entities.Data;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;
 using Biobanks.Web.Utilities;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {

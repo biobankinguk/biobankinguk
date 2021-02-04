@@ -1,10 +1,10 @@
-using Directory.Search.Dto.Documents;
-using Directory.Search.Constants;
 using Nest;
 using System.Collections.Generic;
 using System.Linq;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Dto.Documents;
 
-namespace Directory.Search.Dto.Facets
+namespace Biobanks.Search.Dto.Facets
 {
     public static class FacetList
     {
@@ -267,12 +267,12 @@ namespace Directory.Search.Dto.Facets
             },
             new FacetDetail(FacetGroupId.SampleDetails)
             {
-                Label = "Preservation Type",
-                Name = "preservationType",
-                Slug = "pret",
+                Label = "Storage Temperature",
+                Name = "storageTemperature",
+                Slug = "stmp",
                 NestedAggregation = true,
                 NestedAggregationPath = "materialPreservationDetails",
-                NestedAggregationFieldName = "preservationType",
+                NestedAggregationFieldName = "storageTemperature",
                 SearchTypes = new List<SearchType>
                 {
                     SearchType.Collection

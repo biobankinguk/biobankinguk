@@ -1,6 +1,5 @@
-﻿namespace Directory.Data.Migrations
+﻿namespace Biobanks.Directory.Data.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
     
     public partial class AddAnnotationEntity : DbMigration
@@ -8,8 +7,8 @@
         public override void Up()
         {
             CreateTable(
-                "dbo.Annotations",
-                c => new
+                    "dbo.Annotations",
+                    c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
                         AnnotationId = c.String(),
@@ -17,10 +16,10 @@
                         Uri = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
-                "dbo.PublicationAnnotations",
-                c => new
+                    "dbo.PublicationAnnotations",
+                    c => new
                     {
                         Publication_Id = c.Int(nullable: false),
                         Annotation_Id = c.Int(nullable: false),
@@ -30,10 +29,10 @@
                 .ForeignKey("dbo.Annotations", t => t.Annotation_Id, cascadeDelete: true)
                 .Index(t => t.Publication_Id)
                 .Index(t => t.Annotation_Id);
-            
+
             AddColumn("dbo.Publications", "Source", c => c.String());
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.PublicationAnnotations", "Annotation_Id", "dbo.Annotations");

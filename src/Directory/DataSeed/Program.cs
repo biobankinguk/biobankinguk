@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Directory.DataSeed;
 using Microsoft.Extensions.Hosting;
 
-
-namespace Directory.DataSeed
+namespace Biobanks.DataSeed
 {
     internal static class Program
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Directory.Search.Dto.Results
+namespace Biobanks.Search.Dto.Results
 {
     public class CapabilitySummary
     {

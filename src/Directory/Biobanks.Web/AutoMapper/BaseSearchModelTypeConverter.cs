@@ -1,7 +1,7 @@
 using System.Linq;
 using AutoMapper;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Results;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 using Biobanks.Web.Models.Search;
 using Castle.Core.Internal;
 

@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Search.Contracts;
-using Directory.Search.Dto.Facets;
-using Directory.Search.Dto.Documents;
-using Directory.Search.Dto.Results;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 using Elasticsearch.Net;
 using Nest;
-using DirectorySearchResult = Directory.Search.Dto.Results.Result;
-using Directory.Search.Constants;
+using DirectorySearchResult = Biobanks.Search.Dto.Results.Result;
+using Result = Biobanks.Search.Dto.Results.Result;
 
-namespace Directory.Search.Elastic
+namespace Biobanks.Search.Elastic
 {
     // TODO major renaming work
-    // diagnosis -> ontology term
     // biobank -> organisation
 
     /// <inheritdoc cref="ICapabilitySearchProvider" />
@@ -64,17 +64,17 @@ namespace Directory.Search.Elastic
         public IEnumerable<string> ListOntologyTerms(string wildcard = "")
         {
             var capabilities = _client.Search<CapabilityDocument>(s => s
-                .Query(q => q.Wildcard(p => p.Diagnosis, $"*{wildcard}*"))
+                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*"))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
-                        .Field(p => p.Diagnosis))));
+                        .Field(p => p.OntologyTerm))));
 
             return capabilities.Aggregations.Terms("diagnoses").Buckets.Select(x => x.Key);
         }
 
         /// <inheritdoc />
-        public DirectorySearchResult Search(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
+        public Result Search(string ontologyTerm, IEnumerable<SelectedFacet> selectedFacets, int maxHits)
         {
             var searchResult = _client
                 .Search<CapabilityDocument>(
@@ -87,7 +87,7 @@ namespace Directory.Search.Elastic
                         .Size(SizeLimits.SizeMax)
                         .Aggregations(a => BuildCapabilitySearchAggregations()));
 
-            return new DirectorySearchResult
+            return new Result
             {
                 Biobanks = ExtractBiobankSearchSummaries(searchResult),
                 Facets = ExtractFacets(searchResult)
