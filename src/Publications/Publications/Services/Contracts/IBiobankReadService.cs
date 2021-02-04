@@ -21,7 +21,7 @@ namespace Publications.Services.Contracts
 
         Task<IEnumerable<Publication>> ListPublications();
 
-        Task<IEnumerable<TestDTO>> GetBiobankAnnotations();
+        Task<IEnumerable<AnnotationQueryDTO>> GetBiobankAnnotations();
 
     }
 }

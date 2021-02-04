@@ -54,7 +54,7 @@ namespace Publications.Services
             => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
 
         //Gets all Annotations for every biobank in db
-        public async Task<IEnumerable<TestDTO>> GetBiobankAnnotations()
+        public async Task<IEnumerable<AnnotationQueryDTO>> GetBiobankAnnotations()
         {
             var query =
                 from Annotations in _ctx.Annotations
@@ -64,14 +64,14 @@ namespace Publications.Services
                 from Publications in Publications_join.DefaultIfEmpty()
                 orderby
                   Publications.OrganisationId
-                select new TestDTO
+                select new AnnotationQueryDTO
                 {
                     Annotation = Annotations.Name,
                     OrganisationId = (int?)Publications.OrganisationId
                 };
             var annotationList = await query.ToListAsync();
 
-            var result = annotationList.GroupBy(i => i.OrganisationId).Select(x => new TestDTO { OrganisationId = x.Key, Annotations = x.Select(e => e.Annotation).ToList() });
+            var result = annotationList.GroupBy(i => i.OrganisationId).Select(x => new AnnotationQueryDTO { OrganisationId = x.Key, Annotations = x.Select(e => e.Annotation).ToList() });
 
             return result;
         }
