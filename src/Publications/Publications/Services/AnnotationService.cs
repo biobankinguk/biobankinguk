@@ -27,26 +27,26 @@ namespace Publications.Services
             var existingPublications = await _biobankReadService.GetPublicationById(publicationId);
             var existingAnnotations = await _biobankReadService.GetPublicationAnnotations(existingPublications.Id);
 
-            var annotationList = new HashSet<Annotation>();
-
+            var annotationList = new List<Annotation>();
             foreach(var annotation in annotations)
             {
                 foreach(var tags in annotation.Tags)
                 {
-                    var annotationEntity = new Annotation()
-                    {
-                        AnnotationId = annotation.Id,
-                        Name = tags.Name,
-                        Uri = tags.Uri,
-                        PublicationAnnotations = new List<PublicationAnnotation>()
-                    };
-                    var publicationAnnotation = new PublicationAnnotation()
-                    {
-                        Annotation_Id = annotationEntity.Id,
-                        Publication_Id = existingPublications.Id
-                    };
-                    annotationEntity.PublicationAnnotations.Add(publicationAnnotation);
-                    annotationList.Add(annotationEntity);
+                      var annotationEntity = new Annotation()
+                      {
+                          AnnotationId = annotation.Id,
+                          Name = tags.Name.ToLower(),
+                          Uri = tags.Uri,
+                          PublicationAnnotations = new List<PublicationAnnotation>()
+                      };
+                      var publicationAnnotation = new PublicationAnnotation()
+                      {
+                          Annotation_Id = annotationEntity.Id,
+                          Publication_Id = existingPublications.Id
+                      };
+                      annotationEntity.PublicationAnnotations.Add(publicationAnnotation);
+                      annotationList.Add(annotationEntity);
+
                 }
             }
             //Remove duplicate Annotation Names
