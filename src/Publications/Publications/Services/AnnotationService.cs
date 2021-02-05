@@ -27,7 +27,7 @@ namespace Publications.Services
             var existingPublications = await _biobankReadService.GetPublicationById(publicationId);
             var existingAnnotations = await _biobankReadService.GetPublicationAnnotations(existingPublications.Id);
 
-            var annotationList = new List<Annotation>();
+            var annotationList = new HashSet<Annotation>();
 
             foreach(var annotation in annotations)
             {
@@ -49,9 +49,11 @@ namespace Publications.Services
                     annotationList.Add(annotationEntity);
                 }
             }
-
+            //Remove duplicate Annotation Names
+            var annList = annotationList.GroupBy(x => x.Name).Select(x => x.First()).ToList();
+   
             //Add or Update new annotations
-            foreach (var newer in annotationList)
+            foreach (var newer in annList)
             {
                 //Find if older version of annotation exists
                 var older = existingAnnotations.Select(x => x.Annotation).Where(a => a.AnnotationId == newer.AnnotationId).FirstOrDefault();
