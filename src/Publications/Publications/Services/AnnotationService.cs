@@ -50,7 +50,7 @@ namespace Publications.Services
                 }
             }
             //Remove duplicate Annotation Names
-            var annList = annotationList.GroupBy(x => x.Name).Select(x => x.First()).ToList();
+            var annList = annotationList.GroupBy(x => x.Name).Select(x => x.First()).ToHashSet();
    
             //Add or Update new annotations
             foreach (var newer in annList)
