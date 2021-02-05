@@ -86,6 +86,18 @@ namespace Publications
 
         private async Task<List<AnnotationDto>> AnnotationSearch(string publicationId, string source)
         {
+            // Filter by type of Annotation
+            var types = new List<string>()
+            {
+                "Diseases",
+                "Organ Tissue",
+                "Phenotype",
+                "Sample-Material",
+                "Body-Site"
+            };
+
+            string typeQuery = "?type=" + string.Join("&type=", types);
+
             var annotations = new List<AnnotationDto>();
             // Parse query parameters
             var parameters = new Dictionary<string, string>()
@@ -94,14 +106,6 @@ namespace Publications
                     { "format", "JSON" }
                 };
 
-            // Filter by type of Annotation
-            var types = new List<string>();
-            types.Add("Diseases");
-            types.Add("Organ Tissue");
-            types.Add("Phenotype");
-            types.Add("Sample-Material");
-            types.Add("Body-Site");
-            string typeQuery = "?type=" + string.Join("&type=", types);
 
             string endpoint = QueryHelpers.AddQueryString("annotations_api/annotationsByArticleIds" + typeQuery, parameters);
             string response = await _client.GetStringAsync(endpoint);
