@@ -13,6 +13,7 @@ using System.Linq;
 using Publications.Services.Contracts;
 using Microsoft.Extensions.Configuration;
 using Publications.Services.Dto;
+using Microsoft.Extensions.Primitives;
 
 namespace Publications
 {
@@ -93,7 +94,16 @@ namespace Publications
                     { "format", "JSON" }
                 };
 
-            string endpoint = QueryHelpers.AddQueryString("annotations_api/annotationsByArticleIds", parameters);
+            // Filter by type of Annotation
+            var types = new List<string>();
+            types.Add("Diseases");
+            types.Add("Organ Tissue");
+            types.Add("Phenotype");
+            types.Add("Sample-Material");
+            types.Add("Body-Site");
+            string typeQuery = "?type=" + string.Join("&type=", types);
+
+            string endpoint = QueryHelpers.AddQueryString("annotations_api/annotationsByArticleIds" + typeQuery, parameters);
             string response = await _client.GetStringAsync(endpoint);
 
             // Parse JSON result
