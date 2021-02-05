@@ -56,7 +56,7 @@ namespace Publications.Services
             foreach (var newer in annList)
             {
                 //Find if older version of annotation exists
-                var older = existingAnnotations.Select(x => x.Annotation).Where(a => a.AnnotationId == newer.AnnotationId).FirstOrDefault();
+                var older = existingAnnotations.Select(x => x.Annotation).FirstOrDefault(a => a.AnnotationId == newer.AnnotationId);
 
                 if (older is null)
                 {
