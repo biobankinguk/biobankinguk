@@ -164,7 +164,8 @@ namespace Biobanks.Services
                             Name = ad.AssociatedDataProcurementTimeframe.Value,
                             ad.AssociatedDataProcurementTimeframe.SortOrder
                         })
-                    })
+                    }),
+                    OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(updatedCapability.OntologyTerm.OtherTerms)
                 }));
         }
 
@@ -212,7 +213,8 @@ namespace Biobanks.Services
                                     Name = ad.AssociatedDataProcurementTimeframe.Value,
                                     ad.AssociatedDataProcurementTimeframe.SortOrder
                                 })
-                            })
+                            }),
+                            OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
                         }));
             }
         }
