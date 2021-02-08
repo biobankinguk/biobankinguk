@@ -1,0 +1,28 @@
+[
+    {
+        "id": "5",
+        "value": "Faeces",
+        "sortOrder": "19",
+        "materialTypeGroups": [
+            {
+                "id": 1,
+                "value": "Fluid Sample"
+            }
+        ]
+    },
+    {
+        "id": "20",
+        "value": "Swab",
+        "sortOrder": "46",
+        "materialTypeGroups": [
+            {
+                "id": 2,
+                "value": "Tissue Sample"
+            },
+            {
+                "id": 3,
+                "value": "Extracted Sample"
+            }
+        ]
+    }
+]

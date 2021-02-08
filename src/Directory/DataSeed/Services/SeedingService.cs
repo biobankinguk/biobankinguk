@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data;
-using CsvHelper;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
-using CsvHelper.Configuration;
+using Newtonsoft.Json;
 
 namespace Biobanks.DataSeed.Services
 {
@@ -24,7 +22,6 @@ namespace Biobanks.DataSeed.Services
         private readonly ILogger<SeedingService> _logger;
         private readonly BiobanksDbContext _db;
         private readonly CountriesWebService _countriesWebService;
-        private readonly CsvConfiguration _csvConfiguration;
 
         private IEnumerable<Action> _seedActions;
 
@@ -34,52 +31,42 @@ namespace Biobanks.DataSeed.Services
             _logger = logger;
             _countriesWebService = countriesWebService;
 
-            // Configure CsvReader
-            _csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture)
-            {
-                IgnoreReferences = true
-            };
-
             // List Order Determines Seed Order
             _seedActions = new List<Action>
             {
                 /* Directory Specific */
                 SeedCountries,
-                SeedCounties,
-                SeedCsv<AccessCondition>,
-                SeedCsv<AgeRange>,
-                SeedCsv<AnnualStatisticGroup>,
-                SeedAnnualStatistics,
-                SeedCsv<AssociatedDataProcurementTimeframe>,
-                SeedCsv<AssociatedDataTypeGroup>,
-                SeedAssociatedDataTypes,
-                SeedCsv<CollectionPercentage>,
-                SeedCsv<CollectionPoint>,
-                SeedCsv<CollectionStatus>,
-                SeedCsv<CollectionType>,
-                SeedCsv<ConsentRestriction>,
-                SeedCsv<DonorCount>,
-                SeedCsv<Funder>,
-                SeedCsv<HtaStatus>,
-                SeedCsv<MacroscopicAssessment>,
-                SeedCsv<RegistrationReason>,
-                SeedCsv<SampleCollectionMode>,
-                SeedCsv<ServiceOffering>,
-                SeedCsv<SopStatus>,
+                SeedJson<AccessCondition>,
+                SeedJson<AgeRange>,
+                SeedJson<AnnualStatisticGroup>,
+                SeedJson<AssociatedDataProcurementTimeframe>,
+                SeedJson<AssociatedDataTypeGroup>, // TODO: Not use generated identity
+                SeedJson<CollectionPercentage>,
+                SeedJson<CollectionPoint>,
+                SeedJson<CollectionStatus>,
+                SeedJson<CollectionType>,
+                SeedJson<ConsentRestriction>,
+                SeedJson<DonorCount>,
+                SeedJson<Funder>,
+                SeedJson<HtaStatus>,
+                SeedJson<MacroscopicAssessment>,
+                SeedJson<RegistrationReason>,
+                SeedJson<SampleCollectionMode>,
+                SeedJson<ServiceOffering>,
+                SeedJson<SopStatus>,
                 
                 /* API Specific */
-                SeedCsv<Ontology>,
-                SeedOntologyVersion,
-                SeedCsv<SampleContentMethod>,
-                SeedCsv<Status>,
-                SeedCsv<TreatmentLocation>,
+                SeedJson<Ontology>,
+                SeedJson<SampleContentMethod>,
+                SeedJson<Status>,
+                SeedJson<TreatmentLocation>,
 
                 /* Shared */
-                SeedCsv<MaterialTypeGroup>,
-                SeedCsv<MaterialType>,
-                SeedCsv<Sex>,
-                SeedCsv<OntologyTerm>,
-                SeedCsv<StorageTemperature>,
+                SeedJson<MaterialTypeGroup>,
+                SeedJson<MaterialType>,
+                SeedJson<Sex>,
+                //SeedCsv<OntologyTerm>,
+                SeedJson<StorageTemperature>,
             };
         }
 
@@ -95,30 +82,6 @@ namespace Biobanks.DataSeed.Services
             
         public Task StopAsync(CancellationToken cancellationToken) 
             => Task.CompletedTask;
-
-        private void SeedAnnualStatistics() 
-        {
-            Seed(
-                ReadCsv<AnnualStatistic>().Select(x =>
-                    {
-                        x.AnnualStatisticGroup = null;  // Prevents foreign key duplications
-                        return x;
-                    }
-                )
-            );
-        }
-
-        private void SeedAssociatedDataTypes() 
-        {
-            Seed(
-                ReadCsv<AssociatedDataType>().Select(x =>
-                    {
-                        x.AssociatedDataTypeGroup = null;  // Prevents foreign key duplications
-                        return x;
-                    }
-                )
-            );
-        }
 
         private void SeedCountries() 
         {
@@ -137,50 +100,18 @@ namespace Biobanks.DataSeed.Services
             }
             else
             {
-                SeedCsv<Country>();
+                SeedJson<Country>(); // Also seeds Counties 
             }
 
             // Update Config Value
-            WriteConfig("site.display.counties", !seedUN ? "true" : "false");
-        }
-
-        private void SeedCounties()
-        {
-            if (ReadConfig("site.display.counties") == "true")
-            {
-                // References Of All Seeded Countries
-                var countries = _db.Set<Country>().ToList();
-
-                // Seed Counties From Csv - Linking With Existing Countries
-                Seed(
-                    ReadCsv<County>().Select(x => new County
-                    {
-                        Value = x.Value,
-                        Country = countries.Single(y => y.Id == x.CountryId)
-                    })
-                );
-            }
-        }
-
-        private void SeedOntologyVersion()
-        {
-            var ontologies = _db.Set<Ontology>().ToList();
-
-            Seed(
-                ReadCsv<OntologyVersion>()
-                    .Select(x =>
-                    {
-                        x.Ontology = ontologies.FirstOrDefault(y => y.Id == x.OntologyId);
-                        return x;
-                    })
-                    .Where(x => x.Ontology != null)
-            );
+            _db.Configs.FirstOrDefault(x => x.Key == "site.display.counties").Value = (!seedUN ? "true" : "false");
+            _db.SaveChanges();
         }
 
         private void Seed<T>(IEnumerable<T> entities) where T : class
         {
             var set = _db.Set<T>();
-            
+
             if (set.Any())
             {
                 _logger.LogInformation($"{ typeof(T).Name }: { set.Count() } entries already exist");
@@ -193,33 +124,22 @@ namespace Biobanks.DataSeed.Services
             }
         }
 
-        private void SeedCsv<T>() where T : class
+        private void SeedJson<T>() where T : class
         {
-            Seed(ReadCsv<T>());
+            Seed(ReadJson<T>());
         }
 
-        private void WriteConfig(string key, string value)
-        {
-            _db.Configs.FirstOrDefault(x => x.Key == key).Value = value;
-            _db.SaveChanges();
-        }
-
-        private string ReadConfig(string key)
-        {
-            return _db.Configs.FirstOrDefault(x => x.Key == key).Value;
-        }
-
-        private IEnumerable<T> ReadCsv<T>(string filePath = "") where T : class
+        private IEnumerable<T> ReadJson<T>(string filePath = "")
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                filePath = Path.Combine(_dataDir, typeof(T).Name) + ".csv";
+                filePath = Path.Combine(_dataDir, typeof(T).Name) + ".json";
             }
 
             using (var stream = new StreamReader(filePath))
-            using (var reader = new CsvReader(stream, _csvConfiguration))
+            using (var reader = new JsonTextReader(stream))
             {
-                return reader.GetRecords<T>().ToList();
+                return new JsonSerializer().Deserialize<IEnumerable<T>>(reader);
             }
         }
     }

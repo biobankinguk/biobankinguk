@@ -1,0 +1,454 @@
+[
+    {
+        "id": "1",
+        "value": "Action for A-T"
+    },
+    {
+        "id": "2",
+        "value": "Action for Medical Research"
+    },
+    {
+        "id": "3",
+        "value": "Action on Hearing Loss"
+    },
+    {
+        "id": "4",
+        "value": "Alzheimer's Society"
+    },
+    {
+        "id": "5",
+        "value": "Alzheimer's Research UK"
+    },
+    {
+        "id": "6",
+        "value": "Anthony Nolan"
+    },
+    {
+        "id": "7",
+        "value": "Arthritis Research UK"
+    },
+    {
+        "id": "8",
+        "value": "Asthma UK"
+    },
+    {
+        "id": "9",
+        "value": "Ataxia UK"
+    },
+    {
+        "id": "10",
+        "value": "Ataxia-Telangiectasia Society"
+    },
+    {
+        "id": "11",
+        "value": "Blond McIndoe Research Foundation"
+    },
+    {
+        "id": "12",
+        "value": "Bloodwise"
+    },
+    {
+        "id": "13",
+        "value": "Bone Cancer research trust"
+    },
+    {
+        "id": "14",
+        "value": "Bowel and Cancer Research"
+    },
+    {
+        "id": "15",
+        "value": "Brain Research Trust"
+    },
+    {
+        "id": "16",
+        "value": "Brain Tumor Research"
+    },
+    {
+        "id": "17",
+        "value": "British Heart Foundation"
+    },
+    {
+        "id": "18",
+        "value": "British Lung Foundation"
+    },
+    {
+        "id": "19",
+        "value": "British Sj\u00c3\u00b6gren's Syndrome Association"
+    },
+    {
+        "id": "20",
+        "value": "British Skin Foundation"
+    },
+    {
+        "id": "21",
+        "value": "Cancer Research UK"
+    },
+    {
+        "id": "22",
+        "value": "Chest Heart & Stroke Scotland"
+    },
+    {
+        "id": "23",
+        "value": "Childhood Eye Cancer Trust"
+    },
+    {
+        "id": "24",
+        "value": "Children with Cancer UK"
+    },
+    {
+        "id": "25",
+        "value": "Children's Liver Disease Foundation"
+    },
+    {
+        "id": "26",
+        "value": "Chronic Disease Research Foundation"
+    },
+    {
+        "id": "27",
+        "value": "Chronic Granulomatous Disorder Society"
+    },
+    {
+        "id": "28",
+        "value": "Core"
+    },
+    {
+        "id": "29",
+        "value": "Crohn's and Colitis UK"
+    },
+    {
+        "id": "30",
+        "value": "Crohn's in Childhood Research Association"
+    },
+    {
+        "id": "31",
+        "value": "Cystic Fibrosis Trust"
+    },
+    {
+        "id": "32",
+        "value": "DEBRA"
+    },
+    {
+        "id": "33",
+        "value": "Diabetes Research & Wellness Foundation"
+    },
+    {
+        "id": "34",
+        "value": "Diabetes UK"
+    },
+    {
+        "id": "35",
+        "value": "Dunhill Medical Trust"
+    },
+    {
+        "id": "36",
+        "value": "Epilepsy Research UK"
+    },
+    {
+        "id": "37",
+        "value": "Fght for sight"
+    },
+    {
+        "id": "38",
+        "value": "Foundation for Liver Research"
+    },
+    {
+        "id": "39",
+        "value": "Heart Research UK"
+    },
+    {
+        "id": "40",
+        "value": "JDRF"
+    },
+    {
+        "id": "41",
+        "value": "Kidney Research UK"
+    },
+    {
+        "id": "42",
+        "value": "Kids Kidney Research"
+    },
+    {
+        "id": "43",
+        "value": "Leuka"
+    },
+    {
+        "id": "44",
+        "value": "Leukaemia & Lymphoma NI"
+    },
+    {
+        "id": "45",
+        "value": "Ludwig Institute for Cancer Research"
+    },
+    {
+        "id": "46",
+        "value": "Macular Society"
+    },
+    {
+        "id": "47",
+        "value": "Medical Research Scotland"
+    },
+    {
+        "id": "48",
+        "value": "Meningitis Now"
+    },
+    {
+        "id": "49",
+        "value": "Meningitis Research Foundation"
+    },
+    {
+        "id": "50",
+        "value": "Migrane Trust"
+    },
+    {
+        "id": "51",
+        "value": "Motor Neurone Disease Association"
+    },
+    {
+        "id": "52",
+        "value": "MQ: Transforming Mental Health"
+    },
+    {
+        "id": "53",
+        "value": "Multiple Sclerosis Society"
+    },
+    {
+        "id": "54",
+        "value": "Muscular Dystrophy UK"
+    },
+    {
+        "id": "55",
+        "value": "Myeloma UK"
+    },
+    {
+        "id": "56",
+        "value": "Myrovlytis Trust"
+    },
+    {
+        "id": "57",
+        "value": "National Eye Research Centre"
+    },
+    {
+        "id": "58",
+        "value": "Neuroblastoma UK"
+    },
+    {
+        "id": "59",
+        "value": "Neurosciences Research Foundation"
+    },
+    {
+        "id": "60",
+        "value": "Niemann-Pick Research Foundation"
+    },
+    {
+        "id": "61",
+        "value": "North West Cancer Research"
+    },
+    {
+        "id": "62",
+        "value": "Novo Nordisk UK Research Foundation"
+    },
+    {
+        "id": "63",
+        "value": "Orthopaedic Research UK"
+    },
+    {
+        "id": "64",
+        "value": "Ovarian Action Now"
+    },
+    {
+        "id": "65",
+        "value": "Pancreatic Cancer Research Fund"
+    },
+    {
+        "id": "66",
+        "value": "Pancreatic Cancer UK"
+    },
+    {
+        "id": "67",
+        "value": "Parkinson's UK"
+    },
+    {
+        "id": "68",
+        "value": "Pelican Cancer Foundation"
+    },
+    {
+        "id": "69",
+        "value": "Prostate Cancer UK"
+    },
+    {
+        "id": "70",
+        "value": "Psoriasis Association"
+    },
+    {
+        "id": "71",
+        "value": "RAFT"
+    },
+    {
+        "id": "72",
+        "value": "Restore - Burn and Wound Research"
+    },
+    {
+        "id": "73",
+        "value": "RP Fighting Blindness"
+    },
+    {
+        "id": "74",
+        "value": "SMA Trust"
+    },
+    {
+        "id": "75",
+        "value": "South West Thames Kidney Fund"
+    },
+    {
+        "id": "76",
+        "value": "Sparks"
+    },
+    {
+        "id": "77",
+        "value": "Spinal Research"
+    },
+    {
+        "id": "78",
+        "value": "Target Ovarian Cancer"
+    },
+    {
+        "id": "79",
+        "value": "Tenovus Cancer Care"
+    },
+    {
+        "id": "80",
+        "value": "The Brain Tumour Charity"
+    },
+    {
+        "id": "81",
+        "value": "The Cure Parkinson's Trust"
+    },
+    {
+        "id": "82",
+        "value": "The Encephalitis Society"
+    },
+    {
+        "id": "83",
+        "value": "The Lullaby Trust"
+    },
+    {
+        "id": "84",
+        "value": "The PBC Foundation"
+    },
+    {
+        "id": "85",
+        "value": "The PSP Association"
+    },
+    {
+        "id": "86",
+        "value": "The Urology Foundation"
+    },
+    {
+        "id": "87",
+        "value": "Tommy's"
+    },
+    {
+        "id": "88",
+        "value": "Tuberous Sclerosis Association"
+    },
+    {
+        "id": "89",
+        "value": "Wellbeing of Women"
+    },
+    {
+        "id": "90",
+        "value": "WellChild"
+    },
+    {
+        "id": "91",
+        "value": "Wessex Medical Trust"
+    },
+    {
+        "id": "92",
+        "value": "William Harvey Research Foundation"
+    },
+    {
+        "id": "93",
+        "value": "World Cancer Research Fund"
+    },
+    {
+        "id": "94",
+        "value": "Yorkshire Cancer Research"
+    },
+    {
+        "id": "95",
+        "value": "Medical Research Council"
+    },
+    {
+        "id": "96",
+        "value": "Medical Research Fund"
+    },
+    {
+        "id": "97",
+        "value": "Arts and Humanities Research Council"
+    },
+    {
+        "id": "98",
+        "value": "Biotechnology and Biological Sciences Research Council"
+    },
+    {
+        "id": "99",
+        "value": "Engineering and Physical Sciences Research Council"
+    },
+    {
+        "id": "100",
+        "value": "Economic and Social Research Council"
+    },
+    {
+        "id": "101",
+        "value": "Natural Environment Research Council"
+    },
+    {
+        "id": "102",
+        "value": "Science and Technology Facilities Council"
+    },
+    {
+        "id": "103",
+        "value": "Wellcome Trust"
+    },
+    {
+        "id": "104",
+        "value": "EU Funding"
+    },
+    {
+        "id": "105",
+        "value": "Medical Research Foundation"
+    },
+    {
+        "id": "106",
+        "value": "NHS Greater Glasgow & Clyde"
+    },
+    {
+        "id": "107",
+        "value": "NHS Research Scotland"
+    },
+    {
+        "id": "108",
+        "value": "Children\u00e2\u20ac\u2122s Cancer and Leukaemia Group"
+    },
+    {
+        "id": "109",
+        "value": "National Institute for Health Research (NIHR)"
+    },
+    {
+        "id": "111",
+        "value": "Clinical facility and Biomedical Research Centre at Guy\u00e2\u20ac\u2122s and St Thomas\u00e2\u20ac\u2122"
+    },
+    {
+        "id": "112",
+        "value": "NHS Foundation Trust"
+    },
+    {
+        "id": "113",
+        "value": "Chief Scientist Office (CSO)"
+    },
+    {
+        "id": "114",
+        "value": "Pfizer Ltd"
+    }
+]

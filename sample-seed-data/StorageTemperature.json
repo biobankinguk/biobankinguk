@@ -1,0 +1,40 @@
+[{
+    "id": 1,
+    "value": "Room temperature",
+    "sortOrder": 1
+},
+{
+    "id": 2,
+    "value": "2 °C to 10 °C",
+    "sortOrder": 2
+},
+{
+    "id": 3,
+    "value": "-18 °C to -35 °C",
+    "sortOrder": 3
+},
+{
+    "id": 4,
+    "value": "-60°C to -85°C",
+    "sortOrder": 4
+},
+{
+    "id": 5,
+    "value": "< -135°C",
+    "sortOrder": 5
+},
+{
+    "id": 6,
+    "value": "Liquid nitrogen vapor phase",
+    "sortOrder": 6
+},
+{
+    "id": 7,
+    "value": "Liquid nitrogen liquid phase",
+    "sortOrder": 7
+},
+{
+    "id": 8,
+    "value": "Other",
+    "sortOrder": 8
+}]

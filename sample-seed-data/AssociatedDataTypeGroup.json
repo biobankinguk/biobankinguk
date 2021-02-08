@@ -1,0 +1,37 @@
+[
+    {
+        "id": "1",
+        "value": "Quality Data",
+        "associatedDataTypes": [
+            {
+                "id": "3",
+                "value": "Cold ischemic time",
+                "message": "Data indicating the time between the chilling the sample after its blood supply has been reduced or cut off and the time it is warmed by having its blood supply restored"
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "value": "Research Data",
+        "associatedDataTypes": [
+            {
+                "id": "1",
+                "value": "Biomarker datasets",
+                "message": "Results of an assay of anything that can be used as an indicator of a particular disease state or some other physiological state",
+                "associatedDataTypeGroupId": "2"
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "value": "Annotation Data",
+        "associatedDataTypes": [
+            {
+                "id": "2",
+                "value": "Clinical records",
+                "message": "Data obtained from accessing clinical records",
+                "associatedDataTypeGroupId": "3"
+            }
+        ]
+    }
+]
