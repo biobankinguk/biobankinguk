@@ -1,0 +1,44 @@
+[
+    {
+        "id": "1",
+        "value": "0 - 10%",
+        "sortOrder": "1",
+        "lowerBound": "0.00",
+        "upperBound": "10.50"
+    },
+    {
+        "id": "2",
+        "value": "11 - 25%",
+        "sortOrder": "2",
+        "lowerBound": "10.50",
+        "upperBound": "25.50"
+    },
+    {
+        "id": "3",
+        "value": "26 - 50%",
+        "sortOrder": "3",
+        "lowerBound": "25.50",
+        "upperBound": "50.50"
+    },
+    {
+        "id": "4",
+        "value": "51 - 75%",
+        "sortOrder": "4",
+        "lowerBound": "50.50",
+        "upperBound": "75.50"
+    },
+    {
+        "id": "5",
+        "value": "75% -99%",
+        "sortOrder": "5",
+        "lowerBound": "75.50",
+        "upperBound": "99.50"
+    },
+    {
+        "id": "6",
+        "value": "100%",
+        "sortOrder": "6",
+        "lowerBound": "95.50",
+        "upperBound": "100.10"
+    }
+]
