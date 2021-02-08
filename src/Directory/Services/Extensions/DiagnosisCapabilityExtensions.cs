@@ -20,6 +20,7 @@ namespace Biobanks.Services.Extensions
             {
                 Id = capability.DiagnosisCapabilityId,
                 OntologyTerm = capability.OntologyTerm.Value,
+                OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(capability.OntologyTerm.OtherTerms),
                 BiobankId = capability.OrganisationId,
                 BiobankExternalId = capability.Organisation.OrganisationExternalId,
                 Biobank = capability.Organisation.Name,
