@@ -1513,6 +1513,8 @@ namespace Biobanks.Services
         public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
             => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
 
+        public async Task<bool> OrganisationIncludesPublications(int biobankId)
+            => (!(await GetBiobankByIdAsync(biobankId)).ExcludePublications);
 
     }
 }

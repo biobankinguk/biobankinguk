@@ -42,5 +42,6 @@ namespace Biobanks.Services.Dto
 
         // registration reasons
         public string OtherRegistrationReason { get; set; }
+        public bool ExcludePublications { get; set; }
     }
 }

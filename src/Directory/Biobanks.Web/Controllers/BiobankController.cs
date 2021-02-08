@@ -1702,7 +1702,7 @@ namespace Biobanks.Web.Controllers
             if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
                 return HttpNotFound();
 
-            return View();
+            return View(SessionHelper.GetBiobankId(Session));
         }
 
 
