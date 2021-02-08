@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "value": "Immediate",
+        "sortOrder": "1",
+        "displayValue": "Immediate"
+    },
+    {
+        "id": "2",
+        "value": "0 - 3 months",
+        "sortOrder": "2",
+        "displayValue": "0-3"
+    },
+    {
+        "id": "3",
+        "value": "3 - 6 months",
+        "sortOrder": "3",
+        "displayValue": "3-6"
+    },
+    {
+        "id": "4",
+        "value": "> 6 months",
+        "sortOrder": "4",
+        "displayValue": ">6"
+    }
+]

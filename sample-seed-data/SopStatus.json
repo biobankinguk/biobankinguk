@@ -1,0 +1,26 @@
+[
+    {
+        "value": "Common SOPs in place and accreditation performed",
+        "sortOrder": 1
+    },
+    {
+        "value": "Common SOPs in place, self assessment in place",
+        "sortOrder": 2
+    },
+    {
+        "value": "Common SOPs in place, no assessment of accreditation",
+        "sortOrder": 3
+    },
+    {
+        "value": "Agreed standards in place and accreditation performed",
+        "sortOrder": 4
+    },
+    {
+        "value": "Agreed standards in place, self assessment in place",
+        "sortOrder": 5
+    },
+    {
+        "value": "Agreed standards in place, no assessment of accreditation",
+        "sortOrder": 6
+    }
+]
