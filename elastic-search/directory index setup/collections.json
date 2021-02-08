@@ -149,7 +149,7 @@
         "properties": {
           "name": {
             "type": "keyword",
-			"normalizer": "string_lowercase"
+			      "normalizer": "string_lowercase"
           }
         }
       }
