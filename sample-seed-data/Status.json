@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "value": "Open"
+    },
+    {
+        "id": 2,
+        "value": "Committed"
+    },
+    {
+        "id": 3,
+        "value": "Rejected"
+    },
+    {
+        "id": 4,
+        "value": "Expired"
+    }
+]

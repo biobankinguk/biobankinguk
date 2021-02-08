@@ -1,0 +1,18 @@
+[
+    {
+        "id": "1",
+        "value": "Macroscopic Assessment"
+    },
+    {
+        "id": "2",
+        "value": "Microscopic Assessment"
+    },
+    {
+        "id": "3",
+        "value": "Centrifuge"
+    },
+    {
+        "id": "4",
+        "value": "Other"
+    }
+]
