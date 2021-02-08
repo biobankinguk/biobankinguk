@@ -40,7 +40,8 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<AgeRange>,
                 SeedJson<AnnualStatisticGroup>,
                 SeedJson<AssociatedDataProcurementTimeframe>,
-                SeedJson<AssociatedDataTypeGroup>, // TODO: Not use generated identity
+                SeedJson<AssociatedDataTypeGroup>,
+                SeedJson<AssociatedDataType>,
                 SeedJson<CollectionPercentage>,
                 SeedJson<CollectionPoint>,
                 SeedJson<CollectionStatus>,
@@ -65,7 +66,7 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<MaterialTypeGroup>,
                 SeedJson<MaterialType>,
                 SeedJson<Sex>,
-                //SeedCsv<OntologyTerm>,
+                SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
             };
         }
