@@ -1,0 +1,11 @@
+[
+    {
+        "id": 1,
+        "value": "SNOMED-CT",
+        "ontologyVersions": [
+            {
+                "value": 25
+            }
+        ]
+    }
+]
