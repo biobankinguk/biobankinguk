@@ -1,29 +1,38 @@
 ﻿@using System.Linq
 @using System.Web.Optimization
+@model int
 @{
-	ViewBag.Title = "Publications";
+    ViewBag.Title = "Publications";
 }
 
 @Html.Partial("_BiobankTabs", "Publications")
 
 <h3>
-	@ViewBag.Title
+    @ViewBag.Title
 </h3>
 
+<span id="BiobankId" data-biobank-id="@Model"></span>
+
 <div class="row">
-	<div class="col-md-12">
-		<br />
+    <div class="col-md-12">
+        <br />
 
-		<div class="alert alert-info feedback-message annualstats-feedback" role="alert">
-			Approving publications will help people find you by your research.
-		</div>
+        <div class="alert alert-info feedback-message annualstats-feedback" role="alert">
+            Approving publications will help people find you by your research.
+        </div>
 
-		<table id="biobank-publications" class="table table-striped table-hover" style="width:100%"></table>
-	</div>
+        @*Enable/Disable Publications*@
+        <label class="switch pull-right">
+            <input id="IncludePublications" type="checkbox">
+            <span class="slider round"></span>
+        </label>
+
+        <table id="biobank-publications" class="table table-striped table-hover" style="width:100%"></table>
+    </div>
 </div>
 
 @section FooterScripts
 {
-	@Scripts.Render("~/bundles/datatables")
-	@Scripts.Render("~/bundles/biobank/publications")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/biobank/publications")
 }

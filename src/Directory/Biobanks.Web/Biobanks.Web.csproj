@@ -432,6 +432,7 @@
     <Compile Include="ApiControllers\AssociatedDataProcurementTimeFrameController.cs" />
     <Compile Include="ApiControllers\AssociatedDataTypeGroupController.cs" />
     <Compile Include="ApiControllers\AssociatedDataTypeController.cs" />
+    <Compile Include="ApiControllers\BiobankController.cs" />
     <Compile Include="ApiControllers\CollectionPercentageController.cs" />
     <Compile Include="ApiControllers\CollectionPointController.cs" />
     <Compile Include="ApiControllers\CollectionStatusController.cs" />

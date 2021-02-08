@@ -277,5 +277,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<AnnualStatisticGroup>> ListAnnualStatisticGroupsAsync(string wildcard = "");
         Task<bool> ValidAnnualStatisticGroupNameAsync(int annualStatisticGroupId, string annualStatisticGroupName);
         Task<bool> ValidAnnualStatisticGroupNameAsync(string annualStatisticGroupName);
+        Task<bool> OrganisationIncludesPublications(int biobankId);
+
     }
 }
