@@ -89,7 +89,7 @@ namespace Biobanks.Directory.Data
         public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
-
+        public DbSet<PreservationType> PreservationTypes { get; set; }
 
         /*  API Entities  */
         public DbSet<Status> Statuses { get; set; }
