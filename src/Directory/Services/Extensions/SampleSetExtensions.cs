@@ -15,6 +15,7 @@ namespace Biobanks.Services.Extensions
             {
                 Id = sampleSet.SampleSetId,
                 OntologyTerm = sampleSet.Collection.OntologyTerm.Value,
+                OntologyOtherTerms = ParseOtherTerms(sampleSet.Collection.OntologyTerm.OtherTerms),
                 BiobankId = sampleSet.Collection.OrganisationId,
                 BiobankExternalId = sampleSet.Collection.Organisation.OrganisationExternalId,
                 Biobank = sampleSet.Collection.Organisation.Name,
@@ -121,5 +122,10 @@ namespace Biobanks.Services.Extensions
                 ? consentRestrictions.Select(cr => new ConsentRestrictionDocument {Description = cr.Value})
                 : new List<ConsentRestrictionDocument> { new ConsentRestrictionDocument {Description = "No restrictions"} };
         }
+
+        public static IEnumerable<OtherTermsDocument> ParseOtherTerms(string otherTerms)
+            => string.IsNullOrEmpty(otherTerms) 
+            ? new List<OtherTermsDocument>() 
+            : otherTerms.Split(',').Select(x => new OtherTermsDocument { Name = x.Trim() });
     }
 }
