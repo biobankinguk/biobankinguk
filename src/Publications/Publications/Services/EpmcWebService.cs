@@ -14,6 +14,7 @@ using Publications.Services.Contracts;
 using Microsoft.Extensions.Configuration;
 using Publications.Services.Dto;
 using Microsoft.Extensions.Primitives;
+using Flurl;
 
 namespace Publications
 {
@@ -86,17 +87,6 @@ namespace Publications
 
         private async Task<List<AnnotationDto>> AnnotationSearch(string publicationId, string source)
         {
-            // Filter by type of Annotation
-            var types = new List<string>()
-            {
-                "Diseases",
-                "Organ Tissue",
-                "Phenotype",
-                "Sample-Material",
-                "Body-Site"
-            };
-
-            string typeQuery = "?type=" + string.Join("&type=", types);
 
             var annotations = new List<AnnotationDto>();
             // Parse query parameters
@@ -107,8 +97,21 @@ namespace Publications
                 };
 
 
-            string endpoint = QueryHelpers.AddQueryString("annotations_api/annotationsByArticleIds" + typeQuery, parameters);
-            string response = await _client.GetStringAsync(endpoint);
+            // Filter by type of Annotation
+            var types = new List<string>()
+            {
+                "Diseases",
+                "Organ Tissue",
+                "Phenotype",
+                "Sample-Material",
+                "Body-Site"
+            };
+
+            var url = new Url("annotations_api/annotationsByArticleIds");
+            url.SetQueryParams(parameters).SetQueryParam("type", types);
+
+
+            string response = await _client.GetStringAsync(url);
 
             // Parse JSON result
             var result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
