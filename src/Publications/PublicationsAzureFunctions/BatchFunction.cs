@@ -36,7 +36,7 @@ namespace PublicationsAzureFunctions
 
             //Pulls Publications from directory (test), gets annotations from API and pushes to Azure DB
             await _fetchAnnotationsService.StartAsync(cancellationToken);
-            await _fetchPublicationsService.StopAsync(cancellationToken);
+            await _fetchAnnotationsService.StopAsync(cancellationToken);
 
             log.LogInformation($"C# Timer trigger function executed successfully");
         }
