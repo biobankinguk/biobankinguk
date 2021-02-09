@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api;
+using System.Transactions;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.Dtos;
@@ -35,6 +35,8 @@ namespace Biobanks.SubmissionAzureFunction.Services
             try { sample = await ValidateMaterialType(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateStorageTemperature(dto, sample); }
+            catch (ValidationException e) { exceptions.Add(e); }
+            try { sample = await ValidatePreservationType(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateSampleContentMethod(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
@@ -252,6 +254,29 @@ namespace Biobanks.SubmissionAzureFunction.Services
             sample.StorageTemperatureId = result.Id;
             return sample;
         }
+
+        private async Task<StagedSample> ValidatePreservationType(SampleDto dto, StagedSample sample)
+        {
+            if (string.IsNullOrEmpty(dto.PreservationType))
+                return sample;
+
+            var result = await _refDataReadService.GetPreservationType(dto.PreservationType);
+
+            if (result is null)
+            {
+                //throw new ValidationException(); // Unknown PreservationType
+            }
+
+            if (sample.StorageTemperatureId != result.StorageTemperatureId)
+            {
+                //throw new ValidationException(); // Preservation Type Is Not Applicable At Storage Temperature
+            }
+
+            sample.PreservationTypeId = result.Id;
+
+            return sample;
+        }
+
 
         private async Task<StagedSample> ValidateSex(SampleDto dto, StagedSample sample)
         {

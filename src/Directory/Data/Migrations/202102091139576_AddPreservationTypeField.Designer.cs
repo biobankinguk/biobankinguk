@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class CorrectMaterialTypeJoinTable : IMigrationMetadata
+    public sealed partial class AddPreservationTypeField : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(CorrectMaterialTypeJoinTable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddPreservationTypeField));
         
         string IMigrationMetadata.Id
         {
-            get { return "202102051145020_CorrectMaterialTypeJoinTable"; }
+            get { return "202102091139576_AddPreservationTypeField"; }
         }
         
         string IMigrationMetadata.Source

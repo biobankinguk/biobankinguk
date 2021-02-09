@@ -18,6 +18,7 @@ namespace Biobanks.Data
         public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+        public DbSet<PreservationType> PreservationTypes { get; set; }
         public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
         public DbSet<Ontology> Ontologies { get; set; }
         public DbSet<OntologyVersion> OntologyVersions { get; set; }

@@ -155,6 +155,13 @@ namespace Biobanks.SubmissionAzureFunction.Services
             => (await ListStorageTemperatures())
                 .FirstOrDefault(x => x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase));
 
+        public async Task<IEnumerable<PreservationType>> ListPreservationTypes() 
+            => await _db.PreservationTypes.AsNoTracking().ToListAsync();
+
+        public async Task<PreservationType> GetPreservationType(string value)
+            => (await ListPreservationTypes())
+                .FirstOrDefault(x => x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase));
+
         public async Task<IEnumerable<TreatmentLocation>> ListTreatmentLocations()
         {
             if (_cache.TryGetValue(CacheKeys.TreatmentLocations, out IEnumerable<TreatmentLocation> cacheEntry)) return cacheEntry;

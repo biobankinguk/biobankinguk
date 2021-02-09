@@ -19,6 +19,8 @@ namespace Biobanks.SubmissionAzureFunction.Dtos
         [Required]
         public string StorageTemperature { get; set; }
 
+        public string PreservationType { get; set; }
+
         public DateTime DateCreated { get; set; }
 
         public string Sex { get; set; }
