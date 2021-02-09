@@ -35,7 +35,7 @@ namespace Publications
             return (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
         }
 
-        public async Task<List<AnnotationDTO>> GetPublicationAnnotations(string publicationId, string source)
+        public async Task<List<AnnotationDto>> GetPublicationAnnotations(string publicationId, string source)
         {
             return (await AnnotationSearch(publicationId, source));
         }
