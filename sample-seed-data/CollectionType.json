@@ -1,0 +1,52 @@
+[
+    {
+        "id": "1",
+        "value": "Case-control",
+        "sortOrder": "3"
+    },
+    {
+        "id": "2",
+        "value": "Cohort",
+        "sortOrder": "4"
+    },
+    {
+        "id": "3",
+        "value": "Cross-sectional",
+        "sortOrder": "5"
+    },
+    {
+        "id": "4",
+        "value": "Longitudinal",
+        "sortOrder": "6"
+    },
+    {
+        "id": "5",
+        "value": "Twin-study",
+        "sortOrder": "9"
+    },
+    {
+        "id": "6",
+        "value": "Quality control",
+        "sortOrder": "8"
+    },
+    {
+        "id": "7",
+        "value": "Population-based",
+        "sortOrder": "7"
+    },
+    {
+        "id": "8",
+        "value": "Disease specific",
+        "sortOrder": "1"
+    },
+    {
+        "id": "9",
+        "value": "Birth cohort",
+        "sortOrder": "2"
+    },
+    {
+        "id": "10",
+        "value": "Clinical Trial",
+        "sortOrder": "10"
+    }
+]
