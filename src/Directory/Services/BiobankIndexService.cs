@@ -491,12 +491,15 @@ namespace Biobanks.Services
         {
             // Get the collections with the ontologyTerm.
             var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
-
             // Update all search documents that are relevant to this collection.
             foreach (var collectionId in collectionIds)
             {
                 await UpdateCollectionDetails(collectionId);
             }
         }
+
+        public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
+            => (await _biobankReadService.GetCapabilityIdsByOntologyTermAsync(ontologyTerm))
+               .ForEach(async x => await UpdateCapabilityDetails(x));
     }
 }
