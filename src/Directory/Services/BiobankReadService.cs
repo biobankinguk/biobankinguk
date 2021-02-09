@@ -1118,7 +1118,7 @@ namespace Biobanks.Services
             var preservationType = (await _preservationTypeRepository.ListAsync(false, x => x.Id == id)).First();
 
             return preservationType != null 
-                ? await GetStorageTemperatureUsageCount(preservationType.StorageTemperatureId) 
+                ? await GetStorageTemperatureUsageCount(preservationType.StorageTemperatureId) // Technically Upper Bound
                 : 0;
         }
 

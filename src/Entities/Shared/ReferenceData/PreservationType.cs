@@ -13,6 +13,6 @@ namespace Biobanks.Entities.Shared.ReferenceData
 
         public int StorageTemperatureId { get; set; }
 
-        public StorageTemperature StorageTemperature { get; set; }
+        public virtual StorageTemperature StorageTemperature { get; set; }
     }
 }
