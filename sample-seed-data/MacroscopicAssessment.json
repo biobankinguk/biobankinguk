@@ -1,0 +1,17 @@
+[
+    {
+        "id": "1",
+        "value": "Affected",
+        "sortOrder": "1"
+    },
+    {
+        "id": "2",
+        "value": "Non-affected",
+        "sortOrder": "2"
+    },
+    {
+        "id": "3",
+        "value": "Not applicable",
+        "sortOrder": "3"
+    }
+]

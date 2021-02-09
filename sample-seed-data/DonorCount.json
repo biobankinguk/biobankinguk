@@ -1,0 +1,79 @@
+[
+    {
+        "id": "1",
+        "value": "1 - 10",
+        "sortOrder": "1",
+        "lowerBound": "1",
+        "upperBound": "10"
+    },
+    {
+        "id": "2",
+        "value": "11 - 100",
+        "sortOrder": "2",
+        "lowerBound": "11",
+        "upperBound": "100"
+    },
+    {
+        "id": "3",
+        "value": "101 - 500",
+        "sortOrder": "3",
+        "lowerBound": "101",
+        "upperBound": "500"
+    },
+    {
+        "id": "4",
+        "value": "501 - 1000",
+        "sortOrder": "4",
+        "lowerBound": "501",
+        "upperBound": "1000"
+    },
+    {
+        "id": "5",
+        "value": "1001 - 3000",
+        "sortOrder": "5",
+        "lowerBound": "1001",
+        "upperBound": "3000"
+    },
+    {
+        "id": "6",
+        "value": "3001 - 5000",
+        "sortOrder": "6",
+        "lowerBound": "3001",
+        "upperBound": "5000"
+    },
+    {
+        "id": "7",
+        "value": "5001 - 10000",
+        "sortOrder": "7",
+        "lowerBound": "5001",
+        "upperBound": "10000"
+    },
+    {
+        "id": "8",
+        "value": "10001 - 50000",
+        "sortOrder": "8",
+        "lowerBound": "10001",
+        "upperBound": "50000"
+    },
+    {
+        "id": "9",
+        "value": "50001 - 100000",
+        "sortOrder": "9",
+        "lowerBound": "50001",
+        "upperBound": "100000"
+    },
+    {
+        "id": "10",
+        "value": "100001 - 500000",
+        "sortOrder": "10",
+        "lowerBound": "100001",
+        "upperBound": "500000"
+    },
+    {
+        "id": "11",
+        "value": "> 500000",
+        "sortOrder": "11",
+        "lowerBound": "500001",
+        "upperBound": ""
+    }
+]

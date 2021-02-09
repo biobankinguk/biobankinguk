@@ -1,0 +1,482 @@
+[
+    {
+        "id": "1",
+        "value": "England",
+        "counties": [
+            {
+                "id": "1",
+                "value": "Avon"
+            },
+            {
+                "id": "2",
+                "value": "Bedfordshire"
+            },
+            {
+                "id": "3",
+                "value": "Berkshire"
+            },
+            {
+                "id": "4",
+                "value": "Bristol"
+            },
+            {
+                "id": "5",
+                "value": "Buckinghamshire"
+            },
+            {
+                "id": "6",
+                "value": "Cambridgeshire"
+            },
+            {
+                "id": "7",
+                "value": "Cheshire"
+            },
+            {
+                "id": "8",
+                "value": "Cleveland"
+            },
+            {
+                "id": "9",
+                "value": "Cornwall"
+            },
+            {
+                "id": "10",
+                "value": "Cumbria"
+            },
+            {
+                "id": "11",
+                "value": "Derbyshire"
+            },
+            {
+                "id": "12",
+                "value": "Devon"
+            },
+            {
+                "id": "13",
+                "value": "Dorset"
+            },
+            {
+                "id": "14",
+                "value": "Durham"
+            },
+            {
+                "id": "15",
+                "value": "East Riding of Yorkshire"
+            },
+            {
+                "id": "16",
+                "value": "East Sussex"
+            },
+            {
+                "id": "17",
+                "value": "Essex"
+            },
+            {
+                "id": "18",
+                "value": "Gloucestershire"
+            },
+            {
+                "id": "19",
+                "value": "Greater Manchester"
+            },
+            {
+                "id": "20",
+                "value": "Hampshire"
+            },
+            {
+                "id": "21",
+                "value": "Herefordshire"
+            },
+            {
+                "id": "22",
+                "value": "Hertfordshire"
+            },
+            {
+                "id": "23",
+                "value": "Humberside"
+            },
+            {
+                "id": "24",
+                "value": "Isle of Wight"
+            },
+            {
+                "id": "25",
+                "value": "Isles of Scilly"
+            },
+            {
+                "id": "26",
+                "value": "Kent"
+            },
+            {
+                "id": "27",
+                "value": "Lancashire"
+            },
+            {
+                "id": "28",
+                "value": "Leicestershire"
+            },
+            {
+                "id": "29",
+                "value": "Lincolnshire"
+            },
+            {
+                "id": "30",
+                "value": "London"
+            },
+            {
+                "id": "31",
+                "value": "Merseyside"
+            },
+            {
+                "id": "32",
+                "value": "Middlesex"
+            },
+            {
+                "id": "33",
+                "value": "Norfolk"
+            },
+            {
+                "id": "34",
+                "value": "North Yorkshire"
+            },
+            {
+                "id": "35",
+                "value": "North East Lincolnshire"
+            },
+            {
+                "id": "36",
+                "value": "Northamptonshire"
+            },
+            {
+                "id": "37",
+                "value": "Northumberland"
+            },
+            {
+                "id": "38",
+                "value": "Nottinghamshire"
+            },
+            {
+                "id": "39",
+                "value": "Oxfordshire"
+            },
+            {
+                "id": "40",
+                "value": "Rutland"
+            },
+            {
+                "id": "41",
+                "value": "Shropshire"
+            },
+            {
+                "id": "42",
+                "value": "Somerset"
+            },
+            {
+                "id": "43",
+                "value": "South Yorkshire"
+            },
+            {
+                "id": "44",
+                "value": "Staffordshire"
+            },
+            {
+                "id": "45",
+                "value": "Suffolk"
+            },
+            {
+                "id": "46",
+                "value": "Surrey"
+            },
+            {
+                "id": "47",
+                "value": "Tyne and Wear"
+            },
+            {
+                "id": "48",
+                "value": "Warwickshire"
+            },
+            {
+                "id": "49",
+                "value": "West Midlands"
+            },
+            {
+                "id": "50",
+                "value": "West Sussex"
+            },
+            {
+                "id": "51",
+                "value": "West Yorkshire"
+            },
+            {
+                "id": "52",
+                "value": "Wiltshire"
+            },
+            {
+                "id": "53",
+                "value": "Worcestershire"
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "value": "Wales",
+        "counties": [
+            {
+                "id": "93",
+                "value": "Blaenau Gwent"
+            },
+            {
+                "id": "94",
+                "value": "Bridgend"
+            },
+            {
+                "id": "95",
+                "value": "Caerphilly"
+            },
+            {
+                "id": "96",
+                "value": "Cardiff"
+            },
+            {
+                "id": "97",
+                "value": "Carmarthenshire"
+            },
+            {
+                "id": "98",
+                "value": "Ceredigion"
+            },
+            {
+                "id": "99",
+                "value": "Conwy"
+            },
+            {
+                "id": "100",
+                "value": "Denbighshire"
+            },
+            {
+                "id": "101",
+                "value": "Flintshire"
+            },
+            {
+                "id": "102",
+                "value": "Gwynedd"
+            },
+            {
+                "id": "103",
+                "value": "Isle of Anglesey"
+            },
+            {
+                "id": "104",
+                "value": "Merthyr Tydfil"
+            },
+            {
+                "id": "105",
+                "value": "Monmouthshire"
+            },
+            {
+                "id": "106",
+                "value": "Neath Port Talbot"
+            },
+            {
+                "id": "107",
+                "value": "Newport"
+            },
+            {
+                "id": "108",
+                "value": "Pembrokeshire"
+            },
+            {
+                "id": "109",
+                "value": "Powys"
+            },
+            {
+                "id": "110",
+                "value": "Rhondda Cynon Taff"
+            },
+            {
+                "id": "111",
+                "value": "Swansea"
+            },
+            {
+                "id": "112",
+                "value": "Torfaen"
+            },
+            {
+                "id": "113",
+                "value": "The Vale of Glamorgan"
+            },
+            {
+                "id": "114",
+                "value": "Wrexham"
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "value": "Scotland",
+        "counties": [
+            {
+                "id": "60",
+                "value": "Aberdeen City"
+            },
+            {
+                "id": "61",
+                "value": "Aberdeenshire"
+            },
+            {
+                "id": "62",
+                "value": "Angus"
+            },
+            {
+                "id": "63",
+                "value": "Argyll and Bute"
+            },
+            {
+                "id": "64",
+                "value": "Banffshire"
+            },
+            {
+                "id": "65",
+                "value": "Borders"
+            },
+            {
+                "id": "66",
+                "value": "Clackmannan"
+            },
+            {
+                "id": "67",
+                "value": "Dumfries and Galloway"
+            },
+            {
+                "id": "68",
+                "value": "East Ayrshire"
+            },
+            {
+                "id": "69",
+                "value": "East Dunbartonshire"
+            },
+            {
+                "id": "70",
+                "value": "East Lothian"
+            },
+            {
+                "id": "71",
+                "value": "East Renfrewshire"
+            },
+            {
+                "id": "72",
+                "value": "Edinburgh City"
+            },
+            {
+                "id": "73",
+                "value": "Falkirk"
+            },
+            {
+                "id": "74",
+                "value": "Fife"
+            },
+            {
+                "id": "75",
+                "value": "Glasgow (City of)"
+            },
+            {
+                "id": "76",
+                "value": "Highland"
+            },
+            {
+                "id": "77",
+                "value": "Inverclyde"
+            },
+            {
+                "id": "78",
+                "value": "Midlothian"
+            },
+            {
+                "id": "79",
+                "value": "Moray"
+            },
+            {
+                "id": "80",
+                "value": "North Ayrshire"
+            },
+            {
+                "id": "81",
+                "value": "North Lanarkshire"
+            },
+            {
+                "id": "82",
+                "value": "Orkney"
+            },
+            {
+                "id": "83",
+                "value": "Perthshire and Kinross"
+            },
+            {
+                "id": "84",
+                "value": "Renfrewshire"
+            },
+            {
+                "id": "85",
+                "value": "Roxburghshire"
+            },
+            {
+                "id": "86",
+                "value": "Shetland"
+            },
+            {
+                "id": "87",
+                "value": "South Ayrshire"
+            },
+            {
+                "id": "88",
+                "value": "South Lanarkshire"
+            },
+            {
+                "id": "89",
+                "value": "Stirling"
+            },
+            {
+                "id": "90",
+                "value": "West Dunbartonshire"
+            },
+            {
+                "id": "91",
+                "value": "West Lothian"
+            },
+            {
+                "id": "92",
+                "value": "Western Isles"
+            }
+        ]
+    },
+    {
+        "id": "4",
+        "value": "Northern Ireland",
+        "counties": [
+            {
+                "id": "54",
+                "value": "Antrim"
+            },
+            {
+                "id": "55",
+                "value": "Armagh"
+            },
+            {
+                "id": "56",
+                "value": "Down"
+            },
+            {
+                "id": "57",
+                "value": "Fermanagh"
+            },
+            {
+                "id": "58",
+                "value": "Londonderry"
+            },
+            {
+                "id": "59",
+                "value": "Tyrone"
+            }
+        ]
+    }
+]
