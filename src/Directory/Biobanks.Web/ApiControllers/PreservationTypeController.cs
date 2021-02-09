@@ -47,9 +47,9 @@ namespace Biobanks.Web.ApiControllers
         {
             if (await _biobankReadService.ValidPreservationTypeAsync(model.Value, model.StorageTemperatureId))
             {
-                ModelState.AddModelError("", "");
+                ModelState.AddModelError("PreservationTypes", $"That PresevationType is already in use. '{ model.Value }' is already in use at the StorageTemperature.");
             }
-             
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
@@ -80,12 +80,12 @@ namespace Biobanks.Web.ApiControllers
         {
             if (await _biobankReadService.ValidPreservationTypeAsync(model.Value, model.StorageTemperatureId))
             {
-                ModelState.AddModelError("", "");
+                ModelState.AddModelError("PreservationTypes", $"That PresevationType is already in use. '{ model.Value }' is already in use at the StorageTemperature.");
             }
 
             if (await _biobankReadService.IsPreservationTypeInUse(model.Id))
             {
-                ModelState.AddModelError("", "");
+                ModelState.AddModelError("PreservationTypes", $"Unable to change '{ model.Value }', as it is currently is use.");
             }
 
             if (!ModelState.IsValid)
@@ -118,7 +118,7 @@ namespace Biobanks.Web.ApiControllers
             // If in use, prevent update
             if (await _biobankReadService.IsPreservationTypeInUse(id))
             {
-                ModelState.AddModelError("", "");
+                ModelState.AddModelError("PreservationTypes", $"Unable to delete '{ model.Value }', as it is currently is use.");
             }
 
             if (!ModelState.IsValid)
