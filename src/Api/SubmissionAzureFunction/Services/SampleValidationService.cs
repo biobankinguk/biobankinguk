@@ -264,19 +264,26 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
             if (result is null)
             {
-                //throw new ValidationException(); // Unknown PreservationType
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.PreservationType(dto.PreservationType, dto.Barcode, dto.IndividualReferenceId),
+                        new List<string> { nameof(dto.PreservationType) }),
+                    null, null);
             }
 
             if (sample.StorageTemperatureId != result.StorageTemperatureId)
             {
-                //throw new ValidationException(); // Preservation Type Is Not Applicable At Storage Temperature
+                throw new ValidationException(
+                    new ValidationResult(
+                        $"The provided {nameof(dto.PreservationType)} is not applicable for the provided {nameof(dto.StorageTemperature)}.",
+                        new List<string> { nameof(dto.PreservationType), nameof(dto.StorageTemperature) }),
+                    null, null);
             }
 
             sample.PreservationTypeId = result.Id;
 
             return sample;
         }
-
 
         private async Task<StagedSample> ValidateSex(SampleDto dto, StagedSample sample)
         {
