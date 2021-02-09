@@ -122,7 +122,7 @@ namespace Publications
 
             try 
             {
-                string response = await _client.GetStringAsync(url);
+                var response = await _client.GetStringAsync(url);
 
                 // Parse JSON result
                 result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
