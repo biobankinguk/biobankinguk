@@ -89,6 +89,73 @@ namespace Biobanks.Data
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            // Composite Primary Keys
+            model.Entity<CapabilityAssociatedData>()
+                .HasKey(x => new
+                {
+                    x.DiagnosisCapabilityId,
+                    x.AssociatedDataTypeId
+                });
+
+            model.Entity<CollectionAssociatedData>()
+                .HasKey(x => new
+                {
+                    x.CollectionId,
+                    x.AssociatedDataTypeId
+                });
+
+            model.Entity<MaterialDetail>()
+                .HasKey(x => new
+                {
+                    x.SampleSetId,
+                    x.MaterialTypeId,
+                    x.StorageTemperatureId,
+                    x.MacroscopicAssessmentId
+                });
+
+            model.Entity<NetworkUser>()
+                .HasKey(x => new
+                {
+                    x.NetworkId,
+                    x.NetworkUserId
+                });
+
+            model.Entity<OrganisationAnnualStatistic>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.AnnualStatisticId,
+                    x.Year
+                });
+
+            model.Entity<OrganisationNetwork>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.NetworkId
+                });
+
+            model.Entity<OrganisationRegistrationReason>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.RegistrationReasonId
+                });
+
+            model.Entity<OrganisationServiceOffering>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.ServiceOfferingId
+                });
+
+            model.Entity<OrganisationUser>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.OrganisationUserId
+                });
+
             // Indices (for unique constraints)
             model.Entity<LiveDiagnosis>()
                 .HasIndex(x => new
@@ -116,6 +183,7 @@ namespace Biobanks.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
+
             model.Entity<StagedDiagnosis>()
                 .HasIndex(x => new
                 {
