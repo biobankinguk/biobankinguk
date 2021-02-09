@@ -604,6 +604,10 @@ namespace Biobanks.Services
                 x => x.SampleCollectionMode
             );
 
+        public async Task<List<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
+            => (await _capabilityRepository.ListAsync(false,
+                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.DiagnosisCapabilityId).ToList();
+
         public async Task<int> GetIndexableSampleSetCountAsync()
             => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
 
