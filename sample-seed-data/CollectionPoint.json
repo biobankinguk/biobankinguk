@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "value": "Pre-diagnosis",
+        "sortOrder": "1"
+    },
+    {
+        "id": "2",
+        "value": "During diagnosis",
+        "sortOrder": "3"
+    },
+    {
+        "id": "3",
+        "value": "Post-diagnosis",
+        "sortOrder": "2"
+    },
+    {
+        "id": "4",
+        "value": "Multiple points in patient pathway",
+        "sortOrder": "4"
+    }
+]

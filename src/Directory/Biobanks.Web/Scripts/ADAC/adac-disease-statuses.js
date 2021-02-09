@@ -67,7 +67,7 @@ function AdacDiseaseStatusViewModel() {
             addRefData(_this, form.data("resource-url"), form.serialize(),
                 form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
         } else if (action == 'Update') {
-            editRefData(_this, form.data("resource-url") + '/' + $(e.target.OntologyTermId).val(), form.serialize(),
+            editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
                 form.data("success-redirect"), form.data("refdata-type"));
         }
     };

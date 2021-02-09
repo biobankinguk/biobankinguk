@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "value": "Male",
+        "sortOrder": 1
+    },
+    {
+        "id": 2,
+        "value": "Female",
+        "sortOrder": 2
+    },
+    {
+        "id": 3,
+        "value": "Unknown",
+        "sortOrder": 3
+    },
+    {
+        "id": 4,
+        "value": "Undifferentiated",
+        "sortOrder": 4
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+        "id": "1",
+        "value": "Oral Medication"
+    },
+    {
+        "id": "2",
+        "value": "Targeted Radiotherapy"
+    },
+    {
+        "id": "3",
+        "value": "Other"
+    }
+]

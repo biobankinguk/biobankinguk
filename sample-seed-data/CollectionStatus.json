@@ -1,0 +1,17 @@
+[
+    {
+        "id": "1",
+        "value": "Not-started",
+        "sortOrder": "1"
+    },
+    {
+        "id": "2",
+        "value": "In progress",
+        "sortOrder": "2"
+    },
+    {
+        "id": "3",
+        "value": "Completed",
+        "sortOrder": "3"
+    }
+]
