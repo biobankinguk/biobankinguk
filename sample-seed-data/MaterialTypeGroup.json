@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "value": "Fluid Sample"
+    },
+    {
+        "id": "2",
+        "value": "Tissue Sample"
+    },
+    {
+        "id": "3",
+        "value": "Extracted Sample"
+    },
+    {
+        "id": "4",
+        "value": "Extracted Sample:Blood"
+    },
+    {
+        "id": "5",
+        "value": "Extracted Sample:NonBlood"
+    }
+]

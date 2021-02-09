@@ -1,0 +1,41 @@
+[
+    {
+        "id": "1",
+        "value": "Access Requests Received",
+        "annualStatistics": [
+            {
+                "id": "1",
+                "value": "Internal"
+            },
+            {
+                "id": "2",
+                "value": "External"
+            },
+            {
+                "id": "3",
+                "value": "Commercial"
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "value": "Access Requests Approved",
+        "annualStatistics": [
+            {
+                "id": "4",
+                "value": "Internal",
+                "annualStatisticGroupId": "2"
+            },
+            {
+                "id": "5",
+                "value": "External",
+                "annualStatisticGroupId": "2"
+            },
+            {
+                "id": "6",
+                "value": "Commercial",
+                "annualStatisticGroupId": "2"
+            }
+        ]
+    }
+]

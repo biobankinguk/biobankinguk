@@ -1,0 +1,27 @@
+[
+    {
+        "id": "2",
+        "value": "Commercial restriction",
+        "sortOrder": "1"
+    },
+    {
+        "id": "3",
+        "value": "DNA restriction",
+        "sortOrder": "2"
+    },
+    {
+        "id": "5",
+        "value": "Outside EU access",
+        "sortOrder": "4"
+    },
+    {
+        "id": "6",
+        "value": "Xenograft",
+        "sortOrder": "5"
+    },
+    {
+        "id": "7",
+        "value": "Other animal work",
+        "sortOrder": "3"
+    }
+]

@@ -1,0 +1,1262 @@
+[
+    {
+        "id": "189336000",
+        "value": "Carcinoma in situ of breast",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "254837009",
+        "value": "Malignant tumour of breast",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "269485000",
+        "value": "Benign tumour of breast",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363358000",
+        "value": "Malignant tumour of lung",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363406005",
+        "value": "Malignant tumour of colon",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363418001",
+        "value": "Malignant tumour of pancreas",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363435002",
+        "value": "Malignant tumour of heart",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363443007",
+        "value": "Malignant tumour of ovary",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "372130007",
+        "value": "Malignant neoplasm of skin",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "428061005",
+        "value": "Malignant neoplasm of brain",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "91992005",
+        "value": "Benign neoplasm of bladder",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92030004",
+        "value": "Benign neoplasm of brain",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92065004",
+        "value": "Benign neoplasm of colon",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92132009",
+        "value": "Benign neoplasm of heart",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92186001",
+        "value": "Benign neoplasm of liver",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92196005",
+        "value": "Benign neoplasm of lung",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92260003",
+        "value": "Benign neoplasm of ovary",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92264007",
+        "value": "Benign neoplasm of pancreas",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92308005",
+        "value": "Benign neoplasm of prostate",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92384009",
+        "value": "Benign neoplasm of skin",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92428008",
+        "value": "Benign neoplasm of testis",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92546004",
+        "value": "Carcinoma in situ of bladder",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92568009",
+        "value": "Carcinoma in situ of colon",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92644006",
+        "value": "Carcinoma in situ of liver",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92649001",
+        "value": "Carcinoma in situ of lung",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92672004",
+        "value": "Carcinoma in situ of pancreas",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92691004",
+        "value": "Carcinoma in situ of prostate",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92764008",
+        "value": "Carcinoma in situ of testis",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "93870000",
+        "value": "Malignant neoplasm of liver",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "102499006",
+        "value": "Fit and well",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "109378008",
+        "value": "Mesothelioma (malignant, clinical disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "27090000",
+        "value": "Transitional cell carcinoma",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "40468003",
+        "value": "Viral hepatitis, type A",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "41183007",
+        "value": "Mesothelioma, benign",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "44054006",
+        "value": "Diabetes mellitus type 2",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "46635009",
+        "value": "Diabetes mellitus type 1",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "49049000",
+        "value": "Parkinson's disease",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "50711007",
+        "value": "Viral hepatitis type C",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "52448006",
+        "value": "Dementia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "66071002",
+        "value": "Viral hepatitis type B",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "93143009",
+        "value": "Leukemia, disease",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "7.28E+13",
+        "value": "Arthrofibrosis",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "201618014",
+        "value": "Benign neoplasm of oesophagus",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "92056006",
+        "value": "Benign neoplasm of uterine cervix",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "201640017",
+        "value": "Carcinoma in situ of oesophagus",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "52702003",
+        "value": "Chronic fatigue syndrome",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "387759001",
+        "value": "Chronic granulomatous disease",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "3.55E+13",
+        "value": "Dystrophy of sensory retina",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "51615001",
+        "value": "Fibrosis of lung",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "41799005",
+        "value": "Hereditary retinal dystrophy",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363354003",
+        "value": "Malignant tumor of cervix",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "482603012",
+        "value": "Malignant tumour of oesophagus",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "78275009",
+        "value": "Obstructive sleep apnea syndrome",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "396275006",
+        "value": "Osteoarthritis",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "307576001",
+        "value": "Osteosarcoma of bone",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "197660000",
+        "value": "Renal fibrosis",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "4.01E+13",
+        "value": "Retinal dystrophy due to systemic disorder",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "3.43E+14",
+        "value": "Retinal pigment epithelial dystrophy",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "69896004",
+        "value": "Rheumatoid arthritis",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "55464009",
+        "value": "Systemic lupus erythematosus",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "90176007",
+        "value": "Tonsillitis",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "109843000",
+        "value": "Hepatoblastoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "118599009",
+        "value": "Hodgkin's disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "239873007",
+        "value": "Osteoarthritis of knee (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "254938000",
+        "value": "Astrocytoma of brain (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "28307001",
+        "value": "Germinoma (morphologic (abnormality)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "302847003",
+        "value": "Rhabdomyosarcoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "302849000",
+        "value": "Nephroblastoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "370967009",
+        "value": "Retinoblastoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "393564001",
+        "value": "Glioma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "432328008",
+        "value": "Neuroblastoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "443333004",
+        "value": "Medulloblastoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "443643007",
+        "value": "Ependymoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "53619000",
+        "value": "Disorder of digestive system (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "62064005",
+        "value": "Mesothelioma, malignant (morphologic (abnormality)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "65399007",
+        "value": "Langerhans cell histiocytosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "13746004",
+        "value": "Bipolar disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "156370009",
+        "value": "Psoriatic arthritis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "24700007",
+        "value": "Multiple sclerosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "33449004",
+        "value": "Personality disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "35919005",
+        "value": "Pervasive developmental disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "370143000",
+        "value": "Major depressive disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "406506008",
+        "value": "Attention deficit hyperactivity disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "430909002",
+        "value": "Conduct disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "47505003",
+        "value": "Posttraumatic stress disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "69322001",
+        "value": "Psychotic disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "80967001",
+        "value": "Dental caries (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "129128006",
+        "value": "Infectious disorder of kidney",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "2613810017",
+        "value": "Degenerative disorder of macula (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "571453011",
+        "value": "Malignant neoplasm of endometrium of corpus uteri (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "399068003",
+        "value": "Malignant tumor of prostate (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "20191016",
+        "value": "Gestational diabetes mellitus",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "482550013",
+        "value": "Malignant tumour of lingual tonsil",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "646054019",
+        "value": "Malignant tumor of salivary gland (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755164014",
+        "value": "Malignant tumor of stomach (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755184013",
+        "value": "Malignant tumor of vulva (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755237017",
+        "value": "Malignant tumor of biliary tract (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755271014",
+        "value": "Malignant tumor of vagina (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755275017",
+        "value": "Malignant tumor of testis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755307011",
+        "value": "Malignant tumor of thyroid gland (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755337019",
+        "value": "Malignant tumor of oral cavity (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755338012",
+        "value": "Malignant tumor of nasal sinuses (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755341015",
+        "value": "Malignant tumor of small intestine (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755349018",
+        "value": "Malignant tumor of penis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "755351019",
+        "value": "Malignant tumor of kidney (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "1767246018",
+        "value": "Malignant tumor of urinary bladder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "2898905011",
+        "value": "Malignant neoplasm of connective tissue (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "2898348014",
+        "value": "Malignant neoplasm of upper respiratory tract (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363355002",
+        "value": "Malignant tumor of adrenal gland (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363352004",
+        "value": "Malignant tumor of anal canal (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "838166018",
+        "value": "Secondary malignant neoplasm of colon (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "399187006",
+        "value": "Hemochromatosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "580135014",
+        "value": "Asthma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "26929004",
+        "value": "Alzheimer's disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "195080001",
+        "value": "Atrial fibrillation and flutter (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "62914000",
+        "value": "Cerebrovascular disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "41040004",
+        "value": "Complete trisomy 21 syndrome (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "57148006",
+        "value": "Congenital anomaly of brain (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "52522001",
+        "value": "Degenerative brain disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "35489007",
+        "value": "Depressive disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "84757009",
+        "value": "Epilepsy (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "58756001",
+        "value": "Huntington's chorea (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "38341003",
+        "value": "Hypertensive disorder, systemic arterial (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "414545008",
+        "value": "Ischemic heart disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "792004",
+        "value": "Jakob-Creutzfeldt disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "37340000",
+        "value": "Motor neuron disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "230297002",
+        "value": "Multiple system atrophy (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "28978003",
+        "value": "Progressive supranuclear ophthalmoplegia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "5262007",
+        "value": "Spinal muscular atrophy (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "429998004",
+        "value": "Vascular dementia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "2912822011",
+        "value": "Irritable bowel syndrome (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "683707018",
+        "value": "Placenta healthy (finding)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "617840013",
+        "value": "Multiple myeloma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "617903018",
+        "value": "Myelodysplastic syndrome (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "733242018",
+        "value": "Hematologic neoplasm (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "2641844012",
+        "value": "Myeloproliferative disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "702774002",
+        "value": "Recipient of transplantation (finding)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "444464007",
+        "value": "Recipient of biological material from subject (person)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "581818018",
+        "value": "Primary sclerosing cholangitis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "762878016",
+        "value": "Primary biliary cirrhosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "2152166017",
+        "value": "Autoimmune hepatitis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "746439018",
+        "value": "Corticobasal degeneration (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "754172017",
+        "value": "Inflammatory bowel disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "243584004",
+        "value": "Genus Papillomavirus (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "407444007",
+        "value": "Genus Cytomegalovirus (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "113861009",
+        "value": "Mycobacterium tuberculosis (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "63938009",
+        "value": "Chlamydia trachomatis (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "407359000",
+        "value": "Genus Norovirus (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "19030005",
+        "value": "Human immunodeficiency virus (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "81665004",
+        "value": "Hepatitis B virus (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "55014007",
+        "value": " Family Orthomyxoviridae (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "385093006",
+        "value": "Community acquired pneumonia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "429271009",
+        "value": "Ventilator-acquired pneumonia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "19551004",
+        "value": "Human herpesvirus 3 (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "55822004",
+        "value": "Hyperlipidemia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "40930008",
+        "value": "Hypothyroidism (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "37796009",
+        "value": "Migraine (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "203082005",
+        "value": "Fibromyalgia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "230690007",
+        "value": "Cerebrovascular accident (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "424206003",
+        "value": "Genus Ebolavirus (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "23875004",
+        "value": "No abnormality seen",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "19943007",
+        "value": "Cirrhosis of liver (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "57991002",
+        "value": "Entire embryo (body structure)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "274087000",
+        "value": "Malignant melanoma of eye (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "118600007",
+        "value": "Malignant lymphoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "449790007",
+        "value": "Orofacial cleft (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "240151005",
+        "value": "Chronic multifocal osteomyelitis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "709044004",
+        "value": "Chronic kidney disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "44785005",
+        "value": "Minimal change disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "52254009",
+        "value": "Nephrotic syndrome (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "609561005",
+        "value": "Maturity-onset diabetes of the young (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "609569007",
+        "value": "Diabetes mellitus due to genetic defect in insulin action (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "49817004",
+        "value": "Neonatal diabetes mellitus (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "83901003",
+        "value": "Sj\u00c3\u00b6gren's syndrome (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363351006",
+        "value": "Malignant tumor of rectum (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "414916001",
+        "value": "Obesity (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "363499005",
+        "value": "Malignant tumour of spleen",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "725894000",
+        "value": "Influenza virus (organism)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "302914006",
+        "value": "Barrett's esophagus (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "414341000",
+        "value": "Giant cell arteritis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "70076002",
+        "value": "Rhinitis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "13645005",
+        "value": "Chronic obstructive lung disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "109333005",
+        "value": "Osteoradionecrosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "415113000",
+        "value": "Plasmacytoma - category (morphologic abnormality)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "85898001",
+        "value": "Cardiomyopathy (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "56265001",
+        "value": "Heart disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "372244006",
+        "value": "Malignant melanoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "424952003",
+        "value": "Sarcoma of soft tissue (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "86044005",
+        "value": "Amyotrophic lateral sclerosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "699462004",
+        "value": "Monoarthritis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "417180005",
+        "value": "Undifferentiated inflammatory arthritis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "89155008",
+        "value": "Systemic sclerosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "195295006",
+        "value": "Raynaud's disease (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "65113001",
+        "value": "Deoxyribonucleic acid repair (finding)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "7180009",
+        "value": "Meningitis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "20415001",
+        "value": "Progressive sclerosing poliodystrophy (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "21454007",
+        "value": "Subarachnoid intracranial hemorrhage (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "230284004",
+        "value": "Spongiform encephalopathy (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "26843008",
+        "value": "Antiphospholipid syndrome (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "447240002",
+        "value": "Myelodysplastic/myeloproliferative neoplasm, unclassifiable (morphologic abnormality)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "91861009",
+        "value": "Acute myeloid leukemia, disease (disorder) ",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "397007003",
+        "value": "Mast cell disorder (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "415110002",
+        "value": "Plasma cell myeloma/plasmacytoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "17602002",
+        "value": "Amyloidosis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "109983007",
+        "value": "Monoclonal gammopathy (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "118601006",
+        "value": "Non-Hodgkin's lymphoma (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "2707005",
+        "value": "Necrotizing enterocolitis in fetus OR newborn (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "91302008",
+        "value": "Sepsis (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "440471007",
+        "value": "Cystic dilatation of common bile duct (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    },
+    {
+        "id": "77480004",
+        "value": "Congenital biliary atresia (disorder)",
+        "otherTerms": "",
+        "snomedTagId": ""
+    }
+]
