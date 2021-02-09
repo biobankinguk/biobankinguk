@@ -1112,8 +1112,15 @@ namespace Biobanks.Services
         public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
+        // TODO: Should be updated to count the number of MaterialDetails with PreservationType, when implemented.
         public async Task<int> GetPreservationTypeUsageCount(int id)
-            => 0;
+        {
+            var preservationType = (await _preservationTypeRepository.ListAsync(false, x => x.Id == id)).First();
+
+            return preservationType != null 
+                ? await GetStorageTemperatureUsageCount(preservationType.StorageTemperatureId) 
+                : 0;
+        }
 
         public async Task<bool> IsPreservationTypeInUse(int id)
             => (await GetPreservationTypeUsageCount(id)) > 0;
