@@ -499,7 +499,14 @@ namespace Biobanks.Services
         }
 
         public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
-            => (await _biobankReadService.GetCapabilityIdsByOntologyTermAsync(ontologyTerm))
-               .ForEach(async x => await UpdateCapabilityDetails(x));
+        {
+            // Get the capabilitiess with the ontologyTerm.
+            var capabilityIds = await _biobankReadService.GetCapabilityIdsByOntologyTermAsync(ontologyTerm);
+            // Update all search documents that are relevant to this collection.
+            foreach (var capabilityId in capabilityIds)
+            {
+                await UpdateCapabilityDetails(capabilityId);
+            }
+        }
     }
 }

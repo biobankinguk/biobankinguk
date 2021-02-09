@@ -35,7 +35,7 @@ namespace Biobanks.Services.Contracts
 
         Task<DiagnosisCapability> GetCapabilityByIdAsync(int id);
         Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id);
-        Task<List<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm);
+        Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId);
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 
