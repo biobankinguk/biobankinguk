@@ -1269,6 +1269,10 @@ namespace Biobanks.Services
                    false,
                    x => x.OntologyTermId == id)).Count();
 
+        public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
+            => (await _collectionRepository.ListAsync(false,
+                x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
+
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
       => (await _materialDetailRepository.ListAsync(
                  false,

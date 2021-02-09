@@ -25,6 +25,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync();
         Task<Collection> GetCollectionByIdForIndexingAsync(int id);
         Task<Collection> GetCollectionWithSampleSetsByIdAsync(int id);
+        Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<Collection>> ListCollectionsAsync();
         Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
         Task<CollectionSampleSet> GetSampleSetByIdAsync(int id);
