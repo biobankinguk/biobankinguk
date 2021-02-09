@@ -13,6 +13,8 @@ using System.Linq;
 using Publications.Services.Contracts;
 using Microsoft.Extensions.Configuration;
 using Publications.Services.Dto;
+using Microsoft.Extensions.Primitives;
+using Flurl;
 using Microsoft.Extensions.Logging;
 
 namespace Publications
@@ -88,6 +90,7 @@ namespace Publications
 
         private async Task<List<AnnotationDto>> AnnotationSearch(string publicationId, string source)
         {
+
             var annotations = new List<AnnotationDto>();
 
             if (string.IsNullOrEmpty(source) || (string.IsNullOrEmpty(publicationId)))
@@ -102,21 +105,33 @@ namespace Publications
                     { "format", "JSON" }
                 };
 
-            string endpoint = QueryHelpers.AddQueryString("annotations_api/annotationsByArticleIds", parameters);
+
+            // Filter by type of Annotation
+            var types = new List<string>()
+            {
+                "Diseases",
+                "Organ Tissue",
+                "Phenotype",
+                "Sample-Material",
+                "Body-Site"
+            };
+
+            var url = new Url("annotations_api/annotationsByArticleIds");
+            url.SetQueryParams(parameters).SetQueryParam("type", types);
             var result = new List<AnnotationResult>();
 
-            try
+            try 
             {
-                string response = await _client.GetStringAsync(endpoint);
+                string response = await _client.GetStringAsync(url);
 
                 // Parse JSON result
                 result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
+
             }
             catch (Exception e)
             {
                 _logger.LogInformation(e.ToString());
             }
-
 
             foreach (var annotation in result)
             {
