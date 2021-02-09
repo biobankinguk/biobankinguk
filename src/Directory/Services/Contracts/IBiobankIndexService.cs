@@ -14,6 +14,7 @@ namespace Biobanks.Services.Contracts
         void DeleteSampleSet(int sampleSetId);
         void DeleteCapability(int capabilityId);
         Task UpdateCollectionDetails(int collectionId);
+        Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm);
         Task UpdateBiobankDetails(int biobankId);
         Task UpdateNetwork(int networkId);
         Task JoinOrLeaveNetwork(int biobankId);

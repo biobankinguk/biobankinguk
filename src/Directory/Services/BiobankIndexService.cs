@@ -486,5 +486,17 @@ namespace Biobanks.Services
 
         private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
             => (int) Math.Floor((double) (intList.Count() / chunkSize));
+
+        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
+        {
+            // Get the collections with the ontologyTerm.
+            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
+
+            // Update all search documents that are relevant to this collection.
+            foreach (var collectionId in collectionIds)
+            {
+                await UpdateCollectionDetails(collectionId);
+            }
+        }
     }
 }
