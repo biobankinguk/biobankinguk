@@ -13,6 +13,7 @@ using System.Linq;
 using Publications.Services.Contracts;
 using Microsoft.Extensions.Configuration;
 using Publications.Services.Dto;
+using Microsoft.Extensions.Logging;
 
 namespace Publications
 {
@@ -20,11 +21,13 @@ namespace Publications
     {
 
         private readonly HttpClient _client;
-        
-        public EpmcWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        private readonly ILogger<EpmcWebService> _logger;
+
+        public EpmcWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<EpmcWebService> logger)
         {
             _client = httpClientFactory.CreateClient();
             _client.BaseAddress = new Uri(configuration["EpmcApiUrl"]);
+            _logger = logger;
         }
 
         public async Task<PublicationDto> GetPublicationById(int publicationId)
@@ -86,6 +89,12 @@ namespace Publications
         private async Task<List<AnnotationDTO>> AnnotationSearch(string publicationId, string source)
         {
             var annotations = new List<AnnotationDTO>();
+
+            if (string.IsNullOrEmpty(source) || (string.IsNullOrEmpty(publicationId)))
+            {
+                return annotations;
+            }
+           
             // Parse query parameters
             var parameters = new Dictionary<string, string>()
                 {
@@ -94,10 +103,20 @@ namespace Publications
                 };
 
             string endpoint = QueryHelpers.AddQueryString("annotations_api/annotationsByArticleIds", parameters);
-            string response = await _client.GetStringAsync(endpoint);
+            var result = new List<AnnotationResult>();
 
-            // Parse JSON result
-            var result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
+            try
+            {
+                string response = await _client.GetStringAsync(endpoint);
+
+                // Parse JSON result
+                result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.ToString());
+            }
+
 
             foreach(var annotation in result)
             {
