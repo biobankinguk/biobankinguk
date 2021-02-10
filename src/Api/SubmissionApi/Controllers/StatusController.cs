@@ -98,21 +98,15 @@ namespace Biobanks.SubmissionApi.Controllers
         [SwaggerResponse(404, "No submission found with the specified id.")]
         public async Task<IActionResult> Get(int submissionId)
         {
-            try
-            {
-                var submission = await _submissions.Get(submissionId);
+            var submission = await _submissions.Get(submissionId);
 
-                if (submission == null)
-                    return NotFound();
+            if (submission == null)
+                return NotFound();
 
-                if (!User.HasClaim(CustomClaimTypes.BiobankId, submission.BiobankId.ToString()))
-                    return Forbid();
+            if (!User.HasClaim(CustomClaimTypes.BiobankId, submission.BiobankId.ToString()))
+                return Forbid();
 
-                return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
-            }
-            catch { }
-
-            return null;
+            return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
         }
 
         #region Helpers
