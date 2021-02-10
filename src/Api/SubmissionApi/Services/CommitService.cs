@@ -52,7 +52,7 @@ namespace Biobanks.SubmissionApi.Services
                 .Where(s => s.BiobankId == organisationId && s.Status.Value == Statuses.Open))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.Status = _db.Statuses.FirstOrDefault(s => s.Value == Statuses.Committed);
+                submission.Status = _db.Status.FirstOrDefault(s => s.Value == Statuses.Committed);
             }
 
             await _db.SaveChangesAsync();
