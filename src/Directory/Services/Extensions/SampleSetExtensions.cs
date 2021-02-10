@@ -124,7 +124,7 @@ namespace Biobanks.Services.Extensions
         }
 
         public static IEnumerable<OtherTermsDocument> ParseOtherTerms(string otherTerms)
-            => string.IsNullOrEmpty(otherTerms) 
+            => string.IsNullOrWhiteSpace(otherTerms) 
             ? new List<OtherTermsDocument>() 
             : otherTerms.Split(',').Select(x => new OtherTermsDocument { Name = x.Trim() });
     }
