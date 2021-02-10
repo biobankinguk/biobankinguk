@@ -28,5 +28,7 @@ namespace Biobanks.Search.Dto.Documents
         public IEnumerable<AssociatedDataDocument> AssociatedData { get; set; }
 
         public IEnumerable<BiobankServiceDocument> BiobankServices { get; set; }
+
+        public IEnumerable<OtherTermsDocument> OntologyOtherTerms { get; set; }
     }
 }

@@ -11,9 +11,11 @@ namespace Biobanks.Services.Contracts
         Task IndexCapability(int capabilityId);
         Task UpdateSampleSetDetails(int sampleSetId);
         Task UpdateCapabilityDetails(int capabilityId);
+        Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm);
         void DeleteSampleSet(int sampleSetId);
         void DeleteCapability(int capabilityId);
         Task UpdateCollectionDetails(int collectionId);
+        Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm);
         Task UpdateBiobankDetails(int biobankId);
         Task UpdateNetwork(int networkId);
         Task JoinOrLeaveNetwork(int biobankId);
