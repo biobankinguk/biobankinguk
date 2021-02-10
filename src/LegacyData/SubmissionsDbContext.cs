@@ -43,7 +43,7 @@ namespace Biobanks.LegacyData
         public DbSet<StagedTreatment> StagedTreatments { get; set; }
         public DbSet<StagedTreatmentDelete> StagedTreatmentDeletes { get; set; }
 
-        public DbSet<LiveSample> Samples { get; set; }
+        public DbSet<LiveSample> LiveSamples { get; set; }
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
 

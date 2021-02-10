@@ -176,6 +176,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
         {
             //check if tissue sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            
             if (!(mt?.MaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.TissueSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
@@ -183,7 +184,6 @@ namespace Biobanks.SubmissionAzureFunction.Services
             // TODO Change this to use generic ontology lookup service in future
             var result = await _refDataReadService.GetSnomedBodyOrgan(dto.ExtractionSite, dto.ExtractionSiteOntologyField);
             
-
             if (result == null)
                 throw new ValidationException(
                     new ValidationResult(

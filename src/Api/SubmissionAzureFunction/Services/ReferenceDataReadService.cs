@@ -123,7 +123,9 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
         public async Task<MaterialType> GetMaterialTypeWithGroups(string value)
             => (await ListMaterialTypes())
-                .FirstOrDefault(x => x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase));
+                .FirstOrDefault(x => 
+                    (x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase)) &&
+                    (x.MaterialTypeGroups?.Any() ?? false));
 
         public async Task<IEnumerable<SampleContentMethod>> ListSampleContentMethods()
         {
