@@ -103,7 +103,7 @@ namespace Biobanks.SubmissionApi.Services
         /// <inheritdoc />
         public async Task<Submission> CreateSubmission(int totalRecords, int biobankId)
         {
-            var status = await _db.Status
+            var status = await _db.Statuses
                 .Where(x => x.Value == Statuses.Open)
                 .SingleAsync();
 

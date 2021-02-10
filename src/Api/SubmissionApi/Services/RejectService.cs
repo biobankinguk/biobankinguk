@@ -36,7 +36,7 @@ namespace Biobanks.SubmissionApi.Services
             foreach (var submission in _db.Submissions.Where(s => s.BiobankId == organisationId))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.Status = _db.Status.FirstOrDefault(s => s.Value == Statuses.Rejected);
+                submission.Status = _db.Statuses.FirstOrDefault(s => s.Value == Statuses.Rejected);
             }
 
             // save the submission changes to db

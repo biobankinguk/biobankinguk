@@ -117,7 +117,6 @@ namespace Biobanks.Directory.Data
 
 
 
-
         public BiobanksDbContext() : base("Biobanks") { }
         public BiobanksDbContext(string connectionString) : base(connectionString) { }
 
