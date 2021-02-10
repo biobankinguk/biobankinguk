@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data.Caching;
 using Biobanks.Directory.Data.Repositories;
@@ -72,7 +73,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
-
+        private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
         private readonly IGenericEFRepository<County> _countyRepository;
         private readonly IGenericEFRepository<Country> _countryRepository;
@@ -138,6 +139,7 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
+            IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             ICacheProvider cacheProvider,
 
@@ -197,6 +199,7 @@ namespace Biobanks.Services
             _collectionPercentage = collectionPercentage;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
+            _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
 
@@ -1060,7 +1063,7 @@ namespace Biobanks.Services
 
         #endregion
 
-        #region Donor Count
+        #region RefData: Donor Count
         public async Task<IEnumerable<DonorCount>> ListDonorCountsAsync(bool ignoreCache = false)
         {
             if (ignoreCache)
@@ -1093,7 +1096,7 @@ namespace Biobanks.Services
             => (await _collectionSampleSetRepository.ListAsync(false, x => x.DonorCountId == id)).Count();
         #endregion
 
-        #region Age Range
+        #region RefData: Age Range
         public async Task<IEnumerable<AgeRange>> ListAgeRangesAsync()
             => await _ageRangeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
@@ -1107,6 +1110,30 @@ namespace Biobanks.Services
         {
             return (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
         }
+        #endregion
+
+        #region RefData: Preservation Type
+        public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
+            => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+
+        // TODO: Should be updated to count the number of MaterialDetails with PreservationType, when implemented.
+        public async Task<int> GetPreservationTypeUsageCount(int id)
+        {
+            var preservationType = (await _preservationTypeRepository.ListAsync(false, x => x.Id == id)).First();
+
+            return preservationType != null 
+                ? await GetStorageTemperatureUsageCount(preservationType.StorageTemperatureId) // Technically Upper Bound
+                : 0;
+        }
+
+        public async Task<bool> IsPreservationTypeInUse(int id)
+            => (await GetPreservationTypeUsageCount(id)) > 0;
+
+        public async Task<bool> ValidPreservationTypeAsync(string value, int storageTemperatureId)
+            => (await _preservationTypeRepository.ListAsync(false, x =>
+                    x.Value == value &&
+                    x.StorageTemperatureId == storageTemperatureId)
+                ).Any();
         #endregion
 
         #region RefData: Sample Collection Mode
@@ -1137,8 +1164,7 @@ namespace Biobanks.Services
             => (await _networkRepository.ListAsync(false, x => x.SopStatusId == id)).Count();
         #endregion
 
-
-
+        #region RefData: StorageTemperature
         public async Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync()
             => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
@@ -1152,6 +1178,7 @@ namespace Biobanks.Services
         {
             return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();
         }
+        #endregion
 
         public async Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "")
             => await _ontologyTermRepository.ListAsync(false, x => x.Value.Contains(wildcard));

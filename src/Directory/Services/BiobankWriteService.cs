@@ -66,6 +66,8 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<HtaStatus> _htaStatusRepository;
+        private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
+
 
         private readonly IGenericEFRepository<Publication> _publicationRespository;
 
@@ -110,7 +112,7 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationNetwork> networkOrganisationRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameRepository,
 
-        IGenericEFRepository<Organisation> organisationRepository,
+            IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
             IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
@@ -121,6 +123,7 @@ namespace Biobanks.Services
             IGenericEFRepository<RegistrationReason> registrationReasonRepository,
             IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
             IGenericEFRepository<HtaStatus> htaStatusRepository,
+            IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             IGenericEFRepository<Publication> publicationRepository,
 
@@ -178,6 +181,7 @@ namespace Biobanks.Services
             _serviceOfferingRepository = serviceOfferingRepository;
             _associatedDataProcurementTimeFrameRepository = associatedDataProcurementTimeFrameRepository;
             _htaStatusRepository = htaStatusRepository;
+            _preservationTypeRepository = preservationTypeRepository;
 
             _publicationRespository = publicationRepository;
 
@@ -1438,6 +1442,61 @@ namespace Biobanks.Services
         {
             await _htaStatusRepository.DeleteAsync(htaStatus.Id);
             await _htaStatusRepository.SaveChangesAsync();
+        }
+        #endregion
+
+        #region RefData: PreservationType
+        public async Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType)
+        {
+            _preservationTypeRepository.Insert(preservationType);
+            await _preservationTypeRepository.SaveChangesAsync();
+
+            return preservationType;
+        }
+
+        public async Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false)
+        {
+            var types = await _biobankReadService.ListPreservationTypesAsync();
+
+            // If only updating sortOrder
+            if (sortOnly)
+            {
+                preservationType.Value = types.First(x => x.Id == preservationType.Id).Value;
+            }
+
+            // Add new item, remove old
+            var oldType = types.First(x => x.Id == preservationType.Id);
+            var reverse = (oldType.SortOrder < preservationType.SortOrder);
+
+            var newOrder = types
+                .Prepend(preservationType)
+                .GroupBy(x => x.Id)
+                .Select(x => x.First());
+
+            // Sort depending on direction of change
+            newOrder = reverse
+                ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
+                : newOrder.OrderBy(x => x.SortOrder);
+
+            // Re-index and update
+            newOrder
+                .Select((x, i) =>
+                {
+                    x.SortOrder = (i + 1);
+                    return x;
+                })
+                .ToList()
+                .ForEach(_preservationTypeRepository.Update);
+
+            await _storageTemperatureRepository.SaveChangesAsync();
+
+            return preservationType;
+        }
+
+        public async Task DeletePreservationTypeAsync(PreservationType preservationType)
+        {
+            await _preservationTypeRepository.DeleteAsync(preservationType.Id);
+            await _preservationTypeRepository.SaveChangesAsync();
         }
         #endregion
 
