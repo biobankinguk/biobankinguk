@@ -45,5 +45,9 @@ namespace Publications.Services
         //Uses Annotation Id from EF
         public async Task<Annotation> GetAnnotationById(int annotationId)
             => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
+
+        public async Task<Annotation> GetAnnotationByName(string name)
+            => await _ctx.Annotations.Where(x => x.Name == name).FirstOrDefaultAsync();
+
     }
 }

@@ -24,8 +24,8 @@ namespace Publications.Services
         public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDto> annotations)
         {
 
-            var existingPublications = await _biobankReadService.GetPublicationById(publicationId);
-            var existingAnnotations = await _biobankReadService.GetPublicationAnnotations(existingPublications.Id);
+            var publication = await _biobankReadService.GetPublicationById(publicationId);
+            var existingAnnotations = await _biobankReadService.GetPublicationAnnotations(publication.Id);
 
             var annotationList = new List<Annotation>();
             foreach(var annotation in annotations)
@@ -42,7 +42,7 @@ namespace Publications.Services
                       var publicationAnnotation = new PublicationAnnotation()
                       {
                           Annotation_Id = annotationEntity.Id,
-                          Publication_Id = existingPublications.Id
+                          Publication_Id = publication.Id
                       };
                       annotationEntity.PublicationAnnotations.Add(publicationAnnotation);
                       annotationList.Add(annotationEntity);
@@ -56,7 +56,7 @@ namespace Publications.Services
             foreach (var newer in annList)
             {
                 //Find if older version of annotation exists
-                var older = existingAnnotations.Select(x => x.Annotation).FirstOrDefault(a => a.AnnotationId == newer.AnnotationId);
+                var older = await _biobankReadService.GetAnnotationByName(newer.Name);
 
                 if (older is null)
                 {
@@ -65,10 +65,19 @@ namespace Publications.Services
                 }
                 else
                 {
-                    //Update existing record
-                    older.Name = newer.Name;
-                    older.Uri = newer.Uri;
-                   _ctx.Update(older);
+                    //Check if publicationAnnotation already exists 
+                    var publicationAnnotation = older.PublicationAnnotations.Where(x => x.Annotation_Id == newer.Id && x.Publication_Id == publication.Id).FirstOrDefault();
+
+                    if (publicationAnnotation is null)
+                    {
+                        older.PublicationAnnotations.Add(new PublicationAnnotation()
+                        {
+                            Annotation_Id = newer.Id,
+                            Publication_Id = publication.Id
+                        }); 
+                        
+                        _ctx.Update(older);
+                    }
                 }
             }
            await _ctx.SaveChangesAsync();
