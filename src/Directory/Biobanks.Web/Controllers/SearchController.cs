@@ -14,6 +14,7 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
@@ -63,6 +64,13 @@ namespace Biobanks.Web.Controllers
                     SearchType = SearchDocumentType.Collection
                 });
 
+            List<string> Counties = new List<string>();
+            foreach (var facetCounty in searchResults.Facets.ToList())
+            {
+                Counties.Add(facetCounty.Name);
+            }
+            var countyCountry = await LinkCountriesToCounties(Counties);
+            model.Counties = countyCountry;
             return View(model);
         }
 
@@ -283,6 +291,32 @@ namespace Biobanks.Web.Controllers
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        //Get all Countries & Counties Linked up
+        private async Task<List<List<String>>> LinkCountriesToCounties(IEnumerable<string> facetIds)
+        {
+            List<List<string>> completeList = new List<List<string>>();
+            foreach (string facetId in facetIds)
+            {
+                if (facetId.StartsWith("ctry_"))
+                {
+                    var listCounties = await _biobankReadService.GetCountryCounty(facetId);
+                    List<string> stringCounties = new List<string>();
+                    stringCounties.Add(facetId);
+                    foreach (var county in listCounties)
+                    {
+                        stringCounties.Add(county.Value);
+                    }
+                    completeList.Add(stringCounties);
+                    
+                }
+                
+                
+            }
+            return completeList;
+            
+
         }
     }
 }

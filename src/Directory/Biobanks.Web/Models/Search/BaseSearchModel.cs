@@ -17,5 +17,7 @@ namespace Biobanks.Web.Models.Search
         public IEnumerable<SearchFacetModel> Facets { get; set; }
 
         public IList<string> SelectedFacets { get; set; }
+
+        public IList<IList<string>> Counties { get; set; }
     }
 }

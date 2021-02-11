@@ -13,6 +13,8 @@ namespace Biobanks.Web.Models.Search
 
         public IList<string> SelectedFacets { get; set; }
 
+        public IList<IList<string>> Counties { get; set; }
+
         public bool FacetSelected(string facetId) =>
             SelectedFacets != null &&
             SelectedFacets.Any(sf => sf == facetId);

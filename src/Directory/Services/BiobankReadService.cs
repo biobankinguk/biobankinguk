@@ -310,6 +310,9 @@ namespace Biobanks.Services
         public async Task<ICollection<Country>> ListCountriesAsync() =>
             (await _countryRepository.ListAsync(false, null, x => x.OrderBy(c => c.Value))).ToList();
 
+        public async Task<ICollection<County>> GetCountryCounty(string name)
+            => (await _countyRepository.ListAsync(false,x => x.Value == name)).ToList();
+
         public async Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync()
         {
             var organisations = await _organisationRepository.ListAsync(
