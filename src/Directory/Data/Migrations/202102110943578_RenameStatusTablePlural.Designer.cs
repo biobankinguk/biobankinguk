@@ -13,7 +13,7 @@ namespace Biobanks.Directory.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202102101613238_RenameStatusTablePlural"; }
+            get { return "202102110943578_RenameStatusTablePlural"; }
         }
         
         string IMigrationMetadata.Source
