@@ -122,12 +122,8 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
                     continue;
                 }
-                catch
-                {
 
-                }
-
-                ////Write the staged sample to the context
+                // Write the staged sample to the context
                 _db.StagedSamples.Update(sample);
             }
 
