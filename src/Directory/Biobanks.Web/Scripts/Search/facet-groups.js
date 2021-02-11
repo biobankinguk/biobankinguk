@@ -1,17 +1,21 @@
-﻿$('.facet-group').on('hidden.bs.collapse', function () {
+﻿$('.facet-group').on('hidden.bs.collapse', function (a) {
     $('#' + $(this).data('icon-id')).removeClass('fa-plus-square');
     $('#' + $(this).data('icon-id')).removeClass('fa-minus-square');
 
     $('#' + $(this).data('icon-id')).addClass('fa-plus-square');
 
     $.cookie($(this).attr('id') + 'Collapsed', true);
+    a.stopPropagation()
 });
 
-$('.facet-group').on('shown.bs.collapse', function() {
+$('.facet-group').on('shown.bs.collapse', function(a) {
     $('#' + $(this).data('icon-id')).removeClass('fa-plus-square');
     $('#' + $(this).data('icon-id')).removeClass('fa-minus-square');
 
     $('#' + $(this).data('icon-id')).addClass('fa-minus-square');
 
     $.cookie($(this).attr('id') + 'Collapsed', false);
+    a.stopPropagation()
 });
+
+
