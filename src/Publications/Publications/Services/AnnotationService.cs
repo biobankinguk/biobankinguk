@@ -58,6 +58,7 @@ namespace Publications.Services
                 //Find if older version of annotation exists
                 var older = await _biobankReadService.GetAnnotationByName(newer.Name);
 
+
                 if (older is null)
                 {
                    //Add new record
@@ -66,16 +67,16 @@ namespace Publications.Services
                 else
                 {
                     //Check if publicationAnnotation already exists 
-                    var publicationAnnotation = older.PublicationAnnotations.Where(x => x.Annotation_Id == newer.Id && x.Publication_Id == publication.Id).FirstOrDefault();
+                    var publicationAnnotation = older.PublicationAnnotations.Where(x => x.Publication_Id == publication.Id).FirstOrDefault();
 
                     if (publicationAnnotation is null)
                     {
                         older.PublicationAnnotations.Add(new PublicationAnnotation()
                         {
-                            Annotation_Id = newer.Id,
+                            Annotation_Id = older.Id,
                             Publication_Id = publication.Id
-                        }); 
-                        
+                        });
+
                         _ctx.Update(older);
                     }
                 }

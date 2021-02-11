@@ -49,5 +49,24 @@ namespace Publications.Services
         public async Task<Annotation> GetAnnotationByName(string name)
             => await _ctx.Annotations.Where(x => x.Name == name).FirstOrDefaultAsync();
 
+        public async Task<PublicationAnnotation> GetPublicationAnnotation(int publicationId, string uri)
+        {
+            var query =
+                from PublicationAnnotations in _ctx.PublicationAnnotations
+                join Annotations in _ctx.Annotations on new { Annotation_Id = PublicationAnnotations.Annotation_Id } equals new { Annotation_Id = Annotations.Id } into Annotations_join
+                from Annotations in Annotations_join.DefaultIfEmpty()
+                where
+                  Annotations.Uri == uri &&
+                  PublicationAnnotations.Publication_Id == publicationId
+                select new PublicationAnnotation
+                {
+                    Publication_Id = PublicationAnnotations.Publication_Id,
+                    Annotation_Id = PublicationAnnotations.Annotation_Id
+                };
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+
     }
 }
