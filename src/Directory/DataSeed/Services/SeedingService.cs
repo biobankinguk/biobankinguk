@@ -34,43 +34,41 @@ namespace Biobanks.DataSeed.Services
             // List Order Determines Seed Order
             _seedActions = new List<Action>
             {
-                SeedMaterialTypes
-
-                ///* Directory Specific */
-                //SeedCountries,
-                //SeedJson<AccessCondition>,
-                //SeedJson<AgeRange>,
-                //SeedJson<AnnualStatisticGroup>,
-                //SeedJson<AssociatedDataProcurementTimeframe>,
-                //SeedJson<AssociatedDataTypeGroup>,
-                //SeedJson<AssociatedDataType>,
-                //SeedJson<CollectionPercentage>,
-                //SeedJson<CollectionPoint>,
-                //SeedJson<CollectionStatus>,
-                //SeedJson<CollectionType>,
-                //SeedJson<ConsentRestriction>,
-                //SeedJson<DonorCount>,
-                //SeedJson<Funder>,
-                //SeedJson<HtaStatus>,
-                //SeedJson<MacroscopicAssessment>,
-                //SeedJson<RegistrationReason>,
-                //SeedJson<SampleCollectionMode>,
-                //SeedJson<ServiceOffering>,
-                //SeedJson<SopStatus>,
+                /* Directory Specific */
+                SeedCountries,
+                SeedJson<AccessCondition>,
+                SeedJson<AgeRange>,
+                SeedJson<AnnualStatisticGroup>,
+                SeedJson<AssociatedDataProcurementTimeframe>,
+                SeedJson<AssociatedDataTypeGroup>,
+                SeedJson<AssociatedDataType>,
+                SeedJson<CollectionPercentage>,
+                SeedJson<CollectionPoint>,
+                SeedJson<CollectionStatus>,
+                SeedJson<CollectionType>,
+                SeedJson<ConsentRestriction>,
+                SeedJson<DonorCount>,
+                SeedJson<Funder>,
+                SeedJson<HtaStatus>,
+                SeedJson<MacroscopicAssessment>,
+                SeedJson<RegistrationReason>,
+                SeedJson<SampleCollectionMode>,
+                SeedJson<ServiceOffering>,
+                SeedJson<SopStatus>,
                 
-                ///* API Specific */
-                //SeedJson<Ontology>,
-                //SeedJson<SampleContentMethod>,
-                //SeedJson<Status>,
-                //SeedJson<TreatmentLocation>,
+                /* API Specific */
+                SeedJson<Ontology>,
+                SeedJson<SampleContentMethod>,
+                SeedJson<Status>,
+                SeedJson<TreatmentLocation>,
 
-                ///* Shared */
-                //SeedJson<MaterialTypeGroup>,
-                //SeedMaterialTypes,
-                //SeedJson<Sex>,
-                //SeedJson<OntologyTerm>,
-                //SeedJson<StorageTemperature>,
-                //SeedJson<PreservationType>
+                /* Shared */
+                SeedJson<MaterialTypeGroup>,
+                SeedMaterialTypes,
+                SeedJson<Sex>,
+                SeedJson<OntologyTerm>,
+                SeedJson<StorageTemperature>,
+                SeedJson<PreservationType>
             };
         }
 
@@ -122,8 +120,8 @@ namespace Biobanks.DataSeed.Services
                     {
                         Value = x.Value,
                         SortOrder = x.SortOrder,
-                        MaterialTypeGroups = (x.MaterialTypeGroups ?? new List<MaterialTypeGroup>())
-                            .Select(y => validGroups.First(z => z.Value == y.Value))
+                        MaterialTypeGroups = x.MaterialTypeGroups
+                            ?.Select(y => validGroups.First(z => z.Value == y.Value))
                             .ToList()
                     })
             );
