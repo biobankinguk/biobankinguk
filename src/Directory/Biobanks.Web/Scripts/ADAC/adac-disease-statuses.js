@@ -46,8 +46,7 @@ function AdacDiseaseStatusViewModel() {
     var diseaseStatus = $(event.currentTarget).data("disease-status");
     _this.modal.diseaseStatus(
       new DiseaseStatus(
-        diseaseStatus.Id,
-        diseaseStatus.SnomedIdentifier,
+          diseaseStatus.OntologyTermId,
           diseaseStatus.Description,
           diseaseStatus.OtherTerms
 
@@ -76,11 +75,11 @@ function AdacDiseaseStatusViewModel() {
     //Turns on/off partial editing of some input fields
     this.setPartialEdit = function (flag) {
         if (flag == true) {
-            $("#SnomedIdentifier").prop('readonly', true);
+            $("#OntologyTermId").prop('readonly', true);
             $("#Description").prop('readonly', true);
         }
         else {
-            $("#SnomedIdentifier").prop('readonly', false);
+            $("#OntologyTermId").prop('readonly', false);
             $("#Description").prop('readonly', false);
         }
     }
@@ -162,7 +161,7 @@ $(function () {
 
       var $link = $(this);
       var linkData = $link.data("refdata-model")
-      var url = $link.data("resource-url") + "/" + linkData.Id;
+      var url = $link.data("resource-url") + "/" + linkData.OntologyTermId;
 
       bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
           function (confirmation) {

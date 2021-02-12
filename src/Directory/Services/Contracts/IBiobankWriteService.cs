@@ -120,6 +120,10 @@ namespace Biobanks.Services.Contracts
         Task<SampleCollectionMode> UpdateSampleCollectionModeAsync(SampleCollectionMode sampleCollection, bool sortOnly = false);
         Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
 
+        Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
+        Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
+        Task DeletePreservationTypeAsync(PreservationType preservationType);
+
         Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature);
         Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly=false);
         Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature);
