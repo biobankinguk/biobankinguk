@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class MaterailTypeJoinRefresh : IMigrationMetadata
+    public sealed partial class MaterialTypeRefresh : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(MaterailTypeJoinRefresh));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(MaterialTypeRefresh));
         
         string IMigrationMetadata.Id
         {
-            get { return "202102111550361_MaterailTypeJoinRefresh"; }
+            get { return "202102120925189_MaterialTypeRefresh"; }
         }
         
         string IMigrationMetadata.Source
