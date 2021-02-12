@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biobanks.Web", "Biobanks.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Search", "Search\Search.csproj", "{A0B448D5-603B-4488-9FB8-73DEE25D47F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSeed", "DataSeed\DataSeed.csproj", "{BCB14499-8C9A-43FC-81C1-B2F4B2458D52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSeed", "..\DataSeed\DataSeed.csproj", "{BCB14499-8C9A-43FC-81C1-B2F4B2458D52}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{F087CD21-D746-4F63-84B1-9038E471E258}"
 EndProject
