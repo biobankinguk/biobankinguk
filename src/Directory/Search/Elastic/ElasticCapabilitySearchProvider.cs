@@ -64,7 +64,9 @@ namespace Biobanks.Search.Elastic
         public IEnumerable<string> ListOntologyTerms(string wildcard = "")
         {
             var capabilities = _client.Search<CapabilityDocument>(s => s
-                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*"))
+                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*") || q.Nested(n => n
+                .Path("ontologyOtherTerms")
+                .Query(nq => nq.Wildcard("ontologyOtherTerms.name", $"*{wildcard}*"))))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
