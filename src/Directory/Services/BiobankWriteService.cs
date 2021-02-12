@@ -699,6 +699,8 @@ namespace Biobanks.Services
         {
             _ontologyTermRepository.Update(ontologyTerm);
             await _ontologyTermRepository.SaveChangesAsync();
+            await _indexService.UpdateCollectionsOntologyOtherTerms(ontologyTerm.Value);
+            await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
 
             return ontologyTerm;
         }
