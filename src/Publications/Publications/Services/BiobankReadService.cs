@@ -30,9 +30,11 @@ namespace Publications.Services
 
         public async Task<IList<string>> GetOrganisationNames()
             => (await ListBiobanksAsync()).Select(x => x.Name).ToList();
-
+        
+        //Gets Publications by OrganisationId, if Accepted is true, if the pub has no previously synced annotations and if last sync was over a month ago
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _ctx.Publications.Where(x => x.OrganisationId == biobankId).ToListAsync();
+            => await _ctx.Publications.Where(x => x.OrganisationId == biobankId && x.Accepted == true)
+            .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1)).ToListAsync();
 
         //Uses Publication Id from EF
         public async Task<IEnumerable<PublicationAnnotation>> GetPublicationAnnotations(int publicationId)

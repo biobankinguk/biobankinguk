@@ -79,6 +79,10 @@ namespace Publications.Services
                     }
                 }
             }
+      
+            publication.AnnotationsSynced = DateTime.Now;
+            _ctx.Update(publication);
+
            await _ctx.SaveChangesAsync();
         }
     }
