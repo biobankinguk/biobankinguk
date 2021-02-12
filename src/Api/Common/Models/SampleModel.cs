@@ -29,6 +29,11 @@ namespace Biobanks.Common.Models
         public string StorageTemperature { get; set; }
 
         /// <summary>
+        /// The method in which the sample was preserved, if applicable.
+        /// </summary>
+        public string PreservationType { get; set; }
+
+        /// <summary>
         /// The date the sample was created, in ISO-8601 extended date or IETF RFC-3339 full-date format, e.g. 2016-01-01
         /// </summary>
         public DateTime? DateCreated { get; set; }
