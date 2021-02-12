@@ -1,15 +1,13 @@
-using Biobanks.Directory.Data;
-using Biobanks.Entities.Data;
-using Biobanks.Directory.Data.Repositories;
+using System;
 using Biobanks.DataSeed.Services;
+using Biobanks.Directory.Data;
+using Biobanks.Services;
+using Biobanks.Services.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Biobanks.Services.Contracts;
-using Biobanks.Services;
-using System;
 
-namespace Directory.DataSeed
+namespace Biobanks.DataSeed
 {
     public class Startup
     {
@@ -43,10 +41,8 @@ namespace Directory.DataSeed
             Console.WriteLine("Press any key to continue with this connection string; otherwise close the application");
             Console.ReadKey();
 
-
             services.AddScoped(_ => new BiobanksDbContext(connString));
             services.AddHttpClient();
-
         }
 
         /// <summary>

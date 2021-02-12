@@ -23,7 +23,7 @@ namespace Biobanks.DataSeed.Services
         private readonly BiobanksDbContext _db;
         private readonly CountriesWebService _countriesWebService;
 
-        private IEnumerable<Action> _seedActions;
+        private readonly IEnumerable<Action> _seedActions;
 
         public SeedingService(ILogger<SeedingService> logger, BiobanksDbContext db, CountriesWebService countriesWebService)
         {
@@ -155,11 +155,10 @@ namespace Biobanks.DataSeed.Services
                 filePath = Path.Combine(_dataDir, typeof(T).Name) + ".json";
             }
 
-            using (var stream = new StreamReader(filePath))
-            using (var reader = new JsonTextReader(stream))
-            {
-                return new JsonSerializer().Deserialize<IEnumerable<T>>(reader);
-            }
+            using var stream = new StreamReader(filePath);
+            using var reader = new JsonTextReader(stream);
+            
+            return new JsonSerializer().Deserialize<IEnumerable<T>>(reader);
         }
     }
 }
