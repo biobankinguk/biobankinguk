@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Biobanks.Directory.Data;
+using Biobanks.Data;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using McMaster.Extensions.CommandLineUtils;
@@ -148,7 +148,7 @@ namespace Biobanks.DataSeed.Services
             Seed(ReadJson<T>());
         }
 
-        private IEnumerable<T> ReadJson<T>(string filePath = "")
+        private static IEnumerable<T> ReadJson<T>(string filePath = "")
         {
             if (string.IsNullOrEmpty(filePath))
             {

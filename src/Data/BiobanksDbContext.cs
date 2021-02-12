@@ -29,6 +29,7 @@ namespace Biobanks.Data
         public DbSet<AnnualStatistic> AnnualStatistics { get; set; }
         public DbSet<AnnualStatisticGroup> AnnualStatisticGroups { get; set; }
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
+        public DbSet<AssociatedDataTypeGroup> AssociatedDataTypeGroups { get; set; }
         public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
         public DbSet<Blob> Blobs { get; set; }
         public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
@@ -36,7 +37,7 @@ namespace Biobanks.Data
         public DbSet<Collection> Collections { get; set; }
         public DbSet<CollectionType> CollectionTypes { get; set; }
         public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
-        public DbSet<CollectionStatus> CollectionStatuses { get; set; }
+        public DbSet<CollectionStatus> CollectionStatus { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
         public DbSet<CollectionPoint> CollectionPoints { get; set; }
         public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
@@ -46,7 +47,7 @@ namespace Biobanks.Data
         public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
         public DbSet<DonorCount> DonorCounts { get; set; }
         public DbSet<Funder> Funders { get; set; }
-        public DbSet<HtaStatus> HtaStatuses { get; set; }
+        public DbSet<HtaStatus> HtaStatus { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
         public DbSet<MaterialDetail> MaterialDetails { get; set; }
         public DbSet<Network> Networks { get; set; }
@@ -63,7 +64,7 @@ namespace Biobanks.Data
         public DbSet<RegistrationReason> RegistrationReasons { get; set; }
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
-        public DbSet<SopStatus> SopStatuses { get; set; }
+        public DbSet<SopStatus> SopStatus { get; set; }
         public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
         public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
 
@@ -210,9 +211,8 @@ namespace Biobanks.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
-
         }
-        
+
         public BiobanksDbContext(DbContextOptions options) : base(options) { }
 
         public class BiobanksDbContextFactory : IDesignTimeDbContextFactory<BiobanksDbContext>
