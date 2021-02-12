@@ -34,9 +34,7 @@ namespace Publications.Services
                 {
                       var annotationEntity = new Annotation()
                       {
-                          AnnotationId = annotation.Id,
                           Name = tags.Name.ToLower(),
-                          Uri = tags.Uri,
                           PublicationAnnotations = new List<PublicationAnnotation>()
                       };
                       var publicationAnnotation = new PublicationAnnotation()
