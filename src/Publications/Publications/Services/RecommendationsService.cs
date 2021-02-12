@@ -70,7 +70,7 @@ namespace Publications.Services
                 {
                     var recommendation = new JaccardIndexDTO
                     {
-                        OrganisationId = (int)t.OrganisationId,
+                        OrganisationId = t.OrganisationId,
                         JaccardIndex = response.JaccardIndex,
                         CommonAnnotations = response.CommonAnnotations
                     };
