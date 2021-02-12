@@ -6,7 +6,7 @@ namespace Publications.Services.Dto
 {
     public class AnnotationQueryDTO
     {
-        public int? OrganisationId { get; set; }
+        public int OrganisationId { get; set; }
 
         public string Annotation { get; set; }
         public List<string> Annotations { get; set; }

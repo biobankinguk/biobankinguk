@@ -67,7 +67,7 @@ namespace Publications.Services
                 select new AnnotationQueryDTO
                 {
                     Annotation = Annotations.Name,
-                    OrganisationId = (int?)Publications.OrganisationId
+                    OrganisationId = Publications.OrganisationId
                 };
             var annotationList = await query.ToListAsync();
 

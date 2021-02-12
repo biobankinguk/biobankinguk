@@ -66,13 +66,16 @@ namespace Publications.Services
             {
                 var response = await JaccardSimilarity(publicationsAnnotationListA, t.Annotations);
 
-                var recommendation = new JaccardIndexDTO
+                if (!string.IsNullOrEmpty(response.CommonAnnotations))
                 {
-                    OrganisationId = (int)t.OrganisationId,
-                    JaccardIndex = response.JaccardIndex,
-                    CommonAnnotations = response.CommonAnnotations
-                };
-                recommendationsList.Add(recommendation);
+                    var recommendation = new JaccardIndexDTO
+                    {
+                        OrganisationId = (int)t.OrganisationId,
+                        JaccardIndex = response.JaccardIndex,
+                        CommonAnnotations = response.CommonAnnotations
+                    };
+                    recommendationsList.Add(recommendation);
+                }
             } 
 
             return recommendationsList.OrderByDescending(x => x.JaccardIndex).ToList();
