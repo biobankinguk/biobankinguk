@@ -42,6 +42,7 @@ namespace Publications.Services.Hosted
             foreach (var biobank in biobanks)
             {
                 //Fetch all publications for each organisation in DB
+                //W
                 var publications = await _biobankReadService.ListOrganisationPublications(biobank.OrganisationId);
 
                 foreach (var publication in publications)
