@@ -12,5 +12,6 @@
       }
     }
   },
+  "functionTimeout": "00:10:00",
   "version": "2.0"
 }

@@ -1,4 +1,5 @@
 ﻿using Directory.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,6 +30,8 @@ namespace Publications.Entities
         public bool? Accepted { get; set; }
 
         public string Source { get; set; }
+
+        public DateTime? AnnotationsSynced { get; set; }
 
         public virtual Organisation Organisation { get; set; }
 
