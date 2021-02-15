@@ -65,7 +65,7 @@ namespace Publications.Services
                 else
                 {
                     //Check if publicationAnnotation already exists 
-                    var publicationAnnotation = older.PublicationAnnotations.Where(x => x.Publication_Id == publication.Id).FirstOrDefault();
+                    var publicationAnnotation = older.PublicationAnnotations.FirstOrDefault(x => x.Publication_Id == publication.Id);
 
                     if (publicationAnnotation is null)
                     {
