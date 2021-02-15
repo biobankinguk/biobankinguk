@@ -48,10 +48,21 @@ namespace Biobanks.LegacyData.Entities
         /// Foreign key column.
         /// </summary>
         public int? StorageTemperatureId { get; set; }
+
         /// <summary>
         /// The storage temperature of this sample.
         /// </summary>
         public StorageTemperature StorageTemperature { get; set; }
+
+        /// <summary>
+        /// Foreign key column.
+        /// </summary>
+        public int? PreservationTypeId { get; set; }
+
+        /// <summary>
+        /// The preservation method of this sample.
+        /// </summary>
+        public PreservationType PreservationType { get; set; }
 
         /// <summary>
         /// The date the sample was "created" e.g. extracted.

@@ -19,5 +19,6 @@ namespace Biobanks.Search.Dto.PartialDocuments
         public string AnnualDonorExpectationMetadata { get; set; }
 
         public IEnumerable<AssociatedDataDocument> AssociatedData { get; set; }
+        public IEnumerable<OtherTermsDocument> OntologyOtherTerms { get; set; }
     }
 }

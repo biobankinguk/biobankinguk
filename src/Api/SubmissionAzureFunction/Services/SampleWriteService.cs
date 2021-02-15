@@ -53,7 +53,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
                 .Where(x => x.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();
-            var allLiveSamples = await _db.Samples
+            var allLiveSamples = await _db.LiveSamples
                 .Where(x => x.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();
@@ -123,7 +123,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
                     continue;
                 }
 
-                ////Write the staged sample to the context
+                // Write the staged sample to the context
                 _db.StagedSamples.Update(sample);
             }
 
@@ -147,7 +147,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
                 .Where(s => s.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();
-            var allLiveSamples = await _db.Samples
+            var allLiveSamples = await _db.LiveSamples
                 .Where(s => s.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();

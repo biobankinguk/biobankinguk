@@ -68,6 +68,7 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<Sex>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
+                SeedJson<PreservationType>
             };
         }
 

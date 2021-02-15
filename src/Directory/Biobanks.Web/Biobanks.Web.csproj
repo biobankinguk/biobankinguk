@@ -445,6 +445,7 @@
     <Compile Include="ApiControllers\HtaStatusController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
+    <Compile Include="ApiControllers\PreservationTypeController.cs" />
     <Compile Include="ApiControllers\StorageTemperatureController.cs" />
     <Compile Include="ApiControllers\RegistrationReasonController.cs" />
     <Compile Include="ApiControllers\SampleCollectionModeController.cs" />
@@ -455,6 +456,7 @@
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
+    <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />

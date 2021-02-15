@@ -80,5 +80,8 @@ namespace Biobanks.Search.Dto.Documents
 
         [Keyword(Name = "county")]
         public string County { get; set; }
+
+        [Keyword(Name = "ontologyOtherTerms")]
+        public IEnumerable<OtherTermsDocument> OntologyOtherTerms { get; set; }
     }
 }
