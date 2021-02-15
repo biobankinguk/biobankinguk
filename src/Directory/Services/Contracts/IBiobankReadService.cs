@@ -25,6 +25,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync();
         Task<Collection> GetCollectionByIdForIndexingAsync(int id);
         Task<Collection> GetCollectionWithSampleSetsByIdAsync(int id);
+        Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<Collection>> ListCollectionsAsync();
         Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
         Task<CollectionSampleSet> GetSampleSetByIdAsync(int id);
@@ -34,6 +35,7 @@ namespace Biobanks.Services.Contracts
 
         Task<DiagnosisCapability> GetCapabilityByIdAsync(int id);
         Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id);
+        Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId);
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 
@@ -95,6 +97,11 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsCollectionTypeInUse(int id);
         Task<bool> ValidCollectionTypeDescriptionAsync(string collectionTypeDescription);
         Task<bool> ValidCollectionTypeDescriptionAsync(int collectionTypeId, string collectionTypeDescription);
+
+        Task<IEnumerable<PreservationType>> ListPreservationTypesAsync();
+        Task<int> GetPreservationTypeUsageCount(int id);
+        Task<bool> IsPreservationTypeInUse(int id);
+        Task<bool> ValidPreservationTypeAsync(string value, int storageTemperatureId);
 
         Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync();
         Task<bool> ValidStorageTemperatureAsync(string preservationTypeDescription);

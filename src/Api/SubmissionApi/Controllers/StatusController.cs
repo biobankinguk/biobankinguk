@@ -99,10 +99,11 @@ namespace Biobanks.SubmissionApi.Controllers
         public async Task<IActionResult> Get(int submissionId)
         {
             var submission = await _submissions.Get(submissionId);
-            if (submission == null) return NotFound();
 
-            if (!User.HasClaim(CustomClaimTypes.BiobankId,
-                submission.BiobankId.ToString()))
+            if (submission == null)
+                return NotFound();
+
+            if (!User.HasClaim(CustomClaimTypes.BiobankId, submission.BiobankId.ToString()))
                 return Forbid();
 
             return Ok(_mapper.Map<SubmissionSummaryModel>(submission));
