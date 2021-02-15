@@ -1,17 +1,20 @@
+using Biobanks.Data;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using McMaster.Extensions.CommandLineUtils;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Biobanks.Data;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using McMaster.Extensions.CommandLineUtils;
-using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Newtonsoft.Json;
+using Biobanks.Entities.Data;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Biobanks.DataSeed.Services
 {
@@ -72,7 +75,7 @@ namespace Biobanks.DataSeed.Services
             };
         }
 
-        public Task StartAsync(CancellationToken cancellationToken) 
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             foreach (var seedAction in _seedActions)
             {
@@ -81,23 +84,25 @@ namespace Biobanks.DataSeed.Services
 
             return Task.CompletedTask;
         }
-            
-        public Task StopAsync(CancellationToken cancellationToken) 
+
+        public Task StopAsync(CancellationToken cancellationToken)
             => Task.CompletedTask;
 
-        private void SeedCountries() 
+        private void SeedCountries()
         {
             var seedUN = Prompt.GetYesNo("Would you like to seed UN Countries?", false);
-            
+
             // Seed Countries
             if (seedUN)
             {
                 Seed(
-                    _countriesWebService.ListCountriesAsync().Result.Select(x => new Country
+                    _countriesWebService.ListCountriesAsync().Result.Select(x => 
+                        new Country
                         {
                             Value = x.CountryName
                         }
                     )
+                    .ToList()
                 );
             }
             else
@@ -106,8 +111,14 @@ namespace Biobanks.DataSeed.Services
             }
 
             // Update Config Value
-            _db.Configs.FirstOrDefault(x => x.Key == "site.display.counties").Value = (!seedUN ? "true" : "false");
-            _db.SaveChanges();
+            //Seed(new List<Config>
+            //{
+            //    new Config()
+            //    {
+            //        Key = "site.display.counties",
+            //        Value = !seedUN ? "true" : "false"
+            //    }
+            //});
         }
 
         private void SeedMaterialTypes()
@@ -124,10 +135,11 @@ namespace Biobanks.DataSeed.Services
                             ?.Select(y => validGroups.First(z => z.Value == y.Value))
                             .ToList()
                     })
+                    .ToList()
             );
         }
 
-        private void Seed<T>(IEnumerable<T> entities) where T : class
+        private void Seed<T>(ICollection<T> entities) where T : class
         {
             var set = _db.Set<T>();
 
@@ -137,9 +149,30 @@ namespace Biobanks.DataSeed.Services
             }
             else
             {
-                _logger.LogInformation($"{ typeof(T).Name }: Writing { entities.Count() } entries");
+                var table = set.EntityType.GetTableName();
+                var props = set.EntityType.GetProperties();
+
+                // Commit Changes
                 set.AddRange(entities);
-                _db.SaveChanges();
+                
+                // Save Changes
+                // Check If Table Has Identity Column, Hence Needing Identity Insert
+                if (props.Any(x => x.ValueGenerated == ValueGenerated.OnAdd))
+                {
+                    using var transaction = _db.Database.BeginTransaction();
+
+                    _db.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT dbo.{table} ON");
+                    _db.SaveChanges();
+                    _db.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT dbo.{table} OFF");
+                        
+                    transaction.Commit();
+                }
+                else
+                {
+                    _db.SaveChanges();
+                }
+
+                _logger.LogInformation($"{ typeof(T).Name }: Written { entities.Count() } entries");
             }
         }
 
@@ -148,7 +181,7 @@ namespace Biobanks.DataSeed.Services
             Seed(ReadJson<T>());
         }
 
-        private static IEnumerable<T> ReadJson<T>(string filePath = "")
+        private static ICollection<T> ReadJson<T>(string filePath = "")
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -157,8 +190,8 @@ namespace Biobanks.DataSeed.Services
 
             using var stream = new StreamReader(filePath);
             using var reader = new JsonTextReader(stream);
-            
-            return new JsonSerializer().Deserialize<IEnumerable<T>>(reader);
+
+            return new JsonSerializer().Deserialize<ICollection<T>>(reader);
         }
     }
 }
