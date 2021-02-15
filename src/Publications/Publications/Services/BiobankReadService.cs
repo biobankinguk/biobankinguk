@@ -49,7 +49,7 @@ namespace Publications.Services
             => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
 
         public async Task<Annotation> GetAnnotationByName(string name)
-            => await _ctx.Annotations.Where(x => x.Name == name).FirstOrDefaultAsync();
+            => await _ctx.Annotations.Where(x => x.Name == name).Include(a => a.PublicationAnnotations).FirstOrDefaultAsync();
 
     }
 }
