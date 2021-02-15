@@ -36,7 +36,7 @@ namespace Publications.Services.Hosted
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // Call directory for all active organisation
-            var biobanks = await _biobankReadService.ListBiobanksAsync();
+            var biobanks = (await _biobankReadService.ListBiobanksAsync()).Where(x => !x.ExcludePublications).ToList();
             _logger.LogInformation($"Fetching annotations for {biobanks.Count()} organisations");
 
             foreach (var biobank in biobanks)

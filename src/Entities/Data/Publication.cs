@@ -29,6 +29,8 @@ namespace Biobanks.Entities.Data
         public bool? Accepted { get; set; }
 
         public string Source { get; set; }
+
+        public DateTime? AnnotationsSynced { get; set; }
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }
 
