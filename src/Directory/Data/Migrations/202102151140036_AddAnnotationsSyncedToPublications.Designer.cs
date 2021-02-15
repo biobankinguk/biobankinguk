@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class AddAnnotationsSyncedColumnToPublications : IMigrationMetadata
+    public sealed partial class AddAnnotationsSyncedToPublications : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddAnnotationsSyncedColumnToPublications));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddAnnotationsSyncedToPublications));
         
         string IMigrationMetadata.Id
         {
-            get { return "202102121530124_AddAnnotationsSyncedColumnToPublications"; }
+            get { return "202102151140036_AddAnnotationsSyncedToPublications"; }
         }
         
         string IMigrationMetadata.Source
