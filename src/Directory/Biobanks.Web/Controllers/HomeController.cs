@@ -5,12 +5,12 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.Home;
 using Biobanks.Web.Extensions;
 using Newtonsoft.Json;
 using Biobanks.Web.Utilities;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {

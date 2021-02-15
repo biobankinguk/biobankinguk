@@ -26,7 +26,7 @@
                     <th rowspan="2">Year</th>
                     @foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
                     {
-                        <th colspan="@(annualStatsGroup.AnnualStatistics.Count)" class="text-center">@annualStatsGroup.Name</th>
+                        <th colspan="@(annualStatsGroup.AnnualStatistics.Count)" class="text-center">@annualStatsGroup.Value</th>
                     }
                 </tr>
 
@@ -35,7 +35,7 @@
                     {
                         foreach (var annualStat in annualStatsGroup.AnnualStatistics)
                         {
-                            <th class="text-center">@annualStat.Name</th>
+                            <th class="text-center">@annualStat.Value</th>
                         }
                     }
                 </tr>
@@ -50,9 +50,9 @@
                         {
                             foreach (var annualStat in annualStatsGroup.AnnualStatistics)
                             {
-                                var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.AnnualStatisticId && bas.Year == year)?.Value;
+                                var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.Id && bas.Year == year)?.Value;
                                 <td class="text-center">
-                                    <input type="number" min="0" class="form-control annualstats-input" data-year="@year" data-statistic="@annualStat.AnnualStatisticId" value="@statValue" />
+                                    <input type="number" min="0" class="form-control annualstats-input" data-year="@year" data-statistic="@annualStat.Id" value="@statValue" />
                                 </td>
                             }
                         }

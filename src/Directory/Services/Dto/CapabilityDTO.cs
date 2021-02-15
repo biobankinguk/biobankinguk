@@ -1,10 +1,10 @@
-namespace Directory.Services.Dto
+namespace Biobanks.Services.Dto
 {
     public class CapabilityDTO
     {
         public int Id { get; set; }
         public int OrganisationId { get; set; }
-        public string Diagnosis { get; set; }
+        public string OntologyTerm { get; set; }
         public bool BespokeConsentForm { get; set; }
         public bool BespokeSOP { get; set; }
         public int? AnnualDonorExpectation { get; set; }

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Directory.Identity.Data.Entities
+namespace Biobanks.Identity.Data.Entities
 {
     public class HistoricalPassword
     {

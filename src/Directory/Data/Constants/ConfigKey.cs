@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Directory.Data.Constants
+namespace Biobanks.Directory.Data.Constants
 {
     public static class ConfigKey
     {
@@ -18,6 +18,10 @@ namespace Directory.Data.Constants
         public const string FundersFreeText = "site.display.funders.freetext";
 
         public const string ContactThirdParty = "site.display.thirdparty";
+
+        //Email Config
+        public const string RegistrationEmails = "site.email.registration";
+
         //Trusted Biobank Config
         public const string TrustBiobanks = "site.display.trusted.biobanks";
 
@@ -43,7 +47,7 @@ namespace Directory.Data.Constants
 
 
         // Ref Data Name Configuration Options
-        public const string PreservationTypeName = "site.display.preservation.name";
+        public const string StorageTemperatureName = "site.display.preservation.name"; //TODO: Migrate key name?
         public const string DonorCountName = "site.display.donorcount.name";
         public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
 

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using Directory.Entity.Data;
-using Directory.Identity.Data.Entities;
-using Directory.Identity.Contracts;
-using Directory.Identity.Constants;
-using Directory.Services;
-using Directory.Services.Dto;
-using Directory.Data.Transforms.Url;
-using Directory.Services.Contracts;
+using Biobanks.Entities.Data;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Constants;
+using Biobanks.Services;
+using Biobanks.Services.Dto;
+using Biobanks.Directory.Data.Transforms.Url;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Biobank;
@@ -23,10 +23,10 @@ using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
-using static System.String;
 using System.Net.Http;
-using Directory.Data.Constants;
-
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Directory.Data.Constants;
+using static System.String;
 
 namespace Biobanks.Web.Controllers
 {
@@ -282,7 +282,7 @@ namespace Biobanks.Web.Controllers
             var activeServices =
                 model.ServiceModels.Where(x => x.Active).Select(x => new OrganisationServiceOffering
                 {
-                    ServiceId = x.ServiceOfferingId,
+                    ServiceOfferingId = x.ServiceOfferingId,
                     OrganisationId = biobank.OrganisationId
                 }).ToList();
 
@@ -325,8 +325,8 @@ namespace Biobanks.Web.Controllers
             return allServices.Select(service => new OrganisationServiceModel
             {
                 Active = false,
-                ServiceOfferingName = service.Name,
-                ServiceOfferingId = service.ServiceId,
+                ServiceOfferingName = service.Value,
+                ServiceOfferingId = service.Id,
                 SortOrder = service.SortOrder
             })
             .OrderBy(x => x.SortOrder)
@@ -340,8 +340,8 @@ namespace Biobanks.Web.Controllers
             return allRegistrationReasons.Select(regReason => new OrganisationRegistrationReasonModel
             {
                 Active = false,
-                RegistrationReasonName = regReason.Description,
-                RegistrationReasonId = regReason.RegistrationReasonId
+                RegistrationReasonName = regReason.Value,
+                RegistrationReasonId = regReason.Id
             })
             .ToList();
         }
@@ -380,7 +380,7 @@ namespace Biobanks.Web.Controllers
             //mark services as active in the full list
             var services = (await GetAllServicesAsync()).Select(service =>
             {
-                service.Active = bbServices.Any(x => x.ServiceId == service.ServiceOfferingId);
+                service.Active = bbServices.Any(x => x.ServiceOfferingId == service.ServiceOfferingId);
                 return service;
             }).ToList();
 
@@ -411,10 +411,10 @@ namespace Biobanks.Web.Controllers
                 AddressLine3 = bb.AddressLine3,
                 AddressLine4 = bb.AddressLine4,
                 City = bb.City,
-                CountyId = bb.County?.CountyId,
-                CountryId = bb.Country.CountryId,
-                CountyName = bb.County?.Name,
-                CountryName = bb.Country.Name,
+                CountyId = bb.County?.Id,
+                CountryId = bb.Country.Id,
+                CountyName = bb.County?.Value,
+                CountryName = bb.Country.Value,
                 Postcode = bb.PostCode,
                 GoverningInstitution = bb.GoverningInstitution,
                 GoverningDepartment = bb.GoverningDepartment,
@@ -692,8 +692,8 @@ namespace Biobanks.Web.Controllers
             => (await _biobankReadService.ListBiobankFundersAsync(biobankId))
                 .Select(bbFunder => new FunderModel
                 {
-                    FunderId = bbFunder.FunderId,
-                    Name = bbFunder.Name
+                    FunderId = bbFunder.Id,
+                    Name = bbFunder.Value
                 }).ToList();
 
         public async Task<JsonResult> GetFundersAjax(int biobankId, int timeStamp = 0)
@@ -746,7 +746,7 @@ namespace Biobanks.Web.Controllers
                     // Add Funder to Database
                     await _biobankWriteService.AddFunderAsync(new Funder
                     {
-                        Name = model.FunderName
+                        Value = model.FunderName
                     });
 
                     // Retrieve Funder (ensures no null values)
@@ -769,13 +769,13 @@ namespace Biobanks.Web.Controllers
 
             //Add the funder/biobank relationship
             await _biobankWriteService.AddFunderToBiobankAsync(
-                funder.FunderId, SessionHelper.GetBiobankId(Session));
+                funder.Id, SessionHelper.GetBiobankId(Session));
 
             //return success, and enough details for adding to the viewmodel's list
             return Json(new
             {
                 success = true,
-                funderId = funder.FunderId,
+                funderId = funder.Id,
                 name = model.FunderName
             });
         }
@@ -804,8 +804,8 @@ namespace Biobanks.Web.Controllers
             var funderResults = funders
                 .Select(x => new
                 {
-                    Id = x.FunderId,
-                    Name = x.Name
+                    Id = x.Id,
+                    Name = x.Value
                 }).ToList();
 
             return Json(funderResults, JsonRequestBehavior.AllowGet);
@@ -832,7 +832,7 @@ namespace Biobanks.Web.Controllers
                 BiobankCollectionModels = collections.Select(x => new BiobankCollectionModel
                 {
                     Id = x.CollectionId,
-                    Diagnosis = x.Diagnosis.Description,
+                    OntologyTerm = x.OntologyTerm.Value,
                     Title = x.Title,
                     StartYear = x.StartDate.Year,
                     MaterialTypes = Join(", ", _biobankReadService.ExtractDistinctMaterialTypes(x).Select(y => y)),
@@ -915,16 +915,16 @@ namespace Biobanks.Web.Controllers
             var model = new EditCollectionModel
             {
                 Id = collection.CollectionId,
-                Diagnosis = collection.Diagnosis.Description,
+                Diagnosis = collection.OntologyTerm.Value,
                 Title = collection.Title,
                 Description = collection.Description,
                 StartDate = collection.StartDate.Year,
                 HTAStatus = collection.HtaStatusId,
-                AccessCondition = collection.AccessCondition.AccessConditionId,
+                AccessCondition = collection.AccessCondition.Id,
                 FromApi = collection.FromApi,
-                CollectionType = collection.CollectionType?.CollectionTypeId,
-                CollectionStatus = collection.CollectionStatus.CollectionStatusId,
-                CollectionPoint = collection.CollectionPoint.CollectionPointId,
+                CollectionType = collection.CollectionType?.Id,
+                CollectionStatus = collection.CollectionStatus.Id,
+                CollectionPoint = collection.CollectionPoint.Id,
                 Groups = groups.Groups
                 
             };
@@ -1034,24 +1034,24 @@ namespace Biobanks.Web.Controllers
                 Id = collection.CollectionId,
                 Title = collection.Title,
                 Description = collection.Description,
-                Diagnosis = collection.Diagnosis.Description,
+                OntologyTerm = collection.OntologyTerm.Value,
                 StartDate = collection.StartDate,
-                AccessCondition = collection.AccessCondition.Description,
-                CollectionType = collection.CollectionType?.Description,
+                AccessCondition = collection.AccessCondition.Value,
+                CollectionType = collection.CollectionType?.Value,
                 FromApi = collection.FromApi,
                 AssociatedData = collection.AssociatedData.Select(x => new AssociatedDataSummaryModel
                 {
-                    Description = x.AssociatedDataType.Description,
-                    ProvisionTime = x.AssociatedDataProcurementTimeframe.Description,
+                    Description = x.AssociatedDataType.Value,
+                    ProvisionTime = x.AssociatedDataProcurementTimeframe.Value,
                     ProvisionTimeSortValue = x.AssociatedDataProcurementTimeframe.SortOrder
                 }),
                 SampleSets = collection.SampleSets.Select(sampleSet => new CollectionSampleSetSummaryModel
                 {
                     Id = sampleSet.SampleSetId,
-                    Sex = sampleSet.Sex.Description,
-                    Age = sampleSet.AgeRange.Description,
-                    MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Description).Distinct()),
-                    PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType.Description).Distinct())
+                    Sex = sampleSet.Sex.Value,
+                    Age = sampleSet.AgeRange.Value,
+                    MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
+                    StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
                 })
             };
 
@@ -1089,7 +1089,7 @@ namespace Biobanks.Web.Controllers
                     MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
                     {
                         MaterialTypeId = x.materialType,
-                        PreservationTypeId = x.preservationType,
+                        StorageTemperatureId = x.storageTemperature,
                         CollectionPercentageId = x.percentage,
                         MacroscopicAssessmentId = x.macroscopicAssessment
                     }).ToList()
@@ -1123,7 +1123,7 @@ namespace Biobanks.Web.Controllers
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
                     materialType = x.MaterialTypeId,
-                    preservationType = x.PreservationTypeId,
+                    storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
                 }))
@@ -1165,13 +1165,13 @@ namespace Biobanks.Web.Controllers
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
                     materialType = x.MaterialTypeId,
-                    preservationType = x.PreservationTypeId,
+                    storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
                 }))
             };
 
-            return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+              return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
         }
 
         [HttpPost]
@@ -1193,7 +1193,7 @@ namespace Biobanks.Web.Controllers
                     MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
                     {
                         MaterialTypeId = x.materialType,
-                        PreservationTypeId = x.preservationType,
+                        StorageTemperatureId = x.storageTemperature,
                         CollectionPercentageId = x.percentage,
                         MacroscopicAssessmentId = x.macroscopicAssessment
                     }).ToList()
@@ -1237,15 +1237,15 @@ namespace Biobanks.Web.Controllers
             {
                 Id = sampleSet.SampleSetId,
                 CollectionId = sampleSet.CollectionId,
-                Sex = sampleSet.Sex.Description,
-                AgeRange = sampleSet.AgeRange.Description,
-                DonorCount = sampleSet.DonorCount.Description,
+                Sex = sampleSet.Sex.Value,
+                AgeRange = sampleSet.AgeRange.Value,
+                DonorCount = sampleSet.DonorCount.Value,
                 MaterialPreservationDetails = sampleSet.MaterialDetails.Select(x => new MaterialPreservationDetailModel
                 {
-                    CollectionPercentage = x.CollectionPercentage?.Description,
-                    MacroscopicAssessment = x.MacroscopicAssessment.Description,
-                    MaterialType = x.MaterialType.Description,
-                    PreservationType = x.PreservationType.Description
+                    CollectionPercentage = x.CollectionPercentage?.Value,
+                    MacroscopicAssessment = x.MacroscopicAssessment.Value,
+                    MaterialType = x.MaterialType.Value,
+                    StorageTemperature = x.StorageTemperature.Value
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
             };
@@ -1262,8 +1262,8 @@ namespace Biobanks.Web.Controllers
                 model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
                     .Select(x => new ReferenceDataModel
                     {
-                        Id = x.AccessConditionId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                     .OrderBy(x => x.SortOrder);
@@ -1271,8 +1271,8 @@ namespace Biobanks.Web.Controllers
                 model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
                     .Select(x => new ReferenceDataModel
                     {
-                        Id = x.CollectionTypeId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                     .OrderBy(x => x.SortOrder);
@@ -1280,8 +1280,8 @@ namespace Biobanks.Web.Controllers
                 model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
                     .Select(x => new ReferenceDataModel
                     {
-                        Id = x.CollectionStatusId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                     .OrderBy(x => x.SortOrder);
@@ -1289,8 +1289,8 @@ namespace Biobanks.Web.Controllers
                 model.CollectionPoints = (await _biobankReadService.ListCollectionPointsAsync())
                     .Select(x => new ReferenceDataModel
                     {
-                        Id = x.CollectionPointId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                     .OrderBy(x => x.SortOrder);
@@ -1298,8 +1298,8 @@ namespace Biobanks.Web.Controllers
                 model.HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
                     .Select(x => new ReferenceDataModel
                     {
-                        Id = x.HtaStatusId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                     .OrderBy(x => x.SortOrder);
@@ -1308,9 +1308,9 @@ namespace Biobanks.Web.Controllers
                     .OrderBy(x => x.SortOrder)
                     .Select(x => new Models.Biobank.ConsentRestrictionModel
                     {
-                        ConsentRestrictionId = x.ConsentRestrictionId,
-                        Description = x.Description,
-                        Active = consentRestrictions != null && consentRestrictions.Any(y => y.ConsentRestrictionId == x.ConsentRestrictionId)
+                        ConsentRestrictionId = x.Id,
+                        Description = x.Value,
+                        Active = consentRestrictions != null && consentRestrictions.Any(y => y.Id == x.Id)
                     });
 
                 //if not null keeps previous groups values
@@ -1330,16 +1330,16 @@ namespace Biobanks.Web.Controllers
             var timeFrames = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
                 .Select(x => new AssociatedDataTimeFrameModel
                 {
-                    ProvisionTimeId = x.AssociatedDataProcurementTimeframeId,
-                    ProvisionTimeDescription = x.Description,
+                    ProvisionTimeId = x.Id,
+                    ProvisionTimeDescription = x.Value,
                     ProvisionTimeValue = x.DisplayValue
                 });
 
             var types = (await _biobankReadService.ListAssociatedDataTypesAsync())
                      .Select(x => new AssociatedDataModel
                      {
-                         DataTypeId = x.AssociatedDataTypeId,
-                         DataTypeDescription = x.Description,
+                         DataTypeId = x.Id,
+                         DataTypeDescription = x.Value,
                          DataGroupId = x.AssociatedDataTypeGroupId,
                          Message = x.Message,
                          TimeFrames = timeFrames
@@ -1350,9 +1350,9 @@ namespace Biobanks.Web.Controllers
                 foreach (var g in groups)
                 {
                     var groupModel = new AssociatedDataGroupModel();
-                    groupModel.GroupId = g.AssociatedDataTypeGroupId;
-                    groupModel.Name = g.Description;
-                    groupModel.Types = types.Where(y => y.DataGroupId == g.AssociatedDataTypeGroupId).ToList();
+                    groupModel.GroupId = g.Id;
+                    groupModel.Name = g.Value;
+                    groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
                     model.Groups.Add(groupModel);
                 }
 
@@ -1371,8 +1371,8 @@ namespace Biobanks.Web.Controllers
                 .Select(
                     x => new ReferenceDataModel
                     {
-                        Id = x.SexId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder
                     })
                 .OrderBy(x => x.SortOrder);
@@ -1382,8 +1382,8 @@ namespace Biobanks.Web.Controllers
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.AgeRangeId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
@@ -1393,8 +1393,8 @@ namespace Biobanks.Web.Controllers
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.DonorCountId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
@@ -1404,19 +1404,19 @@ namespace Biobanks.Web.Controllers
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.MaterialTypeId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
+            model.StorageTemperatures = (await _biobankReadService.ListStorageTemperaturesAsync())
                 .Select(
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.PreservationTypeId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
@@ -1426,8 +1426,8 @@ namespace Biobanks.Web.Controllers
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.CollectionPercentageId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
@@ -1439,8 +1439,8 @@ namespace Biobanks.Web.Controllers
                     x =>
                         new ReferenceDataModel
                         {
-                            Id = x.MacroscopicAssessmentId,
-                            Description = x.Description,
+                            Id = x.Id,
+                            Description = x.Value,
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
@@ -1476,8 +1476,8 @@ namespace Biobanks.Web.Controllers
                 BiobankCapabilityModels = capabilities.Select(x => new BiobankCapabilityModel
                 {
                     Id = x.DiagnosisCapabilityId,
-                    Diagnosis = x.Diagnosis.Description,
-                    Protocol = x.SampleCollectionMode.Description
+                    OntologyTerm = x.OntologyTerm.Value,
+                    Protocol = x.SampleCollectionMode.Value
                 })
             };
 
@@ -1512,7 +1512,7 @@ namespace Biobanks.Web.Controllers
                 await _biobankWriteService.AddCapabilityAsync(new CapabilityDTO
                 {
                     OrganisationId = biobankId,
-                    Diagnosis = model.Diagnosis,
+                    OntologyTerm = model.Diagnosis,
                     BespokeConsentForm = model.BespokeConsentForm,
                     BespokeSOP = model.BespokeSOP,
                     AnnualDonorExpectation = model.AnnualDonorExpectation.Value
@@ -1537,7 +1537,7 @@ namespace Biobanks.Web.Controllers
             var model = new EditCapabilityModel
             {
                 Id = id,
-                Diagnosis = capability.Diagnosis.Description,
+                Diagnosis = capability.OntologyTerm.Value,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
                 Groups = groups.Groups
             };
@@ -1595,7 +1595,7 @@ namespace Biobanks.Web.Controllers
                 await _biobankWriteService.UpdateCapabilityAsync(new CapabilityDTO
                 {
                     Id = model.Id,
-                    Diagnosis = model.Diagnosis,
+                    OntologyTerm = model.Diagnosis,
                     BespokeConsentForm = model.BespokeConsentForm,
                     BespokeSOP = model.BespokeSOP,
                     AnnualDonorExpectation = model.AnnualDonorExpectation.Value
@@ -1631,13 +1631,13 @@ namespace Biobanks.Web.Controllers
             var model = new CapabilityModel
             {
                 Id = capability.DiagnosisCapabilityId,
-                Diagnosis = capability.Diagnosis.Description,
-                Protocols = capability.SampleCollectionMode.Description,
+                OntologyTerm = capability.OntologyTerm.Value,
+                Protocols = capability.SampleCollectionMode.Value,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
                 AssociatedData = capability.AssociatedData.Select(x => new AssociatedDataSummaryModel
                 {
-                    Description = x.AssociatedDataType.Description,
-                    ProvisionTime = x.AssociatedDataProcurementTimeframe.Description,
+                    Description = x.AssociatedDataType.Value,
+                    ProvisionTime = x.AssociatedDataProcurementTimeframe.Value,
                     ProvisionTimeSortValue = x.AssociatedDataProcurementTimeframe.SortOrder
                 })
             };
@@ -1702,7 +1702,7 @@ namespace Biobanks.Web.Controllers
             if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
                 return HttpNotFound();
 
-            return View();
+            return View(SessionHelper.GetBiobankId(Session));
         }
 
 

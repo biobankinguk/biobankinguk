@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Directory.Search.Contracts;
-using Directory.Search.Dto.PartialDocuments;
-using Directory.Search.Dto.Documents;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.PartialDocuments;
 using Elasticsearch.Net;
 using Nest;
 
-namespace Directory.Search.Elastic
+namespace Biobanks.Search.Elastic
 {
     public class ElasticCapabilityIndexProvider : BaseElasticIndexProvider, ICapabilityIndexProvider
     {

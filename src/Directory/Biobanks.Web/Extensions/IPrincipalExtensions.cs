@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using System.Security.Principal;
-using Directory.Identity;
+using Biobanks.Identity;
 
 namespace Biobanks.Web.Extensions
 {

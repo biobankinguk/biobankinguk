@@ -1,7 +1,7 @@
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
 using System.Web.Routing;
-using Directory.Identity.Constants;
+using Biobanks.Identity.Constants;
 using Biobanks.Web.Results;
 
 namespace Biobanks.Web.Filters

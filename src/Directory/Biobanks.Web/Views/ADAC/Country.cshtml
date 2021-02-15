@@ -54,11 +54,11 @@
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-country="&quot;@country.Name&quot;"
-                                   href="@Url.Action("DeleteCountry", new
-                                     {
-                                         country.Id, country.Name
-                                     })">
+                                   data-refdata-model="@Json.Encode(country)"
+                                   data-resource-url="/api/Country"
+                                   data-success-redirect="@Url.Action("Country")"
+                                   data-refdata-type="Country"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
@@ -94,8 +94,8 @@
 
             <form id="modal-country-form"
                   data-resource-url="/api/Country")"
-                  data-update-success-redirect="@Url.Action("EditCountrySuccess")"
-                  data-add-success-redirect="@Url.Action("AddCountrySuccess")"
+                  data-success-redirect="@Url.Action("Country")"
+                  data-refdata-type="Country"
                   class="form-horizontal">
 
                 <div class="modal-body">

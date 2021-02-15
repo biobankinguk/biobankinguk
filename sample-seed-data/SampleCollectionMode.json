@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "value": "Bespoke consent form only",
+        "sortOrder": "1"
+    },
+    {
+        "id": "2",
+        "value": "Bespoke SOP only",
+        "sortOrder": "2"
+    },
+    {
+        "id": "3",
+        "value": "Bespoke consent form & SOP",
+        "sortOrder": "3"
+    },
+    {
+        "id": "4",
+        "value": "None",
+        "sortOrder": "4"
+    }
+]

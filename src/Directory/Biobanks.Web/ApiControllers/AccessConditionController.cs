@@ -1,11 +1,12 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -30,10 +31,10 @@ namespace Biobanks.Web.ApiControllers
                 .Select(x =>
                     Task.Run(async () => new ReadAccessConditionsModel
                     {
-                        Id = x.AccessConditionId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.AccessConditionId),
+                        AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.Id),
                     }
                     )
                     .Result
@@ -60,8 +61,8 @@ namespace Biobanks.Web.ApiControllers
 
             var access = new AccessCondition
             {
-                AccessConditionId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 
@@ -99,8 +100,8 @@ namespace Biobanks.Web.ApiControllers
 
             var access = new AccessCondition
             {
-                AccessConditionId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 
@@ -118,12 +119,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAccessConditionsAsync()).Where(x => x.AccessConditionId == id).First();
+            var model = (await _biobankReadService.ListAccessConditionsAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsAccessConditionInUse(id))
             {
-                ModelState.AddModelError("Description", $"The access condition \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("Description", $"The access condition \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -133,14 +134,14 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAccessConditionAsync(new AccessCondition
             {
-                AccessConditionId = model.AccessConditionId
+                Id = model.Id
             });
 
             //Everything went A-OK!
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -150,8 +151,8 @@ namespace Biobanks.Web.ApiControllers
         {
             var access = new AccessCondition
             {
-                AccessConditionId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 

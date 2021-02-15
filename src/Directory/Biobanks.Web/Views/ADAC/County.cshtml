@@ -61,17 +61,15 @@
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-								<a title="Delete"
-								   class="action-icon delete-confirm"
-								   data-county="@county.Name"
-								   href="@Url.Action("DeleteCounty", new
-									{
-										county.Id,
-										county.Name,
-										county.CountryId
-									})">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(county)"
+                                   data-resource-url="/api/County"
+                                   data-success-redirect="@Url.Action("County")"
+                                   data-refdata-type="County"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
 							}
 						</td>
 					</tr>
@@ -116,8 +114,8 @@
 			<!-- Modal Form -->
             <form id="modal-county-form"
                   data-resource-url="/api/County"
-                  data-update-success-redirect="@Url.Action("EditCountySuccess")"
-                  data-add-success-redirect="@Url.Action("AddCountySuccess")"
+                  data-success-redirect="@Url.Action("County")"
+                  data-refdata-type="County"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

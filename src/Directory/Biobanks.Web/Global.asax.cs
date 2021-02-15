@@ -1,13 +1,10 @@
-﻿using System;
+﻿using System.Configuration;
 using System.Web.Helpers;
-using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Biobanks.Web.App_Start;
 using Castle.Windsor;
-using Hangfire;
-using Microsoft.ApplicationInsights.Extensibility;
 using GlobalConfiguration = System.Web.Http.GlobalConfiguration;
 
 namespace Biobanks.Web
@@ -33,7 +30,7 @@ namespace Biobanks.Web
             
             AntiForgeryConfig.SuppressIdentityHeuristicChecks = true; //When two tabs go to war, one login is all that they can score
 
-            //ControllerBuilder.Current.SetControllerFactory(new WindsorControllerFactory(WindsorContainer));
+            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["AppCulture"]);
         }
 
         protected void Application_BeginRequest()

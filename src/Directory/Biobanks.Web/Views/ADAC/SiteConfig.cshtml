@@ -1,5 +1,5 @@
 ﻿@using System.Web.Optimization
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model IEnumerable<Biobanks.Web.Models.Shared.SiteConfigModel>
 
 @{
@@ -53,7 +53,7 @@
                                     // Default free text
 									case ConfigKey.DonorCountName:
 									case ConfigKey.MacroscopicAssessmentName:
-                                    case ConfigKey.PreservationTypeName:
+                                    case ConfigKey.StorageTemperatureName:
                                     default:
 										<input type="text" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "") /> break;
 								}

@@ -1,6 +1,6 @@
 using System;
 using System.Web.Mvc;
-using Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Results;

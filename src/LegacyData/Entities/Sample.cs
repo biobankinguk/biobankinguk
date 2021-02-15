@@ -1,12 +1,13 @@
-﻿using Biobanks.Common.Contracts;
-using Biobanks.Common.Data.Entities;
-using Biobanks.Common.Data.Entities.ReferenceData;
+﻿using Biobanks.Entities.Api;
+using Biobanks.Entities.Api.Contracts;
+using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LegacyData.Entities
+namespace Biobanks.LegacyData.Entities
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>
@@ -47,10 +48,21 @@ namespace LegacyData.Entities
         /// Foreign key column.
         /// </summary>
         public int? StorageTemperatureId { get; set; }
+
         /// <summary>
         /// The storage temperature of this sample.
         /// </summary>
         public StorageTemperature StorageTemperature { get; set; }
+
+        /// <summary>
+        /// Foreign key column.
+        /// </summary>
+        public int? PreservationTypeId { get; set; }
+
+        /// <summary>
+        /// The preservation method of this sample.
+        /// </summary>
+        public PreservationType PreservationType { get; set; }
 
         /// <summary>
         /// The date the sample was "created" e.g. extracted.
@@ -66,7 +78,7 @@ namespace LegacyData.Entities
         /// A SNOMED term representing the site of extraction of this tissue sample.
         /// Tissue Sample only.
         /// </summary>
-        public SnomedTerm ExtractionSite { get; set; }
+        public OntologyTerm ExtractionSite { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -86,7 +98,7 @@ namespace LegacyData.Entities
         /// A SNOMED term for the sample extraction procedure.
         /// Extracted Samples only.
         /// </summary>
-        public SnomedTerm ExtractionProcedure { get; set; }
+        public OntologyTerm ExtractionProcedure { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -96,7 +108,7 @@ namespace LegacyData.Entities
         /// A SNOMED term describing the sample content.
         /// Exracted Samples only.
         /// </summary>
-        public SnomedTerm SampleContent { get; set; }
+        public OntologyTerm SampleContent { get; set; }
 
         /// <summary>
         /// Foreign key column.

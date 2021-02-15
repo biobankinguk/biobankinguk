@@ -10,7 +10,7 @@ namespace Biobanks.Web.Models.Search
             SelectedFacets = new List<string>();
         }
 
-        public string Diagnosis { get; set; }
+        public string OntologyTerm { get; set; }
 
         public IEnumerable<BiobankSearchSummaryModel> Biobanks { get; set; }
 

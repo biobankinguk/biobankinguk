@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Data;
+using Biobanks.Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class ErrorService : IErrorService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public ErrorService(SubmissionsDbContext db)
+        public ErrorService(BiobanksDbContext db)
         {
             _db = db;
         }

@@ -1,6 +1,6 @@
 ﻿@using System.Web.Optimization
 @using Biobanks.Web.Models.Home
-@using Directory.Data.Constants
+@using Biobanks.Directory.Data.Constants
 @model Biobanks.Web.Models.ADAC.RegisterConfigModel
 @{
     ViewBag.Title = "Register Pages Config";
@@ -70,6 +70,12 @@
                         Shared Configuration
                     </h3>
                     <br />
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Enable Registration Emails</label>
+                        <div class="col-md-3">
+                            <input type="checkbox" id="RegistrationEmails" name="RegistrationEmails" value="@Model.RegistrationEmails">
+                        </div>
+                    </div>
                     <!-- Registration Help Url -->
                     <div class="form-group">
                         <label class="col-md-2 control-label">Enable Registration Help Url</label>

@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Directory.Identity.Contracts
+namespace Biobanks.Identity.Contracts
 {
     public interface IApplicationRoleManager<TRole>
     {

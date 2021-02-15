@@ -2,14 +2,15 @@ using System;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Entity.Data;
-using Directory.Identity.Contracts;
-using Directory.Identity.Data.Entities;
-using Directory.Services.Contracts;
+using Biobanks.Entities.Data;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;
 using Biobanks.Web.Utilities;
+using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.Controllers
 {
@@ -117,12 +118,15 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                // Non ADAC Invited requests should notify ADAC users
-                await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
-                    model.Name,
-                    model.Email,
-                    model.Entity,
-                    model.EntityName);
+                if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                {
+                    // Non ADAC Invited requests should notify ADAC users
+                    await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
+                        model.Name,
+                        model.Email,
+                        model.Entity,
+                        model.EntityName);
+                }
             }
 
             return View("RegisterConfirmation");
@@ -197,12 +201,15 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                // Non ADAC Invited requests should notify ADAC users
-                await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
+                if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                {
+                    // Non ADAC Invited requests should notify ADAC users
+                    await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
                     model.Name,
                     model.Email,
                     model.Entity,
                     model.EntityName);
+                }
             }
 
             return View("RegisterConfirmation");

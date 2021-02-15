@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Entity.Data;
-using Directory.Identity.Constants;
-using Directory.Services.Contracts;
+using Biobanks.Entities.Data;
+using Biobanks.Identity.Constants;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.Profile;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
-using Directory.Data.Constants;
+using Biobanks.Directory.Data.Constants;
 using System;
 
 namespace Biobanks.Web.Controllers
@@ -69,8 +69,8 @@ namespace Biobanks.Web.Controllers
                 AddressLine4 = bb.AddressLine4,
                 City = bb.City,
                 PostCode = bb.PostCode,
-                CountyName = bb.County?.Name,
-                CountryName = bb.Country.Name,
+                CountyName = bb.County?.Value,
+                CountryName = bb.Country.Value,
                 ContactNumber = bb.ContactNumber,
                 LastUpdated = bb.LastUpdated,
                 NetworkMembers = (await _biobankReadService.GetNetworksByBiobankIdAsync(bb.OrganisationId)).Select(
@@ -81,33 +81,33 @@ namespace Biobanks.Web.Controllers
                         Logo = x.Logo,
                         Description = x.Description
                     }).ToList(),
-                CapabilityDiagnoses = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
+                CapabilityOntologyTerms = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
                     x => new CapabilityModel
                     {
                         Id = x.DiagnosisCapabilityId,
-                        Diagnosis = x.Diagnosis.Description,
-                        Protocols = x.SampleCollectionMode.Description
+                        OntologyTerm = x.OntologyTerm.Value,
+                        Protocols = x.SampleCollectionMode.Value
                     })
-                    .Select(x => x.Diagnosis)
+                    .Select(x => x.OntologyTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                CollectionDiagnoses = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
+                CollectionOntologyTerms = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,
-                        Diagnosis = x.Diagnosis.Description,
+                        OntologyTerm = x.OntologyTerm.Value,
                         SampleSetsCount = x.SampleSets.Count,
                         StartYear = x.StartDate.Year,
                         MaterialTypes = GetMaterialTypeSummary(x.SampleSets)
                     })
-                    .Select(x => x.Diagnosis)
+                    .Select(x => x.OntologyTerm)
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
                 Services = (await _biobankReadService.ListBiobankServiceOfferingsAsync(bb.OrganisationId))
                     .OrderBy(x => x.ServiceOffering.SortOrder)
-                    .Select(x => x.ServiceOffering.Name)
+                    .Select(x => x.ServiceOffering.Value)
                     .ToList(),
                
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
@@ -129,7 +129,7 @@ namespace Biobanks.Web.Controllers
                 Url = nw.Url,
                 Logo = nw.Logo,
                 ContactEmail = nw.Email,
-                SopStatus = nw.SopStatus.Description,
+                SopStatus = nw.SopStatus.Value,
                 BiobankMembers = (await _biobankReadService.GetBiobanksByNetworkIdAsync(id)).Select(
                     x => new BiobankMemberModel
                     {
@@ -167,6 +167,7 @@ namespace Biobanks.Web.Controllers
                 var model = new BiobankPublicationsModel
                 {
                     ExternalId = bb.OrganisationExternalId,
+                    ExcludePublications = bb.ExcludePublications,
                     Publications = publications.Select(x => new BiobankPublicationModel
                     {
                         Title = x.Title,
@@ -188,7 +189,7 @@ namespace Biobanks.Web.Controllers
 
             sampleSets.ToList().ForEach(
                 x => x.MaterialDetails.ToList().ForEach(
-                    y => materialTypes.Add(y.MaterialType.Description)));
+                    y => materialTypes.Add(y.MaterialType.Value)));
 
             //return first 3, slash separated
             var result = string.Join(" / ", materialTypes.Distinct().OrderBy(x => x).Take(3));

@@ -1,4 +1,4 @@
-namespace Directory.Identity.Constants
+namespace Biobanks.Identity.Constants
 {
     public static class CustomClaimType
     {

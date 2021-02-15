@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities.ReferenceData;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.SubmissionApi.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Data;
+using Biobanks.Data;
 
 namespace Biobanks.SubmissionApi.Services
 {
     /// <inheritdoc />
     public class SampleContentMethodService : ISampleContentMethodService
     {
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public SampleContentMethodService(SubmissionsDbContext db)
+        public SampleContentMethodService(BiobanksDbContext db)
         {
             _db = db;
         }

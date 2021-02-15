@@ -1,4 +1,4 @@
-namespace Directory.Services.Dto
+namespace Biobanks.Services.Dto
 {
     public class OrganisationDTO
     {
@@ -42,5 +42,6 @@ namespace Directory.Services.Dto
 
         // registration reasons
         public string OtherRegistrationReason { get; set; }
+        public bool ExcludePublications { get; set; }
     }
 }

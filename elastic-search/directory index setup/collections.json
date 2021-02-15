@@ -16,7 +16,7 @@
   },
   "mappings": {
     "properties": {
-      "diagnosis": {
+      "ontologyTerm": {
         "type": "keyword",
         "normalizer": "string_lowercase"
       },
@@ -113,10 +113,10 @@
           "materialType": {
             "type": "keyword"
           },
-          "preservationType": {
+          "storageTemperature": {
             "type": "keyword"
           },
-          "preservationTypeMetadata": {
+          "storageTemperatureMetadata": {
             "type": "keyword"
           },
           "macroscopicAssessment": {
@@ -143,6 +143,15 @@
       },
       "county": {
         "type": "keyword"
+      },
+	  "ontologyOtherTerms": {
+        "type": "nested",
+        "properties": {
+          "name": {
+            "type": "keyword",
+			      "normalizer": "string_lowercase"
+          }
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
 ﻿using Biobanks.Web.Models.Header;
-using Directory.Data.Caching;
+using Biobanks.Directory.Data.Caching;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

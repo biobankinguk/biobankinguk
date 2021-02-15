@@ -98,7 +98,7 @@ $(function () {
         .css("margin-bottom", "10px")
         .prependTo("#biobank-publications_wrapper")
         .children();
-
+    $('#biobank-publications_wrapper').hide();
     new $.fn.dataTable.Buttons(table, {
         buttons: [
             "colvis",
@@ -142,4 +142,31 @@ $(function () {
     });
 
     table.buttons().container().prependTo(controls);
+    $.getJSON('/api/Biobank/IncludePublications/' + biobankId, function (data) {
+        if (data) {
+            $('#IncludePublications').prop('checked', true);
+            $('#biobank-publications_wrapper').show();
+        }
+        else {
+            $('#IncludePublications').prop('checked', false);
+            $('#biobank-publications_wrapper').hide();
+        }
+    });
 });
+
+
+$('#IncludePublications').change(function () {
+    var val = this.checked;
+    if (val)
+        $('#biobank-publications_wrapper').show();
+    else
+        $('#biobank-publications_wrapper').hide();
+
+    $.ajax({
+        url: '/api/Biobank/IncludePublications/' + biobankId + '/' + val,
+        type: 'PUT'
+    });
+});
+
+//Biobank Id
+var biobankId = $('#BiobankId').data("biobank-id");

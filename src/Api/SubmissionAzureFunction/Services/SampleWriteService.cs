@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities;
+using Biobanks.Entities.Api;
 using Biobanks.Common.Exceptions;
 using Biobanks.Common.Extensions;
 using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using LegacyData;
-using LiveSample = LegacyData.Entities.LiveSample;
-using StagedSample = LegacyData.Entities.StagedSample;
+using Biobanks.LegacyData;
+using LiveSample = Biobanks.LegacyData.Entities.LiveSample;
+using StagedSample = Biobanks.LegacyData.Entities.StagedSample;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
     public class SampleWriteService : ISampleWriteService
     {
         private readonly ISampleValidationService _sampleValidationService;
-        private readonly SubmissionsDbContext _db;
+        private readonly BiobanksDbContext _db;
 
-        public SampleWriteService(ISampleValidationService sampleValidationService, SubmissionsDbContext db)
+        public SampleWriteService(ISampleValidationService sampleValidationService, BiobanksDbContext db)
         {
             _sampleValidationService = sampleValidationService;
             _db = db;
@@ -53,7 +53,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
                 .Where(x => x.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();
-            var allLiveSamples = await _db.Samples
+            var allLiveSamples = await _db.LiveSamples
                 .Where(x => x.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();
@@ -123,7 +123,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
                     continue;
                 }
 
-                ////Write the staged sample to the context
+                // Write the staged sample to the context
                 _db.StagedSamples.Update(sample);
             }
 
@@ -147,7 +147,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
                 .Where(s => s.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();
-            var allLiveSamples = await _db.Samples
+            var allLiveSamples = await _db.LiveSamples
                 .Where(s => s.OrganisationId == organisationId)
                 .AsNoTracking()
                 .ToListAsync();

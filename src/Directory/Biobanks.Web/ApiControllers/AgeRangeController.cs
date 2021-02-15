@@ -1,10 +1,11 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -29,10 +30,10 @@ namespace Biobanks.Web.ApiControllers
                 .Select(x =>
                     Task.Run(async () => new AgeRangeModel()
                     {
-                        Id = x.AgeRangeId,
-                        Description = x.Description,
+                        Id = x.Id,
+                        Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.AgeRangeId)
+                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -59,8 +60,8 @@ namespace Biobanks.Web.ApiControllers
             // Add new Age Range
             var range = new AgeRange
             {
-                AgeRangeId = model.Id,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 
@@ -95,11 +96,10 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            // Update Preservation Type
             await _biobankWriteService.UpdateAgeRangeAsync(new AgeRange
             {
-                AgeRangeId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             });
 
@@ -114,12 +114,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAgeRangesAsync()).Where(x => x.AgeRangeId == id).First();
+            var model = (await _biobankReadService.ListAgeRangesAsync()).Where(x => x.Id == id).First();
 
             // If in use, prevent update
             if (await _biobankReadService.IsAgeRangeInUse(id))
             {
-                ModelState.AddModelError("AgeRange", $"The age range \"{model.Description}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("AgeRange", $"The age range \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -129,15 +129,15 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.DeleteAgeRangeAsync(new AgeRange
             {
-                AgeRangeId = model.AgeRangeId,
-                Description = model.Description,
+                Id = model.Id,
+                Value = model.Value,
                 SortOrder = model.SortOrder
             });
 
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = model.Value,
             });
         }
 
@@ -148,8 +148,8 @@ namespace Biobanks.Web.ApiControllers
 
             var access = new AgeRange
             {
-                AgeRangeId = id,
-                Description = model.Description,
+                Id = id,
+                Value = model.Description,
                 SortOrder = model.SortOrder
             };
 

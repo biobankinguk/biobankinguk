@@ -1,22 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
-using Directory.Entity.Data;
-using Directory.Search.Dto.Documents;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Search.Dto.Documents;
 using Newtonsoft.Json;
 
-namespace Directory.Services.Extensions
+namespace Biobanks.Services.Extensions
 {
     public static class SampleSetExtensions
     {
         public static CollectionDocument ToCollectionSearchDocument(this CollectionSampleSet sampleSet)
         {
-
-
-
             return new CollectionDocument
             {
                 Id = sampleSet.SampleSetId,
-                Diagnosis = sampleSet.Collection.Diagnosis.Description,
+                OntologyTerm = sampleSet.Collection.OntologyTerm.Value,
+                OntologyOtherTerms = ParseOtherTerms(sampleSet.Collection.OntologyTerm.OtherTerms),
                 BiobankId = sampleSet.Collection.OrganisationId,
                 BiobankExternalId = sampleSet.Collection.Organisation.OrganisationExternalId,
                 Biobank = sampleSet.Collection.Organisation.Name,
@@ -27,76 +26,76 @@ namespace Directory.Services.Extensions
                 CollectionId = sampleSet.CollectionId,
                 CollectionTitle = sampleSet.Collection.Title,
                 StartYear = sampleSet.Collection.StartDate.Year.ToString(),
-                CollectionPoint = sampleSet.Collection.CollectionPoint.Description,
-                CollectionStatus = sampleSet.Collection.CollectionStatus.Description,
+                CollectionPoint = sampleSet.Collection.CollectionPoint.Value,
+                CollectionStatus = sampleSet.Collection.CollectionStatus.Value,
                 ConsentRestrictions = BuildConsentRestrictions(sampleSet.Collection.ConsentRestrictions.ToList()),
-                HTA = sampleSet.Collection.HtaStatus?.Description ?? "not provided",
-                AccessCondition = sampleSet.Collection.AccessCondition.Description,
+                HTA = sampleSet.Collection.HtaStatus?.Value ?? "not provided",
+                AccessCondition = sampleSet.Collection.AccessCondition.Value,
                 AccessConditionMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.Collection.AccessCondition.Description,
+                    Name = sampleSet.Collection.AccessCondition.Value,
                     sampleSet.Collection.AccessCondition.SortOrder
                 }),
-                CollectionType = sampleSet.Collection.CollectionType?.Description,
+                CollectionType = sampleSet.Collection.CollectionType?.Value,
 
                 AssociatedData = sampleSet.Collection.AssociatedData
                     .Select(x => new AssociatedDataDocument
                     {
-                        Text = x.AssociatedDataType.Description,
-                        Timeframe = x.AssociatedDataProcurementTimeframe.Description,
+                        Text = x.AssociatedDataType.Value,
+                        Timeframe = x.AssociatedDataProcurementTimeframe.Value,
                         TimeframeMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = x.AssociatedDataProcurementTimeframe.Description,
+                            Name = x.AssociatedDataProcurementTimeframe.Value,
                             x.AssociatedDataProcurementTimeframe.SortOrder
                         })
                     }),
 
-                Sex = sampleSet.Sex.Description,
+                Sex = sampleSet.Sex.Value,
                 SexMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.Sex.Description,
+                    Name = sampleSet.Sex.Value,
                     sampleSet.Sex.SortOrder
                 }),
-                AgeRange = sampleSet.AgeRange.Description,
+                AgeRange = sampleSet.AgeRange.Value,
                 AgeRangeMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.AgeRange.Description,
+                    Name = sampleSet.AgeRange.Value,
                     sampleSet.AgeRange.SortOrder
                 }),
-                DonorCount = sampleSet.DonorCount.Description,
+                DonorCount = sampleSet.DonorCount.Value,
                 DonorCountMetadata = JsonConvert.SerializeObject(new
                 {
-                    Name = sampleSet.DonorCount.Description,
+                    Name = sampleSet.DonorCount.Value,
                     sampleSet.DonorCount.SortOrder
                 }),
 
                 MaterialPreservationDetails = sampleSet.MaterialDetails
                     .Select(x => new MaterialPreservationDetailDocument
                     {
-                        MaterialType = x.MaterialType.Description,
-                        PreservationType = x.PreservationType.Description,
-                        PreservationTypeMetadata = JsonConvert.SerializeObject(new
+                        MaterialType = x.MaterialType.Value,
+                        StorageTemperature = x.StorageTemperature.Value,
+                        StorageTemperatureMetadata = JsonConvert.SerializeObject(new
                         {
-                            Name = x.PreservationType.Description,
-                            x.PreservationType.SortOrder
+                            Name = x.StorageTemperature.Value,
+                            x.StorageTemperature.SortOrder
                         }),
-                        MacroscopicAssessment = x.MacroscopicAssessment.Description,
-                        PercentageOfSampleSet = x.CollectionPercentage?.Description
+                        MacroscopicAssessment = x.MacroscopicAssessment.Value,
+                        PercentageOfSampleSet = x.CollectionPercentage?.Value
                     }),
 
                 BiobankServices = sampleSet.Collection.Organisation.OrganisationServiceOfferings
                     .Select(x => new BiobankServiceDocument
                     {
-                        Name = x.ServiceOffering.Name
+                        Name = x.ServiceOffering.Value
                     }),
 
                 SampleSetSummary = BuildSampleSetSummary(
-                    sampleSet.DonorCount.Description,
-                    sampleSet.AgeRange.Description,
-                    sampleSet.Sex.Description,
+                    sampleSet.DonorCount.Value,
+                    sampleSet.AgeRange.Value,
+                    sampleSet.Sex.Value,
                     sampleSet.MaterialDetails),
-                Country = sampleSet.Collection.Organisation.Country.Name,
-                County = sampleSet.Collection.Organisation.County?.Name ?? "Not Provided"
+                Country = sampleSet.Collection.Organisation.Country.Value,
+                County = sampleSet.Collection.Organisation.County?.Value ?? "Not Provided"
             };
         }
 
@@ -111,7 +110,7 @@ namespace Directory.Services.Extensions
             if (materialDetails != null && materialDetails.Any())
             {
                 result = string.Concat(result, ", ",
-                    string.Join(" / ", materialDetails.Select(x => x.MaterialType.Description)));
+                    string.Join(" / ", materialDetails.Select(x => x.MaterialType.Value)));
             }
 
             return result;
@@ -120,8 +119,13 @@ namespace Directory.Services.Extensions
         public static IEnumerable<ConsentRestrictionDocument> BuildConsentRestrictions(IList<ConsentRestriction> consentRestrictions)
         {
             return consentRestrictions.Any()
-                ? consentRestrictions.Select(cr => new ConsentRestrictionDocument {Description = cr.Description})
+                ? consentRestrictions.Select(cr => new ConsentRestrictionDocument {Description = cr.Value})
                 : new List<ConsentRestrictionDocument> { new ConsentRestrictionDocument {Description = "No restrictions"} };
         }
+
+        public static IEnumerable<OtherTermsDocument> ParseOtherTerms(string otherTerms)
+            => string.IsNullOrWhiteSpace(otherTerms) 
+            ? new List<OtherTermsDocument>() 
+            : otherTerms.Split(',').Select(x => new OtherTermsDocument { Name = x.Trim() });
     }
 }

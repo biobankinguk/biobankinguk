@@ -36,7 +36,8 @@ namespace Publications.Services
             => (await ListBiobanksAsync()).Select(x => x.OrganisationId).ToList();
 
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _ctx.Publications.Where(x => x.OrganisationId == biobankId).Include(a => a.PublicationAnnotations).ThenInclude(b => b.Annotation).ToListAsync();
+            => await _ctx.Publications.Where(x => x.OrganisationId == biobankId && x.Accepted == true)
+            .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1)).ToListAsync();
 
         public async Task<IEnumerable<Publication>> ListPublications()
             => await _ctx.Publications.Include(a => a.PublicationAnnotations).ThenInclude(b => b.Annotation).ToListAsync();
@@ -52,6 +53,10 @@ namespace Publications.Services
         //Uses Annotation Id from EF
         public async Task<Annotation> GetAnnotationById(int annotationId)
             => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
+
+        public async Task<Annotation> GetAnnotationByName(string name)
+            => await _ctx.Annotations.Where(x => x.Name == name).Include(a => a.PublicationAnnotations).FirstOrDefaultAsync();
+
 
         //Gets all Annotations for every biobank in db
         public async Task<IEnumerable<AnnotationQueryDTO>> GetBiobankAnnotations()

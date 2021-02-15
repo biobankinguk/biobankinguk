@@ -14,7 +14,7 @@ namespace Publications.Services.Contracts
         Task<List<PublicationDto>> GetOrganisationPublications(string biobank);
 
         //Annotations
-
+        Task<List<AnnotationDTO>> GetPublicationAnnotations(string publicationId, string source);
         Task<List<AnnotationDTO>> GetPublicationAnnotations(string publicationId, string source);
     }
 }

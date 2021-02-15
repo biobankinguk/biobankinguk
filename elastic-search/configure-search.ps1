@@ -4,7 +4,7 @@
 ## Command Line Parameters
 param (
     [string]$url = "http://localhost:9200",
-    [string]$dir = "",
+    [string]$dir = "./directory index setup",
     [Alias('c')][switch]$create = $false,
     [Alias('d')][switch]$delete = $false
 )

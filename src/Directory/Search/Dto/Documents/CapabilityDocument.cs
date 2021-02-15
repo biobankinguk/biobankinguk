@@ -1,7 +1,7 @@
 ﻿using Nest;
 using System.Collections.Generic;
 
-namespace Directory.Search.Dto.Documents
+namespace Biobanks.Search.Dto.Documents
 {
     //[ElasticsearchType(Name = "_doc")] // TODO: name is obsolete in 7. how to fix? just remove?
     public class CapabilityDocument : BaseDocument
@@ -28,5 +28,7 @@ namespace Directory.Search.Dto.Documents
         public IEnumerable<AssociatedDataDocument> AssociatedData { get; set; }
 
         public IEnumerable<BiobankServiceDocument> BiobankServices { get; set; }
+
+        public IEnumerable<OtherTermsDocument> OntologyOtherTerms { get; set; }
     }
 }

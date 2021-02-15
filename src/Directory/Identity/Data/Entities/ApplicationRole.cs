@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace Directory.Identity.Data.Entities
+namespace Biobanks.Identity.Data.Entities
 {
     public class ApplicationRole : IdentityRole<string, ApplicationUserRole>
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Directory.Services.Contracts;
+using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
 using Biobanks.Web.Utilities;

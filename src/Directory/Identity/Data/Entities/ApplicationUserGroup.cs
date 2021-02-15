@@ -1,4 +1,4 @@
-namespace Directory.Identity.Data.Entities
+namespace Biobanks.Identity.Data.Entities
 {
     public class ApplicationUserGroup
     {

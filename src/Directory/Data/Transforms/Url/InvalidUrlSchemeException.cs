@@ -1,6 +1,6 @@
 using System;
 
-namespace Directory.Data.Transforms.Url
+namespace Biobanks.Directory.Data.Transforms.Url
 {
     public class InvalidUrlSchemeException : Exception
     {

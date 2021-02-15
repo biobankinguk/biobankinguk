@@ -4,7 +4,7 @@ namespace Biobanks.Web.Models.Profile
     {
         public int Id { get; set; }
 
-        public string Diagnosis { get; set; }
+        public string OntologyTerm { get; set; }
 
         public string Protocols { get; set; }
     }

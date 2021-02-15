@@ -24,8 +24,8 @@
                 return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
 
-            // Preservation Type
-            lookup.preservationTypes(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.PreservationTypes)), function (x) {
+            // Storage Temperature
+            lookup.storageTemperatures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.StorageTemperatures)), function (x) {
                 return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
 
@@ -51,7 +51,7 @@
             {
                 @:sampleSetVM.materialPreservationDetails(ko.utils.arrayMap(@Html.Raw(Model.MaterialPreservationDetailsJson), function(x)
                 @:{
-                @:    return new MaterialPreservationDetail(x.materialType, x.preservationType, x.percentage, x.macroscopicAssessment);
+                @:    return new MaterialPreservationDetail(x.materialType, x.storageTemperature, x.percentage, x.macroscopicAssessment);
                 @:}));
             }
         });

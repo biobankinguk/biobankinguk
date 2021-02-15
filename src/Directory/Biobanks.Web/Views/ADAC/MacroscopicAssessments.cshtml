@@ -1,4 +1,4 @@
-﻿@using Directory.Data.Constants;
+﻿@using Biobanks.Directory.Data.Constants;
 @using System.Web.Optimization
 @model Biobanks.Web.Models.ADAC.MacroscopicAssessmentsModel
 
@@ -69,17 +69,15 @@
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-								<a title="Delete"
-								   class="action-icon delete-confirm"
-								   data-macro-assessment="@type.Description"
-								   href="@Url.Action("DeleteMacroscopicAssessment", new
-								{
-									type.Id,
-									type.Description,
-									type.SortOrder
-								})">
-									<span class="fa fa-trash labelled-icon"></span>Delete
-								</a>
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(type)"
+                                   data-resource-url="/api/MacroscopicAssessment"
+                                   data-success-redirect="@Url.Action("MacroscopicAssessments")"
+                                   data-refdata-type="Macroscopic Assessment"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
 							}
 						</td>
 					</tr>
@@ -115,8 +113,8 @@
             @*Modal Form*@
         <form id="modal-macro-assessments-form"
               data-resource-url="/api/MacroscopicAssessment"
-              data-update-success-redirect="@Url.Action("EditMacroscopicAssessmentSuccess")"
-              data-add-success-redirect="@Url.Action("AddMacroscopicAssessmentSuccess")"
+              data-success-redirect="@Url.Action("MacroscopicAssessments")"
+              data-refdata-type="Macroscopic Assessment"
               class="form-horizontal">
             <div class="modal-body">
                 <div class="row">

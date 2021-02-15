@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Identity.Data.Entities;
 
-using Directory.Identity.Data.Entities;
-
-namespace Directory.Identity.Contracts
+namespace Biobanks.Identity.Contracts
 {
     public interface IApplicationGroupManager<TIdentityResult, TUser, TRole>
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Directory.Entity.Data;
-using Directory.Services;
+using Biobanks.Entities.Data;
+using Biobanks.Services;
 
 namespace Biobanks.Web.Results
 {

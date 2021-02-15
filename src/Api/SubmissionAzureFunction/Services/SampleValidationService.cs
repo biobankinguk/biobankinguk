@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common.Data.Entities;
 using Biobanks.Common.Types;
 using Biobanks.SubmissionAzureFunction.Config;
 using Biobanks.SubmissionAzureFunction.Dtos;
 using Biobanks.SubmissionAzureFunction.Services.Contracts;
 
-using StagedSample = LegacyData.Entities.StagedSample;
+using StagedSample = Biobanks.LegacyData.Entities.StagedSample;
 
 namespace Biobanks.SubmissionAzureFunction.Services
 {
@@ -35,6 +34,8 @@ namespace Biobanks.SubmissionAzureFunction.Services
             try { sample = await ValidateMaterialType(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateStorageTemperature(dto, sample); }
+            catch (ValidationException e) { exceptions.Add(e); }
+            try { sample = await ValidatePreservationType(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
             try { sample = await ValidateSampleContentMethod(dto, sample); }
             catch (ValidationException e) { exceptions.Add(e); }
@@ -174,6 +175,7 @@ namespace Biobanks.SubmissionAzureFunction.Services
         {
             //check if tissue sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            
             if (!(mt?.MaterialTypeGroups.Any(x => x.MaterialTypeGroup.Value == MaterialTypeGroups.TissueSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
@@ -181,7 +183,6 @@ namespace Biobanks.SubmissionAzureFunction.Services
             // TODO Change this to use generic ontology lookup service in future
             var result = await _refDataReadService.GetSnomedBodyOrgan(dto.ExtractionSite, dto.ExtractionSiteOntologyField);
             
-
             if (result == null)
                 throw new ValidationException(
                     new ValidationResult(
@@ -250,6 +251,36 @@ namespace Biobanks.SubmissionAzureFunction.Services
                     null, null);
 
             sample.StorageTemperatureId = result.Id;
+            return sample;
+        }
+
+        private async Task<StagedSample> ValidatePreservationType(SampleDto dto, StagedSample sample)
+        {
+            if (string.IsNullOrEmpty(dto.PreservationType))
+                return sample;
+
+            var result = await _refDataReadService.GetPreservationType(dto.PreservationType);
+
+            if (result is null)
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.PreservationType(dto.PreservationType, dto.Barcode, dto.IndividualReferenceId),
+                        new List<string> { nameof(dto.PreservationType) }),
+                    null, null);
+            }
+
+            if (sample.StorageTemperatureId != result.StorageTemperatureId)
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        $"The provided {nameof(dto.PreservationType)} is not applicable for the provided {nameof(dto.StorageTemperature)}.",
+                        new List<string> { nameof(dto.PreservationType), nameof(dto.StorageTemperature) }),
+                    null, null);
+            }
+
+            sample.PreservationTypeId = result.Id;
+
             return sample;
         }
 

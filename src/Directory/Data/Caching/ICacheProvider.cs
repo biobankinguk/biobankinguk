@@ -1,6 +1,6 @@
 using System;
 
-namespace Directory.Data.Caching
+namespace Biobanks.Directory.Data.Caching
 {
     public interface ICacheProvider
     {

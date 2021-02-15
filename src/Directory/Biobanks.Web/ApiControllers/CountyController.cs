@@ -1,8 +1,9 @@
-﻿using Directory.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Directory.Entity.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
 
 namespace Biobanks.Web.ApiControllers
@@ -29,15 +30,15 @@ namespace Biobanks.Web.ApiControllers
             var model = new CountiesModel
             {
                 Counties = countries.ToDictionary(
-                        x => x.Name,
+                        x => x.Value,
                         x => x.Counties.Select(county =>
                             Task.Run(async () =>
                                 new CountyModel
                                 {
-                                    Id = county.CountyId,
-                                    CountryId = x.CountryId,
-                                    Name = county.Name,
-                                    CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.CountyId)
+                                    Id = county.Id,
+                                    CountryId = x.Id,
+                                    Name = county.Value,
+                                    CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.Id)
                                 }
                                 )
                             .Result
@@ -64,9 +65,9 @@ namespace Biobanks.Web.ApiControllers
 
             var county = new County
             {
-                CountyId = model.Id,
+                Id = model.Id,
                 CountryId = model.CountryId,
-                Name = model.Name
+                Value = model.Name
             };
 
             await _biobankWriteService.AddCountyAsync(county);
@@ -101,9 +102,9 @@ namespace Biobanks.Web.ApiControllers
 
             var county = new County
             {
-                CountyId = id,
+                Id = id,
                 CountryId = model.CountryId,
-                Name = model.Name
+                Value = model.Name
             };
 
             await _biobankWriteService.UpdateCountyAsync(county);
@@ -120,11 +121,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCountriesAsync()).Select(x => x.Counties.Where(y=>y.CountyId == id).First()).First();
+            var model = (await _biobankReadService.ListCountriesAsync()).Select(x => x.Counties.Where(y=>y.Id == id).First()).First();
 
             if (await _biobankReadService.IsCountyInUse(id))
             {
-                ModelState.AddModelError("County", $"The county \"{model.Name}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("County", $"The county \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -134,9 +135,9 @@ namespace Biobanks.Web.ApiControllers
 
             var county = new County
             {
-                CountyId = model.CountyId,
+                Id = model.Id,
                 CountryId = model.CountryId,
-                Name = model.Name
+                Value = model.Value
             };
 
             await _biobankWriteService.DeleteCountyAsync(county);
@@ -145,7 +146,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Name,
+                name = model.Value,
             });
         }
     }
