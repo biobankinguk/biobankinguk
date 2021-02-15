@@ -7,13 +7,13 @@ namespace Biobanks.Directory.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class RenameStatusTablePlural : IMigrationMetadata
+    public sealed partial class MaterialTypeRefresh : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RenameStatusTablePlural));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(MaterialTypeRefresh));
         
         string IMigrationMetadata.Id
         {
-            get { return "202102101613238_RenameStatusTablePlural"; }
+            get { return "202102120925189_MaterialTypeRefresh"; }
         }
         
         string IMigrationMetadata.Source

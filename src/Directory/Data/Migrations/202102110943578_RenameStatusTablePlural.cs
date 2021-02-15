@@ -7,12 +7,12 @@
     {
         public override void Up()
         {
-            RenameTable("dbo.Status", "Statuses");
+            RenameTable(name: "dbo.Status", newName: "Statuses");
         }
         
         public override void Down()
         {
-            RenameTable("dbo.Statuses", "Status");
+            RenameTable(name: "dbo.Statuses", newName: "Status");
         }
     }
 }
