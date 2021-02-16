@@ -1205,11 +1205,20 @@ namespace Biobanks.Services
 
         #endregion
 
-        public async Task<IEnumerable<OntologyTerm>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "")
+        public async Task<IEnumerable<OntologyTermResultDTO>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "")
         {
             var listOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-
-            return await _ontologyTermRepository.ListAsync(false, x => listOntologyTerms.Contains(x.Value));
+            
+            return (await _ontologyTermRepository.ListAsync()).Join(
+                listOntologyTerms, o => o.Value.ToLower(), i => i.OntologyTerm, (a, b) => new OntologyTermResultDTO
+                {
+                    OtherTerms = a.OtherTerms ?? "",
+                    MatchingOtherTerms = b.MatchingOtherTerms,
+                    Id = a.Id,
+                    Value = a.Value,
+                    NonMatchingOtherTerms = a.OtherTerms?.Split(',').Select(p => 
+                        p.Trim()).Where(m => !(b.MatchingOtherTerms.Contains(m))).ToList() ?? new List<string>()
+                });
         }
 
         public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermDescription)

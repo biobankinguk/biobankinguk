@@ -209,15 +209,17 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListSearchableOntologyTermsAsync(type, wildcard);
+            var ontologyTerms = _mapper.Map<IEnumerable<OntologyTermResult>>(await _biobankReadService.ListSearchableOntologyTermsAsync(type, wildcard));
 
-            var model =  ontologyTerms.Select(x =>
-                new OntologyTermModel
-                {
-                    OntologyTermId = x.Id,
-                    Description = x.Value,
-                    OtherTerms = x.OtherTerms
-                }
+            var model = ontologyTerms.Select(x =>
+               new OntologyTermModel
+               {
+                   OntologyTermId = x.Id,
+                   Description = x.Value,
+                   OtherTerms = x.OtherTerms,
+                   MatchingOtherTerms = x.MatchingOtherTerms,
+                   NonMatchingOtherTerms = x.NonMatchingOtherTerms
+               }
             )
             .ToList();
 

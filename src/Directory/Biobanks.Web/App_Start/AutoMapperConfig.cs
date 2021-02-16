@@ -98,6 +98,8 @@ namespace Biobanks.Web
                 cfg.CreateMap<ProfilePageStatDTO, ProfilePageStat>(); 
                 cfg.CreateMap<SourceCountDTO, SourceCount>();
 
+                cfg.CreateMap<OntologyTermResultDTO, OntologyTermResult>();
+
             });
         }
     }

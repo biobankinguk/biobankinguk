@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Biobanks.Web.Models.Shared
+namespace Biobanks.Web.Models.Search
 {
-    public class OntologyTermModel
+    public class OntologyTermResult
     {
         [Required]
         [StringLength(20)]
-        public string OntologyTermId { get; set; }
+        public string Id { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string Value { get; set; }
 
         public string OtherTerms { get; set; }
 
