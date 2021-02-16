@@ -1079,6 +1079,11 @@ div.info div {
     cursor: pointer;
 }
 
+.search-list{
+    border-bottom: 0.5px solid lightgrey; 
+    text-align: left;
+    font-size:medium;
+}
 
 /*Toggle switch*/
 /* The switch - the box around the slider */
