@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
@@ -92,11 +93,14 @@ namespace Biobanks.Data
 
         protected override void OnModelCreating(ModelBuilder model)
         {
-            //// Join Tables
-            //model.Entity<MaterialTypeGroup>()
-            //    .HasMany(x => x.MaterialTypes)
-            //    .WithMany(y => y.MaterialTypeGroups)
-            //    .UsingEntity(j => j.ToTable(""));
+            // Join Tables
+            model.Entity<MaterialTypeGroup>()
+                .HasMany(x => x.MaterialTypes)
+                .WithMany(y => y.MaterialTypeGroups)
+                .UsingEntity<Dictionary<string, object>>(
+                    "MaterialTypeGroupMaterialTypes",
+                    b => b.HasOne<MaterialType>().WithMany().HasForeignKey("MaterialTypeId"),
+                    b => b.HasOne<MaterialTypeGroup>().WithMany().HasForeignKey("MaterialTypeGroupId"));
 
             // Composite Primary Keys
             model.Entity<CapabilityAssociatedData>()

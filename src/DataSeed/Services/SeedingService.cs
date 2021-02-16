@@ -37,40 +37,42 @@ namespace Biobanks.DataSeed.Services
             // List Order Determines Seed Order
             _seedActions = new List<Action>
             {
-                /* Directory Specific */
-                SeedCountries,
-                SeedJson<AccessCondition>,
-                SeedJson<AgeRange>,
-                SeedAnnualStatistics,
-                SeedJson<AssociatedDataProcurementTimeframe>,
-                SeedAssocaitedDataTypes,
-                SeedJson<CollectionPercentage>,
-                SeedJson<CollectionPoint>,
-                SeedJson<CollectionStatus>,
-                SeedJson<CollectionType>,
-                SeedJson<ConsentRestriction>,
-                SeedJson<DonorCount>,
-                SeedJson<Funder>,
-                SeedJson<HtaStatus>,
-                SeedJson<MacroscopicAssessment>,
-                SeedJson<RegistrationReason>,
-                SeedJson<SampleCollectionMode>,
-                SeedJson<ServiceOffering>,
-                SeedJson<SopStatus>,
-                
-                /* API Specific */
-                SeedJson<Ontology>,
-                SeedJson<SampleContentMethod>,
-                SeedJson<Status>,
-                SeedJson<TreatmentLocation>,
+                SeedMaterialTypes,
 
-                /* Shared */
-                SeedJson<MaterialTypeGroup>,
+                ///* Directory Specific */
+                //SeedCountries,
+                //SeedJson<AccessCondition>,
+                //SeedJson<AgeRange>,
+                //SeedAnnualStatistics,
+                //SeedJson<AssociatedDataProcurementTimeframe>,
+                //SeedAssocaitedDataTypes,
+                //SeedJson<CollectionPercentage>,
+                //SeedJson<CollectionPoint>,
+                //SeedJson<CollectionStatus>,
+                //SeedJson<CollectionType>,
+                //SeedJson<ConsentRestriction>,
+                //SeedJson<DonorCount>,
+                //SeedJson<Funder>,
+                //SeedJson<HtaStatus>,
+                //SeedJson<MacroscopicAssessment>,
+                //SeedJson<RegistrationReason>,
+                //SeedJson<SampleCollectionMode>,
+                //SeedJson<ServiceOffering>,
+                //SeedJson<SopStatus>,
+                
+                ///* API Specific */
+                //SeedJson<Ontology>,
+                //SeedJson<SampleContentMethod>,
+                //SeedJson<Status>,
+                //SeedJson<TreatmentLocation>,
+
+                ///* Shared */
+                //SeedJson<MaterialTypeGroup>,
                 //SeedMaterialTypes,
-                SeedJson<Sex>,
-                SeedJson<OntologyTerm>,
-                SeedJson<StorageTemperature>,
-                SeedJson<PreservationType>
+                //SeedJson<Sex>,
+                //SeedJson<OntologyTerm>,
+                //SeedJson<StorageTemperature>,
+                //SeedJson<PreservationType>
             };
         }
 
@@ -200,15 +202,20 @@ namespace Biobanks.DataSeed.Services
                 ReadJson<MaterialType>().Select(x => 
                     new MaterialType()
                     {
+                        Id = x.Id,
                         Value = x.Value,
                         SortOrder = x.SortOrder,
                         MaterialTypeGroups = x.MaterialTypeGroups?
                             .Select(y => validGroups.First(z => z.Value == y.Value))
                             .ToList()
                     }
-                ),
-                identityInsert: false
+                )
             );
+        }
+
+        private void SeedJson<T>() where T : class
+        {
+            Seed(ReadJson<T>());
         }
 
         private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true) where T : class
@@ -246,11 +253,6 @@ namespace Biobanks.DataSeed.Services
 
                 _logger.LogInformation($"{ typeof(T).Name }: Written { entities.Count() } entries");
             }
-        }
-
-        private void SeedJson<T>() where T : class
-        {
-            Seed(ReadJson<T>());
         }
 
         private static ICollection<T> ReadJson<T>(string filePath = "")
