@@ -39,8 +39,8 @@ namespace Publications.Services
             => await _ctx.Publications.Where(x => x.OrganisationId == biobankId && x.Accepted == true)
             .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1)).ToListAsync();
 
-        public async Task<IEnumerable<Publication>> ListPublications()
-            => await _ctx.Publications.Include(a => a.PublicationAnnotations).ThenInclude(b => b.Annotation).ToListAsync();
+        public async Task<IEnumerable<Publication>> ListPublications(string publicationId, string source)
+            => await _ctx.Publications.Where(x => x.PublicationId != publicationId && x.Source != source).Include(a => a.PublicationAnnotations).ThenInclude(b => b.Annotation).ToListAsync();
 
         //Uses Publication Id from EF
         public async Task<IEnumerable<PublicationAnnotation>> GetPublicationAnnotations(int publicationId)

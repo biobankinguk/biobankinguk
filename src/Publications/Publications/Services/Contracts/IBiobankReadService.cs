@@ -21,7 +21,7 @@ namespace Publications.Services.Contracts
 
         Task<Annotation> GetAnnotationByName(string name);
 
-        Task<IEnumerable<Publication>> ListPublications();
+        Task<IEnumerable<Publication>> ListPublications(string publicationId, string source);
 
         Task<IEnumerable<AnnotationQueryDTO>> GetBiobankAnnotations();
 

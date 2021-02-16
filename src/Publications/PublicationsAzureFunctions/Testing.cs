@@ -38,7 +38,7 @@ namespace PublicationsAzureFunctions
             //Pulls Publications from directory (test), gets annotations from API and pushes to Azure DB
             //await _fetchAnnotationsService.StartAsync(cancellationToken);
             //await _fetchAnnotationsService.StopAsync(cancellationToken);
-            var test = await _recommendationsService.CalculateRecommendation("27658825", "MED");
+            var test = await _recommendationsService.CalculateRecommendationByPublication("27658825", "MED");
             return new OkObjectResult("Done");
         }
     }

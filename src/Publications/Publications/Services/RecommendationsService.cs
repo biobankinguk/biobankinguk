@@ -97,8 +97,8 @@ namespace Publications.Services
                 }
             }
 
-            //Get all publications from directory
-            var publications = await _biobankReadService.ListPublications();
+            //Get all publications from directory excluding searched publication
+            var publications = await _biobankReadService.ListPublications(publicationId, source);
             var annotationListB = new List<string>();
             foreach (var publication in publications)
             {
