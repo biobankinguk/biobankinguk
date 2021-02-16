@@ -80,6 +80,9 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/Home/home-contactlist.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/search/tabs").Include(
+                "~/Scripts/Home/search-tabs.js"));
+            
             //Biobank Admin
             bundles.Add(new ScriptBundle("~/bundles/biobank/admins").Include(
                 "~/Scripts/Shared/registerentity-admin-viewmodel.js",

@@ -550,6 +550,7 @@
     <Content Include="Scripts\DataTables\responsive.foundation.min.js" />
     <Content Include="Scripts\DataTables\responsive.jqueryui.js" />
     <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
+    <Content Include="Scripts\Home\search-tabs.js" />
     <Content Include="Scripts\jquery-2.2.2.js" />
     <Content Include="Scripts\jquery-2.2.2.min.js" />
     <Content Include="Scripts\jquery.cookie-1.4.1.min.js" />
@@ -838,6 +839,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
     <Content Include="Views\Header\_NavItemAbout.cshtml" />
+    <Content Include="Views\Home\_SearchTabs.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

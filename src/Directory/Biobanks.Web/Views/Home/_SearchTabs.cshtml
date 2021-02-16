@@ -1,0 +1,23 @@
+﻿@using Biobanks.Directory.Data.Constants;
+@using System.Web.Optimization
+@model string
+
+@Scripts.Render("~/bundles/search/tabs")
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li role="presentation"
+                class="@(Model == "" ? "active" : "true")">
+                @Html.ActionLink("", "")
+            </li>
+
+            <li role="presentation"
+                class="@(Model == "" ? "active" : "true")">
+                @Html.ActionLink("", "")
+            </li>
+        </ul>
+    </div>
+</div>
+
+
