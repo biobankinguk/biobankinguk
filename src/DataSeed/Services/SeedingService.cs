@@ -39,39 +39,38 @@ namespace Biobanks.DataSeed.Services
             {
                 /* Directory Specific */
                 SeedCountries,
-                //SeedJson<AccessCondition>,
-                //SeedJson<AgeRange>,
-                //SeedJson<AnnualStatisticGroup>,
-                //SeedJson<AssociatedDataProcurementTimeframe>,
-                //SeedJson<AssociatedDataTypeGroup>,
-                //SeedJson<AssociatedDataType>,
-                //SeedJson<CollectionPercentage>,
-                //SeedJson<CollectionPoint>,
-                //SeedJson<CollectionStatus>,
-                //SeedJson<CollectionType>,
-                //SeedJson<ConsentRestriction>,
-                //SeedJson<DonorCount>,
-                //SeedJson<Funder>,
-                //SeedJson<HtaStatus>,
-                //SeedJson<MacroscopicAssessment>,
-                //SeedJson<RegistrationReason>,
-                //SeedJson<SampleCollectionMode>,
-                //SeedJson<ServiceOffering>,
-                //SeedJson<SopStatus>,
+                SeedJson<AccessCondition>,
+                SeedJson<AgeRange>,
+                SeedAnnualStatistics,
+                SeedJson<AssociatedDataProcurementTimeframe>,
+                SeedAssocaitedDataTypes,
+                SeedJson<CollectionPercentage>,
+                SeedJson<CollectionPoint>,
+                SeedJson<CollectionStatus>,
+                SeedJson<CollectionType>,
+                SeedJson<ConsentRestriction>,
+                SeedJson<DonorCount>,
+                SeedJson<Funder>,
+                SeedJson<HtaStatus>,
+                SeedJson<MacroscopicAssessment>,
+                SeedJson<RegistrationReason>,
+                SeedJson<SampleCollectionMode>,
+                SeedJson<ServiceOffering>,
+                SeedJson<SopStatus>,
                 
-                ///* API Specific */
-                //SeedJson<Ontology>,
-                //SeedJson<SampleContentMethod>,
-                //SeedJson<Status>,
-                //SeedJson<TreatmentLocation>,
+                /* API Specific */
+                SeedJson<Ontology>,
+                SeedJson<SampleContentMethod>,
+                SeedJson<Status>,
+                SeedJson<TreatmentLocation>,
 
-                ///* Shared */
+                /* Shared */
                 SeedJson<MaterialTypeGroup>,
-                SeedMaterialTypes,
-                //SeedJson<Sex>,
-                //SeedJson<OntologyTerm>,
-                //SeedJson<StorageTemperature>,
-                //SeedJson<PreservationType>
+                //SeedMaterialTypes,
+                SeedJson<Sex>,
+                SeedJson<OntologyTerm>,
+                SeedJson<StorageTemperature>,
+                SeedJson<PreservationType>
             };
         }
 
@@ -87,6 +86,57 @@ namespace Biobanks.DataSeed.Services
 
         public Task StopAsync(CancellationToken cancellationToken)
             => Task.CompletedTask;
+
+        private void SeedAnnualStatistics()
+        {
+            var groups = ReadJson<AnnualStatisticGroup>();
+
+            // Seed AnnualStatisticGroup Only
+            Seed(groups.Select(x => 
+                new AnnualStatisticGroup()
+                {
+                    Id = x.Id,
+                    Value = x.Value
+                }
+            ));
+
+            // Seed AnnualStatistics Separately For Identity Insert
+            Seed(groups.SelectMany(x => x.AnnualStatistics.Select(y =>
+                    new AnnualStatistic()
+                    {
+                        Id = y.Id,
+                        Value = y.Value,
+                        AnnualStatisticGroupId = x.Id
+                    })
+                )
+            );
+        }
+
+        private void SeedAssocaitedDataTypes()
+        {
+            var groups = ReadJson<AssociatedDataTypeGroup>();
+
+            // Seed AssocaitedDataTypeGroup Only
+            Seed(groups.Select(x =>
+                new AssociatedDataTypeGroup()
+                {
+                    Id = x.Id,
+                    Value = x.Value
+                }
+            ));
+
+            // Seed AssocaitedDataType Separately For Identity Insert
+            Seed(groups.SelectMany(x => x.AssociatedDataTypes.Select(y =>
+                    new AssociatedDataType()
+                    {
+                        Id = y.Id,
+                        Value = y.Value,
+                        Message = y.Message,
+                        AssociatedDataTypeGroupId = x.Id
+                    })
+                )
+            );
+        }
 
         private void SeedCountries()
         {

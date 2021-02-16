@@ -1,4 +1,6 @@
-﻿using Biobanks.Entities.Api;
+﻿using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
@@ -90,6 +92,12 @@ namespace Biobanks.Data
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            //// Join Tables
+            //model.Entity<MaterialTypeGroup>()
+            //    .HasMany(x => x.MaterialTypes)
+            //    .WithMany(y => y.MaterialTypeGroups)
+            //    .UsingEntity(j => j.ToTable(""));
+
             // Composite Primary Keys
             model.Entity<CapabilityAssociatedData>()
                 .HasKey(x => new
