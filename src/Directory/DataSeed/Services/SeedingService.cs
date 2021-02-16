@@ -64,7 +64,7 @@ namespace Biobanks.DataSeed.Services
 
                 /* Shared */
                 SeedJson<MaterialTypeGroup>,
-                SeedJson<MaterialType>,
+                SeedMaterialTypes,
                 SeedJson<Sex>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
@@ -108,6 +108,23 @@ namespace Biobanks.DataSeed.Services
             // Update Config Value
             _db.Configs.FirstOrDefault(x => x.Key == "site.display.counties").Value = (!seedUN ? "true" : "false");
             _db.SaveChanges();
+        }
+
+        private void SeedMaterialTypes()
+        {
+            var validGroups = _db.MaterialTypeGroups.ToList();
+
+            Seed(
+                ReadJson<MaterialType>()
+                    .Select(x => new MaterialType()
+                    {
+                        Value = x.Value,
+                        SortOrder = x.SortOrder,
+                        MaterialTypeGroups = x.MaterialTypeGroups
+                            ?.Select(y => validGroups.First(z => z.Value == y.Value))
+                            .ToList()
+                    })
+            );
         }
 
         private void Seed<T>(IEnumerable<T> entities) where T : class

@@ -42,7 +42,7 @@
             (Optional) Enter a disease term  <br />
             See our <a href="@Url.Action("Index", "Term")">list of terms</a> or <a href="@ConfigurationManager.AppSettings["ContactUsUrl"]">contact us</a> for help.
             <div class="row-buffer">
-                @Html.TextBox("Diagnosis", "", new { @class = "form-control diagnosis-search", autocomplete = "off", placeholder = "Enter a disease term", title = "Search" })
+                @Html.TextBox("ontologyTerm", "", new { @class = "form-control diagnosis-search", autocomplete = "off", placeholder = "Enter a disease term", title = "Search" })
             </div>
         </div>
 
