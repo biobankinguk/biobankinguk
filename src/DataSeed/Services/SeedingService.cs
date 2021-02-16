@@ -39,39 +39,39 @@ namespace Biobanks.DataSeed.Services
             {
                 /* Directory Specific */
                 SeedCountries,
-                SeedJson<AccessCondition>,
-                SeedJson<AgeRange>,
-                SeedJson<AnnualStatisticGroup>,
-                SeedJson<AssociatedDataProcurementTimeframe>,
-                SeedJson<AssociatedDataTypeGroup>,
-                SeedJson<AssociatedDataType>,
-                SeedJson<CollectionPercentage>,
-                SeedJson<CollectionPoint>,
-                SeedJson<CollectionStatus>,
-                SeedJson<CollectionType>,
-                SeedJson<ConsentRestriction>,
-                SeedJson<DonorCount>,
-                SeedJson<Funder>,
-                SeedJson<HtaStatus>,
-                SeedJson<MacroscopicAssessment>,
-                SeedJson<RegistrationReason>,
-                SeedJson<SampleCollectionMode>,
-                SeedJson<ServiceOffering>,
-                SeedJson<SopStatus>,
+                //SeedJson<AccessCondition>,
+                //SeedJson<AgeRange>,
+                //SeedJson<AnnualStatisticGroup>,
+                //SeedJson<AssociatedDataProcurementTimeframe>,
+                //SeedJson<AssociatedDataTypeGroup>,
+                //SeedJson<AssociatedDataType>,
+                //SeedJson<CollectionPercentage>,
+                //SeedJson<CollectionPoint>,
+                //SeedJson<CollectionStatus>,
+                //SeedJson<CollectionType>,
+                //SeedJson<ConsentRestriction>,
+                //SeedJson<DonorCount>,
+                //SeedJson<Funder>,
+                //SeedJson<HtaStatus>,
+                //SeedJson<MacroscopicAssessment>,
+                //SeedJson<RegistrationReason>,
+                //SeedJson<SampleCollectionMode>,
+                //SeedJson<ServiceOffering>,
+                //SeedJson<SopStatus>,
                 
-                /* API Specific */
-                SeedJson<Ontology>,
-                SeedJson<SampleContentMethod>,
-                SeedJson<Status>,
-                SeedJson<TreatmentLocation>,
+                ///* API Specific */
+                //SeedJson<Ontology>,
+                //SeedJson<SampleContentMethod>,
+                //SeedJson<Status>,
+                //SeedJson<TreatmentLocation>,
 
-                /* Shared */
+                ///* Shared */
                 SeedJson<MaterialTypeGroup>,
                 SeedMaterialTypes,
-                SeedJson<Sex>,
-                SeedJson<OntologyTerm>,
-                SeedJson<StorageTemperature>,
-                SeedJson<PreservationType>
+                //SeedJson<Sex>,
+                //SeedJson<OntologyTerm>,
+                //SeedJson<StorageTemperature>,
+                //SeedJson<PreservationType>
             };
         }
 
@@ -92,22 +92,43 @@ namespace Biobanks.DataSeed.Services
         {
             var seedUN = Prompt.GetYesNo("Would you like to seed UN Countries?", false);
 
-            // Seed Countries
             if (seedUN)
             {
-                Seed(
-                    _countriesWebService.ListCountriesAsync().Result.Select(x => 
-                        new Country
+                var countries = _countriesWebService.ListCountriesAsync().Result;
+
+                Seed(countries.Select(x =>
+                        new Country()
                         {
                             Value = x.CountryName
                         }
-                    )
-                    .ToList()
+                    ),
+                    identityInsert: false
                 );
             }
             else
             {
-                SeedJson<Country>(); // Also seeds Counties 
+                var countries = ReadJson<Country>();
+
+                // Seed Countries Only
+                Seed(countries.Select(x => 
+                        new Country()
+                        {
+                            Id = x.Id,
+                            Value = x.Value
+                        }
+                    )
+                );
+
+                // Seed Counties Separately For Identity Insert
+                Seed(countries.SelectMany(x => x.Counties.Select(y => 
+                        new County()
+                        {
+                            Id = y.Id,
+                            Value = y.Value,
+                            CountryId = x.Id
+                        })
+                    )
+                );
             }
 
             // Update Config Value
@@ -126,20 +147,21 @@ namespace Biobanks.DataSeed.Services
             var validGroups = _db.MaterialTypeGroups.ToList();
 
             Seed(
-                ReadJson<MaterialType>()
-                    .Select(x => new MaterialType()
+                ReadJson<MaterialType>().Select(x => 
+                    new MaterialType()
                     {
                         Value = x.Value,
                         SortOrder = x.SortOrder,
-                        MaterialTypeGroups = x.MaterialTypeGroups
-                            ?.Select(y => validGroups.First(z => z.Value == y.Value))
+                        MaterialTypeGroups = x.MaterialTypeGroups?
+                            .Select(y => validGroups.First(z => z.Value == y.Value))
                             .ToList()
-                    })
-                    .ToList()
+                    }
+                ),
+                identityInsert: false
             );
         }
 
-        private void Seed<T>(ICollection<T> entities) where T : class
+        private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true) where T : class
         {
             var set = _db.Set<T>();
 
@@ -157,7 +179,7 @@ namespace Biobanks.DataSeed.Services
                 
                 // Save Changes
                 // Check If Table Has Identity Column, Hence Needing Identity Insert
-                if (props.Any(x => x.ValueGenerated == ValueGenerated.OnAdd))
+                if (identityInsert && props.Any(x => x.ValueGenerated == ValueGenerated.OnAdd))
                 {
                     using var transaction = _db.Database.BeginTransaction();
 
