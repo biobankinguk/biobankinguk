@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;

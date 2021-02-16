@@ -141,14 +141,8 @@ namespace Biobanks.DataSeed.Services
             }
 
             // Update Config Value
-            //Seed(new List<Config>
-            //{
-            //    new Config()
-            //    {
-            //        Key = "site.display.counties",
-            //        Value = !seedUN ? "true" : "false"
-            //    }
-            //});
+            _db.Configs.FirstOrDefault(x => x.Key == "site.display.counties").Value = (!seedUN ? "true" : "false");
+            _db.SaveChanges();
         }
 
         private void SeedMaterialTypes()
