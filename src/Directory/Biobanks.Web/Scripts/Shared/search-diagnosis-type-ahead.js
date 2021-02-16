@@ -21,7 +21,8 @@ $(function() {
             filter: function (x) {
                 return $.map(x, function (item) {
                     return {
-                        desc: item.Description
+                        desc: item.Description,
+                        other: item.OtherTerms
                     };
                 });
             }
@@ -42,7 +43,14 @@ $(function() {
         name: 'desc',
         displayKey: 'desc',
         source: diseases.ttAdapter(),
-        limit: 100
+        limit: 100,
+        templates: {
+            suggestion: function (e) {
+                return '<div class="search-list"><br/><b>' + e.desc +
+                    '</b><div style="font-size:small">' +
+                    (!e.other ? "" : ('...' + e.other)) + '</div></div>';
+            }
+        }
     }
     );
 });
