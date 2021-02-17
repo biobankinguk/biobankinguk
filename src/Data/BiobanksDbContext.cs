@@ -11,69 +11,50 @@ namespace Biobanks.Data
 {
     public class BiobanksDbContext : DbContext
     {
-        /* Shared Reference Data */
-        public DbSet<MaterialType> MaterialTypes { get; set; }
-        public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
-        public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
-        public DbSet<Sex> Sexes { get; set; }
-        public DbSet<OntologyTerm> OntologyTerms { get; set; }
-        public DbSet<SnomedTag> SnomedTags { get; set; }
-        public DbSet<StorageTemperature> StorageTemperatures { get; set; }
-        public DbSet<PreservationType> PreservationTypes { get; set; }
-        public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
+        #region Reference Data: API
         public DbSet<Ontology> Ontologies { get; set; }
         public DbSet<OntologyVersion> OntologyVersions { get; set; }
-
-        /* Directory */
+        public DbSet<SampleContentMethod> SampleContentMethods { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
+        #endregion
+        
+        #region Reference Data: Directory
         public DbSet<AccessCondition> AccessConditions { get; set; }
         public DbSet<AgeRange> AgeRanges { get; set; }
         public DbSet<AnnualStatistic> AnnualStatistics { get; set; }
         public DbSet<AnnualStatisticGroup> AnnualStatisticGroups { get; set; }
+        public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
         public DbSet<AssociatedDataTypeGroup> AssociatedDataTypeGroups { get; set; }
-        public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
-        public DbSet<Blob> Blobs { get; set; }
-        public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
-        public DbSet<CollectionAssociatedData> CollectionAssociatedDatas { get; set; }
-        public DbSet<Collection> Collections { get; set; }
-        public DbSet<CollectionType> CollectionTypes { get; set; }
-        public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
-        public DbSet<CollectionStatus> CollectionStatus { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
         public DbSet<CollectionPoint> CollectionPoints { get; set; }
+        public DbSet<CollectionStatus> CollectionStatus { get; set; }
+        public DbSet<CollectionType> CollectionTypes { get; set; }
         public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
-        public DbSet<Config> Configs { get; set; }
-        public DbSet<County> Counties { get; set; }
         public DbSet<Country> Countries { get; set; }
-        public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
+        public DbSet<County> Counties { get; set; }
         public DbSet<DonorCount> DonorCounts { get; set; }
         public DbSet<Funder> Funders { get; set; }
         public DbSet<HtaStatus> HtaStatus { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
-        public DbSet<MaterialDetail> MaterialDetails { get; set; }
-        public DbSet<Network> Networks { get; set; }
-        public DbSet<NetworkRegisterRequest> NetworkRegisterRequests { get; set; }
-        public DbSet<NetworkUser> NetworkUsers { get; set; }
-        public DbSet<Organisation> Organisations { get; set; }
-        public DbSet<OrganisationAnnualStatistic> OrganisationAnnualStatistics { get; set; }
-        public DbSet<OrganisationNetwork> OrganisationNetworks { get; set; }
-        public DbSet<OrganisationRegistrationReason> OrganisationRegistrationReasons { get; set; }
-        public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
-        public DbSet<OrganisationType> OrganisationTypes { get; set; }
-        public DbSet<OrganisationUser> OrganisationUsers { get; set; }
-        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
         public DbSet<RegistrationReason> RegistrationReasons { get; set; }
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
         public DbSet<SopStatus> SopStatus { get; set; }
-        public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
-        public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
+        #endregion
 
-        /* Publications */
-        public DbSet<Publication> Publications { get; set; }
+        #region Reference Data: Shared
+        public DbSet<MaterialType> MaterialTypes { get; set; }
+        public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
+        public DbSet<OntologyTerm> OntologyTerms { get; set; }
+        public DbSet<PreservationType> PreservationTypes { get; set; }
+        public DbSet<Sex> Sexes { get; set; }
+        public DbSet<SnomedTag> SnomedTags { get; set; }
+        public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+        #endregion
 
-        /* API */
-        public DbSet<Status> Statuses { get; set; }
+        #region Application Data: API
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Error> Errors { get; set; }
 
@@ -88,7 +69,37 @@ namespace Biobanks.Data
         public DbSet<LiveSample> Samples { get; set; }
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
+        #endregion
 
+        #region Application Data: Directory
+        public DbSet<Blob> Blobs { get; set; }
+        public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
+        public DbSet<CollectionAssociatedData> CollectionAssociatedDatas { get; set; }
+        public DbSet<Collection> Collections { get; set; }
+        public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
+        public DbSet<Config> Configs { get; set; }
+        public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
+        public DbSet<MaterialDetail> MaterialDetails { get; set; }
+        public DbSet<Network> Networks { get; set; }
+        public DbSet<NetworkRegisterRequest> NetworkRegisterRequests { get; set; }
+        public DbSet<NetworkUser> NetworkUsers { get; set; }
+        public DbSet<Organisation> Organisations { get; set; }
+        public DbSet<OrganisationAnnualStatistic> OrganisationAnnualStatistics { get; set; }
+        public DbSet<OrganisationNetwork> OrganisationNetworks { get; set; }
+        public DbSet<OrganisationRegistrationReason> OrganisationRegistrationReasons { get; set; }
+        public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
+        public DbSet<OrganisationType> OrganisationTypes { get; set; }
+        public DbSet<OrganisationUser> OrganisationUsers { get; set; }
+        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
+        public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
+        public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
+        #endregion
+
+        #region Application Data: Publications
+        public DbSet<Annotation> Annotations { get; set; }
+        public DbSet<Publication> Publications { get; set; }
+        #endregion
+        
         protected override void OnModelCreating(ModelBuilder model)
         {
             // Join Tables
@@ -241,13 +252,11 @@ namespace Biobanks.Data
              */
 
             public BiobanksDbContext CreateDbContext(string[] args)
-            {
-                var options = new DbContextOptionsBuilder<BiobanksDbContext>();
-                options.UseSqlServer(args[0], options => options.EnableRetryOnFailure());
-
-                return new BiobanksDbContext(options.Options);
-            }
+                => new (
+                    new DbContextOptionsBuilder()
+                        .UseSqlServer(args[0], opts => opts.EnableRetryOnFailure())
+                        .Options
+                    );
         }
     }
-
 }
