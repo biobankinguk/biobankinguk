@@ -60,6 +60,9 @@ namespace Biobanks.Web.Controllers
             }
         }
 
+        public ActionResult _PublicationSearchBox() => View();
+        public ActionResult _DiagnosisSearchBox() => View();
+
         public ActionResult Cookies() => View();
 
         public ActionResult Privacy() => View();

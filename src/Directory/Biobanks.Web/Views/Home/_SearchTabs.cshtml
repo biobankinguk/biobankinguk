@@ -1,23 +1,26 @@
 ﻿@using Biobanks.Directory.Data.Constants;
+@using Biobanks.Web.Models.Home
 @using System.Web.Optimization
-@model string
+@model HomepageContentModel
 
-@Scripts.Render("~/bundles/search/tabs")
+@Scripts.Render("~/bundles/home/search-tabs")
 
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs">
-            <li role="presentation"
-                class="@(Model == "HomepageContentModel" ? "active" : "true")">
-                @Html.ActionLink("Diagnosis", "Index")
-            </li>
 
-            <li role="presentation"
-                class="@(Model == "HomepageContentModel" ? "active" : "true")">
-                @Html.ActionLink("Publications", "Index")
-            </li>
-        </ul>
+<ul id="searchtabs" class="nav nav-tabs" role="tablist">
+    <li class="active">
+        <a href="#_DiagnosisSearchBox" role="tab" data-toggle="tab">Diagnosis</a>
+    </li>
+    <li>
+        <a href="#_PublicationSearchBox" role="tab" data-toggle="tab">Publication</a>
+    </li>
+</ul>
+
+
+<div class="tab-content">
+    <div class="tab-pane fade in active" id="_DiagnosisSearchBox">
+        @Html.Partial("~/Views/Home/_DiagnosisSearchBox.cshtml", Model)
+    </div>
+    <div class="tab-pane fade" id="_PublicationSearchBox">
+        @Html.Partial("~/Views/Home/_PublicationSearchBox.cshtml", Model)
     </div>
 </div>
-
-
