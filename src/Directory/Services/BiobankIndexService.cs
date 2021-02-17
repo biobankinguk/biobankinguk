@@ -52,8 +52,7 @@ namespace Biobanks.Services
             }
             catch
             {
-                // Exception Occurred - Assume Search Is Down
-                return "red";
+                return null;
             }
         }
 
