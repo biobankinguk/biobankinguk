@@ -829,7 +829,7 @@
     <Content Include="Views\ADAC\DeleteFunder.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Shared\_BBFooter.cshtml" />
-    <Content Include="Views\Home\_UnifiedSearchBox.cshtml" />
+    <Content Include="Views\Home\_DiagnosisSearchBox.cshtml" />
     <Content Include="Views\Shared\_ContactButton.cshtml" />
     <Content Include="Views\SuperUser\Index.cshtml" />
     <Content Include="Views\SuperUser\_SuperUserTabs.cshtml" />
@@ -840,6 +840,7 @@
     <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
     <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <Content Include="Views\Home\_SearchTabs.cshtml" />
+    <Content Include="Views\Home\_PublicationSearchBox.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
