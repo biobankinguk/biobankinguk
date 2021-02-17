@@ -48,7 +48,7 @@ $(function() {
         limit: 100,
         templates: {
             suggestion: function (e) {
-                return '<div class="search-list"><br/><b>' + e.desc +
+                return '<div class="search-list"><b>' + e.desc +
                     '</b><div style="font-size:small">' +
                     (!e.mother ? "" : ('<span>' + e.mother + '</span><br/>')) +
                     (!e.nother ? "" : ('<span>(...' + e.nother + ')</span>')) + '</div></div>';
