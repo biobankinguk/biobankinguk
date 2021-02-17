@@ -11,6 +11,7 @@ using ServiceOfferingModel = Biobanks.Web.Models.Shared.ServiceOfferingModel;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/ServiceOffering")]
     public class ServiceOfferingController : ApiBaseController
     {
@@ -25,6 +26,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {

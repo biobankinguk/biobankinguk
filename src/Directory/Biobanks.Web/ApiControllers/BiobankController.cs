@@ -6,6 +6,7 @@ using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "BiobankAdmin")]
     [RoutePrefix("api/Biobank")]
     public class BiobankController : ApiBaseController
     {
@@ -22,7 +23,6 @@ namespace Biobanks.Web.ApiControllers
             _mapper = mapper;
         }
 
-        // GET: Biobank
         [HttpGet]
         [Route("IncludePublications/{id}")]
         public async Task<bool> IncludePublications(int id)

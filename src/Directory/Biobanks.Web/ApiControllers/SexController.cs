@@ -9,6 +9,7 @@ using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/Sex")]
     public class SexController : ApiBaseController
     {
@@ -24,6 +25,7 @@ namespace Biobanks.Web.ApiControllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {

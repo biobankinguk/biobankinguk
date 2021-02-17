@@ -10,6 +10,7 @@ using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/MacroscopicAssessment")]
     public class MacroscopicAssessmentController : ApiBaseController
     {
@@ -24,6 +25,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {

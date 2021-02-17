@@ -9,6 +9,7 @@ using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/AssociatedDataProcurementTimeFrame")]
     public class AssociatedDataProcurementTimeFrameController : ApiBaseController
     {
@@ -23,6 +24,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {

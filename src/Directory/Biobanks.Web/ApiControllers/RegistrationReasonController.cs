@@ -10,6 +10,7 @@ using RegistrationReasonModel = Biobanks.Web.Models.Shared.RegistrationReasonMod
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/RegistrationReason")]
     public class RegistrationReasonController : ApiBaseController
     {
@@ -25,6 +26,7 @@ namespace Biobanks.Web.ApiControllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {

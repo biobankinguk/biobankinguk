@@ -10,6 +10,7 @@ using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/MaterialType")]
     public class MaterialTypeController : ApiBaseController
     {
@@ -24,6 +25,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {

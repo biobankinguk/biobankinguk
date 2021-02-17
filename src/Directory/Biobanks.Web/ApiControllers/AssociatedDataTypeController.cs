@@ -9,6 +9,7 @@ using Biobanks.Web.Models.ADAC;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/AssociatedDataType")]
     public class AssociatedDataTypeController : ApiBaseController
     {
@@ -23,6 +24,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IHttpActionResult> Get()
         {

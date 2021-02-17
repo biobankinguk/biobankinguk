@@ -11,6 +11,7 @@ using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [System.Web.Http.Authorize(Roles = "ADAC")]
     [RoutePrefix("api/StorageTemperature")]
     public class StorageTemperatureController : ApiBaseController
     {
@@ -25,6 +26,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {
