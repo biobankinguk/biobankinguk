@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Directory.DataSeed;
 using Microsoft.Extensions.Hosting;
 
 namespace Biobanks.DataSeed
