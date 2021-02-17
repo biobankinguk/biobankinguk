@@ -60,8 +60,32 @@ namespace Biobanks.Web.Controllers
             }
         }
 
-        public ActionResult _PublicationSearchBox() => View();
-        public ActionResult _DiagnosisSearchBox() => View();
+        public ActionResult _PublicationSearchBox() 
+        {
+            return PartialView(new HomepageContentModel
+            {
+                Title = Config.Get(ConfigKey.HomepageTitle, ""),
+                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
+                ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
+                NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
+                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+            });
+        }
+        public ActionResult _DiagnosisSearchBox()
+        {
+            return PartialView(new HomepageContentModel
+            {
+                Title = Config.Get(ConfigKey.HomepageTitle, ""),
+                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
+                ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
+                NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
+                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+            });
+        }
 
         public ActionResult Cookies() => View();
 

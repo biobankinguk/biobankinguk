@@ -1,20 +1,20 @@
-﻿
+﻿    $('#searchtabs a').click(function (e) {
+        e.preventDefault()
+        var tabID = $(this).attr("href").substr(1);
+        $(".tab-pane").each(function () {
+            console.log("clearing " + $(this).attr("id") + " tab");
+            $(this).empty();
+        });
 
-window.addEventListener("DOMContentLoaded", function () {
-    var dropDown = $("#refdropdown");
-    var links = dropDown.find("li");
-    links.sort(function (a, b) {
+        $.ajax({
+            url: '@ViewContext.RouteData.Values["controller"]/' + tabID,
+            cache: false,
+            type: "get",
+            dataType: "html",
+            success: function (result) {
+                $("#" + tabID).html(result);
+            }
 
-        if ($(a).text().trim() > $(b).text().trim()) {
-            return 1;
-        }
-        else if ($(a).text().trim() < $(b).text().trim()) {
-            return -1;
-        }
-        else if ($(a).text().trim() === $(b).text().trim()) {
-            return 0;
-        }
-
-    }).appendTo(dropDown);
-})
-
+        })
+        $(this).tab('show')
+    });

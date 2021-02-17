@@ -81,6 +81,7 @@ namespace Biobanks.Web
                 "~/Scripts/Home/home-contactlist.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/home/search-tabs").Include(
+                "~/Scripts/jquery-{version}.js",
                 "~/Scripts/Home/search-tabs.js"));
             
             //Biobank Admin
