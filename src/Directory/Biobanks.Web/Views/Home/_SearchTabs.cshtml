@@ -8,13 +8,13 @@
     <div class="col-md-12">
         <ul class="nav nav-tabs">
             <li role="presentation"
-                class="@(Model == "" ? "active" : "true")">
-                @Html.ActionLink("", "")
+                class="@(Model == "HomepageContentModel" ? "active" : "true")">
+                @Html.ActionLink("Diagnosis", "Index")
             </li>
 
             <li role="presentation"
-                class="@(Model == "" ? "active" : "true")">
-                @Html.ActionLink("", "")
+                class="@(Model == "HomepageContentModel" ? "active" : "true")">
+                @Html.ActionLink("Publications", "Index")
             </li>
         </ul>
     </div>
