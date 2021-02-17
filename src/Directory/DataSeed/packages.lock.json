@@ -202,6 +202,15 @@
         "resolved": "4.2.5",
         "contentHash": "pqNwRZFTEV6h+ZoHvNolnbIMHEu7xWw+z35l8ldlk7qb+Pw5hiNEY5cHg0JsmcXoYGJBo+mOP7KVj57lkb4GtA=="
       },
+      "Microsoft.ApplicationInsights": {
+        "type": "Transitive",
+        "resolved": "2.14.0",
+        "contentHash": "j66/uh1Mb5Px/nvMwDWx73Wd9MdO2X+zsDw9JScgm5Siz5r4Cw8sTW+VCrjurFkpFqrNkj+0wbfRHDBD9b+elA==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "4.6.0",
+          "System.Memory": "4.5.4"
+        }
+      },
       "Microsoft.AspNet.Identity.Core": {
         "type": "Transitive",
         "resolved": "2.2.3",
@@ -536,8 +545,11 @@
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
-        "resolved": "4.5.1",
-        "contentHash": "zCno/m44ymWhgLFh7tELDG9587q0l/EynPM0m4KgLaWQbz/TEKvNRX2YT5ip2qXW/uayifQ2ZqbnErsKJ4lYrQ=="
+        "resolved": "4.6.0",
+        "contentHash": "mbBgoR0rRfl2uimsZ2avZY8g7Xnh1Mza0rJZLPcxqiMWlkGukjmRkuMJ/er+AhQuiRIh80CR/Hpeztr80seV5g==",
+        "dependencies": {
+          "System.Memory": "4.5.3"
+        }
       },
       "System.Diagnostics.EventLog": {
         "type": "Transitive",
@@ -705,6 +717,7 @@
           "ExcelDataReader.DataSet": "3.6.0",
           "HangFire": "1.7.11",
           "ImageResizer": "4.2.5",
+          "Microsoft.ApplicationInsights": "2.14.0",
           "Postal.Mvc5": "1.2.0",
           "SendGrid": "9.17.0"
         }
