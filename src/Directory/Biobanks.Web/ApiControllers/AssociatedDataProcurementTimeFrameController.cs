@@ -6,10 +6,11 @@ using System.Collections;
 using Biobanks.Services.Contracts;
 using System.Linq;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [System.Web.Http.Authorize(Roles = "ADAC")]
+    [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/AssociatedDataProcurementTimeFrame")]
     public class AssociatedDataProcurementTimeFrameController : ApiBaseController
     {
