@@ -3,8 +3,6 @@
 @using System.Web.Optimization
 @model HomepageContentModel
 
-@Scripts.Render("~/bundles/home/search-tabs")
-
 
     <ul id="searchtabs" class="nav nav-tabs" role="tablist">
         <li class="active">
@@ -24,30 +22,7 @@
         @Html.Partial("~/Views/Home/_DiagnosisSearchBox.cshtml", Model)
     </div>
     <div class="tab-pane fade" id="_PublicationSearchBox">
-
+        @Html.Action("_PublicationSearchBox", "Home");
     </div>
 </div>
 
-
-<script>
-    $('#searchtabs a').click(function (e) {
-        e.preventDefault()
-        var tabID = $(this).attr("href").substr(1);
-        $(".tab-pane").each(function () {
-            console.log("clearing " + $(this).attr("id") + " tab");
-            $(this).empty();
-        });
-
-        $.ajax({
-            url: "Home/" + tabID,
-            cache: false,
-            type: "get",
-            dataType: "html",
-            success: function (result) {
-                $("#" + tabID).html(result);
-            }
-
-        })
-        $(this).tab('show')
-    });
-</script>
