@@ -90,8 +90,9 @@ namespace Biobanks.Web.Controllers
         public async Task<RedirectToRouteResult> BuildIndex()
         {
             await _indexService.BuildIndex();
-            SetTemporaryFeedbackMessage("The building of the index has begun. Pending jobs can be viewed in the Hangfire dashboard.", FeedbackMessageType.Info);
+            //The reindex method is called to populate the index after creation
             await ReindexAllData();
+            SetTemporaryFeedbackMessage("The building of the index has begun. Pending jobs can be viewed in the Hangfire dashboard.", FeedbackMessageType.Info);
             return RedirectToAction("SearchIndex");
         }
 

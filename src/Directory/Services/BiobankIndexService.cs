@@ -38,6 +38,7 @@ namespace Biobanks.Services
 
         public async Task BuildIndex()
         {
+            //Building the Search Index
 
             var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
             List<string> _navPaths = new List<string>();
@@ -55,29 +56,18 @@ namespace Biobanks.Services
                         client.BaseAddress = new Uri(searchBase);
                         var response = await client.DeleteAsync($"{searchBase}/{fileName}");
                     }
-                }
-                catch
-                {
-                    // Exception Occurred - Assume Search Is Down
-                    return;
-                }
-
-                try
-                {
+                
                     using (var client = new HttpClient())
                     {
                         client.BaseAddress = new Uri(searchBase);
 
-                        //Creating the Index
-                        var temp = System.IO.File.ReadAllText(path);
-                        
+                        //Creating the Index                      
                         HttpContent pathContent = new StringContent(System.IO.File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PutAsync($"{searchBase}/{fileName}", pathContent);
                     }
                 }
                 catch
-                {
-                    // Exception Occurred - Assume Search Is Down
+                {                  
                     return;
                 }
             }
@@ -88,7 +78,6 @@ namespace Biobanks.Services
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(searchBase);
-
                     var indexString = "{ \"index\": { \"number_of_replicas\": 0 }}";
                     HttpContent content = new StringContent(indexString, System.Text.Encoding.UTF8, "application/json");
                     var response = await client.PutAsync($"{searchBase}/*/_settings", content);
@@ -96,14 +85,9 @@ namespace Biobanks.Services
             }
             catch
             {
-                // Exception Occurred - Assume Search Is Down
                 return;
             }
-
-            //GetClusterHealth();
-            return;
-           
-
+            return;        
         }
 
 
