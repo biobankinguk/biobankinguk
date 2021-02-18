@@ -47,6 +47,9 @@ namespace Biobanks.SubmissionAzureFunction.Config
         public static string InvalidForType(string value, string type, string barcode, string individualReferenceId) =>
             $"{IdPropertiesPrefix(barcode, individualReferenceId)} '{value}' is not a valid {type} value";
 
+        public static string PreservationType(string value, string barcode, string individualReferenceId) =>
+            InvalidForType(value, "Preservation Type", barcode, individualReferenceId);
+
         public static string SnomedDiagnosis(string value, string field, string individualReferenceId) =>
             InvalidForType(value, $"SNOMED Diagnosis {field}", null, individualReferenceId);
 

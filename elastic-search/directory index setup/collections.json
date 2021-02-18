@@ -143,6 +143,15 @@
       },
       "county": {
         "type": "keyword"
+      },
+	  "ontologyOtherTerms": {
+        "type": "nested",
+        "properties": {
+          "name": {
+            "type": "keyword",
+			      "normalizer": "string_lowercase"
+          }
+        }
       }
     }
   }

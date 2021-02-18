@@ -30,11 +30,11 @@ namespace PublicationsAzureFunctions
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-            //Pulls Biobanks from directory (test), gets publications from API and pushes to Azure DB
+            //Pulls Biobanks from directory, gets publications from API and pushes to Azure DB
             await _fetchPublicationsService.StartAsync(cancellationToken);
             await _fetchPublicationsService.StopAsync(cancellationToken);
 
-            //Pulls Publications from directory (test), gets annotations from API and pushes to Azure DB
+            //Pulls Publications from directory, gets annotations from API and pushes to Azure DB
             await _fetchAnnotationsService.StartAsync(cancellationToken);
             await _fetchAnnotationsService.StopAsync(cancellationToken);
 

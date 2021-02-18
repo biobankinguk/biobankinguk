@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Net.Http;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Extensions;
+using Microsoft.ApplicationInsights;
 
 namespace Biobanks.Services
 {
@@ -50,11 +51,14 @@ namespace Biobanks.Services
                     return clusterHealth.Status;
                 }
             }
-            catch
+            catch (Exception e)
             {
-                // Exception Occurred - Assume Search Is Down
-                return "red";
+                // Log Error via Application Insights
+                var ai = new TelemetryClient();
+                ai.TrackException(e);
             }
+
+            return null;
         }
 
         public async Task IndexSampleSet(int sampleSetId)
@@ -164,7 +168,8 @@ namespace Biobanks.Services
                             Name = ad.AssociatedDataProcurementTimeframe.Value,
                             ad.AssociatedDataProcurementTimeframe.SortOrder
                         })
-                    })
+                    }),
+                    OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(updatedCapability.OntologyTerm.OtherTerms)
                 }));
         }
 
@@ -212,7 +217,8 @@ namespace Biobanks.Services
                                     Name = ad.AssociatedDataProcurementTimeframe.Value,
                                     ad.AssociatedDataProcurementTimeframe.SortOrder
                                 })
-                            })
+                            }),
+                            OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
                         }));
             }
         }
@@ -484,5 +490,27 @@ namespace Biobanks.Services
 
         private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
             => (int) Math.Floor((double) (intList.Count() / chunkSize));
+
+        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
+        {
+            // Get the collections with the ontologyTerm.
+            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
+            // Update all search documents that are relevant to this collection.
+            foreach (var collectionId in collectionIds)
+            {
+                await UpdateCollectionDetails(collectionId);
+            }
+        }
+
+        public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
+        {
+            // Get the capabilitiess with the ontologyTerm.
+            var capabilityIds = await _biobankReadService.GetCapabilityIdsByOntologyTermAsync(ontologyTerm);
+            // Update all search documents that are relevant to this collection.
+            foreach (var capabilityId in capabilityIds)
+            {
+                await UpdateCapabilityDetails(capabilityId);
+            }
+        }
     }
 }

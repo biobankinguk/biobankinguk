@@ -123,7 +123,9 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
         public async Task<MaterialType> GetMaterialTypeWithGroups(string value)
             => (await ListMaterialTypes())
-                .FirstOrDefault(x => x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase));
+                .FirstOrDefault(x => 
+                    (x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase)) &&
+                    (x.MaterialTypeGroups?.Any() ?? false));
 
         public async Task<IEnumerable<SampleContentMethod>> ListSampleContentMethods()
         {
@@ -153,6 +155,13 @@ namespace Biobanks.SubmissionAzureFunction.Services
 
         public async Task<StorageTemperature> GetStorageTemperature(string value)
             => (await ListStorageTemperatures())
+                .FirstOrDefault(x => x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase));
+
+        public async Task<IEnumerable<PreservationType>> ListPreservationTypes() 
+            => await _db.PreservationTypes.AsNoTracking().ToListAsync();
+
+        public async Task<PreservationType> GetPreservationType(string value)
+            => (await ListPreservationTypes())
                 .FirstOrDefault(x => x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase));
 
         public async Task<IEnumerable<TreatmentLocation>> ListTreatmentLocations()

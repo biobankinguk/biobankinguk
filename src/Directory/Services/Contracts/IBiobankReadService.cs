@@ -25,6 +25,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync();
         Task<Collection> GetCollectionByIdForIndexingAsync(int id);
         Task<Collection> GetCollectionWithSampleSetsByIdAsync(int id);
+        Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<Collection>> ListCollectionsAsync();
         Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
         Task<CollectionSampleSet> GetSampleSetByIdAsync(int id);
@@ -34,6 +35,7 @@ namespace Biobanks.Services.Contracts
 
         Task<DiagnosisCapability> GetCapabilityByIdAsync(int id);
         Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id);
+        Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId);
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 

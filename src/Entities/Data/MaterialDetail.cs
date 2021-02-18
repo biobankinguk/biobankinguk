@@ -22,6 +22,9 @@ namespace Biobanks.Entities.Data
         public int MacroscopicAssessmentId { get; set; }
         public virtual MacroscopicAssessment MacroscopicAssessment { get; set; }
 
+        public int? PreservationTypeId { get; set; }
+        public virtual PreservationType PreservationType { get; set; }
+
         public int? CollectionPercentageId { get; set; }
         public virtual CollectionPercentage CollectionPercentage { get; set; }
     }

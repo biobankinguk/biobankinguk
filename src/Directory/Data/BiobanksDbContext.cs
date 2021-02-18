@@ -115,16 +115,31 @@ namespace Biobanks.Directory.Data
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
 
-
-
-
         public BiobanksDbContext() : base("Biobanks") { }
         public BiobanksDbContext(string connectionString) : base(connectionString) { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Collection>().Property(f => f.StartDate).HasColumnType("datetime2");
-            modelBuilder.Entity<OntologyTerm>().HasIndex(x => x.Value).IsUnique();
+            modelBuilder.Entity<Collection>()
+                .Property(f => f.StartDate)
+                .HasColumnType("datetime2");
+
+            modelBuilder.Entity<MaterialTypeGroup>()
+                .HasMany(t => t.MaterialTypes)
+                .WithMany(g => g.MaterialTypeGroups)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("MaterialTypeGroupId");
+                    gt.MapRightKey("MaterialTypeId");
+                    gt.ToTable("MaterialTypeGroupMaterialTypes");
+                });
+
+            modelBuilder.Entity<OntologyTerm>()
+                .HasIndex(x => x.Value)
+                .IsUnique();
+
+            modelBuilder.Entity<Status>()
+                .ToTable("Statuses");
         }
     }
 }

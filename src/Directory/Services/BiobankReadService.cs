@@ -610,6 +610,10 @@ namespace Biobanks.Services
                 x => x.SampleCollectionMode
             );
 
+        public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
+            => (await _capabilityRepository.ListAsync(false,
+                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.DiagnosisCapabilityId);
+
         public async Task<int> GetIndexableSampleSetCountAsync()
             => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
 
@@ -1298,6 +1302,10 @@ namespace Biobanks.Services
                    x => x.OntologyTermId == id)).Count() + (await _capabilityRepository.ListAsync(
                    false,
                    x => x.OntologyTermId == id)).Count();
+
+        public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
+            => (await _collectionRepository.ListAsync(false,
+                x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
       => (await _materialDetailRepository.ListAsync(

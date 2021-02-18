@@ -23,6 +23,8 @@ namespace Biobanks.SubmissionAzureFunction.Services.Contracts
 
         Task<IEnumerable<StorageTemperature>> ListStorageTemperatures();
 
+        Task<IEnumerable<PreservationType>> ListPreservationTypes();
+
         Task<IEnumerable<TreatmentLocation>> ListTreatmentLocations();
 
         Task<OntologyTerm> GetSnomed(string value, string field);
@@ -40,6 +42,8 @@ namespace Biobanks.SubmissionAzureFunction.Services.Contracts
         Task<SampleContentMethod> GetSampleContentMethod(string value);
 
         Task<StorageTemperature> GetStorageTemperature(string value);
+
+        Task<PreservationType> GetPreservationType(string value);
 
         Task<TreatmentLocation> GetTreatmentLocation(string value);
 

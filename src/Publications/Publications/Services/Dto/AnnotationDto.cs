@@ -14,9 +14,9 @@ namespace Publications.Services.Dto
         public string ExtId { get; set; }
 
         [JsonProperty("annotations")]
-        public List<AnnotationDto> Annotations { get; set; }
+        public List<AnnotationDTO> Annotations { get; set; }
     }
-    public class AnnotationDto
+    public class AnnotationDTO
     {
         [JsonProperty("exact")]
         public string Exact { get; set; }

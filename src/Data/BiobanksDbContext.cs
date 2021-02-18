@@ -1,4 +1,5 @@
-﻿using Biobanks.Entities.Api;
+﻿using System.Collections.Generic;
+using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
@@ -18,6 +19,7 @@ namespace Biobanks.Data
         public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+        public DbSet<PreservationType> PreservationTypes { get; set; }
         public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
         public DbSet<Ontology> Ontologies { get; set; }
         public DbSet<OntologyVersion> OntologyVersions { get; set; }
@@ -28,6 +30,7 @@ namespace Biobanks.Data
         public DbSet<AnnualStatistic> AnnualStatistics { get; set; }
         public DbSet<AnnualStatisticGroup> AnnualStatisticGroups { get; set; }
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
+        public DbSet<AssociatedDataTypeGroup> AssociatedDataTypeGroups { get; set; }
         public DbSet<AssociatedDataProcurementTimeframe> AssociatedDataProcurementTimeframes { get; set; }
         public DbSet<Blob> Blobs { get; set; }
         public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
@@ -35,7 +38,7 @@ namespace Biobanks.Data
         public DbSet<Collection> Collections { get; set; }
         public DbSet<CollectionType> CollectionTypes { get; set; }
         public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
-        public DbSet<CollectionStatus> CollectionStatuses { get; set; }
+        public DbSet<CollectionStatus> CollectionStatus { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
         public DbSet<CollectionPoint> CollectionPoints { get; set; }
         public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
@@ -45,7 +48,7 @@ namespace Biobanks.Data
         public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
         public DbSet<DonorCount> DonorCounts { get; set; }
         public DbSet<Funder> Funders { get; set; }
-        public DbSet<HtaStatus> HtaStatuses { get; set; }
+        public DbSet<HtaStatus> HtaStatus { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
         public DbSet<MaterialDetail> MaterialDetails { get; set; }
         public DbSet<Network> Networks { get; set; }
@@ -62,7 +65,7 @@ namespace Biobanks.Data
         public DbSet<RegistrationReason> RegistrationReasons { get; set; }
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
-        public DbSet<SopStatus> SopStatuses { get; set; }
+        public DbSet<SopStatus> SopStatus { get; set; }
         public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
         public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
 
@@ -88,6 +91,82 @@ namespace Biobanks.Data
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            // Join Tables
+            model.Entity<MaterialTypeGroup>()
+                .HasMany(x => x.MaterialTypes)
+                .WithMany(y => y.MaterialTypeGroups)
+                .UsingEntity<Dictionary<string, object>>(
+                    "MaterialTypeGroupMaterialTypes",
+                    b => b.HasOne<MaterialType>().WithMany().HasForeignKey("MaterialTypeId"),
+                    b => b.HasOne<MaterialTypeGroup>().WithMany().HasForeignKey("MaterialTypeGroupId"));
+
+            // Composite Primary Keys
+            model.Entity<CapabilityAssociatedData>()
+                .HasKey(x => new
+                {
+                    x.DiagnosisCapabilityId,
+                    x.AssociatedDataTypeId
+                });
+
+            model.Entity<CollectionAssociatedData>()
+                .HasKey(x => new
+                {
+                    x.CollectionId,
+                    x.AssociatedDataTypeId
+                });
+
+            model.Entity<MaterialDetail>()
+                .HasKey(x => new
+                {
+                    x.SampleSetId,
+                    x.MaterialTypeId,
+                    x.StorageTemperatureId,
+                    x.MacroscopicAssessmentId
+                });
+
+            model.Entity<NetworkUser>()
+                .HasKey(x => new
+                {
+                    x.NetworkId,
+                    x.NetworkUserId
+                });
+
+            model.Entity<OrganisationAnnualStatistic>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.AnnualStatisticId,
+                    x.Year
+                });
+
+            model.Entity<OrganisationNetwork>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.NetworkId
+                });
+
+            model.Entity<OrganisationRegistrationReason>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.RegistrationReasonId
+                });
+
+            model.Entity<OrganisationServiceOffering>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.ServiceOfferingId
+                });
+
+            model.Entity<OrganisationUser>()
+                .HasKey(x => new
+                {
+                    x.OrganisationId,
+                    x.OrganisationUserId
+                });
+
             // Indices (for unique constraints)
             model.Entity<LiveDiagnosis>()
                 .HasIndex(x => new
@@ -115,6 +194,7 @@ namespace Biobanks.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
+
             model.Entity<StagedDiagnosis>()
                 .HasIndex(x => new
                 {
@@ -141,9 +221,8 @@ namespace Biobanks.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
-
         }
-        
+
         public BiobanksDbContext(DbContextOptions options) : base(options) { }
 
         public class BiobanksDbContextFactory : IDesignTimeDbContextFactory<BiobanksDbContext>
