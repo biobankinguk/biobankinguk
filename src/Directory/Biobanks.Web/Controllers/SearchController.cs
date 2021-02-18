@@ -65,7 +65,17 @@ namespace Biobanks.Web.Controllers
                 });
             
             ICollection<Country> countyCountry = await _biobankReadService.ListCountriesAsync();
-            model.Countries = countyCountry;
+            IDictionary<string, IList<string>> countriesDictionary = new Dictionary<string,IList<string>>();
+            foreach (var country in countyCountry)
+            {
+                IList<string> countryList = new List<string>();
+                foreach (var county in country.Counties)
+                {
+                    countryList.Add(county.Value);
+                }
+                countriesDictionary.Add(country.Value, countryList);
+            }
+            model.Countries = countriesDictionary;
             return View(model);
         }
 

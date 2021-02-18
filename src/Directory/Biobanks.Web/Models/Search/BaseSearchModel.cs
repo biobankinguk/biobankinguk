@@ -19,6 +19,6 @@ namespace Biobanks.Web.Models.Search
 
         public IList<string> SelectedFacets { get; set; }
 
-        public ICollection<Country> Countries { get; set; }
+        public IDictionary<string, IList<string>> Countries { get; set; }
     }
 }
