@@ -456,6 +456,7 @@
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
+    <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
