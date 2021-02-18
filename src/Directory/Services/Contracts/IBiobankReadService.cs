@@ -255,7 +255,6 @@ namespace Biobanks.Services.Contracts
         Task<int> GetCountyUsageCount(int id);
 
         Task<ICollection<Country>> ListCountriesAsync();
-        Task<ICollection<County>> GetCountryCounty(string name);
         Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
         Task<Funder> GetFunderByIdAsync(int id);
         List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId);

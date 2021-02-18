@@ -15,5 +15,3 @@ $('.facet-group').on('shown.bs.collapse', function() {
 
     $.cookie($(this).attr('id') + 'Collapsed', false);
 });
-
-
