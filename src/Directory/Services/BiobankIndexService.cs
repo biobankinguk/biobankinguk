@@ -52,7 +52,7 @@ namespace Biobanks.Services
                     {
                         //Deleting the Index
                         client.BaseAddress = new Uri(searchBase);
-                        //var response = await client.DeleteAsync($"{searchBase}/{fileName}");
+                        var response = await client.DeleteAsync($"{searchBase}/{fileName}");
                     }
                 }
                 catch
