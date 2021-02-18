@@ -895,6 +895,7 @@
     <Compile Include="Models\Biobank\BiobankAnalyticReport.cs" />
     <Compile Include="Models\Biobank\BiobankPublicationsModel.cs" />
     <Compile Include="Models\Header\NavItemModel.cs" />
+    <Compile Include="Models\Home\PublicationSearchBoxModel.cs" />
     <Compile Include="Models\Search\TermpageContentModel.cs" />
     <Compile Include="Models\Shared\AccessConditionModel.cs" />
     <Compile Include="Models\Shared\AnnualStatisticGroupModel.cs" />
