@@ -105,11 +105,7 @@ namespace Biobanks.Data
             // Join Tables
             model.Entity<MaterialTypeGroup>()
                 .HasMany(x => x.MaterialTypes)
-                .WithMany(y => y.MaterialTypeGroups)
-                .UsingEntity<Dictionary<string, object>>(
-                    "MaterialTypeGroupMaterialTypes",
-                    b => b.HasOne<MaterialType>().WithMany().HasForeignKey("MaterialTypeId"),
-                    b => b.HasOne<MaterialTypeGroup>().WithMany().HasForeignKey("MaterialTypeGroupId"));
+                .WithMany(y => y.MaterialTypeGroups);
 
             // Composite Primary Keys
             model.Entity<CapabilityAssociatedData>()
