@@ -12,6 +12,8 @@ using System.Configuration;
 using System.Net.Http;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Extensions;
+using System.IO;
+using System.Web.Hosting;
 
 namespace Biobanks.Services
 {
@@ -32,6 +34,77 @@ namespace Biobanks.Services
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
         }
+
+        public async Task BuildIndex()
+        {
+
+            var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+            List<string> _navPaths = new List<string>();
+            _navPaths.Add(HostingEnvironment.MapPath(@"~/App_Config/capabilities.json"));
+            _navPaths.Add(HostingEnvironment.MapPath(@"~/App_Config/collections.json"));
+            
+            foreach (var path in _navPaths)
+            {
+                var fileName = Path.GetFileName(path).Split('.')[0];
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        //Deleting the Index
+                        client.BaseAddress = new Uri(searchBase);
+                        //var response = await client.DeleteAsync($"{searchBase}/{fileName}");
+                    }
+                }
+                catch
+                {
+                    // Exception Occurred - Assume Search Is Down
+                    return;
+                }
+
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        client.BaseAddress = new Uri(searchBase);
+
+                        //Creating the Index
+                        var temp = System.IO.File.ReadAllText(path);
+                        
+                        HttpContent pathContent = new StringContent(System.IO.File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
+                        var response = await client.PutAsync($"{searchBase}/{fileName}", pathContent);
+                    }
+                }
+                catch
+                {
+                    // Exception Occurred - Assume Search Is Down
+                    return;
+                }
+            }
+
+            //Preventing Index Replication
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(searchBase);
+
+                    var indexString = "{ \"index\": { \"number_of_replicas\": 0 }}";
+                    HttpContent content = new StringContent(indexString, System.Text.Encoding.UTF8, "application/json");
+                    var response = await client.PutAsync($"{searchBase}/*/_settings", content);
+                }
+            }
+            catch
+            {
+                // Exception Occurred - Assume Search Is Down
+                return;
+            }
+
+            //GetClusterHealth();
+            return;
+           
+
+        }
+
 
         public async Task<string> GetClusterHealth()
         {

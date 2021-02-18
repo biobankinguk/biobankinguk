@@ -85,6 +85,15 @@ namespace Biobanks.Web.Controllers
 
             return RedirectToAction("SearchIndex");
         }
+
+        public async Task<RedirectToRouteResult> BuildIndex()
+        {
+            await _indexService.BuildIndex();
+            SetTemporaryFeedbackMessage("The building of the index has begun. Pending jobs can be viewed in the Hangfire dashboard.", FeedbackMessageType.Info);
+            await ReindexAllData();
+            return RedirectToAction("SearchIndex");
+        }
+
         #endregion
     }
 }
