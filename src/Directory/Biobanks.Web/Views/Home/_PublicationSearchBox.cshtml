@@ -40,21 +40,14 @@
         </div>
         <div class="col-lg-10">
             Please enter the Publication ID and Source <br />
-            <div class="row-buffer" id="testt">
-                @Html.TextBox("publicationId", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication ID", title = "Search", @maxLength = "11" })
-            </div>
-            <div class="row-buffer">
-                <div class="form-group">
-                    Publication Source
-                    <select class="form-control" id="sel1">
-                        <option>MED</option>
-                        <option>PMC</option>
-                        <option>etc</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+                    <div class="row-buffer">
+                       @Html.TextBox("publicationId", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication ID", title = "Search", @maxLength = "11" })
+                    </div>
 
+                    <div class="row-buffer">
+                       @Html.TextBox("publicationSource", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication Source", title = "Search", @maxLength = "3" })
+                    </div>
+        </div>
     </div>
 
 
@@ -68,3 +61,4 @@
         </div>
     </div>
 }
+
