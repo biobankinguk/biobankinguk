@@ -63,16 +63,13 @@ namespace Biobanks.Web.Controllers
                     OntologyTerm = model.OntologyTerm,
                     SearchType = SearchDocumentType.Collection
                 });
-
-            List<string> Counties = new List<string>();
-            foreach (var facetCounty in searchResults.Facets.ToList())
-            {
-                Counties.Add(facetCounty.Name);
-            }
-            var countyCountry = await LinkCountriesToCounties(Counties);
-            model.Counties = countyCountry;
+            
+            ICollection<Country> countyCountry = await _biobankReadService.ListCountriesAsync();
+            model.Countries = countyCountry;
             return View(model);
         }
+
+
 
         private async Task<ViewResult> NoResults(NoResultsModel model)
         {
@@ -293,30 +290,5 @@ namespace Biobanks.Web.Controllers
             }
         }
 
-        //Get all Countries & Counties Linked up
-        private async Task<List<List<String>>> LinkCountriesToCounties(IEnumerable<string> facetIds)
-        {
-            List<List<string>> completeList = new List<List<string>>();
-            foreach (string facetId in facetIds)
-            {
-                if (facetId.StartsWith("ctry_"))
-                {
-                    var listCounties = await _biobankReadService.GetCountryCounty(facetId);
-                    List<string> stringCounties = new List<string>();
-                    stringCounties.Add(facetId);
-                    foreach (var county in listCounties)
-                    {
-                        stringCounties.Add(county.Value);
-                    }
-                    completeList.Add(stringCounties);
-                    
-                }
-                
-                
-            }
-            return completeList;
-            
-
-        }
     }
 }
