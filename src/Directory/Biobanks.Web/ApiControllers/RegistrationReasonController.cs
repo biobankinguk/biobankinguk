@@ -7,10 +7,11 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using RegistrationReasonModel = Biobanks.Web.Models.Shared.RegistrationReasonModel;
+using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [System.Web.Http.Authorize(Roles = "ADAC")]
+    [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/RegistrationReason")]
     public class RegistrationReasonController : ApiBaseController
     {

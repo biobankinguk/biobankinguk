@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
+using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [System.Web.Http.Authorize(Roles = "BiobankAdmin")]
+    [UserApiAuthorize(Roles = "BiobankAdmin")]
     [RoutePrefix("api/Biobank")]
     public class BiobankController : ApiBaseController
     {

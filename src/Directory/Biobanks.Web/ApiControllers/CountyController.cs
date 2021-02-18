@@ -5,10 +5,11 @@ using System.Web.Http;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
+using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [System.Web.Http.Authorize(Roles = "ADAC")]
+    [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/County")]
     public class CountyController : ApiBaseController
     {
