@@ -9,7 +9,7 @@
         <div class="col-lg-2">
         </div>
         <div class="col-lg-10">
-            <h2>PUBLICATION</h2>
+            <h2>Publications Search</h2>
         </div>
 
         <div class="col-lg-2">
@@ -39,10 +39,19 @@
             <div class="circle circle-orange">2</div>
         </div>
         <div class="col-lg-10">
-            (Optional) Enter a disease term  <br />
-            See our <a href="@Url.Action("Index", "Term")">list of terms</a> or <a href="@ConfigurationManager.AppSettings["ContactUsUrl"]">contact us</a> for help.
+            Please enter the Publication ID and Source <br />
+            <div class="row-buffer" id="testt">
+                @Html.TextBox("publicationId", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication ID", title = "Search", @maxLength = "11" })
+            </div>
             <div class="row-buffer">
-                @Html.TextBox("ontologyTerm", "", new { @class = "form-control diagnosis-search", autocomplete = "off", placeholder = "Enter a disease term", title = "Search" })
+                <div class="form-group">
+                    Publication Source
+                    <select class="form-control" id="sel1">
+                        <option>MED</option>
+                        <option>PMC</option>
+                        <option>etc</option>
+                    </select>
+                </div>
             </div>
         </div>
 

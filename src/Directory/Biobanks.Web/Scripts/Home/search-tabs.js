@@ -1,4 +1,4 @@
-﻿    $('#searchtabs a').click(function (e) {
+﻿    $('#searchtabs').click(function (e) {
         e.preventDefault()
         var tabID = $(this).attr("href").substr(1);
         $(".tab-pane").each(function () {
@@ -7,7 +7,7 @@
         });
 
         $.ajax({
-            url: '@ViewContext.RouteData.Values["controller"]/' + tabID,
+            url: '@ViewContext.RouteData.Values["controller"]/' + tabID
             cache: false,
             type: "get",
             dataType: "html",
@@ -18,3 +18,6 @@
         })
         $(this).tab('show')
     });
+
+
+//@ViewContext.RouteData.Values["controller"]/
