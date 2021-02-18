@@ -27,16 +27,20 @@ namespace Biobanks.Directory.Data.Constants
 
         // Editable Homepage
         public const string HomepageTitle = "site.homepage.title";
-        public const string HomepageSearchTitle = "site.homepage.searchtitle";
         public const string HomepageResourceRegistration = "site.homepage.resourceregistration";
         public const string HomepageNetworkRegistration = "site.homepage.networkregistration";
 
         // Editable Diagnosis Search
+        public const string HomepageSearchTitle = "site.homepage.searchtitle";
         public const string HomepageSearchSubTitle = "site.homepage.searchsubtitle";
         public const string HomepageSearchRadioSamplesCollected = "site.homepage.searchradiosamplescollected";
         public const string HomepageSearchRadioAccessSamples = "site.homepage.searchradioaccesssamples";
 
         // Editable Publications Search
+        public const string PublicationSearchTitle = "site.homepage.publicationsearchtitle";
+        public const string PublicationSearchSubTitle = "site.homepage.publicationsearchsubtitle";
+        public const string PublicationSearchRelatedPublications = "site.homepage.publicationsearchrelatedpublications";
+        public const string PublicationSearchRelatedBiobanks = "site.homepage.publicationsearchrelatedbiobanks";
 
         // Editable Register
         public const string RegisterBiobankTitle = "site.register.biobank.title";

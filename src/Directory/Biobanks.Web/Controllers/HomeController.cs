@@ -62,15 +62,12 @@ namespace Biobanks.Web.Controllers
 
         public ActionResult _PublicationSearchBox() 
         {
-            return PartialView(new HomepageContentModel
+            return PartialView(new PublicationSearchBoxModel
             {
-                Title = Config.Get(ConfigKey.HomepageTitle, ""),
-                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
-                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
-                ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
-                NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
-                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
-                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+                SearchTitle = Config.Get(ConfigKey.PublicationSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.PublicationSearchSubTitle, ""),
+                SearchRelatedPublications = Config.Get(ConfigKey.PublicationSearchRelatedPublications, ""),
+                SearchRelatedBiobanks = Config.Get(ConfigKey.PublicationSearchRelatedBiobanks, ""),
             });
         }
         public ActionResult _DiagnosisSearchBox()

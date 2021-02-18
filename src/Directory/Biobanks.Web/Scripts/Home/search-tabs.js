@@ -7,7 +7,7 @@
         });
 
         $.ajax({
-            url: '@ViewContext.RouteData.Values["controller"]/' + tabID
+            url: '@ViewContext.RouteData.Values["controller"]/' + tabID,
             cache: false,
             type: "get",
             dataType: "html",

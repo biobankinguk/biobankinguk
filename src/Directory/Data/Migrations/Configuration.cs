@@ -163,14 +163,6 @@ namespace Biobanks.Directory.Data.Migrations
                             Value = "Biobanking Directory",
                         },
                         new Config {
-                            Key = "site.homepage.searchtitle",
-                            Value = "Search the Directory",
-                        },
-                        new Config {
-                            Key = "site.homepage.searchsubtitle",
-                            Value = "Search for existing banked samples or for a group to collect samples on your behalf",
-                        },
-                        new Config {
                             Key = "site.homepage.resourceregistration",
                             Value = @"###Registering a sample resource
 
@@ -191,6 +183,15 @@ namespace Biobanks.Directory.Data.Migrations
                                     ####Sample resource or Network?
                                     If you are unsure about whether to register a resource or network then [please get in touch](https://www.biobankinguk.org/contact-us/).",
                         },
+                        // Search Config
+                        new Config {
+                            Key = "site.homepage.searchtitle",
+                            Value = "Search the Directory",
+                        },
+                        new Config {
+                            Key = "site.homepage.searchsubtitle",
+                            Value = "Search for existing banked samples or for a group to collect samples on your behalf",
+                        },
                         new Config
                         {
                             Key = "site.homepage.searchradiosamplescollected",
@@ -203,6 +204,30 @@ namespace Biobanks.Directory.Data.Migrations
                             Key = "site.homepage.searchradioaccesssamples",
                             Value = "Access existing samples",
                             Description = "Set access existing samples text",
+                            ReadOnly = false,
+                        },
+                        new Config
+                        {
+                            Key = "site.homepage.publicationsearchtitle",
+                            Value = "Publications Search",
+                        },
+                        new Config
+                        {
+                            Key = "site.homepage.publicationsearchsubtitle",
+                            Value = "Search for similar publications or biobanks with similar publications stored on the directory",
+                        },
+                        new Config
+                        {
+                            Key = "site.homepage.publicationsearchrelatedpublications",
+                            Value = "Search for related publications",
+                            Description = "Set search for related publications radio text",
+                            ReadOnly = false,
+                        },
+                        new Config
+                        {
+                            Key = "site.homepage.publicationsearchrelatedbiobanks",
+                            Value = "Search for biobanks with related publications",
+                            Description = "Set search for biobanks with related publications radio text",
                             ReadOnly = false,
                         },
 

@@ -1,7 +1,7 @@
 ﻿@using System.Configuration
 @using Biobanks.Web.Models.Home
 @using Biobanks.Directory.Data.Constants
-@model HomepageContentModel
+@model PublicationSearchBoxModel
 @using (Html.BeginForm("Unified", "Search", null, FormMethod.Get))
 {
 
@@ -9,7 +9,7 @@
         <div class="col-lg-2">
         </div>
         <div class="col-lg-10">
-            <h2>Publications Search</h2>
+            <h2>@Model.SearchTitle</h2>
         </div>
 
         <div class="col-lg-2">
@@ -21,10 +21,10 @@
                 <fieldset>
                     <legend class="sr-only">Search for</legend>
                     <label class="radio-inline">
-                        <input type="radio" name="searchRadio" id="Collections" value="Collections" checked="checked">@Model.AccessExistingSamples
+                        <input type="radio" name="searchRadio" id="Collections" value="Collections" checked="checked">@Model.SearchRelatedPublications
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="searchRadio" id="Capabilities" value="Capabilities"> @Model.RequireSamplesCollected
+                        <input type="radio" name="searchRadio" id="Capabilities" value="Capabilities"> @Model.SearchRelatedBiobanks
                     </label>
                 </fieldset>
             </div>
