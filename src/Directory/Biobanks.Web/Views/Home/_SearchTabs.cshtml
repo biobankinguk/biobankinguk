@@ -6,14 +6,17 @@
 @Scripts.Render("~/bundles/home/search-tabs")
 
 
-<ul id="searchtabs" class="nav nav-tabs" role="tablist">
-    <li class="active">
-        <a href="#_DiagnosisSearchBox" role="tab" data-toggle="tab">Diagnosis</a>
-    </li>
-    <li>
-        <a href="#_PublicationSearchBox" role="tab" data-toggle="tab">Publication</a>
-    </li>
-</ul>
+    <ul id="searchtabs" class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#_DiagnosisSearchBox" role="tab" data-toggle="tab">Diagnosis</a>
+        </li>
+        @if (App.Config[ConfigKey.DisplayPublicationSearch] != "false")
+        {
+            <li>
+                <a href="#_PublicationSearchBox" role="tab" data-toggle="tab">Publication</a>
+            </li>
+        }
+        </ul>
 
 
 <div class="tab-content">
@@ -36,7 +39,7 @@
         });
 
         $.ajax({
-            url: "@ViewContext.RouteData.Values["controller"]/" + tabID,
+            url: "Home/" + tabID,
             cache: false,
             type: "get",
             dataType: "html",

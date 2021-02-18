@@ -157,6 +157,15 @@ namespace Biobanks.Directory.Data.Migrations
                             ReadOnly = false
                         },
 
+                        // Display Publication Search
+                        new Config
+                        {
+                            Key = "site.display.publicationsearch",
+                            Value = "true",
+                            Name = "Show Publication Search",
+                            Description = "Enable/Disable Publications Search"
+                        },
+
                         // Homepage Config
                         new Config {
                             Key = "site.homepage.title",
