@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Net.Http;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Extensions;
+using Microsoft.ApplicationInsights;
 
 namespace Biobanks.Services
 {
@@ -50,11 +51,14 @@ namespace Biobanks.Services
                     return clusterHealth.Status;
                 }
             }
-            catch
+            catch (Exception e)
             {
-                // Exception Occurred - Assume Search Is Down
-                return "red";
+                // Log Error via Application Insights
+                var ai = new TelemetryClient();
+                ai.TrackException(e);
             }
+
+            return null;
         }
 
         public async Task IndexSampleSet(int sampleSetId)
