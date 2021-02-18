@@ -28,6 +28,7 @@ namespace Biobanks.LegacyData
         public DbSet<OntologyTerm> OntologyTerms { get; set; }
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
+        public DbSet<PreservationType> PreservationTypes { get; set; }
         public DbSet<TreatmentLocation> TreatmentLocations { get; set; }
         public DbSet<Ontology> Ontologies { get; set; }
         public DbSet<OntologyVersion> OntologyVersions { get; set; }
@@ -42,7 +43,7 @@ namespace Biobanks.LegacyData
         public DbSet<StagedTreatment> StagedTreatments { get; set; }
         public DbSet<StagedTreatmentDelete> StagedTreatmentDeletes { get; set; }
 
-        public DbSet<LiveSample> Samples { get; set; }
+        public DbSet<LiveSample> LiveSamples { get; set; }
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
 

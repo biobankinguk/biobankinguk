@@ -36,5 +36,8 @@ namespace Biobanks.Search.Dto.PartialDocuments
         public string CollectionType { get; set; }
 
         public IEnumerable<AssociatedDataDocument> AssociatedData { get; set; }
+
+        [Keyword(Name = "ontologyOtherTerms")]
+        public IEnumerable<OtherTermsDocument> OntologyOtherTerms { get; set; }
     }
 }

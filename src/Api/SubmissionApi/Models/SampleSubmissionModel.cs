@@ -32,6 +32,11 @@ namespace Biobanks.SubmissionApi.Models
         public string StorageTemperature { get; set; }
 
         /// <summary>
+        /// The method in which the sample was preserved, if applicable.
+        /// </summary>
+        public string PreservationType { get; set; }
+
+        /// <summary>
         /// The date the sample was donated/taken.
         /// </summary>
         [Required]

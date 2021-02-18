@@ -54,7 +54,16 @@
 </table>
 
 <!-- Search Index Health -->
-@if (ViewBag.Status == "green")
+@if (string.IsNullOrEmpty(ViewBag.Status))
+{
+	<div class="alert alert-danger">
+		<h4>Search Index Health: Red</h4>
+		<p>
+			Unable to connect to the search index. Please notify site administrators.
+		</p>
+	</div>
+}
+else if (ViewBag.Status == "green")
 {
     <div class="alert alert-success">
         <h4>Search Index Health: Green</h4>

@@ -63,8 +63,11 @@ namespace Biobanks.Search.Elastic
         /// <inheritdoc />
         public IEnumerable<string> ListOntologyTerms(string wildcard = "")
         {
+            //Matches based on ontologyTerms and onTologyOtherTerms
             var collections = _client.Search<CollectionDocument>(s => s
-                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*"))
+                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*") || q.Nested(n => n
+                .Path("ontologyOtherTerms")
+                .Query(nq => nq.Wildcard("ontologyOtherTerms.name", $"*{wildcard}*"))))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t

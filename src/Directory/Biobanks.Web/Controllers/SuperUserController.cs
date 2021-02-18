@@ -7,9 +7,7 @@ using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.SuperUser;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Filters;
-using System.Net.Http;
-using System.Configuration;
-using Newtonsoft.Json;
+using Microsoft.ApplicationInsights;
 
 namespace Biobanks.Web.Controllers
 {
@@ -41,9 +39,6 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> SearchIndex()
         {
-            // Cluster Health Status
-            ViewBag.Status = await _indexService.GetClusterHealth();
-
             // View Model (Default View Shows No Data)
             var model = new SearchIndexModel();
 
@@ -58,9 +53,15 @@ namespace Biobanks.Web.Controllers
                 model.IndexableCapabilityCount = await _biobankReadService.GetIndexableCapabilityCountAsync();
                 model.SuspendedCapabilityCount = await _biobankReadService.GetSuspendedCapabilityCountAsync();
                 model.CapabilitySearchDocumentCount = await _searchProvider.CountCapabilitySearchDocuments();
+
+                // Cluster Health Status
+                ViewBag.Status = await _indexService.GetClusterHealth();
             }
-            catch
+            catch (Exception e)
             {
+                // Log Error via Application Insights
+                var ai = new TelemetryClient();
+                ai.TrackException(e);
             }
 
             return View(model);
