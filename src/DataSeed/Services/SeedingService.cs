@@ -13,8 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Biobanks.DataSeed.Data;
-using Biobanks.DataSeed.Transforms;
 using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -40,7 +38,6 @@ namespace Biobanks.DataSeed.Services
             _seedActions = new List<Action>
             {
                 /* Directory Specific */
-                SeedDirectoryConfig,
                 SeedCountries,
                 SeedJson<AccessCondition>,
                 SeedJson<AgeRange>,
@@ -75,9 +72,6 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
                 SeedJson<PreservationType>,
-
-                /* Post Seeding Fixes */
-                FixOrganisationUrls
             };
         }
 
@@ -93,23 +87,6 @@ namespace Biobanks.DataSeed.Services
 
         public Task StopAsync(CancellationToken cancellationToken)
             => Task.CompletedTask;
-
-        private void FixOrganisationUrls()
-        {
-            _logger.LogInformation("Attempting to fix organisation urls");
-
-            _db.Organisations
-                .ToList()
-                .ForEach(org =>
-                {
-                    if (UrlTransformer.TryValidateUrl(org.Url, out var validUrl))
-                    {
-                        org.Url = validUrl;
-                    }
-                });
-            
-            _db.SaveChanges();
-        }
 
         private void SeedAnnualStatistics()
         {
@@ -223,11 +200,6 @@ namespace Biobanks.DataSeed.Services
             }
 
             _db.SaveChanges();
-        }
-
-        private void SeedDirectoryConfig()
-        {
-            Seed(DirectoryConfigs.DefaultConfigs);
         }
 
         private void SeedMaterialTypes()

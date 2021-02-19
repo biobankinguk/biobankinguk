@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using Biobanks.Entities.Data;
-using Newtonsoft.Json;
 using System.Data.Entity.Migrations;
 using Biobanks.Directory.Data.Transforms.Url;
-using Biobanks.Directory.Data.Constants;
 
 namespace Biobanks.Directory.Data.Migrations
 {
