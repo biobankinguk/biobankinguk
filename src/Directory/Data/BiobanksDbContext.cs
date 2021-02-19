@@ -129,9 +129,9 @@ namespace Biobanks.Directory.Data
                 .WithMany(g => g.MaterialTypeGroups)
                 .Map(gt =>
                 {
-                    gt.MapLeftKey("MaterialTypeGroupId");
-                    gt.MapRightKey("MaterialTypeId");
-                    gt.ToTable("MaterialTypeGroupMaterialTypes");
+                    gt.MapLeftKey("MaterialTypeGroupsId");
+                    gt.MapRightKey("MaterialTypesId");
+                    gt.ToTable("MaterialTypeMaterialTypeGroup");
                 });
 
             modelBuilder.Entity<OntologyTerm>()

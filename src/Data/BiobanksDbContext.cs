@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Biobanks.Entities.Api;
+﻿using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;

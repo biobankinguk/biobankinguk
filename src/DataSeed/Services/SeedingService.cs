@@ -11,10 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
+using Biobanks.DataSeed.Data;
 using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -40,6 +39,7 @@ namespace Biobanks.DataSeed.Services
             _seedActions = new List<Action>
             {
                 /* Directory Specific */
+                SeedDirectoryConfig,
                 SeedCountries,
                 SeedJson<AccessCondition>,
                 SeedJson<AgeRange>,
@@ -55,6 +55,7 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<Funder>,
                 SeedJson<HtaStatus>,
                 SeedJson<MacroscopicAssessment>,
+                SeedOrganisationTypes,
                 SeedJson<RegistrationReason>,
                 SeedJson<SampleCollectionMode>,
                 SeedJson<ServiceOffering>,
@@ -203,6 +204,11 @@ namespace Biobanks.DataSeed.Services
             _db.SaveChanges();
         }
 
+        private void SeedDirectoryConfig()
+        {
+            Seed(DirectoryConfigs.DefaultConfigs);
+        }
+
         private void SeedMaterialTypes()
         {
             var validGroups = _db.MaterialTypeGroups.ToList();
@@ -221,6 +227,19 @@ namespace Biobanks.DataSeed.Services
                     }
                 )
             );
+        }
+
+        private void SeedOrganisationTypes()
+        {
+            Seed(new List<OrganisationType>
+            {
+                new ()
+                {
+                    OrganisationTypeId = 1,
+                    Description = "Biobank",
+                    SortOrder = 1
+                }
+            });
         }
 
         private void SeedJson<T>() where T : class
