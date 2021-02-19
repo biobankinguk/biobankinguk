@@ -70,19 +70,7 @@ namespace Biobanks.Web.Controllers
                 SearchRelatedBiobanks = Config.Get(ConfigKey.PublicationSearchRelatedBiobanks, ""),
             });
         }
-        public ActionResult _DiagnosisSearchBox()
-        {
-            return PartialView(new HomepageContentModel
-            {
-                Title = Config.Get(ConfigKey.HomepageTitle, ""),
-                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
-                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
-                ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
-                NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
-                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
-                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
-            });
-        }
+
 
         public ActionResult Cookies() => View();
 

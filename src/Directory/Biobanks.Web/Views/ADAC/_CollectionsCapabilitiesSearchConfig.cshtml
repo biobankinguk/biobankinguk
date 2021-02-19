@@ -1,0 +1,66 @@
+﻿@using System.Web.Optimization
+@using Biobanks.Web.Models.Home
+@model HomepageContentModel
+@{
+    ViewBag.Title = "Collections & Capabilities Search Config";
+}
+
+<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+<label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <br />
+
+        <form id="homepage-config-form" class="form-horizontal" method="post">
+            <input type="submit" id="submit-form" class="hidden" formaction="./SaveHomepageConfig" />
+            <input type="submit" id="preview-form" class="hidden" formaction="./HomepageConfigPreview" />
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <a class="icon-button"></a>
+
+                    <!-- Search Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Search Title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="SearchTitle" name="SearchTitle" class="form-control" value="@Model.SearchTitle">
+                        </div>
+                    </div>
+
+                    <!-- Search Sub-title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Search Subtitle</label>
+                        <div class="col-md-10">
+                            <input type="text" id="SearchSubTitle" name="SearchSubTitle" class="form-control" value="@Model.SearchSubTitle">
+                        </div>
+                    </div>
+
+                    <!-- Access existing samples Radio Button -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Collections Radio Title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="AccessExistingSamples" name="AccessExistingSamples" class="form-control" value="@Model.AccessExistingSamples">
+                        </div>
+                    </div>
+
+                    <!-- Require Samples Collected Radio Button -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Capabilities Radio Title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="RequireSamplesCollected" name="RequireSamplesCollected" class="form-control" value="@Model.RequireSamplesCollected">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/markdowndeep")
+}

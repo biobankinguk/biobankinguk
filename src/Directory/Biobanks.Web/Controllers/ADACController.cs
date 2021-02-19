@@ -1478,12 +1478,8 @@ namespace Biobanks.Web.Controllers
             return View(new HomepageContentModel
             {
                 Title = Config.Get(ConfigKey.HomepageTitle, ""),
-                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
-                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
-                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
-                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, "")
             });
         }
 
@@ -1521,6 +1517,28 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public ActionResult HomepageConfigPreview(HomepageContentModel homepage)
             => View("HomepageConfigPreview", homepage);
+
+        public ActionResult _PublicationSearchConfig()
+        {
+            return PartialView(new PublicationSearchBoxModel
+            {
+                SearchTitle = Config.Get(ConfigKey.PublicationSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.PublicationSearchSubTitle, ""),
+                SearchRelatedPublications = Config.Get(ConfigKey.PublicationSearchRelatedPublications, ""),
+                SearchRelatedBiobanks = Config.Get(ConfigKey.PublicationSearchRelatedBiobanks, ""),
+            });
+        }
+
+        public ActionResult _CollectionsCapabilitiesSearchConfig()
+        {
+            return PartialView(new HomepageContentModel
+            {
+                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
+                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, "")
+            });
+        }
         #endregion
 
         #region Termpage Config

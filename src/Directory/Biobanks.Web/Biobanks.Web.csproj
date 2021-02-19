@@ -840,6 +840,8 @@
     <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <Content Include="Views\Home\_SearchTabs.cshtml" />
     <Content Include="Views\Home\_PublicationSearchBox.cshtml" />
+    <Content Include="Views\ADAC\_PublicationSearchConfig.cshtml" />
+    <Content Include="Views\ADAC\_CollectionsCapabilitiesSearchConfig.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
