@@ -29,8 +29,10 @@
     <!-- Homepage config tab-->
     <div class="tab-pane fade in active" id="_Homepage">
 
-        <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
-        <label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
+        <div class="savePreviewBtns">
+            <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+            <label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <br />
@@ -85,10 +87,11 @@
     </div>
 </div>
 
-
-
-
-
+<style>
+    .savePreviewBtns {
+        padding-top: 20px;
+    }
+</style>
 
 @section FooterScripts
 {
