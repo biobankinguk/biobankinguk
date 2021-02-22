@@ -216,17 +216,19 @@ namespace Biobanks.Search.Elastic
         #endregion
         protected static IEnumerable<OntologyTermsSummary> ExtractOntologyOtherTermsHits(ISearchResponse<BaseDocument> searchResponse)
         {
-            var ontologyTerms = new List<OntologyTermsSummary>();
-
-            foreach (var disease in searchResponse.Aggregations.Terms("diagnoses").Buckets.Select(x => x.Key))
-            {
-                var ontologyTerm = new OntologyTermsSummary
+            var ontologyTerms = searchResponse.Aggregations
+            .Terms("diagnoses")
+            .Buckets
+            .Select(x =>
+                new OntologyTermsSummary
                 {
-                    OntologyTerm = disease,
+                    OntologyTerm = x.Key,
                     MatchingOtherTerms = new List<string>()
-                };
+                }).ToList();
 
-                foreach (var hit in searchResponse.Hits.Where(x => x.Source.OntologyTerm.ToLower() == disease))
+            foreach (var ontologyTerm in ontologyTerms)
+            {
+                foreach (var hit in searchResponse.Hits.Where(x => x.Source.OntologyTerm.ToLower() == ontologyTerm.OntologyTerm))
                 {
                     foreach (var terms in hit.InnerHits["ontologyOtherTerms"].Hits.Hits)
                     {
@@ -235,7 +237,6 @@ namespace Biobanks.Search.Elastic
                             ontologyTerm.MatchingOtherTerms.Add(hl);
                     }
                 }
-                ontologyTerms.Add(ontologyTerm);
             }
 
             return ontologyTerms;
