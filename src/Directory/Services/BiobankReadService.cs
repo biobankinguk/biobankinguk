@@ -1210,14 +1210,17 @@ namespace Biobanks.Services
             var listOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
             
             return (await _ontologyTermRepository.ListAsync()).Join(
-                listOntologyTerms, o => o.Value.ToLower(), i => i.OntologyTerm, (a, b) => new OntologyTermResultDTO
-                {
-                    OtherTerms = a.OtherTerms ?? "",
-                    MatchingOtherTerms = b.MatchingOtherTerms,
-                    Id = a.Id,
-                    Value = a.Value,
-                    NonMatchingOtherTerms = a.OtherTerms?.Split(',').Select(p => 
-                        p.Trim()).Where(m => !(b.MatchingOtherTerms.Contains(m))).ToList() ?? new List<string>()
+                listOntologyTerms, o => o.Value.ToLower(), i => i.OntologyTerm, (a, b) => {
+
+                    var otherTerms = a.OtherTerms?.Split(',').Select(p => p.Trim());
+                    return new OntologyTermResultDTO
+                    {
+                        OtherTerms = a.OtherTerms ?? "",
+                        MatchingOtherTerms = b.MatchingOtherTerms,
+                        Id = a.Id,
+                        Value = a.Value,
+                        NonMatchingOtherTerms = otherTerms.Where(m => !(b.MatchingOtherTerms.Contains(m))).ToList() ?? new List<string>()
+                    };
                 });
         }
 
