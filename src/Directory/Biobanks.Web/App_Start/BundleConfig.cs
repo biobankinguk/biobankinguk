@@ -14,19 +14,22 @@ namespace Biobanks.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             #region Styles
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                "~/Content/bootstrap.css",
-                "~/Content/bootstrap-theme.css",
-                "~/Content/DataTables/css/dataTables.bootstrap.css",
-                "~/Content/DataTables/css/rowReorder.bootstrap.min.css",
-                "~/Content/DataTables/css/buttons.bootstrap.css",
-                "~/Content/bootstrap-slider.min.css",
-                "~/Content/typeahead.css",
-                "~/Scripts/MarkdownDeep/mdd_styles.css",
-                "~/Content/Site/*.css"));
+            bundles.Add(new StyleBundle("~/Content/css")
+                .Include("~/frontend/dist/main.css"));
 
-            bundles.Add(new StyleBundle("~/Content/fontawesome").Include(
-                "~/Content/font-awesome.css"));
+            //bundles.Add(new StyleBundle("~/Content/css").Include(
+            //    "~/Content/bootstrap.css",
+            //    "~/Content/bootstrap-theme.css",
+            //    "~/Content/DataTables/css/dataTables.bootstrap.css",
+            //    "~/Content/DataTables/css/rowReorder.bootstrap.min.css",
+            //    "~/Content/DataTables/css/buttons.bootstrap.css",
+            //    "~/Content/bootstrap-slider.min.css",
+            //    "~/Content/typeahead.css",
+            //    "~/Scripts/MarkdownDeep/mdd_styles.css",
+            //    "~/Content/Site/*.css"));
+
+            //bundles.Add(new StyleBundle("~/Content/fontawesome").Include(
+            //    "~/Content/font-awesome.css"));
 
             #endregion
 
