@@ -180,7 +180,7 @@
 
 	@if (Model.LastUpdated.HasValue)
 	{
-		<h4>Last Updated: @Model.LastUpdated</h4>
+		<h4>Last Updated: @Model.LastUpdated.Value.ToShortDateString()</h4>
 		<br />
 	}
     
