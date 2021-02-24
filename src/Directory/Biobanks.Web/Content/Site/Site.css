@@ -1090,9 +1090,9 @@ div.info div {
 /*    min-height: 47px;*/
 }
 
-/*Toggle switch*/
+/*Checkbox-Toggle switch*/
 /* The switch - the box around the slider */
-.switch {
+.checkbox-toggle-switch {
     position: relative;
     display: inline-block;
     width: 60px;
@@ -1100,14 +1100,14 @@ div.info div {
 }
 
     /* Hide default HTML checkbox */
-    .switch input {
+    .checkbox-toggle-switch input {
         opacity: 0;
         width: 0;
         height: 0;
     }
 
-/* The slider */
-.slider {
+/* The checkbox-toggle-slider */
+.checkbox-toggle-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -1119,7 +1119,7 @@ div.info div {
     transition: .4s;
 }
 
-    .slider:before {
+    .checkbox-toggle-slider:before {
         position: absolute;
         content: "";
         height: 26px;
@@ -1131,25 +1131,25 @@ div.info div {
         transition: .4s;
     }
 
-input:checked + .slider {
+input:checked + .checkbox-toggle-slider {
     background-color: #2196F3;
 }
 
-input:focus + .slider {
+input:focus + .checkbox-toggle-slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked + .checkbox-toggle-slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
 }
 
 /* Rounded sliders */
-.slider.round {
+.checkbox-toggle-slider.round {
     border-radius: 34px;
 }
 
-    .slider.round:before {
+    .checkbox-toggle-slider.round:before {
         border-radius: 50%;
     }
