@@ -907,8 +907,10 @@ div.info div {
 
 /* Make typahead scrollable */
 .tt-menu {
-  max-height: 150px;
-  overflow-y: auto;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 .table-fixed {
@@ -1077,4 +1079,13 @@ div.info div {
 
 .dropdown-toggle:hover {
     cursor: pointer;
+}
+
+.search-list {
+    border-bottom: 0.5px solid lightgrey;
+    text-align: left;
+    font-size: medium;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    /*    min-height: 47px;*/
 }

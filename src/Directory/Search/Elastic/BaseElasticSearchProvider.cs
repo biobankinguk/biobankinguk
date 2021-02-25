@@ -3,6 +3,7 @@ using System.Linq;
 using Biobanks.Search.Constants;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Dto.Results;
 using Nest;
 using Newtonsoft.Json;
 
@@ -213,5 +214,32 @@ namespace Biobanks.Search.Elastic
         }
 
         #endregion
+        protected static IEnumerable<OntologyTermsSummary> ExtractOntologyOtherTermsHits(ISearchResponse<BaseDocument> searchResponse)
+        {
+            var ontologyTerms = searchResponse.Aggregations
+            .Terms("diagnoses")
+            .Buckets
+            .Select(x =>
+                new OntologyTermsSummary
+                {
+                    OntologyTerm = x.Key,
+                    MatchingOtherTerms = new List<string>()
+                }).ToList();
+
+            foreach (var ontologyTerm in ontologyTerms)
+            {
+                foreach (var hit in searchResponse.Hits.Where(x => x.Source.OntologyTerm.ToLower() == ontologyTerm.OntologyTerm))
+                {
+                    foreach (var terms in hit.InnerHits["ontologyOtherTerms"].Hits.Hits)
+                    {
+                        var hl = terms.Highlight["ontologyOtherTerms.name"].First();
+                        if (!ontologyTerm.MatchingOtherTerms.Any(x => x == hl))
+                            ontologyTerm.MatchingOtherTerms.Add(hl);
+                    }
+                }
+            }
+
+            return ontologyTerms;
+        }
     }
 }
