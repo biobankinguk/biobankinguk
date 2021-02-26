@@ -63,19 +63,12 @@ namespace Biobanks.Web.Controllers
                     OntologyTerm = model.OntologyTerm,
                     SearchType = SearchDocumentType.Collection
                 });
-            
-            ICollection<Country> countyCountry = await _biobankReadService.ListCountriesAsync();
-            IDictionary<string, IList<string>> countriesDictionary = new Dictionary<string,IList<string>>();
-            foreach (var country in countyCountry)
-            {
-                IList<string> countryList = new List<string>();
-                foreach (var county in country.Counties)
-                {
-                    countryList.Add(county.Value);
-                }
-                countriesDictionary.Add(country.Value, countryList);
-            }
-            model.Countries = countriesDictionary;
+
+            model.Countries = (await _biobankReadService.ListCountriesAsync())
+                .ToDictionary(
+                    x => x.Value,
+                    x => x.Counties.Select(y => y.Value).ToList()
+                );
             return View(model);
         }
 

@@ -14,13 +14,13 @@ namespace Biobanks.Web.Models.Search
 
         public IList<string> SelectedFacets { get; set; }
 
-        public IDictionary<string, IList<string>> Countries { get; set; }
+        public IDictionary<string, List<string>> Countries { get; set; }
 
         public bool FacetSelected(string facetId) =>
             SelectedFacets != null &&
             SelectedFacets.Any(sf => sf == facetId);
 
-        public IList<string> GetCounties(string countryName)
+        public List<string> GetCounties(string countryName)
         {             
             return Countries[countryName];
         }
