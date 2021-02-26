@@ -71,11 +71,9 @@ namespace Biobanks.Services
                 catch (Exception e)
                 {
                     var ai = new TelemetryClient();
-                    ai.TrackException(e);
-                    return;
+                    ai.TrackException(e);                   
                 }
-            }
-            return;        
+            }     
         }
 
 
