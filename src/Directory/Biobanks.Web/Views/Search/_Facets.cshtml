@@ -173,7 +173,7 @@
                                                 <li>
                                                     <a href="@Url.Action(Model.Action, "Search", new
 														 {
-															 diagnosis = Model.OntologyTerm,
+															 ontologyTerm = Model.OntologyTerm,
 															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
 															 {
 																 facetValue.FacetId
@@ -190,7 +190,7 @@
                                                 <li>
                                                     <a href="@Url.Action(Model.Action, "Search", new
 														 {
-															 diagnosis = Model.OntologyTerm,
+															 ontologyTerm = Model.OntologyTerm,
 															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
 																 x => x != facetValue.FacetId))
 														 })">
