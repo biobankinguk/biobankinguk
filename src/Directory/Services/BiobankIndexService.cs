@@ -41,51 +41,39 @@ namespace Biobanks.Services
             //Building the Search Index
 
             var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
-            List<string> _navPaths = new List<string>();
-            _navPaths.Add(HostingEnvironment.MapPath(@"~/App_Config/capabilities.json"));
-            _navPaths.Add(HostingEnvironment.MapPath(@"~/App_Config/collections.json"));
-            
-            foreach (var path in _navPaths)
+            var _navPaths = new List<string>()
             {
-                var fileName = Path.GetFileName(path).Split('.')[0];
+                HostingEnvironment.MapPath(@"~/App_Config/capabilities.json"),
+                HostingEnvironment.MapPath(@"~/App_Config/collections.json")
+            };
+            using (var client = new HttpClient())
+            {
                 try
                 {
-                    using (var client = new HttpClient())
+                    foreach (var path in _navPaths)
                     {
+                        var fileName = Path.GetFileName(path).Split('.')[0];
+                    
                         //Deleting the Index
-                        client.BaseAddress = new Uri(searchBase);
-                        var response = await client.DeleteAsync($"{searchBase}/{fileName}");
-                    }
-                
-                    using (var client = new HttpClient())
-                    {
-                        client.BaseAddress = new Uri(searchBase);
+                        var deleteResponse = await client.DeleteAsync($"{searchBase}/{fileName}");
 
                         //Creating the Index                      
                         HttpContent pathContent = new StringContent(System.IO.File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
-                        var response = await client.PutAsync($"{searchBase}/{fileName}", pathContent);
+                        var createResponse = await client.PutAsync($"{searchBase}/{fileName}", pathContent);
+
+                        //Preventing Index Replication              
+                        var indexString = "{ \"index\": { \"number_of_replicas\": 0 }}";
+                        HttpContent content = new StringContent(indexString, System.Text.Encoding.UTF8, "application/json");
+                        var response = await client.PutAsync($"{searchBase}/*/_settings", content);
                     }
+                 
                 }
-                catch
-                {                  
+                catch (Exception e)
+                {
+                    var ai = new TelemetryClient();
+                    ai.TrackException(e);
                     return;
                 }
-            }
-
-            //Preventing Index Replication
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(searchBase);
-                    var indexString = "{ \"index\": { \"number_of_replicas\": 0 }}";
-                    HttpContent content = new StringContent(indexString, System.Text.Encoding.UTF8, "application/json");
-                    var response = await client.PutAsync($"{searchBase}/*/_settings", content);
-                }
-            }
-            catch
-            {
-                return;
             }
             return;        
         }
