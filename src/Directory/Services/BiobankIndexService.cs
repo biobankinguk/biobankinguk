@@ -52,7 +52,7 @@ namespace Biobanks.Services
                 {
                     foreach (var path in _navPaths)
                     {
-                        var fileName = Path.GetFileName(path).Split('.')[0];
+                        var fileName = Path.GetFileNameWithoutExtension(path);
                     
                         //Deleting the Index
                         var deleteResponse = await client.DeleteAsync($"{searchBase}/{fileName}");
@@ -65,14 +65,14 @@ namespace Biobanks.Services
                         var indexString = "{ \"index\": { \"number_of_replicas\": 0 }}";
                         HttpContent content = new StringContent(indexString, System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PutAsync($"{searchBase}/*/_settings", content);
-                    }
-                 
+                    }                
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) when (e is IOException || e is HttpRequestException)
+                {                           
                     var ai = new TelemetryClient();
-                    ai.TrackException(e);                   
-                }
+                    ai.TrackException(e);
+                    throw;
+                }             
             }     
         }
 
