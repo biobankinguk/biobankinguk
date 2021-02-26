@@ -42,7 +42,7 @@ namespace Biobanks.Search.Legacy
         public Task<List<int>> GetAllSampleSetIds()
             => _collections.ListIds();
 
-        public IEnumerable<string> ListOntologyTerms(SearchDocumentType type, string wildcard = "")
+        public IEnumerable<OntologyTermsSummary> ListOntologyTerms(SearchDocumentType type, string wildcard = "")
             => type == SearchDocumentType.Capability
                 ? _capabilities.ListOntologyTerms(wildcard)
                 : _collections.ListOntologyTerms(wildcard);

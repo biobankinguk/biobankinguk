@@ -48,6 +48,6 @@ namespace Biobanks.Search.Contracts
         /// </summary>
         /// <param name="wildcard">The wildcard string to match</param>
         /// <returns>A list of matching Ontology Terms</returns>
-        IEnumerable<string> ListOntologyTerms(string wildcard = "");
+        IEnumerable<OntologyTermsSummary> ListOntologyTerms(string wildcard = "");
     }
 }

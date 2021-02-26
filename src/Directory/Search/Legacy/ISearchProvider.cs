@@ -24,6 +24,6 @@ namespace Biobanks.Search.Legacy
         Task<List<int>> GetAllCapabilityIds();
 
         //List OntologyTerms in the index, for a given document type
-        IEnumerable<string> ListOntologyTerms(SearchDocumentType type, string wildcard = "");
+        IEnumerable<OntologyTermsSummary> ListOntologyTerms(SearchDocumentType type, string wildcard = "");
     }
 }

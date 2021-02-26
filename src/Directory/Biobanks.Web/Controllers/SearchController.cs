@@ -211,13 +211,15 @@ namespace Biobanks.Web.Controllers
         {
             var ontologyTerms = await _biobankReadService.ListSearchableOntologyTermsAsync(type, wildcard);
 
-            var model =  ontologyTerms.Select(x =>
-                new OntologyTermModel
-                {
-                    OntologyTermId = x.Id,
-                    Description = x.Value,
-                    OtherTerms = x.OtherTerms
-                }
+            var model = ontologyTerms.Select(x =>
+               new OntologyTermModel
+               {
+                   OntologyTermId = x.Id,
+                   Description = x.Value,
+                   OtherTerms = x.OtherTerms,
+                   MatchingOtherTerms = x.MatchingOtherTerms,
+                   NonMatchingOtherTerms = x.NonMatchingOtherTerms
+               }
             )
             .ToList();
 
