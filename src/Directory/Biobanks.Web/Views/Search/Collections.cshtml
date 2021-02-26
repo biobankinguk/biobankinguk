@@ -20,7 +20,8 @@
         Action = Request.RequestContext.RouteData.Values["action"].ToString(),
         OntologyTerm = Model.OntologyTerm,
         Facets = Model.Facets,
-        SelectedFacets = Model.SelectedFacets
+        SelectedFacets = Model.SelectedFacets,
+        Countries = Model.Countries
     })
     <div class="col-sm-8">
         @if (!Model.Biobanks.IsNullOrEmpty())

@@ -14,6 +14,7 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
@@ -63,8 +64,15 @@ namespace Biobanks.Web.Controllers
                     SearchType = SearchDocumentType.Collection
                 });
 
+            model.Countries = (await _biobankReadService.ListCountriesAsync())
+                .ToDictionary(
+                    x => x.Value,
+                    x => x.Counties.Select(y => y.Value).ToList()
+                );
             return View(model);
         }
+
+
 
         private async Task<ViewResult> NoResults(NoResultsModel model)
         {
@@ -211,13 +219,15 @@ namespace Biobanks.Web.Controllers
         {
             var ontologyTerms = await _biobankReadService.ListSearchableOntologyTermsAsync(type, wildcard);
 
-            var model =  ontologyTerms.Select(x =>
-                new OntologyTermModel
-                {
-                    OntologyTermId = x.Id,
-                    Description = x.Value,
-                    OtherTerms = x.OtherTerms
-                }
+            var model = ontologyTerms.Select(x =>
+               new OntologyTermModel
+               {
+                   OntologyTermId = x.Id,
+                   Description = x.Value,
+                   OtherTerms = x.OtherTerms,
+                   MatchingOtherTerms = x.MatchingOtherTerms,
+                   NonMatchingOtherTerms = x.NonMatchingOtherTerms
+               }
             )
             .ToList();
 
@@ -284,5 +294,6 @@ namespace Biobanks.Web.Controllers
                     throw new ArgumentOutOfRangeException();
             }
         }
+
     }
 }
