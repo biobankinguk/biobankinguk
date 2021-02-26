@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Biobanks.Web.Models.Search
@@ -17,5 +18,7 @@ namespace Biobanks.Web.Models.Search
         public IEnumerable<SearchFacetModel> Facets { get; set; }
 
         public IList<string> SelectedFacets { get; set; }
+
+        public IDictionary<string, List<string>> Countries { get; set; }
     }
 }
