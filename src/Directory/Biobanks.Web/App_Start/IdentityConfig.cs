@@ -18,6 +18,7 @@ namespace Biobanks.Web
                 {
                     OnApplyRedirect = ctx =>
                     {   // Do not redirect 401 Unauthorised responses for WebApi
+                        // This assumes every api route starts with /api
                         if (!ctx.Request.Path.StartsWithSegments(new PathString("/api")))
                         {
                             ctx.Response.Redirect(ctx.RedirectUri);
