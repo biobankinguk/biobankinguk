@@ -481,7 +481,7 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="App_Config\footer.json" />
-    <Content Include="App_Config\header.json" />
+    <Content Include="App_Config\header.json" />  
     <None Include="Scripts\jquery-2.2.2.intellisense.js" />
     <Content Include="Scripts\bootbox.js" />
     <Content Include="Scripts\bootbox.min.js" />
@@ -1198,4 +1198,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="..\..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="$(OutDir)/App_Config" />
+    <Copy SourceFiles="..\..\..\elastic-search\directory index setup\collections.json" DestinationFolder="$(OutDir)/App_Config" />
+  </Target>
 </Project>
