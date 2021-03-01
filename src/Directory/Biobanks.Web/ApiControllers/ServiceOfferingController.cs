@@ -6,11 +6,13 @@ using Biobanks.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
-
+using Biobanks.Web.Filters;
 using ServiceOfferingModel = Biobanks.Web.Models.Shared.ServiceOfferingModel;
+
 
 namespace Biobanks.Web.ApiControllers
 {
+    [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/ServiceOffering")]
     public class ServiceOfferingController : ApiBaseController
     {
@@ -25,6 +27,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {
