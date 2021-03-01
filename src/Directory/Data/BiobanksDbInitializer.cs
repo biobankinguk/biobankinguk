@@ -14,24 +14,6 @@ namespace Biobanks.Directory.Data
         {
             SeedDirectoryConfigs(context);
             SeedOrganisationTypes(context);
-            FixOrganisationUrls(context);
-        }
-
-        private void FixOrganisationUrls(BiobanksDbContext context)
-        {
-            // Attempts to fix poorly formatted Organisation URLs.
-            // Ex. http://http://www.example.com
-            foreach (var org in context.Organisations)
-            {
-                try
-                {
-                    org.Url = UrlTransformer.Transform(org.Url);
-                }
-                catch (Exception e) when (e is UriFormatException || e is InvalidUrlSchemeException)
-                {
-                    // Do nothing - Leave broken URL as is
-                }
-            }
         }
 
         private void SeedDirectoryConfigs(BiobanksDbContext context)
