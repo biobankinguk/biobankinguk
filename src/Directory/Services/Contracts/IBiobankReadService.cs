@@ -130,7 +130,7 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
         Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "");
-        Task<IEnumerable<OntologyTerm>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "");
+        Task<IEnumerable<OntologyTermResultDTO>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "");
         Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);
         Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription);
         Task<OntologyTerm> GetOntologyTermByDescription(string description);

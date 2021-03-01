@@ -5,6 +5,8 @@ namespace Biobanks.Services.Contracts
 {
     public interface IBiobankIndexService
     {
+        Task BuildIndex();
+
         Task<string> GetClusterHealth();
 
         Task IndexSampleSet(int sampleSetId);

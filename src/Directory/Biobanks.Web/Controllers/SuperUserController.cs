@@ -8,6 +8,8 @@ using Biobanks.Web.Models.SuperUser;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Filters;
 using Microsoft.ApplicationInsights;
+using System.IO;
+using System.Net.Http;
 
 namespace Biobanks.Web.Controllers
 {
@@ -86,6 +88,24 @@ namespace Biobanks.Web.Controllers
 
             return RedirectToAction("SearchIndex");
         }
+
+        public async Task<RedirectToRouteResult> BuildIndex()
+        {
+            try
+            {
+                await _indexService.BuildIndex();
+            }
+            catch (Exception e) when (e is IOException || e is HttpRequestException)
+            {          
+                SetTemporaryFeedbackMessage($"The building process failed to succesfully complete due to: {e.GetType().Name}.", FeedbackMessageType.Warning);
+                return RedirectToAction("SearchIndex");
+            }
+            //The reindex method is called to populate the index after creation
+            await ReindexAllData();
+            SetTemporaryFeedbackMessage("The building of the index has begun. Pending jobs can be viewed in the Hangfire dashboard.", FeedbackMessageType.Info);
+            return RedirectToAction("SearchIndex");
+        }
+
         #endregion
     }
 }

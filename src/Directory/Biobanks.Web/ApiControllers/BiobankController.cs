@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
+using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [UserApiAuthorize(Roles = "BiobankAdmin")]
     [RoutePrefix("api/Biobank")]
     public class BiobankController : ApiBaseController
     {
@@ -22,7 +24,6 @@ namespace Biobanks.Web.ApiControllers
             _mapper = mapper;
         }
 
-        // GET: Biobank
         [HttpGet]
         [Route("IncludePublications/{id}")]
         public async Task<bool> IncludePublications(int id)
