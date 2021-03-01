@@ -1,6 +1,5 @@
 using System.Web.Http.Dispatcher;
 using System.Web.Mvc;
-using Biobanks.Web.App_Start;
 using Biobanks.Web.Filters;
 using Biobanks.Web.HangfireJobActivator;
 using Biobanks.Web.Windsor;
