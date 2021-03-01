@@ -12,6 +12,8 @@ using System.Configuration;
 using System.Net.Http;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Extensions;
+using System.IO;
+using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
 
 namespace Biobanks.Services
@@ -33,6 +35,47 @@ namespace Biobanks.Services
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
         }
+
+        public async Task BuildIndex()
+        {
+            //Building the Search Index
+
+            var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+            var _navPaths = new List<string>()
+            {
+                HostingEnvironment.MapPath(@"~/App_Config/capabilities.json"),
+                HostingEnvironment.MapPath(@"~/App_Config/collections.json")
+            };
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    foreach (var path in _navPaths)
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(path);
+                    
+                        //Deleting the Index
+                        var deleteResponse = await client.DeleteAsync($"{searchBase}/{fileName}");
+
+                        //Creating the Index                      
+                        HttpContent pathContent = new StringContent(System.IO.File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
+                        var createResponse = await client.PutAsync($"{searchBase}/{fileName}", pathContent);
+
+                        //Preventing Index Replication              
+                        var indexString = "{ \"index\": { \"number_of_replicas\": 0 }}";
+                        HttpContent content = new StringContent(indexString, System.Text.Encoding.UTF8, "application/json");
+                        var response = await client.PutAsync($"{searchBase}/*/_settings", content);
+                    }                
+                }
+                catch (Exception e) when (e is IOException || e is HttpRequestException)
+                {                           
+                    var ai = new TelemetryClient();
+                    ai.TrackException(e);
+                    throw;
+                }             
+            }     
+        }
+
 
         public async Task<string> GetClusterHealth()
         {

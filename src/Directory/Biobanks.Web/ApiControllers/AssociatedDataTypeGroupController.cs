@@ -7,9 +7,11 @@ using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/AssociatedDataTypeGroup")]
     public class AssociatedDataTypeGroupController : ApiBaseController
     {
@@ -24,6 +26,7 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {
