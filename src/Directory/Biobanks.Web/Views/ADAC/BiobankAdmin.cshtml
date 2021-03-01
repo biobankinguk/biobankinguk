@@ -1,0 +1,11 @@
+﻿@model Biobanks.Web.Models.ADAC.BiobankModel
+@{
+    ViewBag.Title = "Biobank Admin";
+}
+
+@Html.Partial("_ADACTabs", "Biobanks")
+
+    <h3>@Model.Name - Admin @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new {id = @Model.BiobankId}, new { @class = "btn btn-danger pull-right" })</h3>
+
+
+

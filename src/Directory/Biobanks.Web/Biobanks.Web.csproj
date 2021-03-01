@@ -481,7 +481,7 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="App_Config\footer.json" />
-    <Content Include="App_Config\header.json" />  
+    <Content Include="App_Config\header.json" />
     <None Include="Scripts\jquery-2.2.2.intellisense.js" />
     <Content Include="Scripts\bootbox.js" />
     <Content Include="Scripts\bootbox.min.js" />
@@ -839,6 +839,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
     <Content Include="Views\Header\_NavItemAbout.cshtml" />
+    <Content Include="Views\ADAC\BiobankAdmin.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
