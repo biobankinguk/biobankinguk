@@ -1219,7 +1219,7 @@ namespace Biobanks.Services
                         MatchingOtherTerms = b.MatchingOtherTerms,
                         Id = a.Id,
                         Value = a.Value,
-                        NonMatchingOtherTerms = otherTerms.Where(m => !(b.MatchingOtherTerms.Contains(m))).ToList() ?? new List<string>()
+                        NonMatchingOtherTerms = otherTerms?.Where(m => !(b.MatchingOtherTerms.Contains(m))).ToList() ?? new List<string>()
                     };
                 });
         }
