@@ -6,12 +6,12 @@
 
     <ul id="searchtabs" class="nav nav-tabs" role="tablist">
         <li class="active">
-            <a href="#_DiagnosisSearchBox" role="tab" data-toggle="tab">Diagnosis</a>
+            <a href="#_DiagnosisSearchBox" role="tab" data-toggle="tab">Collections & Capabilities</a>
         </li>
         @if (App.Config[ConfigKey.DisplayPublicationSearch] != "false")
         {
             <li>
-                <a href="#_PublicationSearchBox" role="tab" data-toggle="tab">Publication</a>
+                <a href="#_PublicationSearchBox" role="tab" data-toggle="tab">Publications</a>
             </li>
         }
         </ul>
@@ -19,7 +19,7 @@
 
 <div class="tab-content">
     <div class="tab-pane fade in active" id="_DiagnosisSearchBox">
-        @Html.Partial("~/Views/Home/_DiagnosisSearchBox.cshtml", Model)
+        @Html.Partial("~/Views/Home/_CollectionsCapabilitiesSearchBox.cshtml", Model)
     </div>
     <div class="tab-pane fade" id="_PublicationSearchBox">
         @Html.Partial("~/Views/Home/_PublicationSearchBox.cshtml", Model)

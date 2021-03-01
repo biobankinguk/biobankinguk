@@ -195,7 +195,7 @@ namespace Biobanks.Directory.Data.Migrations
                         // Search Config
                         new Config {
                             Key = "site.homepage.searchtitle",
-                            Value = "Search the Directory",
+                            Value = "Search Collections & Capabilities",
                         },
                         new Config {
                             Key = "site.homepage.searchsubtitle",
@@ -218,7 +218,7 @@ namespace Biobanks.Directory.Data.Migrations
                         new Config
                         {
                             Key = "site.homepage.publicationsearchtitle",
-                            Value = "Publications Search",
+                            Value = "Search Publications",
                         },
                         new Config
                         {
