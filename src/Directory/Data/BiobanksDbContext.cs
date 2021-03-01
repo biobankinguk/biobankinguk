@@ -115,8 +115,12 @@ namespace Biobanks.Directory.Data
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
 
-        public BiobanksDbContext() : base("Biobanks") { }
-        public BiobanksDbContext(string connectionString) : base(connectionString) { }
+        public BiobanksDbContext() : this("Biobanks") { }
+        
+        public BiobanksDbContext(string connectionString) : base(connectionString)
+        {
+            Database.SetInitializer(new BiobanksDbInitializer());
+        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
