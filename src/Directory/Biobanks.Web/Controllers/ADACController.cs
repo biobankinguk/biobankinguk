@@ -1473,15 +1473,27 @@ namespace Biobanks.Web.Controllers
         #region Site Configuration
 
         #region Homepage Config
-        public async Task<ActionResult> HomepageConfig()
+
+        public async Task<HomepageContentModel> PopulateHomepageModel()
         {
-            return View(new HomepageContentModel
+            return new HomepageContentModel
             {
                 Title = Config.Get(ConfigKey.HomepageTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
-            });
+                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
+                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
+                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+                PublicationsSearchTitle = Config.Get(ConfigKey.PublicationSearchTitle, ""),
+                PublicationsSearchSubTitle = Config.Get(ConfigKey.PublicationSearchSubTitle, ""),
+                SearchRelatedPublications = Config.Get(ConfigKey.PublicationSearchRelatedPublications, ""),
+                SearchRelatedBiobanks = Config.Get(ConfigKey.PublicationSearchRelatedBiobanks, "")
+            };
         }
+        public async Task<ActionResult> HomepageConfig()
+            => View(await PopulateHomepageModel());
+        
 
         [HttpPost]
         public ActionResult HomepageConfig(HomepageContentModel homepage)
@@ -1513,37 +1525,25 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public ActionResult HomepageConfigPreview(HomepageContentModel homepage)
             => View("HomepageConfigPreview", homepage);
+        
 
         // Homepage Config Tabs
-        public ActionResult _HomepageConfig()
-        {
-            return PartialView(new HomepageContentModel
-            {
-                Title = Config.Get(ConfigKey.HomepageTitle, ""),
-                ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
-                NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
-            });
-        }
+        public async Task<ActionResult> _HomepageConfig()
+            => PartialView(await PopulateHomepageModel());
+        
 
-        public ActionResult _PublicationSearchConfig()
-        {
-            return PartialView(new PublicationSearchBoxModel
-            {
-                SearchTitle = Config.Get(ConfigKey.PublicationSearchTitle, ""),
-                SearchSubTitle = Config.Get(ConfigKey.PublicationSearchSubTitle, ""),
-                SearchRelatedPublications = Config.Get(ConfigKey.PublicationSearchRelatedPublications, ""),
-                SearchRelatedBiobanks = Config.Get(ConfigKey.PublicationSearchRelatedBiobanks, ""),
-            });
-        }
+        public async Task<ActionResult> _PublicationSearchConfig()
+            => PartialView(await PopulateHomepageModel());
+        
 
         [HttpPost]
-        public async Task<ActionResult> SavePublicationConfig(PublicationSearchBoxModel publicationSearch)
+        public async Task<ActionResult> SavePublicationConfig(HomepageContentModel publicationSearch)
         {
             await _biobankWriteService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
-                    new Config { Key = ConfigKey.PublicationSearchTitle, Value = publicationSearch.SearchTitle ?? "" },
-                    new Config { Key = ConfigKey.PublicationSearchSubTitle, Value = publicationSearch.SearchSubTitle ?? "" },
+                    new Config { Key = ConfigKey.PublicationSearchTitle, Value = publicationSearch.PublicationsSearchTitle ?? "" },
+                    new Config { Key = ConfigKey.PublicationSearchSubTitle, Value = publicationSearch.PublicationsSearchSubTitle ?? "" },
                     new Config { Key = ConfigKey.PublicationSearchRelatedPublications, Value = publicationSearch.SearchRelatedPublications ?? "" },
                     new Config { Key = ConfigKey.PublicationSearchRelatedBiobanks, Value = publicationSearch.SearchRelatedBiobanks ?? "" }
                 }
@@ -1557,16 +1557,9 @@ namespace Biobanks.Web.Controllers
             return Redirect("HomepageConfig");
         }
 
-        public ActionResult _CollectionsCapabilitiesSearchConfig()
-        {
-            return PartialView(new HomepageContentModel
-            {
-                SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
-                SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
-                RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
-                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, "")
-            });
-        }
+        public async Task<ActionResult> _CollectionsCapabilitiesSearchConfig()
+            => PartialView(await PopulateHomepageModel());
+        
 
         [HttpPost]
         public async Task<ActionResult> SaveCollectionsCapabiltiesConfig(HomepageContentModel diagnosisSearch)

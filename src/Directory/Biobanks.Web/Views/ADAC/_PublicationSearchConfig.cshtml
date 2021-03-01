@@ -1,21 +1,21 @@
 ﻿@using System.Web.Optimization
 @using Biobanks.Web.Models.Home
-@model PublicationSearchBoxModel
+@model HomepageContentModel
 @{
     ViewBag.Title = "Publication Search Config";
 }
 
-    <div class="savePreviewBtns">
-        <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
-        <label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
-    </div>
+<div class="savePreviewBtns">
+    <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+    <label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
+</div>
 
 <div class="row">
     <div class="col-md-12">
         <br />
         <form id="publication-config-form" class="form-horizontal" method="post">
             <input type="submit" id="submit-form" class="hidden" formaction="./SavePublicationConfig" />
-            <input type="submit" id="preview-form" class="hidden" formaction="./TermpageConfigPreview" />
+            <input type="submit" id="preview-form" class="hidden" formaction="./HomepageConfigPreview " />
 
             <div class="row">
                 <div class="col-md-12">
@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <label class="col-md-2 control-label">Search Title</label>
                         <div class="col-md-10">
-                            <input type="text" id="SearchTitle" name="SearchTitle" class="form-control" value="@Model.SearchTitle">
+                            <input type="text" id="PublicationsSearchTitle" name="PublicationsSearchTitle" class="form-control" value="@Model.PublicationsSearchTitle">
                         </div>
                     </div>
 
@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label class="col-md-2 control-label">Search Subtitle</label>
                         <div class="col-md-10">
-                            <input type="text" id="SearchSubTitle" name="SearchSubTitle" class="form-control" value="@Model.SearchSubTitle">
+                            <input type="text" id="PublicationsSearchSubTitle" name="PublicationsSearchSubTitle" class="form-control" value="@Model.PublicationsSearchSubTitle">
                         </div>
                     </div>
 
@@ -53,6 +53,16 @@
                             <input type="text" id="SearchRelatedBiobanks" name="SearchRelatedBiobanks" class="form-control" value="@Model.SearchRelatedBiobanks">
                         </div>
                     </div>
+
+                    <!-- Binding other model properties to form for preview -->
+                    <input type="hidden" id="Title" name="Title" class="form-control" value="@Model.Title">
+                    <input type="hidden" id="ResourceRegistration" name="ResourceRegistration" class="form-control" value="@Model.ResourceRegistration">
+                    <input type="hidden" id="NetworkRegistration" name="NetworkRegistration" class="form-control" value="@Model.NetworkRegistration">
+
+                    <input type="hidden" id="SearchTitle" name="SearchTitle" class="form-control" value="@Model.SearchTitle">
+                    <input type="hidden" id="SearchSubTitle" name="SearchSubTitle" class="form-control" value="@Model.SearchSubTitle">
+                    <input type="hidden" id="AccessExistingSamples" name="AccessExistingSamples" class="form-control" value="@Model.AccessExistingSamples">
+                    <input type="hidden" id="RequireSamplesCollected" name="RequireSamplesCollected" class="form-control" value="@Model.RequireSamplesCollected">
                 </div>
             </div>
         </form>

@@ -42,6 +42,10 @@ namespace Biobanks.Web.Controllers
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
                 AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+                PublicationsSearchTitle = Config.Get(ConfigKey.PublicationSearchTitle, ""),
+                PublicationsSearchSubTitle = Config.Get(ConfigKey.PublicationSearchSubTitle, ""),
+                SearchRelatedPublications = Config.Get(ConfigKey.PublicationSearchRelatedPublications, ""),
+                SearchRelatedBiobanks = Config.Get(ConfigKey.PublicationSearchRelatedBiobanks, ""),
             });
         }
 
@@ -59,18 +63,6 @@ namespace Biobanks.Web.Controllers
                 return HttpNotFound();
             }
         }
-
-        public ActionResult _PublicationSearchBox() 
-        {
-            return PartialView(new PublicationSearchBoxModel
-            {
-                SearchTitle = Config.Get(ConfigKey.PublicationSearchTitle, ""),
-                SearchSubTitle = Config.Get(ConfigKey.PublicationSearchSubTitle, ""),
-                SearchRelatedPublications = Config.Get(ConfigKey.PublicationSearchRelatedPublications, ""),
-                SearchRelatedBiobanks = Config.Get(ConfigKey.PublicationSearchRelatedBiobanks, ""),
-            });
-        }
-
 
         public ActionResult Cookies() => View();
 

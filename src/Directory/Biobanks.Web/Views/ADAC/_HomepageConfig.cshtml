@@ -46,6 +46,18 @@
                             <textarea cols=50 rows=8 id="NetworkRegistration" name="NetworkRegistration" class="form-control mdd_editor">@Model.NetworkRegistration</textarea>
                         </div>
                     </div>
+
+                    <!-- Binding other model properties to form for preview -->
+                    <input type="hidden" id="PublicationsSearchSubTitle" name="PublicationsSearchSubTitle" class="form-control" value="@Model.PublicationsSearchSubTitle">
+                    <input type="hidden" id="PublicationsSearchTitle" name="PublicationsSearchTitle" class="form-control" value="@Model.PublicationsSearchTitle">
+                    <input type="hidden" id="SearchRelatedPublications" name="SearchRelatedPublications" class="form-control" value="@Model.SearchRelatedPublications">
+                    <input type="hidden" id="SearchRelatedBiobanks" name="SearchRelatedBiobanks" class="form-control" value="@Model.SearchRelatedBiobanks">
+
+                    <input type="hidden" id="SearchTitle" name="SearchTitle" class="form-control" value="@Model.SearchTitle">
+                    <input type="hidden" id="SearchSubTitle" name="SearchSubTitle" class="form-control" value="@Model.SearchSubTitle">
+                    <input type="hidden" id="AccessExistingSamples" name="AccessExistingSamples" class="form-control" value="@Model.AccessExistingSamples">
+                    <input type="hidden" id="RequireSamplesCollected" name="RequireSamplesCollected" class="form-control" value="@Model.RequireSamplesCollected">
+
                 </div>
             </div>
         </form>

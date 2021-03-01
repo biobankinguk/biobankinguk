@@ -1,7 +1,7 @@
 ﻿@using System.Configuration
 @using Biobanks.Web.Models.Home
 @using Biobanks.Directory.Data.Constants
-@model PublicationSearchBoxModel
+@model HomepageContentModel
 @using (Html.BeginForm("Unified", "Search", null, FormMethod.Get))
 {
 
@@ -9,14 +9,14 @@
         <div class="col-lg-2">
         </div>
         <div class="col-lg-10">
-            <h2>@Model.SearchTitle</h2>
+            <h2>@Model.PublicationsSearchTitle</h2>
         </div>
 
         <div class="col-lg-2">
             <div class="circle circle-blue">1</div>
         </div>
         <div class="col-lg-10">
-            @Model.SearchSubTitle
+            @Model.PublicationsSearchSubTitle
             <div class="search-info row-buffer">
                 <fieldset>
                     <legend class="sr-only">Search for</legend>
@@ -40,13 +40,13 @@
         </div>
         <div class="col-lg-10">
             Please enter the Publication ID and Source <br />
-                    <div class="row-buffer">
-                       @Html.TextBox("publicationId", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication ID", title = "Search", @maxLength = "11" })
-                    </div>
+            <div class="row-buffer">
+                @Html.TextBox("publicationId", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication ID", title = "Search", @maxLength = "11" })
+            </div>
 
-                    <div class="row-buffer">
-                       @Html.TextBox("publicationSource", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication Source", title = "Search", @maxLength = "3" })
-                    </div>
+            <div class="row-buffer">
+                @Html.TextBox("publicationSource", "", new { @class = "form-control publication-search", autocomplete = "off", placeholder = "Enter a Publication Source", title = "Search", @maxLength = "3" })
+            </div>
         </div>
     </div>
 

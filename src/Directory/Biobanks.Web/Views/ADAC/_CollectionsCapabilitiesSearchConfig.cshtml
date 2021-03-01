@@ -54,6 +54,16 @@
                             <input type="text" id="RequireSamplesCollected" name="RequireSamplesCollected" class="form-control" value="@Model.RequireSamplesCollected">
                         </div>
                     </div>
+
+                    <!-- Binding other model properties to form for preview -->
+                    <input type="hidden" id="Title" name="Title" class="form-control" value="@Model.Title">
+                    <input type="hidden" id="ResourceRegistration" name="ResourceRegistration" class="form-control" value="@Model.ResourceRegistration">
+                    <input type="hidden" id="NetworkRegistration" name="NetworkRegistration" class="form-control" value="@Model.NetworkRegistration">
+
+                    <input type="hidden" id="PublicationsSearchSubTitle" name="PublicationsSearchSubTitle" class="form-control" value="@Model.PublicationsSearchSubTitle">
+                    <input type="hidden" id="PublicationsSearchTitle" name="PublicationsSearchTitle" class="form-control" value="@Model.PublicationsSearchTitle">
+                    <input type="hidden" id="SearchRelatedPublications" name="SearchRelatedPublications" class="form-control" value="@Model.SearchRelatedPublications">
+                    <input type="hidden" id="SearchRelatedBiobanks" name="SearchRelatedBiobanks" class="form-control" value="@Model.SearchRelatedBiobanks">
                 </div>
             </div>
         </form>
