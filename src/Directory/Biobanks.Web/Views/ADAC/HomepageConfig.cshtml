@@ -7,84 +7,43 @@
 
 @Html.Partial("_ADACTabs", (string)ViewBag.Title)
 
+
+
 <h3>
     Homepage Configuration
 </h3>
 
 <ul id="searchtabs" class="nav nav-tabs" role="tablist">
     <li class="active">
-        <a href="#_Homepage" role="tab" data-toggle="tab">Homepage</a>
+        <a href="#_HomepageConfig" role="tab" data-toggle="tab">Homepage</a>
     </li>
     <li>
-        <a href="#_Diagnosis" role="tab" data-toggle="tab">Collections & Capabilities Search</a>
+        <a href="#_CollectionsCapabilitiesSearchConfig" role="tab" data-toggle="tab">Collections & Capabilities Search</a>
     </li>
     <li>
-        <a href="#_Publication" role="tab" data-toggle="tab">Publications Search</a>
+        <a href="#_PublicationSearchConfig" role="tab" data-toggle="tab">Publications Search</a>
     </li>
 </ul>
 
 
+<!-- Uses JS to call relevant method in ADACController -->
 <div class="tab-content">
 
     <!-- Homepage config tab-->
-    <div class="tab-pane fade in active" id="_Homepage">
-
-        <div class="savePreviewBtns">
-            <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
-            <label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <br />
-
-                <form id="homepage-config-form" class="form-horizontal" method="post">
-                    <input type="submit" id="submit-form" class="hidden" formaction="./SaveHomepageConfig" />
-                    <input type="submit" id="preview-form" class="hidden" formaction="./HomepageConfigPreview" />
-
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <a class="icon-button"></a>
-
-                            <!-- Title -->
-                            <div class="form-group">
-                                <label class="col-md-2 control-label">Title</label>
-                                <div class="col-md-10">
-                                    <input type="text" id="Title" name="Title" class="form-control" value="@Model.Title">
-                                </div>
-                            </div>
-
-                            <!-- Resource Registration  -->
-                            <div class="form-group">
-                                <label class="col-md-2 control-label">Resource Registration</label>
-                                <div class="col-md-10">
-                                    <textarea cols=50 rows=8 id="ResourceRegistration" name="ResourceRegistration" class="form-control mdd_editor">@Model.ResourceRegistration</textarea>
-                                </div>
-                            </div>
-
-                            <!-- Network Registration  -->
-                            <div class="form-group">
-                                <label class="col-md-2 control-label">Network Registration</label>
-                                <div class="col-md-10">
-                                    <textarea cols=50 rows=8 id="NetworkRegistration" name="NetworkRegistration" class="form-control mdd_editor">@Model.NetworkRegistration</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div class="tab-pane fade in active" id="_HomepageConfig">
+        @Html.Partial("~/Views/ADAC/_HomepageConfig.cshtml", Model)
     </div>
 
     <!-- Collections & Capabilities Search Config-->
-    <div class="tab-pane fade" id="_Diagnosis">
-        @Html.Action("_CollectionsCapabilitiesSearchConfig", "ADAC");
+    <div class="tab-pane fade" id="_CollectionsCapabilitiesSearchConfig">
+
     </div>
 
     <!-- Publications Search Config-->
-    <div class="tab-pane fade" id="_Publication">
-        @Html.Action("_PublicationSearchConfig", "ADAC");
+    <div class="tab-pane fade" id="_PublicationSearchConfig">
+
     </div>
+
 </div>
 
 <style>
@@ -96,4 +55,6 @@
 @section FooterScripts
 {
     @Scripts.Render("~/bundles/markdowndeep")
+    @Scripts.Render("~/bundles/adac/homepage-config")
 }
+

@@ -1494,12 +1494,8 @@ namespace Biobanks.Web.Controllers
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
-                    new Config { Key = ConfigKey.HomepageSearchTitle, Value = homepage.SearchTitle ?? "" },
-                    new Config { Key = ConfigKey.HomepageSearchSubTitle, Value = homepage.SearchSubTitle ?? "" },
                     new Config { Key = ConfigKey.HomepageResourceRegistration, Value = homepage.ResourceRegistration ?? "" },
-                    new Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" },
-                    new Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = homepage.RequireSamplesCollected ?? ""},
-                    new Config { Key = ConfigKey.HomepageSearchRadioAccessSamples, Value = homepage.AccessExistingSamples ?? "" }
+                    new Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" }
                 }
             );
 
@@ -1518,6 +1514,17 @@ namespace Biobanks.Web.Controllers
         public ActionResult HomepageConfigPreview(HomepageContentModel homepage)
             => View("HomepageConfigPreview", homepage);
 
+        // Homepage Config Tabs
+        public ActionResult _HomepageConfig()
+        {
+            return PartialView(new HomepageContentModel
+            {
+                Title = Config.Get(ConfigKey.HomepageTitle, ""),
+                ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
+                NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
+            });
+        }
+
         public ActionResult _PublicationSearchConfig()
         {
             return PartialView(new PublicationSearchBoxModel
@@ -1529,6 +1536,27 @@ namespace Biobanks.Web.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<ActionResult> SavePublicationConfig(PublicationSearchBoxModel publicationSearch)
+        {
+            await _biobankWriteService.UpdateSiteConfigsAsync(
+                new List<Config>
+                {
+                    new Config { Key = ConfigKey.PublicationSearchTitle, Value = publicationSearch.SearchTitle ?? "" },
+                    new Config { Key = ConfigKey.PublicationSearchSubTitle, Value = publicationSearch.SearchSubTitle ?? "" },
+                    new Config { Key = ConfigKey.PublicationSearchRelatedPublications, Value = publicationSearch.SearchRelatedPublications ?? "" },
+                    new Config { Key = ConfigKey.PublicationSearchRelatedBiobanks, Value = publicationSearch.SearchRelatedBiobanks ?? "" }
+                }
+            );
+
+            // Invalidate current config (Refreshed in SiteConfigAttribute filter)
+            HttpContext.Application["Config"] = null;
+
+            SetTemporaryFeedbackMessage("Publication search configuration saved successfully.", FeedbackMessageType.Success);
+
+            return Redirect("HomepageConfig");
+        }
+
         public ActionResult _CollectionsCapabilitiesSearchConfig()
         {
             return PartialView(new HomepageContentModel
@@ -1538,6 +1566,27 @@ namespace Biobanks.Web.Controllers
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
                 AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, "")
             });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SaveCollectionsCapabiltiesConfig(HomepageContentModel diagnosisSearch)
+        {
+            await _biobankWriteService.UpdateSiteConfigsAsync(
+                new List<Config>
+                {
+                    new Config { Key = ConfigKey.HomepageSearchTitle, Value = diagnosisSearch.SearchTitle ?? "" },
+                    new Config { Key = ConfigKey.HomepageSearchSubTitle, Value = diagnosisSearch.SearchSubTitle ?? "" },
+                    new Config { Key = ConfigKey.HomepageSearchRadioAccessSamples, Value = diagnosisSearch.AccessExistingSamples ?? "" },
+                    new Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = diagnosisSearch.RequireSamplesCollected ?? "" }
+                }
+            );
+
+            // Invalidate current config (Refreshed in SiteConfigAttribute filter)
+            HttpContext.Application["Config"] = null;
+
+            SetTemporaryFeedbackMessage("Collection & Capabilities search configuration saved successfully.", FeedbackMessageType.Success);
+
+            return Redirect("HomepageConfig");
         }
         #endregion
 
