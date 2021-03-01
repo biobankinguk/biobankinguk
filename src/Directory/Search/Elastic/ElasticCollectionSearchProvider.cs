@@ -61,19 +61,20 @@ namespace Biobanks.Search.Elastic
         }
 
         /// <inheritdoc />
-        public IEnumerable<string> ListOntologyTerms(string wildcard = "")
+        public IEnumerable<OntologyTermsSummary> ListOntologyTerms(string wildcard = "")
         {
             //Matches based on ontologyTerms and onTologyOtherTerms
             var collections = _client.Search<CollectionDocument>(s => s
                 .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*") || q.Nested(n => n
-                .Path("ontologyOtherTerms")
+                .Path(p => p.OntologyOtherTerms).InnerHits(i => i.Explain()
+                .Highlight(h => h.Fields(f => f.Field(o => o.OntologyOtherTerms.Select(on => on.Name)).PreTags("").PostTags(""))))
                 .Query(nq => nq.Wildcard("ontologyOtherTerms.name", $"*{wildcard}*"))))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
                         .Field(p => p.OntologyTerm))));
 
-            return collections.Aggregations.Terms("diagnoses").Buckets.Select(x => x.Key);
+            return ExtractOntologyOtherTermsHits(collections);
         }
 
         /// <inheritdoc />
