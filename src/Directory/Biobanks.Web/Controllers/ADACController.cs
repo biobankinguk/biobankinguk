@@ -421,6 +421,29 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region Biobanks
+        public async Task<ActionResult> BiobankAdmin(int id = 0)
+        {
+            var biobank = await _biobankReadService.GetBiobankByIdAsync(id);
+
+            if (biobank != null)
+            {
+                var model = _mapper.Map<BiobankModel>(biobank);
+
+                //get the admins
+                model.Admins =
+                    (await _biobankReadService.ListBiobankAdminsAsync(model.BiobankId)).Select(x => new RegisterEntityAdminModel
+                    {
+                        UserId = x.Id,
+                        UserFullName = x.Name,
+                        UserEmail = x.Email,
+                        EmailConfirmed = x.EmailConfirmed
+                    }).ToList();
+
+                return View(model);
+            }
+            else
+                return HttpNotFound();
+        }
 
         public async Task<ActionResult> Biobanks()
         {

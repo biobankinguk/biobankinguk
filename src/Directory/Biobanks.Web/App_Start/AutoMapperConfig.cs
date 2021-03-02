@@ -58,7 +58,8 @@ namespace Biobanks.Web
                     .ForMember(dest => dest.BiobankExternalId, opts => opts.MapFrom(src => src.OrganisationExternalId));
 
                 cfg.CreateMap<Organisation, BiobankModel>()
-                    .ForMember(dest => dest.BiobankId, opts => opts.MapFrom(src => src.OrganisationId));
+                    .ForMember(dest => dest.BiobankId, opts => opts.MapFrom(src => src.OrganisationId))
+                    .ForMember(dest => dest.BiobankExternalId, opts => opts.MapFrom(src => src.OrganisationExternalId));
 
                 cfg.CreateMap<BiobankDetailsModel, OrganisationDTO>()
                     .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.OrganisationName))
