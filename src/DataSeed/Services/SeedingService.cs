@@ -13,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Biobanks.DataSeed.Extensions;
+using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Biobanks.DataSeed.Services
@@ -53,6 +53,7 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<Funder>,
                 SeedJson<HtaStatus>,
                 SeedJson<MacroscopicAssessment>,
+                SeedOrganisationTypes,
                 SeedJson<RegistrationReason>,
                 SeedJson<SampleCollectionMode>,
                 SeedJson<ServiceOffering>,
@@ -70,7 +71,7 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<Sex>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
-                SeedJson<PreservationType>
+                SeedJson<PreservationType>,
             };
         }
 
@@ -91,24 +92,52 @@ namespace Biobanks.DataSeed.Services
         {
             var groups = ReadJson<AnnualStatisticGroup>();
 
-            // Seed AnnualStatisticGroup Only
-            Seed(groups.Transform(x => x.AnnualStatistics = null));
+            // Seed AnnualStatisticGroups
+            Seed(groups.Select(x =>
+                new AnnualStatisticGroup
+                {
+                    Id = x.Id,
+                    Value = x.Value
+                }
+            ));
 
-            // Seed AnnualStatistics Separately For Identity Insert
+            // Seed AnnualStatistics
             Seed(groups.SelectMany(x =>
-                x.AnnualStatistics.Transform(y => y.AnnualStatisticGroupId = x.Id)));
+                x.AnnualStatistics.Select(y =>
+                    new AnnualStatistic
+                    {
+                        Id = y.Id,
+                        Value = y.Value,
+                        AnnualStatisticGroupId= x.Id
+                    }
+                )
+            ));
         }
 
         private void SeedAssociatedDataTypes()
         {
             var groups = ReadJson<AssociatedDataTypeGroup>();
 
-            // Seed AssociatedDataTypeGroup Only
-            Seed(groups.Transform(x => x.AssociatedDataTypes = null));
+            // Seed AssociatedDataTypeGroups
+            Seed(groups.Select(x => 
+                new AssociatedDataTypeGroup
+                {
+                    Id = x.Id,
+                    Value = x.Value
+                }
+            ));
 
-            // Seed AssociatedDataType Separately For Identity Insert
+            // Seed AssociatedDataTypes
             Seed(groups.SelectMany(x =>
-                x.AssociatedDataTypes.Transform(y => y.AssociatedDataTypeGroupId = x.Id)));
+                x.AssociatedDataTypes.Select(y =>
+                    new AssociatedDataType
+                    {
+                        Id = y.Id,
+                        Value = y.Value,
+                        AssociatedDataTypeGroupId = x.Id
+                    }
+                )
+            ));
         }
 
         private void SeedCountries()
@@ -131,17 +160,45 @@ namespace Biobanks.DataSeed.Services
             else
             {
                 var countries = ReadJson<Country>();
-                
-                // Seed Countries Only
-                Seed(countries.Transform(x => x.Counties = null));
 
-                // Seed Counties Separately For Identity Insert
+                // Seed Countries
+                Seed(countries.Select(x => 
+                    new Country 
+                    {
+                        Id = x.Id,
+                        Value =  x.Value
+                    }
+                ));
+
+                // Seed Counties
                 Seed(countries.SelectMany(x => 
-                    x.Counties.Transform(y => y.CountryId = x.Id)));
+                    x.Counties.Select(y => 
+                        new County 
+                        {
+                            Id = y.Id,
+                            Value = y.Value,
+                            CountryId = x.Id
+                        }
+                    )
+                ));
             }
 
             // Update Config Value
-            _db.Configs.FirstOrDefault(x => x.Key == "site.display.counties").Value = (!seedUN ? "true" : "false");
+            var config = new Config() 
+            {
+                Key = "site.display.counties",
+                Value = !seedUN ? "true" : "false"
+            };
+
+            if (_db.Configs.Any(x => x.Key == config.Key))
+            {
+                _db.Configs.Update(config);
+            }
+            else
+            {
+                _db.Configs.Add(config);
+            }
+
             _db.SaveChanges();
         }
 
@@ -150,13 +207,32 @@ namespace Biobanks.DataSeed.Services
             var validGroups = _db.MaterialTypeGroups.ToList();
 
             Seed(
-                ReadJson<MaterialType>().Transform(x =>
-                    x.MaterialTypeGroups = 
-                        x.MaterialTypeGroups?
-                            .Select(y => validGroups.First(z => z.Value == y.Value))
-                            .ToList()
+                ReadJson<MaterialType>().Select(x =>
+                    new MaterialType()
+                    {
+                        Id = x.Id,
+                        Value = x.Value,
+                        SortOrder = x.SortOrder,
+                        MaterialTypeGroups =
+                            x.MaterialTypeGroups?
+                                .Select(y => validGroups.First(z => z.Value == y.Value))
+                                .ToList()
+                    }
                 )
             );
+        }
+
+        private void SeedOrganisationTypes()
+        {
+            Seed(new List<OrganisationType>
+            {
+                new ()
+                {
+                    OrganisationTypeId = 1,
+                    Description = "Biobank",
+                    SortOrder = 1
+                }
+            });
         }
 
         private void SeedJson<T>() where T : class
