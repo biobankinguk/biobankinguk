@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "index": {
+      "number_of_replicas": 0,
+      "analysis": {
+        "normalizer": {
+          "string_lowercase": {
+            "type": "custom",
+            "filter": [
+              "lowercase"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+        "annotation": {
+            "type": "keyword"
+        },
+        "publications": {
+        "type": "nested",
+        "properties": {
+          "name": {
+            "type": "keyword"
+          }
+        }
+        } 
+        }
+    }
+}
