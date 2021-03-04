@@ -1,11 +1,64 @@
-﻿@model Biobanks.Web.Models.ADAC.BiobankModel
+﻿@using System.Web.Optimization
+@model Biobanks.Web.Models.ADAC.BiobankModel
 @{
     ViewBag.Title = "Biobank Admin";
 }
 
 @Html.Partial("_ADACTabs", "Biobanks")
 
-    <h3>@Model.Name - Admin @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new {id = @Model.BiobankId}, new { @class = "btn btn-danger pull-right" })</h3>
+<h3>@Model.Name - Admin @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new { id = @Model.BiobankId }, new { @class = "btn btn-danger pull-right" })</h3>
+
+<h2>Details</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <br />
 
 
+        <div class="col-sm-12">
+            <dl class="dl-horizontal dt-left">
+                <!-- Biobank Email -->
+                <dt>Email: </dt>
+                <dd itemprop="email"><a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></dd>
 
+                <!-- Biobank Status - Suspended or Active -->
+                <dt>Status: </dt>
+                <dd>
+                    @(Model.IsSuspended ? Html.Raw("Suspended") : Html.Raw("Active"))
+                    @if (Model.IsSuspended)
+                    {
+                        <a href="@Url.Action(
+                                             "UnsuspendBiobank", "ADAC",
+                                             new
+                                             {
+                                                 id = Model.BiobankId
+                                             })"
+                           class="unsuspend-confirm pull-right"
+                           data-biobank-name="@Model.Name">
+                            <span class="fa fa-check-square-o labelled-icon"></span>Unsuspend
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action(
+                                             "SuspendBiobank", "ADAC",
+                                             new
+                                             {
+                                                 id = Model.BiobankId
+                                             })"
+                           class="suspend-confirm pull-right"
+                           data-biobank-name="@Model.Name">
+                            <span class="fa fa-ban labelled-icon"></span>Suspend
+                        </a>
+                    }
+                </dd>
+            </dl>
+
+        </div>
+    </div>
+
+    @section FooterScripts
+{
+        @Scripts.Render("~/bundles/datatables")
+        @Scripts.Render("~/bundles/adac/biobanks")
+}
