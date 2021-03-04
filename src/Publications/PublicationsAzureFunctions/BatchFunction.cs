@@ -13,7 +13,7 @@ namespace PublicationsAzureFunctions
 {
     public class BatchFunction
     {
-        
+
         private FetchPublicationsService _fetchPublicationsService;
         private FetchAnnotationsService _fetchAnnotationsService;
         private readonly CancellationToken cancellationToken;
@@ -26,7 +26,7 @@ namespace PublicationsAzureFunctions
 
         //Configured to run every 24 hours
         [FunctionName("BatchFunction")]
-        public async Task Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
+        public async Task Run([TimerTrigger("0 0 0 * * *")] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
@@ -40,6 +40,6 @@ namespace PublicationsAzureFunctions
 
             log.LogInformation($"C# Timer trigger function executed successfully");
         }
-        
+
     }
 }

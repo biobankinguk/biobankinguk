@@ -138,6 +138,16 @@ namespace Biobanks.Directory.Data
                     gt.ToTable("MaterialTypeMaterialTypeGroup");
                 });
 
+            modelBuilder.Entity<Publication>()
+                .HasMany(t => t.Annotations)
+                .WithMany(g => g.Publications)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("PublicationsId");
+                    gt.MapRightKey("AnnotationsId");
+                    gt.ToTable("PublicationAnnotations");
+                });
+
             modelBuilder.Entity<OntologyTerm>()
                 .HasIndex(x => x.Value)
                 .IsUnique();

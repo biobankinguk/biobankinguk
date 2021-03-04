@@ -39,8 +39,8 @@ namespace Publications.Services
                       };
                       var publicationAnnotation = new PublicationAnnotation()
                       {
-                          Annotation_Id = annotationEntity.Id,
-                          Publication_Id = publication.Id
+                          AnnotationsId = annotationEntity.Id,
+                          PublicationsId = publication.Id
                       };
                       annotationEntity.PublicationAnnotations.Add(publicationAnnotation);
                       annotationList.Add(annotationEntity);
@@ -65,14 +65,14 @@ namespace Publications.Services
                 else
                 {
                     //Check if publicationAnnotation already exists 
-                    var publicationAnnotation = older.PublicationAnnotations.FirstOrDefault(x => x.Publication_Id == publication.Id);
+                    var publicationAnnotation = older.PublicationAnnotations.FirstOrDefault(x => x.PublicationsId == publication.Id);
 
                     if (publicationAnnotation is null)
                     {
                         older.PublicationAnnotations.Add(new PublicationAnnotation()
                         {
-                            Annotation_Id = older.Id,
-                            Publication_Id = publication.Id
+                            AnnotationsId = older.Id,
+                            PublicationsId = publication.Id
                         });
 
                         _ctx.Update(older);

@@ -6,10 +6,10 @@ namespace Publications.Entities
 {
     public class PublicationAnnotation
     {
-        public int Publication_Id { get; set; }
+        public int PublicationsId { get; set; }
         public Publication Publication { get; set; }
 
-        public int Annotation_Id { get; set; }
+        public int AnnotationsId { get; set; }
         public Annotation Annotation { get; set; }
     }
 }

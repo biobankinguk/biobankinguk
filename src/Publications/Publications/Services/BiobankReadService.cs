@@ -38,7 +38,7 @@ namespace Publications.Services
 
         //Uses Publication Id from EF
         public async Task<IEnumerable<PublicationAnnotation>> GetPublicationAnnotations(int publicationId)
-            => await _ctx.PublicationAnnotations.Where(x => x.Publication_Id == publicationId).Include(a => a.Annotation).ToListAsync();
+            => await _ctx.PublicationAnnotations.Where(x => x.PublicationsId == publicationId).Include(a => a.Annotation).ToListAsync();
         
         //Uses publicationId from API
         public async Task<Publication> GetPublicationById(string publicationId)

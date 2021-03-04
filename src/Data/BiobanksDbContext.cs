@@ -106,6 +106,10 @@ namespace Biobanks.Data
                 .HasMany(x => x.MaterialTypes)
                 .WithMany(y => y.MaterialTypeGroups);
 
+            model.Entity<Publication>()
+                .HasMany(x => x.Annotations)
+                .WithMany(y => y.Publications);
+
             // Composite Primary Keys
             model.Entity<CapabilityAssociatedData>()
                 .HasKey(x => new

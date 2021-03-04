@@ -25,15 +25,15 @@ namespace Publications
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PublicationAnnotation>()
-                .HasKey(bc => new { bc.Publication_Id, bc.Annotation_Id });
+                .HasKey(bc => new { bc.PublicationsId, bc.AnnotationsId });
             modelBuilder.Entity<PublicationAnnotation>()
                 .HasOne(bc => bc.Publication)
                 .WithMany(b => b.PublicationAnnotations)
-                .HasForeignKey(bc => bc.Publication_Id);
+                .HasForeignKey(bc => bc.PublicationsId);
             modelBuilder.Entity<PublicationAnnotation>()
                 .HasOne(bc => bc.Annotation)
                 .WithMany(c => c.PublicationAnnotations)
-                .HasForeignKey(bc => bc.Annotation_Id);
+                .HasForeignKey(bc => bc.AnnotationsId);
         }
     }
 }
