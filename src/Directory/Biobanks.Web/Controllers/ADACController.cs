@@ -1118,10 +1118,11 @@ namespace Biobanks.Web.Controllers
                 )
                 .ToList();
 
-            // Fetch Sample Set Count
+            // Fetch Sample Set Count and whether a Preservation Type is using this storage temperature
             foreach (var model in models)
             {
                 model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
+                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
             }
 
             return View(new StorageTemperaturesModel
