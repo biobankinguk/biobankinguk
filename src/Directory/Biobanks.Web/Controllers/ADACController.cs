@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -16,22 +14,12 @@ using Biobanks.Web.Extensions;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
 using Microsoft.AspNet.Identity;
-using Newtonsoft.Json;
 using Biobanks.Web.Utilities;
 using Biobanks.Web.Filters;
-using Biobanks.Directory.Data.Migrations;
-using System.Linq.Expressions;
 using Biobanks.Web.Models.Home;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Web.Models.Search;
-using Biobanks.Services;
-using Microsoft.Ajax.Utilities;
-using Hangfire.States;
-using System.Net.Http;
-using System.Configuration;
-using Newtonsoft.Json.Linq;
 using Biobanks.Entities.Shared.ReferenceData;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
