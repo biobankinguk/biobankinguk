@@ -110,5 +110,10 @@ $(function () {
         language: {
             search: "Filter: ",
         },
+        columnDefs: [
+            { orderable: true, targets: 0 },
+            { orderable: true, targets: 1 },
+            { orderable: false, targets: '_all' }
+        ]
     });
 });
