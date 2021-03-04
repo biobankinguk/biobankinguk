@@ -1131,6 +1131,38 @@ namespace Biobanks.Web.Controllers
         }
         #endregion
 
+        #region RefData: Preservation Type
+
+        public async Task<ActionResult> PreservationTypes()
+        {
+            var models = (await _biobankReadService.ListPreservationTypesAsync())
+                .Select(x =>
+                    new PreservationTypeModel()
+                    {
+                        Id = x.Id,
+                        Value = x.Value,
+                        SortOrder = x.SortOrder,
+                        StorageTemperatureId = x.StorageTemperatureId,
+                        StorageTemperatureName = x.StorageTemperature.Value
+                    }
+                )
+                .ToList();
+
+            // Fetch Sample Set Count
+            foreach (var model in models)
+            {
+                model.PreservationTypeCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
+            }
+
+            return View(new PreservationTypesModel
+            {
+                PreservationTypes = models,
+                StorageTemperatures = await _biobankReadService.ListStorageTemperaturesAsync()
+            });
+        }
+
+        #endregion
+
         #region RefData: Assocaited Data Types
 
         public async Task<ActionResult> AssociatedDataTypes()
