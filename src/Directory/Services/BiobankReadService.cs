@@ -8,7 +8,6 @@ using Biobanks.Directory.Data.Caching;
 using Biobanks.Directory.Data.Repositories;
 using Biobanks.Identity.Contracts;
 using Biobanks.Search.Legacy;
-using Biobanks.Search.Constants;
 using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity;
 using Biobanks.Entities.Data;
@@ -811,15 +810,6 @@ namespace Biobanks.Services
             return collections;
         }
 
-        public async Task<IEnumerable<OntologyTerm>> GetUsedOntologyTermsAsync()
-        {
-            var collections = await _collectionRepository.ListAsync(false);
-            var uniqueOntologyTermsIds = collections.Select(x => x.OntologyTermId).Distinct();
-            var uniqueOntologyTerms = await _ontologyTermRepository.ListAsync(false, x => uniqueOntologyTermsIds.Contains(x.Id));
-
-            return uniqueOntologyTerms;
-        }
-
         public async Task<CollectionSampleSet> GetSampleSetByIdAsync(int id)
             => (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
                 x => x.Sex,
@@ -1180,8 +1170,42 @@ namespace Biobanks.Services
         }
         #endregion
 
+        #region RefData: OntologyTerm
         public async Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(false, x => x.Value.Contains(wildcard));
+            => await _ontologyTermRepository.ListAsync(filter: x => x.Value.Contains(wildcard) && x.DisplayOnDirectory);
+
+        public async Task<IEnumerable<OntologyTerm>> GetUsedOntologyTermsAsync()
+        {
+            var collections = await _collectionRepository.ListAsync(false);
+            var ontologyTerms = await ListOntologyTermsAsync();
+
+            return ontologyTerms.Where(x => collections.Any(y => y.OntologyTermId == x.Id));
+        }
+
+        public async Task<OntologyTerm> GetOntologyTermByDescription(string description)
+            => (await _ontologyTermRepository.ListAsync(filter: x => x.Value == description && x.DisplayOnDirectory)).Single();
+
+        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x => 
+                    x.Value == ontologyTermDescription && 
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x => 
+                    x.Value == ontologyDescription && 
+                    x.Id != ontologyTermId && 
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
+            => await _collectionRepository.CountAsync(x => x.OntologyTermId == id) 
+               + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
+        #endregion
 
         #region Site Config
         public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
@@ -1200,41 +1224,11 @@ namespace Biobanks.Services
         {
             return (await _siteConfigRepository.ListAsync(false, x => x.Key == siteConfigValue && x.Value == "true")).Any();
         }
-
-
-
         #endregion
 
-        public async Task<IEnumerable<OntologyTermResultDTO>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "")
-        {
-            var listOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            
-            return (await _ontologyTermRepository.ListAsync()).Join(
-                listOntologyTerms, o => o.Value.ToLower(), i => i.OntologyTerm, (a, b) => {
-
-                    var otherTerms = a.OtherTerms?.Split(',').Select(p => p.Trim());
-                    return new OntologyTermResultDTO
-                    {
-                        OtherTerms = a.OtherTerms ?? "",
-                        MatchingOtherTerms = b.MatchingOtherTerms,
-                        Id = a.Id,
-                        Value = a.Value,
-                        NonMatchingOtherTerms = otherTerms?.Where(m => !(b.MatchingOtherTerms.Contains(m))).ToList() ?? new List<string>()
-                    };
-                });
-        }
-
-        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermDescription)
-            => (await _ontologyTermRepository.ListAsync(false, x => x.Value == ontologyTermDescription)).Any();
-
-        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription)
-            => (await _ontologyTermRepository.ListAsync(
-                false,
-                x => x.Value == ontologyDescription &&
-                     x.Id != ontologyTermId)).Any();
 
         public async Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription)
-    => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Value == consentDescription)).Any();
+            => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Value == consentDescription)).Any();
 
         public async Task<bool> ValidConsentRestrictionDescriptionAsync(int consentId, string consentDescription)
             => (await _collectionConsentRestrictionRepository.ListAsync(
@@ -1301,16 +1295,6 @@ namespace Biobanks.Services
                 false,
                 x => x.Value == collectionStatusDescription &&
                      x.Id != collectionStatusId)).Any();
-
-        public async Task<OntologyTerm> GetOntologyTermByDescription(string description)
-            => (await _ontologyTermRepository.ListAsync(false, x => x.Value == description)).Single();
-
-        public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
-        => (await _collectionRepository.ListAsync(
-                   false,
-                   x => x.OntologyTermId == id)).Count() + (await _capabilityRepository.ListAsync(
-                   false,
-                   x => x.OntologyTermId == id)).Count();
 
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
