@@ -94,7 +94,7 @@ namespace Biobanks.Data.Migrations
                     b.HasIndex("OrganisationId", "IndividualReferenceId", "DateDiagnosed", "DiagnosisCodeId")
                         .IsUnique();
 
-                    b.ToTable("LiveDiagnoses");
+                    b.ToTable("Diagnoses");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Api.LiveSample", b =>

@@ -147,7 +147,17 @@ namespace Biobanks.Directory.Data
                     gt.MapRightKey("ConsentRestrictionsId");
                     gt.ToTable("CollectionConsentRestriction");
                 });
-                
+
+            modelBuilder.Entity<Funder>()
+                .HasMany(t => t.Organisations)
+                .WithMany(g => g.Funders)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("FundersId");
+                    gt.MapRightKey("OrganisationsOrganisationId");
+                    gt.ToTable("FunderOrganisation");
+                });
+
             modelBuilder.Entity<OntologyTerm>()
                 .HasIndex(x => x.Value)
                 .IsUnique();

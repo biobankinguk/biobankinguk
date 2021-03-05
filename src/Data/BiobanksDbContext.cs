@@ -57,7 +57,7 @@ namespace Biobanks.Data
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Error> Errors { get; set; }
 
-        public DbSet<LiveDiagnosis> LiveDiagnoses { get; set; }
+        public DbSet<LiveDiagnosis> Diagnoses { get; set; }
         public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
         public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
 
