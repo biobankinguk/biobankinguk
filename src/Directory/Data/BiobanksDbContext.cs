@@ -17,7 +17,7 @@ namespace Biobanks.Directory.Data
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<OrganisationType> OrganisationTypes { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
-        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
+        public DbSet<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public DbSet<OrganisationUser> OrganisationUsers { get; set; }
         public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
 
@@ -138,6 +138,16 @@ namespace Biobanks.Directory.Data
                     gt.ToTable("MaterialTypeMaterialTypeGroup");
                 });
 
+            modelBuilder.Entity<Collection>()
+                .HasMany(t => t.ConsentRestrictions)
+                .WithMany(g => g.Collections)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("CollectionsCollectionId");
+                    gt.MapRightKey("ConsentRestrictionsId");
+                    gt.ToTable("CollectionConsentRestriction");
+                });
+                
             modelBuilder.Entity<OntologyTerm>()
                 .HasIndex(x => x.Value)
                 .IsUnique();

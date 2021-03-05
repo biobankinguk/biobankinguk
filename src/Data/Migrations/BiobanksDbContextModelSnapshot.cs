@@ -1126,7 +1126,7 @@ namespace Biobanks.Data.Migrations
 
                     b.HasIndex("ServiceOfferingId");
 
-                    b.ToTable("OrgServiceOfferings");
+                    b.ToTable("OrganisationServiceOfferings");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.OrganisationType", b =>

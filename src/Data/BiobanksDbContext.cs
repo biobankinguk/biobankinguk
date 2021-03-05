@@ -89,7 +89,7 @@ namespace Biobanks.Data
         public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
         public DbSet<OrganisationType> OrganisationTypes { get; set; }
         public DbSet<OrganisationUser> OrganisationUsers { get; set; }
-        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
+        public DbSet<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
         public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
         #endregion

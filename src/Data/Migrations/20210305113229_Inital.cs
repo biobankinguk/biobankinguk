@@ -1363,6 +1363,30 @@ namespace Biobanks.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrganisationServiceOfferings",
+                columns: table => new
+                {
+                    OrganisationId = table.Column<int>(type: "int", nullable: false),
+                    ServiceOfferingId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrganisationServiceOfferings", x => new { x.OrganisationId, x.ServiceOfferingId });
+                    table.ForeignKey(
+                        name: "FK_OrganisationServiceOfferings_Organisations_OrganisationId",
+                        column: x => x.OrganisationId,
+                        principalTable: "Organisations",
+                        principalColumn: "OrganisationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrganisationServiceOfferings_ServiceOfferings_ServiceOfferingId",
+                        column: x => x.ServiceOfferingId,
+                        principalTable: "ServiceOfferings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrganisationUsers",
                 columns: table => new
                 {
@@ -1377,30 +1401,6 @@ namespace Biobanks.Data.Migrations
                         column: x => x.OrganisationId,
                         principalTable: "Organisations",
                         principalColumn: "OrganisationId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrgServiceOfferings",
-                columns: table => new
-                {
-                    OrganisationId = table.Column<int>(type: "int", nullable: false),
-                    ServiceOfferingId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrgServiceOfferings", x => new { x.OrganisationId, x.ServiceOfferingId });
-                    table.ForeignKey(
-                        name: "FK_OrgServiceOfferings_Organisations_OrganisationId",
-                        column: x => x.OrganisationId,
-                        principalTable: "Organisations",
-                        principalColumn: "OrganisationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrgServiceOfferings_ServiceOfferings_ServiceOfferingId",
-                        column: x => x.ServiceOfferingId,
-                        principalTable: "ServiceOfferings",
-                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -1856,8 +1856,8 @@ namespace Biobanks.Data.Migrations
                 column: "OrganisationTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrgServiceOfferings_ServiceOfferingId",
-                table: "OrgServiceOfferings",
+                name: "IX_OrganisationServiceOfferings_ServiceOfferingId",
+                table: "OrganisationServiceOfferings",
                 column: "ServiceOfferingId");
 
             migrationBuilder.CreateIndex(
@@ -2092,10 +2092,10 @@ namespace Biobanks.Data.Migrations
                 name: "OrganisationRegistrationReasons");
 
             migrationBuilder.DropTable(
-                name: "OrganisationUsers");
+                name: "OrganisationServiceOfferings");
 
             migrationBuilder.DropTable(
-                name: "OrgServiceOfferings");
+                name: "OrganisationUsers");
 
             migrationBuilder.DropTable(
                 name: "Samples");
