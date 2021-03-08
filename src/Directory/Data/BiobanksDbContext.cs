@@ -17,7 +17,7 @@ namespace Biobanks.Directory.Data
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<OrganisationType> OrganisationTypes { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
-        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
+        public DbSet<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public DbSet<OrganisationUser> OrganisationUsers { get; set; }
         public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
 
@@ -136,6 +136,26 @@ namespace Biobanks.Directory.Data
                     gt.MapLeftKey("MaterialTypeGroupsId");
                     gt.MapRightKey("MaterialTypesId");
                     gt.ToTable("MaterialTypeMaterialTypeGroup");
+                });
+
+            modelBuilder.Entity<Collection>()
+                .HasMany(t => t.ConsentRestrictions)
+                .WithMany(g => g.Collections)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("CollectionsCollectionId");
+                    gt.MapRightKey("ConsentRestrictionsId");
+                    gt.ToTable("CollectionConsentRestriction");
+                });
+
+            modelBuilder.Entity<Funder>()
+                .HasMany(t => t.Organisations)
+                .WithMany(g => g.Funders)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("FundersId");
+                    gt.MapRightKey("OrganisationsOrganisationId");
+                    gt.ToTable("FunderOrganisation");
                 });
 
             modelBuilder.Entity<OntologyTerm>()
