@@ -823,7 +823,7 @@ namespace Biobanks.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LiveDiagnoses",
+                name: "Diagnoses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -837,15 +837,15 @@ namespace Biobanks.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LiveDiagnoses", x => x.Id);
+                    table.PrimaryKey("PK_Diagnoses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LiveDiagnoses_OntologyTerms_DiagnosisCodeId",
+                        name: "FK_Diagnoses_OntologyTerms_DiagnosisCodeId",
                         column: x => x.DiagnosisCodeId,
                         principalTable: "OntologyTerms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LiveDiagnoses_OntologyVersions_DiagnosisCodeOntologyVersionId",
+                        name: "FK_Diagnoses_OntologyVersions_DiagnosisCodeOntologyVersionId",
                         column: x => x.DiagnosisCodeOntologyVersionId,
                         principalTable: "OntologyVersions",
                         principalColumn: "Id",
@@ -1363,6 +1363,30 @@ namespace Biobanks.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrganisationServiceOfferings",
+                columns: table => new
+                {
+                    OrganisationId = table.Column<int>(type: "int", nullable: false),
+                    ServiceOfferingId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrganisationServiceOfferings", x => new { x.OrganisationId, x.ServiceOfferingId });
+                    table.ForeignKey(
+                        name: "FK_OrganisationServiceOfferings_Organisations_OrganisationId",
+                        column: x => x.OrganisationId,
+                        principalTable: "Organisations",
+                        principalColumn: "OrganisationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrganisationServiceOfferings_ServiceOfferings_ServiceOfferingId",
+                        column: x => x.ServiceOfferingId,
+                        principalTable: "ServiceOfferings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrganisationUsers",
                 columns: table => new
                 {
@@ -1377,30 +1401,6 @@ namespace Biobanks.Data.Migrations
                         column: x => x.OrganisationId,
                         principalTable: "Organisations",
                         principalColumn: "OrganisationId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrgServiceOfferings",
-                columns: table => new
-                {
-                    OrganisationId = table.Column<int>(type: "int", nullable: false),
-                    ServiceOfferingId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrgServiceOfferings", x => new { x.OrganisationId, x.ServiceOfferingId });
-                    table.ForeignKey(
-                        name: "FK_OrgServiceOfferings_Organisations_OrganisationId",
-                        column: x => x.OrganisationId,
-                        principalTable: "Organisations",
-                        principalColumn: "OrganisationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrgServiceOfferings_ServiceOfferings_ServiceOfferingId",
-                        column: x => x.ServiceOfferingId,
-                        principalTable: "ServiceOfferings",
-                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -1735,6 +1735,22 @@ namespace Biobanks.Data.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Diagnoses_DiagnosisCodeId",
+                table: "Diagnoses",
+                column: "DiagnosisCodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Diagnoses_DiagnosisCodeOntologyVersionId",
+                table: "Diagnoses",
+                column: "DiagnosisCodeOntologyVersionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Diagnoses_OrganisationId_IndividualReferenceId_DateDiagnosed_DiagnosisCodeId",
+                table: "Diagnoses",
+                columns: new[] { "OrganisationId", "IndividualReferenceId", "DateDiagnosed", "DiagnosisCodeId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DiagnosisCapabilities_OntologyTermId",
                 table: "DiagnosisCapabilities",
                 column: "OntologyTermId");
@@ -1758,22 +1774,6 @@ namespace Biobanks.Data.Migrations
                 name: "IX_FunderOrganisation_OrganisationsOrganisationId",
                 table: "FunderOrganisation",
                 column: "OrganisationsOrganisationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LiveDiagnoses_DiagnosisCodeId",
-                table: "LiveDiagnoses",
-                column: "DiagnosisCodeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LiveDiagnoses_DiagnosisCodeOntologyVersionId",
-                table: "LiveDiagnoses",
-                column: "DiagnosisCodeOntologyVersionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LiveDiagnoses_OrganisationId_IndividualReferenceId_DateDiagnosed_DiagnosisCodeId",
-                table: "LiveDiagnoses",
-                columns: new[] { "OrganisationId", "IndividualReferenceId", "DateDiagnosed", "DiagnosisCodeId" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MaterialDetails_CollectionPercentageId",
@@ -1856,8 +1856,8 @@ namespace Biobanks.Data.Migrations
                 column: "OrganisationTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrgServiceOfferings_ServiceOfferingId",
-                table: "OrgServiceOfferings",
+                name: "IX_OrganisationServiceOfferings_ServiceOfferingId",
+                table: "OrganisationServiceOfferings",
                 column: "ServiceOfferingId");
 
             migrationBuilder.CreateIndex(
@@ -2059,13 +2059,13 @@ namespace Biobanks.Data.Migrations
                 name: "Configs");
 
             migrationBuilder.DropTable(
+                name: "Diagnoses");
+
+            migrationBuilder.DropTable(
                 name: "Errors");
 
             migrationBuilder.DropTable(
                 name: "FunderOrganisation");
-
-            migrationBuilder.DropTable(
-                name: "LiveDiagnoses");
 
             migrationBuilder.DropTable(
                 name: "MaterialDetails");
@@ -2092,10 +2092,10 @@ namespace Biobanks.Data.Migrations
                 name: "OrganisationRegistrationReasons");
 
             migrationBuilder.DropTable(
-                name: "OrganisationUsers");
+                name: "OrganisationServiceOfferings");
 
             migrationBuilder.DropTable(
-                name: "OrgServiceOfferings");
+                name: "OrganisationUsers");
 
             migrationBuilder.DropTable(
                 name: "Samples");

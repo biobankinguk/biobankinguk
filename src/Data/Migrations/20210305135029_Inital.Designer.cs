@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    [Migration("20210218162415_Inital")]
+    [Migration("20210305135029_Inital")]
     partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,7 +96,7 @@ namespace Biobanks.Data.Migrations
                     b.HasIndex("OrganisationId", "IndividualReferenceId", "DateDiagnosed", "DiagnosisCodeId")
                         .IsUnique();
 
-                    b.ToTable("LiveDiagnoses");
+                    b.ToTable("Diagnoses");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Api.LiveSample", b =>
@@ -1128,7 +1128,7 @@ namespace Biobanks.Data.Migrations
 
                     b.HasIndex("ServiceOfferingId");
 
-                    b.ToTable("OrgServiceOfferings");
+                    b.ToTable("OrganisationServiceOfferings");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.OrganisationType", b =>
