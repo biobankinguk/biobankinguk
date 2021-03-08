@@ -39,6 +39,21 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> Collections(string ontologyTerm, string selectedFacets)
         {
+            // Check If Valid and Visible Term
+            if (!string.IsNullOrEmpty(ontologyTerm))
+            {
+                var term = await _biobankReadService.GetOntologyTermByDescription(ontologyTerm);
+
+                if (term is null)
+                {
+                    return await NoResults(new NoResultsModel
+                    {
+                        OntologyTerm = ontologyTerm,
+                        SearchType = SearchDocumentType.Collection
+                    });
+                }
+            }
+
             // Build the base model.
             var model = new BaseSearchModel
             {
@@ -71,32 +86,6 @@ namespace Biobanks.Web.Controllers
                     x => x.Counties.Select(y => y.Value).ToList()
                 );
             return View(model);
-        }
-
-
-
-        private async Task<ViewResult> NoResults(NoResultsModel model)
-        {
-            model.Suggestions = await GetOntologyTermSearchResultsAsync(model.SearchType, model.OntologyTerm?.ToLower());
-
-            //BIO-455 special case for cancer (will override this with a genericised approach in BIO-447
-            if (model.OntologyTerm.ToLower() == "cancer")
-            {
-                //get suggestions for the relevant correct searches
-                var malignant = await GetOntologyTermSearchResultsAsync(model.SearchType, "malignant");
-                var neoplasm = await GetOntologyTermSearchResultsAsync(model.SearchType, "neoplasm");
-
-                //munge them into a distinct list
-                var results = new List<OntologyTermModel>();
-                results.AddRange(malignant);
-                results.AddRange(neoplasm);
-                model.Suggestions = results
-                    .DistinctBy(x => x.Description)
-                    .OrderBy(x => x.Description)
-                    .ToList();
-            }
-
-            return View("NoResults", model);
         }
 
         [HttpGet]
@@ -134,6 +123,21 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> Capabilities(string ontologyTerm, string selectedFacets)
         {
+            // Check If Valid and Visible Term
+            if (!string.IsNullOrEmpty(ontologyTerm))
+            {
+                var term = await _biobankReadService.GetOntologyTermByDescription(ontologyTerm);
+
+                if (term is null)
+                {
+                    return await NoResults(new NoResultsModel
+                    {
+                        OntologyTerm = ontologyTerm,
+                        SearchType = SearchDocumentType.Collection
+                    });
+                }
+            }
+
             // Build the base model.
             var model = new BaseSearchModel
             {
@@ -183,6 +187,30 @@ namespace Biobanks.Web.Controllers
             model.LogoName = (await _biobankReadService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
 
             return View(model);
+        }
+
+        private async Task<ViewResult> NoResults(NoResultsModel model)
+        {
+            model.Suggestions = await GetOntologyTermSearchResultsAsync(model.SearchType, model.OntologyTerm?.ToLower());
+
+            //BIO-455 special case for cancer (will override this with a genericised approach in BIO-447
+            if (model.OntologyTerm.ToLower() == "cancer")
+            {
+                //get suggestions for the relevant correct searches
+                var malignant = await GetOntologyTermSearchResultsAsync(model.SearchType, "malignant");
+                var neoplasm = await GetOntologyTermSearchResultsAsync(model.SearchType, "neoplasm");
+
+                //munge them into a distinct list
+                var results = new List<OntologyTermModel>();
+                results.AddRange(malignant);
+                results.AddRange(neoplasm);
+                model.Suggestions = results
+                    .DistinctBy(x => x.Description)
+                    .OrderBy(x => x.Description)
+                    .ToList();
+            }
+
+            return View("NoResults", model);
         }
 
         #region Diagnosis Type Ahead

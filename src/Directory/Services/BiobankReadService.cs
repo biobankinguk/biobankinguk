@@ -1183,7 +1183,7 @@ namespace Biobanks.Services
         }
 
         public async Task<OntologyTerm> GetOntologyTermByDescription(string description)
-            => (await _ontologyTermRepository.ListAsync(filter: x => x.Value == description && x.DisplayOnDirectory)).Single();
+            => (await _ontologyTermRepository.ListAsync(filter: x => x.Value == description && x.DisplayOnDirectory)).SingleOrDefault();
 
         public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermDescription)
             => (await _ontologyTermRepository.ListAsync(
