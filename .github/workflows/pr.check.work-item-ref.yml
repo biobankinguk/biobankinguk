@@ -1,0 +1,21 @@
+# https://github.com/DylanVann/check-pull-request-title
+
+name: "Azure Boards Check"
+on:
+  pull_request:
+    types:
+      # Check title when opened.
+      - opened
+      # Check title when new commits are pushed.
+      # Required to use as a status check.
+      - synchronize
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: dylanvann/check-pull-request-title@v1
+        with:
+          # Match pull request titles in the form AB#<id>: Title.
+          pattern: "^AB#\d+: "
