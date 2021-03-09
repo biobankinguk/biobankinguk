@@ -23,6 +23,6 @@
 "Area: Entities":
   - src/Entities/**/*
 
-# interesting types of content, such as db migrations?
-"Content: Migrations":
+# label types of changes contained in a PR
+"Contains: Migrations":
   - src/**/Migrations/*.cs
