@@ -31,4 +31,3 @@ jobs:
           dotnet build
           ${{ env.CI_project }}
           -c ${{ env.CI_build-config }}
-          -o $GITHUB_WORKSPACE/.publish
