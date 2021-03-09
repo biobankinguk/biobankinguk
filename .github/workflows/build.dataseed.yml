@@ -3,7 +3,7 @@ name: Build DataSeed
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
       - src/DataSeed/**
       - src/Data/**
@@ -13,39 +13,27 @@ on:
 
 jobs:
   build:
-
     env:
-      BUILD_CONFIG: release
+      # Configure these
+      CI_build-config: release
+      CI_dotnet-version: 5.0.x
+      CI_working-directory: src/DataSeed
+      CI_project: "**/DataSeed.csproj"
+
       DOTNET_CLI_TELEMETRY_OPTOUT: true
       DOTNET_NOLOGO: true
-
-    defaults:
-      run:
-        working-directory: src/DataSeed
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    
-    - name: Restore dependencies
-      run: >-
-        dotnet restore
-    
-    - name: Publish App
-      run: >-
-        dotnet publish
-        --no-restore
-        -c ${{ env.BUILD_CONFIG }}
-        -o $GITHUB_WORKSPACE/.publish
-    
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: dataseed
-        path: ./.publish
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet build
+        run: >-
+          dotnet build
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o $GITHUB_WORKSPACE/.publish
+        working-directory: ${{ env.CI_working-directory }}
