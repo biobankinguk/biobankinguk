@@ -1,8 +1,7 @@
 # label affected logical areas of the repo
 "Area: CI":
-  - any:
-      - .azure/pipelines/**/*
-      - .github/**/*
+  - .azure/pipelines/**/*
+  - .github/**/*
 "Area: Search Index":
   - elastic-search/**/*
 "Area: Analytics":
