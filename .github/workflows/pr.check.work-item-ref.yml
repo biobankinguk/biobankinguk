@@ -18,4 +18,4 @@ jobs:
       - uses: dylanvann/check-pull-request-title@v1
         with:
           # Match pull request titles in the form AB#<id>: Title.
-          pattern: "^AB#\d+: "
+          pattern: '^AB#\d+: '
