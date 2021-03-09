@@ -35,9 +35,9 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ℹ Linked Title:
+            **ℹ Linked Title:**
             ${{ github.event.pull_request.title }}
 
-            This bot comment serves to ensure the title work item gets hyperlinked.
+            *This bot comment serves to ensure the title work item gets hyperlinked.*
           edit-mode: replace
 
