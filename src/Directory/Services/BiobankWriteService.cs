@@ -697,6 +697,8 @@ namespace Biobanks.Services
 
         public async Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm)
         {
+            ontologyTerm.DisplayOnDirectory = true;
+
             _ontologyTermRepository.Update(ontologyTerm);
             await _ontologyTermRepository.SaveChangesAsync();
             await _indexService.UpdateCollectionsOntologyOtherTerms(ontologyTerm.Value);
@@ -707,6 +709,8 @@ namespace Biobanks.Services
 
         public async Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm)
         {
+            ontologyTerm.DisplayOnDirectory = true;
+
             _ontologyTermRepository.Insert(ontologyTerm);
             await _ontologyTermRepository.SaveChangesAsync();
 
