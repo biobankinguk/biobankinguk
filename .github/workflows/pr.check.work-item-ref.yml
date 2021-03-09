@@ -3,19 +3,13 @@
 name: "Azure Boards Check"
 on:
   pull_request:
-    types:
-      # Check title when opened.
-      - opened
-      # Check title when new commits are pushed.
-      # Required to use as a status check.
-      - synchronize
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: dylanvann/check-pull-request-title@v0.1.14
+      - uses: deepakputhraya/action-pr-title@master
         with:
-          # Match pull request titles in the form AB#<id>: Title.
-          pattern: '^AB#\d+: '
+          regex: '^AB#\d+: ' # Match pull request titles in the form AB#<id>: Title.
+          github_token: ${{ github.token }} # Default: ${{ github.token }}
