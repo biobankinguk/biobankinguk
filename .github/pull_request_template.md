@@ -2,7 +2,7 @@
 
 **⚠ DELETE THIS SECTION!**
 
-ℹ Please reference relevant Azure Boards work items in a list below, in the form `AB#<id>`.
+ℹ If there are multiple relevant Azure Boards work items, please reference them in a list below, in the form `AB#<id>`.
 
 ⚠ The Pull Request also cannot be merged unless its title starts with such a reference to the primary work item.
 
