@@ -17,7 +17,6 @@ jobs:
       # Configure these
       CI_build-config: release
       CI_dotnet-version: 5.0.x
-      CI_working-directory: src/DataSeed
       CI_project: "**/DataSeed.csproj"
 
       DOTNET_CLI_TELEMETRY_OPTOUT: true
@@ -36,4 +35,3 @@ jobs:
           ${{ env.CI_project }}
           -c ${{ env.CI_build-config }}
           -o $GITHUB_WORKSPACE/.publish
-        working-directory: ${{ env.CI_working-directory }}
