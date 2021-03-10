@@ -8,16 +8,17 @@ on:
       - src/Publications/**
       - .github/workflows/build.publications.yml
 
+env:
+  # Configure these
+  CI_build-config: release
+  CI_dotnet-version: 3.1.x
+  CI_project: ./src/Publications/PublicationsAzureFunctions/PublicationsAzureFunctions.csproj
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
 jobs:
   build:
-    env:
-      # Configure these
-      CI_build-config: release
-      CI_dotnet-version: 3.1.x
-      CI_project: ./src/Publications/PublicationsAzureFunctions/PublicationsAzureFunctions.csproj
-
-      DOTNET_CLI_TELEMETRY_OPTOUT: true
-      DOTNET_NOLOGO: true
 
     runs-on: ubuntu-latest
 
