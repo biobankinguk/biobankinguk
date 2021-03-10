@@ -456,7 +456,7 @@ namespace Biobanks.Web.Controllers
 
             SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
 
-            return RedirectToAction("BiobankAdmin", biobankId);
+            return RedirectToAction("BiobankAdmin", new { id = biobankId } );
         }
 
         public async Task<ActionResult> Biobanks()

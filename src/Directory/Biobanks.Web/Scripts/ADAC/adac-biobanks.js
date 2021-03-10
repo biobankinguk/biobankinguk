@@ -40,4 +40,18 @@
                 confirmation && window.location.assign($link.attr("href"));
             });
     });
+
+    $(".confirm-admin-delete").click(function (e) {
+        e.preventDefault();
+        var $link = $(this);
+        bootbox.confirm(
+            "Are you sure you wish to remove " +
+            $link.data("admin-name") +
+            " from the biobank " +
+            $link.data("biobank-name") + "?",
+            function (confirmation) {
+                confirmation && window.location.assign($link.attr("href"));
+            }
+        );
+    });
 });

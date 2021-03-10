@@ -56,9 +56,9 @@
 
         </div>
     </div>
- </div>
+</div>
 
-<h2>Administrators</h2>
+<h2>Administrators <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteBiobankAdmin" data-bind="click: openInviteDialog">Add new admin</a></h2>
 <div class="row">
     <div class="col-sm-12">
         <br />
@@ -82,9 +82,36 @@
                     <td class="vtop">
                         <a href="mailto:@admin.UserEmail">@admin.UserEmail</a>
                     </td>
+                    <td>
+                        <div class="pull-right">
+
+                            @if (!admin.EmailConfirmed)
+                            {
+                                <a href="@Url.Action(
+                                        "ResendConfirmLink", "Account",
+                                        new
+                                        {
+                                            userEmail = admin.UserEmail,
+                                            onBehalf = true,
+                                            returnUrl = Request.RawUrl
+                                        })"
+                                   class="confirm-resend"
+                                   data-admin-name="@admin.UserFullName">
+                                    <span class="fa fa-repeat labelled-icon"></span>Resend Invite
+                                </a>
+                            }
+                            &nbsp;
+                            <a href="@Url.Action("DeleteAdmin", "ADAC", new {biobankId = Model.BiobankId, biobankUserId = admin.UserId})"
+                               class="confirm-admin-delete"
+                               data-admin-name="@admin.UserFullName"
+                               data-biobank-name="@Model.Name">
+                                <span class="fa fa-trash labelled-icon"></span>Delete
+                            </a>
+                        </div>
+                    </td>
                 </tr>
                 }
-                </tbody>
+            </tbody>
 
         </table>
 
@@ -92,8 +119,8 @@
     </div>
 </div>
 
-        @section FooterScripts
+@section FooterScripts
 {
-            @Scripts.Render("~/bundles/datatables")
-            @Scripts.Render("~/bundles/adac/biobanks")
-        }
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/adac/biobanks")
+}
