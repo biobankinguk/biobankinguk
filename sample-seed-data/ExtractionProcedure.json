@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "value": "Excision",
+        "sortOrder": 1,
+        "materialTypeId": 4
+    },
+    {
+        "id": 2,
+        "value": "Biopsy",
+        "sortOrder": 2,
+        "materialTypeId": 4
+    },
+    {
+        "id": 3,
+        "value": "Other",
+        "sortOrder": 3,
+        "materialTypeId": 4
+    },
+    {
+        "id": 4,
+        "value": "Unknown",
+        "sortOrder": 4,
+        "materialTypeId": 4
+    }  
+]

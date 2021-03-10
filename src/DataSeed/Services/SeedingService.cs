@@ -66,6 +66,7 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<TreatmentLocation>,
 
                 /* Shared */
+                SeedJson<ExtractionProcedure>,
                 SeedJson<MaterialTypeGroup>,
                 SeedMaterialTypes,
                 SeedJson<Sex>,
