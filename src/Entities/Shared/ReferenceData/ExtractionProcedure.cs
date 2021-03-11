@@ -11,7 +11,9 @@ namespace Biobanks.Entities.Shared.ReferenceData
 
         public int SortOrder { get; set; }
 
-        public int MaterialTypeId { get; set; }
+        public bool IsDefaultValue { get; set; }
+
+        public int? MaterialTypeId { get; set; }
 
         public virtual MaterialType MaterialType { get; set; }
     }

@@ -26,6 +26,9 @@ namespace Biobanks.DataSeed
         {
             var connString = context.Configuration["RefDataConnectionString"];
 
+            Console.WriteLine("Assume Seeding has failed until success message is raised!");
+            Console.WriteLine();
+
             if (string.IsNullOrWhiteSpace(connString))
             {
                 Console.WriteLine("Couldn't find a connection string.");
