@@ -4,13 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Entities.Api;
 using Biobanks.Submissions.Core.Types;
-using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Api.Types;
+using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Data;
 using LinqKit;
 
-namespace Biobanks.Submissions.Api.Services
+namespace Biobanks.Submissions.Core.Services
 {
     /// <inheritdoc />
     public class SubmissionService : ISubmissionService
@@ -125,6 +124,20 @@ namespace Biobanks.Submissions.Api.Services
         {
             var submission = await _db.Submissions.SingleAsync(s => s.Id == submissionId);
             _db.Remove(submission);
+            await _db.SaveChangesAsync();
+        }
+
+        /// <inheritdoc />
+        public async Task ProcessRecords(int submissionId, int n)
+        {
+            var sub = await _db.Submissions.Where(x => x.Id == submissionId).SingleOrDefaultAsync();
+
+            if (sub == null) throw new KeyNotFoundException();
+
+            var newTotalRecordsProcessed = sub.RecordsProcessed + n;
+            sub.RecordsProcessed = newTotalRecordsProcessed <= sub.TotalRecords ? newTotalRecordsProcessed : sub.TotalRecords;
+            sub.StatusChangeTimestamp = DateTime.Now;
+
             await _db.SaveChangesAsync();
         }
     }
