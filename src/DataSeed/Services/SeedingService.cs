@@ -222,7 +222,7 @@ namespace Biobanks.DataSeed.Services
                 }
             },
             identityInsert: false,
-            ignoreExisiting: true);
+            ignoreExisting: true);
 
             // Default PreservationType
             Seed(new[]
@@ -234,7 +234,7 @@ namespace Biobanks.DataSeed.Services
                 }
             },
             identityInsert: false,
-            ignoreExisiting: true);
+            ignoreExisting: true);
         }
 
         private void SeedExtractionProcedures()
@@ -309,11 +309,11 @@ namespace Biobanks.DataSeed.Services
             Seed(ReadJson<T>());
         }
 
-        private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true, bool ignoreExisiting = false) where T : class
+        private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true, bool ignoreExisting = false) where T : class
         {
             var set = _db.Set<T>();
 
-            if (set.Any() && !ignoreExisiting)
+            if (set.Any() && !ignoreExisting)
             {
                 _logger.LogInformation($"{ typeof(T).Name }: { set.Count() } entries already exist");
             }
