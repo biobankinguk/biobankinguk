@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Common.Types
+﻿namespace Biobanks.Submissions.Core.Types
 {
     // TODO: There's also a Status Refdata table. Which is the authority? Can we make this clearer!
     public static class Statuses

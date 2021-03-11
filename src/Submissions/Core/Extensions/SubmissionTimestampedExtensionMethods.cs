@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Biobanks.Common.Exceptions;
+using Biobanks.Submissions.Core.Exceptions;
 using Biobanks.Entities.Api.Contracts;
 
-namespace Biobanks.Common.Extensions
+namespace Biobanks.Submissions.Core.Extensions
 {
     public static class SubmissionTimestampedExtensionMethods
     {

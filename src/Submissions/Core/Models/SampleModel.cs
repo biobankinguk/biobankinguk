@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Models
+namespace Biobanks.Submissions.Core.Models
 {
     public class SampleModel : SampleIdModel
     {

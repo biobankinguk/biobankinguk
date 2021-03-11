@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Common.Models
+﻿namespace Biobanks.Submissions.Core.Models
 {
     public class TreatmentModel : TreatmentIdModel
     {

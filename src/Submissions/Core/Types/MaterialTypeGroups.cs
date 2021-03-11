@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Common.Types
+﻿namespace Biobanks.Submissions.Core.Types
 {
     public static class MaterialTypeGroups
     {

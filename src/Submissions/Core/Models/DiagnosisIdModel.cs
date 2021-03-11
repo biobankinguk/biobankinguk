@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Common.Models
+namespace Biobanks.Submissions.Core.Models
 {
     public class DiagnosisIdModel : BaseIdModel
     {

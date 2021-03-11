@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Common.Models
+﻿namespace Biobanks.Submissions.Core.Models
 {
     /// <summary>
     /// Stub to retain consistency - to be used if Diagnosis type in future has non-identifying properties.

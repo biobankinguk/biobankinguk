@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Biobanks.Common.Exceptions
+namespace Biobanks.Submissions.Core.Exceptions
 {
     public class NewerRecordExistsException : Exception { }
 }

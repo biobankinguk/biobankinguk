@@ -1,7 +1,7 @@
 ﻿using System;
 using Biobanks.Common.Types;
 
-namespace Biobanks.Common.Models
+namespace Biobanks.Submissions.Core.Models
 {
     public class OperationsQueueItem
     {
