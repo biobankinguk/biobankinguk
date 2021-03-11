@@ -83,6 +83,8 @@ namespace Biobanks.DataSeed.Services
                 seedAction();
             }
 
+            _logger.LogInformation($"Seeding Complete - Ran { _seedActions.Count() } Seeding Actions");
+
             return Task.CompletedTask;
         }
 
