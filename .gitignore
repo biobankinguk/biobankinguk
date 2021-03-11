@@ -1,6 +1,9 @@
 tempkey.rsa
 **/wwwroot/dist
 
+# ignore data being seeded
+src/DataSeed/**/data
+
 snomed.csv
 swagger.xml
 

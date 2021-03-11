@@ -1,0 +1,45 @@
+name: Build Directory Web App
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - src/Directory/**
+      - .github/workflows/build.directory.yml
+
+env:
+  # Configure these
+  CI_build-config: release
+  CI_solution: ./src/Directory/Directory.sln
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: microsoft/setup-msbuild@v1
+      - uses: NuGet/setup-nuget@v1.0.5
+        with:
+          nuget-version: 5.x
+
+      - name: nuget restore
+        run: nuget restore ${{ env.CI_solution }}
+
+      - name: Build Solution
+        run: >-
+          msbuild.exe
+          ${{ env.CI_solution }}
+          /p:Configuration="${{ env.CI_build-config }}"
+          /nologo
+          /nr:false
+          /p:DeployOnBuild=true
+          /p:WebPublishMethod=Package
+          /p:_PackageTempDir=C:/Package
+          /p:PackageAsSingleFile=true
+          /p:PrecompileBeforePublish=true
+          /p:SkipInvalidConfigurations=true
+          /p:PackageLocation="$GITHUB_WORKSPACE/webdeploy"
+          /p:Platform="Any CPU"
