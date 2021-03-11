@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyData", "LegacyData.csproj", "{5725B32C-0007-42FD-B3D3-B52186285282}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\Api\Common\Common.csproj", "{C2C27CFD-4C82-4415-A551-C5D67DB0BCC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\Submissions\Common\Common.csproj", "{C2C27CFD-4C82-4415-A551-C5D67DB0BCC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
