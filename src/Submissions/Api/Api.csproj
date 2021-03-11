@@ -24,7 +24,6 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="clacks.overhead" Version="1.0.0" />
     <PackageReference Include="Hangfire" Version="1.7.19" />
-    <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="5.0.23" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.4" />
