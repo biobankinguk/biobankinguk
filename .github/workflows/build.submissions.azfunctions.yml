@@ -1,0 +1,35 @@
+name: Build Submissions AzFunctions
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - src/Api/Common/**
+      - src/Api/SubmissionAzureFunction/**
+      - .github/workflows/build.submissions.azfunctions.yml
+
+env:
+  # Configure these
+  CI_build-config: release
+  CI_dotnet-version: 3.1.x
+  CI_project: ./src/Api/SubmissionAzureFunction/SubmissionAzureFunction.csproj
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+
+    runs-on: windows-latest # while we have net48 dependencies and aren't net50 ourselves
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet build
+        run: >-
+          dotnet build
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
