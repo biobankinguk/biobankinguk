@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 
@@ -22,6 +22,13 @@ namespace Biobanks.Submissions.Api.Services
             var q = _queueClient.GetQueueReference(queue);
             await q.CreateIfNotExistsAsync();
             await q.AddMessageAsync(new CloudQueueMessage(message));
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteAsync(string queue, string messageId)
+        {
+            var q = _queueClient.GetQueueReference(queue);
+            await q.DeleteMessageAsync(messageId, ""); // TODO: is popReceipt important to do this from an id only?
         }
     }
 }
