@@ -4,7 +4,7 @@ using AutoMapper;
 using Biobanks.Entities.Api;
 using Biobanks.Submissions.Core.Models;
 
-namespace Biobanks.Submissions.Api.MappingProfiles
+namespace Biobanks.Submissions.Core.MappingProfiles
 {
     /// <inheritdoc />
     public class SubmissionProfile : Profile

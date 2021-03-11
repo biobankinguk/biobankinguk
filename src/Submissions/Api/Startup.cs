@@ -103,7 +103,10 @@ namespace Biobanks.Submissions.Api
             });
             services.AddSwaggerGenNewtonsoftSupport();
 
-            services.AddAutoMapper(typeof(Startup));
+            // Add Core Mapping Profiles, and any Local ones
+            services.AddAutoMapper(
+                typeof(Core.MappingProfiles.DiagnosisProfile),
+                typeof(Startup));
 
             // Synchronous I/O is disabled by default in .NET Core 3
             services.Configure<IISServerOptions>(opts =>
