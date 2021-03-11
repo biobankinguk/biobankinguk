@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data.Caching;
 using Biobanks.Directory.Data.Repositories;
@@ -15,7 +14,6 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Biobanks.Services
 {
