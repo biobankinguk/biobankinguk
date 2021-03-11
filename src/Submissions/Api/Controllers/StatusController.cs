@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Common.Auth;
-using Biobanks.Common.Models;
-using Biobanks.SubmissionApi.Services.Contracts;
-using Biobanks.SubmissionApi.Types;
+using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Api.Types;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Biobanks.SubmissionApi.Controllers
+namespace Biobanks.Submissions.Api.Controllers
 {
     /// <inheritdoc />
     /// <summary>

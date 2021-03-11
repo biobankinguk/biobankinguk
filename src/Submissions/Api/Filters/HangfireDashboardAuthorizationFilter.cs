@@ -1,7 +1,7 @@
-﻿using Biobanks.Common.Auth;
+﻿using Biobanks.Submissions.Api.Auth;
 using Hangfire.Dashboard;
 
-namespace Biobanks.SubmissionApi.Filters
+namespace Biobanks.Submissions.Api.Filters
 {
     /// <inheritdoc />
     public class HangfireDashboardAuthorizationFilter : IDashboardAuthorizationFilter

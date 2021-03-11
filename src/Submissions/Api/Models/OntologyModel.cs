@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.SubmissionApi.Models
+namespace Biobanks.Submissions.Api.Models
 {
     /// <summary>
     /// Ontology - for examples, see https://www.ebi.ac.uk/ols/ontologies.

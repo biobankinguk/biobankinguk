@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Biobanks.Entities.Api;
-using Biobanks.SubmissionApi.Models;
-using SampleModel = Biobanks.Common.Models.SampleModel;
+using Biobanks.Submissions.Api.Models;
+using SampleModel = Biobanks.Submissions.Core.Models.SampleModel;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Biobanks.Submissions.Api.MappingProfiles
 {
     /// <inheritdoc />
     public class SampleProfile : Profile

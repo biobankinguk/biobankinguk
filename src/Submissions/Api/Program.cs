@@ -1,9 +1,8 @@
 ﻿using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Biobanks.SubmissionApi
+namespace Biobanks.Submissions.Api
 {
     /// <summary>
     /// Main Program init for app.
@@ -29,7 +28,6 @@ namespace Biobanks.SubmissionApi
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseApplicationInsights();
                     webBuilder.ConfigureServices(services => services.AddAutofac());
                     webBuilder.UseStartup<Startup>();
                     webBuilder.ConfigureKestrel((context, opts) =>

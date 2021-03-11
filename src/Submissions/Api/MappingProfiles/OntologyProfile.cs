@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.SubmissionApi.Models;
+using Biobanks.Submissions.Api.Models;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Biobanks.Submissions.Api.MappingProfiles
 {
     /// <inheritdoc />
     public class OntologyProfile : Profile

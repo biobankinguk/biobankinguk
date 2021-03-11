@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Biobanks.Common.Models;
+using Biobanks.Submissions.Core.Models;
 
-namespace Biobanks.SubmissionApi.Models
+namespace Biobanks.Submissions.Api.Models
 {
     /// <inheritdoc />
     public class PaginatedErrorsModel : BasePaginatedModel

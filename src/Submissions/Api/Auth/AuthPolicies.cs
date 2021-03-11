@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Biobanks.Common.Auth
+namespace Biobanks.Submissions.Api.Auth
 {
     public static class AuthPolicies
     {

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Biobanks.Entities.Api;
-using Biobanks.Common.Models;
-using Biobanks.SubmissionApi.Models;
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Api.Models;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Biobanks.Submissions.Api.MappingProfiles
 {
     /// <inheritdoc />
     public class DiagnosisProfile : Profile

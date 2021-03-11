@@ -1,7 +1,6 @@
 ﻿using System;
-using Biobanks.Common.Types;
 
-namespace Biobanks.SubmissionApi.Types
+namespace Biobanks.Submissions.Api.Types
 {
     /// <summary>
     /// Additional parameters for paginating a filtered list of submissions

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Biobanks.Entities.Api;
-using Biobanks.SubmissionApi.Models;
+using Biobanks.Submissions.Api.Models;
 using Newtonsoft.Json.Linq;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Biobanks.Submissions.Api.MappingProfiles
 {
     /// <inheritdoc />
     public class ErrorProfile : Profile

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Models;
-using Biobanks.Common.Types;
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Core.Types;
 
-namespace Biobanks.SubmissionApi.Models
+namespace Biobanks.Submissions.Api.Models
 {
     /// <inheritdoc />
     public class TreatmentSubmissionModel : TreatmentIdModel

@@ -1,8 +1,8 @@
 ﻿using System;
-using Biobanks.Common.Models;
-using Biobanks.Common.Types;
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Api.Types;
 
-namespace Biobanks.Common
+namespace Biobanks.Submissions.Api
 {
     public static class Utils
     {

@@ -1,6 +1,6 @@
-﻿using Biobanks.Common.Models;
+﻿using Biobanks.Submissions.Core.Models;
 
-namespace Biobanks.SubmissionApi.Models
+namespace Biobanks.Submissions.Api.Models
 {
     /// <inheritdoc />
     /// <summary>

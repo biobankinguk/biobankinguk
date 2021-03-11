@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Biobanks.Entities.Api.ReferenceData;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Contracts
 {
     /// <summary>
     /// Service for handling Sample Content Method reference data.

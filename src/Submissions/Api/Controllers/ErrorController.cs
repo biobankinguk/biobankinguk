@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Common;
-using Biobanks.Common.Auth;
-using Biobanks.Common.Types;
-using Biobanks.SubmissionApi.Models;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Types;
+using Biobanks.Submissions.Api.Models;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Biobanks.SubmissionApi.Controllers
+namespace Biobanks.Submissions.Api.Controllers
 {
     /// <summary>
     /// This controller serves as a sub-controller for submission errors only

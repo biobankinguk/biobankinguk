@@ -3,14 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Data;
-using Biobanks.Common.Types;
-using Biobanks.SubmissionApi.Consts;
-using Biobanks.SubmissionApi.EqualityComparers;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Core.Types;
+using Biobanks.Submissions.Api.Consts;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Biobanks.Submissions.Api.Services
 {
     /// <inheritdoc />
     public class CommitService : ICommitService

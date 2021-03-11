@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Entities.Api;
-using Biobanks.Common.Types;
+using Biobanks.Submissions.Api.Types;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Contracts
 {
     /// <summary>
     /// Service for handling Submission Error information

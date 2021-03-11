@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Biobanks.Common.Auth;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Biobanks.SubmissionApi.Controllers.ReferenceData
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
     /// <inheritdoc />
     [Route("[controller]")]

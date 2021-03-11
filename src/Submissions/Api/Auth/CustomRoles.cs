@@ -1,6 +1,6 @@
-﻿namespace Biobanks.Common.Auth
+﻿namespace Biobanks.Submissions.Api.Auth
 {
-    public class CustomRoles
+    public static class CustomRoles
     {
         public const string SuperAdmin = "SuperAdmin";
     }

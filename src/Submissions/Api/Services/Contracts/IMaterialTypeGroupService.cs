@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Contracts
 {
     /// <summary>
     /// Service for handling Material Type Group reference data.

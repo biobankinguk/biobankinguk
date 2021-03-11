@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Biobanks.Submissions.Api.Services
 {
     /// <inheritdoc />
     public class OntologyService : IOntologyService

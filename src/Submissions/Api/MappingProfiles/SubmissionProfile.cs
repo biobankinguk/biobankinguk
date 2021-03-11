@@ -2,9 +2,9 @@
 using System.Linq;
 using AutoMapper;
 using Biobanks.Entities.Api;
-using Biobanks.Common.Models;
+using Biobanks.Submissions.Core.Models;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Biobanks.Submissions.Api.MappingProfiles
 {
     /// <inheritdoc />
     public class SubmissionProfile : Profile
@@ -23,8 +23,8 @@ namespace Biobanks.SubmissionApi.MappingProfiles
                         src => src.Errors.Count))
                 .ForMember(
                     dest => dest.RecordsFailed,
-                    opts => opts.ResolveUsing(
-                        src => src.Errors?.Select(e => e.RecordIdentifiers).Distinct().Count()))
+                    opts => opts.MapFrom((src, _) =>
+                        src.Errors?.Select(e => e.RecordIdentifiers).Distinct().Count()))
                 .ForMember(
                     dest => dest.ErrorUri,
                     opts => opts.MapFrom(

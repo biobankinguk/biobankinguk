@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Common.Types
+﻿namespace Biobanks.Submissions.Api.Types
 {
     /// <summary>
     /// Standard parameters for a paginated collection

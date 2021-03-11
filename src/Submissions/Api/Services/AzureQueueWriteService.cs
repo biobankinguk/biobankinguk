@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Biobanks.Submissions.Api.Services
 {
     /// <inheritdoc />
     public class AzureQueueWriteService : IQueueWriteService

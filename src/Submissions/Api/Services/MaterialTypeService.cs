@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Common.Models;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Data;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Biobanks.Submissions.Api.Services
 {
     /// <inheritdoc />
     public class MaterialTypeService : IMaterialTypeService

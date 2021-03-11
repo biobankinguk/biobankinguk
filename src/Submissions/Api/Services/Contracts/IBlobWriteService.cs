@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Contracts
 {
     /// <summary>
     /// Service for writing objects to blob storage providers.

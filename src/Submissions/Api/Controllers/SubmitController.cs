@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Common.Auth;
-using Biobanks.Common.Models;
-using Biobanks.Common.Types;
-using Biobanks.SubmissionApi.EqualityComparers;
-using Biobanks.SubmissionApi.Models;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Core.Types;
+using Biobanks.Submissions.Api.EqualityComparers;
+using Biobanks.Submissions.Api.Models;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Biobanks.SubmissionApi.Controllers
+namespace Biobanks.Submissions.Api.Controllers
 {
     /// <inheritdoc />
     /// <summary>

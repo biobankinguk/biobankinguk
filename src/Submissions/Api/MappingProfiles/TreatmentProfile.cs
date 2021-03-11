@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Biobanks.Entities.Api;
-using Biobanks.SubmissionApi.Models;
-using TreatmentModel = Biobanks.Common.Models.TreatmentModel;
+using Biobanks.Submissions.Api.Models;
+using TreatmentModel = Biobanks.Submissions.Core.Models.TreatmentModel;
 
-namespace Biobanks.SubmissionApi.MappingProfiles
+namespace Biobanks.Submissions.Api.MappingProfiles
 {
     /// <inheritdoc />
     public class TreatmentProfile : Profile

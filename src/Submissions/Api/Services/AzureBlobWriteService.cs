@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Biobanks.Submissions.Api.Services
 {
     /// <inheritdoc />
     public class AzureBlobWriteService : IBlobWriteService

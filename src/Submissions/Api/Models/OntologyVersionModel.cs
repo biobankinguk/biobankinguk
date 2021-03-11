@@ -1,4 +1,4 @@
-﻿namespace Biobanks.SubmissionApi.Models
+﻿namespace Biobanks.Submissions.Api.Models
 {
     /// <summary>
     /// Ontology version.

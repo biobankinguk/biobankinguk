@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Common.Models;
-using Biobanks.Common.Types;
 
-namespace Biobanks.SubmissionApi.Models
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Core.Types;
+
+namespace Biobanks.Submissions.Api.Models
 {
     /// <inheritdoc />
     public class SampleSubmissionModel : SampleIdModel

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Common.Models;
+using Biobanks.Submissions.Core.Models;
 
-namespace Biobanks.SubmissionApi.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Contracts
 {
     /// <summary>
     /// Service for handling Material Type reference data.

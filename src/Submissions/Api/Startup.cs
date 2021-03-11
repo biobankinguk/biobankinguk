@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using Autofac;
-using AutoMapper;
-using Biobanks.Common.Auth;
-using Biobanks.SubmissionApi.Filters;
-using Biobanks.SubmissionApi.Services;
-using Biobanks.SubmissionApi.Services.Contracts;
+using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Filters;
+using Biobanks.Submissions.Api.Services;
+using Biobanks.Submissions.Api.Services.Contracts;
 using clacks.overhead;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,9 +21,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 using UoN.AspNetCore.VersionMiddleware;
 
-namespace Biobanks.SubmissionApi
+namespace Biobanks.Submissions.Api
 {
     /// <summary>
     /// Main startup pipeline for app - configures services and middleware.
@@ -50,6 +51,8 @@ namespace Biobanks.SubmissionApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<Data.BiobanksDbContext>(opts =>
@@ -61,8 +64,12 @@ namespace Biobanks.SubmissionApi
                 opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
                 opts.EnableEndpointRouting = false;
             })
+                // TODO: Consider System.Text.Json
                 .AddNewtonsoftJson(opts =>
-                    opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
+                    {
+                        opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                        opts.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    });
 
             // JWT Auth
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -84,7 +91,7 @@ namespace Biobanks.SubmissionApi
             services.AddSwaggerGen(opts =>
             {
                 opts.SwaggerDoc("v1",
-                    new Microsoft.OpenApi.Models.OpenApiInfo
+                    new OpenApiInfo
                     {
                         Title = "UKCRC Tissue Directory API",
                         Version = "v1"
@@ -93,11 +100,10 @@ namespace Biobanks.SubmissionApi
                 opts.IncludeXmlComments(Path.Combine(
                     PlatformServices.Default.Application.ApplicationBasePath,
                     Configuration["Swagger:Filename"]));
-
-                opts.DescribeAllEnumsAsStrings();
             });
+            services.AddSwaggerGenNewtonsoftSupport();
 
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(Startup));
 
             // Synchronous I/O is disabled by default in .NET Core 3
             services.Configure<IISServerOptions>(opts =>

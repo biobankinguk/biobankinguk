@@ -1,6 +1,6 @@
 ﻿namespace Biobanks.Common.Auth
 {
-    public class CustomRoles
+    public static class CustomRoles
     {
         public const string SuperAdmin = "SuperAdmin";
     }

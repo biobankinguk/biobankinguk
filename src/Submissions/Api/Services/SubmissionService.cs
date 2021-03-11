@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Common;
 using Biobanks.Entities.Api;
-using Biobanks.Common.Types;
-using Biobanks.SubmissionApi.Services.Contracts;
-using Biobanks.SubmissionApi.Types;
+using Biobanks.Submissions.Core.Types;
+using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Api.Types;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Data;
+using LinqKit;
 
-namespace Biobanks.SubmissionApi.Services
+namespace Biobanks.Submissions.Api.Services
 {
     /// <inheritdoc />
     public class SubmissionService : ISubmissionService
@@ -38,8 +38,7 @@ namespace Biobanks.SubmissionApi.Services
             // we're gonna build up conditional stuff on this query, so store a basic one for now
             var query = _db.Submissions.AsNoTracking();
 
-            var predicate = PredicateBuilder.True<Submission>();
-            predicate = predicate.And(x => x.BiobankId == biobankId); //always filter on bb id
+            var predicate = PredicateBuilder.New<Submission>(x => x.BiobankId == biobankId); //always filter on bb id
 
             DateTime? since = null; //so we can abuse since mechanics WITHOUT modifying the paging object
 
