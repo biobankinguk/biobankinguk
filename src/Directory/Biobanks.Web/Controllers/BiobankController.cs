@@ -1077,23 +1077,31 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AddSampleSet(int id, AddSampleSetModel model)
         {
             var apiCheck = await _biobankReadService.IsCollectionFromApi(id);
+
             ViewData["CollectionApiStatus"] = apiCheck;
+
             if (model.IsValid(ModelState) && apiCheck == false)
             {
-                await _biobankWriteService.AddSampleSetAsync(new CollectionSampleSet
+                var sampleSet = new CollectionSampleSet
                 {
                     CollectionId = id,
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
-                    MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
-                    {
-                        MaterialTypeId = x.materialType,
-                        StorageTemperatureId = x.storageTemperature,
-                        CollectionPercentageId = x.percentage,
-                        MacroscopicAssessmentId = x.macroscopicAssessment
-                    }).ToList()
-                });
+                    MaterialDetails = model.MaterialPreservationDetails.Select(x => 
+                        new MaterialDetail
+                        {
+                            MaterialTypeId = x.materialType,
+                            StorageTemperatureId = x.storageTemperature,
+                            CollectionPercentageId = x.percentage,
+                            MacroscopicAssessmentId = x.macroscopicAssessment
+                        }
+                    )
+                    .ToList()
+                };
+
+                // Add New SampleSet
+                await _biobankWriteService.AddSampleSetAsync(sampleSet);
 
                 SetTemporaryFeedbackMessage("Sample Set added!", FeedbackMessageType.Success);
 
@@ -1184,20 +1192,26 @@ namespace Biobanks.Web.Controllers
 
             if (model.IsValid(ModelState) && apiCheck == false)
             {
-                await _biobankWriteService.UpdateSampleSetAsync(new CollectionSampleSet
+                var sampleSet = new CollectionSampleSet
                 {
                     SampleSetId = id,
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
-                    MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
-                    {
-                        MaterialTypeId = x.materialType,
-                        StorageTemperatureId = x.storageTemperature,
-                        CollectionPercentageId = x.percentage,
-                        MacroscopicAssessmentId = x.macroscopicAssessment
-                    }).ToList()
-                });
+                    MaterialDetails = model.MaterialPreservationDetails.Select(x =>
+                        new MaterialDetail
+                        {
+                            MaterialTypeId = x.materialType,
+                            StorageTemperatureId = x.storageTemperature,
+                            CollectionPercentageId = x.percentage,
+                            MacroscopicAssessmentId = x.macroscopicAssessment,
+                        }
+                    )
+                    .ToList()
+                };
+
+                // Update SampleSet
+                await _biobankWriteService.UpdateSampleSetAsync(sampleSet);
 
                 SetTemporaryFeedbackMessage("Sample Set updated!", FeedbackMessageType.Success);
 

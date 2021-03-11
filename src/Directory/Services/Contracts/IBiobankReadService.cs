@@ -104,7 +104,7 @@ namespace Biobanks.Services.Contracts
         Task<PreservationType> GetDefaultPreservationTypeAsync();
         Task<int> GetPreservationTypeUsageCount(int id);
         Task<bool> IsPreservationTypeInUse(int id);
-        Task<bool> ValidPreservationTypeAsync(string value, int storageTemperatureId);
+        Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId);
 
         Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync();
         Task<bool> ValidStorageTemperatureAsync(string preservationTypeDescription);

@@ -1131,7 +1131,7 @@ namespace Biobanks.Services
         public async Task<bool> IsPreservationTypeInUse(int id)
             => (await GetPreservationTypeUsageCount(id)) > 0;
 
-        public async Task<bool> ValidPreservationTypeAsync(string value, int storageTemperatureId)
+        public async Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId)
             => (await _preservationTypeRepository.ListAsync(false, x =>
                     x.Value == value &&
                     x.StorageTemperatureId == storageTemperatureId)
