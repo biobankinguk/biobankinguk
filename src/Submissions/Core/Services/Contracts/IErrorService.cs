@@ -27,6 +27,15 @@ namespace Biobanks.Submissions.Core.Services.Contracts
         /// <returns>The requested Error</returns>
         Task<Error> Get(int errorId);
 
+        /// <summary>
+        /// Add Errors based on Validation Exceptions
+        /// </summary>
+        /// <param name="submissionId">ID of the Submission to add Errors to</param>
+        /// <param name="op">The Operation in question</param>
+        /// <param name="type">Type (?)</param>
+        /// <param name="messages">The Validation exceptions</param>
+        /// <param name="biobankId">ID of the Biobank this submission is for</param>
+        /// <returns></returns>
         Task Add(int submissionId, Operation op, string type, ICollection<BiobanksValidationResult> messages, int biobankId);
     }
 }
