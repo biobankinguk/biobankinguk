@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
@@ -44,6 +44,13 @@ namespace Biobanks.Submissions.Api.Services
             await blockBlob.UploadTextAsync(text);
 
             return id;
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteAsync(string container, Guid id)
+        {
+            var blobContainer = _blobClient.GetContainerReference(container);
+            await blobContainer.GetBlobReference(id.ToString()).DeleteIfExistsAsync();
         }
     }
 }
