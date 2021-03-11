@@ -83,6 +83,7 @@ namespace Biobanks.Directory.Data
         public DbSet<Annotation> Annotations { get; set; }
 
         /* Shared Reference Data */
+        public DbSet<ExtractionProcedure> ExtractionProcedures { get; set; }
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<Sex> Sexes { get; set; }
@@ -90,6 +91,7 @@ namespace Biobanks.Directory.Data
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         public DbSet<PreservationType> PreservationTypes { get; set; }
+        
 
         /*  API Entities  */
         public DbSet<Status> Statuses { get; set; }

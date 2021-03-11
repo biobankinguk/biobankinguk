@@ -44,6 +44,7 @@ namespace Biobanks.Data
         #endregion
 
         #region Reference Data: Shared
+        public DbSet<ExtractionProcedure> ExtractionProcedures { get; set; }
         public DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<OntologyTerm> OntologyTerms { get; set; }

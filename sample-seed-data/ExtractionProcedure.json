@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "value": "Excision",
+        "sortOrder": 1,
+        "materialType": {
+            "value": "Tissue specimen"
+        }
+    },
+    {
+        "id": 2,
+        "value": "Biopsy",
+        "sortOrder": 2,
+        "materialType": {
+            "value": "Tissue specimen"
+        }
+    }
+]
