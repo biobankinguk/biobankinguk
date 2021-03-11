@@ -4,8 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <DocumentationFile>swagger.xml</DocumentationFile>
 	  <Version>3.0.0-alpha.1</Version>
-    <RootNamespace>Biobanks.SubmissionApi</RootNamespace>
-    <AssemblyName>SubmissionApi</AssemblyName>
+    <RootNamespace>Biobanks.Submissions.Api</RootNamespace>
+    <AssemblyName>Biobanks.Submissions.Api</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
   </PropertyGroup>
 
