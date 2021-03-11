@@ -22,10 +22,12 @@ namespace Biobanks.Entities.Data
         public int MacroscopicAssessmentId { get; set; }
         public virtual MacroscopicAssessment MacroscopicAssessment { get; set; }
 
-        public int? ExtractionProcedureId { get; set; }
+        [Key, Column(Order = 4)]
+        public int ExtractionProcedureId { get; set; }
         public virtual ExtractionProcedure ExtractionProcedure { get; set; }
 
-        public int? PreservationTypeId { get; set; }
+        [Key, Column(Order = 5)]
+        public int PreservationTypeId { get; set; }
         public virtual PreservationType PreservationType { get; set; }
 
         public int? CollectionPercentageId { get; set; }

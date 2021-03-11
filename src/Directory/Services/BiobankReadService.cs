@@ -15,6 +15,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Biobanks.Services
 {
@@ -1312,9 +1313,7 @@ namespace Biobanks.Services
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
-      => (await _materialDetailRepository.ListAsync(
-                 false,
-                 x => x.MaterialTypeId == id)).Count();
+            => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
