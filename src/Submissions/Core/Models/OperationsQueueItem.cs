@@ -1,5 +1,5 @@
 ﻿using System;
-using Biobanks.Common.Types;
+using Biobanks.Submissions.Core.Types;
 
 namespace Biobanks.Submissions.Core.Models
 {

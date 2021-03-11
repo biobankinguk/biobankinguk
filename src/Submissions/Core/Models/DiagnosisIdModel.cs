@@ -1,4 +1,4 @@
-﻿using Biobanks.Common.Types;
+﻿using Biobanks.Submissions.Core.Types;
 using System;
 using System.ComponentModel.DataAnnotations;
 
