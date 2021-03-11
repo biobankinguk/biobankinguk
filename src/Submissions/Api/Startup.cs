@@ -6,6 +6,9 @@ using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Services;
+using Biobanks.Submissions.Core.Services.Contracts;
+
 using clacks.overhead;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

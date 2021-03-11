@@ -1,6 +1,6 @@
 ﻿using System;
 using Biobanks.Submissions.Core.Models;
-using Biobanks.Submissions.Api.Types;
+using Biobanks.Submissions.Core.Types;
 
 namespace Biobanks.Submissions.Api
 {

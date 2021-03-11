@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Services.Contracts;
+
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
