@@ -10,6 +10,10 @@ using Biobanks.Web.Filters;
 using Microsoft.ApplicationInsights;
 using System.IO;
 using System.Net.Http;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity;
+using Biobanks.Directory.Data;
+using Biobanks.Directory.Data.Transforms.Url;
 
 namespace Biobanks.Web.Controllers
 {
@@ -17,15 +21,19 @@ namespace Biobanks.Web.Controllers
     public class SuperUserController : ApplicationBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
+        private readonly IBiobankWriteService _biobankWriteService;
         private readonly IBiobankIndexService _indexService;
         private readonly ISearchProvider _searchProvider;
+        private readonly BiobanksDbContext _db;
 
         public SuperUserController(
             IBiobankReadService biobankReadService,
+            IBiobankWriteService biobankWriteService,
             IBiobankIndexService indexService,
             ISearchProvider searchProvider)
         {
             _biobankReadService = biobankReadService;
+            _biobankWriteService = biobankWriteService;
             _indexService = indexService;
             _searchProvider = searchProvider;
         }
@@ -35,6 +43,32 @@ namespace Biobanks.Web.Controllers
         {
             return View();
         }
+
+        #region Super User Tools
+
+        public ActionResult Tools()
+        {
+            return View();
+        }
+
+        public async Task<RedirectToRouteResult> FixOrgURL()
+        {
+            try
+            {
+                var organisations =  _biobankReadService.GetOrganisations();
+                await _biobankWriteService.UpdateOrganisationURLAsync();
+            }
+            catch (Exception e) when (e is HttpRequestException || e is DbUpdateException)
+            {
+                SetTemporaryFeedbackMessage($"The process failed to succesfully complete due to: {e.GetType().Name}.", FeedbackMessageType.Warning);
+                return RedirectToAction("Tools");
+            }
+
+            SetTemporaryFeedbackMessage("The process of fixing any broken organisation URLs has succesfully completed.", FeedbackMessageType.Success);
+            return RedirectToAction("Tools");
+        }
+
+        #endregion
 
         #region Search Index Management
 

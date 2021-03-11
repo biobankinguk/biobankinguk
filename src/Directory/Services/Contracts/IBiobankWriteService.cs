@@ -156,6 +156,7 @@ namespace Biobanks.Services.Contracts
 
         Task<Organisation> SuspendBiobankAsync(int id);
         Task<Organisation> UnsuspendBiobankAsync(int id);
+        Task UpdateOrganisationURLAsync();
         Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId);
         Task RemoveFunderFromBiobankAsync(int funderId, int biobankId);
         Task DeleteBiobankAsync(int id);

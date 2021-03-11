@@ -5,6 +5,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data.Repositories;
+using Biobanks.Directory.Data.Transforms.Url;
 using System.IO;
 using AutoMapper;
 using Biobanks.Entities.Data;
@@ -12,6 +13,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
+
 
 namespace Biobanks.Services
 {
@@ -1923,6 +1925,23 @@ namespace Biobanks.Services
             await _indexService.BulkIndexBiobank(id);
 
             return biobank;
+        }
+
+        public async Task UpdateOrganisationURLAsync()
+        {
+            var biobanks = await _organisationRepository.ListAsync();
+
+            foreach (var biobank in biobanks)
+            {
+                //Transform the URL
+                biobank.Url = UrlTransformer.Transform(biobank.Url);
+
+                //Update
+                _organisationRepository.Update(biobank);
+            }
+
+            await _organisationRepository.SaveChangesAsync();
+         
         }
 
         public async Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId)
