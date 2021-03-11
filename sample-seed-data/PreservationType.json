@@ -1,18 +1,18 @@
 [
     {
-        "id": 1,
+        "id": 2,
         "value": "Paraffin",
         "sortOrder": 1,
         "storageTemperatureId": 1
     },
     {
-        "id": 2,
+        "id": 3,
         "value": "Resin (EM)",
         "sortOrder": 2,
         "storageTemperatureId": 1
     },
     {
-        "id": 3,
+        "id": 4,
         "value": "Resin (LM)",
         "sortOrder": 3,
         "storageTemperatureId": 1

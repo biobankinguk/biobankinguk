@@ -211,7 +211,7 @@ namespace Biobanks.DataSeed.Services
             var defaultValue = new[] {
                 new ExtractionProcedure
                 {
-                    Id = -1,
+                    Id = 1,
                     Value = "N/A",
                     IsDefaultValue = true
                 }
@@ -271,7 +271,7 @@ namespace Biobanks.DataSeed.Services
             var defaultValue = new[] {
                 new PreservationType
                 {
-                    Id = -1,
+                    Id = 1,
                     Value = "N/A",
                     IsDefaultValue = true
                 } 

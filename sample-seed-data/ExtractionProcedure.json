@@ -1,6 +1,6 @@
 [
     {
-        "id": 1,
+        "id": 2,
         "value": "Excision",
         "sortOrder": 1,
         "materialType": {
@@ -8,7 +8,7 @@
         }
     },
     {
-        "id": 2,
+        "id": 3,
         "value": "Biopsy",
         "sortOrder": 2,
         "materialType": {
