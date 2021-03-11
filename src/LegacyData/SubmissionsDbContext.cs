@@ -21,6 +21,7 @@ namespace Biobanks.LegacyData
         public DbSet<Error> Errors { get; set; }
 
         // Reference Data
+        public DbSet<ExtractionProcedure> ExtractionProcedures { get; set; }
         public DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<MaterialTypeMaterialTypeGroup> MaterialTypeMaterialTypeGroup { get; set; }
