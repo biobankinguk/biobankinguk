@@ -72,7 +72,7 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<Sex>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
-                SeedJson<PreservationType>,
+                SeedPreservationTypes,
             };
         }
 
@@ -207,15 +207,27 @@ namespace Biobanks.DataSeed.Services
         {
             var validMaterialTypes = _db.MaterialTypes.ToList();
 
+            // Default ExtractionProcedure
+            var defaultValue = new[] {
+                new ExtractionProcedure
+                {
+                    Id = -1,
+                    Value = "N/A",
+                    IsDefaultValue = true
+                }
+            };
+
             Seed(
-                ReadJson<ExtractionProcedure>().Select(x =>
-                    new ExtractionProcedure()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                        MaterialType = validMaterialTypes.First(y => y.Value == x.MaterialType.Value)
-                    }
+                defaultValue.Union(
+                    ReadJson<ExtractionProcedure>().Select(x =>
+                        new ExtractionProcedure()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            MaterialType = validMaterialTypes.First(y => y.Value == x.MaterialType.Value)
+                        }
+                    )
                 )
             );
         }
@@ -251,6 +263,25 @@ namespace Biobanks.DataSeed.Services
                     SortOrder = 1
                 }
             });
+        }
+
+        private void SeedPreservationTypes()
+        {
+            // Default PreservationType
+            var defaultValue = new[] {
+                new PreservationType
+                {
+                    Id = -1,
+                    Value = "N/A",
+                    IsDefaultValue = true
+                } 
+            };
+
+            Seed(
+                defaultValue.Union(
+                    ReadJson<PreservationType>()
+                )
+            );
         }
 
         private void SeedJson<T>() where T : class

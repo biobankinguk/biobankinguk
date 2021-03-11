@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210310161622_PreservationTypeNullable")]
+    partial class PreservationTypeNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1706,10 +1708,7 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<bool>("IsDefaultValue")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("MaterialTypeId")
+                    b.Property<int>("MaterialTypeId")
                         .HasColumnType("int");
 
                     b.Property<int>("SortOrder")
@@ -1792,9 +1791,6 @@ namespace Biobanks.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
-
-                    b.Property<bool>("IsDefaultValue")
-                        .HasColumnType("bit");
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
@@ -2569,7 +2565,9 @@ namespace Biobanks.Data.Migrations
                 {
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.MaterialType", "MaterialType")
                         .WithMany()
-                        .HasForeignKey("MaterialTypeId");
+                        .HasForeignKey("MaterialTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("MaterialType");
                 });
