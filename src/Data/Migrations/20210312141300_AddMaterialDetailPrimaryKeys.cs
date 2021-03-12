@@ -23,7 +23,6 @@ namespace Biobanks.Data.Migrations
                 table: "MaterialDetails",
                 type: "int",
                 nullable: false,
-                defaultValue: 0,
                 oldClrType: typeof(int),
                 oldType: "int",
                 oldNullable: true);
@@ -33,7 +32,6 @@ namespace Biobanks.Data.Migrations
                 table: "MaterialDetails",
                 type: "int",
                 nullable: false,
-                defaultValue: 0,
                 oldClrType: typeof(int),
                 oldType: "int",
                 oldNullable: true);
