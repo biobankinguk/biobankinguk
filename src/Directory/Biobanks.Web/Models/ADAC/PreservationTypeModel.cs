@@ -20,7 +20,7 @@ namespace Biobanks.Web.Models.ADAC
 
         public int SortOrder { get; set; }
 
-        public int StorageTemperatureId { get; set; }
+        public int? StorageTemperatureId { get; set; }
 
         public string StorageTemperatureName { get; set; }
 

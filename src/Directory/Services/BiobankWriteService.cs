@@ -301,22 +301,49 @@ namespace Biobanks.Services
 
         public async Task AddSampleSetAsync(CollectionSampleSet sampleSet)
         {
-            _sampleSetRepository.Insert(sampleSet);
+            // Assign default values to Material Details
+            var defaultPreservationType = await _biobankReadService.GetDefaultPreservationTypeAsync();
+            var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
 
+            foreach (var materialDetail in sampleSet.MaterialDetails)
+            {
+                if (materialDetail.PreservationTypeId == default)
+                    materialDetail.PreservationTypeId = defaultPreservationType.Id;
+
+                if (materialDetail.ExtractionProcedureId == default)
+                    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
+            }
+
+            // Add new SampleSet
+            _sampleSetRepository.Insert(sampleSet);
             await _sampleSetRepository.SaveChangesAsync();
 
+            // Update collection's timestamp
             var collection = await _collectionRepository.GetByIdAsync(sampleSet.CollectionId);
-
             collection.LastUpdated = DateTime.Now;
-
             await _collectionRepository.SaveChangesAsync();
 
+            // Index New SampleSet
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(sampleSet.CollectionId))
                 await _indexService.IndexSampleSet(sampleSet.SampleSetId);
         }
 
         public async Task UpdateSampleSetAsync(CollectionSampleSet sampleSet)
         {
+            // Assign default values to new Material Details
+            var defaultPreservationType = await _biobankReadService.GetDefaultPreservationTypeAsync();
+            var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
+
+            foreach (var materialDetail in sampleSet.MaterialDetails)
+            {
+                if (materialDetail.PreservationTypeId == default)
+                    materialDetail.PreservationTypeId = defaultPreservationType.Id;
+
+                if (materialDetail.ExtractionProcedureId == default)
+                    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
+            }
+
+            // Update exisiting SampleSet
             var existingSampleSet = (await _sampleSetRepository.ListAsync(
                 true, x => x.SampleSetId == sampleSet.SampleSetId, null,
                 x => x.Collection, x => x.MaterialDetails)).First();

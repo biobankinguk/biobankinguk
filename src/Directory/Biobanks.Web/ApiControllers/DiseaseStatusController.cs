@@ -99,7 +99,8 @@ namespace Biobanks.Web.ApiControllers
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,
-                OtherTerms = model.OtherTerms
+                OtherTerms = model.OtherTerms,
+                DisplayOnDirectory = true
             });
 
             //Everything went A-OK!
@@ -129,7 +130,8 @@ namespace Biobanks.Web.ApiControllers
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,
-                OtherTerms = model.OtherTerms
+                OtherTerms = model.OtherTerms,
+                DisplayOnDirectory = true
             });
 
             //Everything went A-OK!
