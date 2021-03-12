@@ -6,8 +6,7 @@ namespace Biobanks.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            /* Start EF6 Schema Migrations */
-            
+            #region EF6 Schema Migrations
             // Rename FK
             migrationBuilder.DropForeignKey(
                 name: "FK_dbo.MaterialDetails_dbo.PreservationTypes_PreservationTypeId",
@@ -37,9 +36,7 @@ namespace Biobanks.Data.Migrations
                 name: "IX_PreservationTypeId",
                 newName: "IX_MaterialDetails_PreservationTypeId",
                 table: "MaterialDetails");
-
-            /* End EF6 Schema Migration */
-
+            #endregion
 
             migrationBuilder.DropForeignKey(
                 name: "FK_ExtractionProcedures_MaterialTypes_MaterialTypeId",

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace Biobanks.Data.Migrations
 {
@@ -6,6 +7,27 @@ namespace Biobanks.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region EF6 Schema Migrations
+            Console.WriteLine(@"
+            Note:
+            Before applying this migration. Ensure that all records in MaterialDetails
+            have a non-null FK value for PreservationTypeId and ExtractionProcedureId
+            otherwise this mirgation WILL fail.
+            
+            Press any key to continue, or Ctrl+C to abort this migration.");
+            Console.ReadKey();
+
+            // Rename PK
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_dbo.MaterialDetails",
+                table: "MaterialDetails");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_MaterialDetails",
+                table: "MaterialDetails",
+                columns: new[] { "SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId" });
+            #endregion
+
             migrationBuilder.DropForeignKey(
                 name: "FK_MaterialDetails_ExtractionProcedures_ExtractionProcedureId",
                 table: "MaterialDetails");
