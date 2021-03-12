@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210312140033_AddMaterialDetailFields")]
+    partial class AddMaterialDetailFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -787,16 +789,16 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("MacroscopicAssessmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ExtractionProcedureId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PreservationTypeId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CollectionPercentageId")
                         .HasColumnType("int");
 
-                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId", "ExtractionProcedureId", "PreservationTypeId");
+                    b.Property<int?>("ExtractionProcedureId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PreservationTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId");
 
                     b.HasIndex("CollectionPercentageId");
 
@@ -2337,9 +2339,7 @@ namespace Biobanks.Data.Migrations
 
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.ExtractionProcedure", "ExtractionProcedure")
                         .WithMany()
-                        .HasForeignKey("ExtractionProcedureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ExtractionProcedureId");
 
                     b.HasOne("Biobanks.Entities.Data.ReferenceData.MacroscopicAssessment", "MacroscopicAssessment")
                         .WithMany()
@@ -2355,9 +2355,7 @@ namespace Biobanks.Data.Migrations
 
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.PreservationType", "PreservationType")
                         .WithMany()
-                        .HasForeignKey("PreservationTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PreservationTypeId");
 
                     b.HasOne("Biobanks.Entities.Data.CollectionSampleSet", null)
                         .WithMany("MaterialDetails")
