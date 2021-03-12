@@ -1200,7 +1200,7 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Copy SourceFiles="..\..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="$(OutDir)/App_Config" />
-    <Copy SourceFiles="..\..\..\elastic-search\directory index setup\collections.json" DestinationFolder="$(OutDir)/App_Config" />
+    <Copy SourceFiles="..\..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
+    <Copy SourceFiles="..\..\..\elastic-search\directory index setup\collections.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
   </Target>
 </Project>
