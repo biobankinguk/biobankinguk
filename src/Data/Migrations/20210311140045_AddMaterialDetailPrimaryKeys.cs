@@ -6,6 +6,41 @@ namespace Biobanks.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            /* Start EF6 Schema Migrations */
+            
+            // Rename FK
+            migrationBuilder.DropForeignKey(
+                name: "FK_dbo.MaterialDetails_dbo.PreservationTypes_PreservationTypeId",
+                table: "MaterialDetails");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_MaterialDetails_PreservationTypes_PreservationTypeId",
+                table: "MaterialDetails",
+                column: "PreservationTypeId",
+                principalTable: "PreservationTypes",
+                principalColumn: "Id");
+
+            // Rename FK
+            migrationBuilder.DropForeignKey(
+                name: "FK_dbo.PreservationTypes_dbo.StorageTemperatures_StorageTemperatureId",
+                table: "PreservationTypes");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_PreservationTypes_StorageTemperatures_StorageTemperatureId",
+                table: "PreservationTypes",
+                column: "StorageTemperatureId",
+                principalTable: "StorageTemperatures",
+                principalColumn: "Id");
+
+            // Rename Index
+            migrationBuilder.RenameIndex(
+                name: "IX_PreservationTypeId",
+                newName: "IX_MaterialDetails_PreservationTypeId",
+                table: "MaterialDetails");
+
+            /* End EF6 Schema Migration */
+
+
             migrationBuilder.DropForeignKey(
                 name: "FK_ExtractionProcedures_MaterialTypes_MaterialTypeId",
                 table: "ExtractionProcedures");
