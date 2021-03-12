@@ -56,7 +56,11 @@ namespace Biobanks.Web.Controllers
             try
             {
                 var organisations =  _biobankReadService.GetOrganisations();
-                await _biobankWriteService.UpdateOrganisationURLAsync();
+                foreach (var organisation in organisations)
+                {
+                    await _biobankWriteService.UpdateOrganisationURLAsync(organisation.OrganisationId);
+                }
+                
             }
             catch (Exception e) when (e is HttpRequestException || e is DbUpdateException)
             {

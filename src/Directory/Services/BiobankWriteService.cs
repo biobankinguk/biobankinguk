@@ -1927,19 +1927,16 @@ namespace Biobanks.Services
             return biobank;
         }
 
-        public async Task UpdateOrganisationURLAsync()
+        public async Task UpdateOrganisationURLAsync(int id)
         {
-            var biobanks = await _organisationRepository.ListAsync();
+            var biobank = await _organisationRepository.GetByIdAsync(id);
+      
+            //Transform the URL
+            biobank.Url = UrlTransformer.Transform(biobank.Url);
 
-            foreach (var biobank in biobanks)
-            {
-                //Transform the URL
-                biobank.Url = UrlTransformer.Transform(biobank.Url);
-
-                //Update
-                _organisationRepository.Update(biobank);
-            }
-
+            //Update
+            _organisationRepository.Update(biobank);
+            
             await _organisationRepository.SaveChangesAsync();
          
         }
