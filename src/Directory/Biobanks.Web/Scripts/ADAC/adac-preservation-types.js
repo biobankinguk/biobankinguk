@@ -1,20 +1,21 @@
 ﻿// Modals
 var adacPreservationTypeVM;
 
-function PreservationType(id, name, storageTemperatureId) {
+function PreservationType(id, name, storageTemperatureId, sortOrder) {
     this.id = id;
+    this.sortOrder = ko.observable(sortOrder);
     this.name = ko.observable(name);
     this.storageTemperatureId = ko.observable(storageTemperatureId);
 }
 
-function PreservationTypeModal(id, name, storageTemperatureId, storageTemperatures) {
+function PreservationTypeModal(id, name, storageTemperatureId, storageTemperatures, sortOrder) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.preservationType = ko.observable(
-        new PreservationType(id, name, storageTemperatureId)
+        new PreservationType(id, name, storageTemperatureId, sortOrder)
     );
 
     this.storageTemperatures = ko.observableArray(storageTemperatures);
@@ -26,7 +27,7 @@ function AdacPreservationTypeViewModel() {
 
     this.storageTemperatures = $(this.modalId).data("storageTemperatures");
 
-    this.modal = new PreservationTypeModal(0, "", 0, this.storageTemperatures);
+    this.modal = new PreservationTypeModal(0, "", 0, this.storageTemperatures,0);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -40,7 +41,7 @@ function AdacPreservationTypeViewModel() {
 
     this.openModalForAdd = function () {
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.preservationType(new PreservationType(0, "", 0));
+        _this.modal.preservationType(new PreservationType(0, "", 0,0));
         _this.showModal();
     };
 
@@ -53,7 +54,8 @@ function AdacPreservationTypeViewModel() {
             new PreservationType(
                 preservationType.Id,
                 preservationType.Value,
-                preservationType.StorageTemperatureId
+                preservationType.StorageTemperatureId,
+                preservationType.SortOrder
             )
         );
 
@@ -107,13 +109,34 @@ $(function () {
         paging: false,
         info: false,
         autoWidth: false,
+        rowReorder: true,
+        columnDefs: [
+            { orderable: true, "visible": false, className: 'reorder', targets: 0 }, // Column must be orderable for rowReorder
+            { orderable: false, targets: '_all' }
+        ],
         language: {
             search: "Filter: ",
         },
-        columnDefs: [
-            { orderable: true, targets: 0 },
-            { orderable: true, targets: 1 },
-            { orderable: false, targets: '_all' }
-        ]
+    });
+
+    // Re-Order Event
+    table.on('row-reorder', function (e, diff, edit) {
+
+        // Find the row that was moved
+        var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
+
+        //AJAX Update
+        $.ajax({
+            url: $(triggerRow.node).data('resource-url') +
+                "/" + $(triggerRow.node).data('preservation-type-id') + "/move",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id: $(triggerRow.node).data('preservation-type-id'),
+                value: $(triggerRow.node).data('preservation-type-value'),
+                sortOrder: (triggerRow.newPosition + 1),
+                storageTemperatureId: $(triggerRow.node).data('preservation-type-storageTemperatureId')
+            }
+        });
     });
 });

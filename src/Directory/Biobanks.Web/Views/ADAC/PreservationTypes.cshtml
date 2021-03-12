@@ -24,6 +24,7 @@
             <thead>
                 <tr>
                 <tr>
+                    <th>Sort Order</th>
                     <th>Preservation Type</th>
                     <th>Storage Temperature</th>
                     <th>Sample Set Count</th>
@@ -34,8 +35,14 @@
             <tbody>
                 @foreach (var item in Model.PreservationTypes)
                 {
-                                     
-                    <tr class="@(item.PreservationTypeCount > 0 ? "info" : "")">
+                    if (item.SortOrder > 0)
+                    { 
+                    <tr class="@(item.PreservationTypeCount > 0 ? "info" : "")" 
+                        data-resource-url="/api/PreservationType"
+						data-preservation-type-id="@item.Id"
+						data-preservation-type-value="@item.Value"
+                        data-preservation-type-storageTemperatureId="@item.StorageTemperatureId">
+                        <td>@item.SortOrder</td>
                         <td>@item.Value</td>
                         <td>@item.StorageTemperatureName</td>                     
                         <td>@item.PreservationTypeCount</td>
@@ -68,7 +75,7 @@
                             }
                         </td>
                     </tr>
-                    
+                    }
                 }
             </tbody>
         </table>
@@ -84,7 +91,7 @@
     });
 }
 
-<div class="modal fade" id="preservation-types-modal" tabindex="-1" role="dialog" aria-labelledby="county-label" data-storage-temperatures="@Json.Encode(storageTemperatures)">
+<div class="modal fade" id="preservation-types-modal" tabindex="-1" role="dialog" aria-labelledby="preservation-types-label" data-storage-temperatures="@Json.Encode(storageTemperatures)">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -116,6 +123,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.preservationType().id">
+                            <input type="hidden" id="SortOrder" name="SortOrder" data-bind="value: modal.preservationType().sortOrder()">
 
                             <!-- Preservation Type -->
                             <div class="form-group">
