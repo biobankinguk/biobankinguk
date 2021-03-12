@@ -2,7 +2,7 @@
 
 namespace Biobanks.Data.Migrations
 {
-    public partial class AddMaterialDetailPrimaryKeys : Migration
+    public partial class AddMaterialDetailFields : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,14 +46,6 @@ namespace Biobanks.Data.Migrations
                 table: "ExtractionProcedures");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_MaterialDetails_ExtractionProcedures_ExtractionProcedureId",
-                table: "MaterialDetails");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_MaterialDetails_PreservationTypes_PreservationTypeId",
-                table: "MaterialDetails");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_PreservationTypes_StorageTemperatures_StorageTemperatureId",
                 table: "PreservationTypes");
 
@@ -71,26 +63,6 @@ namespace Biobanks.Data.Migrations
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
-
-            migrationBuilder.AlterColumn<int>(
-                name: "PreservationTypeId",
-                table: "MaterialDetails",
-                type: "int",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<int>(
-                name: "ExtractionProcedureId",
-                table: "MaterialDetails",
-                type: "int",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
                 name: "MaterialTypeId",
@@ -114,22 +86,6 @@ namespace Biobanks.Data.Migrations
                 principalTable: "MaterialTypes",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_MaterialDetails_ExtractionProcedures_ExtractionProcedureId",
-                table: "MaterialDetails",
-                column: "ExtractionProcedureId",
-                principalTable: "ExtractionProcedures",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_MaterialDetails_PreservationTypes_PreservationTypeId",
-                table: "MaterialDetails",
-                column: "PreservationTypeId",
-                principalTable: "PreservationTypes",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PreservationTypes_StorageTemperatures_StorageTemperatureId",
@@ -147,14 +103,6 @@ namespace Biobanks.Data.Migrations
                 table: "ExtractionProcedures");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_MaterialDetails_ExtractionProcedures_ExtractionProcedureId",
-                table: "MaterialDetails");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_MaterialDetails_PreservationTypes_PreservationTypeId",
-                table: "MaterialDetails");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_PreservationTypes_StorageTemperatures_StorageTemperatureId",
                 table: "PreservationTypes");
 
@@ -177,22 +125,6 @@ namespace Biobanks.Data.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
-                name: "PreservationTypeId",
-                table: "MaterialDetails",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AlterColumn<int>(
-                name: "ExtractionProcedureId",
-                table: "MaterialDetails",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AlterColumn<int>(
                 name: "MaterialTypeId",
                 table: "ExtractionProcedures",
                 type: "int",
@@ -209,22 +141,6 @@ namespace Biobanks.Data.Migrations
                 principalTable: "MaterialTypes",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_MaterialDetails_ExtractionProcedures_ExtractionProcedureId",
-                table: "MaterialDetails",
-                column: "ExtractionProcedureId",
-                principalTable: "ExtractionProcedures",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_MaterialDetails_PreservationTypes_PreservationTypeId",
-                table: "MaterialDetails",
-                column: "PreservationTypeId",
-                principalTable: "PreservationTypes",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PreservationTypes_StorageTemperatures_StorageTemperatureId",

@@ -128,7 +128,9 @@ namespace Biobanks.Data
                     x.SampleSetId,
                     x.MaterialTypeId,
                     x.StorageTemperatureId,
-                    x.MacroscopicAssessmentId
+                    x.MacroscopicAssessmentId,
+                    x.ExtractionProcedureId,
+                    x.PreservationTypeId
                 });
 
             model.Entity<NetworkUser>()
