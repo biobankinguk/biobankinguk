@@ -136,19 +136,6 @@ namespace Biobanks.Submissions.Api
             services.AddTransient<ICommitService, CommitService>();
             services.AddTransient<IRejectService, RejectService>();
 
-            // reference data services
-            services.AddTransient<IMaterialTypeService, MaterialTypeService>();
-            services.AddTransient<IMaterialTypeGroupService, MaterialTypeGroupService>();
-            services.AddTransient<IOntologyService, OntologyService>();
-            services.AddTransient<IOntologyVersionService, OntologyVersionService>();
-            services.AddTransient<ISampleContentMethodService, SampleContentMethodService>();
-            services.AddTransient<ISexService, SexService>();
-            services.AddTransient<ISnomedTagService, SnomedTagService>();
-            services.AddTransient<IOntologyTermService, OntologyTermService>();
-            services.AddTransient<IStorageTemperatureService, StorageTemperatureService>();
-            services.AddTransient<ITreatmentLocationService, TreatmentLocationService>();
-
-
             services.AddOptions();
         }
 
