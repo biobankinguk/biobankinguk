@@ -3,6 +3,7 @@ using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Directory.Data
@@ -116,6 +117,8 @@ namespace Biobanks.Directory.Data
         public DbSet<LiveSample> Samples { get; set; }
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
+
+        public DbSet<ApiClient> ApiClients { get; set; }
 
         public BiobanksDbContext() : this("Biobanks") { }
         
