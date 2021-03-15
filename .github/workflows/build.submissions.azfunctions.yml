@@ -32,8 +32,7 @@ jobs:
 
       # .NET Isolated Functions Worker still has a 3.1 SDK dependency for now
       # https://github.com/Azure/azure-functions-dotnet-worker/issues/301
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.x
       
