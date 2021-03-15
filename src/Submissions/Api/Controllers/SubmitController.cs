@@ -8,7 +8,7 @@ using Biobanks.Submissions.Core.Models;
 using Biobanks.Submissions.Core.Types;
 using Biobanks.Submissions.Api.EqualityComparers;
 using Biobanks.Submissions.Api.Models;
-using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;

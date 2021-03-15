@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services.Contracts
+namespace Biobanks.Submissions.Core.Services.Contracts
 {
     /// <summary>
     /// Service for writing objects to blob storage providers.
@@ -24,5 +24,13 @@ namespace Biobanks.Submissions.Api.Services.Contracts
         /// <param name="contentType">MIME type of the text.</param>
         /// <returns></returns>
         Task<Guid> StoreTextAsync(string container, string text, string contentType = "text/plain");
+
+        /// <summary>
+        /// Delete a Blob
+        /// </summary>
+        /// <param name="container">ID of the container the Blob is stored in</param>
+        /// <param name="id">ID of the Blob record to delete</param>
+        /// <returns></returns>
+        Task DeleteAsync(string container, Guid id);
     }
 }

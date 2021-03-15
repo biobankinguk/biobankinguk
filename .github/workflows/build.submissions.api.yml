@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - src/Submissions/Core/**
+      - src/Submissions/Core.AzureStorage/**
       - src/Submissions/Api/**
       - .github/workflows/build.submissions.api.yml
 

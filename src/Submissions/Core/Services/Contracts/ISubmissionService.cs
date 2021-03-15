@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Entities.Api;
-using Biobanks.Submissions.Api.Types;
+using Biobanks.Submissions.Core.Types;
 
-namespace Biobanks.Submissions.Api.Services.Contracts
+namespace Biobanks.Submissions.Core.Services.Contracts
 {
     /// <summary>
     /// Service for handling Submission metadata (e.g. status information)
@@ -49,5 +49,13 @@ namespace Biobanks.Submissions.Api.Services.Contracts
         /// <param name="submissionId">ID of the submission to delete.</param>
         /// <returns></returns>
         Task DeleteSubmission(int submissionId);
+
+        /// <summary>
+        /// Marks n records as processed on the Submissions
+        /// </summary>
+        /// <param name="submissionId">ID of the submission to update the processed count for</param>
+        /// <param name="n">The number of Records Processed</param>
+        /// <returns></returns>
+        Task ProcessRecords(int submissionId, int n);
     }
 }

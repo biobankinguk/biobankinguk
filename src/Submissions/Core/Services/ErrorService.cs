@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Entities.Api;
-using Biobanks.Submissions.Api.Types;
-using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Types;
+using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Data;
+using Biobanks.Submissions.Core.Exceptions;
 
-namespace Biobanks.Submissions.Api.Services
+namespace Biobanks.Submissions.Core.Services
 {
     /// <inheritdoc />
     public class ErrorService : IErrorService
@@ -47,5 +48,26 @@ namespace Biobanks.Submissions.Api.Services
                 .Include(x => x.Submission)
                 .Where(x => x.Id == errorId)
                 .SingleOrDefaultAsync();
+
+        /// <inheritdoc />
+        public async Task Add(int submissionId, Operation op, string type, ICollection<BiobanksValidationResult> messages, int biobankId)
+        {
+            var sub = await _db.Submissions
+                .Where(x => x.Id == submissionId)
+                .Include(x => x.Errors)
+                .SingleOrDefaultAsync();
+
+            foreach (var message in messages)
+            {
+                sub.Errors.Add(new Error
+                {
+                    Message = $"Failed to {op} {type}: {message.ErrorMessage}",
+                    RecordIdentifiers = message.RecordIdentifiers,
+                    SubmissionId = submissionId
+                });
+            }
+
+            await _db.SaveChangesAsync();
+        }
     }
 }

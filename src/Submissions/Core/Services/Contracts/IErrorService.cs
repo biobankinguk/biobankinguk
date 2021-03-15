@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Entities.Api;
-using Biobanks.Submissions.Api.Types;
+using Biobanks.Submissions.Core.Exceptions;
+using Biobanks.Submissions.Core.Types;
 
-namespace Biobanks.Submissions.Api.Services.Contracts
+namespace Biobanks.Submissions.Core.Services.Contracts
 {
     /// <summary>
     /// Service for handling Submission Error information
@@ -25,5 +26,16 @@ namespace Biobanks.Submissions.Api.Services.Contracts
         /// <param name="errorId">The ID of the Error to fetch</param>
         /// <returns>The requested Error</returns>
         Task<Error> Get(int errorId);
+
+        /// <summary>
+        /// Add Errors based on Validation Exceptions
+        /// </summary>
+        /// <param name="submissionId">ID of the Submission to add Errors to</param>
+        /// <param name="op">The Operation in question</param>
+        /// <param name="type">Type (?)</param>
+        /// <param name="messages">The Validation exceptions</param>
+        /// <param name="biobankId">ID of the Biobank this submission is for</param>
+        /// <returns></returns>
+        Task Add(int submissionId, Operation op, string type, ICollection<BiobanksValidationResult> messages, int biobankId);
     }
 }
