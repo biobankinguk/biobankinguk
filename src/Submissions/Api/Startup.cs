@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Autofac;
-using Biobanks.Submissions.Api.Auth;
+﻿using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
@@ -10,8 +6,10 @@ using Biobanks.Submissions.Core.AzureStorage;
 using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
 
-using clacks.overhead;
+using ClacksMiddleware.Extensions;
+
 using Hangfire;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,8 +21,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 using UoN.AspNetCore.VersionMiddleware;
 
@@ -156,7 +159,7 @@ namespace Biobanks.Submissions.Api
         /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.RememberTerryPratchett(); // TODO: replace with newer Clacks middleware
+            app.GnuTerryPratchett();
 
             if (env.IsDevelopment())
             {
@@ -211,7 +214,7 @@ namespace Biobanks.Submissions.Api
             app.UseHangfireServer();
             app.UseHangfireDashboard("/TasksDashboard", new DashboardOptions
             {
-                Authorization = new [] {new HangfireDashboardAuthorizationFilter()}
+                Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
             });
         }
     }
