@@ -1,4 +1,5 @@
 ﻿using Biobanks.Data;
+using Biobanks.Submissions.Core.AzureStorage;
 using Biobanks.Submissions.Core.Config;
 using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
@@ -43,22 +44,18 @@ namespace AzFunctions
             services.AddDbContext<BiobanksDbContext>(options => options
                 .EnableSensitiveDataLogging()
                 .UseSqlServer(
-                    config.GetConnectionString("DefaultConnection")
+                    config.GetConnectionString("Default")
                 ),
                 ServiceLifetime.Transient
             );
 
-            // Cloud Services
-            services.AddTransient(s =>
-                CloudStorageAccount.Parse(
-                    config.GetConnectionString("AzureQueueConnection")
-                )
-            );
-
             // Storage Services
-            services.AddTransient<IBlobReadService, AzureBlobReadService>();
-            services.AddTransient<IBlobWriteService, AzureBlobWriteService>();
-            services.AddTransient<IQueueWriteService, AzureQueueWriteService>();
+            services.AddTransient<IBlobReadService, AzureBlobReadService>(
+                _ => new(config.GetConnectionString("AzureStorage")));
+            services.AddTransient<IBlobWriteService, AzureBlobWriteService>(
+                _ => new(config.GetConnectionString("AzureStorage")));
+            services.AddTransient<IQueueWriteService, AzureQueueWriteService>(
+                _ => new(config.GetConnectionString("AzureStorage")));
 
             // Core Data Services
             services.AddTransient<ISampleWriteService, SampleWriteService>();
