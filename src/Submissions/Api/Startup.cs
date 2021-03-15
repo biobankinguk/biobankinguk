@@ -6,6 +6,7 @@ using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.AzureStorage;
 using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
 
@@ -22,7 +23,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -56,10 +56,10 @@ namespace Biobanks.Submissions.Api
         {
             services.AddApplicationInsightsTelemetry();
 
-            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")));
 
             services.AddDbContext<Data.BiobanksDbContext>(opts =>
-                opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                opts.UseSqlServer(Configuration.GetConnectionString("Default"),
                     sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
 
             services.AddMvc(opts =>
@@ -117,13 +117,19 @@ namespace Biobanks.Submissions.Api
                 opts.AllowSynchronousIO = true;
             });
 
-            // disable output fortmat buffering
+            // disable output format buffering
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true);
-            
+
+
+            // Cloud Services
+            services.AddTransient<IBlobWriteService, AzureBlobWriteService>(
+                _ => new(Configuration.GetConnectionString("AzureStorage")));
+            services.AddTransient<IQueueWriteService, AzureQueueWriteService>(
+                _ => new(Configuration.GetConnectionString("AzureStorage")));
+
+
             services.AddTransient<ISubmissionService, SubmissionService>();
             services.AddTransient<IErrorService, ErrorService>();
-            services.AddTransient<IBlobWriteService, AzureBlobWriteService>();
-            services.AddTransient<IQueueWriteService, AzureQueueWriteService>();
             services.AddTransient<ICommitService, CommitService>();
             services.AddTransient<IRejectService, RejectService>();
 
@@ -139,16 +145,8 @@ namespace Biobanks.Submissions.Api
             services.AddTransient<IStorageTemperatureService, StorageTemperatureService>();
             services.AddTransient<ITreatmentLocationService, TreatmentLocationService>();
 
-            //autofac.Populate(services); //load the basic services into autofac's container
-            //return new AutofacServiceProvider(autofac.Build());
-            services.AddOptions();
-        }
 
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.Register(
-                    (c, p) => CloudStorageAccount.Parse(Configuration.GetConnectionString("AzureQueueConnectionString")))
-                .AsSelf();
+            services.AddOptions();
         }
 
         /// <summary>
@@ -158,18 +156,7 @@ namespace Biobanks.Submissions.Api
         /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // first migrate the database
-            using (var serviceScope = app.ApplicationServices
-                .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<Data.BiobanksDbContext>())
-                {
-                    context.Database.Migrate();
-                }
-            }
-
-            app.RememberTerryPratchett();
+            app.RememberTerryPratchett(); // TODO: replace with newer Clacks middleware
 
             if (env.IsDevelopment())
             {

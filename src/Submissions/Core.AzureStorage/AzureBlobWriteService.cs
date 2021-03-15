@@ -1,21 +1,26 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+
 using Biobanks.Submissions.Core.Services.Contracts;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Services
+namespace Biobanks.Submissions.Core.AzureStorage
 {
     /// <inheritdoc />
     public class AzureBlobWriteService : IBlobWriteService
     {
-        private readonly CloudBlobClient _blobClient;
+        private readonly BlobServiceClient _blobsClient;
 
         /// <inheritdoc />
-        public AzureBlobWriteService(CloudStorageAccount storageAccount)
+        public AzureBlobWriteService(string connectionString)
         {
-            _blobClient = storageAccount.CreateCloudBlobClient();
+            _blobsClient = new BlobServiceClient(connectionString);
         }
 
         /// <inheritdoc />
@@ -30,18 +35,21 @@ namespace Biobanks.Submissions.Api.Services
         {
             if (string.IsNullOrWhiteSpace(text)) throw new ArgumentNullException(nameof(text));
 
-            var blobContainer = _blobClient.GetContainerReference(container);
+            var containerClient = _blobsClient.GetBlobContainerClient(container);
 
-            if (!await blobContainer.ExistsAsync())
-                await blobContainer.CreateAsync();
+            if (!await containerClient.ExistsAsync())
+                await containerClient.CreateAsync();
 
             var id = Guid.NewGuid(); // generate a unique id for the blob
 
-            var blockBlob = blobContainer.GetBlockBlobReference(id.ToString());
+            var blobClient = containerClient.GetBlobClient(id.ToString());
 
-            blockBlob.Properties.ContentType = contentType;
-
-            await blockBlob.UploadTextAsync(text);
+            await blobClient.UploadAsync(
+                new MemoryStream(Encoding.UTF8.GetBytes(text)),
+                new BlobHttpHeaders()
+                {
+                    ContentType = contentType
+                });
 
             return id;
         }
@@ -49,8 +57,8 @@ namespace Biobanks.Submissions.Api.Services
         /// <inheritdoc />
         public async Task DeleteAsync(string container, Guid id)
         {
-            var blobContainer = _blobClient.GetContainerReference(container);
-            await blobContainer.GetBlobReference(id.ToString()).DeleteIfExistsAsync();
+            var containerClient = _blobsClient.GetBlobContainerClient(container);
+            await containerClient.GetBlobClient(id.ToString()).DeleteIfExistsAsync();
         }
     }
 }
