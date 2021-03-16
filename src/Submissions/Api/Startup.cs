@@ -55,8 +55,6 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
-
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
                 .AddJsonOptions(o =>
@@ -81,7 +79,7 @@ namespace Biobanks.Submissions.Api
                         RequireExpirationTime = false
                     };
                 })
-                .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuthentication", null);
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>(BasicAuthConstants.AuthenticationScheme, null);
 
             services
                 .AddOptions()
@@ -95,6 +93,13 @@ namespace Biobanks.Submissions.Api
                         sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
 
                 .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")))
+
+                .AddAuthorization(o =>
+                {
+                    o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
+                    o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
+                        AuthPolicies.IsBasicAuthenticated);
+                })
 
                 .AddSwaggerGen(opts =>
                     {
@@ -142,8 +147,7 @@ namespace Biobanks.Submissions.Api
             }
             else
             {
-                // TODO only enable when ready
-                //app.UseHsts();
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
@@ -151,11 +155,6 @@ namespace Biobanks.Submissions.Api
             app.UseStatusCodePages();
 
             app.UseVersion();
-            /*
-            app.UseSwagger(c =>
-                c.PreSerializeFilters.Add((swagger, request) =>
-                    swagger.Host = request.Host.Value));
-            */
 
             app.UseSwagger(c =>
             {
@@ -164,8 +163,6 @@ namespace Biobanks.Submissions.Api
                     swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } };
                 });
             });
-
-
 
             app.UseSwaggerUI(c =>
             {
@@ -180,10 +177,7 @@ namespace Biobanks.Submissions.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization());
 
             // Hangfire
             app.UseHangfireServer();

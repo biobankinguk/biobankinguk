@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Auth
 {
     public static class AuthPolicies
     {
-        public static AuthorizationPolicy BuildDefaultJwtPolicy()
+        private static AuthorizationPolicy IsAuthenticated
             => new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .RequireAssertion(
-                    ctx => ctx.User.HasClaim(claim => claim.Type == CustomClaimTypes.BiobankId)
-                           || ctx.User.IsInRole(CustomRoles.SuperAdmin))
                 .Build();
 
-        public static AuthorizationPolicy RequireSuperAdminRole()
+        public static AuthorizationPolicy IsTokenAuthenticated
             => new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .RequireRole(CustomRoles.SuperAdmin)
-            .Build();
+                .Combine(IsAuthenticated)
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .RequireClaim(CustomClaimTypes.BiobankId)
+                .Build();
+
+        public static AuthorizationPolicy IsBasicAuthenticated
+            => new AuthorizationPolicyBuilder()
+                .Combine(IsAuthenticated)
+                .AddAuthenticationSchemes(BasicAuthConstants.AuthenticationScheme)
+                .Build();
     }
 }
