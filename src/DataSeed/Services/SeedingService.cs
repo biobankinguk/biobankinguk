@@ -70,6 +70,7 @@ namespace Biobanks.DataSeed.Services
                 SeedMaterialTypes,
                 SeedExtractionProcedures,
                 SeedJson<Sex>,
+                SeedJson<SnomedTag>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
                 SeedPreservationTypes,
