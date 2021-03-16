@@ -3,6 +3,7 @@ using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Directory.Data
@@ -17,7 +18,7 @@ namespace Biobanks.Directory.Data
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<OrganisationType> OrganisationTypes { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
-        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
+        public DbSet<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public DbSet<OrganisationUser> OrganisationUsers { get; set; }
         public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
 
@@ -83,6 +84,7 @@ namespace Biobanks.Directory.Data
         public DbSet<Annotation> Annotations { get; set; }
 
         /* Shared Reference Data */
+        public DbSet<ExtractionProcedure> ExtractionProcedures { get; set; }
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<Sex> Sexes { get; set; }
@@ -90,6 +92,7 @@ namespace Biobanks.Directory.Data
         public DbSet<SnomedTag> SnomedTags { get; set; }
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         public DbSet<PreservationType> PreservationTypes { get; set; }
+        
 
         /*  API Entities  */
         public DbSet<Status> Statuses { get; set; }
@@ -115,6 +118,8 @@ namespace Biobanks.Directory.Data
         public DbSet<StagedSample> StagedSamples { get; set; }
         public DbSet<StagedSampleDelete> StagedSampleDeletes { get; set; }
 
+        public DbSet<ApiClient> ApiClients { get; set; }
+
         public BiobanksDbContext() : this("Biobanks") { }
         
         public BiobanksDbContext(string connectionString) : base(connectionString)
@@ -124,6 +129,16 @@ namespace Biobanks.Directory.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ApiClient>()
+                .HasMany(c => c.Organisations)
+                .WithMany(o => o.ApiClients)
+                .Map(join =>
+                {
+                    join.MapLeftKey("ApiClientsId");
+                    join.MapRightKey("OrganisationsOrganisationId");
+                    join.ToTable("ApiClientOrganisation");
+                });
+
             modelBuilder.Entity<Collection>()
                 .Property(f => f.StartDate)
                 .HasColumnType("datetime2");
@@ -136,6 +151,26 @@ namespace Biobanks.Directory.Data
                     gt.MapLeftKey("MaterialTypeGroupsId");
                     gt.MapRightKey("MaterialTypesId");
                     gt.ToTable("MaterialTypeMaterialTypeGroup");
+                });
+
+            modelBuilder.Entity<Collection>()
+                .HasMany(t => t.ConsentRestrictions)
+                .WithMany(g => g.Collections)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("CollectionsCollectionId");
+                    gt.MapRightKey("ConsentRestrictionsId");
+                    gt.ToTable("CollectionConsentRestriction");
+                });
+
+            modelBuilder.Entity<Funder>()
+                .HasMany(t => t.Organisations)
+                .WithMany(g => g.Funders)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("FundersId");
+                    gt.MapRightKey("OrganisationsOrganisationId");
+                    gt.ToTable("FunderOrganisation");
                 });
 
             modelBuilder.Entity<OntologyTerm>()
