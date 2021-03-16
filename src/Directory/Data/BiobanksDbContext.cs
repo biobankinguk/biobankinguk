@@ -129,6 +129,16 @@ namespace Biobanks.Directory.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ApiClient>()
+                .HasMany(c => c.Organisations)
+                .WithMany(o => o.ApiClients)
+                .Map(join =>
+                {
+                    join.MapLeftKey("ApiClientsId");
+                    join.MapRightKey("OrganisationsOrganisationId");
+                    join.ToTable("ApiClientOrganisation");
+                });
+
             modelBuilder.Entity<Collection>()
                 .Property(f => f.StartDate)
                 .HasColumnType("datetime2");
