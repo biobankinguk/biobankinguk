@@ -1,4 +1,5 @@
 ﻿using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
@@ -55,6 +56,9 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // local config
+            var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
+
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
                 .AddJsonOptions(o =>
@@ -67,15 +71,13 @@ namespace Biobanks.Submissions.Api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
                 {
-                    opts.Audience = Configuration["JWT:Audience"];
+                    opts.Audience = JwtBearerConstants.TokenAudience;
                     opts.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = Configuration["JWT:Issuer"],
+                        ValidIssuer = JwtBearerConstants.TokenIssuer,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Convert.FromBase64String(
-                                Configuration["JWT:Secret"])),
+                        IssuerSigningKey = Crypto.GenerateSigningKey(jwtConfig.Secret),
                         RequireExpirationTime = false
                     };
                 })
@@ -85,6 +87,7 @@ namespace Biobanks.Submissions.Api
                 .AddOptions()
 
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
+                .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
 
                 .AddApplicationInsightsTelemetry()
 

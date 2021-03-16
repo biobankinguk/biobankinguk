@@ -9,6 +9,7 @@ namespace Biobanks.Submissions.Api.Filters
         /// <inheritdoc />
         public bool Authorize(DashboardContext ctx)
         {
+            // TODO: How does this even work?
             return ctx.GetHttpContext().User.IsInRole(CustomRoles.SuperAdmin);
         }
     }
