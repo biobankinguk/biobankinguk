@@ -139,7 +139,10 @@ namespace Biobanks.Submissions.Api
         /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.GnuTerryPratchett();
+            // Early pipeline config
+            app
+                .GnuTerryPratchett()
+                .UseHttpsRedirection();
 
             if (env.IsDevelopment())
             {
@@ -150,41 +153,39 @@ namespace Biobanks.Submissions.Api
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app
+                // Simple public middleware
+                .UseStatusCodePages()
+                .UseVersion()
 
-            app.UseStatusCodePages();
-
-            app.UseVersion();
-
-            app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                // Swagger
+                .UseSwagger(c =>
                 {
-                    swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } };
+                    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                        swaggerDoc.Servers = new List<OpenApiServer> {
+                            new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } });
+                })
+                .UseSwaggerUI(c =>
+                {
+                    c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1 Docs");
+                    c.SupportedSubmitMethods(); // don't allow "try it out" as the token auth doesn't work
+                })
+
+                // Everything past this point is routed and subject to Auth
+                .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
+
+                // Endpoint Routing
+                .UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization())
+
+                // Hangfire
+                .UseHangfireServer()
+                .UseHangfireDashboard("/TasksDashboard", new DashboardOptions
+                {
+                    Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
                 });
-            });
-
-            app.UseSwaggerUI(c =>
-            {
-                c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1 Docs");
-                c.SupportedSubmitMethods(); // don't allow "try it out" as the token auth doesn't work
-            });
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization());
-
-            // Hangfire
-            app.UseHangfireServer();
-            app.UseHangfireDashboard("/TasksDashboard", new DashboardOptions
-            {
-                Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
-            });
         }
     }
 }
