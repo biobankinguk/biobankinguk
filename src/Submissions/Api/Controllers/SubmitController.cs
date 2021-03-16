@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+
 using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Core.Models;
-using Biobanks.Submissions.Core.Types;
 using Biobanks.Submissions.Api.EqualityComparers;
 using Biobanks.Submissions.Api.Models;
+using Biobanks.Submissions.Core.Models;
 using Biobanks.Submissions.Core.Services.Contracts;
+using Biobanks.Submissions.Core.Types;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+
 using Swashbuckle.AspNetCore.Annotations;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
@@ -92,7 +96,7 @@ namespace Biobanks.Submissions.Api.Controllers
                 return BadRequest(
                     $"This submission contains multiple entries with matching identifiers in the following sections: {string.Join('.', duplicates)}");
             }
-                
+
             var diagnosesUpdates = new List<DiagnosisModel>();
             var samplesUpdates = new List<SampleModel>();
             var treatmentsUpdates = new List<TreatmentModel>();
@@ -219,7 +223,7 @@ namespace Biobanks.Submissions.Api.Controllers
                     await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesUpdates);
 
                 await _queueWriteService.PushAsync("operations",
-                    JsonConvert.SerializeObject(
+                    JsonSerializer.Serialize(
                         new OperationsQueueItem
                         {
                             SubmissionId = submission.Id,
@@ -239,7 +243,7 @@ namespace Biobanks.Submissions.Api.Controllers
                     await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesDeletes);
 
                 await _queueWriteService.PushAsync("operations",
-                    JsonConvert.SerializeObject(
+                    JsonSerializer.Serialize(
                         new OperationsQueueItem
                         {
                             SubmissionId = submission.Id,
@@ -259,7 +263,7 @@ namespace Biobanks.Submissions.Api.Controllers
                     await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesUpdates);
 
                 await _queueWriteService.PushAsync("operations",
-                    JsonConvert.SerializeObject(
+                    JsonSerializer.Serialize(
                         new OperationsQueueItem
                         {
                             SubmissionId = submission.Id,
@@ -279,7 +283,7 @@ namespace Biobanks.Submissions.Api.Controllers
                     await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesDeletes);
 
                 await _queueWriteService.PushAsync("operations",
-                    JsonConvert.SerializeObject(
+                    JsonSerializer.Serialize(
                         new OperationsQueueItem
                         {
                             SubmissionId = submission.Id,
@@ -299,7 +303,7 @@ namespace Biobanks.Submissions.Api.Controllers
                     await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsUpdates);
 
                 await _queueWriteService.PushAsync("operations",
-                    JsonConvert.SerializeObject(
+                    JsonSerializer.Serialize(
                         new OperationsQueueItem
                         {
                             SubmissionId = submission.Id,
@@ -320,7 +324,7 @@ namespace Biobanks.Submissions.Api.Controllers
                     await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsDeletes);
 
                 await _queueWriteService.PushAsync("operations",
-                    JsonConvert.SerializeObject(
+                    JsonSerializer.Serialize(
                         new OperationsQueueItem
                         {
                             SubmissionId = submission.Id,

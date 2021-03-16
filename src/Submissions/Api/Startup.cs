@@ -10,10 +10,10 @@ using ClacksMiddleware.Extensions;
 
 using Hangfire;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,12 +22,10 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Serialization;
 
 using UoN.AspNetCore.VersionMiddleware;
 
@@ -57,27 +55,17 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplicationInsightsTelemetry();
+            //opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
 
-            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")));
+            // MVC
+            services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
-            services.AddDbContext<Data.BiobanksDbContext>(opts =>
-                opts.UseSqlServer(Configuration.GetConnectionString("Default"),
-                    sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
-
-            services.AddMvc(opts =>
-            {
-                opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
-                opts.EnableEndpointRouting = false;
-            })
-                // TODO: Consider System.Text.Json
-                .AddNewtonsoftJson(opts =>
-                    {
-                        opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                        opts.SerializerSettings.Converters.Add(new StringEnumConverter());
-                    });
-
-            // JWT Auth
+            // Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
                 {
@@ -92,51 +80,51 @@ namespace Biobanks.Submissions.Api
                                 Configuration["JWT:Secret"])),
                         RequireExpirationTime = false
                     };
-                });
+                })
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuthentication", null);
 
-            services.AddSwaggerGen(opts =>
-            {
-                opts.SwaggerDoc("v1",
-                    new OpenApiInfo
+            services
+                .AddOptions()
+
+                .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
+
+                .AddApplicationInsightsTelemetry()
+
+                .AddDbContext<Data.BiobanksDbContext>(opts =>
+                    opts.UseSqlServer(Configuration.GetConnectionString("Default"),
+                        sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
+
+                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")))
+
+                .AddSwaggerGen(opts =>
                     {
-                        Title = "UKCRC Tissue Directory API",
-                        Version = "v1"
-                    });
+                        opts.SwaggerDoc("v1",
+                            new OpenApiInfo
+                            {
+                                Title = "UKCRC Tissue Directory API",
+                                Version = "v1"
+                            });
 
-                opts.IncludeXmlComments(Path.Combine(
-                    PlatformServices.Default.Application.ApplicationBasePath,
-                    Configuration["Swagger:Filename"]));
-            });
-            services.AddSwaggerGenNewtonsoftSupport();
+                        opts.IncludeXmlComments(Path.Combine(
+                            PlatformServices.Default.Application.ApplicationBasePath,
+                            Configuration["Swagger:Filename"]));
+                    })
 
-            // Add Core Mapping Profiles, and any Local ones
-            services.AddAutoMapper(
-                typeof(Core.MappingProfiles.DiagnosisProfile),
-                typeof(Startup));
+                .AddAutoMapper(
+                    typeof(Core.MappingProfiles.DiagnosisProfile),
+                    typeof(Startup))
 
-            // Synchronous I/O is disabled by default in .NET Core 3
-            services.Configure<IISServerOptions>(opts =>
-            {
-                opts.AllowSynchronousIO = true;
-            });
+                // Cloud services
+                .AddTransient<IBlobWriteService, AzureBlobWriteService>(
+                    _ => new(Configuration.GetConnectionString("AzureStorage")))
+                .AddTransient<IQueueWriteService, AzureQueueWriteService>(
+                    _ => new(Configuration.GetConnectionString("AzureStorage")))
 
-            // disable output format buffering
-            services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true);
-
-
-            // Cloud Services
-            services.AddTransient<IBlobWriteService, AzureBlobWriteService>(
-                _ => new(Configuration.GetConnectionString("AzureStorage")));
-            services.AddTransient<IQueueWriteService, AzureQueueWriteService>(
-                _ => new(Configuration.GetConnectionString("AzureStorage")));
-
-
-            services.AddTransient<ISubmissionService, SubmissionService>();
-            services.AddTransient<IErrorService, ErrorService>();
-            services.AddTransient<ICommitService, CommitService>();
-            services.AddTransient<IRejectService, RejectService>();
-
-            services.AddOptions();
+                // Local Services
+                .AddTransient<ISubmissionService, SubmissionService>()
+                .AddTransient<IErrorService, ErrorService>()
+                .AddTransient<ICommitService, CommitService>()
+                .AddTransient<IRejectService, RejectService>();
         }
 
         /// <summary>
