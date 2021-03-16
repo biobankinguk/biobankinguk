@@ -4,7 +4,7 @@
         "value": "Paraffin",
         "sortOrder": 1,
         "storageTemperature": {
-            "value": "Room temperature"
+            "value": "RT"
         }
     },
     {
@@ -12,7 +12,7 @@
         "value": "Resin (EM)",
         "sortOrder": 2,
         "storageTemperature": {
-            "value": "Room temperature"
+            "value": "RT"
         }
     },
     {
@@ -20,7 +20,7 @@
         "value": "Resin (LM)",
         "sortOrder": 3,
         "storageTemperature": {
-            "value": "Room temperature"
+            "value": "RT"
         }
     }  
 ]
