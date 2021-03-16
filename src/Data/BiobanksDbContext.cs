@@ -2,6 +2,7 @@
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -44,6 +45,7 @@ namespace Biobanks.Data
         #endregion
 
         #region Reference Data: Shared
+        public DbSet<ExtractionProcedure> ExtractionProcedures { get; set; }
         public DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<OntologyTerm> OntologyTerms { get; set; }
@@ -53,11 +55,11 @@ namespace Biobanks.Data
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         #endregion
 
-        #region Application Data: API
+        #region Application Data: Submissions Service
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Error> Errors { get; set; }
 
-        public DbSet<LiveDiagnosis> LiveDiagnoses { get; set; }
+        public DbSet<LiveDiagnosis> Diagnoses { get; set; }
         public DbSet<StagedDiagnosis> StagedDiagnoses { get; set; }
         public DbSet<StagedDiagnosisDelete> StagedDiagnosisDeletes { get; set; }
 
@@ -89,7 +91,7 @@ namespace Biobanks.Data
         public DbSet<OrganisationRegisterRequest> OrganisationRegisterRequests { get; set; }
         public DbSet<OrganisationType> OrganisationTypes { get; set; }
         public DbSet<OrganisationUser> OrganisationUsers { get; set; }
-        public DbSet<OrganisationServiceOffering> OrgServiceOfferings { get; set; }
+        public DbSet<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
         public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
         #endregion
@@ -98,7 +100,9 @@ namespace Biobanks.Data
         public DbSet<Annotation> Annotations { get; set; }
         public DbSet<Publication> Publications { get; set; }
         #endregion
-        
+
+        public DbSet<ApiClient> ApiClients { get; set; }
+
         protected override void OnModelCreating(ModelBuilder model)
         {
             // Join Tables
@@ -127,7 +131,9 @@ namespace Biobanks.Data
                     x.SampleSetId,
                     x.MaterialTypeId,
                     x.StorageTemperatureId,
-                    x.MacroscopicAssessmentId
+                    x.MacroscopicAssessmentId,
+                    x.ExtractionProcedureId,
+                    x.PreservationTypeId
                 });
 
             model.Entity<NetworkUser>()

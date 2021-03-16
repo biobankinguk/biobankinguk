@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
@@ -38,6 +39,21 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> Collections(string ontologyTerm, string selectedFacets)
         {
+            // Check If Valid and Visible Term
+            if (!string.IsNullOrEmpty(ontologyTerm))
+            {
+                var term = await _biobankReadService.GetOntologyTermByDescription(ontologyTerm);
+
+                if (term is null)
+                {
+                    return await NoResults(new NoResultsModel
+                    {
+                        OntologyTerm = ontologyTerm,
+                        SearchType = SearchDocumentType.Collection
+                    });
+                }
+            }
+
             // Build the base model.
             var model = new BaseSearchModel
             {
@@ -71,8 +87,6 @@ namespace Biobanks.Web.Controllers
                 );
             return View(model);
         }
-
-
 
         private async Task<ViewResult> NoResults(NoResultsModel model)
         {
@@ -133,6 +147,21 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> Capabilities(string ontologyTerm, string selectedFacets)
         {
+            // Check If Valid and Visible Term
+            if (!string.IsNullOrEmpty(ontologyTerm))
+            {
+                var term = await _biobankReadService.GetOntologyTermByDescription(ontologyTerm);
+
+                if (term is null)
+                {
+                    return await NoResults(new NoResultsModel
+                    {
+                        OntologyTerm = ontologyTerm,
+                        SearchType = SearchDocumentType.Collection
+                    });
+                }
+            }
+
             // Build the base model.
             var model = new BaseSearchModel
             {
@@ -184,6 +213,7 @@ namespace Biobanks.Web.Controllers
             return View(model);
         }
 
+
         #region Diagnosis Type Ahead
         [AllowAnonymous]
         public async Task<JsonpResult> ListOntologyTerms(string wildcard, string callback)
@@ -217,21 +247,32 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListSearchableOntologyTermsAsync(type, wildcard);
+            var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
+            var directoryOntologyTerms = await _biobankReadService.ListOntologyTermsAsync();
 
-            var model = ontologyTerms.Select(x =>
-               new OntologyTermModel
-               {
-                   OntologyTermId = x.Id,
-                   Description = x.Value,
-                   OtherTerms = x.OtherTerms,
-                   MatchingOtherTerms = x.MatchingOtherTerms,
-                   NonMatchingOtherTerms = x.NonMatchingOtherTerms
-               }
-            )
-            .ToList();
+            // Join Ontology Terms In Search and Directory Based On Ontology Term Value
+            var model = directoryOntologyTerms.Join(searchOntologyTerms, 
+                outer => outer.Value.ToLower(), 
+                inner => inner.OntologyTerm, 
+                (directoryTerm, searchTerm) =>
+                {
+                    var nonMatchingTerms = directoryTerm.OtherTerms?
+                        .Split(',')
+                        .Select(m => m.Trim())
+                        .Where(m => !searchTerm.MatchingOtherTerms.Contains(m))
+                        .ToList();
 
-            return model;
+                    return new OntologyTermModel
+                    {
+                        OntologyTermId = directoryTerm.Id,
+                        Description = directoryTerm.Value,
+                        OtherTerms = directoryTerm.OtherTerms ?? "",
+                        MatchingOtherTerms = searchTerm.MatchingOtherTerms,
+                        NonMatchingOtherTerms = nonMatchingTerms ?? new List<string>()
+                    };
+                });
+
+            return model.ToList();
         }
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)

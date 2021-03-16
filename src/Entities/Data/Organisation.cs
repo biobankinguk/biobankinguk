@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared;
 
 namespace Biobanks.Entities.Data
 {
@@ -74,5 +75,7 @@ namespace Biobanks.Entities.Data
         //Collections
         //ServiceOfferings
         //contacts?
+
+        public virtual ICollection<ApiClient> ApiClients { get; set; }
     }
 }
