@@ -3,18 +3,24 @@
         "id": 1,
         "value": "Paraffin",
         "sortOrder": 1,
-        "storageTemperatureId": 1
+        "storageTemperature": {
+            "value": "Room temperature"
+        }
     },
     {
         "id": 2,
         "value": "Resin (EM)",
         "sortOrder": 2,
-        "storageTemperatureId": 1
+        "storageTemperature": {
+            "value": "Room temperature"
+        }
     },
     {
         "id": 3,
         "value": "Resin (LM)",
         "sortOrder": 3,
-        "storageTemperatureId": 1
+        "storageTemperature": {
+            "value": "Room temperature"
+        }
     }  
 ]
