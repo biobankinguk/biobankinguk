@@ -79,7 +79,7 @@ namespace Biobanks.Submissions.Api
                         ValidIssuer = JwtBearerConstants.TokenIssuer,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = Crypto.GenerateSigningKey(jwtConfig.Secret),
-                        RequireExpirationTime = false
+                        RequireExpirationTime = true
                     };
                 })
                 .AddBasic(opts => opts.Realm = "biobankinguk-submissions-accesstoken");

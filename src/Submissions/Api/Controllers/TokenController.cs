@@ -53,7 +53,7 @@ namespace Biobanks.Submissions.Api.Controllers
                 audience: JwtBearerConstants.TokenAudience,
                 claims: claims,
                 notBefore: DateTime.UtcNow,
-                expires: null,
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: new SigningCredentials(
                     Crypto.GenerateSigningKey(_config.Secret),
                     SecurityAlgorithms.HmacSha256)
