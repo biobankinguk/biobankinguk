@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
+using Swashbuckle.AspNetCore.Annotations;
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -26,8 +28,14 @@ namespace Biobanks.Submissions.Api.Controllers
             _config = config.Value;
         }
 
+        /// <summary>
+        /// Request an Submissions API Access JWT for a set of client credentials.
+        /// </summary>
+        /// <example>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</example>
+        /// <returns>A paginated list of submission summaries.</returns>
         [HttpGet]
-        // TODO: Swaggger annotations
+        [SwaggerResponse(200)]
+        [SwaggerResponse(401, Description = "Unauthorized. The credentials provided failed authentication.")]
         public async Task<string> Get()
         {
             // prep claims (since we need to add the "sub" claim for JWT)

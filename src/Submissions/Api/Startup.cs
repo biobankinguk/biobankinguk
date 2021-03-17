@@ -1,4 +1,4 @@
-using Biobanks.Submissions.Api.Auth;
+﻿using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Filters;
@@ -23,7 +23,8 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-using System;
+using Swashbuckle.AspNetCore.SwaggerUI;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
@@ -106,16 +107,32 @@ namespace Biobanks.Submissions.Api
 
                 .AddSwaggerGen(opts =>
                     {
+                        // Docs details
                         opts.SwaggerDoc("v1",
                             new OpenApiInfo
                             {
-                                Title = "UKCRC Tissue Directory API",
+                                Title = "BiobankingUK Submissions API",
                                 Version = "v1"
                             });
 
+                        // Doc generation sources
+                        opts.EnableAnnotations();
                         opts.IncludeXmlComments(Path.Combine(
                             PlatformServices.Default.Application.ApplicationBasePath,
                             Configuration["Swagger:Filename"]));
+
+                        // Auth configuration
+                        opts.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "basic"
+                        });
+                        opts.AddSecurityDefinition("jwtbearer", new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "bearer",
+                            BearerFormat = "JWT"
+                        });
                     })
 
                 .AddAutoMapper(
@@ -171,8 +188,8 @@ namespace Biobanks.Submissions.Api
                 .UseSwaggerUI(c =>
                 {
                     c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1 Docs");
-                    c.SupportedSubmitMethods(); // don't allow "try it out" as the token auth doesn't work
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    c.SupportedSubmitMethods(SubmitMethod.Get);
                 })
 
                 // Everything past this point is routed and subject to Auth

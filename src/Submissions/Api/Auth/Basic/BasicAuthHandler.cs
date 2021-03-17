@@ -133,7 +133,7 @@ namespace Biobanks.Submissions.Api.Auth.Basic
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
         {
-            Response.Headers["WWW-Authenticate"] = $"{Scheme} realm=\"{Options.Realm}\", charset=\"UTF-8\"";
+            Response.Headers["WWW-Authenticate"] = $"{Scheme.Name} realm=\"{Options.Realm}\", charset=\"UTF-8\"";
             await base.HandleChallengeAsync(properties);
         }
     }
