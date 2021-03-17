@@ -9,6 +9,10 @@
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="swagger.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

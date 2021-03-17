@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Auth
 {
+    /// <summary>
+    /// ASP.NET Core Authorization Policy Definitions
+    /// </summary>
     public static class AuthPolicies
     {
         private static AuthorizationPolicy IsAuthenticated
@@ -12,6 +15,9 @@ namespace Biobanks.Submissions.Api.Auth
                 .RequireAuthenticatedUser()
                 .Build();
 
+        /// <summary>
+        /// Requires that a request is authenticated via Bearer Token
+        /// </summary>
         public static AuthorizationPolicy IsTokenAuthenticated
             => new AuthorizationPolicyBuilder()
                 .Combine(IsAuthenticated)
@@ -19,6 +25,9 @@ namespace Biobanks.Submissions.Api.Auth
                 .RequireClaim(CustomClaimTypes.BiobankId)
                 .Build();
 
+        /// <summary>
+        /// Requires that a request is authenticated via Basic Auth
+        /// </summary>
         public static AuthorizationPolicy IsBasicAuthenticated
             => new AuthorizationPolicyBuilder()
                 .Combine(IsAuthenticated)

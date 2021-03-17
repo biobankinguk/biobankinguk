@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Biobanks.Submissions.Api.Auth
 {
+    /// <summary>
+    /// Cryptography related Extension Methods for string
+    /// </summary>
     public static class StringCryptoExtensions
     {
         /// <summary>

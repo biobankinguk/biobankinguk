@@ -8,8 +8,9 @@ using System.Linq;
 
 namespace Biobanks.Submissions.Api.Auth
 {
-    // These filters tell Swagger which security definitions (e.g. Basic Auth...) apply to which Authorization Policies
-
+    /// <summary>
+    /// Swashbuckle Filter to apply OpenAPI Security Definitions to particular matching Controller Actions
+    /// </summary>
     public class SecurityRequirementsOperationFilter : IOperationFilter
     {
         private static Dictionary<string, string> _policySchemes = new()
@@ -21,6 +22,11 @@ namespace Biobanks.Submissions.Api.Auth
         private IEnumerable<string> GetDistinctAuthorizationPolicyNames(object[] attributes)
             => attributes.OfType<AuthorizeAttribute>().Select(a => a.Policy).Distinct();
 
+        /// <summary>
+        /// Apply OpenAPI Security Requirements based on some filtering logic
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             // TODO: if we ever add any public Controller actions we'll need to account for [AllowAnonymous]

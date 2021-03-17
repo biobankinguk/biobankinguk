@@ -12,10 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
+    /// <summary>
+    /// Controller for Token issuing
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [Authorize(Policy = nameof(AuthPolicies.IsBasicAuthenticated))]
@@ -23,6 +25,7 @@ namespace Biobanks.Submissions.Api.Controllers
     {
         private readonly JwtBearerConfig _config;
 
+        /// <inheritdoc />
         public TokenController(IOptions<JwtBearerConfig> config)
         {
             _config = config.Value;
@@ -35,7 +38,7 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <returns>A paginated list of submission summaries.</returns>
         [HttpGet]
         [SwaggerResponse(200)]
-        public async Task<string> Get()
+        public string Get()
         {
             // prep claims (since we need to add the "sub" claim for JWT)
             var claimsPrincipal = new ClaimsPrincipal(User.Identity);

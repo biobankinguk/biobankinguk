@@ -5,8 +5,14 @@ using System;
 
 namespace Biobanks.Submissions.Api.Auth.Basic
 {
+    /// <summary>
+    /// AuthenticationScheme Options for Basic Auth
+    /// </summary>
     public class BasicAuthSchemeOptions : AuthenticationSchemeOptions
     {
+        /// <summary>
+        /// Authentication Scheme Realm - required by Basic Auth
+        /// </summary>
         public string Realm { get; set; }
     }
 
@@ -15,6 +21,11 @@ namespace Biobanks.Submissions.Api.Auth.Basic
     /// </summary>
     public class BasicAuthPostConfigureOptions : IPostConfigureOptions<BasicAuthSchemeOptions>
     {
+        /// <summary>
+        /// Runs after BasicAuthSchemeOptions Configuration
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="options"></param>
         public void PostConfigure(string name, BasicAuthSchemeOptions options)
         {
             if (string.IsNullOrEmpty(options.Realm))
