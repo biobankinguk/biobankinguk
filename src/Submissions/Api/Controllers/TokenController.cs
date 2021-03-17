@@ -35,7 +35,6 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <returns>A paginated list of submission summaries.</returns>
         [HttpGet]
         [SwaggerResponse(200)]
-        [SwaggerResponse(401, Description = "Unauthorized. The credentials provided failed authentication.")]
         public async Task<string> Get()
         {
             // prep claims (since we need to add the "sub" claim for JWT)

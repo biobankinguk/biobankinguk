@@ -133,6 +133,7 @@ namespace Biobanks.Submissions.Api
                             Scheme = "bearer",
                             BearerFormat = "JWT"
                         });
+                        opts.OperationFilter<SecurityRequirementsOperationFilter>();
                     })
 
                 .AddAutoMapper(

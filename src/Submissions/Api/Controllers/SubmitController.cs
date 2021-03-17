@@ -58,7 +58,6 @@ namespace Biobanks.Submissions.Api.Controllers
         [SwaggerResponse(202, Type = typeof(SubmissionSummaryModel))]
         [SwaggerResponse(400, "Request body expected.")]
         [SwaggerResponse(400, "Invalid request body provided.")]
-        [SwaggerResponse(403, "Access to post to the requested biobank denied.")]
         [SwaggerResponse(409, "Newer record exists.")]
         public async Task<IActionResult> Post(int biobankId, [FromBody] SubmissionModel model)
         {
