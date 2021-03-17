@@ -1,4 +1,5 @@
-﻿using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
@@ -11,7 +12,6 @@ using ClacksMiddleware.Extensions;
 
 using Hangfire;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -81,7 +81,7 @@ namespace Biobanks.Submissions.Api
                         RequireExpirationTime = false
                     };
                 })
-                .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>(BasicAuthConstants.AuthenticationScheme, null);
+                .AddBasic(opts => opts.Realm = "biobankinguk-submissions-accesstoken");
 
             services
                 .AddOptions()

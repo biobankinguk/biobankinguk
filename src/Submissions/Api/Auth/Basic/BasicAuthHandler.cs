@@ -14,14 +14,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Auth
+namespace Biobanks.Submissions.Api.Auth.Basic
 {
-    internal class BasicAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    internal class BasicAuthHandler : AuthenticationHandler<BasicAuthSchemeOptions>
     {
         private readonly BiobanksDbContext _db;
 
         public BasicAuthHandler(
-            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            IOptionsMonitor<BasicAuthSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
@@ -129,6 +129,12 @@ namespace Biobanks.Submissions.Api.Auth
             {
                 return AuthenticateResult.Fail(e.Message);
             }
+        }
+
+        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
+        {
+            Response.Headers["WWW-Authenticate"] = $"{Scheme} realm=\"{Options.Realm}\", charset=\"UTF-8\"";
+            await base.HandleChallengeAsync(properties);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Biobanks.Submissions.Api.Auth.Basic;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Auth
@@ -20,7 +22,7 @@ namespace Biobanks.Submissions.Api.Auth
         public static AuthorizationPolicy IsBasicAuthenticated
             => new AuthorizationPolicyBuilder()
                 .Combine(IsAuthenticated)
-                .AddAuthenticationSchemes(BasicAuthConstants.AuthenticationScheme)
+                .AddAuthenticationSchemes(BasicAuthDefaults.AuthenticationScheme)
                 .Build();
     }
 }
