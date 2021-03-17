@@ -9,11 +9,12 @@ using Biobanks.Submissions.Core.Types;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-using Newtonsoft.Json;
+
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.AzFunctions
@@ -63,14 +64,14 @@ namespace Biobanks.Submissions.AzFunctions
         public async Task Run(
             [QueueTrigger("operations")] string messageBody,
             FunctionContext context, // out of process context
-            // QueueTrigger metadata
+                                     // QueueTrigger metadata
             string id,
             string popReceipt)
         {
             var log = context.GetLogger("Submissions_Staging");
 
             const string storageContainer = "submission-payload";
-            var message = JsonConvert.DeserializeObject<OperationsQueueItem>(messageBody);
+            var message = JsonSerializer.Deserialize<OperationsQueueItem>(messageBody);
             var blobContents = await _blobReader.GetObjectFromJsonAsync(storageContainer, message.BlobId);
             var biobankId = message.BiobankId;
 
@@ -80,7 +81,7 @@ namespace Biobanks.Submissions.AzFunctions
             log.LogInformation($"BlobType: {message.BlobType}");
             log.LogInformation(blobContents);
 
-            var blobject = JsonConvert.DeserializeObject(blobContents, blobType);
+            var blobject = JsonSerializer.Deserialize(blobContents, blobType);
             var subId = message.SubmissionId;
 
             log.LogInformation($"blobject type: {blobject.GetType()}");
