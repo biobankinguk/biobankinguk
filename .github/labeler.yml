@@ -6,8 +6,8 @@
   - elastic-search/**/*
 "Area: Analytics":
   - src/Analytics/**/*
-"Area: Submission API":
-  - src/Api/**/*
+"Area: Submissions":
+  - src/Submissions/**/*
 "Area: Data":
   - src/Data/**/*
 "Area: DataSeed":
@@ -16,8 +16,6 @@
   - src/Directory/**/*
 "Area: Directory Data":
   - src/Directory/Data/**/*
-"Area: LegacyData":
-  - src/LegacyData/**/*
 "Area: Publications":
   - src/Publications/**/*
 "Area: Entities":
