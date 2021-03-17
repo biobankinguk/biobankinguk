@@ -1,4 +1,5 @@
 ﻿using IdentityTool;
+using IdentityTool.Commands;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -10,15 +11,19 @@ using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
 using System.Reflection;
 
-var cmd = new CommandLineBuilder(new MyRootCommand())
+var appAssembly = Assembly.GetAssembly(typeof(Startup));
+
+var cmd = new CommandLineBuilder(new AppRootCommand())
     .UseDefaults()
     .UseHost(hostArgs =>
         Host.CreateDefaultBuilder(hostArgs)
             .ConfigureAppConfiguration(b =>
-                b.AddUserSecrets(Assembly.GetAssembly(typeof(MyRootCommand))))
+                b.AddUserSecrets(appAssembly))
             .UseSerilog((context, services, loggerConfig) => loggerConfig
                 .ReadFrom.Configuration(context.Configuration)
-                .Enrich.FromLogContext()))
+                .Enrich.FromLogContext())
+            .ConfigureServices(Startup.ConfigureServices))
+            
     .Build();
 
 await cmd.InvokeAsync(args);
