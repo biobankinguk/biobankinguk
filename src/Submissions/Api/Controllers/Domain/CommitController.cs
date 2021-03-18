@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Services.Contracts;
+
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Biobanks.Submissions.Api.Controllers.Domain
@@ -55,7 +57,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
             var submissionsInProgress = await _submissionService.ListSubmissionsInProgress(biobankId);
             if (submissionsInProgress.Any())
             {
-                return BadRequest(JsonConvert.SerializeObject(submissionsInProgress));
+                return BadRequest(JsonSerializer.Serialize(submissionsInProgress));
             }
 
             BackgroundJob.Enqueue(() => _commitService.CommitStagedData(type.Equals("replace", StringComparison.OrdinalIgnoreCase), biobankId));

@@ -1,5 +1,4 @@
-﻿using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 namespace Biobanks.Submissions.Api
@@ -25,15 +24,10 @@ namespace Biobanks.Submissions.Api
         /// <returns></returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(b =>
                 {
-                    webBuilder.ConfigureServices(services => services.AddAutofac());
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.ConfigureKestrel((context, opts) =>
-                    {
-                        opts.AllowSynchronousIO = true;
-                    });
+                    b.UseStartup<Startup>();
+                    b.ConfigureKestrel((_, opts) => opts.AllowSynchronousIO = true);
                 });
     }
 }

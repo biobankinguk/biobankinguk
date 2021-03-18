@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Core.Models;
-using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Api.Types;
+using Biobanks.Submissions.Core.Services.Contracts;
+using Biobanks.Submissions.Core.Types;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -44,7 +44,6 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <returns>A paginated list of submission summaries.</returns>
         [HttpGet("biobank/{biobankId}")]
         [SwaggerResponse(200, Type = typeof(PaginatedSubmissionSummariesModel))]
-        [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(400, "Offset exceeds the total records available.")]
         [SwaggerResponse(400, "The parameters 'Since' and 'N' are mutually exclusive.")]
         public async Task<IActionResult> List(int biobankId, [FromQuery]SubmissionPaginationParams paging)
@@ -94,7 +93,6 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <returns>A summary of the specified submission</returns>
         [HttpGet("{submissionId}")]
         [SwaggerResponse(200, Type = typeof(SubmissionSummaryModel))]
-        [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(404, "No submission found with the specified id.")]
         public async Task<IActionResult> Get(int submissionId)
         {

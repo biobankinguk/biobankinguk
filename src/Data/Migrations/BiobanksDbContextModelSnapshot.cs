@@ -34,6 +34,21 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("AnnotationPublication");
                 });
 
+            modelBuilder.Entity("ApiClientOrganisation", b =>
+                {
+                    b.Property<int>("ApiClientsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrganisationsOrganisationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ApiClientsId", "OrganisationsOrganisationId");
+
+                    b.HasIndex("OrganisationsOrganisationId");
+
+                    b.ToTable("ApiClientOrganisation");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Api.Error", b =>
                 {
                     b.Property<int>("Id")
@@ -787,16 +802,16 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("MacroscopicAssessmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CollectionPercentageId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ExtractionProcedureId")
                         .HasColumnType("int");
 
                     b.Property<int>("PreservationTypeId")
                         .HasColumnType("int");
 
-                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId");
+                    b.Property<int?>("CollectionPercentageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId", "ExtractionProcedureId", "PreservationTypeId");
 
                     b.HasIndex("CollectionPercentageId");
 
@@ -1699,6 +1714,29 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("TokenValidationRecords");
                 });
 
+            modelBuilder.Entity("Biobanks.Entities.Shared.ApiClient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientSecretHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApiClients");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Shared.ReferenceData.ExtractionProcedure", b =>
                 {
                     b.Property<int>("Id")
@@ -1923,6 +1961,21 @@ namespace Biobanks.Data.Migrations
                     b.HasOne("Biobanks.Entities.Data.Publication", null)
                         .WithMany()
                         .HasForeignKey("PublicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ApiClientOrganisation", b =>
+                {
+                    b.HasOne("Biobanks.Entities.Shared.ApiClient", null)
+                        .WithMany()
+                        .HasForeignKey("ApiClientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Biobanks.Entities.Data.Organisation", null)
+                        .WithMany()
+                        .HasForeignKey("OrganisationsOrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

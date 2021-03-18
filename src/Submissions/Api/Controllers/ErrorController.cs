@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Types;
+using Biobanks.Submissions.Core.Types;
 using Biobanks.Submissions.Api.Models;
-using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -40,7 +40,6 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <returns>A paginated list of errors.</returns>
         [HttpGet]
         [SwaggerResponse(200, Type = typeof(PaginatedErrorsModel))]
-        [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(404, "No submission found with the specified id.")]
         [SwaggerResponse(400, "Offset exceeds the total records available.")]
         public async Task<IActionResult> ListErrors(int submissionId, [FromQuery]PaginationParams paging)
@@ -85,7 +84,6 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <returns>A single error.</returns>
         [HttpGet("{errorId}")]
         [SwaggerResponse(200, Type = typeof(ErrorModel))]
-        [SwaggerResponse(403, "Access to the requested submission denied.")]
         [SwaggerResponse(404, "No error found with the specified id matching the specified submission.")]
         public async Task<IActionResult> GetError(int submissionId, int errorId)
         {
