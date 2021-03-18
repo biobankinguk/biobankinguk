@@ -14,9 +14,8 @@ namespace Biobanks.IdentityTool.Commands
 
             AddCommand(new Command("api-clients", "Actions for managing BiobankingUK ApiClients")
             {
-                new Command("add", "Add a new ApiClient to target BiobankingUK Directory Database")
+                new AddApiClient("add")
             });
         }
     }
 }
-

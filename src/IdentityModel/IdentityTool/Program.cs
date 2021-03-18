@@ -15,15 +15,16 @@ var appAssembly = Assembly.GetAssembly(typeof(Startup));
 
 var cmd = new CommandLineBuilder(new AppRootCommand())
     .UseDefaults()
-    .UseHost(hostArgs =>
-        Host.CreateDefaultBuilder(hostArgs)
+    .UseHost(
+        (hostArgs) => Host.CreateDefaultBuilder(hostArgs),
+        b => b
             .ConfigureAppConfiguration(b =>
                 b.AddUserSecrets(appAssembly))
             .UseSerilog((context, _, loggerConfig) => loggerConfig
                 .ReadFrom.Configuration(context.Configuration)
                 .Enrich.FromLogContext())
             .ConfigureServices(Startup.ConfigureServices))
-            
+
     .Build();
 
 await cmd.InvokeAsync(args);

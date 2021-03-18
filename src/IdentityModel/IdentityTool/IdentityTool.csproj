@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Data.csproj" />
     <ProjectReference Include="..\IdentityModel\IdentityModel.csproj" />
   </ItemGroup>
 
