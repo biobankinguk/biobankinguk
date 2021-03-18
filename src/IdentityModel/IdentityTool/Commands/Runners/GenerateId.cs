@@ -1,4 +1,5 @@
-﻿using Biobanks.IdentityModel.Helpers;
+﻿using Biobanks.IdentityModel.Extensions;
+using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Types;
 
 using Microsoft.Extensions.Logging;
@@ -21,29 +22,33 @@ namespace Biobanks.IdentityTool.Commands.Runners
         {
             var outputFormat = OutputFormat.Base64Url;
 
-            _logger.LogInformation(
-                $"Generating as {{{nameof(outputFormat)}}}", outputFormat);
+            var output = new StringBuilder()
+                .AppendLine().AppendLine(
+                "|==============|===");
 
-            var output = new StringBuilder().AppendLine(
-                "Generation Results").AppendLine(
-                "=========================");
+            // Generate the ID
+            _logger.LogInformation(
+                $"Generating as {{{nameof(outputFormat)}}}",
+                outputFormat);
 
             var id = Crypto.GenerateId(32, outputFormat);
 
-            output.AppendLine(id);
+            output.Append("| ID:          | ")
+                .AppendLine(id);
 
-            // if (hash) output.AppendLine("Hashed: KEK");
+            // Generate the Hash
+            if (hash)
+            {
+                _logger.LogInformation(
+                    "Hashing with SHA256 as {hashFormat}",
+                    OutputFormat.Base64Url);
 
-            //switch (encoding)
-            //{
-            //    case EncodingFormat.Base64:
-            //        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("LOL"));
-            //        output.Append("Base64: ").AppendLine(encoded);
-            //        break;
-            //    default:
-            //        break;
-            //}
+                output.AppendLine("|--------------|---")
+                    .Append("| SHA256 Hash: | ")  
+                    .AppendLine(id.Sha256());
+            }
 
+            output.AppendLine("|==============|===").AppendLine();
             console.Out.Write(output.ToString());
         }
     }
