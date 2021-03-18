@@ -17,7 +17,7 @@ namespace Biobanks.IdentityTool
                 .AddTransient<CryptoService>()
 
                 // Command Runners
-                .AddTransient<GenerateSecret>();
+                .AddTransient<GenerateId>();
         }
     }
 }
