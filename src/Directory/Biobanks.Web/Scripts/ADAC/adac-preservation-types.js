@@ -134,7 +134,7 @@ $(function () {
             data: {
                 id: $(triggerRow.node).data('preservation-type-id'),
                 value: $(triggerRow.node).data('preservation-type-value'),
-                sortOrder: (triggerRow.newPosition + 1),
+                sortOrder: (triggerRow.newPosition),
                 storageTemperatureId: $(triggerRow.node).data('preservation-type-storagetemperatureid')
             }
         });

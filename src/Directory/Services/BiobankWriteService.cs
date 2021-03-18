@@ -1509,7 +1509,7 @@ namespace Biobanks.Services
             newOrder
                 .Select((x, i) =>
                 {
-                    x.SortOrder = (i + 1);
+                    x.SortOrder = (i);
                     return x;
                 })
                 .ToList()
