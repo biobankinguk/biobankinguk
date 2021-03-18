@@ -1,4 +1,6 @@
-﻿using IdentityTool.Commands.Runners;
+﻿using Biobanks.IdentityModel.Services;
+
+using Biobanks.IdentityTool.Commands.Runners;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,8 +11,13 @@ namespace Biobanks.IdentityTool
     {
         public static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
-            // Command Runners
-            services.AddTransient<GenerateSecret>();
+
+
+            services
+                .AddTransient<CryptoService>()
+
+                // Command Runners
+                .AddTransient<GenerateSecret>();
         }
     }
 }

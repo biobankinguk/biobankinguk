@@ -1,32 +1,39 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Biobanks.IdentityModel.Services;
+using Biobanks.IdentityModel.Types;
+
+using Microsoft.Extensions.Logging;
 using System.CommandLine;
 using System.Text;
 
-using static IdentityModel.CryptoRandom;
-
 namespace Biobanks.IdentityTool.Commands.Runners
 {
-    internal class GenerateSecret
+    internal class GenerateId
     {
-        private readonly ILogger<GenerateSecret> _logger;
+        private readonly ILogger<GenerateId> _logger;
+        private readonly CryptoService _crypto;
 
-        public GenerateSecret(ILogger<GenerateSecret> logger)
+        public GenerateId(
+            ILogger<GenerateId> logger,
+            CryptoService crypto)
         {
             _logger = logger;
+            _crypto = crypto;
         }
 
-        public void Run(IConsole console, bool hash, OutputFormat encoding)
+        public void Run(IConsole console, bool hash = false)
         {
-            _logger.LogInformation("Generating secret...");
+            var outputFormat = OutputFormat.Base64Url;
 
+            _logger.LogInformation(
+                $"Generating as {{{nameof(outputFormat)}}}", outputFormat);
 
             var output = new StringBuilder().AppendLine(
-                "Secret Generation Results").AppendLine(
+                "Generation Results").AppendLine(
                 "=========================");
 
-            var secret = "LOL";
+            var id = _crypto.GenerateId(32, outputFormat);
 
-            output.Append("Raw:    ").AppendLine(secret);
+            output.AppendLine(id);
 
             // if (hash) output.AppendLine("Hashed: KEK");
 

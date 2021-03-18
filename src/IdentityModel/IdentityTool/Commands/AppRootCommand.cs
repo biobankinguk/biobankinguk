@@ -6,10 +6,9 @@ namespace Biobanks.IdentityTool.Commands
     {
         public AppRootCommand()
         {
-            AddCommand(
-                new Command("secrets", "Actions for working with secure secrets")
+            AddCommand(new Command("crypto", "Actions for working with secure identifiers")
                 {
-                    new GenerateSecret("generate")
+                    new GenerateId("generate-id")
                 });
         }
     }
