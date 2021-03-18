@@ -34,6 +34,21 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("AnnotationPublication");
                 });
 
+            modelBuilder.Entity("ApiClientOrganisation", b =>
+                {
+                    b.Property<int>("ApiClientsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrganisationsOrganisationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ApiClientsId", "OrganisationsOrganisationId");
+
+                    b.HasIndex("OrganisationsOrganisationId");
+
+                    b.ToTable("ApiClientOrganisation");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Api.Error", b =>
                 {
                     b.Property<int>("Id")
@@ -787,15 +802,20 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("MacroscopicAssessmentId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ExtractionProcedureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PreservationTypeId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("CollectionPercentageId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PreservationTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId");
+                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId", "ExtractionProcedureId", "PreservationTypeId");
 
                     b.HasIndex("CollectionPercentageId");
+
+                    b.HasIndex("ExtractionProcedureId");
 
                     b.HasIndex("MacroscopicAssessmentId");
 
@@ -1694,6 +1714,56 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("TokenValidationRecords");
                 });
 
+            modelBuilder.Entity("Biobanks.Entities.Shared.ApiClient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientSecretHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApiClients");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Shared.ReferenceData.ExtractionProcedure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<bool>("IsDefaultValue")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("MaterialTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaterialTypeId");
+
+                    b.ToTable("ExtractionProcedures");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Shared.ReferenceData.MaterialType", b =>
                 {
                     b.Property<int>("Id")
@@ -1761,10 +1831,13 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<bool>("IsDefaultValue")
+                        .HasColumnType("bit");
+
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
-                    b.Property<int>("StorageTemperatureId")
+                    b.Property<int?>("StorageTemperatureId")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
@@ -1888,6 +1961,21 @@ namespace Biobanks.Data.Migrations
                     b.HasOne("Biobanks.Entities.Data.Publication", null)
                         .WithMany()
                         .HasForeignKey("PublicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ApiClientOrganisation", b =>
+                {
+                    b.HasOne("Biobanks.Entities.Shared.ApiClient", null)
+                        .WithMany()
+                        .HasForeignKey("ApiClientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Biobanks.Entities.Data.Organisation", null)
+                        .WithMany()
+                        .HasForeignKey("OrganisationsOrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -2300,6 +2388,12 @@ namespace Biobanks.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CollectionPercentageId");
 
+                    b.HasOne("Biobanks.Entities.Shared.ReferenceData.ExtractionProcedure", "ExtractionProcedure")
+                        .WithMany()
+                        .HasForeignKey("ExtractionProcedureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Biobanks.Entities.Data.ReferenceData.MacroscopicAssessment", "MacroscopicAssessment")
                         .WithMany()
                         .HasForeignKey("MacroscopicAssessmentId")
@@ -2314,7 +2408,9 @@ namespace Biobanks.Data.Migrations
 
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.PreservationType", "PreservationType")
                         .WithMany()
-                        .HasForeignKey("PreservationTypeId");
+                        .HasForeignKey("PreservationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Biobanks.Entities.Data.CollectionSampleSet", null)
                         .WithMany("MaterialDetails")
@@ -2329,6 +2425,8 @@ namespace Biobanks.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("CollectionPercentage");
+
+                    b.Navigation("ExtractionProcedure");
 
                     b.Navigation("MacroscopicAssessment");
 
@@ -2524,6 +2622,15 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("Country");
                 });
 
+            modelBuilder.Entity("Biobanks.Entities.Shared.ReferenceData.ExtractionProcedure", b =>
+                {
+                    b.HasOne("Biobanks.Entities.Shared.ReferenceData.MaterialType", "MaterialType")
+                        .WithMany()
+                        .HasForeignKey("MaterialTypeId");
+
+                    b.Navigation("MaterialType");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Shared.ReferenceData.OntologyTerm", b =>
                 {
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.SnomedTag", "SnomedTag")
@@ -2537,9 +2644,7 @@ namespace Biobanks.Data.Migrations
                 {
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.StorageTemperature", "StorageTemperature")
                         .WithMany()
-                        .HasForeignKey("StorageTemperatureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StorageTemperatureId");
 
                     b.Navigation("StorageTemperature");
                 });
