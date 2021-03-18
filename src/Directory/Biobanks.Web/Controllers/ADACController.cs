@@ -1154,6 +1154,11 @@ namespace Biobanks.Web.Controllers
             foreach (var model in models)
             {
                 model.PreservationTypeCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
+
+                if (model.SortOrder == 0)
+                {
+                    await _biobankWriteService.UpdatePreservationTypeSortOrderAsync();
+                }
             }
 
             return View(new PreservationTypesModel

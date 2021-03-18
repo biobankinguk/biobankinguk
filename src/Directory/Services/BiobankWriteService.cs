@@ -1509,7 +1509,7 @@ namespace Biobanks.Services
             newOrder
                 .Select((x, i) =>
                 {
-                    x.SortOrder = (i);
+                    x.SortOrder = (i + 1);
                     return x;
                 })
                 .ToList()
@@ -1518,6 +1518,32 @@ namespace Biobanks.Services
             await _storageTemperatureRepository.SaveChangesAsync();
 
             return preservationType;
+        }
+
+        public async Task UpdatePreservationTypeSortOrderAsync()
+        {
+            var types = await _biobankReadService.ListPreservationTypesAsync();
+
+            var newOrder = types
+                .GroupBy(x => x.Id)
+                .Select(x => x.First());
+
+            // Sort depending on direction of change
+            newOrder = true
+                ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
+                : newOrder.OrderBy(x => x.SortOrder);
+
+            // Re-index and update
+            newOrder
+                .Select((x, i) =>
+                {
+                    x.SortOrder = (i);
+                    return x;
+                })
+                .ToList()
+                .ForEach(_preservationTypeRepository.Update);
+
+            await _storageTemperatureRepository.SaveChangesAsync();
         }
 
         public async Task DeletePreservationTypeAsync(PreservationType preservationType)

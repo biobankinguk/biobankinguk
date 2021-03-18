@@ -122,6 +122,7 @@ namespace Biobanks.Services.Contracts
 
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
+        Task UpdatePreservationTypeSortOrderAsync();
         Task DeletePreservationTypeAsync(PreservationType preservationType);
 
         Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature);
