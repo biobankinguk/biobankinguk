@@ -1485,6 +1485,9 @@ namespace Biobanks.Services
         {
             var types = await _biobankReadService.ListPreservationTypesAsync();
 
+            //Assign Default Value
+            preservationType.IsDefaultValue = types.First(x => x.Id == preservationType.Id).IsDefaultValue;
+
             // If only updating sortOrder
             if (sortOnly)
             {
@@ -1537,7 +1540,7 @@ namespace Biobanks.Services
             newOrder
                 .Select((x, i) =>
                 {
-                    x.SortOrder = (i);
+                    x.SortOrder = (i + 1);
                     return x;
                 })
                 .ToList()
