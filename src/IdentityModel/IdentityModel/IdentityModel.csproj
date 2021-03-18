@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Biobanks.IdentityModel</RootNamespace>
+    <AssemblyName>Biobanks.IdentityModel</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="5.0.1" />
+  </ItemGroup>
 
 </Project>

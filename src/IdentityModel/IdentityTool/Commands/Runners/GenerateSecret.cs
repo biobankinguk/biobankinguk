@@ -1,12 +1,10 @@
-﻿using IdentityTool.Types;
-
-using Microsoft.Extensions.Logging;
-
-using System;
+﻿using Microsoft.Extensions.Logging;
 using System.CommandLine;
 using System.Text;
 
-namespace IdentityTool.Commands.Runners
+using static IdentityModel.CryptoRandom;
+
+namespace Biobanks.IdentityTool.Commands.Runners
 {
     internal class GenerateSecret
     {
@@ -17,40 +15,31 @@ namespace IdentityTool.Commands.Runners
             _logger = logger;
         }
 
-        public void Run(IConsole console, bool hash, EncodingFormat encoding)
+        public void Run(IConsole console, bool hash, OutputFormat encoding)
         {
-            // Use a stringbuilder to progressively build the output
-            // and only render it at the end so it's not interspersed with logging throughout
+            _logger.LogInformation("Generating secret...");
+
+
             var output = new StringBuilder().AppendLine(
                 "Secret Generation Results").AppendLine(
                 "=========================");
 
             var secret = "LOL";
 
-            _logger.LogInformation($"Generated Secret: {{{nameof(secret)}}}", secret);
             output.Append("Raw:    ").AppendLine(secret);
 
-            if (hash)
-            {
-                _logger.LogInformation("Hashed Secret: {hash}", "KEK");
-                output.AppendLine("Hashed: KEK");
-            }
+            // if (hash) output.AppendLine("Hashed: KEK");
 
+            //switch (encoding)
+            //{
+            //    case EncodingFormat.Base64:
+            //        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("LOL"));
+            //        output.Append("Base64: ").AppendLine(encoded);
+            //        break;
+            //    default:
+            //        break;
+            //}
 
-            switch (encoding)
-            {
-                case EncodingFormat.Base64:
-                    var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("LOL"));
-                    _logger.LogInformation(
-                        $"Encoded (Base64): {{{nameof(encoded)}}}", encoded);
-                    output.Append("Base64: ").AppendLine(encoded);
-                    break;
-                default:
-                    _logger.LogInformation("no specific encoding requested");
-                    break;
-            }
-
-            // Render the output
             console.Out.Write(output.ToString());
         }
     }

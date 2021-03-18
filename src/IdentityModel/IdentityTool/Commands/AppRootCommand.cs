@@ -1,7 +1,6 @@
-﻿
-using System.CommandLine;
+﻿using System.CommandLine;
 
-namespace IdentityTool.Commands
+namespace Biobanks.IdentityTool.Commands
 {
     internal class AppRootCommand : RootCommand
     {

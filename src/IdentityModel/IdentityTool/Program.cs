@@ -1,5 +1,5 @@
-﻿using IdentityTool;
-using IdentityTool.Commands;
+﻿using Biobanks.IdentityTool;
+using Biobanks.IdentityTool.Commands;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

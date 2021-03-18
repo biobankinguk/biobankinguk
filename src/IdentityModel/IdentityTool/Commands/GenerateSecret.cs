@@ -1,13 +1,13 @@
-﻿using IdentityTool.Types;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 
-namespace IdentityTool.Commands
+using static IdentityModel.CryptoRandom;
+
+namespace Biobanks.IdentityTool.Commands
 {
     internal class GenerateSecret : Command
     {
@@ -21,15 +21,15 @@ namespace IdentityTool.Commands
                 {
                     Argument = new Argument<bool>()
                 },
-                new(new[] { "-e", "--encoding" },
-                "Encode the output")
+                new(new[] { "-f", "--output-format" },
+                "Output format for the generated secret")
                 {
-                    Argument = new Argument<EncodingFormat>()
+                    Argument = new Argument<OutputFormat>()
                 }
             }.ForEach(AddOption);
 
             Handler = CommandHandler.Create(
-                (IHost host, IConsole console, bool sha, EncodingFormat encoding) =>
+                (IHost host, IConsole console, bool sha, OutputFormat encoding) =>
                     host.Services.GetRequiredService<Runners.GenerateSecret>()
                         .Run(console, sha, encoding));
         }

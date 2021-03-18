@@ -3,7 +3,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace IdentityTool
+namespace Biobanks.IdentityTool
 {
     internal static class Startup
     {
