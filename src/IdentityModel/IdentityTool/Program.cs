@@ -19,7 +19,7 @@ var cmd = new CommandLineBuilder(new AppRootCommand())
         Host.CreateDefaultBuilder(hostArgs)
             .ConfigureAppConfiguration(b =>
                 b.AddUserSecrets(appAssembly))
-            .UseSerilog((context, services, loggerConfig) => loggerConfig
+            .UseSerilog((context, _, loggerConfig) => loggerConfig
                 .ReadFrom.Configuration(context.Configuration)
                 .Enrich.FromLogContext())
             .ConfigureServices(Startup.ConfigureServices))

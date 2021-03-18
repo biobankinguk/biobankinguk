@@ -1,4 +1,4 @@
-﻿using IdentityTool.Commands;
+﻿using IdentityTool.Commands.Runners;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +9,8 @@ namespace IdentityTool
     {
         public static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
-            services.AddTransient<GenerateSecretHandler>();
+            // Command Runners
+            services.AddTransient<GenerateSecret>();
         }
     }
 }

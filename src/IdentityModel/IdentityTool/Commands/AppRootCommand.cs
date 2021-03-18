@@ -7,7 +7,11 @@ namespace IdentityTool.Commands
     {
         public AppRootCommand()
         {
-            AddCommand(new Secrets());
+            AddCommand(
+                new Command("secrets", "Actions for working with secure secrets")
+                {
+                    new GenerateSecret("generate")
+                });
         }
     }
 }
