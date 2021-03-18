@@ -2,9 +2,12 @@
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Types;
 
+using ConsoleTableExt;
+
 using Microsoft.Extensions.Logging;
+
+using System.Collections.Generic;
 using System.CommandLine;
-using System.Text;
 
 namespace Biobanks.IdentityTool.Commands.Runners
 {
@@ -20,11 +23,9 @@ namespace Biobanks.IdentityTool.Commands.Runners
 
         public void Run(IConsole console, bool hash = false)
         {
-            var outputFormat = OutputFormat.Base64Url;
+            const OutputFormat outputFormat = OutputFormat.Base64Url;
 
-            var output = new StringBuilder()
-                .AppendLine().AppendLine(
-                "|==============|===");
+            var outputRows = new List<List<object>>();
 
             // Generate the ID
             _logger.LogInformation(
@@ -33,8 +34,7 @@ namespace Biobanks.IdentityTool.Commands.Runners
 
             var id = Crypto.GenerateId(32, outputFormat);
 
-            output.Append("| ID:          | ")
-                .AppendLine(id);
+            outputRows.Add(new() { "ID", id });
 
             // Generate the Hash
             if (hash)
@@ -43,13 +43,15 @@ namespace Biobanks.IdentityTool.Commands.Runners
                     "Hashing with SHA256 as {hashFormat}",
                     OutputFormat.Base64Url);
 
-                output.AppendLine("|--------------|---")
-                    .Append("| SHA256 Hash: | ")  
-                    .AppendLine(id.Sha256());
+                outputRows.Add(new() { "SHA256", id.Sha256() });
             }
 
-            output.AppendLine("|==============|===").AppendLine();
-            console.Out.Write(output.ToString());
+            // Output
+            console.Out.Write(ConsoleTableBuilder
+                .From(outputRows)
+                .WithCharMapDefinition(CharMapDefinition.FramePipDefinition)
+                .Export()
+                .ToString());
         }
     }
 }
