@@ -1,4 +1,4 @@
-﻿using Biobanks.IdentityModel.Services;
+﻿using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Types;
 
 using Microsoft.Extensions.Logging;
@@ -10,14 +10,11 @@ namespace Biobanks.IdentityTool.Commands.Runners
     internal class GenerateId
     {
         private readonly ILogger<GenerateId> _logger;
-        private readonly CryptoService _crypto;
 
         public GenerateId(
-            ILogger<GenerateId> logger,
-            CryptoService crypto)
+            ILogger<GenerateId> logger)
         {
             _logger = logger;
-            _crypto = crypto;
         }
 
         public void Run(IConsole console, bool hash = false)
@@ -31,7 +28,7 @@ namespace Biobanks.IdentityTool.Commands.Runners
                 "Generation Results").AppendLine(
                 "=========================");
 
-            var id = _crypto.GenerateId(32, outputFormat);
+            var id = Crypto.GenerateId(32, outputFormat);
 
             output.AppendLine(id);
 

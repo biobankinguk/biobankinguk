@@ -6,17 +6,17 @@ using System;
 using System.Security.Cryptography;
 
 
-namespace Biobanks.IdentityModel.Services
+namespace Biobanks.IdentityModel.Helpers
 {
-    public class CryptoService
+    public static class Crypto
     {
-        private readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
+        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
         /// <summary>
-        /// Gets a cryptographically random byte array
+        /// Generates a cryptographically random byte array
         /// </summary>
         /// <param name="length">The desired length of the byte array</param>
-        public byte[] GetRandomBytes(int length)
+        public static byte[] GenerateRandomBytes(int length)
         {
             var bytes = new byte[length];
             Rng.GetBytes(bytes);
@@ -32,9 +32,9 @@ namespace Biobanks.IdentityModel.Services
         /// </summary>
         /// <param name="length">The length</param>
         /// <param name="format">The output format</param>
-        public string GenerateId(int length = 32, OutputFormat format = OutputFormat.Base64Url)
+        public static string GenerateId(int length = 32, OutputFormat format = OutputFormat.Base64Url)
         {
-            var id = GetRandomBytes(length);
+            var id = GenerateRandomBytes(length);
 
             return format switch
             {
@@ -44,5 +44,12 @@ namespace Biobanks.IdentityModel.Services
                 _ => throw new ArgumentException("Invalid OutputFormat", nameof(format))
             };
         }
+
+        /// <summary>
+        /// Generate a Signing Key from a Base64Url Secret, that can be used to sign / verify JWTs
+        /// </summary>
+        /// <param name="secret">The secret to use for the key, in Base64Url format</param>
+        public static SymmetricSecurityKey GenerateSigningKey(string secret)
+            => new SymmetricSecurityKey(Base64UrlEncoder.DecodeBytes(secret));
     }
 }
