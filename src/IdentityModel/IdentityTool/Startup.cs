@@ -13,7 +13,8 @@ namespace Biobanks.IdentityTool
 
             services
                 // Command Runners
-                .AddTransient<GenerateId>();
+                .AddTransient<GenerateId>()
+                .AddTransient<Hash>();
         }
     }
 }

@@ -8,8 +8,14 @@ namespace Biobanks.IdentityTool.Commands
         {
             AddCommand(new Command("crypto", "Actions for working with secure identifiers")
                 {
-                    new GenerateId("generate-id")
+                    new GenerateId("generate-id"),
+                    new Hash("hash")
                 });
+
+            AddCommand(new Command("api-clients", "Actions for managing BiobankingUK ApiClients")
+            {
+                new Command("add", "Add a new ApiClient to target BiobankingUK Directory Database")
+            });
         }
     }
 }
