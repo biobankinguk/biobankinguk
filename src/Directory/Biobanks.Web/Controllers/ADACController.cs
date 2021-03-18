@@ -1144,7 +1144,8 @@ namespace Biobanks.Web.Controllers
                         Value = x.Value,
                         SortOrder = x.SortOrder,
                         StorageTemperatureId = x.StorageTemperatureId,
-                        StorageTemperatureName = x.StorageTemperature?.Value ?? ""
+                        StorageTemperatureName = x.StorageTemperature?.Value ?? "",
+                        DefaultValue = x.IsDefaultValue
                     }
                 )
                 .ToList();

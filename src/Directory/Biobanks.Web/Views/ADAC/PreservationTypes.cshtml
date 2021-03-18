@@ -35,13 +35,12 @@
             <tbody>
                 @foreach (var item in Model.PreservationTypes)
                 {
-                    if (item.SortOrder > 0)
-                    { 
+                    
                     <tr class="@(item.PreservationTypeCount > 0 ? "info" : "")" 
                         data-resource-url="/api/PreservationType"
 						data-preservation-type-id="@item.Id"
 						data-preservation-type-value="@item.Value"
-                        data-preservation-type-storageTemperatureId="@item.StorageTemperatureId">
+                        data-preservation-type-storagetemperatureid="@item.StorageTemperatureId">
                         <td>@item.SortOrder</td>
                         <td>@item.Value</td>
                         <td>@item.StorageTemperatureName</td>                     
@@ -52,30 +51,42 @@
                             {
                                 <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Preservation Type in use")
                             }
+                            else if (item.DefaultValue)
+                            {
+                                <a title="Edit"
+                                   class="action-icon"
+                                   href="#"
+                                   data-target="#preservation-types-modal"
+                                   data-preservation-type="@Json.Encode(item)"
+                                   data-bind="click: openModalForEdit">
+                                    <span class="fa fa-edit labelled-icon"></span>Edit
+                                </a>
+                            }
                             else
                             {
                                 <a title="Edit"
-                                    class="action-icon"
-                                    href="#"
-                                    data-target="#preservation-types-modal"
-                                    data-preservation-type="@Json.Encode(item)"
-                                    data-bind="click: openModalForEdit">
+                                   class="action-icon"
+                                   href="#"
+                                   data-target="#preservation-types-modal"
+                                   data-preservation-type="@Json.Encode(item)"
+                                   data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
-                                    class="action-icon delete-confirm"
-                                    data-refdata-model="@Json.Encode(item)"
-                                    data-resource-url="/api/PreservationType"
-                                    data-success-redirect="@Url.Action("PreservationTypes")"
-                                    data-refdata-type="Preservation Type"
-                                    href="#">
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(item)"
+                                   data-resource-url="/api/PreservationType"
+                                   data-success-redirect="@Url.Action("PreservationTypes")"
+                                   data-refdata-type="Preservation Type"
+                                   href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
                             }
+
                         </td>
                     </tr>
-                    }
+                    
                 }
             </tbody>
         </table>

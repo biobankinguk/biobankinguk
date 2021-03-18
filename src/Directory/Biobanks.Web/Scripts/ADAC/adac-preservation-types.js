@@ -135,7 +135,7 @@ $(function () {
                 id: $(triggerRow.node).data('preservation-type-id'),
                 value: $(triggerRow.node).data('preservation-type-value'),
                 sortOrder: (triggerRow.newPosition + 1),
-                storageTemperatureId: $(triggerRow.node).data('preservation-type-storageTemperatureId')
+                storageTemperatureId: $(triggerRow.node).data('preservation-type-storagetemperatureid')
             }
         });
     });

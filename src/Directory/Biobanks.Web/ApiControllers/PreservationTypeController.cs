@@ -124,6 +124,12 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("PreservationTypes", $"Unable to delete '{ model.Value }', as it is currently is use.");
             }
 
+            // If Default Value, prevent update
+            if (model.IsDefaultValue)
+            {
+                ModelState.AddModelError("PreservationTypes", $"Unable to delete '{ model.Value }', as it is the default value.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
