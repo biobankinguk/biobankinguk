@@ -855,7 +855,7 @@ namespace Biobanks.Services
 
                 return sets;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
