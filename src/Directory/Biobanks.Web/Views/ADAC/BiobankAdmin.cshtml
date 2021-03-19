@@ -6,7 +6,9 @@
 
 @Html.Partial("_ADACTabs", "Biobanks")
 
-<h3>@Model.Name - Admin @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new { id = @Model.BiobankId }, new { @class = "btn btn-danger pull-right" })</h3>
+<h3>@Model.Name - Admin Page @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new { id = @Model.BiobankId }, new { @class = "btn btn-danger pull-right" })</h3>
+
+<span id="BiobankId" data-biobank-id="@Model.BiobankId"></span>
 
 <h2>Details</h2>
 
@@ -58,7 +60,9 @@
     </div>
 </div>
 
+<!--<h2>Administrators <a href="#modalInviteBiobankAdmin" class="btn btn-success pull-right" data-toggle="modal">Add new admin</a></h2>-->
 <h2>Administrators <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteBiobankAdmin" data-bind="click: openInviteDialog">Add new admin</a></h2>
+
 <div class="row">
     <div class="col-sm-12">
         <br />
@@ -75,19 +79,19 @@
             <tbody>
                 @foreach (var admin in Model.Admins)
                 {
-                <tr>
-                    <td class="vtop">
-                        @admin.UserFullName
-                    </td>
-                    <td class="vtop">
-                        <a href="mailto:@admin.UserEmail">@admin.UserEmail</a>
-                    </td>
-                    <td>
-                        <div class="pull-right">
+                    <tr>
+                        <td class="vtop">
+                            @admin.UserFullName
+                        </td>
+                        <td class="vtop">
+                            <a href="mailto:@admin.UserEmail">@admin.UserEmail</a>
+                        </td>
+                        <td>
+                            <div class="pull-right">
 
-                            @if (!admin.EmailConfirmed)
-                            {
-                                <a href="@Url.Action(
+                                @if (!admin.EmailConfirmed)
+                                {
+                                    <a href="@Url.Action(
                                         "ResendConfirmLink", "Account",
                                         new
                                         {
@@ -95,21 +99,21 @@
                                             onBehalf = true,
                                             returnUrl = Request.RawUrl
                                         })"
-                                   class="confirm-resend"
-                                   data-admin-name="@admin.UserFullName">
-                                    <span class="fa fa-repeat labelled-icon"></span>Resend Invite
+                                       class="confirm-resend"
+                                       data-admin-name="@admin.UserFullName">
+                                        <span class="fa fa-repeat labelled-icon"></span>Resend Invite
+                                    </a>
+                                }
+                                &nbsp;
+                                <a href="@Url.Action("DeleteAdmin", "ADAC", new {biobankId = Model.BiobankId, biobankUserId = admin.UserId})"
+                                   class="confirm-admin-delete"
+                                   data-admin-name="@admin.UserFullName"
+                                   data-biobank-name="@Model.Name">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
                                 </a>
-                            }
-                            &nbsp;
-                            <a href="@Url.Action("DeleteAdmin", "ADAC", new {biobankId = Model.BiobankId, biobankUserId = admin.UserId})"
-                               class="confirm-admin-delete"
-                               data-admin-name="@admin.UserFullName"
-                               data-biobank-name="@Model.Name">
-                                <span class="fa fa-trash labelled-icon"></span>Delete
-                            </a>
-                        </div>
-                    </td>
-                </tr>
+                            </div>
+                        </td>
+                    </tr>
                 }
             </tbody>
 
@@ -119,8 +123,14 @@
     </div>
 </div>
 
+<div id="modalInviteBiobankAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteBiobankAdmin_Label">
+
+</div>
+
 @section FooterScripts
 {
     @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/adac/biobanks")
+    @Scripts.Render("~/bundles/bootbox")
+    @Scripts.Render("~/bundles/knockout")
 }

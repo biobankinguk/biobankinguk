@@ -575,7 +575,7 @@ namespace Biobanks.Web.Controllers
                     model.Email,
                     model.Name,
                     model.Entity,
-                    Url.Action("Index", "Biobank", null, Request.Url.Scheme));
+                    Url.Action("BiobankAdmin", "Adac", new { id = biobankId }, Request.Url.Scheme));
             }
 
             //Add the user/biobank relationship

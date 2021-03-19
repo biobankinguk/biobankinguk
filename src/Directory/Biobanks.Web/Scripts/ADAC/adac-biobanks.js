@@ -1,4 +1,85 @@
-﻿$(function () {
+﻿function BiobankAdminsViewModel() {
+    var _this = this;
+    var base = "BiobankAdmin";
+    this.elements = {
+        id: "#BiobankId",
+        modal: "#modalInvite" + base,
+        form: "#modalInvite" + base + "Form",
+    };
+
+    this.dialogErrors = ko.observableArray([]);
+    this.biobankId = $(this.elements.id).data("biobank-id");
+
+    this.openInviteDialog = function () {
+        $.ajax({
+            url: "/Adac/InviteAdminAjax/",
+            data: { biobankId: _this.biobankId },
+            contentType: "application/html",
+            success: function (content) {
+                //clear form errors (as these are in the page's ko model)
+                _this.dialogErrors.removeAll();
+
+                _this.cleanNodeJquerySafe(_this.elements.modal);
+
+                //populate the modal with the form
+                $(_this.elements.modal).html(content);
+
+                //apply ko bindings to the ajax'd elements
+                ko.applyBindings(biobankAdminsVm, $(_this.elements.modal)[0]);
+
+                //wire up the form submission
+                $(_this.elements.form).submit(function (e) {
+                    _this.submitInviteDialog(e);
+                });
+            },
+        });
+    };
+
+    this.submitInviteDialog = function (e) {
+        e.preventDefault();
+        var form = $(_this.elements.form);
+
+        $.ajax({
+            type: "POST",
+            url: form.data("action"),
+            data: form.serialize(),
+            success: function (data) {
+                //clear form errors (as these are in the page's ko model)
+                _this.dialogErrors.removeAll();
+
+                if (data.success) {
+                    $(_this.elements.modal).modal("hide");
+                    //now we can redirect (force a page reload, following the successful AJAX submit
+                    //(why not just do a regular POST submit? for nice AJAX modal form valdation)
+                    window.location.href =
+                        form.data("success-redirect") + "?Name=" + data.name;
+                } else {
+                    if (Array.isArray(data.errors)) {
+                        for (var error of data.errors) {
+                            _this.dialogErrors.push(error);
+                        }
+                    }
+                }
+            },
+        });
+    };
+
+    this.cleanNodeJquerySafe = function (nodeSelector) {
+        //clear knockout bindings,
+        //but leave jQuery/bootstrap bindings intact!
+        var original = ko.utils.domNodeDisposal["cleanExternalData"];
+        ko.utils.domNodeDisposal["cleanExternalData"] = function () { };
+        ko.cleanNode($(nodeSelector)[0]); //designed to work with ID selectors, so only does the first match
+        ko.utils.domNodeDisposal["cleanExternalData"] = original;
+    };
+}
+
+var biobankAdminsVm;
+
+$(function () {
+    biobankAdminsVm = new BiobankAdminsViewModel();
+    ko.applyBindings(biobankAdminsVm);
+
     $("#adac-biobanks").DataTable({
         "columnDefs": [{ "orderable": false, "targets": [2, 3, 4, 5] }], // remove the sort icon for columns with just buttons/links in
         "paging": false,
@@ -54,4 +135,5 @@
             }
         );
     });
-});
+
+})
