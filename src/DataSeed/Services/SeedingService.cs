@@ -70,6 +70,7 @@ namespace Biobanks.DataSeed.Services
                 SeedMaterialTypes,
                 SeedExtractionProcedures,
                 SeedJson<Sex>,
+                SeedJson<SnomedTag>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
                 SeedPreservationTypes,
@@ -102,7 +103,7 @@ namespace Biobanks.DataSeed.Services
                 new AnnualStatisticGroup
                 {
                     Id = x.Id,
-                    Value = x.Value
+                    Value = x.Value.Trim()
                 }
             ));
 
@@ -112,7 +113,7 @@ namespace Biobanks.DataSeed.Services
                     new AnnualStatistic
                     {
                         Id = y.Id,
-                        Value = y.Value,
+                        Value = y.Value.Trim(),
                         AnnualStatisticGroupId= x.Id
                     }
                 )
@@ -128,7 +129,7 @@ namespace Biobanks.DataSeed.Services
                 new AssociatedDataTypeGroup
                 {
                     Id = x.Id,
-                    Value = x.Value
+                    Value = x.Value.Trim()
                 }
             ));
 
@@ -138,7 +139,7 @@ namespace Biobanks.DataSeed.Services
                     new AssociatedDataType
                     {
                         Id = y.Id,
-                        Value = y.Value,
+                        Value = y.Value.Trim(),
                         AssociatedDataTypeGroupId = x.Id
                     }
                 )
@@ -171,7 +172,7 @@ namespace Biobanks.DataSeed.Services
                     new Country 
                     {
                         Id = x.Id,
-                        Value =  x.Value
+                        Value =  x.Value.Trim()
                     }
                 ));
 
@@ -181,7 +182,7 @@ namespace Biobanks.DataSeed.Services
                         new County 
                         {
                             Id = y.Id,
-                            Value = y.Value,
+                            Value = y.Value.Trim(),
                             CountryId = x.Id
                         }
                     )
@@ -246,9 +247,9 @@ namespace Biobanks.DataSeed.Services
                     new ExtractionProcedure()
                     {
                         Id = x.Id,
-                        Value = x.Value,
+                        Value = x.Value.Trim(),
                         SortOrder = x.SortOrder,
-                        MaterialType = validMaterialTypes.First(y => y.Value == x.MaterialType.Value),
+                        MaterialType = validMaterialTypes.First(y => y.Value.Trim() == x.MaterialType.Value),
                         IsDefaultValue = false
                     }
                 )
@@ -264,11 +265,11 @@ namespace Biobanks.DataSeed.Services
                     new MaterialType()
                     {
                         Id = x.Id,
-                        Value = x.Value,
+                        Value = x.Value.Trim(),
                         SortOrder = x.SortOrder,
                         MaterialTypeGroups =
                             x.MaterialTypeGroups?
-                                .Select(y => validGroups.First(z => z.Value == y.Value))
+                                .Select(y => validGroups.First(z => z.Value == y.Value.Trim()))
                                 .ToList()
                     }
                 )
@@ -290,15 +291,17 @@ namespace Biobanks.DataSeed.Services
 
         private void SeedPreservationTypes()
         {
+            var validTemperatures = _db.StorageTemperatures.ToList();
+
             Seed(
                 ReadJson<PreservationType>().Select(x =>
                     new PreservationType
                     {
                         Id = x.Id,
-                        Value = x.Value,
+                        Value = x.Value.Trim(),
                         SortOrder = x.SortOrder,
-                        StorageTemperatureId = x.StorageTemperatureId,
-                        IsDefaultValue = false
+                        IsDefaultValue = false,
+                        StorageTemperature = validTemperatures.First(y => y.Value == x.StorageTemperature.Value)
                     }
                 )
             );

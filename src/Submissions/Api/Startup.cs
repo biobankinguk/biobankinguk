@@ -1,4 +1,6 @@
 ﻿using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Auth.Basic;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
@@ -13,7 +15,6 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,12 +23,11 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Serialization;
 
 using UoN.AspNetCore.VersionMiddleware;
 
@@ -57,86 +57,100 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplicationInsightsTelemetry();
+            // local config
+            var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
 
-            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")));
+            // MVC
+            services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
-            services.AddDbContext<Data.BiobanksDbContext>(opts =>
-                opts.UseSqlServer(Configuration.GetConnectionString("Default"),
-                    sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
-
-            services.AddMvc(opts =>
-            {
-                opts.Filters.Add(new AuthorizeFilter(AuthPolicies.BuildDefaultJwtPolicy()));
-                opts.EnableEndpointRouting = false;
-            })
-                // TODO: Consider System.Text.Json
-                .AddNewtonsoftJson(opts =>
-                    {
-                        opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                        opts.SerializerSettings.Converters.Add(new StringEnumConverter());
-                    });
-
-            // JWT Auth
+            // Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
                 {
-                    opts.Audience = Configuration["JWT:Audience"];
+                    opts.Audience = JwtBearerConstants.TokenAudience;
                     opts.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = Configuration["JWT:Issuer"],
+                        ValidIssuer = JwtBearerConstants.TokenIssuer,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Convert.FromBase64String(
-                                Configuration["JWT:Secret"])),
-                        RequireExpirationTime = false
+                        IssuerSigningKey = Crypto.GenerateSigningKey(jwtConfig.Secret),
+                        RequireExpirationTime = true
                     };
-                });
+                })
+                .AddBasic(opts => opts.Realm = "biobankinguk-submissions-accesstoken");
 
-            services.AddSwaggerGen(opts =>
-            {
-                opts.SwaggerDoc("v1",
-                    new OpenApiInfo
+            services
+                .AddOptions()
+
+                .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
+                .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
+
+                .AddApplicationInsightsTelemetry()
+
+                .AddDbContext<Data.BiobanksDbContext>(opts =>
+                    opts.UseSqlServer(Configuration.GetConnectionString("Default"),
+                        sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
+
+                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")))
+
+                .AddAuthorization(o =>
+                {
+                    o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
+                    o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
+                        AuthPolicies.IsBasicAuthenticated);
+                })
+
+                .AddSwaggerGen(opts =>
                     {
-                        Title = "UKCRC Tissue Directory API",
-                        Version = "v1"
-                    });
+                        // Docs details
+                        opts.SwaggerDoc("v1",
+                            new OpenApiInfo
+                            {
+                                Title = "BiobankingUK Submissions API",
+                                Version = "v1"
+                            });
 
-                opts.IncludeXmlComments(Path.Combine(
-                    PlatformServices.Default.Application.ApplicationBasePath,
-                    Configuration["Swagger:Filename"]));
-            });
-            services.AddSwaggerGenNewtonsoftSupport();
+                        // Doc generation sources
+                        opts.EnableAnnotations();
+                        opts.IncludeXmlComments(Path.Combine(
+                            PlatformServices.Default.Application.ApplicationBasePath,
+                            Configuration["Swagger:Filename"]));
 
-            // Add Core Mapping Profiles, and any Local ones
-            services.AddAutoMapper(
-                typeof(Core.MappingProfiles.DiagnosisProfile),
-                typeof(Startup));
+                        // Auth configuration
+                        opts.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "basic"
+                        });
+                        opts.AddSecurityDefinition("jwtbearer", new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "bearer",
+                            BearerFormat = "JWT"
+                        });
+                        opts.OperationFilter<SecurityRequirementsOperationFilter>();
+                    })
 
-            // Synchronous I/O is disabled by default in .NET Core 3
-            services.Configure<IISServerOptions>(opts =>
-            {
-                opts.AllowSynchronousIO = true;
-            });
+                .AddAutoMapper(
+                    typeof(Core.MappingProfiles.DiagnosisProfile),
+                    typeof(Startup))
 
-            // disable output format buffering
-            services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true);
+                // Cloud services
+                .AddTransient<IBlobWriteService, AzureBlobWriteService>(
+                    _ => new(Configuration.GetConnectionString("AzureStorage")))
+                .AddTransient<IQueueWriteService, AzureQueueWriteService>(
+                    _ => new(Configuration.GetConnectionString("AzureStorage")))
 
-
-            // Cloud Services
-            services.AddTransient<IBlobWriteService, AzureBlobWriteService>(
-                _ => new(Configuration.GetConnectionString("AzureStorage")));
-            services.AddTransient<IQueueWriteService, AzureQueueWriteService>(
-                _ => new(Configuration.GetConnectionString("AzureStorage")));
-
-
-            services.AddTransient<ISubmissionService, SubmissionService>();
-            services.AddTransient<IErrorService, ErrorService>();
-            services.AddTransient<ICommitService, CommitService>();
-            services.AddTransient<IRejectService, RejectService>();
-
-            services.AddOptions();
+                // Local Services
+                .AddTransient<ISubmissionService, SubmissionService>()
+                .AddTransient<IErrorService, ErrorService>()
+                .AddTransient<ICommitService, CommitService>()
+                .AddTransient<IRejectService, RejectService>();
         }
 
         /// <summary>
@@ -146,7 +160,10 @@ namespace Biobanks.Submissions.Api
         /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.GnuTerryPratchett();
+            // Early pipeline config
+            app
+                .GnuTerryPratchett()
+                .UseHttpsRedirection();
 
             if (env.IsDevelopment())
             {
@@ -154,55 +171,42 @@ namespace Biobanks.Submissions.Api
             }
             else
             {
-                // TODO only enable when ready
-                //app.UseHsts();
+                app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app
+                // Simple public middleware
+                .UseStatusCodePages()
+                .UseVersion()
 
-            app.UseStatusCodePages();
-
-            app.UseVersion();
-            /*
-            app.UseSwagger(c =>
-                c.PreSerializeFilters.Add((swagger, request) =>
-                    swagger.Host = request.Host.Value));
-            */
-
-            app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                // Swagger
+                .UseSwagger(c =>
                 {
-                    swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } };
+                    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                        swaggerDoc.Servers = new List<OpenApiServer> {
+                            new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" } });
+                })
+                .UseSwaggerUI(c =>
+                {
+                    c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    c.SupportedSubmitMethods(SubmitMethod.Get);
+                })
+
+                // Everything past this point is routed and subject to Auth
+                .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
+
+                // Endpoint Routing
+                .UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization())
+
+                // Hangfire
+                .UseHangfireServer()
+                .UseHangfireDashboard("/TasksDashboard", new DashboardOptions
+                {
+                    Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
                 });
-            });
-
-
-
-            app.UseSwaggerUI(c =>
-            {
-                c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1 Docs");
-                c.SupportedSubmitMethods(); // don't allow "try it out" as the token auth doesn't work
-            });
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            // Hangfire
-            app.UseHangfireServer();
-            app.UseHangfireDashboard("/TasksDashboard", new DashboardOptions
-            {
-                Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
-            });
         }
     }
 }

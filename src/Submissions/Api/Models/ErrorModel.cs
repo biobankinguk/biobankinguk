@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json;
 
 namespace Biobanks.Submissions.Api.Models
 {
@@ -20,6 +20,6 @@ namespace Biobanks.Submissions.Api.Models
         /// <summary>
         /// Unique identifiers of the record to which the error relates.
         /// </summary>
-        public JObject RecordIdentifiers { get; set; }
+        public JsonDocument RecordIdentifiers { get; set; }
     }
 }
