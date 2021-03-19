@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <RootNamespace>Biobanks.Search</RootNamespace>
     <AssemblyName>Biobanks.Search</AssemblyName>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
