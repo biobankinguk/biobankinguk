@@ -9,10 +9,6 @@
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
-  </PropertyGroup>
-
   <ItemGroup>
     <Content Include="swagger.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -36,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Data.csproj" />
+    <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj" />
     <ProjectReference Include="..\Core.AzureStorage\Core.AzureStorage.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
