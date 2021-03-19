@@ -1014,7 +1014,7 @@ namespace Biobanks.Web.Controllers
                     .Result
                 )
                 .ToList();
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent") == true)
+            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent"))
             {
                 return View(new CollectionPercentagesModel()
                 {
@@ -1025,8 +1025,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-
-            return RedirectToAction("CollectionPercentages");
         }
 
         #endregion
@@ -1324,7 +1322,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: County
         public async Task<ActionResult> County()
         {
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties") == true)
+            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties"))
             {
                 var countries = await _biobankReadService.ListCountriesAsync();
 
@@ -1353,8 +1351,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-
-            return RedirectToAction("County");
         }
 
         #endregion
