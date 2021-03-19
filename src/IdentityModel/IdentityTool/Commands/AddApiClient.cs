@@ -14,6 +14,10 @@ namespace Biobanks.IdentityTool.Commands
         public AddApiClient(string name)
             : base(name, "Add a new ApiClient to target BiobankingUK Directory Database")
         {
+            AddArgument(new Argument<int>(
+                "biobankId",
+                "The Database Record ID for the Biobank to associate this Client with."));
+
             new List<Option>
             {
                 new(new[] {"--connection-string", "-c" },
@@ -27,11 +31,38 @@ namespace Biobanks.IdentityTool.Commands
                     "Generate new ApiClient credentials and output them to the console after adding them to the Database")
                 {
                     Argument = new Argument<bool>()
+                },
+
+                new(
+                    new[] {"--client-id", "-i" },
+                    "The Client Identifier. Required if --generate is not specified.")
+                {
+                    Argument = new Argument<string>()
+                },
+
+                new(
+                    new[] {"--client-secret", "-s" },
+                    "The Client Secret (not hashed). Required if --generate is not specified.")
+                {
+                    Argument = new Argument<string>()
+                },
+
+                new(
+                    new[] {"--client-name", "-n" },
+                    "The Client Name. If omitted the Client ID will be used as a name.")
+                {
+                    Argument = new Argument<string>()
                 }
             }.ForEach(AddOption);
 
-            Handler = CommandHandler.Create(
-                async (IHost host, IConsole console, bool generate) =>
+            Handler = CommandHandler.Create(async (
+                IHost host,
+                IConsole console,
+                bool generate,
+                int biobankId,
+                string clientId,
+                string clientSecret,
+                string clientName) =>
                 {
                     var logger = host.Services.GetRequiredService<ILogger<AddApiClient>>();
 
@@ -49,13 +80,19 @@ namespace Biobanks.IdentityTool.Commands
                         // by massaging ParseResult perhaps?
                         logger.LogError(
                             // TODO: this is probably a reusable message :\
-                            "No Connection String \"Default\" was specified. " +
-                            "Please specify one in a Configuration source, or using the \"--connection-string\" option");
-                        
+                            "No Connection String `Default` was specified. " +
+                            "Please specify one in a Configuration source, or using the `--connection-string` option");
+
                         return;
                     }
 
-                    await host.Services.GetRequiredService<Runners.AddApiClient>().Run(console, generate);
+                    await host.Services.GetRequiredService<Runners.AddApiClient>().Run(
+                        console,
+                        generate,
+                        biobankId,
+                        clientId,
+                        clientSecret,
+                        clientName);
                 });
         }
     }
