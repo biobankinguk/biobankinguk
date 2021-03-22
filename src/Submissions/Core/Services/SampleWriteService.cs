@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Biobanks.Data;
+using Biobanks.Entities.Api;
+using Biobanks.Submissions.Core.Dto;
+using Biobanks.Submissions.Core.Exceptions;
+using Biobanks.Submissions.Core.Extensions;
+using Biobanks.Submissions.Core.Services.Contracts;
+
+using Microsoft.EntityFrameworkCore;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api;
-using Biobanks.Submissions.Core.Exceptions;
-using Biobanks.Submissions.Core.Extensions;
-using Biobanks.Submissions.Core.Dto;
-using Biobanks.Submissions.Core.Services.Contracts;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Biobanks.Data;
 
 namespace Biobanks.Submissions.Core.Services
 {
@@ -30,7 +32,7 @@ namespace Biobanks.Submissions.Core.Services
             => samples.Where(
                 x => x.OrganisationId == dto.OrganisationId &&
                      x.IndividualReferenceId.Equals(dto.IndividualReferenceId, StringComparison.OrdinalIgnoreCase) &&
-                     x.Barcode.Equals(dto.Barcode, StringComparison.OrdinalIgnoreCase) && 
+                     x.Barcode.Equals(dto.Barcode, StringComparison.OrdinalIgnoreCase) &&
                      (x.CollectionName ?? string.Empty).Equals(dto.CollectionName ?? string.Empty, StringComparison.OrdinalIgnoreCase));
 
         private static IEnumerable<LiveSample> GetLiveSamplesFromDto(SampleIdDto dto,
@@ -38,7 +40,7 @@ namespace Biobanks.Submissions.Core.Services
             => samples.Where(
                 x => x.OrganisationId == dto.OrganisationId &&
                      x.IndividualReferenceId.Equals(dto.IndividualReferenceId, StringComparison.OrdinalIgnoreCase) &&
-                     x.Barcode.Equals(dto.Barcode, StringComparison.OrdinalIgnoreCase) && 
+                     x.Barcode.Equals(dto.Barcode, StringComparison.OrdinalIgnoreCase) &&
                      (x.CollectionName ?? string.Empty).Equals(dto.CollectionName ?? string.Empty, StringComparison.OrdinalIgnoreCase));
 
         public async Task ProcessSamples(IEnumerable<SampleDto> dto)
@@ -71,7 +73,7 @@ namespace Biobanks.Submissions.Core.Services
                         resultsWithIdentifiers.Add(new BiobanksValidationResult
                         {
                             ErrorMessage = result.ErrorMessage,
-                            RecordIdentifiers = JsonConvert.SerializeObject(new
+                            RecordIdentifiers = JsonSerializer.Serialize(new
                             {
                                 incomingDto.OrganisationId,
                                 incomingDto.IndividualReferenceId,
@@ -109,7 +111,7 @@ namespace Biobanks.Submissions.Core.Services
                         validationResults.Add(new BiobanksValidationResult
                         {
                             ErrorMessage = exception.Message,
-                            RecordIdentifiers = JsonConvert.SerializeObject(new
+                            RecordIdentifiers = JsonSerializer.Serialize(new
                             {
                                 incomingDto.OrganisationId,
                                 incomingDto.IndividualReferenceId,
@@ -150,7 +152,7 @@ namespace Biobanks.Submissions.Core.Services
                 .AsNoTracking()
                 .ToListAsync();
 
-            foreach(var incomingDto in sampleIdDtos)
+            foreach (var incomingDto in sampleIdDtos)
             {
                 //controller should have done this, but: model validate the dto
                 var vcontext = new ValidationContext(dto);
@@ -163,7 +165,7 @@ namespace Biobanks.Submissions.Core.Services
                         resultsWithIdentifiers.Add(new BiobanksValidationResult
                         {
                             ErrorMessage = result.ErrorMessage,
-                            RecordIdentifiers = JsonConvert.SerializeObject(new
+                            RecordIdentifiers = JsonSerializer.Serialize(new
                             {
                                 incomingDto.OrganisationId,
                                 incomingDto.IndividualReferenceId,
