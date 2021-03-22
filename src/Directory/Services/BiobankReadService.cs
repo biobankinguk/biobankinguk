@@ -852,7 +852,7 @@ namespace Biobanks.Services
 
                 return sets;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -1412,9 +1412,11 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int biobankId)
         {
+            // Returns users who have admin role only for this biobank
             // TODO remove the generic repo when upgrading to netcore, as it doesn't support groupby fully
             var admins = await _organisationUserRepository.ListAsync(false);
             var adminIds = admins.GroupBy(a => a.OrganisationUserId)
+                .Where(g => g.Count() == 1)
                 .Select(a => a.FirstOrDefault(ai => ai.OrganisationId == biobankId))
                 .Select(ou => ou?.OrganisationUserId);
 

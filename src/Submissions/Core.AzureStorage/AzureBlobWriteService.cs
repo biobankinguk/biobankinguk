@@ -1,14 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
 using Biobanks.Submissions.Core.Services.Contracts;
-
-using Newtonsoft.Json;
 
 namespace Biobanks.Submissions.Core.AzureStorage
 {
@@ -26,7 +25,7 @@ namespace Biobanks.Submissions.Core.AzureStorage
         /// <inheritdoc />
         public async Task<Guid> StoreObjectAsJsonAsync(string container, object obj)
         {
-            var json = JsonConvert.SerializeObject(obj);
+            var json = JsonSerializer.Serialize(obj);
             return await StoreTextAsync(container, json, "application/json");
         }
 

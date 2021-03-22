@@ -1991,6 +1991,7 @@ namespace Biobanks.Services
         public async Task DeleteBiobankAsync(int id)
         {
             // remove biobank
+            await _indexService.BulkDeleteBiobank(id);
             await _organisationRepository.DeleteAsync(id);
             await _organisationRepository.SaveChangesAsync();
         }

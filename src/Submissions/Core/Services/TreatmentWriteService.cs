@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Biobanks.Data;
+using Biobanks.Entities.Api;
+using Biobanks.Submissions.Core.Dto;
+using Biobanks.Submissions.Core.Exceptions;
+using Biobanks.Submissions.Core.Extensions;
+using Biobanks.Submissions.Core.Services.Contracts;
+
+using Microsoft.EntityFrameworkCore;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api;
-using Biobanks.Submissions.Core.Exceptions;
-using Biobanks.Submissions.Core.Extensions;
-using Biobanks.Submissions.Core.Dto;
-using Biobanks.Submissions.Core.Services.Contracts;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Biobanks.Data;
 
 namespace Biobanks.Submissions.Core.Services
 {
@@ -29,7 +31,7 @@ namespace Biobanks.Submissions.Core.Services
             IEnumerable<StagedTreatment> treatments)
             => treatments.Where(
                 x => x.OrganisationId == dto.OrganisationId &&
-                x.DateTreated == dto.DateTreated &&     
+                x.DateTreated == dto.DateTreated &&
                 x.IndividualReferenceId.Equals(dto.IndividualReferenceId, StringComparison.OrdinalIgnoreCase) &&
                 x.TreatmentCodeId.Equals(dto.TreatmentCode, StringComparison.OrdinalIgnoreCase));
 
@@ -71,7 +73,7 @@ namespace Biobanks.Submissions.Core.Services
                         resultsWithIdentifiers.Add(new BiobanksValidationResult
                         {
                             ErrorMessage = result.ErrorMessage,
-                            RecordIdentifiers = JsonConvert.SerializeObject(new
+                            RecordIdentifiers = JsonSerializer.Serialize(new
                             {
                                 incomingDto.OrganisationId,
                                 incomingDto.IndividualReferenceId,
@@ -110,7 +112,7 @@ namespace Biobanks.Submissions.Core.Services
                         validationResults.Add(new BiobanksValidationResult
                         {
                             ErrorMessage = exception.Message,
-                            RecordIdentifiers = JsonConvert.SerializeObject(new
+                            RecordIdentifiers = JsonSerializer.Serialize(new
                             {
                                 incomingDto.OrganisationId,
                                 incomingDto.IndividualReferenceId,
@@ -119,7 +121,7 @@ namespace Biobanks.Submissions.Core.Services
                             })
                         });
                     }
-                        
+
                     continue;
                 }
 
@@ -165,7 +167,7 @@ namespace Biobanks.Submissions.Core.Services
                         resultsWithIdentifiers.Add(new BiobanksValidationResult
                         {
                             ErrorMessage = result.ErrorMessage,
-                            RecordIdentifiers = JsonConvert.SerializeObject(new
+                            RecordIdentifiers = JsonSerializer.Serialize(new
                             {
                                 incomingDto.OrganisationId,
                                 incomingDto.IndividualReferenceId,
