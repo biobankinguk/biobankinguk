@@ -7,6 +7,10 @@ namespace Biobanks.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_MaterialDetails_CollectionSampleSets_SampleSetId",
+                table: "MaterialDetails");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_MaterialDetails_ExtractionProcedures_ExtractionProcedureId",
                 table: "MaterialDetails");
 
@@ -21,14 +25,28 @@ namespace Biobanks.Data.Migrations
                 name: "ExtractionProcedureId",
                 table: "MaterialDetails",
                 type: "nvarchar(20)",
-                nullable: false,
+                nullable: true,
                 oldClrType: typeof(int),
                 oldType: "int");
+
+            migrationBuilder.AddColumn<int>(
+                name: "Id",
+                table: "MaterialDetails",
+                type: "int",
+                nullable: false,
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
+
+            migrationBuilder.AddColumn<int>(
+                name: "CollectionSampleSetSampleSetId",
+                table: "MaterialDetails",
+                type: "int",
+                nullable: true);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_MaterialDetails",
                 table: "MaterialDetails",
-                columns: new[] { "SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId", "PreservationTypeId" });
+                column: "Id");
 
             migrationBuilder.CreateTable(
                 name: "MaterialTypeOntologyTerm",
@@ -55,9 +73,22 @@ namespace Biobanks.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_MaterialDetails_CollectionSampleSetSampleSetId",
+                table: "MaterialDetails",
+                column: "CollectionSampleSetSampleSetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MaterialTypeOntologyTerm_MaterialTypesId",
                 table: "MaterialTypeOntologyTerm",
                 column: "MaterialTypesId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_MaterialDetails_CollectionSampleSets_CollectionSampleSetSampleSetId",
+                table: "MaterialDetails",
+                column: "CollectionSampleSetSampleSetId",
+                principalTable: "CollectionSampleSets",
+                principalColumn: "SampleSetId",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_MaterialDetails_OntologyTerms_ExtractionProcedureId",
@@ -65,11 +96,15 @@ namespace Biobanks.Data.Migrations
                 column: "ExtractionProcedureId",
                 principalTable: "OntologyTerms",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_MaterialDetails_CollectionSampleSets_CollectionSampleSetSampleSetId",
+                table: "MaterialDetails");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_MaterialDetails_OntologyTerms_ExtractionProcedureId",
                 table: "MaterialDetails");
@@ -81,13 +116,27 @@ namespace Biobanks.Data.Migrations
                 name: "PK_MaterialDetails",
                 table: "MaterialDetails");
 
+            migrationBuilder.DropIndex(
+                name: "IX_MaterialDetails_CollectionSampleSetSampleSetId",
+                table: "MaterialDetails");
+
+            migrationBuilder.DropColumn(
+                name: "Id",
+                table: "MaterialDetails");
+
+            migrationBuilder.DropColumn(
+                name: "CollectionSampleSetSampleSetId",
+                table: "MaterialDetails");
+
             migrationBuilder.AlterColumn<int>(
                 name: "ExtractionProcedureId",
                 table: "MaterialDetails",
                 type: "int",
                 nullable: false,
+                defaultValue: 0,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(20)");
+                oldType: "nvarchar(20)",
+                oldNullable: true);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_MaterialDetails",
@@ -120,6 +169,14 @@ namespace Biobanks.Data.Migrations
                 name: "IX_ExtractionProcedures_MaterialTypeId",
                 table: "ExtractionProcedures",
                 column: "MaterialTypeId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_MaterialDetails_CollectionSampleSets_SampleSetId",
+                table: "MaterialDetails",
+                column: "SampleSetId",
+                principalTable: "CollectionSampleSets",
+                principalColumn: "SampleSetId",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_MaterialDetails_ExtractionProcedures_ExtractionProcedureId",

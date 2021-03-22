@@ -6,6 +6,7 @@ using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Biobanks.Data
 {
@@ -124,17 +125,6 @@ namespace Biobanks.Data
                     x.AssociatedDataTypeId
                 });
 
-            model.Entity<MaterialDetail>()
-                .HasKey(x => new
-                {
-                    x.SampleSetId,
-                    x.MaterialTypeId,
-                    x.StorageTemperatureId,
-                    x.MacroscopicAssessmentId,
-                    x.ExtractionProcedureId,
-                    x.PreservationTypeId
-                });
-
             model.Entity<NetworkUser>()
                 .HasKey(x => new
                 {
@@ -179,6 +169,17 @@ namespace Biobanks.Data
                 });
 
             // Indices (for unique constraints)
+            model.Entity<MaterialDetail>()
+                .HasIndex(x => new
+                {
+                    x.SampleSetId,
+                    x.MaterialTypeId,
+                    x.StorageTemperatureId,
+                    x.MacroscopicAssessmentId,
+                    x.ExtractionProcedureId,
+                    x.PreservationTypeId
+                }).IsUnique();
+
             model.Entity<LiveDiagnosis>()
                 .HasIndex(x => new
                 {
