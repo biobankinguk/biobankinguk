@@ -50,14 +50,14 @@ namespace Biobanks.Search.Elastic
         }
 
         /// <inheritdoc />
-        public async Task<List<int>> ListIds()
+        public Task<List<int>> ListIds()
         {
             var results = _client.Search<CapabilityDocument>(s => s
                 .MatchAll()
                 .Source(false) //don't care about the document, just its index id in the metadata
                 .Size(SizeLimits.SizeMax));
 
-            return results.Hits.Select(x => int.Parse(x.Id)).ToList();
+            return Task.FromResult(results.Hits.Select(x => int.Parse(x.Id)).ToList());
         }
 
         /// <inheritdoc />

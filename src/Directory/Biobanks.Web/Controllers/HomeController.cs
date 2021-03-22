@@ -31,7 +31,7 @@ namespace Biobanks.Web.Controllers
         }
 
         // GET: Home
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             return View(new HomepageContentModel
             {
