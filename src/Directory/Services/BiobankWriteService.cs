@@ -303,15 +303,15 @@ namespace Biobanks.Services
         {
             // Assign default values to Material Details
             var defaultPreservationType = await _biobankReadService.GetDefaultPreservationTypeAsync();
-            var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
+            //var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
 
             foreach (var materialDetail in sampleSet.MaterialDetails)
             {
                 if (materialDetail.PreservationTypeId == default)
                     materialDetail.PreservationTypeId = defaultPreservationType.Id;
 
-                if (materialDetail.ExtractionProcedureId == default)
-                    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
+                //if (materialDetail.ExtractionProcedureId == default)
+                //    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
             }
 
             // Add new SampleSet
@@ -332,15 +332,15 @@ namespace Biobanks.Services
         {
             // Assign default values to new Material Details
             var defaultPreservationType = await _biobankReadService.GetDefaultPreservationTypeAsync();
-            var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
+            //var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
 
             foreach (var materialDetail in sampleSet.MaterialDetails)
             {
                 if (materialDetail.PreservationTypeId == default)
                     materialDetail.PreservationTypeId = defaultPreservationType.Id;
 
-                if (materialDetail.ExtractionProcedureId == default)
-                    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
+                //if (materialDetail.ExtractionProcedureId == default)
+                //    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
             }
 
             // Update exisiting SampleSet

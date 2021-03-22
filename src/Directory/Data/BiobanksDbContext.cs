@@ -84,7 +84,6 @@ namespace Biobanks.Directory.Data
         public DbSet<Annotation> Annotations { get; set; }
 
         /* Shared Reference Data */
-        public DbSet<ExtractionProcedure> ExtractionProcedures { get; set; }
         public virtual DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<Sex> Sexes { get; set; }

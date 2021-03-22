@@ -71,7 +71,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
-        private readonly IGenericEFRepository<ExtractionProcedure> _extractionProcedureRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
         private readonly IGenericEFRepository<County> _countyRepository;
@@ -138,7 +137,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
-            IGenericEFRepository<ExtractionProcedure> extractionProcedureRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             ICacheProvider cacheProvider,
@@ -199,7 +197,6 @@ namespace Biobanks.Services
             _collectionPercentage = collectionPercentage;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
-            _extractionProcedureRepository = extractionProcedureRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
@@ -1102,11 +1099,6 @@ namespace Biobanks.Services
         {
             return (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
         }
-        #endregion
-
-        #region RefData: ExtractionProcedure
-        public async Task<ExtractionProcedure> GetDefaultExtractionProcedureAsync()
-            => (await _extractionProcedureRepository.ListAsync(filter: x => x.IsDefaultValue)).Single();
         #endregion
 
         #region RefData: Preservation Type

@@ -24,7 +24,7 @@ namespace Biobanks.Entities.Data
 
         [Key, Column(Order = 4)]
         public int ExtractionProcedureId { get; set; }
-        public virtual ExtractionProcedure ExtractionProcedure { get; set; }
+        public virtual OntologyTerm ExtractionProcedure { get; set; }
 
         [Key, Column(Order = 5)]
         public int PreservationTypeId { get; set; }
