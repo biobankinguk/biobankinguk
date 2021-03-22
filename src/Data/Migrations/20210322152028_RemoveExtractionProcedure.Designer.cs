@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210322152028_RemoveExtractionProcedure")]
+    partial class RemoveExtractionProcedure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -802,16 +804,17 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("MacroscopicAssessmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExtractionProcedureId")
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<int>("PreservationTypeId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CollectionPercentageId")
                         .HasColumnType("int");
 
-                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId", "ExtractionProcedureId", "PreservationTypeId");
+                    b.Property<string>("ExtractionProcedureId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId", "PreservationTypeId");
 
                     b.HasIndex("CollectionPercentageId");
 

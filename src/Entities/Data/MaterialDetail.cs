@@ -23,7 +23,7 @@ namespace Biobanks.Entities.Data
         public virtual MacroscopicAssessment MacroscopicAssessment { get; set; }
 
         [Key, Column(Order = 4)]
-        public int ExtractionProcedureId { get; set; }
+        public string ExtractionProcedureId { get; set; }
         public virtual OntologyTerm ExtractionProcedure { get; set; }
 
         [Key, Column(Order = 5)]
