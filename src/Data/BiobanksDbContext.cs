@@ -6,7 +6,6 @@ using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Biobanks.Data
 {
