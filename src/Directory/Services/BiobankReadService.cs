@@ -1105,9 +1105,6 @@ namespace Biobanks.Services
         public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
-        public async Task<PreservationType> GetDefaultPreservationTypeAsync()
-            => (await _preservationTypeRepository.ListAsync(filter: x => x.IsDefaultValue)).Single();
-
         // TODO: Should be updated to count the number of MaterialDetails with PreservationType, when implemented.
         public async Task<int> GetPreservationTypeUsageCount(int id)
         {
