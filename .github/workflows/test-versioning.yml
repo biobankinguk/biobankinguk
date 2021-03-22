@@ -1,0 +1,10 @@
+name: Testing Versioning Action
+on: [pull_request]
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/update-version-manifest
