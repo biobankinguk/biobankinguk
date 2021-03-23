@@ -71,7 +71,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
-        private readonly IGenericEFRepository<ExtractionProcedure> _extractionProcedureRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
         private readonly IGenericEFRepository<County> _countyRepository;
@@ -138,7 +137,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
-            IGenericEFRepository<ExtractionProcedure> extractionProcedureRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             ICacheProvider cacheProvider,
@@ -199,7 +197,6 @@ namespace Biobanks.Services
             _collectionPercentage = collectionPercentage;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
-            _extractionProcedureRepository = extractionProcedureRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
@@ -1104,17 +1101,9 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: ExtractionProcedure
-        public async Task<ExtractionProcedure> GetDefaultExtractionProcedureAsync()
-            => (await _extractionProcedureRepository.ListAsync(filter: x => x.IsDefaultValue)).Single();
-        #endregion
-
         #region RefData: Preservation Type
         public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<PreservationType> GetDefaultPreservationTypeAsync()
-            => (await _preservationTypeRepository.ListAsync(filter: x => x.IsDefaultValue)).Single();
 
         // TODO: Should be updated to count the number of MaterialDetails with PreservationType, when implemented.
         public async Task<int> GetPreservationTypeUsageCount(int id)

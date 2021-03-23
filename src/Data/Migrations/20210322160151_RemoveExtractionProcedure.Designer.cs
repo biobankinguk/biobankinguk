@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210322160151_RemoveExtractionProcedure")]
+    partial class RemoveExtractionProcedure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -810,7 +812,7 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("MaterialTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PreservationTypeId")
+                    b.Property<int>("PreservationTypeId")
                         .HasColumnType("int");
 
                     b.Property<int>("SampleSetId")
@@ -834,10 +836,6 @@ namespace Biobanks.Data.Migrations
                     b.HasIndex("PreservationTypeId");
 
                     b.HasIndex("StorageTemperatureId");
-
-                    b.HasIndex("SampleSetId", "MaterialTypeId", "StorageTemperatureId", "MacroscopicAssessmentId", "ExtractionProcedureId", "PreservationTypeId")
-                        .IsUnique()
-                        .HasFilter("[ExtractionProcedureId] IS NOT NULL AND [PreservationTypeId] IS NOT NULL");
 
                     b.ToTable("MaterialDetails");
                 });
@@ -1818,6 +1816,9 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<bool>("IsDefaultValue")
+                        .HasColumnType("bit");
+
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
@@ -2409,7 +2410,9 @@ namespace Biobanks.Data.Migrations
 
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.PreservationType", "PreservationType")
                         .WithMany()
-                        .HasForeignKey("PreservationTypeId");
+                        .HasForeignKey("PreservationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.StorageTemperature", "StorageTemperature")
                         .WithMany()
