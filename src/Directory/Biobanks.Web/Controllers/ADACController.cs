@@ -446,7 +446,7 @@ namespace Biobanks.Web.Controllers
                     UserFullName = x.Name,
                     UserEmail = x.Email,
                     EmailConfirmed = x.EmailConfirmed
-                }).SingleOrDefault(x => x.UserId == biobankUserId);
+                }).SingleOrDefault(x => x.UserId == biobankUserId).UserFullName;
 
             //remove them from the network
             await _biobankWriteService.RemoveUserFromBiobankAsync(biobankUserId, biobankId);
@@ -454,7 +454,7 @@ namespace Biobanks.Web.Controllers
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
 
-            SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
+            SetTemporaryFeedbackMessage($"{userFullName} has been removed from the admins!", FeedbackMessageType.Success);
 
             return RedirectToAction("BiobankAdmin", new { id = biobankId } );
         }
