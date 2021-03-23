@@ -8,6 +8,7 @@ using Biobanks.Submissions.Core.Config;
 using Biobanks.Submissions.Core.Dto;
 using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Entities.Api;
+using AutoMapper.Internal;
 
 namespace Biobanks.Submissions.Core.Services
 {
@@ -150,23 +151,32 @@ namespace Biobanks.Submissions.Core.Services
 
         private async Task<StagedSample> ValidateExtractionProcedure(SampleDto dto, StagedSample sample)
         {
-            //check if extracted sample
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
-                return sample; //not invalid, but irrelevant, so no value
-
-            // Validate SNOMED-CT term
-            // TODO Change this to use generic ontology lookup service in future
-            var result = await _refDataReadService.GetSnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField);
-
-            if (result == null)
+            var ep = await _refDataReadService.GetSnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField);
+            
+            // Invalid MaterialType or ExtractionProcedure
+            if (mt == null || ep == null)
+            {
                 throw new ValidationException(
                     new ValidationResult(
                         ValidationErrors.SnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField, dto.Barcode, dto.IndividualReferenceId),
                         new List<string> { nameof(dto.ExtractionProcedure) }),
                     null, null);
+            }
 
-            sample.ExtractionProcedureId = result.Id;
+            // Check MaterialType is valid for given Extraction Procedure
+            if (!ep.MaterialTypes.Contains(mt))
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.SnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField, dto.Barcode, dto.IndividualReferenceId),
+                        new List<string> { nameof(dto.ExtractionProcedure) }),
+                    null, null);
+            }
+
+            // Validated ExtractionProcedure
+            sample.ExtractionProcedureId = ep.Id;
+
             return sample;
         }
 
