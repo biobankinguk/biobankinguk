@@ -68,14 +68,11 @@ namespace Biobanks.DataSeed.Services
                 /* Shared */
                 SeedJson<MaterialTypeGroup>,
                 SeedMaterialTypes,
-                SeedExtractionProcedures,
                 SeedJson<Sex>,
                 SeedJson<SnomedTag>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
-                SeedPreservationTypes,
-
-                SeedDefaultValues
+                SeedPreservationTypes
             };
         }
 
@@ -208,54 +205,6 @@ namespace Biobanks.DataSeed.Services
             _db.SaveChanges();
         }
 
-        private void SeedDefaultValues()
-        {
-            // Default Values should ignore exisiting values in a table and 
-            // have identity insert off such that an auto-generated ID is used
-
-            // Default ExtractionProcedure
-            Seed(new[]
-            {
-                new ExtractionProcedure
-                {
-                    Value = "N/A",
-                    IsDefaultValue = true
-                }
-            },
-            identityInsert: false,
-            ignoreExisting: true);
-
-            // Default PreservationType
-            Seed(new[]
-            {
-                new PreservationType
-                {
-                    Value = "N/A",
-                    IsDefaultValue = true
-                }
-            },
-            identityInsert: false,
-            ignoreExisting: true);
-        }
-
-        private void SeedExtractionProcedures()
-        {
-            var validMaterialTypes = _db.MaterialTypes.ToList();
-
-            Seed(
-                ReadJson<ExtractionProcedure>().Select(x =>
-                    new ExtractionProcedure()
-                    {
-                        Id = x.Id,
-                        Value = x.Value.Trim(),
-                        SortOrder = x.SortOrder,
-                        MaterialType = validMaterialTypes.First(y => y.Value.Trim() == x.MaterialType.Value),
-                        IsDefaultValue = false
-                    }
-                )
-            );
-        }
-
         private void SeedMaterialTypes()
         {
             var validGroups = _db.MaterialTypeGroups.ToList();
@@ -300,7 +249,6 @@ namespace Biobanks.DataSeed.Services
                         Id = x.Id,
                         Value = x.Value.Trim(),
                         SortOrder = x.SortOrder,
-                        IsDefaultValue = false,
                         StorageTemperature = validTemperatures.First(y => y.Value == x.StorageTemperature.Value)
                     }
                 )
@@ -312,11 +260,11 @@ namespace Biobanks.DataSeed.Services
             Seed(ReadJson<T>());
         }
 
-        private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true, bool ignoreExisting = false) where T : class
+        private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true) where T : class
         {
             var set = _db.Set<T>();
 
-            if (set.Any() && !ignoreExisting)
+            if (set.Any())
             {
                 _logger.LogInformation($"{ typeof(T).Name }: { set.Count() } entries already exist");
             }

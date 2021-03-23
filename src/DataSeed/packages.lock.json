@@ -1596,7 +1596,11 @@
         }
       },
       "Biobanks.Entities": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.ComponentModel.Annotations": "5.0.0"
+        }
       },
       "Biobanks.Services": {
         "type": "Project"
