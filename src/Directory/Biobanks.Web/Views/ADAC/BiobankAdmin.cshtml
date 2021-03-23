@@ -6,7 +6,8 @@
 
 @Html.Partial("_ADACTabs", "Biobanks")
 
-<h3>@Model.Name - Admin Page @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new { id = @Model.BiobankId }, new { @class = "btn btn-danger pull-right" })</h3>
+
+<h1>@Model.Name @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new { id = @Model.BiobankId }, new { @class = "btn btn-danger" })</h1>
 
 <span id="BiobankId" data-biobank-id="@Model.BiobankId"></span>
 
@@ -22,7 +23,6 @@
                 <!-- Biobank Email -->
                 <dt>Email: </dt>
                 <dd itemprop="email"><a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></dd>
-
                 <!-- Biobank Status - Suspended or Active -->
                 <dt>Status: </dt>
                 <dd>
@@ -35,7 +35,7 @@
                                              {
                                                  id = Model.BiobankId
                                              })"
-                           class="unsuspend-confirm pull-right"
+                           class="unsuspend-confirm"
                            data-biobank-name="@Model.Name">
                             <span class="fa fa-check-square-o labelled-icon"></span>Unsuspend
                         </a>
@@ -48,7 +48,7 @@
                                              {
                                                  id = Model.BiobankId
                                              })"
-                           class="suspend-confirm pull-right"
+                           class="suspend-confirm"
                            data-biobank-name="@Model.Name">
                             <span class="fa fa-ban labelled-icon"></span>Suspend
                         </a>
@@ -61,8 +61,10 @@
 </div>
 
 <!--<h2>Administrators <a href="#modalInviteBiobankAdmin" class="btn btn-success pull-right" data-toggle="modal">Add new admin</a></h2>-->
-<h2>Administrators <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteBiobankAdmin" data-bind="click: openInviteDialog">Add new admin</a></h2>
-
+<h2>Administrators</h2>
+<div class="row col-sm-12">
+    <a href="#" class="btn btn-success" data-toggle="modal" data-target="#modalInviteBiobankAdmin" data-bind="click: openInviteDialog">Add new admin</a>
+</div>
 <div class="row">
     <div class="col-sm-12">
         <br />
@@ -118,8 +120,6 @@
             </tbody>
 
         </table>
-
-
     </div>
 </div>
 
