@@ -26,6 +26,7 @@ namespace Biobanks.Web.HangfireJobActivator
             return _kernel.Resolve(jobType);
         }
 
+        [Obsolete]
         public override JobActivatorScope BeginScope()
         {
             return new HangfireIocJobActivatorScope(this, _kernel);

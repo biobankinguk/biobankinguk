@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "value": "Disease"
+    },
+    {
+        "id": 2,
+        "value": "Body Organ"
+    },
+    {
+        "id": 3,
+        "value": "Treatment"
+    },
+    {
+        "id": 4,
+        "value": "Blood Product"
+    },
+    {
+        "id": 5,
+        "value": "Extraction Procedure"
+    }
+]

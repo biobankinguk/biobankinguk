@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using Hangfire.Dashboard;
 
 namespace Biobanks.Web.Filters
 {
+    [Obsolete]
     public class HangFireAuthorizationFilter : IAuthorizationFilter
     {
         public bool Authorize(IDictionary<string, object> owinEnvironment)

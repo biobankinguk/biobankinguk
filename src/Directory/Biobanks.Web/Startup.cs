@@ -1,3 +1,4 @@
+using System;
 using System.Web.Http.Dispatcher;
 using System.Web.Mvc;
 using Biobanks.Web.Filters;
@@ -17,6 +18,8 @@ namespace Biobanks.Web
         //http://tech.trailmax.info/2014/09/aspnet-identity-and-ioc-container-registration/
         internal static IDataProtectionProvider DataProtectionProvider { get; private set; }
 
+        [Obsolete("Sections of this method contain Obselete usages. Reference the comments for details")]
+        // Hangfire AuthorizationFilters
         public void Configuration(IAppBuilder app)
         {
             DataProtectionProvider = app.GetDataProtectionProvider();
@@ -39,7 +42,8 @@ namespace Biobanks.Web
             JobActivator.Current = new HangfireWindsorJobActivator(windsorContainer.Kernel);
 
             // Make sure only SuperUsers can access the Hangfire dashboard.
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions { AuthorizationFilters = new[] { new HangFireAuthorizationFilter() } });
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions {
+                AuthorizationFilters = new[] { new HangFireAuthorizationFilter() } });
 
             // Start the Hangfire services.
             app.UseHangfireDashboard();

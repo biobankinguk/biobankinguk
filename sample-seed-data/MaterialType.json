@@ -1,13 +1,18 @@
 [
     {
-        "id": "4",
+        "id": 1,
+        "value": "cDNA/mRNA",
+        "sortOrder": 12
+    },
+    {
+        "id": 4,
         "value": "DNA",
-        "sortOrder": "15"
+        "sortOrder": 17
     },
     {
-        "id": "5",
+        "id": 5,
         "value": "Faeces",
-        "sortOrder": "19",
+        "sortOrder": 21,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -15,19 +20,24 @@
         ]
     },
     {
-        "id": "7",
+        "id": 6,
+        "value": "microRNA",
+        "sortOrder": 30
+    },
+    {
+        "id": 7,
         "value": "Isolated Pathogens",
-        "sortOrder": "26"
+        "sortOrder": 28
     },
     {
-        "id": "8",
-        "value": "Peripheral blood mononuclear cells (PBMC) ",
-        "sortOrder": "31"
+        "id": 8,
+        "value": "Peripheral blood mononuclear cells (PBMC)",
+        "sortOrder": 34
     },
     {
-        "id": "9",
+        "id": 9,
         "value": "Plasma",
-        "sortOrder": "33",
+        "sortOrder": 36,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -35,19 +45,19 @@
         ]
     },
     {
-        "id": "10",
+        "id": 10,
         "value": "PM tissue",
-        "sortOrder": "35"
+        "sortOrder": 38
     },
     {
-        "id": "11",
+        "id": 11,
         "value": "RNA",
-        "sortOrder": "40"
+        "sortOrder": 42
     },
     {
-        "id": "12",
+        "id": 12,
         "value": "Saliva",
-        "sortOrder": "41",
+        "sortOrder": 43,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -55,9 +65,9 @@
         ]
     },
     {
-        "id": "13",
+        "id": 13,
         "value": "Serum",
-        "sortOrder": "43",
+        "sortOrder": 45,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -65,9 +75,9 @@
         ]
     },
     {
-        "id": "14",
+        "id": 14,
         "value": "Tissue specimen ",
-        "sortOrder": "51",
+        "sortOrder": 53,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
@@ -78,9 +88,9 @@
         ]
     },
     {
-        "id": "15",
+        "id": 15,
         "value": "Urine",
-        "sortOrder": "53",
+        "sortOrder": 55,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -88,9 +98,9 @@
         ]
     },
     {
-        "id": "16",
+        "id": 16,
         "value": "Whole blood",
-        "sortOrder": "56",
+        "sortOrder": 58,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -98,45 +108,39 @@
         ]
     },
     {
-        "id": "17",
+        "id": 17,
         "value": "Embryo",
-        "sortOrder": "17",
+        "sortOrder": 19,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "18",
+        "id": 18,
         "value": "Whole bone marrow",
-        "sortOrder": "57"
+        "sortOrder": 59
     },
     {
-        "id": "19",
+        "id": 19,
         "value": "Primary cells",
-        "sortOrder": "36"
+        "sortOrder": 39
     },
     {
-        "id": "20",
+        "id": 20,
         "value": "Swab",
-        "sortOrder": "46",
+        "sortOrder": 48,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "21",
+        "id": 21,
         "value": "Sputum",
-        "sortOrder": "44",
+        "sortOrder": 46,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -144,9 +148,9 @@
         ]
     },
     {
-        "id": "22",
-        "value": "Dried whole blood (e.g. Guthrie cards) DWB ",
-        "sortOrder": "16",
+        "id": 22,
+        "value": "Dried whole blood (e.g. Guthrie cards) DWB",
+        "sortOrder": 18,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -154,19 +158,19 @@
         ]
     },
     {
-        "id": "23",
+        "id": 23,
         "value": "Cancer cell lines",
-        "sortOrder": "11"
+        "sortOrder": 11
     },
     {
-        "id": "24",
+        "id": 24,
         "value": "Immortalized cell lines",
-        "sortOrder": "25"
+        "sortOrder": 27
     },
     {
-        "id": "25",
+        "id": 25,
         "value": "Synovial fluid",
-        "sortOrder": "48",
+        "sortOrder": 50,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -174,9 +178,9 @@
         ]
     },
     {
-        "id": "26",
+        "id": 26,
         "value": "Tears",
-        "sortOrder": "49",
+        "sortOrder": 51,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -184,9 +188,9 @@
         ]
     },
     {
-        "id": "27",
-        "value": "(Breast) Milk ",
-        "sortOrder": "1",
+        "id": 27,
+        "value": "(Breast) Milk",
+        "sortOrder": 1,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -194,9 +198,9 @@
         ]
     },
     {
-        "id": "28",
-        "value": "Amniotic Fluid ",
-        "sortOrder": "2",
+        "id": 28,
+        "value": "Amniotic Fluid",
+        "sortOrder": 2,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -204,9 +208,9 @@
         ]
     },
     {
-        "id": "29",
-        "value": "Ascites Fluid ",
-        "sortOrder": "3",
+        "id": 29,
+        "value": "Ascites Fluid",
+        "sortOrder": 3,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -214,9 +218,9 @@
         ]
     },
     {
-        "id": "30",
+        "id": 30,
         "value": "Bile ",
-        "sortOrder": "4",
+        "sortOrder": 4,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -224,9 +228,9 @@
         ]
     },
     {
-        "id": "31",
-        "value": "Body Cavity Fluid ",
-        "sortOrder": "5",
+        "id": 31,
+        "value": "Body Cavity Fluid",
+        "sortOrder": 5,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -234,21 +238,18 @@
         ]
     },
     {
-        "id": "32",
+        "id": 32,
         "value": "Bone ",
-        "sortOrder": "6",
+        "sortOrder": 6,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "33",
-        "value": "Bone marrow aspirate ",
+        "id": 33,
+        "value": "Bone marrow aspirate",
         "sortOrder": "7",
         "materialTypeGroups": [
             {
@@ -257,9 +258,9 @@
         ]
     },
     {
-        "id": "34",
-        "value": "Bone Marrow Plasma ",
-        "sortOrder": "8",
+        "id": 34,
+        "value": "Bone Marrow Plasma",
+        "sortOrder": 8,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -267,9 +268,9 @@
         ]
     },
     {
-        "id": "35",
-        "value": "Bronchoalveolar lavage ",
-        "sortOrder": "9",
+        "id": 35,
+        "value": "Bronchoalveolar lavage",
+        "sortOrder": 9,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -277,14 +278,14 @@
         ]
     },
     {
-        "id": "36",
-        "value": "Buffy coat ",
-        "sortOrder": "10"
+        "id": 36,
+        "value": "Buffy coat",
+        "sortOrder": 10
     },
     {
-        "id": "37",
-        "value": "Cord blood ",
-        "sortOrder": "13",
+        "id": 37,
+        "value": "Cord blood",
+        "sortOrder": 14,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -292,9 +293,9 @@
         ]
     },
     {
-        "id": "38",
-        "value": "Dental pulp PLP ",
-        "sortOrder": "14",
+        "id": 38,
+        "value": "Dental pulp PLP",
+        "sortOrder": 16,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -302,45 +303,39 @@
         ]
     },
     {
-        "id": "39",
-        "value": "Entire body organ ",
-        "sortOrder": "18",
+        "id": 39,
+        "value": "Entire body organ",
+        "sortOrder": 20,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "40",
-        "value": "Fetal tissue ",
-        "sortOrder": "20",
+        "id": 40,
+        "value": "Fetal tissue",
+        "sortOrder": 22,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "41",
-        "value": "Fibroblasts ",
-        "sortOrder": "21"
+        "id": 41,
+        "value": "Fibroblasts",
+        "sortOrder": 23
     },
     {
-        "id": "42",
-        "value": "Gas, exhaled (=breath) ",
-        "sortOrder": "22"
+        "id": 42,
+        "value": "Gas, exhaled (=breath)",
+        "sortOrder": 24
     },
     {
-        "id": "43",
-        "value": "Gastric Fluid ",
-        "sortOrder": "23",
+        "id": 43,
+        "value": "Gastric Fluid",
+        "sortOrder": 25,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -348,22 +343,19 @@
         ]
     },
     {
-        "id": "44",
-        "value": "Hair ",
-        "sortOrder": "24",
+        "id": 44,
+        "value": "Hair",
+        "sortOrder": 26,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "45",
-        "value": "Menstrual blood ",
-        "sortOrder": "27",
+        "id": 45,
+        "value": "Menstrual blood",
+        "sortOrder": 29,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -371,22 +363,19 @@
         ]
     },
     {
-        "id": "46",
-        "value": "Nail ",
-        "sortOrder": "28",
+        "id": 46,
+        "value": "Nail",
+        "sortOrder": 31,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "47",
-        "value": "Nasal washing ",
-        "sortOrder": "29",
+        "id": 47,
+        "value": "Nasal washing",
+        "sortOrder": 32,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -394,9 +383,9 @@
         ]
     },
     {
-        "id": "48",
-        "value": "Pericardial Fluid ",
-        "sortOrder": "30",
+        "id": 48,
+        "value": "Pericardial Fluid",
+        "sortOrder": 33,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -404,22 +393,19 @@
         ]
     },
     {
-        "id": "49",
-        "value": "Placenta ",
-        "sortOrder": "32",
+        "id": 49,
+        "value": "Placenta",
+        "sortOrder": 35,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "50",
-        "value": "Pleural fluid PFL ",
-        "sortOrder": "34",
+        "id": 50,
+        "value": "Pleural fluid PFL",
+        "sortOrder": 37,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -427,9 +413,9 @@
         ]
     },
     {
-        "id": "51",
+        "id": 51,
         "value": "Cerebrospinal fluid",
-        "sortOrder": "12",
+        "sortOrder": 13,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -437,19 +423,19 @@
         ]
     },
     {
-        "id": "52",
-        "value": "Proteins ",
-        "sortOrder": "37"
+        "id": 52,
+        "value": "Proteins",
+        "sortOrder": 40
     },
     {
-        "id": "53",
-        "value": "Red blood cells ",
-        "sortOrder": "38"
+        "id": 53,
+        "value": "Red blood cells",
+        "sortOrder": 41
     },
     {
-        "id": "54",
-        "value": "Semen ",
-        "sortOrder": "42",
+        "id": 54,
+        "value": "Semen",
+        "sortOrder": 44,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -457,14 +443,14 @@
         ]
     },
     {
-        "id": "55",
-        "value": "Stem cells and iPS cells ",
-        "sortOrder": "45"
+        "id": 55,
+        "value": "Stem cells and iPS cells",
+        "sortOrder": 47
     },
     {
-        "id": "56",
-        "value": "Sweat ",
-        "sortOrder": "47",
+        "id": 56,
+        "value": "Sweat",
+        "sortOrder": 49,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -472,35 +458,29 @@
         ]
     },
     {
-        "id": "57",
-        "value": "Teeth ",
-        "sortOrder": "50",
+        "id": 57,
+        "value": "Teeth",
+        "sortOrder": 52,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "58",
-        "value": "Umbilical cord ",
-        "sortOrder": "52",
+        "id": 58,
+        "value": "Umbilical cord",
+        "sortOrder": 54,
         "materialTypeGroups": [
             {
                 "value": "Tissue Sample"
-            },
-            {
-                "value": "Extracted Sample"
             }
         ]
     },
     {
-        "id": "59",
-        "value": "Urine sediment ",
-        "sortOrder": "54",
+        "id": 59,
+        "value": "Urine sediment",
+        "sortOrder": 56,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"
@@ -508,9 +488,9 @@
         ]
     },
     {
-        "id": "60",
-        "value": "Vitreous Fluid ",
-        "sortOrder": "55",
+        "id": 60,
+        "value": "Vitreous Fluid",
+        "sortOrder": 57,
         "materialTypeGroups": [
             {
                 "value": "Fluid Sample"

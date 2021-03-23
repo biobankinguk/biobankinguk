@@ -11,8 +11,6 @@ namespace Biobanks.Entities.Shared.ReferenceData
 
         public int SortOrder { get; set; }
 
-        public bool IsDefaultValue { get; set; }
-
         public int? StorageTemperatureId { get; set; }
 
         public virtual StorageTemperature StorageTemperature { get; set; }

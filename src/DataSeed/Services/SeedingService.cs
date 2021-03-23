@@ -68,13 +68,11 @@ namespace Biobanks.DataSeed.Services
                 /* Shared */
                 SeedJson<MaterialTypeGroup>,
                 SeedMaterialTypes,
-                SeedExtractionProcedures,
                 SeedJson<Sex>,
+                SeedJson<SnomedTag>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
-                SeedPreservationTypes,
-
-                SeedDefaultValues
+                SeedPreservationTypes
             };
         }
 
@@ -102,7 +100,7 @@ namespace Biobanks.DataSeed.Services
                 new AnnualStatisticGroup
                 {
                     Id = x.Id,
-                    Value = x.Value
+                    Value = x.Value.Trim()
                 }
             ));
 
@@ -112,7 +110,7 @@ namespace Biobanks.DataSeed.Services
                     new AnnualStatistic
                     {
                         Id = y.Id,
-                        Value = y.Value,
+                        Value = y.Value.Trim(),
                         AnnualStatisticGroupId= x.Id
                     }
                 )
@@ -128,7 +126,7 @@ namespace Biobanks.DataSeed.Services
                 new AssociatedDataTypeGroup
                 {
                     Id = x.Id,
-                    Value = x.Value
+                    Value = x.Value.Trim()
                 }
             ));
 
@@ -138,7 +136,7 @@ namespace Biobanks.DataSeed.Services
                     new AssociatedDataType
                     {
                         Id = y.Id,
-                        Value = y.Value,
+                        Value = y.Value.Trim(),
                         AssociatedDataTypeGroupId = x.Id
                     }
                 )
@@ -171,7 +169,7 @@ namespace Biobanks.DataSeed.Services
                     new Country 
                     {
                         Id = x.Id,
-                        Value =  x.Value
+                        Value =  x.Value.Trim()
                     }
                 ));
 
@@ -181,7 +179,7 @@ namespace Biobanks.DataSeed.Services
                         new County 
                         {
                             Id = y.Id,
-                            Value = y.Value,
+                            Value = y.Value.Trim(),
                             CountryId = x.Id
                         }
                     )
@@ -207,54 +205,6 @@ namespace Biobanks.DataSeed.Services
             _db.SaveChanges();
         }
 
-        private void SeedDefaultValues()
-        {
-            // Default Values should ignore exisiting values in a table and 
-            // have identity insert off such that an auto-generated ID is used
-
-            // Default ExtractionProcedure
-            Seed(new[]
-            {
-                new ExtractionProcedure
-                {
-                    Value = "N/A",
-                    IsDefaultValue = true
-                }
-            },
-            identityInsert: false,
-            ignoreExisting: true);
-
-            // Default PreservationType
-            Seed(new[]
-            {
-                new PreservationType
-                {
-                    Value = "N/A",
-                    IsDefaultValue = true
-                }
-            },
-            identityInsert: false,
-            ignoreExisting: true);
-        }
-
-        private void SeedExtractionProcedures()
-        {
-            var validMaterialTypes = _db.MaterialTypes.ToList();
-
-            Seed(
-                ReadJson<ExtractionProcedure>().Select(x =>
-                    new ExtractionProcedure()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                        MaterialType = validMaterialTypes.First(y => y.Value == x.MaterialType.Value),
-                        IsDefaultValue = false
-                    }
-                )
-            );
-        }
-
         private void SeedMaterialTypes()
         {
             var validGroups = _db.MaterialTypeGroups.ToList();
@@ -264,11 +214,11 @@ namespace Biobanks.DataSeed.Services
                     new MaterialType()
                     {
                         Id = x.Id,
-                        Value = x.Value,
+                        Value = x.Value.Trim(),
                         SortOrder = x.SortOrder,
                         MaterialTypeGroups =
                             x.MaterialTypeGroups?
-                                .Select(y => validGroups.First(z => z.Value == y.Value))
+                                .Select(y => validGroups.First(z => z.Value == y.Value.Trim()))
                                 .ToList()
                     }
                 )
@@ -290,15 +240,16 @@ namespace Biobanks.DataSeed.Services
 
         private void SeedPreservationTypes()
         {
+            var validTemperatures = _db.StorageTemperatures.ToList();
+
             Seed(
                 ReadJson<PreservationType>().Select(x =>
                     new PreservationType
                     {
                         Id = x.Id,
-                        Value = x.Value,
+                        Value = x.Value.Trim(),
                         SortOrder = x.SortOrder,
-                        StorageTemperatureId = x.StorageTemperatureId,
-                        IsDefaultValue = false
+                        StorageTemperature = validTemperatures.First(y => y.Value == x.StorageTemperature.Value)
                     }
                 )
             );
@@ -309,11 +260,11 @@ namespace Biobanks.DataSeed.Services
             Seed(ReadJson<T>());
         }
 
-        private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true, bool ignoreExisting = false) where T : class
+        private void Seed<T>(IEnumerable<T> entities, bool identityInsert = true) where T : class
         {
             var set = _db.Set<T>();
 
-            if (set.Any() && !ignoreExisting)
+            if (set.Any())
             {
                 _logger.LogInformation($"{ typeof(T).Name }: { set.Count() } entries already exist");
             }
