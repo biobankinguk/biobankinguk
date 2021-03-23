@@ -301,19 +301,6 @@ namespace Biobanks.Services
 
         public async Task AddSampleSetAsync(CollectionSampleSet sampleSet)
         {
-            // Assign default values to Material Details
-            var defaultPreservationType = await _biobankReadService.GetDefaultPreservationTypeAsync();
-            var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
-
-            foreach (var materialDetail in sampleSet.MaterialDetails)
-            {
-                if (materialDetail.PreservationTypeId == default)
-                    materialDetail.PreservationTypeId = defaultPreservationType.Id;
-
-                if (materialDetail.ExtractionProcedureId == default)
-                    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
-            }
-
             // Add new SampleSet
             _sampleSetRepository.Insert(sampleSet);
             await _sampleSetRepository.SaveChangesAsync();
@@ -330,19 +317,6 @@ namespace Biobanks.Services
 
         public async Task UpdateSampleSetAsync(CollectionSampleSet sampleSet)
         {
-            // Assign default values to new Material Details
-            var defaultPreservationType = await _biobankReadService.GetDefaultPreservationTypeAsync();
-            var defaultExtractionProcedure = await _biobankReadService.GetDefaultExtractionProcedureAsync();
-
-            foreach (var materialDetail in sampleSet.MaterialDetails)
-            {
-                if (materialDetail.PreservationTypeId == default)
-                    materialDetail.PreservationTypeId = defaultPreservationType.Id;
-
-                if (materialDetail.ExtractionProcedureId == default)
-                    materialDetail.ExtractionProcedureId = defaultExtractionProcedure.Id;
-            }
-
             // Update exisiting SampleSet
             var existingSampleSet = (await _sampleSetRepository.ListAsync(
                 true, x => x.SampleSetId == sampleSet.SampleSetId, null,
@@ -1991,6 +1965,7 @@ namespace Biobanks.Services
         public async Task DeleteBiobankAsync(int id)
         {
             // remove biobank
+            await _indexService.BulkDeleteBiobank(id);
             await _organisationRepository.DeleteAsync(id);
             await _organisationRepository.SaveChangesAsync();
         }

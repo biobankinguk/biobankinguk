@@ -4,8 +4,20 @@ using Biobanks.Submissions.Core.Types;
 
 namespace Biobanks.Submissions.Api
 {
+    /// <summary>
+    /// General Utility methods
+    /// </summary>
     public static class Utils
     {
+        /// <summary>
+        /// Calculate Pagination properties of a given model which supports them
+        /// </summary>
+        /// <typeparam name="T">Type of the Paginated Model</typeparam>
+        /// <param name="paginatedResourceUri"></param>
+        /// <param name="paging"></param>
+        /// <param name="count"></param>
+        /// <param name="total"></param>
+        /// <param name="model"></param>
         public static void Paginate<T>(
             Uri paginatedResourceUri,
             PaginationParams paging,

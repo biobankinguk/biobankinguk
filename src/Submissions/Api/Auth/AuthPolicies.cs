@@ -1,21 +1,37 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Biobanks.Submissions.Api.Auth.Basic;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Auth
 {
+    /// <summary>
+    /// ASP.NET Core Authorization Policy Definitions
+    /// </summary>
     public static class AuthPolicies
     {
-        public static AuthorizationPolicy BuildDefaultJwtPolicy()
+        private static AuthorizationPolicy IsAuthenticated
             => new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .RequireAssertion(
-                    ctx => ctx.User.HasClaim(claim => claim.Type == CustomClaimTypes.BiobankId)
-                           || ctx.User.IsInRole(CustomRoles.SuperAdmin))
                 .Build();
 
-        public static AuthorizationPolicy RequireSuperAdminRole()
+        /// <summary>
+        /// Requires that a request is authenticated via Bearer Token
+        /// </summary>
+        public static AuthorizationPolicy IsTokenAuthenticated
             => new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .RequireRole(CustomRoles.SuperAdmin)
-            .Build();
+                .Combine(IsAuthenticated)
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .RequireClaim(CustomClaimTypes.BiobankId)
+                .Build();
+
+        /// <summary>
+        /// Requires that a request is authenticated via Basic Auth
+        /// </summary>
+        public static AuthorizationPolicy IsBasicAuthenticated
+            => new AuthorizationPolicyBuilder()
+                .Combine(IsAuthenticated)
+                .AddAuthenticationSchemes(BasicAuthDefaults.AuthenticationScheme)
+                .Build();
     }
 }

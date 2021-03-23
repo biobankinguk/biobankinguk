@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+
 using Biobanks.Entities.Api;
 using Biobanks.Submissions.Api.Models;
-using Newtonsoft.Json.Linq;
+
+using System.Text.Json;
 
 namespace Biobanks.Submissions.Api.MappingProfiles
 {
@@ -15,17 +17,13 @@ namespace Biobanks.Submissions.Api.MappingProfiles
                 .ForMember(
                     dest => dest.RecordIdentifiers,
                     opts => opts.MapFrom(
-                            src => JObject.Parse(src.RecordIdentifiers)
-                        )
-                    );
+                            src => JsonDocument.Parse(src.RecordIdentifiers, default)));
 
             CreateMap<ErrorModel, Error>()
                 .ForMember(
                     dest => dest.RecordIdentifiers,
                     opts => opts.MapFrom(
-                            src => src.RecordIdentifiers.ToString()
-                        )
-                    );
+                            src => src.RecordIdentifiers.ToString()));
         }
     }
 }

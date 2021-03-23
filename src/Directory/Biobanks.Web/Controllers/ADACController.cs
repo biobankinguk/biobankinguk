@@ -677,13 +677,11 @@ namespace Biobanks.Web.Controllers
             return View(
                 (await _biobankReadService.ListFundersAsync(string.Empty))
                     .Select(x =>
-
-                        Task.Run(async () => new FunderModel
+                        new FunderModel
                         {
                             FunderId = x.Id,
                             Name = x.Value
-                        }).Result)
-
+                        })
                     .ToList()
                 );
         }
@@ -1141,7 +1139,7 @@ namespace Biobanks.Web.Controllers
                     .Result
                 )
                 .ToList();
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent") == true)
+            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent"))
             {
                 return View(new CollectionPercentagesModel()
                 {
@@ -1152,8 +1150,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-
-            return RedirectToAction("CollectionPercentages");
         }
 
         #endregion
@@ -1451,7 +1447,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: County
         public async Task<ActionResult> County()
         {
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties") == true)
+            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties"))
             {
                 var countries = await _biobankReadService.ListCountriesAsync();
 
@@ -1480,8 +1476,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-
-            return RedirectToAction("County");
         }
 
         #endregion
@@ -1611,7 +1605,7 @@ namespace Biobanks.Web.Controllers
         #region Site Configuration
 
         #region Homepage Config
-        public async Task<ActionResult> HomepageConfig()
+        public ActionResult HomepageConfig()
         {
             return View(new HomepageContentModel
             {
@@ -1662,7 +1656,7 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region Termpage Config
-        public async Task<ActionResult> TermpageConfig()
+        public ActionResult TermpageConfig()
         {
             return View(new TermPageModel
             {
@@ -1737,7 +1731,7 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region Register Biobank and Network Pages Config
-        public async Task<ActionResult> RegisterPagesConfig()
+        public ActionResult RegisterPagesConfig()
         {
             return View(new RegisterConfigModel
             {

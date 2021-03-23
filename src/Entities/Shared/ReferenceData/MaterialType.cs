@@ -26,5 +26,10 @@ namespace Biobanks.Entities.Shared.ReferenceData
         /// Many to Many Relationship with MaterialTypeGroup
         /// </summary>
         public ICollection<MaterialTypeGroup> MaterialTypeGroups { get; set; }
+
+        /// <summary>
+        /// Many to Many Relationship with OntologyTerm
+        /// </summary>
+        public ICollection<OntologyTerm> ExtractionProcedures { get; set; }
     }
 }

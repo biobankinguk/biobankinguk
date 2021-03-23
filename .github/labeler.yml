@@ -6,8 +6,8 @@
   - elastic-search/**/*
 "Area: Analytics":
   - src/Analytics/**/*
-"Area: Submission API":
-  - src/Api/**/*
+"Area: Submissions":
+  - src/Submissions/**/*
 "Area: Data":
   - src/Data/**/*
 "Area: DataSeed":
@@ -16,12 +16,12 @@
   - src/Directory/**/*
 "Area: Directory Data":
   - src/Directory/Data/**/*
-"Area: LegacyData":
-  - src/LegacyData/**/*
 "Area: Publications":
   - src/Publications/**/*
 "Area: Entities":
   - src/Entities/**/*
+"Area: IdentityModel":
+  - src/IdentityModel/**/*
 
 # label types of changes contained in a PR
 "Contains: Migrations":

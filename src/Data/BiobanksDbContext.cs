@@ -45,7 +45,6 @@ namespace Biobanks.Data
         #endregion
 
         #region Reference Data: Shared
-        public DbSet<ExtractionProcedure> ExtractionProcedures { get; set; }
         public DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<MaterialTypeGroup> MaterialTypeGroups { get; set; }
         public DbSet<OntologyTerm> OntologyTerms { get; set; }
@@ -125,17 +124,6 @@ namespace Biobanks.Data
                     x.AssociatedDataTypeId
                 });
 
-            model.Entity<MaterialDetail>()
-                .HasKey(x => new
-                {
-                    x.SampleSetId,
-                    x.MaterialTypeId,
-                    x.StorageTemperatureId,
-                    x.MacroscopicAssessmentId,
-                    x.ExtractionProcedureId,
-                    x.PreservationTypeId
-                });
-
             model.Entity<NetworkUser>()
                 .HasKey(x => new
                 {
@@ -180,6 +168,17 @@ namespace Biobanks.Data
                 });
 
             // Indices (for unique constraints)
+            model.Entity<MaterialDetail>()
+                .HasIndex(x => new
+                {
+                    x.SampleSetId,
+                    x.MaterialTypeId,
+                    x.StorageTemperatureId,
+                    x.MacroscopicAssessmentId,
+                    x.ExtractionProcedureId,
+                    x.PreservationTypeId
+                }).IsUnique();
+
             model.Entity<LiveDiagnosis>()
                 .HasIndex(x => new
                 {
