@@ -649,7 +649,7 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("The selected biobank could not be suspended.", FeedbackMessageType.Danger);
             }
 
-            return RedirectToAction($"BiobankAdmin", id);
+            return RedirectToAction($"BiobankAdmin", new { id = id });
         }
 
         public async Task<ActionResult> UnsuspendBiobank(int id)
@@ -665,7 +665,7 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("The selected biobank could not be unsuspended.", FeedbackMessageType.Danger);
             }
 
-            return RedirectToAction($"BiobankAdmin", id);
+            return RedirectToAction($"BiobankAdmin", new { id = id });
         }
 
         #endregion

@@ -22,8 +22,6 @@
                     <th>Contact Email</th>
                     <th>Status</th>
                     <th></th>
-                    <th></th>
-                    <th></th>
                 </tr>
                 </thead>
 
@@ -41,8 +39,6 @@
                         <td class="vtop">
                             @(biobank.IsSuspended ? Html.Raw("Suspended") : Html.Raw("Active"))
                         </td>
-                        <td> </td>
-                        <td></td>
                         <td>
                             @Html.ActionLink("Admin", "BiobankAdmin", "ADAC", new {id = biobank.BiobankId}, new {@class = "btn btn-edit"})
                         </td>
