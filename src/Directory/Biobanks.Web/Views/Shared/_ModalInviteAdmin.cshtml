@@ -30,8 +30,8 @@
         </div>
 
         <form id="modalInviteBiobankAdminForm"
-              data-action="@Url.Action("InviteAdminAjax")"
-              data-success-redirect="@Url.Action("InviteAdminSuccess")"
+              data-action="@Url.Action("InviteAdminAjax", Model.ControllerName)"
+              data-success-redirect="@Url.Action("InviteAdminSuccess", Model.ControllerName)"
               class="form-horizontal">
             
             <div class="modal-body">

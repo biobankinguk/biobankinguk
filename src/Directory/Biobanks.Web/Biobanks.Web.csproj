@@ -803,7 +803,7 @@
     <Content Include="Views\Network\_NetworkTabs.cshtml" />
     <Content Include="Views\Biobank\Edit.cshtml" />
     <Content Include="Views\Biobank\EditorTemplates\OrganisationServiceModel.cshtml" />
-    <Content Include="Views\Biobank\_ModalInviteAdmin.cshtml" />
+    <Content Include="Views\Shared\_ModalInviteAdmin.cshtml" />
     <Content Include="Views\Biobank\Admins.cshtml" />
     <Content Include="Views\Shared\_ModelStateErrorMessage.cshtml" />
     <Content Include="Views\Search\Collections.cshtml" />
