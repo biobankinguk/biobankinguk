@@ -232,6 +232,14 @@ namespace Biobanks.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
+
+            model.Entity<AgeRange>()
+                .HasIndex(x => new
+                {
+                    x.LowerBound,
+                    x.UpperBound
+                }).IsUnique();
+
         }
 
         public BiobanksDbContext(DbContextOptions options) : base(options) { }
