@@ -8,6 +8,14 @@
     <UserSecretsId>5cdec43c-9ed5-4902-a8de-3a120ea0dce9</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Today we only publish a .NET dependent Windows .exe -->
+    <!-- That can be reviewed in future -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="ConsoleTableExt" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />

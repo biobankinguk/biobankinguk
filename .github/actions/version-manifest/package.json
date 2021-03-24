@@ -1,6 +1,6 @@
 {
   "name": "update-version-manifest",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Versioning action for Biobanks GitHub release workflow",
   "main": "index.js",
   "scripts": {

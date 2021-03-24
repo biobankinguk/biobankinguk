@@ -12,6 +12,7 @@ const semver = __nccwpck_require__(1383);
 
 /** path to the manifest YAML file */
 const manifestPath = core.getInput("manifest-path");
+const shouldUpdate = core.getInput("update");
 
 /** fixed (non semver) release types */
 const releaseTypes = {
@@ -66,11 +67,11 @@ try {
   }
 
   // save the updated manifest, if any release
-  if (doRelease) {
+  if (doRelease && shouldUpdate) {
     persistChanges(manifest);
   }
 
-  // record the (possibly updated) version
+  // record the updated version
   core.setOutput("version", manifest.version);
   console.log("version:", manifest.version);
 } catch (e) {

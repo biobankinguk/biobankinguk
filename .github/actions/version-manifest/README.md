@@ -1,6 +1,6 @@
-# Update Version Manifest
+# Version Manifest action
 
-This is a fairly generic action which reads a version manifest and updates it bsed on the release instructions within it.
+This is a fairly generic action which reads a version manifest and updates it based on the release instructions within it.
 
 The purpose is to make and record a semver change for use elsewhere in a workflow.
 
@@ -9,6 +9,8 @@ The purpose is to make and record a semver change for use elsewhere in a workflo
 ### Inputs
 
 - `manifest-path` - path to the manifest file; defaults to `./version.yml`
+- `update` - optionally update the local manifest, as well as returning the outputs.
+  - sometimes it may be desirable to do this later in a workflow than first getting the updated version information.
 
 ### Outputs
 
@@ -18,7 +20,7 @@ The purpose is to make and record a semver change for use elsewhere in a workflo
 
 ### Side effects
 
-- the local working copy of the manifest is updated.
+- with the `update` option, the local working copy of the manifest is updated.
   - it should typically then be committed to git to prevent re-enacting the same version update in future workflow runs.
 
 ## The manifest
