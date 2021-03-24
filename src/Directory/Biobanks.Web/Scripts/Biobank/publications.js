@@ -55,6 +55,25 @@ function formatStatus(data, type, row) {
     }
 }
 
+function formatAuthor(data, type, row) {
+    var authorLink = $("<a>", {
+        text: "see all",
+        attr: {
+            href: "#",
+            "data-target": "#authorModal",
+            "data-toggle":"modal",
+            "data-authors": data
+        }
+    }).get(0).outerHTML;
+    return data.split(",")[0] + " et al. " +  authorLink
+}
+
+$('#authorModal').on('show.bs.modal', function (event) {
+    var link = $(event.relatedTarget);
+    var authors = link.data('authors');
+    $(this).find('.modal-body span').text(authors);
+});
+
 function toggleButton(button) {
     $(".dt-buttons .btn").removeClass("active");
     $(button).addClass("active");
@@ -84,7 +103,7 @@ $(function () {
         },
         "columns": [
             { title: "Title",   width: "",      data: "Title",  render: formatTitle },
-            { title: "Authors", width: "160px", data: "Authors"},
+            { title: "Authors", width: "160px", data: "Authors", render: formatAuthor},
             { title: "Year",    width: "35px",  data: "Year" },
             { title: "Journal", width: "140px", data: "Journal" },
             { title: "Status",  width: "120px", data: "Approved", render: formatStatus, className: "status" }
