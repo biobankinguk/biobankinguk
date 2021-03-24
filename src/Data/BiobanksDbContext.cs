@@ -238,7 +238,7 @@ namespace Biobanks.Data
                 {
                     x.LowerBound,
                     x.UpperBound
-                }).IsUnique();
+                }).IsUnique(); 
 
         }
 
