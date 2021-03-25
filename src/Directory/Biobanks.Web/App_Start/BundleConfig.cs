@@ -92,7 +92,8 @@ namespace Biobanks.Web
                 "~/Scripts/Biobank/funder-viewmodel.js",
                 "~/Scripts/Biobank/funders-viewmodel.js"));
             bundles.Add(new ScriptBundle("~/bundles/biobank/edit-details").Include(
-                "~/Scripts/Biobank/details-logo.js"));
+                "~/Scripts/Biobank/details-logo.js",
+                "~/Scripts/Biobank/edit-details.js"));
             bundles.Add(new ScriptBundle("~/bundles/collection-and-capability-crud").Include(
                         "~/Scripts/bootbox*",
                         "~/Scripts/typeahead.bundle*",
