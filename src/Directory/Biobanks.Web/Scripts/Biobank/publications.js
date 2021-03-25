@@ -56,17 +56,17 @@ function formatStatus(data, type, row) {
 }
 
 function formatAuthor(data, type, row) {
-    var authorLink = $("<a>", {
-        text: "see all",
-        attr: {
-            href: "#",
-            "data-target": "#authorModal",
-            "data-toggle":"modal",
-            "data-authors": data
-        }
-    }).get(0).outerHTML;
-
     if (data) {
+        let authorLink = $("<a>", {
+            text: "see all",
+            attr: {
+                href: "#",
+                "data-target": "#authorModal",
+                "data-toggle":"modal",
+                "data-authors": data
+            }
+        }).get(0).outerHTML;
+
         let authors = data.split(",")
         return authors[0] + ((authors.length > 1) ? " et al. " + authorLink : "");
     }
