@@ -429,7 +429,8 @@ namespace Biobanks.Web.Controllers
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
                 Entity = nw.Name,
-                EntityName = "network"
+                EntityName = "network",
+                ControllerName = "Network"
             });
         }
 
