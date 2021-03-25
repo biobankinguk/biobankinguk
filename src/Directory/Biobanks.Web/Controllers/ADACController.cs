@@ -1267,8 +1267,7 @@ namespace Biobanks.Web.Controllers
                         Value = x.Value,
                         SortOrder = x.SortOrder,
                         StorageTemperatureId = x.StorageTemperatureId,
-                        StorageTemperatureName = x.StorageTemperature?.Value ?? "",
-                        DefaultValue = x.IsDefaultValue
+                        StorageTemperatureName = x.StorageTemperature?.Value ?? ""
                     }
                 )
                 .ToList();
@@ -1277,11 +1276,6 @@ namespace Biobanks.Web.Controllers
             foreach (var model in models)
             {
                 model.PreservationTypeCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
-
-                if (model.SortOrder == 0)
-                {
-                    await _biobankWriteService.UpdatePreservationTypeSortOrderAsync();
-                }
             }
 
             return View(new PreservationTypesModel

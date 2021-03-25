@@ -49,13 +49,13 @@ function AdacPreservationTypeViewModel() {
         _this.modal.mode(_this.modal.modalModeEdit);
 
         var preservationType = $(event.currentTarget).data("preservation-type");
-
+        var sortOrder = ($(event.currentTarget).parent().parent().index() + 1);
         _this.modal.preservationType(
             new PreservationType(
                 preservationType.Id,
                 preservationType.Value,
                 preservationType.StorageTemperatureId,
-                preservationType.SortOrder
+                sortOrder
             )
         );
 
@@ -138,5 +138,7 @@ $(function () {
                 storageTemperatureId: $(triggerRow.node).data('preservation-type-storagetemperatureid')
             }
         });
+
+    
     });
 });

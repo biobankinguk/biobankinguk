@@ -25,7 +25,5 @@ namespace Biobanks.Web.Models.ADAC
         public string StorageTemperatureName { get; set; }
 
         public int PreservationTypeCount { get; set; }
-
-        public bool DefaultValue { get; set; }
     }
 }

@@ -1460,7 +1460,7 @@ namespace Biobanks.Services
             var types = await _biobankReadService.ListPreservationTypesAsync();
 
             //Assign Default Value
-            preservationType.IsDefaultValue = types.First(x => x.Id == preservationType.Id).IsDefaultValue;
+            //preservationType.IsDefaultValue = types.First(x => x.Id == preservationType.Id).IsDefaultValue;
 
             // If only updating sortOrder
             if (sortOnly)
@@ -1496,33 +1496,7 @@ namespace Biobanks.Services
 
             return preservationType;
         }
-
-        public async Task UpdatePreservationTypeSortOrderAsync()
-        {
-            var types = await _biobankReadService.ListPreservationTypesAsync();
-
-            var newOrder = types
-                .GroupBy(x => x.Id)
-                .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = true
-                ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_preservationTypeRepository.Update);
-
-            await _storageTemperatureRepository.SaveChangesAsync();
-        }
-
+      
         public async Task DeletePreservationTypeAsync(PreservationType preservationType)
         {
             await _preservationTypeRepository.DeleteAsync(preservationType.Id);

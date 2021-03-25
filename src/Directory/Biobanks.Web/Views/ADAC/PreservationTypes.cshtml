@@ -50,18 +50,7 @@
                             @if (item.PreservationTypeCount > 0)
                             {
                                 <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Preservation Type in use")
-                            }
-                            else if (item.DefaultValue)
-                            {
-                                <a title="Edit"
-                                   class="action-icon"
-                                   href="#"
-                                   data-target="#preservation-types-modal"
-                                   data-preservation-type="@Json.Encode(item)"
-                                   data-bind="click: openModalForEdit">
-                                    <span class="fa fa-edit labelled-icon"></span>Edit
-                                </a>
-                            }
+                            }                           
                             else
                             {
                                 <a title="Edit"
