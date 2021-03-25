@@ -3,56 +3,56 @@
         "id": "1",
         "value": "Neonate (0 - 1 month)",
         "sortOrder": "2",
-        "lowerBound": "0M",
-        "upperBound": "1M"
+        "lowerBound": "P0M",
+        "upperBound": "P1M"
     },
     {
         "id": "2",
         "value": "Infant (1 month - 2 years)",
         "sortOrder": "3",
-        "lowerBound": "1M",
-        "upperBound": "2Y"
+        "lowerBound": "P1M",
+        "upperBound": "P2Y"
     },
     {
         "id": "3",
         "value": "Young child (2 - 6 years)",
         "sortOrder": "4",
-        "lowerBound": "2Y",
-        "upperBound": "6Y"
+        "lowerBound": "P2Y",
+        "upperBound": "P6Y"
     },
     {
         "id": "4",
         "value": "Child (6 - 12 years)",
         "sortOrder": "5",
-        "lowerBound": "6Y",
-        "upperBound": "12Y"
+        "lowerBound": "P6Y",
+        "upperBound": "P12Y"
     },
     {
         "id": "5",
         "value": "Adolescent (12 - 18 years)",
         "sortOrder": "6",
-        "lowerBound": "12Y",
-        "upperBound": "18Y"
+        "lowerBound": "P12Y",
+        "upperBound": "P18Y"
     },
     {
         "id": "6",
         "value": "Young adult (18 - 40 years)",
         "sortOrder": "7",
-        "lowerBound": "18Y",
-        "upperBound": "40Y"
+        "lowerBound": "P18Y",
+        "upperBound": "P40Y"
     },
     {
         "id": "7",
         "value": "Adult (> 40 years)",
         "sortOrder": "8",
-        "lowerBound": "40Y"
+        "lowerBound": "P40Y"
     },
     {
         "id": "8",
         "value": "Fetus",
         "sortOrder": "1",
-        "lowerBound": "-1Y",
-        "upperBound": "0"
+        "lowerBound": "P-1Y",
+        "upperBound": "P0D"
     },
     {
         "id": "9",
