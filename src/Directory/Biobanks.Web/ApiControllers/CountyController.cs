@@ -155,8 +155,8 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpGet]
         [AllowAnonymous]
-        [Route("{id}/GetCountryofCounty")]
-        public async Task<int> GetCountryofCounty(int id)
+        [Route("{id}/country")]
+        public async Task<int> GetCountryId(int id)
         {
             var county = (await _biobankReadService.ListCountiesAsync()).Where(x => x.Id == id).First();
             
