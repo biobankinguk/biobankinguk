@@ -1,0 +1,36 @@
+name: Build IdentityTool
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - src/IdentityModel/**
+      - src/Data/**
+      - src/Entities/**
+      - .github/workflows/build.identitytool.yml
+
+env:
+  # Configure these
+  CI_build-config: release
+  CI_dotnet-version: 5.0.x
+  CI_project: ./src/IdentityModel/IdentityTool/IdentityTool.csproj
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet build
+        run: >-
+          dotnet build
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}

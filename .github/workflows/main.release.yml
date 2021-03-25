@@ -1,0 +1,361 @@
+# How to add new stack items:
+# 
+# 1. Create the new publish job
+#   - it should zip the publish result
+#   - upload the zip as an artifact
+# 2. Make the `release` job depend on it
+#   - add the new publish job id to `release.needs`
+# 3. Include the artifact in the GitHub release
+#   - add the artifact to the `artifacts` list in the `release` job
+
+name: GitHub Release
+on:
+  push:
+    branches: [main]
+
+env:
+  CI_build-config: release
+  CI_dotnet-version: 5.0.x
+  CI_publish-dir: publish
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+
+  # Stage 4. Create a release if all publish jobs completed successfully
+  # This is the last job which runs, after everything else,
+  # but it's also the one that needs modifying, so we keep it at the top
+  release:
+    needs:
+      - publish-dataseed
+      - publish-identitytool
+      - publish-submissions-api
+      - publish-submissions-azfunctions
+      - publish-analytics-azfunctions
+      - publish-publications-azfunctions
+      - publish-directory
+      - publish-data-migrations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
+          fetch-depth: 0
+      - id: manifest
+        uses: ./.github/actions/version-manifest
+        with:
+          update: true
+      - name: Git commit, tag and push
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout ${{ github.ref }}
+          git commit -am "🚀 ${{ steps.manifest.outputs.version }}" -m "[skip ci]"
+          git tag ${{ steps.manifest.outputs.version }}
+          git push --atomic origin ${{ github.ref }} ${{ steps.manifest.outputs.version }}
+      
+      # get ALL our release artifacts
+      - uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+      
+      # TODO: Release notes generation?
+      # TODO: Link to usage docs? (i.e. what assets to use, how to use them, etc...)
+      - uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.manifest.outputs.version }}
+          name: ${{ steps.manifest.outputs.version }}
+          body: ${{ steps.manifest.outputs.version }}
+          artifacts: >-
+            artifacts/identitytool/*,
+            artifacts/dataseed/*,
+            artifacts/submissions-api/*,
+            artifacts/submissions-workers-azfunctions/*,
+            artifacts/publications-azfunctions/*,
+            artifacts/analytics-azfunctions/*,
+            artifacts/directory/*,
+            artifacts/identity-migrations/*,
+            artifacts/data-migrations/*
+          # don't leave a final trailing comma, above!
+          artifactContentType: application/zip
+
+  # Stage 1. Check if version manifest should cause the rest of the workflow to run
+  version-check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.manifest.outputs.version }}
+      doRelease: ${{ steps.manifest.outputs.doRelease }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: manifest
+        uses: ./.github/actions/version-manifest
+  
+  # Stage 2. the entire rest of the workflow only runs if doRelease is true
+  release-gate:
+    runs-on: ubuntu-latest
+    needs: version-check
+    if: needs.version-check.outputs.doRelease
+    steps:
+      - run: 'echo "Release Triggered: ${{ needs.version-check.outputs.version }}"'
+
+  # Stage 3. Publish artifacts
+  publish-dataseed:
+    runs-on: ubuntu-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_project: ./src/DataSeed/DataSeed.csproj
+      CI_artifact-name: dataseed
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet publish
+        # many of the arguments below are due to poor dependencies on net48 libraries
+        # such as Biobanks.Directory.Services
+        # When those are tidied, this can be too
+        run: >-
+          dotnet publish
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o ${{ env.CI_publish-dir }}
+          /P:Version=${{ needs.version-check.outputs.version }}
+          /P:DebugType=embedded
+          /P:SatelliteResourceLanguages=en-GB
+          -r win-x64
+          --self-contained false
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+  
+  publish-identitytool:
+    runs-on: ubuntu-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_project: ./src/IdentityModel/IdentityTool/IdentityTool.csproj
+      CI_artifact-name: identitytool
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet publish
+        run: >-
+          dotnet publish
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o ${{ env.CI_publish-dir }}
+          /P:Version=${{ needs.version-check.outputs.version }}
+          /P:DebugType=embedded
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+  
+  publish-submissions-api:
+    runs-on: ubuntu-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_project: ./src/Submissions/Api/Api.csproj
+      CI_artifact-name: submissions-api
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet publish
+        run: >-
+          dotnet publish
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o ${{ env.CI_publish-dir }}
+          /P:Version=${{ needs.version-check.outputs.version }}
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+  
+  publish-submissions-azfunctions:
+    runs-on: ubuntu-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_project: ./src/Submissions/AzFunctions/AzFunctions.csproj
+      CI_artifact-name: submissions-workers-azfunctions
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      # .NET Isolated Functions Worker still has a 3.1 SDK dependency for now
+      # https://github.com/Azure/azure-functions-dotnet-worker/issues/301
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      - name: dotnet publish
+        run: >-
+          dotnet publish
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o ${{ env.CI_publish-dir }}
+          /P:Version=${{ needs.version-check.outputs.version }}
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+  
+  publish-analytics-azfunctions:
+    runs-on: ubuntu-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_project: ./src/Analytics/AzureFunctions/AzureFunctions.csproj
+      CI_artifact-name: analytics-azfunctions
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x # TODO revert to stack version after upgrade
+      - name: dotnet publish
+        run: >-
+          dotnet publish
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o ${{ env.CI_publish-dir }}
+          /P:Version=${{ needs.version-check.outputs.version }}
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+  
+  publish-publications-azfunctions:
+    runs-on: ubuntu-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_project: ./src/Publications/PublicationsAzureFunctions/PublicationsAzureFunctions.csproj
+      CI_artifact-name: publications-azfunctions
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x # TODO revert to stack version after upgrade
+      - name: dotnet publish
+        run: >-
+          dotnet publish
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o ${{ env.CI_publish-dir }}
+          /P:Version=${{ needs.version-check.outputs.version }}
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+  
+  publish-directory:
+    runs-on: windows-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_src: ./src/Directory
+      CI_project: ./src/Directory/Directory.sln
+      CI_artifact-name: directory
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: microsoft/setup-msbuild@v1
+      - uses: NuGet/setup-nuget@v1.0.5
+        with:
+          nuget-version: 5.x
+
+      - name: nuget restore
+        run: nuget restore ${{ env.CI_project }}
+
+      - name: Build Solution
+        run: >-
+          msbuild.exe
+          ${{ env.CI_project }}
+          /p:Configuration="${{ env.CI_build-config }}"
+          /nologo
+          /nr:false
+          /p:DeployOnBuild=true
+          /p:WebPublishMethod=Package
+          /p:_PackageTempDir=C:/Package
+          /p:PackageAsSingleFile=true
+          /p:PrecompileBeforePublish=true
+          /p:SkipInvalidConfigurations=true
+          /p:PackageLocation=${{ github.workspace}}\${{ env.CI_publish-dir }}
+          /p:Platform="Any CPU"
+      - run: >-
+          Compress-Archive
+          -Path .\${{ env.CI_publish-dir }}\*
+          -DestinationPath .\${{ env.CI_publish-dir }}\${{ env.CI_artifact-name }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+      
+      # publish identity migrations from this build as well
+      - name: Copy migrations files
+        run: |
+          mkdir -p ${{ env.CI_publish-dir }}/migrations
+          cp ${{ env.CI_src }}/packages/EntityFramework*/tools/net45/win-x86/ef6.exe ${{ env.CI_publish-dir }}/migrations
+          ls -r -include *.dll ${{ env.CI_src }}/Identity/bin | % { cp $_ ${{ env.CI_publish-dir }}/migrations }
+      - run: >-
+          Compress-Archive
+          -Path .\${{ env.CI_publish-dir }}\migrations\*
+          -DestinationPath .\${{ env.CI_publish-dir }}\identity-migrations
+      - uses: actions/upload-artifact@v2
+        with:
+          name: identity-migrations
+          path: ${{ env.CI_publish-dir }}/identity-migrations.zip
+  
+  publish-data-migrations:
+    runs-on: ubuntu-latest
+    needs: [release-gate, version-check]
+    env:
+      CI_src: ./src/Data
+      CI_project: ./src/Data/Data.csproj
+      CI_artifact-name: data-migrations
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      - name: dotnet build
+        run: >-
+          dotnet build
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          /P:Version=${{ needs.version-check.outputs.version }}
+      - name: Copy migrations files
+        run: |
+          mkdir -p ${{ env.CI_publish-dir }}/bin
+          mkdir -p ${{ env.CI_publish-dir }}/obj
+          cp -r ${{ env.CI_src }}/bin/* ${{ env.CI_publish-dir }}/bin
+          cp -r ${{ env.CI_src }}/obj/* ${{ env.CI_publish-dir }}/obj
+          cp ${{ env.CI_src }}/Data.csproj ${{ env.CI_publish-dir }}
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip

@@ -3,14 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <DocumentationFile>swagger.xml</DocumentationFile>
-	  <Version>3.0.0-alpha.1</Version>
     <RootNamespace>Biobanks.Submissions.Api</RootNamespace>
     <AssemblyName>Biobanks.Submissions.Api</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Data.csproj" />
+    <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj" />
     <ProjectReference Include="..\Core.AzureStorage\Core.AzureStorage.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>

@@ -1,5 +1,3 @@
-# https://github.com/DylanVann/check-pull-request-title
-
 name: "Azure Boards Reference"
 on:
   pull_request:

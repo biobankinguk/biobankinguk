@@ -20,6 +20,8 @@
   - src/Publications/**/*
 "Area: Entities":
   - src/Entities/**/*
+"Area: IdentityModel":
+  - src/IdentityModel/**/*
 
 # label types of changes contained in a PR
 "Contains: Migrations":
