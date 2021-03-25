@@ -31,17 +31,6 @@ function BiobankAdminsViewModel() {
         $(_this.elements.form).submit(function (e) {
           _this.submitInviteDialog(e);
         });
-
-        //intialise jQuery Validation for the new elements
-        //$(_this.elements.form).validate({
-        //    rules: {
-        //        Name: "required",
-        //        Email: {
-        //            required: true,
-        //            email: true
-        //        }
-        //    }
-        //});
       },
     });
   };
