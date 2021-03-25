@@ -240,9 +240,6 @@ namespace Biobanks.Data
                     x.UpperBound
                 }).IsUnique();
 
-            // Check Constraints 
-            model.Entity<AgeRange>(entity =>
-                entity.HasCheckConstraint("CK_ONLY_ONE_NULL", "[LowerBound] IS NOT NULL OR [UpperBound] IS NOT NULL"));
 
         }
 
