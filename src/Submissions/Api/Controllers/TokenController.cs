@@ -1,4 +1,5 @@
-﻿using Biobanks.Submissions.Api.Auth;
+﻿using Biobanks.IdentityModel.Helpers;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
 
 using Microsoft.AspNetCore.Authorization;

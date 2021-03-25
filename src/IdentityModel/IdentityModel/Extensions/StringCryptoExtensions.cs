@@ -3,7 +3,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Biobanks.Submissions.Api.Auth
+namespace Biobanks.IdentityModel.Extensions
 {
     /// <summary>
     /// Cryptography related Extension Methods for string
@@ -11,9 +11,9 @@ namespace Biobanks.Submissions.Api.Auth
     public static class StringCryptoExtensions
     {
         /// <summary>
-        /// Hash a string using SHA256 and Base64 URL encode it
+        /// Hash a UTF8 string using SHA256 and Base64URL encode it
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="input">The UT8 string to hash</param>
         public static string Sha256(this string input)
         {
             using SHA256 sha256 = SHA256.Create();
