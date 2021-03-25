@@ -152,7 +152,7 @@
         <div class="form-group">
             @Html.LabelFor(x => x.CountryId, new { @class = "col-sm-3 control-label required" })
             <div class="col-sm-6">
-                @Html.DropDownListFor(x => x.CountryId, new SelectList(Model.Countries, "Id", "Value"), "Select Country", new { @class = "form-control" @readonly = "true" })
+                @Html.DropDownListFor(x => x.CountryId, new SelectList(Model.Countries, "Id", "Value"), "Select Country", new { @class = "form-control"})
                 @Html.ValidationMessageFor(x => x.CountryId)
             </div>
         </div>
