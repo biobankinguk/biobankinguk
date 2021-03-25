@@ -840,6 +840,7 @@
     <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
     <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <Content Include="Views\ADAC\BiobankAdmin.cshtml" />
+    <Content Include="Views\SuperUser\Tools.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
