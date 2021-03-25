@@ -65,7 +65,12 @@ function formatAuthor(data, type, row) {
             "data-authors": data
         }
     }).get(0).outerHTML;
-    return data.split(",")[0] + " et al. " +  authorLink
+
+    if (data) {
+        let authors = data.split(",")
+        return authors[0] + ((authors.length > 1) ? " et al. " + authorLink : "");
+    }
+    return "";
 }
 
 $('#authorModal').on('show.bs.modal', function (event) {
