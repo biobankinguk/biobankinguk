@@ -1,4 +1,5 @@
-﻿using Biobanks.Submissions.Api.Auth;
+﻿using Biobanks.IdentityModel.Helpers;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Filters;

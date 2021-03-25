@@ -16,5 +16,9 @@ namespace Biobanks.Web.Models.Shared
         public string EntityName { get; set; } //for label
         [Required]
         public string Entity { get; set; }
+        /// <summary>
+        /// The controller to which this will be redirected (either the biobank or ADAC depending on who is adding admins)
+        /// </summary>
+        public string ControllerName { get; set; }
     }
 }
