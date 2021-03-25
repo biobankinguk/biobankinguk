@@ -144,7 +144,7 @@
         <div class="form-group">
             @Html.LabelFor(x => x.CountyId, new { @class = "col-sm-3 control-label required" })
             <div class="col-sm-6">
-                @Html.DropDownListFor(x => x.CountyId, new SelectList(Model.Counties, "Id", "Value"), "Select County", new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.CountyId, new SelectList(items: Model.Counties.OrderBy(x => x.Country.Value).ThenBy(x => x.Value), dataValueField: "Id", dataTextField: "Value", dataGroupField: "Country.Value", selectedValue:null), "Select County", new { @class = "form-control" })
                 @Html.ValidationMessageFor(x => x.CountyId)
             </div>
         </div>
