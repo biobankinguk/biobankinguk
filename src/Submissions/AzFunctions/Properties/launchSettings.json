@@ -1,10 +1,10 @@
-a{
+{
   "profiles": {
-    "AzFunctions": {
+    "Start": {
       "commandName": "Executable",
       "executablePath": "func",
       "commandLineArgs": "host start --dotnet-isolated-debug",
-      "nativeDebugging": false
+      "ErrorString": "Unexpected character encountered while parsing value: a. Path '', line 0, position 0."
     }
   }
 }
