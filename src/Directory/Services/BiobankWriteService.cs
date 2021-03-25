@@ -1459,9 +1459,6 @@ namespace Biobanks.Services
         {
             var types = await _biobankReadService.ListPreservationTypesAsync();
 
-            //Assign Default Value
-            //preservationType.IsDefaultValue = types.First(x => x.Id == preservationType.Id).IsDefaultValue;
-
             // If only updating sortOrder
             if (sortOnly)
             {
