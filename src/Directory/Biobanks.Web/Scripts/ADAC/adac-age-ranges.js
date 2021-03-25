@@ -5,8 +5,8 @@ function AgeRange(id, description, sortOrder, lowerBound, upperBound) {
     this.id = id;
     this.description = ko.observable(description);
     this.sortOrder = sortOrder;
-    this.lowerBound = lowerBound;
-    this.upperBound = upperBound;
+    this.lowerBound = ko.observable(lowerBound);
+    this.upperBound = ko.observable(upperBound);
 }
 
 function AgeRangeModal(id, description, sortOrder, lowerBound, upperBound) {
@@ -52,8 +52,8 @@ function AdacAgeRangeViewModel() {
                 ageRange.Id,
                 ageRange.Description,
                 ageRange.SortOrder,
-                ageRange.lowerBound,
-                ageRange.upperBound
+                ageRange.LowerBound,
+                ageRange.UpperBound
             )
         );
 
