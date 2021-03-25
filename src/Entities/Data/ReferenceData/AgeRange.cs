@@ -10,5 +10,9 @@ namespace Biobanks.Entities.Data.ReferenceData
         public string Value { get; set; }
 
         public int SortOrder { get; set; }
+
+        public string LowerBound { get; set; }
+
+        public string UpperBound { get; set; }
     }
 }
