@@ -1,20 +1,22 @@
 // Modals
 var adacAgeRangeVM;
 
-function AgeRange(id, description, sortOrder) {
+function AgeRange(id, description, sortOrder, lowerBound, upperBound) {
     this.id = id;
     this.description = ko.observable(description);
     this.sortOrder = sortOrder;
+    this.lowerBound = lowerBound;
+    this.upperBound = upperBound;
 }
 
-function AgeRangeModal(id, description, sortOrder) {
+function AgeRangeModal(id, description, sortOrder, lowerBound, upperBound) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.ageRange = ko.observable(
-        new AgeRange(id, description, sortOrder)
+        new AgeRange(id, description, sortOrder, lowerBound, upperBound)
     );
 }
 
@@ -49,7 +51,9 @@ function AdacAgeRangeViewModel() {
             new AgeRange(
                 ageRange.Id,
                 ageRange.Description,
-                ageRange.SortOrder
+                ageRange.SortOrder,
+                ageRange.lowerBound,
+                ageRange.upperBound
             )
         );
 
@@ -128,7 +132,9 @@ $(function () {
             data: {
                 id: $(triggerRow.node).data('age-range-id'),
                 description: $(triggerRow.node).data('age-range-desc'),
-                sortOrder: (triggerRow.newPosition + 1) //1-indexable
+                sortOrder: (triggerRow.newPosition + 1), //1-indexable,
+                lowerBound: $(triggerRow.node).data('age-range-lowerbound'),
+                upperBound: $(triggerRow.node).data('age-range-upperbound')
             }
         });
     });

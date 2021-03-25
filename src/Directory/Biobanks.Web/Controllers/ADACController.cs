@@ -967,7 +967,9 @@ namespace Biobanks.Web.Controllers
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id)
+                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id),
+                        LowerBound = x.LowerBound,
+                        UpperBound = x.UpperBound
                     })
                     .Result
                 )
