@@ -24,7 +24,6 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IBiobankIndexService _indexService;
         private readonly ISearchProvider _searchProvider;
-        private readonly BiobanksDbContext _db;
 
         public SuperUserController(
             IBiobankReadService biobankReadService,
