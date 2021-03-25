@@ -154,8 +154,8 @@ namespace Biobanks.Submissions.Core.Services
             var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
             var ep = await _refDataReadService.GetSnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField);
             
-            // Invalid MaterialType or ExtractionProcedure
-            if (mt == null || ep == null)
+            // Invalid ExtractionProcedure
+            if (ep == null)
             {
                 throw new ValidationException(
                     new ValidationResult(
@@ -165,12 +165,12 @@ namespace Biobanks.Submissions.Core.Services
             }
 
             // Check MaterialType is valid for given Extraction Procedure
-            if (!ep.MaterialTypes.Contains(mt))
+            if (mt == null || !ep.MaterialTypes.Contains(mt))
             {
                 throw new ValidationException(
                     new ValidationResult(
-                        ValidationErrors.SnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField, dto.Barcode, dto.IndividualReferenceId),
-                        new List<string> { nameof(dto.ExtractionProcedure) }),
+                        ValidationErrors.ExtractionProcedureMaterialTypeMismatch(dto.ExtractionProcedure, dto.MaterialType, dto.Barcode, dto.IndividualReferenceId),
+                        new List<string> { nameof(dto.ExtractionProcedure), nameof(dto.MaterialType) }),
                     null, null);
             }
 
