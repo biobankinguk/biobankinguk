@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    [Migration("20210325091617_LowerUpperBoundAgeRanges")]
+    [Migration("20210325094927_LowerUpperBoundAgeRanges")]
     partial class LowerUpperBoundAgeRanges
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1267,14 +1267,14 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("LowerBound")
-                        .HasColumnType("int");
+                    b.Property<string>("LowerBound")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UpperBound")
-                        .HasColumnType("int");
+                    b.Property<string>("UpperBound")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .IsRequired()

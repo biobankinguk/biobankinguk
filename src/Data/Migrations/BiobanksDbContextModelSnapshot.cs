@@ -1265,14 +1265,14 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("LowerBound")
-                        .HasColumnType("int");
+                    b.Property<string>("LowerBound")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UpperBound")
-                        .HasColumnType("int");
+                    b.Property<string>("UpperBound")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .IsRequired()

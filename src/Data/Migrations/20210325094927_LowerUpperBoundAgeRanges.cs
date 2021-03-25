@@ -6,16 +6,16 @@ namespace Biobanks.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<string>(
                 name: "LowerBound",
                 table: "AgeRanges",
-                type: "int",
+                type: "nvarchar(450)",
                 nullable: true);
 
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<string>(
                 name: "UpperBound",
                 table: "AgeRanges",
-                type: "int",
+                type: "nvarchar(450)",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
