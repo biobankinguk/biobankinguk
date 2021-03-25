@@ -9,7 +9,9 @@
 #   - add the artifact to the `artifacts` list in the `release` job
 
 name: GitHub Release
-on: [pull_request]
+on:
+  push:
+    branches: [main]
 
 env:
   CI_build-config: release
@@ -48,10 +50,10 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git checkout ${{ github.head_ref }}
+          git checkout ${{ github.ref }}
           git commit -am "🚀 ${{ steps.manifest.outputs.version }}" -m "[skip ci]"
           git tag ${{ steps.manifest.outputs.version }}
-          git push --atomic origin ${{ github.head_ref }} ${{ steps.manifest.outputs.version }}
+          git push --atomic origin ${{ github.ref }} ${{ steps.manifest.outputs.version }}
       
       # get ALL our release artifacts
       - uses: actions/download-artifact@v2
