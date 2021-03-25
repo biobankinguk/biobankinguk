@@ -1,0 +1,10 @@
+a{
+  "profiles": {
+    "AzFunctions": {
+      "commandName": "Executable",
+      "executablePath": "func",
+      "commandLineArgs": "host start --dotnet-isolated-debug",
+      "nativeDebugging": false
+    }
+  }
+}
