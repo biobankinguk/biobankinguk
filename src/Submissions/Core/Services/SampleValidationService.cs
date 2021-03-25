@@ -151,10 +151,16 @@ namespace Biobanks.Submissions.Core.Services
 
         private async Task<StagedSample> ValidateExtractionProcedure(SampleDto dto, StagedSample sample)
         {
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var mt = (await _refDataReadService.ListMaterialTypes()).FirstOrDefault(x => x.Value == dto.MaterialType);
             var ep = await _refDataReadService.GetSnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField);
             
-            // Invalid ExtractionProcedure
+            // Only Validate If MaterialType Has Explicit ExtractionProcedures
+            if (mt == null || !mt.ExtractionProcedures.Any())
+            {
+                return sample;
+            }
+
+            // Invalid ExtractionProcedures
             if (ep == null)
             {
                 throw new ValidationException(
@@ -165,7 +171,7 @@ namespace Biobanks.Submissions.Core.Services
             }
 
             // Check MaterialType is valid for given Extraction Procedure
-            if (mt == null || !ep.MaterialTypes.Contains(mt))
+            if (!ep.MaterialTypes.Contains(mt))
             {
                 throw new ValidationException(
                     new ValidationResult(
