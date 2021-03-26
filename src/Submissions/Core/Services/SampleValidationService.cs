@@ -8,7 +8,6 @@ using Biobanks.Submissions.Core.Config;
 using Biobanks.Submissions.Core.Dto;
 using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Entities.Api;
-using AutoMapper.Internal;
 
 namespace Biobanks.Submissions.Core.Services
 {
