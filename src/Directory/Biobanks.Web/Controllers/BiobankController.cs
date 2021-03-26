@@ -1867,6 +1867,56 @@ namespace Biobanks.Web.Controllers
         }
         #endregion
 
+        #region Submissions
+
+        [HttpGet]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<ActionResult> Submissions()
+        {
+            var model = new SubmissionsModel();
+
+            //populate drop downs
+            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+                .Select(x => new ReferenceDataModel
+            {
+                Id = x.Id,
+                Description = x.Value,
+                SortOrder = x.SortOrder
+            }).OrderBy(x => x.SortOrder);
+
+            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                .Select(x => new ReferenceDataModel
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                }).OrderBy(x => x.SortOrder);
+
+            //get currently selected values from org (if applicable)
+
+
+            //
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Submissions(SubmissionsModel model)
+        {
+            //update Organisations table
+
+            //update update api clients table
+
+            SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
+
+            return RedirectToAction("Submissions");
+        }
+
+
+        #endregion
+
         public ActionResult Suspended(string biobankName)
         {
             var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
