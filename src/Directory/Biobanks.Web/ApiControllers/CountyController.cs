@@ -152,5 +152,17 @@ namespace Biobanks.Web.ApiControllers
                 name = model.Value,
             });
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("{id}/country")]
+        public async Task<int> GetCountryId(int id)
+        {
+            var county = (await _biobankReadService.ListCountiesAsync()).Where(x => x.Id == id).First();
+            
+            return county.Country.Id;
+        }
+
+
     }
 }
