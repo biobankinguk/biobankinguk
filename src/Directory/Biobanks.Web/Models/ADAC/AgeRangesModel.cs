@@ -21,5 +21,8 @@ namespace Biobanks.Web.Models.ADAC
 
         public string LowerBound { get; set; }
         public string UpperBound { get; set; }
+
+        public string LowerDuration { get; set; }
+        public string UpperDuration { get; set; }
     }
 }

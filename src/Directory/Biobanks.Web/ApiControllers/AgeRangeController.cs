@@ -62,6 +62,8 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
+            // Need to encode lower/upper bound with duration 
+
             // Add new Age Range
             var range = new AgeRange
             {
