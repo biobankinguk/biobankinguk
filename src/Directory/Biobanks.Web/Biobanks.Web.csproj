@@ -486,6 +486,7 @@
     <Content Include="App_Config\footer.json" />
     <Content Include="App_Config\header.json" />
     <None Include="Scripts\jquery-2.2.2.intellisense.js" />
+    <Content Include="Scripts\Biobank\edit-details.js" />
     <Content Include="Scripts\bootbox.js" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
