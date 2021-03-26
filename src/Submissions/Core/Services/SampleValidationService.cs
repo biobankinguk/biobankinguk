@@ -171,7 +171,7 @@ namespace Biobanks.Submissions.Core.Services
             }
 
             // Check MaterialType is valid for given Extraction Procedure
-            if (!ep.MaterialTypes.Contains(mt))
+            if (!ep.MaterialTypes.Select(x => x.Id).Contains(mt.Id))
             {
                 throw new ValidationException(
                     new ValidationResult(
