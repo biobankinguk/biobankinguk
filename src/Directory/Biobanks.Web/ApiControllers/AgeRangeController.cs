@@ -7,6 +7,7 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using System.Xml;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -63,16 +64,18 @@ namespace Biobanks.Web.ApiControllers
             }
 
             // Need to encode lower/upper bound with duration 
+            var convertedModel = ConversionToISODuration(model);
 
             // Add new Age Range
             var range = new AgeRange
             {
-                Id = model.Id,
-                Value = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound
+                Id = convertedModel.Id,
+                Value = convertedModel.Description,
+                SortOrder = convertedModel.SortOrder,
+                LowerBound = convertedModel.LowerBound
+                UpperBound = convertedModel.UpperBound
             };
+
 
             await _biobankWriteService.AddAgeRangeAsync(range);
             await _biobankWriteService.UpdateAgeRangeAsync(range, true); // Ensure sortOrder is correct
@@ -178,5 +181,34 @@ namespace Biobanks.Web.ApiControllers
             });
 
         }
+
+        private AgeRangeModel ConversionToISODuration(AgeRangeModel model)
+        {
+            // Check for negatives
+            if (int.Parse(model.LowerBound) < 0)
+            {
+                model.LowerBound = model.LowerBound.Replace("-", "");
+                model.LowerBound = "-P" + model.LowerBound + model.LowerDuration;
+            }
+            else if (int.Parse(model.LowerBound) >= 0)
+            {
+                model.LowerBound = "P" + model.LowerBound + model.LowerDuration;
+            }
+
+            if (int.Parse(model.UpperBound) < 0)
+            {
+                model.UpperBound = model.UpperBound.Replace("-", "");
+                model.UpperBound = "-P" + model.UpperBound + model.UpperDuration;
+            }
+            else if (int.Parse(model.UpperBound) >= 0)
+            {
+                model.UpperBound = "P" + model.UpperBound + model.UpperDuration;
+            }
+
+            return model;
+        }
+
     }
+
+
 }
