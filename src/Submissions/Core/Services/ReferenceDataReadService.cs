@@ -52,6 +52,7 @@ namespace Biobanks.Submissions.Core.Services
                 CacheKeys.OntologyTerms,
                 async () => await _db.OntologyTerms.AsNoTracking()
                     .Include(x => x.SnomedTag)
+                    .Include(x => x.MaterialTypes)
                     .ToListAsync());
 
         public async Task<IEnumerable<Ontology>> ListOntologies()
@@ -108,6 +109,7 @@ namespace Biobanks.Submissions.Core.Services
             => await CacheGetOrCreateWithAbsoluteExpiry(
                 CacheKeys.MaterialTypes,
                 async () => await _db.MaterialTypes.AsNoTracking()
+                    .Include(x => x.ExtractionProcedures)
                     .ToListAsync());
 
         public async Task<MaterialType> GetMaterialTypeWithGroups(string value)
