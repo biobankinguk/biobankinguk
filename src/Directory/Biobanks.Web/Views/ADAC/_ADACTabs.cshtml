@@ -139,10 +139,15 @@
                         @Html.ActionLink("Material Types", "MaterialTypes")
                     </li>
 
-					<li role="presentation"
-						class="@(Model == $"{@App.Config[ConfigKey.StorageTemperatureName]}" ? "active" : "true")">
-						@Html.ActionLink($"{@App.Config[ConfigKey.StorageTemperatureName]}", "StorageTemperatures")
-					</li>
+                    <li role="presentation"
+                        class="@(Model == "Preservation Types" ? "active" : "true")">
+                        @Html.ActionLink("Preservation Types", "PreservationTypes")
+                    </li>
+
+                    <li role="presentation"
+                        class="@(Model == $"{@App.Config[ConfigKey.StorageTemperatureName]}" ? "active" : "true")">
+                        @Html.ActionLink($"{@App.Config[ConfigKey.StorageTemperatureName]}", "StorageTemperatures")
+                    </li>
 
                     <li role="presentation"
                         class="@(Model == "Registration Reasons" ? "active" : "true")">
