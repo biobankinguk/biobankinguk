@@ -36,7 +36,9 @@ namespace Biobanks.Web.ApiControllers
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id)
+                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id),
+                        LowerBound = x.LowerBound,
+                        UpperBound = x.UpperBound
                     })
                     .Result
                 )
@@ -65,7 +67,9 @@ namespace Biobanks.Web.ApiControllers
             {
                 Id = model.Id,
                 Value = model.Description,
-                SortOrder = model.SortOrder
+                SortOrder = model.SortOrder,
+                LowerBound = model.LowerBound,
+                UpperBound = model.UpperBound
             };
 
             await _biobankWriteService.AddAgeRangeAsync(range);
@@ -103,7 +107,9 @@ namespace Biobanks.Web.ApiControllers
             {
                 Id = id,
                 Value = model.Description,
-                SortOrder = model.SortOrder
+                SortOrder = model.SortOrder,
+                LowerBound = model.LowerBound,
+                UpperBound = model.UpperBound
             });
 
             return Json(new
@@ -134,7 +140,9 @@ namespace Biobanks.Web.ApiControllers
             {
                 Id = model.Id,
                 Value = model.Value,
-                SortOrder = model.SortOrder
+                SortOrder = model.SortOrder,
+                LowerBound = model.LowerBound,
+                UpperBound = model.UpperBound
             });
 
             return Json(new
@@ -153,7 +161,9 @@ namespace Biobanks.Web.ApiControllers
             {
                 Id = id,
                 Value = model.Description,
-                SortOrder = model.SortOrder
+                SortOrder = model.SortOrder,
+                LowerBound = model.LowerBound,
+                UpperBound = model.UpperBound
             };
 
             await _biobankWriteService.UpdateAgeRangeAsync(access, true);

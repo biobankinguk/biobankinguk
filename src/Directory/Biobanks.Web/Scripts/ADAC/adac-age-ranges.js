@@ -24,7 +24,7 @@ function AdacAgeRangeViewModel() {
     var _this = this;
 
     this.modalId = "#age-ranges-modal";
-    this.modal = new AgeRangeModal(0, "", 0);
+    this.modal = new AgeRangeModal(0, "", 0, 0, 0);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -38,7 +38,7 @@ function AdacAgeRangeViewModel() {
 
     this.openModalForAdd = function () {
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.ageRange(new AgeRange(0, "", 0));
+        _this.modal.ageRange(new AgeRange(0, "", 0, 0, 0));
         _this.showModal();
     };
 
