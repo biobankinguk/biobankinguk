@@ -150,23 +150,38 @@ namespace Biobanks.Submissions.Core.Services
 
         private async Task<StagedSample> ValidateExtractionProcedure(SampleDto dto, StagedSample sample)
         {
-            //check if extracted sample
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
-            if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
-                return sample; //not invalid, but irrelevant, so no value
+            var mt = (await _refDataReadService.ListMaterialTypes()).FirstOrDefault(x => x.Value == dto.MaterialType);
+            var ep = await _refDataReadService.GetSnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField);
+            
+            // Only Validate If MaterialType Has Explicit ExtractionProcedures
+            if (mt == null || !mt.ExtractionProcedures.Any())
+            {
+                return sample;
+            }
 
-            // Validate SNOMED-CT term
-            // TODO Change this to use generic ontology lookup service in future
-            var result = await _refDataReadService.GetSnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField);
-
-            if (result == null)
+            // Invalid ExtractionProcedures
+            if (ep == null)
+            {
                 throw new ValidationException(
                     new ValidationResult(
                         ValidationErrors.SnomedExtractionProcedure(dto.ExtractionProcedure, dto.ExtractionProcedureOntologyField, dto.Barcode, dto.IndividualReferenceId),
                         new List<string> { nameof(dto.ExtractionProcedure) }),
                     null, null);
+            }
 
-            sample.ExtractionProcedureId = result.Id;
+            // Check MaterialType is valid for given Extraction Procedure
+            if (!ep.MaterialTypes.Select(x => x.Id).Contains(mt.Id))
+            {
+                throw new ValidationException(
+                    new ValidationResult(
+                        ValidationErrors.ExtractionProcedureMaterialTypeMismatch(dto.ExtractionProcedure, dto.MaterialType, dto.Barcode, dto.IndividualReferenceId),
+                        new List<string> { nameof(dto.ExtractionProcedure), nameof(dto.MaterialType) }),
+                    null, null);
+            }
+
+            // Validated ExtractionProcedure
+            sample.ExtractionProcedureId = ep.Id;
+
             return sample;
         }
 
