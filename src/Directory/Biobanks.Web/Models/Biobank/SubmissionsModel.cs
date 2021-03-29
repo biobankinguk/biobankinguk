@@ -24,5 +24,7 @@ namespace Biobanks.Web.Models.Biobank
         [Display(Name = "Collection type")]
         public int? CollectionType { get; set; }
         #endregion
+
+        public int BiobankId { get; set; }
     }
 }

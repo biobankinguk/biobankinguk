@@ -1893,7 +1893,12 @@ namespace Biobanks.Web.Controllers
                 }).OrderBy(x => x.SortOrder);
 
             //get currently selected values from org (if applicable)
+            var biobankId = SessionHelper.GetBiobankId(Session);
+            var org = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            model.BiobankId = biobankId;
 
+            model.AccessCondition = org.AccessCondition.Id;
+            model.CollectionType = org.CollectionType.Id;
 
             //
 

@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210329090341_OrgApiSettings")]
+    partial class OrgApiSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1275,24 +1277,14 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("LowerBound")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpperBound")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LowerBound", "UpperBound")
-                        .IsUnique()
-                        .HasFilter("[LowerBound] IS NOT NULL AND [UpperBound] IS NOT NULL");
 
                     b.ToTable("AgeRanges");
                 });
