@@ -960,6 +960,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Age Ranges
         public async Task<ActionResult> AgeRanges()
         {
+
             var models = (await _biobankReadService.ListAgeRangesAsync())
                 .Select(x =>
                     Task.Run(async () => new AgeRangeModel()

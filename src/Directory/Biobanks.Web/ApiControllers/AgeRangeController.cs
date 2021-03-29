@@ -58,6 +58,11 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
 
+            if (!int.TryParse(model.LowerBound, out _) || !int.TryParse(model.UpperBound, out _))
+            {
+                ModelState.AddModelError("AgeRange", "Lower and Upper Bound values must be valid numbers.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
@@ -72,7 +77,7 @@ namespace Biobanks.Web.ApiControllers
                 Id = convertedModel.Id,
                 Value = convertedModel.Description,
                 SortOrder = convertedModel.SortOrder,
-                LowerBound = convertedModel.LowerBound
+                LowerBound = convertedModel.LowerBound,
                 UpperBound = convertedModel.UpperBound
             };
 
@@ -101,6 +106,11 @@ namespace Biobanks.Web.ApiControllers
             if (model.SampleSetsCount > 0)
             {
                 ModelState.AddModelError("AgeRange", $"The age range \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+
+            if (!int.TryParse(model.LowerBound, out _) || !int.TryParse(model.UpperBound, out _))
+            {
+                ModelState.AddModelError("AgeRange", "Lower and Upper Bound values must be valid numbers.");
             }
 
             if (!ModelState.IsValid)
