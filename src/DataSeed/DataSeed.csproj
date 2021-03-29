@@ -4,10 +4,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Biobanks.DataSeed</RootNamespace>
-    <AssemblyName>Biobanks.DataSeed</AssemblyName>
+    <AssemblyName>DataSeed</AssemblyName>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <UserSecretsId>8019bc8d-21cf-4020-a6d0-119f259500be</UserSecretsId>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>

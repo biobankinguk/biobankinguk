@@ -83,7 +83,7 @@ namespace Biobanks.Web.ApiControllers
         {
             if (await _biobankReadService.ValidPreservationTypeAsync(model.Value, model.StorageTemperatureId))
             {
-                ModelState.AddModelError("PreservationTypes", $"That PresevationType is already in use. '{ model.Value }' is already in use at the StorageTemperature.");
+                ModelState.AddModelError("PreservationTypes", $"That PreservationType is already in use. '{ model.Value }' is already in use at the StorageTemperature.");
             }
 
             if (await _biobankReadService.IsPreservationTypeInUse(model.Id))
