@@ -52,6 +52,18 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Post(AgeRangeModel model)
         {
+            // Need to encode lower/upper bound with duration 
+            var convertedModel = ConversionToISODuration(new AgeRangeModel()
+            {
+                Id = model.Id,
+                Description = model.Description,
+                SortOrder = model.SortOrder,
+                LowerBound = model.LowerBound,
+                UpperBound = model.UpperBound,
+                LowerDuration = model.LowerDuration,
+                UpperDuration = model.UpperDuration
+            });
+
             // Validate model
             if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
             {
@@ -63,13 +75,15 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", "Lower and Upper Bound values must be valid numbers.");
             }
 
+            if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+            {
+                ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
+            }
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-
-            // Need to encode lower/upper bound with duration 
-            var convertedModel = ConversionToISODuration(model);
 
             // Add new Age Range
             var range = new AgeRange
@@ -194,6 +208,7 @@ namespace Biobanks.Web.ApiControllers
 
         private AgeRangeModel ConversionToISODuration(AgeRangeModel model)
         {
+            // Unable to use XmlConvert.toString as cannot create valid TimeSpan from Years/Months
             // Check for negatives
             if (int.Parse(model.LowerBound) < 0)
             {
