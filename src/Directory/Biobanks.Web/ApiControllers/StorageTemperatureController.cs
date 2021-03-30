@@ -46,6 +46,7 @@ namespace Biobanks.Web.ApiControllers
             foreach (var model in models)
             {
                 model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
+                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
             }
 
             return models;
@@ -101,7 +102,7 @@ namespace Biobanks.Web.ApiControllers
             }
 
             // If in use, prevent update
-            if (model.SampleSetsCount > 0)
+            if ((model.SampleSetsCount > 0) || model.UsedByPreservationTypes)
             {
                 ModelState.AddModelError("StorageTemperature", $"The storage temperature \"{model.Value}\" is currently in use, and cannot be updated.");
             }
@@ -136,7 +137,7 @@ namespace Biobanks.Web.ApiControllers
             Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // If in use, prevent update
-            if (await _biobankReadService.IsStorageTemperatureInUse(id))
+            if (await _biobankReadService.IsStorageTemperatureInUse(id) || await _biobankReadService.IsStorageTemperatureAssigned(id))
             {
                 ModelState.AddModelError("StorageTemperature", $"The storage temperature \"{model.Value}\" is currently in use, and cannot be deleted.");
             }

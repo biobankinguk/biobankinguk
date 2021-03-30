@@ -18,7 +18,11 @@ namespace Biobanks.Submissions.Core.AzureStorage
         /// <inheritdoc />
         public async Task PushAsync(string queue, string message)
         {
-            var q = new QueueClient(_connectionString, queue);
+            var q = new QueueClient(_connectionString, queue, new QueueClientOptions
+            {
+                MessageEncoding = QueueMessageEncoding.Base64
+            });
+           
             await q.CreateIfNotExistsAsync();
             await q.SendMessageAsync(message);
         }
@@ -26,7 +30,11 @@ namespace Biobanks.Submissions.Core.AzureStorage
         /// <inheritdoc />
         public async Task DeleteAsync(string queue, string messageId, string popReceipt)
         {
-            var q = new QueueClient(_connectionString, queue);
+            var q = new QueueClient(_connectionString, queue, new QueueClientOptions
+            {
+                MessageEncoding = QueueMessageEncoding.Base64
+            });
+
             await q.DeleteMessageAsync(messageId, popReceipt);
         }
     }

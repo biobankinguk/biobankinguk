@@ -44,8 +44,14 @@ namespace Biobanks.Submissions.Core.Config
             return $"{barcodeText}{nameof(individualReferenceId)}: {individualReferenceId} - ";
         }
 
-        public static string InvalidForType(string value, string type, string barcode, string individualReferenceId) =>
-            $"{IdPropertiesPrefix(barcode, individualReferenceId)} '{value}' is not a valid {type} value";
+        public static string Invalid(string message, string barcode, string individualReferenceId)
+            => $"{IdPropertiesPrefix(barcode, individualReferenceId)} {message}";
+
+        public static string InvalidForType(string value, string type, string barcode, string individualReferenceId) => 
+            Invalid($"'{value}' is not a valid {type} value", barcode, individualReferenceId);
+
+        public static string ExtractionProcedureMaterialTypeMismatch(string epValue, string mtValue, string barcode, string individualReferenceId) =>
+            Invalid($"ExtractionProcedure'{epValue}' is not a valid for the MaterialType {mtValue}", barcode, individualReferenceId);
 
         public static string PreservationType(string value, string barcode, string individualReferenceId) =>
             InvalidForType(value, "Preservation Type", barcode, individualReferenceId);
