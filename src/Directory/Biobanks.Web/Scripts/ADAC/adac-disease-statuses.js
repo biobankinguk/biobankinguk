@@ -65,6 +65,9 @@ function AdacDiseaseStatusViewModel() {
         e.preventDefault();
         var form = $(e.target); // get form as a jquery object
 
+        //Concatenate other terms (exclude null/empty/whitespace strings)
+        $("#OtherTerms").val(_this.modal.diseaseStatus().otherTermsArray().filter(x => x && x.trim()).join(','));
+
         // Get Action Type
         var action = _this.modal.mode();
         if (action == 'Add') {
@@ -93,9 +96,6 @@ function AdacDiseaseStatusViewModel() {
     }
     this.removeOtherTerms = function (idx) {
         _this.modal.diseaseStatus().otherTermsArray.splice(idx,1)
-    }
-    this.updateOtherTerms = function (idx) {
-        _this.modal.diseaseStatus().otherTermsArray.replace(this.valueOf());
     }
 }
 
