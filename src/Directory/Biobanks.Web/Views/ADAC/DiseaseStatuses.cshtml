@@ -142,34 +142,27 @@
                             </div>
 
                             <!-- Other Terms -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Other Terms</label>
-                                <div class="col-sm-8">
-                                    <input type="text" id="OtherTerms" name="OtherTerms" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().otherTermsArray()[0]">
-                                </div>
-                                <div class="col-sm-1">
-                                    <button type="button" class="fa fa-plus-circle btn btn-default form-control-static pull-right" data-bind="click: addOtherTerms"/>
-                                </div>
-                            </div>
-                            <div data-bind="visible: modal.diseaseStatus().otherTermsArray().length > 1, foreach: modal.diseaseStatus().otherTermsArray().slice(1) ">
+                            <div data-bind="foreach: modal.diseaseStatus().otherTermsArray()">
                                 <div class="form-group">
-                                    <div class="col-sm-offset-3 col-sm-8">
-                                        <input type="text" id="OtherTerms" name="OtherTerms" class="form-control"
-                                               data-bind="value: $data.term">
+                                    <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Other Terms</label>
+                                    <div class="col-sm-8"  data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
+                                        <input type="text" name="OtherTerms" class="form-control"
+                                               data-bind="textInput: $parent.modal.diseaseStatus().otherTermsArray()[$index()]">
                                     </div>
                                     <div class="col-sm-1">
-                                        <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right" data-bind="click: $parent.removeOtherTerms"/>
+                                        <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right" 
+                                                data-bind="click: function() { $parent.removeOtherTerms($index())}" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
-				</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bind="click: addOtherTerms">Add Other Term</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
+                </div>
 			</form>
 		</div>
 	</div>

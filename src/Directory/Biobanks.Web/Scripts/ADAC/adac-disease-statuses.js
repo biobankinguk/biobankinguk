@@ -45,11 +45,7 @@ function AdacDiseaseStatusViewModel() {
     _this.modal.mode(_this.modal.modalModeEdit);
 
       var diseaseStatus = $(event.currentTarget).data("disease-status");
-      //let otherTermsArray = (diseaseStatus.OtherTerms ? diseaseStatus.OtherTerms.split(",").map(item => item.trim()) : diseaseStatus.OtherTerms)
-      let otherTermsArray = (diseaseStatus.OtherTerms ? diseaseStatus.OtherTerms.split(",").map(function (item, index) {
-          return { "index": index, "term": item.trim() };
-      }
-      ) : diseaseStatus.OtherTerms)
+      let otherTermsArray = (diseaseStatus.OtherTerms ? diseaseStatus.OtherTerms.split(",").map(item => item.trim()) : diseaseStatus.OtherTerms)
 
     _this.modal.diseaseStatus(
       new DiseaseStatus(
@@ -93,13 +89,13 @@ function AdacDiseaseStatusViewModel() {
     }
 
     this.addOtherTerms = function () {
-        _this.modal.diseaseStatus().otherTermsArray.push({});
+        _this.modal.diseaseStatus().otherTermsArray.push("");
     }
-    this.removeOtherTerms = function () {
-        _this.modal.diseaseStatus().otherTermsArray.remove(this.valueOf())
+    this.removeOtherTerms = function (idx) {
+        _this.modal.diseaseStatus().otherTermsArray.splice(idx,1)
     }
-    this.updateOtherTerms = function () {
-        _this.modal.diseaseStatus().otherTermsArray.replace(this.valueOf())
+    this.updateOtherTerms = function (idx) {
+        _this.modal.diseaseStatus().otherTermsArray.replace(this.valueOf());
     }
 }
 
