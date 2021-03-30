@@ -1,17 +1,18 @@
-function DiseaseStatus(ontologyTermId, description, otherTerms) {
+function DiseaseStatus(ontologyTermId, description, otherTerms, otherTermsArray) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.otherTerms = ko.observable(otherTerms);
+    this.otherTermsArray = ko.observableArray(otherTermsArray);
 }
 
-function DiseaseStatusModal(ontologyTermId, description, otherTerms) {
+function DiseaseStatusModal(ontologyTermId, description, otherTerms, otherTermsArray) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.diseaseStatus = ko.observable(
-        new DiseaseStatus(ontologyTermId, description, otherTerms)
+        new DiseaseStatus(ontologyTermId, description, otherTerms, otherTermsArray)
     );
 }
 
@@ -20,7 +21,7 @@ function AdacDiseaseStatusViewModel() {
     var _this = this;
 
     this.modalId = "#disease-status-modal";
-    this.modal = new DiseaseStatusModal("", "", "");
+    this.modal = new DiseaseStatusModal("", "", "",[]);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -36,19 +37,26 @@ function AdacDiseaseStatusViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.diseaseStatus(new DiseaseStatus("", "", ""));
+        _this.modal.diseaseStatus(new DiseaseStatus("", "", "",[]));
         _this.showModal();
     };
 
   this.openModalForEdit = function (_, event) {
     _this.modal.mode(_this.modal.modalModeEdit);
 
-    var diseaseStatus = $(event.currentTarget).data("disease-status");
+      var diseaseStatus = $(event.currentTarget).data("disease-status");
+      //let otherTermsArray = (diseaseStatus.OtherTerms ? diseaseStatus.OtherTerms.split(",").map(item => item.trim()) : diseaseStatus.OtherTerms)
+      let otherTermsArray = (diseaseStatus.OtherTerms ? diseaseStatus.OtherTerms.split(",").map(function (item, index) {
+          return { "index": index, "term": item.trim() };
+      }
+      ) : diseaseStatus.OtherTerms)
+
     _this.modal.diseaseStatus(
       new DiseaseStatus(
           diseaseStatus.OntologyTermId,
           diseaseStatus.Description,
-          diseaseStatus.OtherTerms
+          diseaseStatus.OtherTerms,
+          otherTermsArray
 
       )
     );
@@ -82,6 +90,16 @@ function AdacDiseaseStatusViewModel() {
             $("#OntologyTermId").prop('readonly', false);
             $("#Description").prop('readonly', false);
         }
+    }
+
+    this.addOtherTerms = function () {
+        _this.modal.diseaseStatus().otherTermsArray.push({});
+    }
+    this.removeOtherTerms = function () {
+        _this.modal.diseaseStatus().otherTermsArray.remove(this.valueOf())
+    }
+    this.updateOtherTerms = function () {
+        _this.modal.diseaseStatus().otherTermsArray.replace(this.valueOf())
     }
 }
 
