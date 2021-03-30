@@ -46,35 +46,34 @@
                         <td>@item.StorageTemperatureName</td>                     
                         <td>@item.PreservationTypeCount</td>
 
-			<td class="text-right">
-				@if (item.PreservationTypeCount > 0)
-				{
-					<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Preservation Type in use")
-				}
-				else if (item.StorageTemperatureId != null)
-				{
-					<a title="Edit"
-					   class="action-icon"
-					   href="#"
-					   data-target="#preservation-types-modal"
-					   data-preservation-type="@Json.Encode(item)"
-					   data-bind="click: openModalForEdit">
-						<span class="fa fa-edit labelled-icon"></span>Edit
-					</a>
+                        <td class="text-right">
+                            @if (item.PreservationTypeCount > 0)
+                            {
+                                <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Preservation Type in use")
+                            }                           
+                            else if (item.StorageTemperatureId != null)
+                            {
+                                <a title="Edit"
+                                   class="action-icon"
+                                   href="#"
+                                   data-target="#preservation-types-modal"
+                                   data-preservation-type="@Json.Encode(item)"
+                                   data-bind="click: openModalForEdit">
+                                    <span class="fa fa-edit labelled-icon"></span>Edit
+                                </a>
 
-					<a title="Delete"
-						class="action-icon delete-confirm"
-						data-refdata-model="@Json.Encode(item)"
-						data-resource-url="/api/PreservationType"
-						data-success-redirect="@Url.Action("PreservationTypes")"
-						data-refdata-type="Preservation Type"
-						href="#">
-						<span class="fa fa-trash labelled-icon"></span>Delete
-					</a>
-				}
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(item)"
+                                   data-resource-url="/api/PreservationType"
+                                   data-success-redirect="@Url.Action("PreservationTypes")"
+                                   data-refdata-type="Preservation Type"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
+                            }
 
-			</td>
-                    </tr>
+                        </td>
                     
                 }
             </tbody>
