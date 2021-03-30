@@ -142,12 +142,12 @@
                             </div>
 
                             <!-- Other Terms -->
-                            <div data-bind="foreach: modal.diseaseStatus().otherTermsArray()">
+                            <div data-bind="foreach: modal.diseaseStatus().otherTerms()">
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Other Terms</label>
                                     <div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
                                         <input type="text" class="form-control"
-                                               data-bind="textInput: $parent.modal.diseaseStatus().otherTermsArray()[$index()]">
+                                               data-bind="textInput: $parent.modal.diseaseStatus().otherTerms()[$index()]">
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right"
