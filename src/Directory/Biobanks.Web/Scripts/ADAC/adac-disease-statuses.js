@@ -37,7 +37,8 @@ function AdacDiseaseStatusViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.diseaseStatus(new DiseaseStatus("", "", "",[]));
+        _this.modal.diseaseStatus(new DiseaseStatus("", "", "", []));
+        _this.setPartialEdit(false);
         _this.showModal();
     };
 
