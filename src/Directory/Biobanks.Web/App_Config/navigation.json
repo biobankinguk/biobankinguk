@@ -3,9 +3,6 @@
 		"title": "directory options",
 		"child_items": [
 			{
-				"action": "contact"
-			},
-			{
 				"action": "account"
 			},
 			{
@@ -28,5 +25,10 @@
 				"action": "logout"
 			}
 		]
+	},
+	{
+		"title": "contact",
+		"action": "contact",
+		"toolbar":  true
 	}
 ]
