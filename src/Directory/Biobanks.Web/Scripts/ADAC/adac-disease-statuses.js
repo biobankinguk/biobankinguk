@@ -1,7 +1,7 @@
 function DiseaseStatus(ontologyTermId, description, otherTerms) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
-    this.otherTerms = ko.observable(otherTerms);
+    this.otherTerms = ko.observableArray(otherTerms);
 }
 
 function DiseaseStatusModal(ontologyTermId, description, otherTerms) {
@@ -20,7 +20,7 @@ function AdacDiseaseStatusViewModel() {
     var _this = this;
 
     this.modalId = "#disease-status-modal";
-    this.modal = new DiseaseStatusModal("", "", "");
+    this.modal = new DiseaseStatusModal("", "", []);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -36,19 +36,24 @@ function AdacDiseaseStatusViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.diseaseStatus(new DiseaseStatus("", "", ""));
+        _this.modal.diseaseStatus(new DiseaseStatus("", "",[]));
+        _this.setPartialEdit(false);
         _this.showModal();
     };
 
   this.openModalForEdit = function (_, event) {
     _this.modal.mode(_this.modal.modalModeEdit);
 
-    var diseaseStatus = $(event.currentTarget).data("disease-status");
+      var diseaseStatus = $(event.currentTarget).data("disease-status");
+      let otherTerms = (diseaseStatus.OtherTerms
+          ? diseaseStatus.OtherTerms.split(",").map(item => item.trim())
+          : diseaseStatus.OtherTerms)
+
     _this.modal.diseaseStatus(
       new DiseaseStatus(
           diseaseStatus.OntologyTermId,
           diseaseStatus.Description,
-          diseaseStatus.OtherTerms
+          otherTerms
 
       )
     );
@@ -60,6 +65,9 @@ function AdacDiseaseStatusViewModel() {
     this.modalSubmit = function (e) {
         e.preventDefault();
         var form = $(e.target); // get form as a jquery object
+
+        //Concatenate other terms (exclude null/empty/whitespace strings)
+        $("#OtherTerms").val(_this.modal.diseaseStatus().otherTerms().filter(x => x && x.trim()).join(','));
 
         // Get Action Type
         var action = _this.modal.mode();
@@ -82,6 +90,13 @@ function AdacDiseaseStatusViewModel() {
             $("#OntologyTermId").prop('readonly', false);
             $("#Description").prop('readonly', false);
         }
+    }
+
+    this.addOtherTerms = function () {
+        _this.modal.diseaseStatus().otherTerms.push("");
+    }
+    this.removeOtherTerms = function (idx) {
+        _this.modal.diseaseStatus().otherTerms.splice(idx,1)
     }
 }
 
