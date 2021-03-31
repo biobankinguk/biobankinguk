@@ -42,11 +42,14 @@
 
 			<!-- Navigation -->
 			<div class="navbar-collapse-container">
-				<div id="myNavbar" class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						@Html.Partial("_NavMenu", Model.NavigationItems)
-					</ul>
-				</div>
+                <div id="myNavbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        @Html.Partial("_NavMenu", Model.NavigationItems)
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        @Html.Partial("_NavMenu", Model.NavigationItems, new ViewDataDictionary { { "Toolbar", true } })
+                    </ul>
+                </div>
 			</div>
 		</div>
 	</div>
