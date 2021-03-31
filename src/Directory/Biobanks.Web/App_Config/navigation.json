@@ -27,7 +27,6 @@
 		]
 	},
 	{
-		"title": "contact",
 		"action": "contact",
 		"toolbar":  true
 	}
