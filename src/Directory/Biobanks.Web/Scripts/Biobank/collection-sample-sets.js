@@ -7,7 +7,10 @@ function RadioBinding(value, label, sortOrder) {
 function Lookup() {
     var initValue = "Initial value to get it to build the vm model correctly.";
     this.ageRanges = ko.observableArray([new RadioBinding(0, initValue, 0)]);
-    this.donorCounts = ko.observableArray([new RadioBinding(0, initValue, 0)]);
+	this.donorCounts = ko.observableArray([new RadioBinding(0, initValue, 0)]);
+	this.preservationTypes = ko.observableArray([
+		new RadioBinding(0, initValue, 0),
+	]);
     this.storageTemperatures = ko.observableArray([
         new RadioBinding(0, initValue, 0),
     ]);
@@ -22,6 +25,7 @@ var lookup = new Lookup();
 
 function MaterialPreservationDetail(
   materialType,
+  preservationType,
   storageTemperature,
   percentage,
   macroscopicAssessment
@@ -38,6 +42,9 @@ function MaterialPreservationDetail(
 
   this.materialType = ko.observable(materialType).extend({
 	min: { params: 1, message: "Please select a material type." },
+  });
+  this.preservationType = ko.observable(preservationType).extend({
+	min: { params: 1, message: "Please select a preservation type." },
   });
   this.storageTemperature = ko.observable(storageTemperature).extend({
 	min: { params: 1, message: "Please select a storage temperature." },
@@ -65,6 +72,13 @@ function MaterialPreservationDetail(
 	);
   });
 
+  this.preservationTypeDescription = ko.computed(function () {
+	return _this.getRadioBindingLabel(
+		lookup.preservationTypes(),
+		_this.preservationType()
+	);
+  });
+
   this.storageTemperatureDescription = ko.computed(function () {
 	return _this.getRadioBindingLabel(
 	  lookup.storageTemperatures(),
@@ -88,6 +102,7 @@ function MaterialPreservationDetail(
 
 function MaterialPreservationDetailModal(
   materialType,
+  preservationType,
   storageTemperature,
   percentage,
   macroscopicAssessment
@@ -101,6 +116,7 @@ function MaterialPreservationDetailModal(
   this.materialPreservationDetail = ko.observable(
 	new MaterialPreservationDetail(
 	  materialType,
+      preservationType,
 	  storageTemperature,
 	  percentage,
 	  macroscopicAssessment
@@ -111,7 +127,7 @@ function MaterialPreservationDetailModal(
 function AppViewModel() {
   var _this = this;
   this.donorCount = ko.observable(0);
-  this.modal = new MaterialPreservationDetailModal(0, 0, 1, 0);
+  this.modal = new MaterialPreservationDetailModal(0,0, 0, 1, 0);
   this.materialPreservationDetails = ko.observableArray([]);
   this.currentlyEdited = ko.observable(null);
 
@@ -169,6 +185,7 @@ function AppViewModel() {
 	  if (_this.modal.materialPreservationDetail().errors().length === 0) {
 		var newMaterialPreservationDetail = new MaterialPreservationDetail(
 		  _this.modal.materialPreservationDetail().materialType(),
+		  _this.modal.materialPreservationDetail().preservationType(),
 		  _this.modal.materialPreservationDetail().storageTemperature(),
 		  _this.modal.materialPreservationDetail().percentage(),
 		  _this.modal.materialPreservationDetail().macroscopicAssessment()
@@ -189,6 +206,11 @@ function AppViewModel() {
 		  .currentlyEdited()
 		  .materialType(
 			_this.modal.materialPreservationDetail().materialType()
+		  );
+		_this
+		  .currentlyEdited()
+		  .preservationType(
+		    _this.modal.materialPreservationDetail().preservationType()
 		  );
 		_this
 		  .currentlyEdited()
@@ -228,6 +250,7 @@ function AppViewModel() {
 			if (_this.modal.materialPreservationDetail().errors().length === 0) {
 				var newMaterialPreservationDetail = new MaterialPreservationDetail(
 					_this.modal.materialPreservationDetail().materialType(),
+					_this.modal.materialPreservationDetail().preservationType(),
 					_this.modal.materialPreservationDetail().storageTemperature(),
 					null,
 					_this.modal.materialPreservationDetail().macroscopicAssessment()
@@ -248,6 +271,11 @@ function AppViewModel() {
 					.currentlyEdited()
 					.materialType(
 						_this.modal.materialPreservationDetail().materialType()
+					);
+				_this
+					.currentlyEdited()
+					.preservationType(
+						_this.modal.materialPreservationDetail().preservationType()
 					);
 				_this
 					.currentlyEdited()
@@ -276,11 +304,13 @@ function AppViewModel() {
 
   this.resetModalValues = function () {
 	_this.modal.materialPreservationDetail().materialType(0);
+	_this.modal.materialPreservationDetail().preservationType(0);
 	_this.modal.materialPreservationDetail().storageTemperature(0);
 	_this.modal.materialPreservationDetail().percentage(1);
 	_this.modal.materialPreservationDetail().macroscopicAssessment(3); // Default: 'Not-Applicable'
 
 	_this.modal.materialPreservationDetail().materialType.isModified(false);
+	_this.modal.materialPreservationDetail().preservationType.isModified(false);
 	_this.modal.materialPreservationDetail().storageTemperature.isModified(false);
 	_this.modal.materialPreservationDetail().percentage.isModified(false);
 	_this.modal
@@ -305,6 +335,9 @@ function AppViewModel() {
 	  .materialType(details.materialType());
 	_this.modal
 	  .materialPreservationDetail()
+		.preservationType(details.preservationType());
+	_this.modal
+	  .materialPreservationDetail()
 	  .storageTemperature(details.storageTemperature());
 	_this.modal.materialPreservationDetail().percentage(details.percentage());
 	_this.modal
@@ -318,6 +351,9 @@ function AppViewModel() {
 	_this.modal
 	  .materialPreservationDetail()
 	  .materialType(details.materialType());
+	_this.modal
+	  .materialPreservationDetail()
+	  .preservationType(details.preservationType());
 	_this.modal
 	  .materialPreservationDetail()
 	  .storageTemperature(details.storageTemperature());
@@ -336,6 +372,7 @@ function AppViewModel() {
 		return (
 		  item !== _this.currentlyEdited() && //doesn't matter if the same item matches itself when editing
 		  item.materialType() === details.materialType() &&
+		  item.preservationType() === details.preservationType() &&
 		  item.storageTemperature() === details.storageTemperature() &&
 		  item.macroscopicAssessment() === details.macroscopicAssessment()
 		);

@@ -138,12 +138,13 @@
 		{
 			<table id="collection-samplesets" class="table table-striped table-hover">
 				<thead>
-					<tr>
-						<th>Sex</th>
-						<th>Age</th>
-						<th>Material types</th>
-						<th>@App.Config[ConfigKey.StorageTemperatureName]</th>
-					</tr>
+                    <tr>
+                        <th>Sex</th>
+                        <th>Age</th>
+                        <th>Material types</th>
+                        <th>Preservation types</th>
+                        <th>@App.Config[ConfigKey.StorageTemperatureName]</th>
+                    </tr>
 				</thead>
 				<tbody>
 					@foreach (var sampleSet in Model.SampleSets)
@@ -153,6 +154,7 @@
 							<td>@sampleSet.Sex</td>
 							<td>@sampleSet.Age</td>
 							<td>@sampleSet.MaterialTypes</td>
+							<td>@sampleSet.PreservationTypes</td>
 							<td>@sampleSet.StorageTemperatures</td>
 						</tr>
 					}
