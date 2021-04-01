@@ -83,9 +83,8 @@ The function app uses App Settings to configure the URLs of the apis it relies u
   <img src="./readme/azure-function-settings.png" width="60%" />
 </p>
 
-The Function App requires two URLs
+The Function App requires the EPMC API URL
 ```yml
-DirectoryUrl: "<directory-url>",
 EpmcApiUrl: "https://www.ebi.ac.uk/europepmc/"
 ```
 
