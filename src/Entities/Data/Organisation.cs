@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared;
 
@@ -72,8 +73,11 @@ namespace Biobanks.Entities.Data
         public virtual Country Country { get; set; }
 
         //Submission API settings
-
+        [ForeignKey("CollectionType")]
+        public int CollectionTypeId { get; set; }
         public virtual CollectionType CollectionType { get; set; }
+        [ForeignKey("AccessCondition")]
+        public int AccessConditionId { get; set; }
         public virtual AccessCondition AccessCondition { get; set; }
 
         public virtual ICollection<ApiClient> ApiClients { get; set; }

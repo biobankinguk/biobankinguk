@@ -22,69 +22,6 @@
     <div class="col-sm-10 col-sm-offset-1">
         <h4 class="required">
             @Html.DisplayNameFor(x => x.AccessCondition)
-            <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-collection-accesscondition"></span>
         </h4>
-    </div>
-    <div class="col-sm-10 col-sm-offset-2">
-        <div class="col-sm-6">
-            @for (var i = 0; i < Model.AccessConditions.Count(); i++)
-            {
-                var accessCondition = Model.AccessConditions.ElementAt(i);
-
-                <div class="radio">
-                    <label>
-                        @Html.RadioButtonFor(x => x.AccessCondition, accessCondition.Id)
-                        @Html.Raw(accessCondition.Description)
-                    </label>
-                </div>
-
-                if (i == Math.Ceiling((decimal)Model.AccessConditions.Count() / 2) - 1)
-                {
-                    @Html.Raw("</div>\n<div class=\"col-sm-6\">")
-                }
-            }
-        </div>
-        @Html.ValidationMessageFor(x => x.AccessCondition)
-    </div>
-</div>
-
-<div class="form-group">
-    <div class="col-sm-10 col-sm-offset-1">
-        <h4>
-            @Html.DisplayNameFor(x => x.CollectionType)
-            <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-collection-collectiontype"></span>
-        </h4>
-    </div>
-    <div class="col-sm-10 col-sm-offset-2">
-        <div class="col-sm-6">
-            @for (var i = 0; i < Model.CollectionTypes.Count(); i++)
-            {
-                var collectionType = Model.CollectionTypes.ElementAt(i);
-
-                <div class="radio">
-                    <label>
-                        @Html.RadioButtonFor(x => x.CollectionType, collectionType.Id)
-                        @Html.Raw(collectionType.Description)
-                    </label>
-                </div>
-
-                if (i == Math.Ceiling((decimal)Model.CollectionTypes.Count() / 2) - 1)
-                {
-                    @Html.Raw("</div>\n<div class=\"col-sm-6\">")
-                }
-            }
-        </div>
-        <div class="col-sm-12">
-            @Html.ValidationMessageFor(x => x.CollectionType)
-        </div>
-    </div>
-</div>
-
-<h3>Submission API Authentication</h3>
-
-<div class="form-group">
-    <div class="col-sm-12 text-center">
-        @Html.ActionLink("Cancel", "Biobank", new { id = Model. }, new { @class = "btn btn-default" })
-        <button type="submit" class="btn btn-primary">Update collection</button>
     </div>
 </div>

@@ -128,6 +128,16 @@ namespace Biobanks.Directory.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+        /*    modelBuilder.Entity<Organisation>()
+                .HasOptional(o => o.AccessCondition)
+                .WithRequired()
+                .Map(m => m.MapKey("AccessConditionId"));
+
+            modelBuilder.Entity<Organisation>()
+                .HasOptional(o => o.CollectionType)
+                .WithRequired()
+                .Map(m => m.MapKey("CollectionTypeId"));*/
+
             modelBuilder.Entity<ApiClient>()
                 .HasMany(c => c.Organisations)
                 .WithMany(o => o.ApiClients)

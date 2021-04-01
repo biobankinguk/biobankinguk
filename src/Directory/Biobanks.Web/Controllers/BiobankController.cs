@@ -1900,8 +1900,6 @@ namespace Biobanks.Web.Controllers
             model.AccessCondition = org.AccessCondition.Id;
             model.CollectionType = org.CollectionType.Id;
 
-            //
-
             return View(model);
         }
 

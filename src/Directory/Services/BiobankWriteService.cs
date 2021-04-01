@@ -423,6 +423,12 @@ namespace Biobanks.Services
             biobank.OrganisationExternalId = "GBR-" + type.OrganisationTypeId + "-";
             biobank.OrganisationTypeId = type.OrganisationTypeId;
 
+            //Default CollectionType and AccessCondition values. These will need to be looked at
+            //by the Biobank admin before API submissions can be made
+
+            biobank.CollectionTypeId = (await _biobankReadService.ListCollectionTypesAsync()).FirstOrDefault().Id;
+            biobank.AccessConditionId = (await _biobankReadService.ListAccessConditionsAsync()).FirstOrDefault().Id;
+
             // create new anonymous id
             biobank.AnonymousIdentifier = Guid.NewGuid();
 
