@@ -1052,7 +1052,7 @@ namespace Biobanks.Web.Controllers
                     Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Value,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
-                    PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType.Value).Distinct()),
+                    PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
                     StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
                 })
             };
