@@ -1163,6 +1163,11 @@ namespace Biobanks.Services
         public async Task<bool> IsStorageTemperatureInUse(int id)
             => (await GetStorageTemperatureUsageCount(id)) > 0;
 
+        public async Task<bool> IsStorageTemperatureAssigned(int id)
+        {
+            return (await _preservationTypeRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Any();
+        }
+
         public async Task<bool> ValidStorageTemperatureAsync(string storageTemperature)
         {
             return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();

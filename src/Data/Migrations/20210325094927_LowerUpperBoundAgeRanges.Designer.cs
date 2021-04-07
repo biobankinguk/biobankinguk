@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210325094927_LowerUpperBoundAgeRanges")]
+    partial class LowerUpperBoundAgeRanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -985,12 +987,6 @@ namespace Biobanks.Data.Migrations
                     b.Property<int?>("CountyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DefaultSubmissionsAccessConditionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DefaultSubmissionsCollectionTypeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1047,10 +1043,6 @@ namespace Biobanks.Data.Migrations
                     b.HasIndex("CountryId");
 
                     b.HasIndex("CountyId");
-
-                    b.HasIndex("DefaultSubmissionsAccessConditionId");
-
-                    b.HasIndex("DefaultSubmissionsCollectionTypeId");
 
                     b.HasIndex("OrganisationTypeId");
 
@@ -2482,23 +2474,11 @@ namespace Biobanks.Data.Migrations
                         .WithMany("Organisations")
                         .HasForeignKey("CountyId");
 
-                    b.HasOne("Biobanks.Entities.Data.ReferenceData.AccessCondition", "AccessCondition")
-                        .WithMany("Organisations")
-                        .HasForeignKey("DefaultSubmissionsAccessConditionId");
-
-                    b.HasOne("Biobanks.Entities.Data.ReferenceData.CollectionType", "CollectionType")
-                        .WithMany("Organisations")
-                        .HasForeignKey("DefaultSubmissionsCollectionTypeId");
-
                     b.HasOne("Biobanks.Entities.Data.OrganisationType", "OrganisationType")
                         .WithMany()
                         .HasForeignKey("OrganisationTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AccessCondition");
-
-                    b.Navigation("CollectionType");
 
                     b.Navigation("Country");
 
@@ -2774,11 +2754,6 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("OrganisationUsers");
                 });
 
-            modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.AccessCondition", b =>
-                {
-                    b.Navigation("Organisations");
-                });
-
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.AnnualStatistic", b =>
                 {
                     b.Navigation("OrganisationAnnualStatistics");
@@ -2792,11 +2767,6 @@ namespace Biobanks.Data.Migrations
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.AssociatedDataTypeGroup", b =>
                 {
                     b.Navigation("AssociatedDataTypes");
-                });
-
-            modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.CollectionType", b =>
-                {
-                    b.Navigation("Organisations");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.Country", b =>
