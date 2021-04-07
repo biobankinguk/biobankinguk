@@ -119,44 +119,50 @@
 				<div class="modal-body">
 
 					<div class="row">
-						<div class="col-sm-12">
+                        <div class="col-sm-12">
 
-							<input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().ontologyTermId()">
+                            <input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().ontologyTermId()">
+                            <input type="hidden" id="OtherTerms" name="OtherTerms">
+                            <!-- SNOMED ID -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Ontology Term ID</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="OntologyTermId" name="OntologyTermId" class="form-control"
+                                           data-bind="value: modal.diseaseStatus().ontologyTermId()" maxlength="20">
+                                </div>
+                            </div>
 
-							<!-- SNOMED ID -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Ontology Term ID</label>
-								<div class="col-sm-9">
-									<input type="text" id="OntologyTermId" name="OntologyTermId" class="form-control"
-										   data-bind="value: modal.diseaseStatus().ontologyTermId()" maxlength="20">
-								</div>
-							</div>
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="Description" name="Description" class="form-control"
+                                           data-bind="value: modal.diseaseStatus().description()">
+                                </div>
+                            </div>
 
-							<!-- Description -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Name</label>
-								<div class="col-sm-9">
-									<input type="text" id="Description" name="Description" class="form-control"
-										   data-bind="value: modal.diseaseStatus().description()">
-								</div>
-							</div>
-
-							<!-- Other Terms -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Other Terms</label>
-								<div class="col-sm-9">
-									<input type="text" id="OtherTerms" name="OtherTerms" class="form-control"
-										   data-bind="value: modal.diseaseStatus().otherTerms()">
-								</div>
-							</div>
-						</div>
-					</div>
-
+                            <!-- Other Terms -->
+                            <div data-bind="foreach: modal.diseaseStatus().otherTerms()">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Other Terms</label>
+                                    <div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
+                                        <input type="text" class="form-control"
+                                               data-bind="textInput: $parent.modal.diseaseStatus().otherTerms()[$index()]">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right"
+                                                data-bind="click: function() { $parent.removeOtherTerms($index())}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
-				</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bind="click: addOtherTerms">Add Other Term</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
+                </div>
 			</form>
 		</div>
 	</div>

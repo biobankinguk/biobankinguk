@@ -17,7 +17,7 @@ namespace Biobanks.Submissions.AzFunctions
         }
 
         [Function("Submissions_Expiry")]
-        public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo _)
+        public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer)
         {
             var organisationsToExpireSubmissionsFor = await _submissions.GetOrganisationsWithExpiringSubmissions();
 

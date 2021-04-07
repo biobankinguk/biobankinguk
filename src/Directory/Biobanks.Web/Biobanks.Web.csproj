@@ -469,6 +469,7 @@
     <Compile Include="Models\Header\HeaderItemModel.cs" />
     <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
+    <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
     <Content Include="Scripts\ADAC\adac-refdata-utility.js" />
     <Content Include="Scripts\ADAC\adac-sample-resource-config.js" />
@@ -485,6 +486,7 @@
     <Content Include="App_Config\footer.json" />
     <Content Include="App_Config\header.json" />
     <None Include="Scripts\jquery-2.2.2.intellisense.js" />
+    <Content Include="Scripts\Biobank\edit-details.js" />
     <Content Include="Scripts\bootbox.js" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -840,6 +842,8 @@
     <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
     <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <Content Include="Views\ADAC\BiobankAdmin.cshtml" />
+    <Content Include="Views\ADAC\PreservationTypes.cshtml" />
+    <Content Include="Views\SuperUser\Tools.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
