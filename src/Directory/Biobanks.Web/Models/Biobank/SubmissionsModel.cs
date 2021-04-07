@@ -18,7 +18,7 @@ namespace Biobanks.Web.Models.Biobank
 
         [Required(ErrorMessage = "Please select an access condition.")]
         [Display(Name = "Access condition")]
-        public int AccessCondition { get; set; }
+        public int? AccessCondition { get; set; }
 
         [Required(ErrorMessage = "Please select a collection Type.")]
         [Display(Name = "Collection type")]
