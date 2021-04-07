@@ -49,15 +49,20 @@ function AdacAgeRangeViewModel() {
 
         var ageRange = $(event.currentTarget).data("age-range");
 
+        // Selected value in dropdown
+        var lowerDuration = ageRange.LowerBound.replace(/[^a-zA-Z]+/g, '');
+        document.getElementById("lowerDuration").value = lowerDuration.charAt(0);
 
+        var upperDuration = ageRange.UpperBound.replace(/[^a-zA-Z]+/g, '');
+        document.getElementById("upperDuration").value = upperDuration.charAt(0);
 
         _this.modal.ageRange(
             new AgeRange(
                 ageRange.Id,
                 ageRange.Description,
                 ageRange.SortOrder,
-                ageRange.LowerBound.replace(/\D/g, ''),
-                ageRange.UpperBound.replace(/\D/g, ''),
+                ageRange.LowerBound.replace(/[a-z]/gi, ''),
+                ageRange.UpperBound.replace(/[a-z]/gi, ''),
                 ageRange.LowerDuration,
                 ageRange.UpperDuration
             )
