@@ -78,14 +78,13 @@ namespace Biobanks.Web.ApiControllers
                     LowerDuration = model.LowerDuration,
                     UpperDuration = model.UpperDuration
                 });
-
-
                 if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
                 {
                     ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
                 }
-
             }
+
+
 
             if (!ModelState.IsValid)
             {
@@ -134,6 +133,30 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", "Lower and Upper Bound values must be valid numbers.");
             }
 
+
+            var convertedModel = new AgeRangeModel();
+
+            if (ModelState.IsValid)
+            {
+                // Need to encode lower/upper bound with duration 
+                convertedModel = ConversionToISODuration(new AgeRangeModel()
+                {
+                    Id = model.Id,
+                    Description = model.Description,
+                    SortOrder = model.SortOrder,
+                    LowerBound = model.LowerBound,
+                    UpperBound = model.UpperBound,
+                    LowerDuration = model.LowerDuration,
+                    UpperDuration = model.UpperDuration
+                });
+                if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+                {
+                    ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
+                }
+            }
+
+
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
@@ -142,16 +165,16 @@ namespace Biobanks.Web.ApiControllers
             await _biobankWriteService.UpdateAgeRangeAsync(new AgeRange
             {
                 Id = id,
-                Value = model.Description,
-                SortOrder = model.SortOrder,
-                LowerBound = model.LowerBound,
-                UpperBound = model.UpperBound
+                Value = convertedModel.Description,
+                SortOrder = convertedModel.SortOrder,
+                LowerBound = convertedModel.LowerBound,
+                UpperBound = convertedModel.UpperBound
             });
 
             return Json(new
             {
                 success = true,
-                name = model.Description,
+                name = convertedModel.Description,
             });
         }
 

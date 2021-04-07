@@ -49,13 +49,15 @@ function AdacAgeRangeViewModel() {
 
         var ageRange = $(event.currentTarget).data("age-range");
 
+
+
         _this.modal.ageRange(
             new AgeRange(
                 ageRange.Id,
                 ageRange.Description,
                 ageRange.SortOrder,
-                ageRange.LowerBound,
-                ageRange.UpperBound,
+                ageRange.LowerBound.replace(/\D/g, ''),
+                ageRange.UpperBound.replace(/\D/g, ''),
                 ageRange.LowerDuration,
                 ageRange.UpperDuration
             )
