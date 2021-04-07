@@ -117,7 +117,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, AgeRangeModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
+            if (await _biobankReadService.ValidAgeRangeAsync(id, model.Description))
             {
                 ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
