@@ -1893,9 +1893,11 @@ namespace Biobanks.Web.Controllers
                 }).OrderBy(x => x.SortOrder);
 
             //get currently selected values from org (if applicable)
+            var biobankId = SessionHelper.GetBiobankId(Session);
+            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
-
-            //
+            model.AccessCondition = biobank.DefaultSubmissionsAccessConditionId;
+            model.CollectionType = biobank.DefaultSubmissionsCollectionTypeId;
 
             return View(model);
         }
@@ -1906,9 +1908,17 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Submissions(SubmissionsModel model)
         {
             //update Organisations table
+            var biobankId = SessionHelper.GetBiobankId(Session);
+            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+            biobank.DefaultSubmissionsCollectionTypeId = model.CollectionType;
+            biobank.DefaultSubmissionsAccessConditionId = model.AccessCondition;
+
+            await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
 
             //update update api clients table
 
+            //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
 
             return RedirectToAction("Submissions");
