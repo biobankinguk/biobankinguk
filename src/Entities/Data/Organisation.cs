@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared;
 
@@ -57,6 +58,17 @@ namespace Biobanks.Entities.Data
         public string OtherRegistrationReason { get; set; }
 
         public bool ExcludePublications { get; set; }
+
+        public int? DefaultSubmissionsAccessConditionId { get; set; }
+
+        public int? DefaultSubmissionsCollectionTypeId { get; set; }
+
+
+        [ForeignKey("DefaultSubmissionsAccessConditionId")]
+        public virtual AccessCondition AccessCondition { get; set; }
+
+        [ForeignKey("DefaultSubmissionsCollectionTypeId")]
+        public virtual CollectionType CollectionType { get; set; }
 
         //1 -> M Navigation properties?
         public virtual ICollection<OrganisationNetwork> OrganisationNetworks { get; set; }
