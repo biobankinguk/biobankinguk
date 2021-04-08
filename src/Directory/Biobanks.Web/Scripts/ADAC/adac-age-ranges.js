@@ -61,8 +61,8 @@ function AdacAgeRangeViewModel() {
                 ageRange.Id,
                 ageRange.Description,
                 ageRange.SortOrder,
-                ageRange.LowerBound.replace(/[a-z]/gi, ''),
-                ageRange.UpperBound.replace(/[a-z]/gi, ''),
+                ageRange.LowerBound.replace(/[a-z]/gi, '').replace(/\s/g, ""),
+                ageRange.UpperBound.replace(/[a-z]/gi, '').replace(/\s/g, ""),
                 ageRange.LowerDuration,
                 ageRange.UpperDuration
             )

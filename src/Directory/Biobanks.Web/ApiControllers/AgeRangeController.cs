@@ -58,9 +58,19 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
 
-            if (!int.TryParse(model.LowerBound, out _) || !int.TryParse(model.UpperBound, out _))
+            if (model.LowerDuration != "N/A")
             {
-                ModelState.AddModelError("AgeRange", "Lower and Upper Bound values must be valid numbers.");
+                if (!int.TryParse(model.LowerBound, out _))
+                {
+                    ModelState.AddModelError("AgeRange", "Lower Bound value must be a valid number.");
+                }
+            }
+            if (model.UpperDuration != "N/A")
+            {
+                if (!int.TryParse(model.UpperBound, out _))
+                {
+                    ModelState.AddModelError("AgeRange", "Upper Bound value must be a valid number.");
+                }
             }
 
             var convertedModel = new AgeRangeModel();
@@ -78,10 +88,14 @@ namespace Biobanks.Web.ApiControllers
                     LowerDuration = model.LowerDuration,
                     UpperDuration = model.UpperDuration
                 });
-                if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+                if (!string.IsNullOrEmpty(convertedModel.LowerBound) && !string.IsNullOrEmpty(convertedModel.UpperBound))
                 {
-                    ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
+                    if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+                    {
+                        ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
+                    }
                 }
+
             }
 
 
@@ -128,9 +142,19 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", $"The age range \"{model.Description}\" is currently in use, and cannot be updated.");
             }
 
-            if (!int.TryParse(model.LowerBound, out _) || !int.TryParse(model.UpperBound, out _))
+            if (model.LowerDuration != "N/A")
             {
-                ModelState.AddModelError("AgeRange", "Lower and Upper Bound values must be valid numbers.");
+                if (!int.TryParse(model.LowerBound, out _))
+                {
+                    ModelState.AddModelError("AgeRange", "Lower Bound value must be a valid number.");
+                }
+            }
+            if (model.UpperDuration != "N/A")
+            {
+                if (!int.TryParse(model.UpperBound, out _))
+                {
+                    ModelState.AddModelError("AgeRange", "Upper Bound value must be a valid number.");
+                }
             }
 
             var convertedModel = new AgeRangeModel();
@@ -148,9 +172,12 @@ namespace Biobanks.Web.ApiControllers
                     LowerDuration = model.LowerDuration,
                     UpperDuration = model.UpperDuration
                 });
-                if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+                if (!string.IsNullOrEmpty(convertedModel.LowerBound) && !string.IsNullOrEmpty(convertedModel.UpperBound))
                 {
-                    ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
+                    if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+                    {
+                        ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
+                    }
                 }
             }
 
@@ -239,24 +266,39 @@ namespace Biobanks.Web.ApiControllers
         {
             // Unable to use XmlConvert.toString as cannot create valid TimeSpan from Years/Months
             // Check for negatives
-            if (int.Parse(model.LowerBound) < 0)
+            if (model.LowerDuration != "N/A")
             {
-                model.LowerBound = model.LowerBound.Replace("-", "");
-                model.LowerBound = "-P" + model.LowerBound + model.LowerDuration;
+                if (int.Parse(model.LowerBound) < 0)
+                {
+                    model.LowerBound = model.LowerBound.Replace("-", "");
+                    model.LowerBound = "-P" + model.LowerBound + model.LowerDuration;
+                }
+                else if (int.Parse(model.LowerBound) >= 0)
+                {
+                    model.LowerBound = "P" + model.LowerBound + model.LowerDuration;
+                }
             }
-            else if (int.Parse(model.LowerBound) >= 0)
+            else
             {
-                model.LowerBound = "P" + model.LowerBound + model.LowerDuration;
+                model.LowerBound = null;
+                model.LowerDuration = null;
             }
-
-            if (int.Parse(model.UpperBound) < 0)
+            if (model.UpperDuration != "N/A")
             {
-                model.UpperBound = model.UpperBound.Replace("-", "");
-                model.UpperBound = "-P" + model.UpperBound + model.UpperDuration;
+                if (int.Parse(model.UpperBound) < 0)
+                {
+                    model.UpperBound = model.UpperBound.Replace("-", "");
+                    model.UpperBound = "-P" + model.UpperBound + model.UpperDuration;
+                }
+                else if (int.Parse(model.UpperBound) >= 0)
+                {
+                    model.UpperBound = "P" + model.UpperBound + model.UpperDuration;
+                }
             }
-            else if (int.Parse(model.UpperBound) >= 0)
+            else
             {
-                model.UpperBound = "P" + model.UpperBound + model.UpperDuration;
+                model.UpperBound = null;
+                model.UpperDuration = null;
             }
 
             return model;
