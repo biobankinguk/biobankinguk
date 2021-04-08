@@ -39,7 +39,7 @@ That's all the database preparation.
 Happy developing!
 
 
-# 📕 Guide to Repository Structure
+# 📂 Guide to Repository Structure
 
 The `src/` folder contains roughly project or app categorised folders, which also have Visual Studio Solutions in. Each Solution contains all the relevant projects including dev dependencies, so it's generally a good idea to use the solution of the project or app area you are doing work on.
 
