@@ -56,6 +56,15 @@ function AdacAgeRangeViewModel() {
         var upperDuration = ageRange.UpperBound.replace(/[^a-zA-Z]+/g, '');
         document.getElementById("upperDuration").value = upperDuration.charAt(0);
 
+        // Disables all input options for data not recorded entry (both bounds being null)
+        if (ageRange.LowerBound == "" && ageRange.UpperBound == "") {
+            document.getElementById("LowerBound").readOnly = true;
+            document.getElementById("UpperBound").readOnly = true;
+            document.getElementById("lowerDuration").disabled = true;
+            document.getElementById("upperDuration").disabled = true;
+            
+        }
+
         _this.modal.ageRange(
             new AgeRange(
                 ageRange.Id,
