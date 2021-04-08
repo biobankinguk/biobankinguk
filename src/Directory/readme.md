@@ -39,9 +39,42 @@ To use Search functionality:
 1. Setup a local Elastic Search instance
    - Instructions below, Docker recommended
 
+# 🙍‍♂️ Identity Database Migrations
+
+- The Directory uses ASP.NET Identity 2.x to manage user authentication and authorization against a local userstore.
+- The structure of that local userstore is created by Entity Framework 6 code first migrations.
+- It **does not** use Automatic Migrations; all schema changes must have a migration added using `add-migration`.
+- it **does not** run any migrations automatically (i.e. `update-database` doesn't happen on App Startup)
+
+## Apply migrations to a local database
+
+If there are schema changes you don't have locally, you need to apply them.
+
+In **Package Manager Console**:
+1. Set "Default Project" to `Identity`
+1. run `update-database`
+
+## Applying migrations to a non-local environment
+
+Use `ef6.exe` to perform the migrations.
+
+## ⚠ Making Schema changes
+
+It should be rare, but if you make a schema change to entities in the `Identity` Project, you'll need to add and run a migration.
+
+> ℹ Migrations for the `Entities` Project are handled by the top-level `Data` Project, not the Directory!
+
+### Adding new migrations
+
+You need to record the change in a migration, so it can be applied to databases.
+
+In **Package Manager Console**:
+1. Set "Default Project" to `Identity`
+1. run `add-migration <name>`
+
 # 🔍 Elastic Search
 
-You'll need an Elastic Search 7.x instance.
+You'll need an Elastic Search `7.x` instance.
 
 ## 😊 With Docker
 
@@ -55,41 +88,6 @@ ElasticSearch can be installed locally. It depends on Java.
 Kibana et al are unnecessary for local development - Postman or similar can be used to hit the ES REST API.
 
 Interacting with the Elastic Search REST API is documented in `elastic-search/README.md`
-
-# 🙍‍♂️ Identity Database Migrations
-
-- The Directory uses ASP.NET Identity 2.x to manage user authentication and authorization against a local userstore.
-- The structure of that local userstore is created by Entity Framework 6 code first migrations.
-- It **does not** use Automatic Migrations; all schema changes must have a migration added using `add-migration`.
-- it **does not** run any migrations automatically (i.e. `update-database` doesn't happen on App Startup)
-
-## Apply migrations to a local database
-
-If there are schema changes you don't have locally, you need to apply them.
-
-In **Package Manager Console** run `update-database` ensuring the Package Manager Console "Default Project" is set to `Identity`.
-
-## Applying migrations to a non-local environment
-
-Use `ef6.exe` to perform the migrations.
-
-# Handling Schema changes locally
-
-If you make (or need to apply) a schema change, you need to know what entities have changed and which context they belong to: `BiobanksDbContext` or `UserStoreDbContext`.
-
-Then you should do the following in Visual Studio's **Package Manager Console**:
-
-1. Ensure Package Manager Console is targeting the correct project, for the correct Entities/Context:
-   - `BiobanksDbContext` - `Data`
-   - `UserStoreDbContext` - `Identity`
-
-#### Adding new migrations
-
-If you have made a schema change, you need to record the change in a migration, so it can be applied to databases.
-
-In **Package Manager Console** run `add-migration <name>` ensuring the Package Manager Console "Default Project" is correct, as noted above.
-
-
 
 # ✉ Email Sending
 
