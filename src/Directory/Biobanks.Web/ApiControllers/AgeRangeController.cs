@@ -73,6 +73,11 @@ namespace Biobanks.Web.ApiControllers
                 }
             }
 
+            if (model.LowerDuration == "N/A" && model.UpperDuration == "N/A")
+            {
+                ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
+            }
+
             var convertedModel = new AgeRangeModel();
 
             if (ModelState.IsValid)
@@ -90,7 +95,7 @@ namespace Biobanks.Web.ApiControllers
                 });
                 if (!string.IsNullOrEmpty(convertedModel.LowerBound) && !string.IsNullOrEmpty(convertedModel.UpperBound))
                 {
-                    if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+                    if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) >= XmlConvert.ToTimeSpan(convertedModel.UpperBound))
                     {
                         ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
                     }
@@ -157,6 +162,11 @@ namespace Biobanks.Web.ApiControllers
                 }
             }
 
+            if (model.LowerDuration == "N/A" && model.UpperDuration == "N/A")
+            {
+                ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
+            }
+
             var convertedModel = new AgeRangeModel();
 
             if (ModelState.IsValid)
@@ -174,7 +184,7 @@ namespace Biobanks.Web.ApiControllers
                 });
                 if (!string.IsNullOrEmpty(convertedModel.LowerBound) && !string.IsNullOrEmpty(convertedModel.UpperBound))
                 {
-                    if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) > XmlConvert.ToTimeSpan(convertedModel.UpperBound))
+                    if (XmlConvert.ToTimeSpan(convertedModel.LowerBound) >= XmlConvert.ToTimeSpan(convertedModel.UpperBound))
                     {
                         ModelState.AddModelError("AgeRange", "Upper Bound value must be greater than the Lower Bound value");
                     }
