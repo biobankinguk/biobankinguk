@@ -8,8 +8,10 @@ namespace Biobanks.Web.Utilities
 {
     public class VersionHelper
     {
-        public static string GetVersionNumber()
+        public static string GetInformationalVersion()
         {
+            //InformationalVersion can contain strings, not just numbers
+            //so is useful for Semantic Versioning http://semver.org 
             //http://stackoverflow.com/questions/7770068/get-the-net-assemblys-assemblyinformationalversion-value
             var attr = Attribute.GetCustomAttribute(
                     GetAspNetAssembly(),

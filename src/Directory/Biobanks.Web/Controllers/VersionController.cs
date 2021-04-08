@@ -12,7 +12,7 @@ namespace Biobanks.Web.Controllers
         // GET: Version
         public string Index()
         {            
-            return Utilities.VersionHelper.GetVersionNumber();
+            return Utilities.VersionHelper.GetInformationalVersion();
         }
     }
 }
