@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace Biobanks.Web.Controllers
 {
+    [AllowAnonymous]
     public class VersionController : Controller
     {
         // GET: Version
