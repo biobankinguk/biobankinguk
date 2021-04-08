@@ -68,7 +68,7 @@ namespace Biobanks.Web.ApiControllers
             if (ModelState.IsValid)
             {
                 // Need to encode lower/upper bound with duration 
-                convertedModel = ConversionToISODuration(new AgeRangeModel()
+                convertedModel = ConversionToIsoDuration(new AgeRangeModel()
                 {
                     Id = model.Id,
                     Description = model.Description,
@@ -133,13 +133,12 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", "Lower and Upper Bound values must be valid numbers.");
             }
 
-
             var convertedModel = new AgeRangeModel();
 
             if (ModelState.IsValid)
             {
                 // Need to encode lower/upper bound with duration 
-                convertedModel = ConversionToISODuration(new AgeRangeModel()
+                convertedModel = ConversionToIsoDuration(new AgeRangeModel()
                 {
                     Id = model.Id,
                     Description = model.Description,
