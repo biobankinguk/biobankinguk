@@ -236,7 +236,7 @@ namespace Biobanks.Web.ApiControllers
 
         }
 
-        private AgeRangeModel ConversionToISODuration(AgeRangeModel model)
+        private AgeRangeModel ConversionToIsoDuration(AgeRangeModel model)
         {
             // Unable to use XmlConvert.toString as cannot create valid TimeSpan from Years/Months
             // Check for negatives
