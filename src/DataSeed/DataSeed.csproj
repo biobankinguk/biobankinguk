@@ -21,6 +21,7 @@
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
     <PackageReference Include="System.CommandLine.Hosting" Version="0.3.0-alpha.20070.2" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="UoN.VersionInformation" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
