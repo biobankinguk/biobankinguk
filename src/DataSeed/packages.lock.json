@@ -159,6 +159,15 @@
           "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2"
         }
       },
+      "UoN.VersionInformation": {
+        "type": "Direct",
+        "requested": "[1.0.0, )",
+        "resolved": "1.0.0",
+        "contentHash": "0JEF27DgwlwlS+26z7qq3mNL754La8YR+97w6BCwskixHLOMoFwDo9hZEm2MeMP3YYyatyPpdvw5OHwaf7Z/3Q==",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        }
+      },
       "Microsoft.CSharp": {
         "type": "Transitive",
         "resolved": "4.7.0",
