@@ -960,13 +960,6 @@ namespace Biobanks.Web.Controllers
         #region RefData: Age Ranges
         public async Task<ActionResult> AgeRanges()
         {
-            var dict = new Dictionary<string, string>
-            {
-                { "D", "Days" },
-                { "M", "Months" },
-                { "Y", "Years" }
-            };
-
             var models = (await _biobankReadService.ListAgeRangesAsync())
                 .Select(x =>
                     Task.Run(async () => new AgeRangeModel()
@@ -975,9 +968,8 @@ namespace Biobanks.Web.Controllers
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                         SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id),
-                        // Converting from ISO Duration to 'plain text' - e.g P6M -> 6 Months
-                        LowerBound = string.IsNullOrEmpty(x.LowerBound) ? "" : x.LowerBound.Replace("P", "").Replace(x.LowerBound.Last().ToString(), " " + dict[x.LowerBound.Last().ToString()]),
-                        UpperBound = string.IsNullOrEmpty(x.UpperBound) ? "" : x.UpperBound.Replace("P", "").Replace(x.UpperBound.Last().ToString(), " " + dict[x.UpperBound.Last().ToString()])
+                        LowerBound = ConvertFromIsoDuration(x.LowerBound),
+                        UpperBound = ConvertFromIsoDuration(x.UpperBound)
                     })
                     .Result 
                 )
@@ -988,6 +980,21 @@ namespace Biobanks.Web.Controllers
                 AgeRanges = models
             });
 
+        }
+
+        // Converting from Iso Duration to 'plain text' - e.g P6M -> 6 Months
+        private string ConvertFromIsoDuration(string bound)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                { "D", "Days" },
+                { "M", "Months" },
+                { "Y", "Years" }
+            };
+
+            var converted = string.IsNullOrEmpty(bound) ? "" : bound.Replace("P", "").Replace(bound.Last().ToString(), " " + dict[bound.Last().ToString()]);
+
+            return converted;
         }
 
         
