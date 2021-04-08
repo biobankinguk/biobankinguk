@@ -281,7 +281,7 @@ namespace Biobanks.Web.ApiControllers
             else
             {
                 model.LowerBound = null;
-                model.LowerDuration = null;
+                model.LowerDuration = "N/A";
             }
             if (model.UpperDuration != "N/A")
             {
@@ -298,7 +298,7 @@ namespace Biobanks.Web.ApiControllers
             else
             {
                 model.UpperBound = null;
-                model.UpperDuration = null;
+                model.UpperDuration = "N/A";
             }
 
             return model;

@@ -135,7 +135,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"></label>
                                 <div class="col-sm-9">
-                                    <select name="lowerDuration" id="lowerDuration" class="form-control" data-bind="value: modal.ageRange().lowerDuration()">
+                                    <select name="lowerDuration" id="lowerDuration"  onChange="checkBound(this, 'LowerBound')" class="form-control" data-bind="value: modal.ageRange().lowerDuration()">
                                         <option value="M">Months</option>
                                         <option value="Y">Years</option>
                                         <option value="N/A">N/A</option>
@@ -154,7 +154,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label"></label>
                                 <div class="col-sm-9">
-                                    <select name="upperDuration" id="upperDuration" class="form-control" data-bind="value: modal.ageRange().upperDuration()">
+                                    <select name="upperDuration" id="upperDuration" onChange="checkBound(this, 'UpperBound' )" class="form-control" data-bind="value: modal.ageRange().upperDuration()">
                                         <option value="M">Months</option>
                                         <option value="Y">Years</option>
                                         <option value="N/A">N/A</option>

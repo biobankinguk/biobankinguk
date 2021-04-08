@@ -112,6 +112,12 @@ $(function () {
     ko.applyBindings(adacAgeRangeVM);
 });
 
+
+function checkBound(obj, id) {
+    var upperInput = document.getElementById(id);
+    upperInput.disabled = obj.value == "N/A";
+}
+
 // DataTables
 $(function () {
     var table = $("#age-ranges")["DataTable"]({
