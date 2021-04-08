@@ -9,7 +9,7 @@ namespace Biobanks.Services.Extensions
 {
     public static class SampleSetExtensions
     {
-        public static CollectionDocument ToCollectionSearchDocument(this CollectionSampleSet sampleSet)
+        public static CollectionDocument ToCollectionSearchDocument(this SampleSet sampleSet)
         {
             return new CollectionDocument
             {

@@ -76,7 +76,7 @@ namespace Biobanks.Data
         public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
         public DbSet<CollectionAssociatedData> CollectionAssociatedDatas { get; set; }
         public DbSet<Collection> Collections { get; set; }
-        public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
+        public DbSet<SampleSet> SampleSets { get; set; }
         public DbSet<Config> Configs { get; set; }
         public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
         public DbSet<MaterialDetail> MaterialDetails { get; set; }
