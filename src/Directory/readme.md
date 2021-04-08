@@ -16,7 +16,7 @@ Assumptions:
 
 - You'll be using the latest Visual Studio to interact with the codebase at large.
 
-## ‼ Essential steps
+## Essential steps
 
 > ℹ Complete the instructions in the repository `README` first!
 
@@ -32,7 +32,7 @@ Assumptions:
    - make sure the path exists, or change the configuration
    - Instructions below
 
-## ❔ Optional steps
+## Optional steps
 
 To use Search functionality:
 
@@ -76,12 +76,12 @@ In **Package Manager Console**:
 
 You'll need an Elastic Search `7.x` instance.
 
-## 😊 With Docker
+## With Docker
 
 - `docker-compose up` inside the `elastic-search/` directory will provide a suitable dev search server.
 - payloads for index configuration and example queries are also in the `elastic-search/` directory.
 
-## 😐 Without Docker
+## Without Docker
 
 ElasticSearch can be installed locally. It depends on Java.
 

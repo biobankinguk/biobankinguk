@@ -39,7 +39,7 @@ That's all the database preparation.
 Happy developing!
 
 
-# 📂 Guide to Repository Structure
+# 📕 Guide to Repository Structure
 
 The `src/` folder contains roughly project or app categorised folders, which also have Visual Studio Solutions in. Each Solution contains all the relevant projects including dev dependencies, so it's generally a good idea to use the solution of the project or app area you are doing work on.
 
@@ -53,7 +53,7 @@ The `src/` folder contains roughly project or app categorised folders, which als
 - `sql/` - Various SQL scripts used to add/repair database records
 - `src/` - Projects Source Code, detailed below
 
-## 📁 Projects (in `src/`)
+## Projects (in `src/`)
 
 | Folder | Description | `README` |
 | - | - | - |
@@ -67,7 +67,7 @@ The `src/` folder contains roughly project or app categorised folders, which als
 | `Publications/` | .NET Core 3.1 Azure Function which fetches and stores relevant metadata on articles published by Directory users on EuropePMC | ✔
 | `Submissions/` | .NET 5 Web API and workers for bulk submission of data to the directory database | ✔
 
-# 📃 License
+# 🧾 License
 
 Source code in this repository is licensed under the MIT license, unless otherwise specified. Content licenses and attributions are retained adjacent to and in reference to the relevant content where required by the license.
 
