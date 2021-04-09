@@ -223,7 +223,7 @@ namespace Biobanks.DataSeed.Services
                                 .ToList(),
                         ExtractionProcedures =
                             x.ExtractionProcedures?
-                                .Select(y => validProcedures.First(z => z.Value == y.Value.Trim()))
+                                .Select(y => validProcedures.First(z => z.Id == y.Id.Trim()))
                                 .ToList()
                     }
                 )

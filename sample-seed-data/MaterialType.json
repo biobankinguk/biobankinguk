@@ -88,10 +88,10 @@
         ],
         "extractionProcedures": [
             {
-                "value": "Surgical procedure (procedure)"
+                "id": "387713003"
             },
             {
-                "value": "Biopsy (procedure)"
+                "id": "86273004"
             }
         ]
     },
