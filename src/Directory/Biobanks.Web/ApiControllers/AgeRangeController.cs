@@ -78,6 +78,7 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
             }
 
+
             var convertedModel = new AgeRangeModel();
 
             if (ModelState.IsValid)

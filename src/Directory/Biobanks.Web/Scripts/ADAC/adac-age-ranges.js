@@ -62,7 +62,12 @@ function AdacAgeRangeViewModel() {
             document.getElementById("UpperBound").readOnly = true;
             document.getElementById("lowerDuration").disabled = true;
             document.getElementById("upperDuration").disabled = true;
-            
+        }
+        else {
+            document.getElementById("LowerBound").readOnly = false;
+            document.getElementById("UpperBound").readOnly = false;
+            document.getElementById("lowerDuration").disabled = false;
+            document.getElementById("upperDuration").disabled = false;
         }
 
         _this.modal.ageRange(
