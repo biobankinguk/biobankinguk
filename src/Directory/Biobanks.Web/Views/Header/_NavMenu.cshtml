@@ -1,14 +1,18 @@
 ﻿@using Biobanks.Web.Models.Header
 @model IEnumerable<NavItemModel>
+@{
+    var isToolbar = (bool?)ViewData["Toolbar"] ?? false;
+}
 
-@foreach (var item in Model)
+
+@foreach (var item in Model.Where(x=>x.Toolbar == isToolbar))
 {
-	if (item.Children?.Count() > 0)
-	{
-		Html.RenderPartial("_NavDropdown", item);
-	}
-	else
-	{
-		Html.RenderPartial("_NavItem", item);
-	}
+    if (item.Children?.Count() > 0)
+    {
+        Html.RenderPartial("_NavDropdown", item);
+    }
+    else
+    {
+        Html.RenderPartial("_NavItem", item);
+    }
 }
