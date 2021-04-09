@@ -39,6 +39,16 @@ function AdacAgeRangeViewModel() {
     };
 
     this.openModalForAdd = function () {
+        // Return to default dropdown options
+        document.getElementById("LowerBound").readOnly = false;
+        document.getElementById("UpperBound").readOnly = false;
+        var lowerDuration = document.getElementById("lowerDuration")
+        lowerDuration.disabled = false;
+        lowerDuration.value = "M";
+        var upperDuration = document.getElementById("upperDuration");
+        upperDuration.disabled = false;
+        upperDuration.value = "M";
+
         _this.modal.mode(_this.modal.modalModeAdd);
         _this.modal.ageRange(new AgeRange(0, "", 0, 0, 0));
         _this.showModal();

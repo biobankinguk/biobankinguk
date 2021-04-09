@@ -171,10 +171,10 @@ namespace Biobanks.Web.ApiControllers
                     }
                 }
 
-                if (string.IsNullOrEmpty(model.LowerDuration) && string.IsNullOrEmpty(model.UpperDuration))
-                {
-                    ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
-                }
+            }
+            if (string.IsNullOrEmpty(model.LowerDuration) && string.IsNullOrEmpty(model.UpperDuration))
+            {
+                ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
             }
 
 
