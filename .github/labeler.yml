@@ -1,0 +1,28 @@
+# label affected logical areas of the repo
+"Area: CI":
+  - .azure/pipelines/**/*
+  - .github/**/*
+"Area: Search Index":
+  - elastic-search/**/*
+"Area: Analytics":
+  - src/Analytics/**/*
+"Area: Submissions":
+  - src/Submissions/**/*
+"Area: Data":
+  - src/Data/**/*
+"Area: DataSeed":
+  - src/DataSeed/**/*
+"Area: Directory":
+  - src/Directory/**/*
+"Area: Directory Data":
+  - src/Directory/Data/**/*
+"Area: Publications":
+  - src/Publications/**/*
+"Area: Entities":
+  - src/Entities/**/*
+"Area: IdentityModel":
+  - src/IdentityModel/**/*
+
+# label types of changes contained in a PR
+"Contains: Migrations":
+  - src/**/Migrations/*.cs

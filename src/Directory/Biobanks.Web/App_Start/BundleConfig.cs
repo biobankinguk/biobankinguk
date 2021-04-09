@@ -92,7 +92,8 @@ namespace Biobanks.Web
                 "~/Scripts/Biobank/funder-viewmodel.js",
                 "~/Scripts/Biobank/funders-viewmodel.js"));
             bundles.Add(new ScriptBundle("~/bundles/biobank/edit-details").Include(
-                "~/Scripts/Biobank/details-logo.js"));
+                "~/Scripts/Biobank/details-logo.js",
+                "~/Scripts/Biobank/edit-details.js"));
             bundles.Add(new ScriptBundle("~/bundles/collection-and-capability-crud").Include(
                         "~/Scripts/bootbox*",
                         "~/Scripts/typeahead.bundle*",
@@ -230,6 +231,10 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/storage-temperatures").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-storage-temperatures.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/preservation-types").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-preservation-types.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sop-status").Include(
                 "~/Scripts/bootbox*",

@@ -28,8 +28,8 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<Collection>> ListCollectionsAsync();
         Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
-        Task<CollectionSampleSet> GetSampleSetByIdAsync(int id);
-        Task<CollectionSampleSet> GetSampleSetByIdForIndexingAsync(int id);
+        Task<SampleSet> GetSampleSetByIdAsync(int id);
+        Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id);
         bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId);
         bool CanThisBiobankAdministerThisSampleSet(int biobankId, int sampleSetId);
 
@@ -101,11 +101,12 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<PreservationType>> ListPreservationTypesAsync();
         Task<int> GetPreservationTypeUsageCount(int id);
         Task<bool> IsPreservationTypeInUse(int id);
-        Task<bool> ValidPreservationTypeAsync(string value, int storageTemperatureId);
+        Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId);
 
         Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync();
         Task<bool> ValidStorageTemperatureAsync(string preservationTypeDescription);
         Task<bool> IsStorageTemperatureInUse(int id);
+        Task<bool> IsStorageTemperatureAssigned(int id);
         Task<int> GetStorageTemperatureUsageCount(int id);
 
         Task<IEnumerable<SopStatus>> ListSopStatusesAsync();
@@ -130,7 +131,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
         Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "");
-        Task<IEnumerable<OntologyTermResultDTO>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "");
         Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);
         Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription);
         Task<OntologyTerm> GetOntologyTermByDescription(string description);
@@ -216,7 +216,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();
 
-        Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
+        Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
         Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(IEnumerable<int> capabilityIds);
         Task<bool> BiobankRegisterRequestExists(string name);
         Task<bool> NetworkRegisterRequestExists(string name);
@@ -232,7 +232,7 @@ namespace Biobanks.Services.Contracts
         /// <returns>A count of all Capabilities in the database.</returns>
         Task<int> GetCapabilityCountAsync();
 
-        Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(IEnumerable<int> sampleSetIds);
+        Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(IEnumerable<int> sampleSetIds);
         Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(IEnumerable<int> capabilityIds);
         Task<int> GetIndexableSampleSetCountAsync();
         Task<int> GetIndexableCapabilityCountAsync();

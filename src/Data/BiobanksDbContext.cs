@@ -2,6 +2,7 @@
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -53,7 +54,7 @@ namespace Biobanks.Data
         public DbSet<StorageTemperature> StorageTemperatures { get; set; }
         #endregion
 
-        #region Application Data: API
+        #region Application Data: Submissions Service
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Error> Errors { get; set; }
 
@@ -75,7 +76,7 @@ namespace Biobanks.Data
         public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
         public DbSet<CollectionAssociatedData> CollectionAssociatedDatas { get; set; }
         public DbSet<Collection> Collections { get; set; }
-        public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
+        public DbSet<SampleSet> SampleSets { get; set; }
         public DbSet<Config> Configs { get; set; }
         public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
         public DbSet<MaterialDetail> MaterialDetails { get; set; }
@@ -98,7 +99,9 @@ namespace Biobanks.Data
         public DbSet<Annotation> Annotations { get; set; }
         public DbSet<Publication> Publications { get; set; }
         #endregion
-        
+
+        public DbSet<ApiClient> ApiClients { get; set; }
+
         protected override void OnModelCreating(ModelBuilder model)
         {
             // Join Tables
@@ -119,15 +122,6 @@ namespace Biobanks.Data
                 {
                     x.CollectionId,
                     x.AssociatedDataTypeId
-                });
-
-            model.Entity<MaterialDetail>()
-                .HasKey(x => new
-                {
-                    x.SampleSetId,
-                    x.MaterialTypeId,
-                    x.StorageTemperatureId,
-                    x.MacroscopicAssessmentId
                 });
 
             model.Entity<NetworkUser>()
@@ -174,6 +168,17 @@ namespace Biobanks.Data
                 });
 
             // Indices (for unique constraints)
+            model.Entity<MaterialDetail>()
+                .HasIndex(x => new
+                {
+                    x.SampleSetId,
+                    x.MaterialTypeId,
+                    x.StorageTemperatureId,
+                    x.MacroscopicAssessmentId,
+                    x.ExtractionProcedureId,
+                    x.PreservationTypeId
+                }).IsUnique();
+
             model.Entity<LiveDiagnosis>()
                 .HasIndex(x => new
                 {
@@ -227,6 +232,15 @@ namespace Biobanks.Data
                     x.Barcode,
                     x.CollectionName
                 }).IsUnique();
+
+            model.Entity<AgeRange>()
+                .HasIndex(x => new
+                {
+                    x.LowerBound,
+                    x.UpperBound
+                }).IsUnique();
+
+
         }
 
         public BiobanksDbContext(DbContextOptions options) : base(options) { }

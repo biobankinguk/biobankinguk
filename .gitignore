@@ -1,6 +1,14 @@
 tempkey.rsa
 **/wwwroot/dist
 
+# Elastic Search files get copied to the Directory on msbuild
+# but we don't want to commit them :)
+**/App_Config/collections.json
+**/App_Config/capabilities.json
+
+# ignore data being seeded
+src/DataSeed/**/data
+
 snomed.csv
 swagger.xml
 

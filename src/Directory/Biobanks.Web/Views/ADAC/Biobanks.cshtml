@@ -21,8 +21,6 @@
                     <th>Biobank</th>
                     <th>Contact Email</th>
                     <th>Status</th>
-                    <th>Admins</th>
-                    <th></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -42,61 +40,7 @@
                             @(biobank.IsSuspended ? Html.Raw("Suspended") : Html.Raw("Active"))
                         </td>
                         <td>
-                            <ul class="list-unstyled">
-                                @foreach (var admin in biobank.Admins)
-                                {
-                                    <li>
-                                        <span class="fa fa-user labelled-icon"></span>@admin.UserEmail
-                                        @if (!admin.EmailConfirmed)
-                                        {
-                                            <a href="@Url.Action(
-                                                         "ResendConfirmLink", "Account",
-                                                         new
-                                                         {
-                                                             userEmail = admin.UserEmail,
-                                                             onBehalf = true,
-                                                             returnUrl = Request.RawUrl
-                                                         })"
-                                               class="resend-confirm pull-right"
-                                               data-admin-name="@admin.UserFullName"
-                                               data-admin-email="@admin.UserEmail">
-                                                <span class="fa fa-repeat labelled-icon"></span>Resend Invite
-                                            </a>
-                                        }
-                                    </li>
-                                }
-                            </ul>
-                        </td>
-                        <td>
-                            @if (biobank.IsSuspended)
-                            {
-                                <a href="@Url.Action(
-                                             "UnsuspendBiobank", "ADAC",
-                                             new
-                                             {
-                                                 id = biobank.BiobankId
-                                             })"
-                                   class="unsuspend-confirm pull-right"
-                                   data-biobank-name="@biobank.Name">
-                                    <span class="fa fa-check-square-o labelled-icon"></span>Unsuspend
-                                </a>
-                            }
-                            else
-                            {
-                                <a href="@Url.Action(
-                                             "SuspendBiobank", "ADAC",
-                                             new
-                                             {
-                                                 id = biobank.BiobankId
-                                             })"
-                                   class="suspend-confirm pull-right"
-                                   data-biobank-name="@biobank.Name">
-                                    <span class="fa fa-ban labelled-icon"></span>Suspend
-                                </a>
-                            }
-                        </td>
-                        <td>
-                            @Html.ActionLink("Delete", "DeleteBiobank", "ADAC", new {id = biobank.BiobankId}, new {@class = "btn btn-danger"})
+                            @Html.ActionLink("Admin", "BiobankAdmin", "ADAC", new {id = biobank.BiobankId}, new {@class = "btn btn-edit"})
                         </td>
                     </tr>
                 }

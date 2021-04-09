@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data.Caching;
 using Biobanks.Directory.Data.Repositories;
 using Biobanks.Identity.Contracts;
 using Biobanks.Search.Legacy;
-using Biobanks.Search.Constants;
 using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity;
 using Biobanks.Entities.Data;
@@ -35,11 +33,11 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
         private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
-        private readonly IGenericEFRepository<CollectionSampleSet> _collectionSampleSetRepository;
+        private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
         private readonly IGenericEFRepository<HtaStatus> _htaStatusRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
-        private readonly IGenericEFRepository<CollectionSampleSet> _sampleSetRepository;
+        private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
 
@@ -101,11 +99,11 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<CollectionPoint> collectionPointRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
-            IGenericEFRepository<CollectionSampleSet> collectionSampleSetRepository,
+            IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
             IGenericEFRepository<HtaStatus> htaStatusRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
-            IGenericEFRepository<CollectionSampleSet> sampleSetRepository,
+            IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
@@ -521,7 +519,7 @@ namespace Biobanks.Services
         public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
             => (await _capabilityRepository.ListAsync()).Select(x => x.DiagnosisCapabilityId);
 
-        public async Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexingAsync(
+        public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
         {
             var sampleSets = await _sampleSetRepository.ListAsync(false,
@@ -567,7 +565,7 @@ namespace Biobanks.Services
                 x => x.SampleCollectionMode
             );
 
-        public async Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(
+        public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(
                 IEnumerable<int> sampleSetIds)
             => await _sampleSetRepository.ListAsync(false, x => sampleSetIds.Contains(x.SampleSetId), null,
                 x => x.Collection,
@@ -811,16 +809,7 @@ namespace Biobanks.Services
             return collections;
         }
 
-        public async Task<IEnumerable<OntologyTerm>> GetUsedOntologyTermsAsync()
-        {
-            var collections = await _collectionRepository.ListAsync(false);
-            var uniqueOntologyTermsIds = collections.Select(x => x.OntologyTermId).Distinct();
-            var uniqueOntologyTerms = await _ontologyTermRepository.ListAsync(false, x => uniqueOntologyTermsIds.Contains(x.Id));
-
-            return uniqueOntologyTerms;
-        }
-
-        public async Task<CollectionSampleSet> GetSampleSetByIdAsync(int id)
+        public async Task<SampleSet> GetSampleSetByIdAsync(int id)
             => (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
                 x => x.Sex,
                 x => x.AgeRange,
@@ -832,7 +821,7 @@ namespace Biobanks.Services
                 x => x.MaterialDetails.Select(y => y.StorageTemperature)
             )).FirstOrDefault();
 
-        public async Task<CollectionSampleSet> GetSampleSetByIdForIndexingAsync(int id)
+        public async Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id)
         {
             try
             {
@@ -863,7 +852,7 @@ namespace Biobanks.Services
 
                 return sets;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -1121,15 +1110,15 @@ namespace Biobanks.Services
         {
             var preservationType = (await _preservationTypeRepository.ListAsync(false, x => x.Id == id)).First();
 
-            return preservationType != null 
-                ? await GetStorageTemperatureUsageCount(preservationType.StorageTemperatureId) // Technically Upper Bound
+            return preservationType?.StorageTemperatureId != null
+                ? await GetStorageTemperatureUsageCount((int) preservationType.StorageTemperatureId) // Technically Upper Bound
                 : 0;
         }
 
         public async Task<bool> IsPreservationTypeInUse(int id)
             => (await GetPreservationTypeUsageCount(id)) > 0;
 
-        public async Task<bool> ValidPreservationTypeAsync(string value, int storageTemperatureId)
+        public async Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId)
             => (await _preservationTypeRepository.ListAsync(false, x =>
                     x.Value == value &&
                     x.StorageTemperatureId == storageTemperatureId)
@@ -1174,14 +1163,53 @@ namespace Biobanks.Services
         public async Task<bool> IsStorageTemperatureInUse(int id)
             => (await GetStorageTemperatureUsageCount(id)) > 0;
 
+        public async Task<bool> IsStorageTemperatureAssigned(int id)
+        {
+            return (await _preservationTypeRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Any();
+        }
+
         public async Task<bool> ValidStorageTemperatureAsync(string storageTemperature)
         {
             return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();
         }
         #endregion
 
+        #region RefData: OntologyTerm
         public async Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(false, x => x.Value.Contains(wildcard));
+            => await _ontologyTermRepository.ListAsync(filter: x => x.Value.Contains(wildcard) && x.DisplayOnDirectory);
+
+        public async Task<IEnumerable<OntologyTerm>> GetUsedOntologyTermsAsync()
+        {
+            var collections = await _collectionRepository.ListAsync(false);
+            var ontologyTerms = await ListOntologyTermsAsync();
+
+            return ontologyTerms.Where(x => collections.Any(y => y.OntologyTermId == x.Id));
+        }
+
+        public async Task<OntologyTerm> GetOntologyTermByDescription(string description)
+            => (await _ontologyTermRepository.ListAsync(filter: x => x.Value == description && x.DisplayOnDirectory)).SingleOrDefault();
+
+        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x => 
+                    x.Value == ontologyTermDescription && 
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x => 
+                    x.Value == ontologyDescription && 
+                    x.Id != ontologyTermId && 
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
+            => await _collectionRepository.CountAsync(x => x.OntologyTermId == id) 
+               + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
+        #endregion
 
         #region Site Config
         public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
@@ -1200,41 +1228,11 @@ namespace Biobanks.Services
         {
             return (await _siteConfigRepository.ListAsync(false, x => x.Key == siteConfigValue && x.Value == "true")).Any();
         }
-
-
-
         #endregion
 
-        public async Task<IEnumerable<OntologyTermResultDTO>> ListSearchableOntologyTermsAsync(SearchDocumentType type, string wildcard = "")
-        {
-            var listOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            
-            return (await _ontologyTermRepository.ListAsync()).Join(
-                listOntologyTerms, o => o.Value.ToLower(), i => i.OntologyTerm, (a, b) => {
-
-                    var otherTerms = a.OtherTerms?.Split(',').Select(p => p.Trim());
-                    return new OntologyTermResultDTO
-                    {
-                        OtherTerms = a.OtherTerms ?? "",
-                        MatchingOtherTerms = b.MatchingOtherTerms,
-                        Id = a.Id,
-                        Value = a.Value,
-                        NonMatchingOtherTerms = otherTerms?.Where(m => !(b.MatchingOtherTerms.Contains(m))).ToList() ?? new List<string>()
-                    };
-                });
-        }
-
-        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermDescription)
-            => (await _ontologyTermRepository.ListAsync(false, x => x.Value == ontologyTermDescription)).Any();
-
-        public async Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription)
-            => (await _ontologyTermRepository.ListAsync(
-                false,
-                x => x.Value == ontologyDescription &&
-                     x.Id != ontologyTermId)).Any();
 
         public async Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription)
-    => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Value == consentDescription)).Any();
+            => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Value == consentDescription)).Any();
 
         public async Task<bool> ValidConsentRestrictionDescriptionAsync(int consentId, string consentDescription)
             => (await _collectionConsentRestrictionRepository.ListAsync(
@@ -1302,24 +1300,12 @@ namespace Biobanks.Services
                 x => x.Value == collectionStatusDescription &&
                      x.Id != collectionStatusId)).Any();
 
-        public async Task<OntologyTerm> GetOntologyTermByDescription(string description)
-            => (await _ontologyTermRepository.ListAsync(false, x => x.Value == description)).Single();
-
-        public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
-        => (await _collectionRepository.ListAsync(
-                   false,
-                   x => x.OntologyTermId == id)).Count() + (await _capabilityRepository.ListAsync(
-                   false,
-                   x => x.OntologyTermId == id)).Count();
-
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
-      => (await _materialDetailRepository.ListAsync(
-                 false,
-                 x => x.MaterialTypeId == id)).Count();
+            => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
@@ -1428,9 +1414,11 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int biobankId)
         {
+            // Returns users who have admin role only for this biobank
             // TODO remove the generic repo when upgrading to netcore, as it doesn't support groupby fully
             var admins = await _organisationUserRepository.ListAsync(false);
             var adminIds = admins.GroupBy(a => a.OrganisationUserId)
+                .Where(g => g.Count() == 1)
                 .Select(a => a.FirstOrDefault(ai => ai.OrganisationId == biobankId))
                 .Select(ou => ou?.OrganisationUserId);
 

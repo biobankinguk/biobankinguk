@@ -5,6 +5,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data.Repositories;
+using Biobanks.Directory.Data.Transforms.Url;
 using System.IO;
 using AutoMapper;
 using Biobanks.Entities.Data;
@@ -12,6 +13,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
+
 
 namespace Biobanks.Services
 {
@@ -48,7 +50,7 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<CollectionSampleSet> _sampleSetRepository;
+        private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
 
         private readonly IGenericEFRepository<Network> _networkRepository;
         private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
@@ -105,7 +107,7 @@ namespace Biobanks.Services
             IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
-            IGenericEFRepository<CollectionSampleSet> sampleSetRepository,
+            IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Network> networkRepository,
             IGenericEFRepository<NetworkUser> networkUserRepository,
             IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
@@ -281,7 +283,7 @@ namespace Biobanks.Services
             if (collection.SampleSets.Any())
             {
                 IList<int> sampleSetIDs = new List<int>();
-                foreach (CollectionSampleSet sampleSet in collection.SampleSets)
+                foreach (SampleSet sampleSet in collection.SampleSets)
                 {
                     sampleSetIDs.Add(sampleSet.SampleSetId);
                 }
@@ -299,24 +301,25 @@ namespace Biobanks.Services
             return true;
         }
 
-        public async Task AddSampleSetAsync(CollectionSampleSet sampleSet)
+        public async Task AddSampleSetAsync(SampleSet sampleSet)
         {
+            // Add new SampleSet
             _sampleSetRepository.Insert(sampleSet);
-
             await _sampleSetRepository.SaveChangesAsync();
 
+            // Update collection's timestamp
             var collection = await _collectionRepository.GetByIdAsync(sampleSet.CollectionId);
-
             collection.LastUpdated = DateTime.Now;
-
             await _collectionRepository.SaveChangesAsync();
 
+            // Index New SampleSet
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(sampleSet.CollectionId))
                 await _indexService.IndexSampleSet(sampleSet.SampleSetId);
         }
 
-        public async Task UpdateSampleSetAsync(CollectionSampleSet sampleSet)
+        public async Task UpdateSampleSetAsync(SampleSet sampleSet)
         {
+            // Update exisiting SampleSet
             var existingSampleSet = (await _sampleSetRepository.ListAsync(
                 true, x => x.SampleSetId == sampleSet.SampleSetId, null,
                 x => x.Collection, x => x.MaterialDetails)).First();
@@ -1492,7 +1495,7 @@ namespace Biobanks.Services
 
             return preservationType;
         }
-
+      
         public async Task DeletePreservationTypeAsync(PreservationType preservationType)
         {
             await _preservationTypeRepository.DeleteAsync(preservationType.Id);
@@ -1925,6 +1928,20 @@ namespace Biobanks.Services
             return biobank;
         }
 
+        public async Task UpdateOrganisationURLAsync(int id)
+        {
+            var biobank = await _organisationRepository.GetByIdAsync(id);
+      
+            //Transform the URL
+            biobank.Url = UrlTransformer.Transform(biobank.Url);
+
+            //Update
+            _organisationRepository.Update(biobank);
+            
+            await _organisationRepository.SaveChangesAsync();
+         
+        }
+
         public async Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId)
         {
             var funder = await _funderRepository.GetByIdAsync(funderId);
@@ -1964,6 +1981,7 @@ namespace Biobanks.Services
         public async Task DeleteBiobankAsync(int id)
         {
             // remove biobank
+            await _indexService.BulkDeleteBiobank(id);
             await _organisationRepository.DeleteAsync(id);
             await _organisationRepository.SaveChangesAsync();
         }

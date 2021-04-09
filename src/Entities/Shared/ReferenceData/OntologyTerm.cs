@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Biobanks.Entities.Shared.ReferenceData
@@ -35,5 +36,15 @@ namespace Biobanks.Entities.Shared.ReferenceData
         /// A Biobanks Phase 2 specific "category" tag.
         /// </summary>
         public SnomedTag SnomedTag { get; set; }
+
+        /// <summary>
+        /// Whether this term should be visible on the Directory
+        /// </summary>
+        public bool DisplayOnDirectory { get; set; }
+
+        /// <summary>
+        /// Join entities for MaterialTypes in the group
+        /// </summary>
+        public ICollection<MaterialType> MaterialTypes { get; set; }
     }
 }

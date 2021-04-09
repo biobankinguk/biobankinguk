@@ -21,6 +21,7 @@ using Biobanks.Directory.Data.Constants;
 using Biobanks.Web.Models.Search;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
+using System.Data.Entity;
 
 namespace Biobanks.Web.Controllers
 {
@@ -433,6 +434,31 @@ namespace Biobanks.Web.Controllers
                 return HttpNotFound();
         }
 
+        public async Task<ActionResult> DeleteAdmin(int biobankId, string biobankUserId)
+        {
+            if (biobankId == 0)
+                return RedirectToAction("Index", "Home");
+
+            var userFullName =
+                (await _biobankReadService.ListBiobankAdminsAsync(biobankId)).Select(x => new RegisterEntityAdminModel
+                {
+                    UserId = x.Id,
+                    UserFullName = x.Name,
+                    UserEmail = x.Email,
+                    EmailConfirmed = x.EmailConfirmed
+                }).SingleOrDefault(x => x.UserId == biobankUserId).UserFullName;
+
+            //remove them from the network
+            await _biobankWriteService.RemoveUserFromBiobankAsync(biobankUserId, biobankId);
+
+            //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
+            await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
+
+            SetTemporaryFeedbackMessage($"{userFullName} has been removed from the admins!", FeedbackMessageType.Success);
+
+            return RedirectToAction("BiobankAdmin", new { id = biobankId } );
+        }
+
         public async Task<ActionResult> Biobanks()
         {
             var allBiobanks =
@@ -466,6 +492,107 @@ namespace Biobanks.Web.Controllers
             };
 
             return View(model);
+        }
+
+        public async Task<ActionResult> InviteAdminAjax(int biobankId)
+        {
+            var bb = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+            return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
+            {
+                Entity = bb.Name,
+                EntityName = "biobank",
+                ControllerName = "ADAC"
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    success = false,
+                    errors = ModelState.Values
+                        .Where(x => x.Errors.Count > 0)
+                        .SelectMany(x => x.Errors)
+                        .Select(x => x.ErrorMessage).ToList()
+                });
+            }
+
+            var biobankId = (await _biobankReadService.GetBiobankByNameAsync(model.Entity)).OrganisationId;
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                //User doesn't exist; add a new one
+                //Create a new user, no password at this time (so they don't really function yet)
+                user = new ApplicationUser
+                {
+                    Email = model.Email,
+                    UserName = model.Email,
+                    Name = model.Name
+                };
+
+                var result = await _userManager.CreateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    //send email to confirm account
+                    var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+
+                    await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
+
+                    await _emailService.SendNewUserRegisterEntityAdminInvite(
+                        model.Email,
+                        model.Name,
+                        model.Entity,
+                        Url.Action("Confirm", "Account",
+                            new
+                            {
+                                userId = user.Id,
+                                token = confirmToken
+                            },
+                            Request.Url.Scheme));
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        errors = result.Errors.ToArray()
+                    });
+                }
+
+                //Maybe there should be an auth (or shared) method for all this
+            }
+            else
+            {
+                //send email to inform the existing user they've been added as an admin
+                await _emailService.SendExistingUserRegisterEntityAdminInvite(
+                    model.Email,
+                    model.Name,
+                    model.Entity,
+                    Url.Action("BiobankAdmin", "Adac", new { id = biobankId }, Request.Url.Scheme));
+            }
+
+            //Add the user/biobank relationship
+            await _biobankWriteService.AddUserToBiobankAsync(user.Id, biobankId);
+
+            //add user to BiobankAdmin role
+            await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
+
+            //return success, and enough user details for adding to the viewmodel's list
+            return Json(new
+            {
+                success = true,
+                userId = user.Id,
+                name = user.Name,
+                email = user.Email,
+                emailConfirmed = user.EmailConfirmed
+            });
         }
 
         [HttpGet]
@@ -522,7 +649,7 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("The selected biobank could not be suspended.", FeedbackMessageType.Danger);
             }
 
-            return RedirectToAction("Biobanks");
+            return RedirectToAction($"BiobankAdmin", new { id = id });
         }
 
         public async Task<ActionResult> UnsuspendBiobank(int id)
@@ -538,7 +665,7 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("The selected biobank could not be unsuspended.", FeedbackMessageType.Danger);
             }
 
-            return RedirectToAction("Biobanks");
+            return RedirectToAction($"BiobankAdmin", new { id = id });
         }
 
         #endregion
@@ -550,13 +677,11 @@ namespace Biobanks.Web.Controllers
             return View(
                 (await _biobankReadService.ListFundersAsync(string.Empty))
                     .Select(x =>
-
-                        Task.Run(async () => new FunderModel
+                        new FunderModel
                         {
                             FunderId = x.Id,
                             Name = x.Value
-                        }).Result)
-
+                        })
                     .ToList()
                 );
         }
@@ -1014,7 +1139,7 @@ namespace Biobanks.Web.Controllers
                     .Result
                 )
                 .ToList();
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent") == true)
+            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent"))
             {
                 return View(new CollectionPercentagesModel()
                 {
@@ -1025,8 +1150,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-
-            return RedirectToAction("CollectionPercentages");
         }
 
         #endregion
@@ -1118,10 +1241,11 @@ namespace Biobanks.Web.Controllers
                 )
                 .ToList();
 
-            // Fetch Sample Set Count
+            // Fetch Sample Set Count and whether a Preservation Type is using this storage temperature
             foreach (var model in models)
             {
                 model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
+                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
             }
 
             return View(new StorageTemperaturesModel
@@ -1129,6 +1253,38 @@ namespace Biobanks.Web.Controllers
                 StorageTemperatures = models
             });
         }
+        #endregion
+
+        #region RefData: Preservation Type
+
+        public async Task<ActionResult> PreservationTypes()
+        {
+            var models = (await _biobankReadService.ListPreservationTypesAsync())
+                .Select(x =>
+                    new PreservationTypeModel()
+                    {
+                        Id = x.Id,
+                        Value = x.Value,
+                        SortOrder = x.SortOrder,
+                        StorageTemperatureId = x.StorageTemperatureId,
+                        StorageTemperatureName = x.StorageTemperature?.Value ?? ""
+                    }
+                )
+                .ToList();
+
+            // Fetch Sample Set Count
+            foreach (var model in models)
+            {
+                model.PreservationTypeCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
+            }
+
+            return View(new PreservationTypesModel
+            {
+                PreservationTypes = models,
+                StorageTemperatures = await _biobankReadService.ListStorageTemperaturesAsync()
+            });
+        }
+
         #endregion
 
         #region RefData: Assocaited Data Types
@@ -1324,7 +1480,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: County
         public async Task<ActionResult> County()
         {
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties") == true)
+            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties"))
             {
                 var countries = await _biobankReadService.ListCountriesAsync();
 
@@ -1353,8 +1509,6 @@ namespace Biobanks.Web.Controllers
             {
                 return RedirectToAction("LockedRef");
             }
-
-            return RedirectToAction("County");
         }
 
         #endregion
@@ -1484,7 +1638,7 @@ namespace Biobanks.Web.Controllers
         #region Site Configuration
 
         #region Homepage Config
-        public async Task<ActionResult> HomepageConfig()
+        public ActionResult HomepageConfig()
         {
             return View(new HomepageContentModel
             {
@@ -1535,7 +1689,7 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region Termpage Config
-        public async Task<ActionResult> TermpageConfig()
+        public ActionResult TermpageConfig()
         {
             return View(new TermPageModel
             {
@@ -1610,7 +1764,7 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region Register Biobank and Network Pages Config
-        public async Task<ActionResult> RegisterPagesConfig()
+        public ActionResult RegisterPagesConfig()
         {
             return View(new RegisterConfigModel
             {

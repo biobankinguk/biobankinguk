@@ -12,8 +12,6 @@ namespace Biobanks.Directory.Data.Repositories
         private readonly BiobanksDbContext _context;
         private readonly DbSet<TEntity> _dbSet;
 
-        private bool _isDisposed = false;
-
         public GenericEFRepository(BiobanksDbContext context)
         {
             _context = context;
@@ -138,14 +136,5 @@ namespace Biobanks.Directory.Data.Repositories
         {
             return await _context.SaveChangesAsync();
         }
-
-        //public void Dispose()
-        //{
-        //    if (!_isDisposed)
-        //    {
-        //        _isDisposed = true;
-        //        _context.Dispose();
-        //    }
-        //}
     }
 }

@@ -69,9 +69,10 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<MaterialTypeGroup>,
                 SeedMaterialTypes,
                 SeedJson<Sex>,
+                SeedJson<SnomedTag>,
                 SeedJson<OntologyTerm>,
                 SeedJson<StorageTemperature>,
-                SeedJson<PreservationType>,
+                SeedPreservationTypes
             };
         }
 
@@ -81,6 +82,8 @@ namespace Biobanks.DataSeed.Services
             {
                 seedAction();
             }
+
+            _logger.LogInformation($"Seeding Complete - Ran { _seedActions.Count() } Seeding Actions");
 
             return Task.CompletedTask;
         }
@@ -97,7 +100,7 @@ namespace Biobanks.DataSeed.Services
                 new AnnualStatisticGroup
                 {
                     Id = x.Id,
-                    Value = x.Value
+                    Value = x.Value.Trim()
                 }
             ));
 
@@ -107,7 +110,7 @@ namespace Biobanks.DataSeed.Services
                     new AnnualStatistic
                     {
                         Id = y.Id,
-                        Value = y.Value,
+                        Value = y.Value.Trim(),
                         AnnualStatisticGroupId= x.Id
                     }
                 )
@@ -123,7 +126,7 @@ namespace Biobanks.DataSeed.Services
                 new AssociatedDataTypeGroup
                 {
                     Id = x.Id,
-                    Value = x.Value
+                    Value = x.Value.Trim()
                 }
             ));
 
@@ -133,7 +136,7 @@ namespace Biobanks.DataSeed.Services
                     new AssociatedDataType
                     {
                         Id = y.Id,
-                        Value = y.Value,
+                        Value = y.Value.Trim(),
                         AssociatedDataTypeGroupId = x.Id
                     }
                 )
@@ -166,7 +169,7 @@ namespace Biobanks.DataSeed.Services
                     new Country 
                     {
                         Id = x.Id,
-                        Value =  x.Value
+                        Value =  x.Value.Trim()
                     }
                 ));
 
@@ -176,7 +179,7 @@ namespace Biobanks.DataSeed.Services
                         new County 
                         {
                             Id = y.Id,
-                            Value = y.Value,
+                            Value = y.Value.Trim(),
                             CountryId = x.Id
                         }
                     )
@@ -211,11 +214,11 @@ namespace Biobanks.DataSeed.Services
                     new MaterialType()
                     {
                         Id = x.Id,
-                        Value = x.Value,
+                        Value = x.Value.Trim(),
                         SortOrder = x.SortOrder,
                         MaterialTypeGroups =
                             x.MaterialTypeGroups?
-                                .Select(y => validGroups.First(z => z.Value == y.Value))
+                                .Select(y => validGroups.First(z => z.Value == y.Value.Trim()))
                                 .ToList()
                     }
                 )
@@ -233,6 +236,23 @@ namespace Biobanks.DataSeed.Services
                     SortOrder = 1
                 }
             });
+        }
+
+        private void SeedPreservationTypes()
+        {
+            var validTemperatures = _db.StorageTemperatures.ToList();
+
+            Seed(
+                ReadJson<PreservationType>().Select(x =>
+                    new PreservationType
+                    {
+                        Id = x.Id,
+                        Value = x.Value.Trim(),
+                        SortOrder = x.SortOrder,
+                        StorageTemperature = validTemperatures.First(y => y.Value == x.StorageTemperature.Value)
+                    }
+                )
+            );
         }
 
         private void SeedJson<T>() where T : class

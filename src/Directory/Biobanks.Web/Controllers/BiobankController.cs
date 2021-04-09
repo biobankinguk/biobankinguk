@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
 using AutoMapper;
-using Biobanks.Entities.Data;
-using Biobanks.Identity.Data.Entities;
-using Biobanks.Identity.Contracts;
-using Biobanks.Identity.Constants;
-using Biobanks.Services;
-using Biobanks.Services.Dto;
+using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Identity.Constants;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Services;
 using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Biobank;
@@ -23,9 +17,15 @@ using Biobanks.Web.Utilities;
 using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using System.Net.Http;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Directory.Data.Constants;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 using static System.String;
 
 namespace Biobanks.Web.Controllers
@@ -557,7 +557,8 @@ namespace Biobanks.Web.Controllers
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
                 Entity = bb.Name,
-                EntityName = "biobank"
+                EntityName = "biobank",
+                ControllerName = "Biobank"
             });
         }
 
@@ -1077,23 +1078,31 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AddSampleSet(int id, AddSampleSetModel model)
         {
             var apiCheck = await _biobankReadService.IsCollectionFromApi(id);
+
             ViewData["CollectionApiStatus"] = apiCheck;
+
             if (model.IsValid(ModelState) && apiCheck == false)
             {
-                await _biobankWriteService.AddSampleSetAsync(new CollectionSampleSet
+                var sampleSet = new SampleSet
                 {
                     CollectionId = id,
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
-                    MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
-                    {
-                        MaterialTypeId = x.materialType,
-                        StorageTemperatureId = x.storageTemperature,
-                        CollectionPercentageId = x.percentage,
-                        MacroscopicAssessmentId = x.macroscopicAssessment
-                    }).ToList()
-                });
+                    MaterialDetails = model.MaterialPreservationDetails.Select(x => 
+                        new MaterialDetail
+                        {
+                            MaterialTypeId = x.materialType,
+                            StorageTemperatureId = x.storageTemperature,
+                            CollectionPercentageId = x.percentage,
+                            MacroscopicAssessmentId = x.macroscopicAssessment
+                        }
+                    )
+                    .ToList()
+                };
+
+                // Add New SampleSet
+                await _biobankWriteService.AddSampleSetAsync(sampleSet);
 
                 SetTemporaryFeedbackMessage("Sample Set added!", FeedbackMessageType.Success);
 
@@ -1184,20 +1193,26 @@ namespace Biobanks.Web.Controllers
 
             if (model.IsValid(ModelState) && apiCheck == false)
             {
-                await _biobankWriteService.UpdateSampleSetAsync(new CollectionSampleSet
+                var sampleSet = new SampleSet
                 {
                     SampleSetId = id,
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
-                    MaterialDetails = model.MaterialPreservationDetails.Select(x => new MaterialDetail
-                    {
-                        MaterialTypeId = x.materialType,
-                        StorageTemperatureId = x.storageTemperature,
-                        CollectionPercentageId = x.percentage,
-                        MacroscopicAssessmentId = x.macroscopicAssessment
-                    }).ToList()
-                });
+                    MaterialDetails = model.MaterialPreservationDetails.Select(x =>
+                        new MaterialDetail
+                        {
+                            MaterialTypeId = x.materialType,
+                            StorageTemperatureId = x.storageTemperature,
+                            CollectionPercentageId = x.percentage,
+                            MacroscopicAssessmentId = x.macroscopicAssessment,
+                        }
+                    )
+                    .ToList()
+                };
+
+                // Update SampleSet
+                await _biobankWriteService.UpdateSampleSetAsync(sampleSet);
 
                 SetTemporaryFeedbackMessage("Sample Set updated!", FeedbackMessageType.Success);
 

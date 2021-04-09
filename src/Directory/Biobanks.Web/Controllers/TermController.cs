@@ -31,7 +31,7 @@ namespace Biobanks.Web.Controllers
 
             // List of Unique Diagnoses With Sample Sets
             var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
-                .Where(x => x.SampleSets.Any())
+                .Where(x => x.SampleSets.Any() && x.OntologyTerm.DisplayOnDirectory && !x.Organisation.IsSuspended)
                 .GroupBy(x => x.OntologyTermId)
                 .Select(x => x.First().OntologyTerm);
 

@@ -16,8 +16,8 @@ namespace Biobanks.Services.Contracts
             IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
         Task<bool> DeleteCollectionAsync(int id);
         Task<bool> DeleteAPICollectionAsync(int id);
-        Task AddSampleSetAsync(CollectionSampleSet sampleSet);
-        Task UpdateSampleSetAsync(CollectionSampleSet sampleSet);
+        Task AddSampleSetAsync(SampleSet sampleSet);
+        Task UpdateSampleSetAsync(SampleSet sampleSet);
         Task DeleteSampleSetAsync(int id);
 
         Task AddCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
@@ -156,6 +156,7 @@ namespace Biobanks.Services.Contracts
 
         Task<Organisation> SuspendBiobankAsync(int id);
         Task<Organisation> UnsuspendBiobankAsync(int id);
+        Task UpdateOrganisationURLAsync(int id);
         Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId);
         Task RemoveFunderFromBiobankAsync(int funderId, int biobankId);
         Task DeleteBiobankAsync(int id);
