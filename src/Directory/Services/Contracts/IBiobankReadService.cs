@@ -60,6 +60,8 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsAgeRangeInUse(int id);
         Task<int> GetAgeRangeUsageCount(int id);
 
+        Task<bool> AreAgeRangeBoundsNull(int id);
+
         Task<IEnumerable<AnnualStatistic>> ListAnnualStatisticsAsync();
         Task<bool> ValidAnnualStatisticAsync(string annualStatisticDescription, int annualStatisticGroupId);
         Task<bool> IsAnnualStatisticInUse(int id);

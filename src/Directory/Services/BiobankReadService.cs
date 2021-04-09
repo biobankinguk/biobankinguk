@@ -1104,6 +1104,10 @@ namespace Biobanks.Services
                 false,
                 x => x.Value == ageRangeDescription &&
                      x.Id != ageRangeId)).Any();
+
+        public async Task<bool> AreAgeRangeBoundsNull(int id)
+            => (await _ageRangeRepository.ListAsync(false, x => x.Id == id))
+                .Where(x => string.IsNullOrEmpty(x.LowerBound) && string.IsNullOrEmpty(x.UpperBound)).Any();
         #endregion
 
         #region RefData: Preservation Type

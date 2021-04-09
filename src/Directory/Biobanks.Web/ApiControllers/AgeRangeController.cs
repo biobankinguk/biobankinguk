@@ -172,7 +172,8 @@ namespace Biobanks.Web.ApiControllers
                 }
 
             }
-            if (string.IsNullOrEmpty(model.LowerDuration) && string.IsNullOrEmpty(model.UpperDuration))
+            // Checks if entry already had both null values prior to edit
+            if (string.IsNullOrEmpty(model.LowerDuration) && string.IsNullOrEmpty(model.UpperDuration) && !await _biobankReadService.AreAgeRangeBoundsNull(id))
             {
                 ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
             }
