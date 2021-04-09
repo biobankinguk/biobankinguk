@@ -68,7 +68,7 @@ namespace Biobanks.DataSeed.Services
                 /* Shared */
                 SeedJson<Sex>,
                 SeedJson<SnomedTag>,
-                SeedOntologyTerms,
+                SeedJson<OntologyTerm>,
                 SeedJson<MaterialTypeGroup>,
                 SeedMaterialTypes,
                 SeedJson<StorageTemperature>,
