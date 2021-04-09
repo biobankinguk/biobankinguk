@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
@@ -161,6 +162,17 @@ namespace Biobanks.Submissions.Api.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
                         else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
+                        else if (sampleModel.AgeAtDonation != null)
+                        {
+                            try
+                            {
+                                XmlConvert.ToTimeSpan(sampleModel.AgeAtDonation);
+                            }
+                            catch
+                            {
+                                return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid AgeAtDonation value, must be in an ISO duration format.");
+                            }
+                        }
                         else
                             samplesUpdates.Add(sampleModel);
                         break;
