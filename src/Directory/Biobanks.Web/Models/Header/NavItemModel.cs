@@ -14,6 +14,8 @@ namespace Biobanks.Web.Models.Header
 
         public string Url { get; set; }
 
+        public bool Toolbar { get; set; }
+
         [JsonProperty("classes")]
         public IEnumerable<string> StyleClasses;
 
