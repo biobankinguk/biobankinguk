@@ -52,20 +52,23 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Post(AgeRangeModel model)
         {
+            if (model.LowerDuration == "N/A") { model.LowerDuration = null;  }
+            if (model.UpperDuration == "N/A") { model.UpperDuration = null;  }
+
             // Validate model
             if (await _biobankReadService.ValidAgeRangeAsync(model.Description))
             {
                 ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
 
-            if (model.LowerDuration != "N/A")
+            if (model.LowerDuration != null)
             {
                 if (!int.TryParse(model.LowerBound, out _))
                 {
                     ModelState.AddModelError("AgeRange", "Lower Bound value must be a valid number.");
                 }
             }
-            if (model.UpperDuration != "N/A")
+            if (model.UpperDuration != null)
             {
                 if (!int.TryParse(model.UpperBound, out _))
                 {
@@ -73,7 +76,7 @@ namespace Biobanks.Web.ApiControllers
                 }
             }
 
-            if (model.LowerDuration == "N/A" && model.UpperDuration == "N/A")
+            if (string.IsNullOrEmpty(model.LowerDuration) && string.IsNullOrEmpty(model.UpperDuration))
             {
                 ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
             }
@@ -136,6 +139,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, AgeRangeModel model)
         {
+            if (model.LowerDuration == "N/A") { model.LowerDuration = null; }
+            if (model.UpperDuration == "N/A") { model.UpperDuration = null; }
+
             // Validate model
             if (await _biobankReadService.ValidAgeRangeAsync(id, model.Description))
             {
@@ -148,25 +154,30 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("AgeRange", $"The age range \"{model.Description}\" is currently in use, and cannot be updated.");
             }
 
-            if (model.LowerDuration != "N/A")
+            if (model.LowerBound != null || model.UpperBound != null)
             {
-                if (!int.TryParse(model.LowerBound, out _))
+                if (model.LowerDuration != null)
                 {
-                    ModelState.AddModelError("AgeRange", "Lower Bound value must be a valid number.");
+                    if (!int.TryParse(model.LowerBound, out _))
+                    {
+                        ModelState.AddModelError("AgeRange", "Lower Bound value must be a valid number.");
+                    }
                 }
-            }
-            if (model.UpperDuration != "N/A")
-            {
-                if (!int.TryParse(model.UpperBound, out _))
+                if (model.UpperDuration != null)
                 {
-                    ModelState.AddModelError("AgeRange", "Upper Bound value must be a valid number.");
+                    if (!int.TryParse(model.UpperBound, out _))
+                    {
+                        ModelState.AddModelError("AgeRange", "Upper Bound value must be a valid number.");
+                    }
+                }
+
+                if (string.IsNullOrEmpty(model.LowerDuration) && string.IsNullOrEmpty(model.UpperDuration))
+                {
+                    ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
                 }
             }
 
-            if (model.LowerDuration == "N/A" && model.UpperDuration == "N/A")
-            {
-                ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
-            }
+
 
             var convertedModel = new AgeRangeModel();
 
@@ -277,7 +288,7 @@ namespace Biobanks.Web.ApiControllers
         {
             // Unable to use XmlConvert.toString as cannot create valid TimeSpan from Years/Months
             // Check for negatives
-            if (model.LowerDuration != "N/A")
+            if (model.LowerDuration != null)
             {
                 if (int.Parse(model.LowerBound) < 0)
                 {
@@ -292,9 +303,9 @@ namespace Biobanks.Web.ApiControllers
             else
             {
                 model.LowerBound = null;
-                model.LowerDuration = "N/A";
+                model.LowerDuration = null;
             }
-            if (model.UpperDuration != "N/A")
+            if (model.UpperDuration != null)
             {
                 if (int.Parse(model.UpperBound) < 0)
                 {
@@ -309,7 +320,7 @@ namespace Biobanks.Web.ApiControllers
             else
             {
                 model.UpperBound = null;
-                model.UpperDuration = "N/A";
+                model.UpperDuration = null;
             }
 
             return model;

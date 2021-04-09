@@ -42,6 +42,7 @@ function AdacAgeRangeViewModel() {
         _this.modal.mode(_this.modal.modalModeAdd);
         _this.modal.ageRange(new AgeRange(0, "", 0, 0, 0));
         _this.showModal();
+
     };
 
     this.openModalForEdit = function (_, event) {
@@ -98,6 +99,7 @@ function AdacAgeRangeViewModel() {
             editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
                 form.data("success-redirect"), form.data("refdata-type"));
         }
+
     };
 }
 
