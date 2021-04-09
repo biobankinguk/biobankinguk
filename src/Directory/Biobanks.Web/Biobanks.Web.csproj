@@ -1105,6 +1105,10 @@
     <Folder Include="Views\SopStatus\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj">
+      <Project>{57e6a212-ae53-451a-a51b-6c0890bbe4f4}</Project>
+      <Name>IdentityModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{f087cd21-d746-4f63-84b1-9038e471e258}</Project>
       <Name>Data</Name>
