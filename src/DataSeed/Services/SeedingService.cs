@@ -66,11 +66,11 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<TreatmentLocation>,
 
                 /* Shared */
-                SeedJson<MaterialTypeGroup>,
-                SeedMaterialTypes,
                 SeedJson<Sex>,
                 SeedJson<SnomedTag>,
-                SeedJson<OntologyTerm>,
+                SeedOntologyTerms,
+                SeedJson<MaterialTypeGroup>,
+                SeedMaterialTypes,
                 SeedJson<StorageTemperature>,
                 SeedPreservationTypes
             };
@@ -208,6 +208,7 @@ namespace Biobanks.DataSeed.Services
         private void SeedMaterialTypes()
         {
             var validGroups = _db.MaterialTypeGroups.ToList();
+            var validProcedures = _db.OntologyTerms.ToList();
 
             Seed(
                 ReadJson<MaterialType>().Select(x =>
@@ -219,6 +220,10 @@ namespace Biobanks.DataSeed.Services
                         MaterialTypeGroups =
                             x.MaterialTypeGroups?
                                 .Select(y => validGroups.First(z => z.Value == y.Value.Trim()))
+                                .ToList(),
+                        ExtractionProcedures =
+                            x.ExtractionProcedures?
+                                .Select(y => validProcedures.First(z => z.Value == y.Value.Trim()))
                                 .ToList()
                     }
                 )

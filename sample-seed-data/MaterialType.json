@@ -76,7 +76,7 @@
     },
     {
         "id": 14,
-        "value": "Tissue specimen ",
+        "value": "Tissue specimen",
         "sortOrder": 53,
         "materialTypeGroups": [
             {
@@ -84,6 +84,14 @@
             },
             {
                 "value": "Extracted Sample"
+            }
+        ],
+        "extractionProcedures": [
+            {
+                "value": "Surgical procedure (procedure)"
+            },
+            {
+                "value": "Biopsy (procedure)"
             }
         ]
     },
