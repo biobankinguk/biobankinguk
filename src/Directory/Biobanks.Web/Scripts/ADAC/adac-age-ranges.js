@@ -52,10 +52,20 @@ function AdacAgeRangeViewModel() {
 
         // Selected value in dropdown
         var lowerDuration = ageRange.LowerBound.replace(/[^a-zA-Z]+/g, '');
-        document.getElementById("lowerDuration").value = lowerDuration.charAt(0);
+        if (lowerDuration == "") {
+            document.getElementById("lowerDuration").value = "N/A";
+        }
+        else {
+            document.getElementById("lowerDuration").value = lowerDuration.charAt(0);
+        }
 
         var upperDuration = ageRange.UpperBound.replace(/[^a-zA-Z]+/g, '');
-        document.getElementById("upperDuration").value = upperDuration.charAt(0);
+        if (upperDuration == "") {
+            document.getElementById("upperDuration").value = "N/A";
+        }
+        else {
+            document.getElementById("upperDuration").value = upperDuration.charAt(0);
+        }
 
         // Disables all input options for data not recorded entry (both bounds being null)
         if (ageRange.LowerBound == "" && ageRange.UpperBound == "") {
