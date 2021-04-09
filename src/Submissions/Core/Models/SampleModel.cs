@@ -14,7 +14,7 @@ namespace Biobanks.Submissions.Core.Models
         public int? YearOfBirth { get; set; }
 
         [Range(0, 150)]
-        public int? AgeAtDonation { get; set; }
+        public string AgeAtDonation { get; set; }
 
         /// <summary>
         /// The type of material
