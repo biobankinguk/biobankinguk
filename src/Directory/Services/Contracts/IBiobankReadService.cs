@@ -28,8 +28,8 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<Collection>> ListCollectionsAsync();
         Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
-        Task<CollectionSampleSet> GetSampleSetByIdAsync(int id);
-        Task<CollectionSampleSet> GetSampleSetByIdForIndexingAsync(int id);
+        Task<SampleSet> GetSampleSetByIdAsync(int id);
+        Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id);
         bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId);
         bool CanThisBiobankAdministerThisSampleSet(int biobankId, int sampleSetId);
 
@@ -219,7 +219,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();
 
-        Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
+        Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
         Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(IEnumerable<int> capabilityIds);
         Task<bool> BiobankRegisterRequestExists(string name);
         Task<bool> NetworkRegisterRequestExists(string name);
@@ -235,7 +235,7 @@ namespace Biobanks.Services.Contracts
         /// <returns>A count of all Capabilities in the database.</returns>
         Task<int> GetCapabilityCountAsync();
 
-        Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(IEnumerable<int> sampleSetIds);
+        Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(IEnumerable<int> sampleSetIds);
         Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(IEnumerable<int> capabilityIds);
         Task<int> GetIndexableSampleSetCountAsync();
         Task<int> GetIndexableCapabilityCountAsync();
