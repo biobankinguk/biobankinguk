@@ -31,7 +31,7 @@ namespace Biobanks.Entities.Api
         /// Optional Age of the individual when the sample was donated.
         /// At least one of Age or YearOfBirth are required.
         /// </summary>
-        public int? AgeAtDonation { get; set; }
+        public string AgeAtDonation { get; set; }
 
         /// <summary>
         /// Foreign key column.
