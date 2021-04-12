@@ -104,6 +104,20 @@ namespace Biobanks.Submissions.Core.Services
             {
                 sample.YearOfBirth = (int) dto.YearOfBirth;
                 sample.AgeAtDonation =  dto.DateCreated.Year - sample.YearOfBirth;
+                var ageAtDonationStr = "";
+
+                // Check if negative 
+                if (sample.AgeAtDonation < 0)
+                {
+                    //turn to positive 
+                    var positive = sample.AgeAtDonation * -1;
+                    ageAtDonationStr = "-P" + positive.ToString() + "Y";
+                }
+                else
+                {
+                    ageAtDonationStr = "P" + sample.AgeAtDonation.ToString() + "Y";
+                }
+
                 return sample;
             }
 
