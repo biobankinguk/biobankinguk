@@ -41,7 +41,7 @@ function SaveToLocalStorage(contactIds) {
 
 function UpdateContactCounter(contactIds) {
     var count = contactIds.length;
-    var contactButtonBase = "<span class=\"fa fa-envelope-o labelled-icon\"></span>View Contact List ({count})";
+    var contactButtonBase = "<span class=\"fa fa-envelope-o labelled-icon\"></span>Contact List ({count})";
 
     // Update counter dropdown
     $("#ContactCounter").html(contactButtonBase.replace("{count}", String(count)));

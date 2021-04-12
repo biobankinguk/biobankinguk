@@ -43,7 +43,7 @@ namespace Biobanks.Entities.Data
         public int CollectionPointId { get; set; }
         public virtual CollectionPoint CollectionPoint { get; set; }
 
-        public virtual ICollection<CollectionSampleSet> SampleSets { get; set; }
+        public virtual ICollection<SampleSet> SampleSets { get; set; }
 
         public virtual ICollection<CollectionAssociatedData> AssociatedData { get; set; }
 
