@@ -8,6 +8,7 @@ using Biobanks.Submissions.Core.Config;
 using Biobanks.Submissions.Core.Dto;
 using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Entities.Api;
+using System.Xml;
 
 namespace Biobanks.Submissions.Core.Services
 {
@@ -100,24 +101,16 @@ namespace Biobanks.Submissions.Core.Services
             }
                 
             // if only YearOfBirth is specified, calculate confident AgeAtDonation and return
-            if (dto.AgeAtDonation == null)
+            if (string.IsNullOrEmpty(dto.AgeAtDonation))
             {
                 sample.YearOfBirth = (int) dto.YearOfBirth;
-                sample.AgeAtDonation =  (dto.DateCreated.Year - sample.YearOfBirth).ToString();
-                /*
-                var ageAtDonationStr = "";
+                // Creates an AgeAtDonation Timespan value from date created - 01/01/YearOfBirth
+                /* If DateCreated is in the same year as YearOfBirth - then it will be positive duration
+                   Otherwise it will be negative (fetus)   */
+                var ageAtDonation = dto.DateCreated - new DateTime((int)sample.YearOfBirth, 01, 01);
 
-                // Check if negative 
-                if (sample.AgeAtDonation < 0)
-                {
-                    //turn to positive 
-                    var positive = sample.AgeAtDonation * -1;
-                    ageAtDonationStr = "-P" + positive.ToString() + "Y";
-                }
-                else
-                {
-                    ageAtDonationStr = "P" + sample.AgeAtDonation.ToString() + "Y";
-                } */
+                // Converts Timespan value to Iso Duration
+                sample.AgeAtDonation = XmlConvert.ToString(ageAtDonation);
 
                 return sample;
             }
