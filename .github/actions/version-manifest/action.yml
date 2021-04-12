@@ -14,6 +14,8 @@ inputs:
 outputs:
   version:
     description: Updated version according to the manifest's release type.
+  isPrerelease:
+    description: Is the updated version a prerelease version?
   doRelease:
     description: Whether a release should be triggered based on the manifest release type.
 runs:
