@@ -56,7 +56,7 @@ namespace Biobanks.Services.Contracts
         
         Task<IEnumerable<AgeRange>> ListAgeRangesAsync();
         Task<bool> ValidAgeRangeAsync(string ageRangeDescription);
-        Task<bool> ValidAgeRangeAsync(int ageRangeId, string ageRangeDescription);
+        Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription);
         Task<bool> IsAgeRangeInUse(int id);
         Task<int> GetAgeRangeUsageCount(int id);
 

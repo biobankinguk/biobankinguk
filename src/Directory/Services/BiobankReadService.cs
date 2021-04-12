@@ -1099,7 +1099,7 @@ namespace Biobanks.Services
             => (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
         
 
-        public async Task<bool> ValidAgeRangeAsync(int ageRangeId, string ageRangeDescription)
+        public async Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription)
             => (await _ageRangeRepository.ListAsync(
                 false,
                 x => x.Value == ageRangeDescription &&

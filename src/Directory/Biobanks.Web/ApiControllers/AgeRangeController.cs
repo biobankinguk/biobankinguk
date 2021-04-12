@@ -143,7 +143,7 @@ namespace Biobanks.Web.ApiControllers
             if (model.UpperDuration == "N/A") { model.UpperDuration = null; }
 
             // Validate model
-            if (await _biobankReadService.ValidAgeRangeAsync(id, model.Description))
+            if (await _biobankReadService.IsAgeRangeDescriptionInUse(id, model.Description))
             {
                 ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
