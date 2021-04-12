@@ -5,12 +5,7 @@
     <AssemblyName>Biobanks.Data</AssemblyName>
     <RootNamespace>Biobanks.Data</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Migrations\20210409152642_SampleUpdateFlags.cs" />
-    <Compile Remove="Migrations\20210409152642_SampleUpdateFlags.Designer.cs" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
