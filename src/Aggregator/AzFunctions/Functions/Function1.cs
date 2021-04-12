@@ -8,7 +8,6 @@ namespace Biobanks.Aggregator.AzFunctions
     {
         [Function("Function1")]
         public async Task Run([TimerTrigger("0 1 * * *", RunOnStartup = true)] TimerInfo timer)
-        {
-        }
+            => await Task.CompletedTask;
     }
 }
