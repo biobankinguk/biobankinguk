@@ -70,6 +70,7 @@ jobs:
           tag: ${{ steps.manifest.outputs.version }}
           name: ${{ steps.manifest.outputs.version }}
           body: ${{ steps.manifest.outputs.version }}
+          prerelease: ${{ steps.manifest.outputs.isPrerelease }}
           artifacts: >-
             artifacts/identitytool/*,
             artifacts/dataseed/*,
