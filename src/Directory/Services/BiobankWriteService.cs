@@ -51,6 +51,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Collection> _collectionRepository;
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
+        private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
 
         private readonly IGenericEFRepository<Network> _networkRepository;
         private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
@@ -108,6 +109,7 @@ namespace Biobanks.Services
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
+            IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<Network> networkRepository,
             IGenericEFRepository<NetworkUser> networkUserRepository,
             IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
@@ -165,6 +167,7 @@ namespace Biobanks.Services
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
             _sampleSetRepository = sampleSetRepository;
+            _materialDetailRepository = materialDetailRepository;
 
             _networkRepository = networkRepository;
             _networkUserRepository = networkUserRepository;
@@ -319,9 +322,9 @@ namespace Biobanks.Services
 
         public async Task UpdateSampleSetAsync(SampleSet sampleSet)
         {
-            // Existing Data
+            // Update SampleSet
             var existingSampleSet = (await _sampleSetRepository.ListAsync(
-                    tracking: false,
+                    tracking: true,
                     filter: x => x.Id == sampleSet.Id,
                     orderBy: null,
                     x => x.Collection,
@@ -329,25 +332,53 @@ namespace Biobanks.Services
                 )
                 .First();
 
-            // Update SampleSet
             existingSampleSet.SexId = sampleSet.SexId;
             existingSampleSet.AgeRangeId = sampleSet.AgeRangeId;
             existingSampleSet.DonorCountId = sampleSet.DonorCountId;
             existingSampleSet.Collection.LastUpdated = DateTime.Now;
 
+            await _sampleSetRepository.SaveChangesAsync();
+
+
             // Update MaterialDetails
-            
-            
+            var existingMaterialDetails = await _materialDetailRepository.ListAsync(
+                    tracking: true,
+                    filter: x => x.SampleSetId == existingSampleSet.Id
+                );
+
+            foreach (var materialDetail in existingSampleSet.MaterialDetails)
+            {
+                // Existing MaterialDetail Updated
+                if (sampleSet.MaterialDetails.Select(x => x.Id).Contains(materialDetail.Id))
+                {
+                }
+                // Exisiting MaterialDetail Deleted
+                else
+                {
+                    try
+                    {
+                        _materialDetailRepository.Delete(materialDetail);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            // Add New MaterialDetails
+            foreach (var materialDetail in sampleSet.MaterialDetails.Where(x => x.Id == default))
+            {
+            }
+
             try
             {
-                _sampleSetRepository.Update(existingSampleSet);
-
-                await _sampleSetRepository.SaveChangesAsync();
+                await _materialDetailRepository.SaveChangesAsync();
             }
             catch
             {
             }
 
+            // Index Changes
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
             {
                 await _indexService.UpdateSampleSetDetails(sampleSet.Id);
