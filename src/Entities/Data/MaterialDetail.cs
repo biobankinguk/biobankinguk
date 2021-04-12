@@ -1,13 +1,16 @@
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Biobanks.Entities.Data
 {
     public class MaterialDetail //"Material Preservation Details" in the model
     {
-
+        [Key, Column(Order = 0)]
         public int Id { get; set; }
 
+        [Key, Column(Order = 1)]
         public int SampleSetId { get; set; } //"Sample Code" in the model
 
         public int MaterialTypeId { get; set; }
