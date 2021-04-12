@@ -1173,6 +1173,7 @@ namespace Biobanks.Web.Controllers
 
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
+                    id = x.Id,
                     materialType = x.MaterialTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
@@ -1202,6 +1203,7 @@ namespace Biobanks.Web.Controllers
                     MaterialDetails = model.MaterialPreservationDetails.Select(x =>
                         new MaterialDetail
                         {
+                            Id = x.id ?? 0,
                             MaterialTypeId = x.materialType,
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,

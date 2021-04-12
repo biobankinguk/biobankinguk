@@ -13,7 +13,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
-
+using AutoMapper.Internal;
 
 namespace Biobanks.Services
 {
@@ -319,22 +319,29 @@ namespace Biobanks.Services
 
         public async Task UpdateSampleSetAsync(SampleSet sampleSet)
         {
-            // Update exisiting SampleSet
+            // Existing Data
             var existingSampleSet = (await _sampleSetRepository.ListAsync(
-                true, x => x.Id == sampleSet.Id, null,
-                x => x.Collection, x => x.MaterialDetails)).First();
+                    tracking: false,
+                    filter: x => x.Id == sampleSet.Id,
+                    orderBy: null,
+                    x => x.Collection,
+                    x => x.MaterialDetails)
+                )
+                .First();
 
-            existingSampleSet.MaterialDetails.Clear();
-
+            // Update SampleSet
             existingSampleSet.SexId = sampleSet.SexId;
             existingSampleSet.AgeRangeId = sampleSet.AgeRangeId;
             existingSampleSet.DonorCountId = sampleSet.DonorCountId;
-            existingSampleSet.MaterialDetails = sampleSet.MaterialDetails;
-
             existingSampleSet.Collection.LastUpdated = DateTime.Now;
 
+            // Update MaterialDetails
+            
+            
             try
             {
+                _sampleSetRepository.Update(existingSampleSet);
+
                 await _sampleSetRepository.SaveChangesAsync();
             }
             catch
@@ -342,7 +349,9 @@ namespace Biobanks.Services
             }
 
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
+            {
                 await _indexService.UpdateSampleSetDetails(sampleSet.Id);
+            }
         }
 
         public async Task DeleteSampleSetAsync(int id)
