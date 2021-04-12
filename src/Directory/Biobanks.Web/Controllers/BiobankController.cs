@@ -1048,7 +1048,7 @@ namespace Biobanks.Web.Controllers
                 }),
                 SampleSets = collection.SampleSets.Select(sampleSet => new CollectionSampleSetSummaryModel
                 {
-                    Id = sampleSet.SampleSetId,
+                    Id = sampleSet.Id,
                     Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Value,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
@@ -1165,7 +1165,7 @@ namespace Biobanks.Web.Controllers
 
             var model = new EditSampleSetModel
             {
-                Id = sampleSet.SampleSetId,
+                Id = sampleSet.Id,
                 CollectionId = sampleSet.CollectionId,
                 Sex = sampleSet.SexId,
                 AgeRange = sampleSet.AgeRangeId,
@@ -1195,7 +1195,7 @@ namespace Biobanks.Web.Controllers
             {
                 var sampleSet = new SampleSet
                 {
-                    SampleSetId = id,
+                    Id = id,
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
@@ -1250,7 +1250,7 @@ namespace Biobanks.Web.Controllers
 
             var model = new SampleSetModel
             {
-                Id = sampleSet.SampleSetId,
+                Id = sampleSet.Id,
                 CollectionId = sampleSet.CollectionId,
                 Sex = sampleSet.Sex.Value,
                 AgeRange = sampleSet.AgeRange.Value,

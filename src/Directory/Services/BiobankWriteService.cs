@@ -285,7 +285,7 @@ namespace Biobanks.Services
                 IList<int> sampleSetIDs = new List<int>();
                 foreach (SampleSet sampleSet in collection.SampleSets)
                 {
-                    sampleSetIDs.Add(sampleSet.SampleSetId);
+                    sampleSetIDs.Add(sampleSet.Id);
                 }
 
                 foreach (int sampleSetID in sampleSetIDs)
@@ -314,14 +314,14 @@ namespace Biobanks.Services
 
             // Index New SampleSet
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(sampleSet.CollectionId))
-                await _indexService.IndexSampleSet(sampleSet.SampleSetId);
+                await _indexService.IndexSampleSet(sampleSet.Id);
         }
 
         public async Task UpdateSampleSetAsync(SampleSet sampleSet)
         {
             // Update exisiting SampleSet
             var existingSampleSet = (await _sampleSetRepository.ListAsync(
-                true, x => x.SampleSetId == sampleSet.SampleSetId, null,
+                true, x => x.Id == sampleSet.Id, null,
                 x => x.Collection, x => x.MaterialDetails)).First();
 
             existingSampleSet.MaterialDetails.Clear();
@@ -333,10 +333,16 @@ namespace Biobanks.Services
 
             existingSampleSet.Collection.LastUpdated = DateTime.Now;
 
-            await _sampleSetRepository.SaveChangesAsync();
+            try
+            {
+                await _sampleSetRepository.SaveChangesAsync();
+            }
+            catch
+            {
+            }
 
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
-                await _indexService.UpdateSampleSetDetails(sampleSet.SampleSetId);
+                await _indexService.UpdateSampleSetDetails(sampleSet.Id);
         }
 
         public async Task DeleteSampleSetAsync(int id)
@@ -344,7 +350,7 @@ namespace Biobanks.Services
             //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
             var suspended = await _biobankReadService.IsSampleSetBiobankSuspendedAsync(id);
 
-            await _sampleSetRepository.DeleteWhereAsync(x => x.SampleSetId == id);
+            await _sampleSetRepository.DeleteWhereAsync(x => x.Id == id);
 
             await _sampleSetRepository.SaveChangesAsync();
 
