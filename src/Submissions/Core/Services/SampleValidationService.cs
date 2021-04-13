@@ -116,15 +116,23 @@ namespace Biobanks.Submissions.Core.Services
             }
 
             // otherwise, check that the provided YearOfBirth and AgeAtDonation add up
-            // if they don't add up, throw an error
-            if(Math.Abs(dto.DateCreated.Year - (int) dto.YearOfBirth - (int) dto.AgeAtDonation) > 1)
+
+            var ageAtDonationTs = XmlConvert.ToTimeSpan(dto.AgeAtDonation);
+
+            var maxTs = dto.DateCreated - new DateTime((int)dto.YearOfBirth, 01, 01);
+            var minTs = dto.DateCreated - new DateTime((int)dto.YearOfBirth, 12, 31);
+
+            // if AgeAtDonation doesnt fall within the bounds of DateCreated - YearOfBirth, throw an error
+            if(ageAtDonationTs <= minTs || ageAtDonationTs >= maxTs)
+            {
                 throw new ValidationException(
                     new ValidationResult(
-                        $"If both {nameof(dto.AgeAtDonation)} and {nameof(dto.YearOfBirth)} are provided, the difference between {nameof(dto.DateCreated)} and {nameof(dto.YearOfBirth)} must be {nameof(dto.AgeAtDonation)} +/- 1 year.",
+                       $"If both {nameof(dto.AgeAtDonation)} and {nameof(dto.YearOfBirth)} are provided, the {nameof(dto.AgeAtDonation)} timespan value must fall within the minimum/maximum timepsans based on the difference between {nameof(dto.DateCreated)} and {nameof(dto.YearOfBirth)}.",
                         new List<string> { nameof(dto.AgeAtDonation), nameof(dto.YearOfBirth) }),
                     null, null);
+            }
 
-            // if they do add up, use the original values and return
+            // if AgeAtDonation does fall within the bounds, use the original values and return
             sample.AgeAtDonation = dto.AgeAtDonation;
             sample.YearOfBirth = (int) dto.YearOfBirth;
             return sample;
