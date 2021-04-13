@@ -1917,13 +1917,13 @@ namespace Biobanks.Web.Controllers
             await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
 
             //update update api clients table
+            var newclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
 
             //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
 
             return RedirectToAction("Submissions");
         }
-
 
         #endregion
 
