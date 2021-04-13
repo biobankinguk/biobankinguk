@@ -5,6 +5,7 @@
         id: "#BiobankId",
         modal: "#modalInvite" + base,
         form: "#modalInvite" + base + "Form",
+        modal2: "#modalReset" + base
     };
 
     this.dialogErrors = ko.observableArray([]);
@@ -72,6 +73,26 @@
         ko.cleanNode($(nodeSelector)[0]); //designed to work with ID selectors, so only does the first match
         ko.utils.domNodeDisposal["cleanExternalData"] = original;
     };
+
+    this.openResetBox = function () {
+        $.ajax({
+            url: "/Adac/GenerateResetLinkAjax/",
+            data: { biobankUserId: _this.biobankUserId },
+            contentType: "application/html",
+            success: function (content) {                
+                //clear form errors (as these are in the page's ko model)
+                _this.dialogErrors.removeAll();
+
+                _this.cleanNodeJquerySafe(_this.elements.modal2);
+
+                //populate the modal with the form
+                $(_this.elements.modal2).html(content);
+
+                //apply ko bindings to the ajax'd elements
+                ko.applyBindings(biobankAdminsVm, $(_this.elements.modal2)[0]);                
+            },
+        });
+    }
 }
 
 var biobankAdminsVm;
@@ -137,3 +158,14 @@ $(function () {
     });
 
 })
+
+function copyToClipboard() {
+    var copyText = document.getElementById("link");
+
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+
+    document.execCommand("copy");
+
+    alert("Copied");
+}

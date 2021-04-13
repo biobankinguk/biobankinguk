@@ -668,6 +668,22 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction($"BiobankAdmin", new { id = id });
         }
 
+        public async Task<ActionResult> GenerateResetLinkAjax(string biobankUserId)
+        {
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(biobankUserId);
+            var url = Url.Action("ResetPassword", "Account",
+                new { userId = biobankUserId, token = resetToken },
+                Request.Url.Scheme);
+
+            return PartialView("_reset-password", new InviteRegisterEntityAdminModel
+            {
+                Entity = url,
+                EntityName = "resetlink",
+                ControllerName = "Biobank"
+            });
+            
+        }
+
         #endregion
 
         #region Funders
