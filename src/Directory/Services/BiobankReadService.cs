@@ -10,6 +10,7 @@ using Biobanks.Search.Legacy;
 using Biobanks.Identity.Data.Entities;
 using Microsoft.AspNet.Identity;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Shared;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
@@ -80,6 +81,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
 
         private readonly IGenericEFRepository<Publication> _publicationRepository;
+        private readonly IGenericEFRepository<ApiClient> _apiClientRepository;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
@@ -1551,5 +1553,7 @@ namespace Biobanks.Services
         public async Task<bool> OrganisationIncludesPublications(int biobankId)
             => (!(await GetBiobankByIdAsync(biobankId)).ExcludePublications);
 
+        public async Task<bool> IsBiobankAnApiClient(int biobankId)
+            => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
     }
 }
