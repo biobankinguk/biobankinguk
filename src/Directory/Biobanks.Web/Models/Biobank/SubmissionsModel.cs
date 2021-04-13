@@ -23,6 +23,15 @@ namespace Biobanks.Web.Models.Biobank
         [Required(ErrorMessage = "Please select a collection Type.")]
         [Display(Name = "Collection type")]
         public int? CollectionType { get; set; }
+
+        
+        public bool GenerateKey { get; set; }
+
+        [Display(Name="Public Key")]
+        public string PublicKey { get; set; }
+        [Display(Name="Private Key")]
+        public string PrivateKey { get; set; }
+
         #endregion
     }
 }
