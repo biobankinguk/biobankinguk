@@ -20,8 +20,7 @@ on:
     branches: [main, support/*]
 
 env:
-  # lets workflow_dispatch override, but allows all steps to reference the env variable
-  CI_build-config: ${{ github.events.inputs.buildConfig || 'release' }}
+  CI_build-config: release
   CI_dotnet-version: 5.0.x
   CI_publish-dir: publish
 
@@ -71,7 +70,7 @@ jobs:
   init:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.manifest.outputs.version }}
+      version: ${{ format('{0}+{1}', steps.manifest.outputs.version, steps.short-sha.outputs.shortSha) }}
       doRelease: ${{ steps.manifest.outputs.doRelease }}
       isPrerelease: ${{ steps.manifest.outputs.isPrerelease }}
       deploymentId: ${{ steps.deployment.outputs.deployment_id }}
@@ -86,6 +85,8 @@ jobs:
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
           environment: ${{ steps.friendly-ref.outputs.ref_name }}
+      - id: short-sha
+        run: echo "::set-output name=shortSha::${GITHUB_SHA::8}"
 
   # Stage 2. Build and Publish artifacts
   publish-dataseed:
@@ -106,7 +107,7 @@ jobs:
         run: >-
           dotnet publish
           ${{ env.CI_project }}
-          -c ${{ env.CI_build-config }}
+          -c ${{ github.events.inputs.buildConfig || env.CI_build-config }}
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
           /P:DebugType=embedded
@@ -136,7 +137,7 @@ jobs:
         run: >-
           dotnet publish
           ${{ env.CI_project }}
-          -c ${{ env.CI_build-config }}
+          -c ${{ github.events.inputs.buildConfig || env.CI_build-config }}
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
           /P:DebugType=embedded
@@ -163,7 +164,7 @@ jobs:
         run: >-
           dotnet publish
           ${{ env.CI_project }}
-          -c ${{ env.CI_build-config }}
+          -c ${{ github.events.inputs.buildConfig || env.CI_build-config }}
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
       - uses: edgarrc/action-7z@v1.0.4
@@ -194,7 +195,7 @@ jobs:
         run: >-
           dotnet publish
           ${{ env.CI_project }}
-          -c ${{ env.CI_build-config }}
+          -c ${{ github.events.inputs.buildConfig || env.CI_build-config }}
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
       - uses: edgarrc/action-7z@v1.0.4
@@ -220,7 +221,7 @@ jobs:
         run: >-
           dotnet publish
           ${{ env.CI_project }}
-          -c ${{ env.CI_build-config }}
+          -c ${{ github.events.inputs.buildConfig || env.CI_build-config }}
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
       - uses: edgarrc/action-7z@v1.0.4
@@ -246,7 +247,7 @@ jobs:
         run: >-
           dotnet publish
           ${{ env.CI_project }}
-          -c ${{ env.CI_build-config }}
+          -c ${{ github.events.inputs.buildConfig || env.CI_build-config }}
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
       - uses: edgarrc/action-7z@v1.0.4
@@ -279,7 +280,7 @@ jobs:
         run: >-
           msbuild.exe
           ${{ env.CI_project }}
-          /p:Configuration="${{ env.CI_build-config }}"
+          /p:Configuration="${{ github.events.inputs.buildConfig || env.CI_build-config }}"
           /nologo
           /nr:false
           /p:DeployOnBuild=true
@@ -290,6 +291,7 @@ jobs:
           /p:SkipInvalidConfigurations=true
           /p:PackageLocation=${{ github.workspace}}\${{ env.CI_publish-dir }}
           /p:Platform="Any CPU"
+          /P:Version=${{ needs.init.outputs.version }}
       - run: >-
           Compress-Archive
           -Path .\${{ env.CI_publish-dir }}\*
@@ -330,7 +332,7 @@ jobs:
         run: >-
           dotnet build
           ${{ env.CI_project }}
-          -c ${{ env.CI_build-config }}
+          -c ${{ github.events.inputs.buildConfig || env.CI_build-config }}
           /P:Version=${{ needs.init.outputs.version }}
       - name: Copy migrations files
         run: |
@@ -408,7 +410,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.manifest.outputs.version }}
           name: ${{ steps.manifest.outputs.version }}
-          body: ${{ steps.manifest.outputs.version }}
+          body: ${{ needs.init.outputs.version }}
           prerelease: ${{ steps.manifest.outputs.isPrerelease }}
           artifacts: releaseArtifacts
           artifactContentType: application/zip
