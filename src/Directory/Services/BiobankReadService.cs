@@ -81,7 +81,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
 
         private readonly IGenericEFRepository<Publication> _publicationRepository;
-        private readonly IGenericEFRepository<ApiClient> _apiClientRepository;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 

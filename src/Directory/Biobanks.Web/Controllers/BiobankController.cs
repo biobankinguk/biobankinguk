@@ -6,6 +6,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Identity.Constants;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
+using Biobanks.IdentityModel.Helpers;
 using Biobanks.Services;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
@@ -1917,10 +1918,23 @@ namespace Biobanks.Web.Controllers
             await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
 
             //update update api clients table
-            var newclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
+            if (model.GenerateKey)
+            {
+                var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
+                if (!existingclient)
+                {
+                    var credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+                    model.PublicKey = credentials.Key;
+                    model.PrivateKey = credentials.Value;
 
-            //Set feedback and redirect
-            SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
+                    SetTemporaryFeedbackMessage("New private key generated successfully!", FeedbackMessageType.Success);
+                }
+            }
+            else
+            {
+                //Set feedback and redirect
+                SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
+            }
 
             return RedirectToAction("Submissions");
         }
