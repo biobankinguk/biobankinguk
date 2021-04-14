@@ -47,7 +47,7 @@ namespace Biobanks.Directory.Data
         public DbSet<HtaStatus> HtaStatuses { get; set; }
 
         //Collection SampleSet details
-        public DbSet<CollectionSampleSet> CollectionSampleSets { get; set; }
+        public DbSet<SampleSet> SampleSets { get; set; }
         public DbSet<AgeRange> AgeRanges { get; set; }
         public DbSet<DonorCount> DonorCounts { get; set; }
 

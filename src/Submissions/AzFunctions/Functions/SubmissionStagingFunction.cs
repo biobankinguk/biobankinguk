@@ -62,7 +62,7 @@ namespace Biobanks.Submissions.AzFunctions
 
         [Function("Submissions_Staging")]
         public async Task Run(
-            [QueueTrigger("operations")] string messageBody,
+            [QueueTrigger("operations", Connection = "WorkerStorage")] string messageBody,
             FunctionContext context, // out of process context
                                      // QueueTrigger metadata
             string id,

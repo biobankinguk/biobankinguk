@@ -33,11 +33,11 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
         private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
-        private readonly IGenericEFRepository<CollectionSampleSet> _collectionSampleSetRepository;
+        private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
         private readonly IGenericEFRepository<HtaStatus> _htaStatusRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
-        private readonly IGenericEFRepository<CollectionSampleSet> _sampleSetRepository;
+        private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
 
@@ -99,11 +99,11 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<CollectionPoint> collectionPointRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
-            IGenericEFRepository<CollectionSampleSet> collectionSampleSetRepository,
+            IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
             IGenericEFRepository<HtaStatus> htaStatusRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
-            IGenericEFRepository<CollectionSampleSet> sampleSetRepository,
+            IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
@@ -519,7 +519,7 @@ namespace Biobanks.Services
         public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
             => (await _capabilityRepository.ListAsync()).Select(x => x.DiagnosisCapabilityId);
 
-        public async Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexingAsync(
+        public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
         {
             var sampleSets = await _sampleSetRepository.ListAsync(false,
@@ -565,7 +565,7 @@ namespace Biobanks.Services
                 x => x.SampleCollectionMode
             );
 
-        public async Task<IEnumerable<CollectionSampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(
+        public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(
                 IEnumerable<int> sampleSetIds)
             => await _sampleSetRepository.ListAsync(false, x => sampleSetIds.Contains(x.SampleSetId), null,
                 x => x.Collection,
@@ -809,7 +809,7 @@ namespace Biobanks.Services
             return collections;
         }
 
-        public async Task<CollectionSampleSet> GetSampleSetByIdAsync(int id)
+        public async Task<SampleSet> GetSampleSetByIdAsync(int id)
             => (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
                 x => x.Sex,
                 x => x.AgeRange,
@@ -821,7 +821,7 @@ namespace Biobanks.Services
                 x => x.MaterialDetails.Select(y => y.StorageTemperature)
             )).FirstOrDefault();
 
-        public async Task<CollectionSampleSet> GetSampleSetByIdForIndexingAsync(int id)
+        public async Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id)
         {
             try
             {
@@ -1096,9 +1096,18 @@ namespace Biobanks.Services
             => (await GetAgeRangeUsageCount(id)) > 0;
 
         public async Task<bool> ValidAgeRangeAsync(string ageRangeDescription)
-        {
-            return (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
-        }
+            => (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
+        
+
+        public async Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription)
+            => (await _ageRangeRepository.ListAsync(
+                false,
+                x => x.Value == ageRangeDescription &&
+                     x.Id != ageRangeId)).Any();
+
+        public async Task<bool> AreAgeRangeBoundsNull(int id)
+            => (await _ageRangeRepository.ListAsync(false, x => x.Id == id))
+                .Where(x => string.IsNullOrEmpty(x.LowerBound) && string.IsNullOrEmpty(x.UpperBound)).Any();
         #endregion
 
         #region RefData: Preservation Type

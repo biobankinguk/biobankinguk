@@ -1,20 +1,24 @@
 // Modals
 var adacAgeRangeVM;
 
-function AgeRange(id, description, sortOrder) {
+function AgeRange(id, description, sortOrder, lowerBound, upperBound, lowerDuration, upperDuration) {
     this.id = id;
     this.description = ko.observable(description);
     this.sortOrder = sortOrder;
+    this.lowerBound = ko.observable(lowerBound);
+    this.upperBound = ko.observable(upperBound);
+    this.lowerDuration = ko.observable(lowerDuration);
+    this.upperDuration = ko.observable(upperDuration);
 }
 
-function AgeRangeModal(id, description, sortOrder) {
+function AgeRangeModal(id, description, sortOrder, lowerBound, upperBound, lowerDuration, upperDuration) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.ageRange = ko.observable(
-        new AgeRange(id, description, sortOrder)
+        new AgeRange(id, description, sortOrder, lowerBound, upperBound, lowerDuration, upperDuration)
     );
 }
 
@@ -22,7 +26,7 @@ function AdacAgeRangeViewModel() {
     var _this = this;
 
     this.modalId = "#age-ranges-modal";
-    this.modal = new AgeRangeModal(0, "", 0);
+    this.modal = new AgeRangeModal(0, "", 0, 0, 0);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -35,9 +39,20 @@ function AdacAgeRangeViewModel() {
     };
 
     this.openModalForAdd = function () {
+        // Return to default dropdown options
+        document.getElementById("LowerBound").readOnly = false;
+        document.getElementById("UpperBound").readOnly = false;
+        var lowerDuration = document.getElementById("lowerDuration")
+        lowerDuration.disabled = false;
+        lowerDuration.value = "M";
+        var upperDuration = document.getElementById("upperDuration");
+        upperDuration.disabled = false;
+        upperDuration.value = "M";
+
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.ageRange(new AgeRange(0, "", 0));
+        _this.modal.ageRange(new AgeRange(0, "", 0, 0, 0));
         _this.showModal();
+
     };
 
     this.openModalForEdit = function (_, event) {
@@ -45,11 +60,46 @@ function AdacAgeRangeViewModel() {
 
         var ageRange = $(event.currentTarget).data("age-range");
 
+        // Selected value in dropdown
+        var lowerDuration = ageRange.LowerBound.replace(/[^a-zA-Z]+/g, '');
+        if (lowerDuration == "") {
+            document.getElementById("lowerDuration").value = "N/A";
+        }
+        else {
+            document.getElementById("lowerDuration").value = lowerDuration.charAt(0);
+        }
+
+        var upperDuration = ageRange.UpperBound.replace(/[^a-zA-Z]+/g, '');
+        if (upperDuration == "") {
+            document.getElementById("upperDuration").value = "N/A";
+        }
+        else {
+            document.getElementById("upperDuration").value = upperDuration.charAt(0);
+        }
+
+        // Disables all input options for data not recorded entry (both bounds being null)
+        if (ageRange.LowerBound == "" && ageRange.UpperBound == "") {
+            document.getElementById("LowerBound").readOnly = true;
+            document.getElementById("UpperBound").readOnly = true;
+            document.getElementById("lowerDuration").disabled = true;
+            document.getElementById("upperDuration").disabled = true;
+        }
+        else {
+            document.getElementById("LowerBound").readOnly = false;
+            document.getElementById("UpperBound").readOnly = false;
+            document.getElementById("lowerDuration").disabled = false;
+            document.getElementById("upperDuration").disabled = false;
+        }
+
         _this.modal.ageRange(
             new AgeRange(
                 ageRange.Id,
                 ageRange.Description,
-                ageRange.SortOrder
+                ageRange.SortOrder,
+                ageRange.LowerBound.replace(/[a-z]/gi, '').replace(/\s/g, ""),
+                ageRange.UpperBound.replace(/[a-z]/gi, '').replace(/\s/g, ""),
+                ageRange.LowerDuration,
+                ageRange.UpperDuration
             )
         );
 
@@ -69,6 +119,7 @@ function AdacAgeRangeViewModel() {
             editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
                 form.data("success-redirect"), form.data("refdata-type"));
         }
+
     };
 }
 
@@ -96,6 +147,12 @@ $(function () {
     adacAgeRangeVM = new AdacAgeRangeViewModel();
     ko.applyBindings(adacAgeRangeVM);
 });
+
+
+function checkBound(obj, id) {
+    var upperInput = document.getElementById(id);
+    upperInput.disabled = obj.value == "N/A";
+}
 
 // DataTables
 $(function () {
@@ -128,7 +185,9 @@ $(function () {
             data: {
                 id: $(triggerRow.node).data('age-range-id'),
                 description: $(triggerRow.node).data('age-range-desc'),
-                sortOrder: (triggerRow.newPosition + 1) //1-indexable
+                sortOrder: (triggerRow.newPosition + 1), //1-indexable,
+                lowerBound: $(triggerRow.node).data('age-range-lowerbound'),
+                upperBound: $(triggerRow.node).data('age-range-upperbound')
             }
         });
     });
