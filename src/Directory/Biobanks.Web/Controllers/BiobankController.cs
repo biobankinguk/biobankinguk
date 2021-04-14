@@ -1899,6 +1899,7 @@ namespace Biobanks.Web.Controllers
 
             model.AccessCondition = biobank.DefaultSubmissionsAccessConditionId;
             model.CollectionType = biobank.DefaultSubmissionsCollectionTypeId;
+            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
 
             return View(model);
         }
@@ -1926,8 +1927,27 @@ namespace Biobanks.Web.Controllers
                     var credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
                     model.PublicKey = credentials.Key;
                     model.PrivateKey = credentials.Value;
+                    model.GenerateKey = false;
+
+                    //populate drop downs
+                    model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+                        .Select(x => new ReferenceDataModel
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            SortOrder = x.SortOrder
+                        }).OrderBy(x => x.SortOrder);
+
+                    model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                        .Select(x => new ReferenceDataModel
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            SortOrder = x.SortOrder
+                        }).OrderBy(x => x.SortOrder);
 
                     SetTemporaryFeedbackMessage("New private key generated successfully!", FeedbackMessageType.Success);
+                    return View(model);
                 }
             }
             else
