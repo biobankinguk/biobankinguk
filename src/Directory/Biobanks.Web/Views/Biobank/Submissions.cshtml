@@ -95,7 +95,7 @@
 
     //Using the same form forces the user to set default values before generating api credentials
     <h3>Submission API Authentication</h3>
-    <div class="form-group">
+    <div class="row form-group">
         <div class="col-sm-2 col-sm-offset-1">
             <h4>
                 @Html.DisplayNameFor(x => x.PublicKey)
@@ -103,12 +103,31 @@
             </h4>
         </div>
         <div class="col-sm-5">
-            @Html.TextBoxFor(x => x.PublicKey, new { @class = "form-control", @readonly = "true" })
+            @Html.TextBoxFor(x => x.PublicKey,  new { @class = "form-control", @readonly = "true" })
         </div>
     </div>
+    if (Model.PrivateKey != null)
+    {
+        <div class="row form-group">
+            <div class="col-sm-2 col-sm-offset-1">
+                <h4>
+                    @Html.DisplayNameFor(x => x.PrivateKey)
+                    <span class="fa fa-info-circle help-icon-button help-icon-for-label"></span>
+                </h4>
+            </div>
+            <div class="col-sm-5">
+                @Html.TextBoxFor(x => x.PrivateKey, new { @class = "form-control", @readonly = "true" })
+            </div>
+            <div class="col-sm-10 col-sm-offset-1 alert-container">
+                <div class="alert alert-warning">
+                    <label>This will only be displayed once</label>
+                </div>
+            </div>
+        </div>
+    }
     <div class="form-group row">
         <div class="col-sm-10">
-            <button type="submit" name="generatekey" value="true" class="btn btn-success pull-right"> Generate Key </button>
+            <button type="submit" name="generatekey" value="true" class="btn btn-success pull-right"> Generate New Private Key </button>
         </div>
     </div>
 }
