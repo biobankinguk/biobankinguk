@@ -146,6 +146,12 @@ namespace Biobanks.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDirty")
+                        .HasColumnType("bit");
+
                     b.Property<int>("MaterialTypeId")
                         .HasColumnType("int");
 
