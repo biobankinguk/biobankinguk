@@ -288,3 +288,19 @@ $(".help-label-adac-macroscopicassessment-override").click(function () {
         buttons: helpIconBootboxButtons
     });
 });
+
+$(".help-label-submissions-publickey").click(function () {
+    bootbox.dialog({
+        message: "The public key used to encrypt data when using the submission API",
+        title: "Public Key",
+        buttons: helpIconBootboxButtons
+    });
+});
+
+$(".help-label-submissions-privatekey").click(function () {
+    bootbox.dialog({
+        message: "The private key used to encrypt and decrypt data when using the submission API. Should not be shared with unauthorised users",
+        title: "Private Key",
+        buttons: helpIconBootboxButtons
+    });
+});
