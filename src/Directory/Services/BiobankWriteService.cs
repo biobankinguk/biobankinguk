@@ -2136,5 +2136,19 @@ namespace Biobanks.Services
             await _organisationRepository.SaveChangesAsync();
             return new KeyValuePair<string, string> (clientId,clientSecret);
         }
+
+        public async Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId)
+        {
+            //Generates and update biobank api client with new client secret.
+            var biobank = await _organisationRepository.GetByIdAsync(biobankId);
+
+            var newSecret = Crypto.GenerateId();
+            var credentials = biobank.ApiClients.First();
+            credentials.ClientSecretHash = newSecret.Sha256();
+
+            await _organisationRepository.SaveChangesAsync();
+            return new KeyValuePair<string, string>(credentials.ClientId, newSecret);
+
+        }
     }
 }

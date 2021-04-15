@@ -173,5 +173,6 @@ namespace Biobanks.Services.Contracts
         Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
 
         Task<KeyValuePair<string, string>> GenerateNewApiClientForBiobank(int biobankId, string clientName = null);
+        Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId);
     }
 }
