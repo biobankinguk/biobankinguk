@@ -22,6 +22,8 @@
   - src/Entities/**/*
 "Area: IdentityModel":
   - src/IdentityModel/**/*
+"Area: Aggregator":
+  - src/Aggregator/**/*
 
 # label types of changes contained in a PR
 "Contains: Migrations":
