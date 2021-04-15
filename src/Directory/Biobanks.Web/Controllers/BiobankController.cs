@@ -1923,33 +1923,36 @@ namespace Biobanks.Web.Controllers
             if (model.GenerateKey)
             {
                 var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
-                if (!existingclient)
-                {
-                    var credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
-                    model.PublicKey = credentials.Key;
-                    model.PrivateKey = credentials.Value;
-                    model.GenerateKey = false;
+                var credentials = new KeyValuePair<string,string>();
 
-                    //populate drop downs
-                    model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
-                        .Select(x => new ReferenceDataModel
-                        {
-                            Id = x.Id,
-                            Description = x.Value,
-                            SortOrder = x.SortOrder
-                        }).OrderBy(x => x.SortOrder);
+                //re-populate drop downs
+                model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+                    .Select(x => new ReferenceDataModel
+                    {
+                        Id = x.Id,
+                        Description = x.Value,
+                        SortOrder = x.SortOrder
+                    }).OrderBy(x => x.SortOrder);
 
-                    model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
-                        .Select(x => new ReferenceDataModel
-                        {
-                            Id = x.Id,
-                            Description = x.Value,
-                            SortOrder = x.SortOrder
-                        }).OrderBy(x => x.SortOrder);
+                model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                    .Select(x => new ReferenceDataModel
+                    {
+                        Id = x.Id,
+                        Description = x.Value,
+                        SortOrder = x.SortOrder
+                    }).OrderBy(x => x.SortOrder);
 
-                    SetTemporaryFeedbackMessage("New private key generated successfully!", FeedbackMessageType.Success);
-                    return View(model);
-                }
+                if (existingclient) 
+                    credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
+                else
+                    credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+
+                model.PublicKey = credentials.Key;
+                model.PrivateKey = credentials.Value;
+                model.GenerateKey = false;
+
+                SetTemporaryFeedbackMessage("New private key generated successfully!", FeedbackMessageType.Success);
+                return View(model);
             }
             else
             {
