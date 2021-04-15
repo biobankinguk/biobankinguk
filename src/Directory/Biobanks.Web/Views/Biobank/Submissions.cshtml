@@ -104,8 +104,16 @@
             </h4>
         </div>
         <div class="col-sm-5">
-            @Html.TextBoxFor(x => x.PublicKey,  new { @class = "form-control", @readonly = "true" })
+            <input type="text" id="PublicKey" name="PublicKey" value=@Model.PublicKey class="form-control" readonly="readonly" />
         </div>
+        @if (Model.PublicKey != null)
+        {
+            <div class="col-sm-10 col-sm-offset-1 alert-container">
+                <div class="alert alert-warning">
+                    <label>Generating a new private key will override your previous key and display a new private key. Your public key will remain unchanged.</label>
+                </div>
+            </div>
+        }
     </div>
     if (Model.PrivateKey != null)
     {
@@ -117,11 +125,11 @@
                 </h4>
             </div>
             <div class="col-sm-5">
-                @Html.TextBoxFor(x => x.PrivateKey, new { @class = "form-control", @readonly = "true" })
+                <input type="text" id="PrivateKey" name="PrivateKey" value=@Model.PrivateKey class="form-control" readonly="readonly" />
             </div>
             <div class="col-sm-10 col-sm-offset-1 alert-container">
                 <div class="alert alert-warning">
-                    <label>This will only be displayed once</label>
+                    <label>This private key will be displayed only once! You are advised to copy it now and store it in a safe place.</label>
                 </div>
             </div>
         </div>
