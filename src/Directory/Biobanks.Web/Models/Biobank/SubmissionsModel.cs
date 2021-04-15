@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Biobanks.Web.Models.Biobank
 {
@@ -15,6 +16,9 @@ namespace Biobanks.Web.Models.Biobank
         #endregion
 
         #region Properties
+
+        [HiddenInput(DisplayValue = false)]
+        public int BiobankId { get; set; }
 
         [Required(ErrorMessage = "Please select an access condition.")]
         [Display(Name = "Access condition")]
