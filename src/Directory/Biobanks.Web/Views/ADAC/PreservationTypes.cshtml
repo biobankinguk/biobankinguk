@@ -51,7 +51,7 @@
                             {
                                 <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Preservation Type in use")
                             }                           
-                            else
+                            else if (item.StorageTemperatureId != null)
                             {
                                 <a title="Edit"
                                    class="action-icon"

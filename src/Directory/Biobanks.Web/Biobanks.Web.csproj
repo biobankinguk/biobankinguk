@@ -463,6 +463,7 @@
     <Compile Include="App_Start\ProfilerConfig.cs" />
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
+    <Compile Include="Controllers\VersionController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
@@ -1052,6 +1053,7 @@
     <Compile Include="Utilities\FeedbackMessage.cs" />
     <Compile Include="Utilities\SessionHelper.cs" />
     <Compile Include="Utilities\SessionKeys.cs" />
+    <Compile Include="Utilities\VersionHelper.cs" />
     <Compile Include="Views\ApplicationBaseViewPage.cs" />
     <Compile Include="Windsor\WindsorActionFilterHelper.cs" />
     <Compile Include="Windsor\WindsorActionInvoker.cs" />
@@ -1109,6 +1111,7 @@
     <Folder Include="Views\ServiceOfferings\" />
     <Folder Include="Views\Sexes\" />
     <Folder Include="Views\SopStatus\" />
+    <Folder Include="Views\Version\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj">

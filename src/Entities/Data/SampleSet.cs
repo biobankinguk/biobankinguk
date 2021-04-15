@@ -5,7 +5,7 @@ using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Entities.Data
 {
-    public class CollectionSampleSet
+    public class SampleSet
     {
         [Key]
         public int SampleSetId { get; set; } //"Sample Code" in model

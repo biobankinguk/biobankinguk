@@ -45,10 +45,10 @@ namespace Analytics.Services
         {
             _ctx = ctx;
             _config = configuration;
-            _viewId = _config.GetValue<string>("analytics-viewid", "");
-            _startDate = _config.GetValue<string>("start-date", "2016-01-01");
+            _viewId = _config.GetValue<string>("AnalyticsViewid", "");
+            _startDate = _config.GetValue<string>("StartDate", "2016-01-01");
 
-            _credentials = GoogleCredential.FromJson(_config.GetValue<string>("analytics-apikey", "{}"))
+            _credentials = GoogleCredential.FromJson(_config.GetValue<string>("AnalyticsApikey", "{}"))
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
 
             _analytics = new AnalyticsReportingService(

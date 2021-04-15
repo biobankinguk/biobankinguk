@@ -183,7 +183,7 @@ namespace Biobanks.Web.Controllers
             }
         }
 
-        private static string GetMaterialTypeSummary(IEnumerable<CollectionSampleSet> sampleSets)
+        private static string GetMaterialTypeSummary(IEnumerable<SampleSet> sampleSets)
         {
             var materialTypes = new List<string>();
 

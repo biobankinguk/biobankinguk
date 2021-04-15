@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Start": {
+      "commandName": "Executable",
+      "executablePath": "func",
+      "commandLineArgs": "host start --dotnet-isolated-debug",
+      "ErrorString": "Unexpected character encountered while parsing value: a. Path '', line 0, position 0."
+    }
+  }
+}

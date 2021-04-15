@@ -8,6 +8,7 @@ using Biobanks.Submissions.Core.Config;
 using Biobanks.Submissions.Core.Dto;
 using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Entities.Api;
+using System.Xml;
 
 namespace Biobanks.Submissions.Core.Services
 {
@@ -100,23 +101,38 @@ namespace Biobanks.Submissions.Core.Services
             }
                 
             // if only YearOfBirth is specified, calculate confident AgeAtDonation and return
-            if (dto.AgeAtDonation == null)
+            if (string.IsNullOrEmpty(dto.AgeAtDonation))
             {
                 sample.YearOfBirth = (int) dto.YearOfBirth;
-                sample.AgeAtDonation =  dto.DateCreated.Year - sample.YearOfBirth;
+                // Creates an AgeAtDonation Timespan value from date created - 01/01/YearOfBirth
+                /* If DateCreated is in the same year as YearOfBirth - then it will be positive duration
+                   Otherwise it will be negative (fetus)   */
+                var ageAtDonation = dto.DateCreated - new DateTime((int)sample.YearOfBirth, 01, 01);
+
+                // Converts Timespan value to Iso Duration
+                sample.AgeAtDonation = XmlConvert.ToString(ageAtDonation);
+
                 return sample;
             }
 
             // otherwise, check that the provided YearOfBirth and AgeAtDonation add up
-            // if they don't add up, throw an error
-            if(Math.Abs(dto.DateCreated.Year - (int) dto.YearOfBirth - (int) dto.AgeAtDonation) > 1)
+
+            var ageAtDonationTs = XmlConvert.ToTimeSpan(dto.AgeAtDonation);
+
+            var maxTs = dto.DateCreated - new DateTime((int)dto.YearOfBirth, 01, 01);
+            var minTs = dto.DateCreated - new DateTime((int)dto.YearOfBirth, 12, 31);
+
+            // if AgeAtDonation doesnt fall within the bounds of DateCreated - YearOfBirth, throw an error
+            if(ageAtDonationTs <= minTs || ageAtDonationTs >= maxTs)
+            {
                 throw new ValidationException(
                     new ValidationResult(
-                        $"If both {nameof(dto.AgeAtDonation)} and {nameof(dto.YearOfBirth)} are provided, the difference between {nameof(dto.DateCreated)} and {nameof(dto.YearOfBirth)} must be {nameof(dto.AgeAtDonation)} +/- 1 year.",
+                       $"If both {nameof(dto.AgeAtDonation)} and {nameof(dto.YearOfBirth)} are provided, the {nameof(dto.AgeAtDonation)} timespan value must fall within the minimum/maximum timepsans based on the difference between {nameof(dto.DateCreated)} and {nameof(dto.YearOfBirth)}.",
                         new List<string> { nameof(dto.AgeAtDonation), nameof(dto.YearOfBirth) }),
                     null, null);
+            }
 
-            // if they do add up, use the original values and return
+            // if AgeAtDonation does fall within the bounds, use the original values and return
             sample.AgeAtDonation = dto.AgeAtDonation;
             sample.YearOfBirth = (int) dto.YearOfBirth;
             return sample;

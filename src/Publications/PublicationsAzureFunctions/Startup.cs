@@ -29,7 +29,7 @@ namespace PublicationsAzureFunctions
                 .GetService<IConfiguration>();
 
             // Populate connection string with credentials
-            var sqlConnection = _configuration.GetConnectionString("sqldb-connection");
+            var sqlConnection = _configuration.GetConnectionString("Default");
 
             // Register DbContext
             builder.Services.AddDbContext<PublicationDbContext>(options =>
