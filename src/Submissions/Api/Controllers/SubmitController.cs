@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
@@ -161,6 +162,39 @@ namespace Biobanks.Submissions.Api.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
                         else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
+                        else if (sampleModel.AgeAtDonation != null)
+                        {
+                            int ageAtDonationInt; 
+                            if (int.TryParse(sampleModel.AgeAtDonation, out ageAtDonationInt))
+                            {
+                                // Check if negative
+                                bool isNegative = false;
+                                if (ageAtDonationInt < 0)
+                                {
+                                    isNegative = true;
+                                    sampleModel.AgeAtDonation = sampleModel.AgeAtDonation.Replace("-", "");
+                                }
+                                // Convert to ISO Duration
+                                sampleModel.AgeAtDonation = "P" + sampleModel.AgeAtDonation + "Y";
+                                if (isNegative)
+                                {
+                                    sampleModel.AgeAtDonation = "-" + sampleModel.AgeAtDonation;
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    // Checks if AgeAtDonation is a valid ISO Duration 
+                                    XmlConvert.ToTimeSpan(sampleModel.AgeAtDonation);
+                                }
+                                catch
+                                {
+                                    return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid AgeAtDonation value, must be a valid ISO duration.");
+                                }
+                            }
+
+                        }
                         else
                             samplesUpdates.Add(sampleModel);
                         break;
