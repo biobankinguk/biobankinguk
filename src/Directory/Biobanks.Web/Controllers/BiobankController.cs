@@ -1897,6 +1897,7 @@ namespace Biobanks.Web.Controllers
             var biobankId = SessionHelper.GetBiobankId(Session);
             var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
+            model.BiobankId = biobankId;
             model.AccessCondition = biobank.DefaultSubmissionsAccessConditionId;
             model.CollectionType = biobank.DefaultSubmissionsCollectionTypeId;
             model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
@@ -1910,7 +1911,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Submissions(SubmissionsModel model)
         {
             //update Organisations table
-            var biobankId = SessionHelper.GetBiobankId(Session);
+            var biobankId = model.BiobankId;
             var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
             biobank.DefaultSubmissionsCollectionTypeId = model.CollectionType;
