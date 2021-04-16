@@ -198,9 +198,37 @@
                             </div>
                         </div>
 
+                        <!-- Storage Temperature -->
+                        <div class="col-sm-12 form-group">
+                            <label class="control-label required">@App.Config[ConfigKey.StorageTemperatureName]</label>
+                            <p class="help-block col-sm-12">
+                                <span class="fa fa-info-circle"></span>
+                                Select how the samples are currently stored.
+                                If there is something missing please contact us.
+                            </p>
+                            <div class="col-sm-12">
+                                <div class="col-sm-6" data-bind="foreach: lookup.storageTemperatures.slice(0, lookup.storageTemperatures().length / 2)">
+                                    <div class="radio">
+                                        <label data-bind="validationOptions: {insertMessages: false}">
+                                            <input type="radio" name="radPreservation" onclick="preservationValidation()" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().storageTemperature">
+                                            <span data-bind="text: $data.label"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" data-bind="foreach: lookup.storageTemperatures.slice(lookup.storageTemperatures().length / 2)">
+                                    <div class="radio">
+                                        <label data-bind="validationOptions: {insertMessages: false}">
+                                            <input type="radio" name="radPreservation" onclick="preservationValidation()" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().storageTemperature">
+                                            <span data-bind="text: $data.label"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Preservation Type -->
                         <div class="col-sm-12 form-group">
-                            <label class="control-label required">Preservation Type</label>
+                            <label class="control-label">Preservation Type</label>
                             <p class="help-block col-sm-12">
                                 <span class="fa fa-info-circle"></span>
                                 Select how the samples are currently stored.
@@ -219,34 +247,6 @@
                                     <div class="radio">
                                         <label data-bind="validationOptions: {insertMessages: false}">
                                             <input type="radio" name="radPreservationType" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().preservationType">
-                                            <span data-bind="text: $data.label"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Storage Temperature -->
-                        <div class="col-sm-12 form-group">
-                            <label class="control-label required">@App.Config[ConfigKey.StorageTemperatureName]</label>
-                            <p class="help-block col-sm-12">
-                                <span class="fa fa-info-circle"></span>
-                                Select how the samples are currently stored.
-                                If there is something missing please contact us.
-                            </p>
-                            <div class="col-sm-12">
-                                <div class="col-sm-6" data-bind="foreach: lookup.storageTemperatures.slice(0, lookup.storageTemperatures().length / 2)">
-                                    <div class="radio">
-                                        <label data-bind="validationOptions: {insertMessages: false}">
-                                            <input type="radio" name="radPreservation" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().storageTemperature">
-                                            <span data-bind="text: $data.label"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6" data-bind="foreach: lookup.storageTemperatures.slice(lookup.storageTemperatures().length / 2)">
-                                    <div class="radio">
-                                        <label data-bind="validationOptions: {insertMessages: false}">
-                                            <input type="radio" name="radPreservation" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().storageTemperature">
                                             <span data-bind="text: $data.label"></span>
                                         </label>
                                     </div>

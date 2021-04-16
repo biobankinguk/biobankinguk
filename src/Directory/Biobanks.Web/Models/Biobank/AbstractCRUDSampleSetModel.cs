@@ -58,7 +58,6 @@ namespace Biobanks.Web.Models.Biobank
                 foreach (var mpd in MaterialPreservationDetails)
                 {
                     if (mpd.materialType == 0 ||
-                        mpd.preservationType == 0 ||
                         mpd.storageTemperature == 0 ||
                         mpd.percentage == 0 ||
                         mpd.macroscopicAssessment == 0)

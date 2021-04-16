@@ -4,6 +4,28 @@ function RadioBinding(value, label, sortOrder) {
     this.sortOrder = sortOrder;
 }
 
+function preservationValidation() {
+	var selectedOption = $("input[name='radPreservation']:checked").val();
+	$("input[name='radPreservationType']").attr('disabled', true)
+	$("input[name='radPreservationType']").attr('checked', false)
+	//Resetting the stored selected value
+	sampleSetVM.modal.materialPreservationDetail().preservationType(null);
+
+	//AJAX Update
+	$.ajax({
+		url: '/api/' + 'StorageTemperature' + "/" + selectedOption + "/preservationtype",
+		type: 'GET',
+		success: function (data) {
+			for (let i of data) {				
+				var temp = $("input[name='radPreservationType'][value='" + i + "']");
+				temp.attr('disabled', false);
+            }
+		}
+	});
+
+
+}
+
 function Lookup() {
     var initValue = "Initial value to get it to build the vm model correctly.";
     this.ageRanges = ko.observableArray([new RadioBinding(0, initValue, 0)]);
@@ -43,9 +65,7 @@ function MaterialPreservationDetail(
   this.materialType = ko.observable(materialType).extend({
 	min: { params: 1, message: "Please select a material type." },
   });
-  this.preservationType = ko.observable(preservationType).extend({
-	min: { params: 1, message: "Please select a preservation type." },
-  });
+  this.preservationType = ko.observable(preservationType);
   this.storageTemperature = ko.observable(storageTemperature).extend({
 	min: { params: 1, message: "Please select a storage temperature." },
   });
@@ -183,13 +203,27 @@ function AppViewModel() {
 	  _this.modal.mode() == _this.modal.modalModeCopy
 	) {
 	  if (_this.modal.materialPreservationDetail().errors().length === 0) {
-		var newMaterialPreservationDetail = new MaterialPreservationDetail(
-		  _this.modal.materialPreservationDetail().materialType(),
-		  _this.modal.materialPreservationDetail().preservationType(),
-		  _this.modal.materialPreservationDetail().storageTemperature(),
-		  _this.modal.materialPreservationDetail().percentage(),
-		  _this.modal.materialPreservationDetail().macroscopicAssessment()
-		);
+        
+		
+
+		  if (_this.modal.materialPreservationDetail().preservationType() === 0) {
+			  var newMaterialPreservationDetail = new MaterialPreservationDetail(
+				  _this.modal.materialPreservationDetail().materialType(),
+				  null,
+				  _this.modal.materialPreservationDetail().storageTemperature(),
+				  _this.modal.materialPreservationDetail().percentage(),
+				  _this.modal.materialPreservationDetail().macroscopicAssessment()
+			  );
+		  }
+		  else {
+			  var newMaterialPreservationDetail = new MaterialPreservationDetail(
+				  _this.modal.materialPreservationDetail().materialType(),
+				  _this.modal.materialPreservationDetail().preservationType(),
+				  _this.modal.materialPreservationDetail().storageTemperature(),
+				  _this.modal.materialPreservationDetail().percentage(),
+				  _this.modal.materialPreservationDetail().macroscopicAssessment()
+			  );
+          }
 
 		_this.materialPreservationDetails.push(newMaterialPreservationDetail);
 
@@ -248,13 +282,26 @@ function AppViewModel() {
 			_this.modal.mode() == _this.modal.modalModeCopy
 		) {
 			if (_this.modal.materialPreservationDetail().errors().length === 0) {
-				var newMaterialPreservationDetail = new MaterialPreservationDetail(
-					_this.modal.materialPreservationDetail().materialType(),
-					_this.modal.materialPreservationDetail().preservationType(),
-					_this.modal.materialPreservationDetail().storageTemperature(),
-					null,
-					_this.modal.materialPreservationDetail().macroscopicAssessment()
-				);
+
+
+				if (_this.modal.materialPreservationDetail().preservationType() === 0) {
+					var newMaterialPreservationDetail = new MaterialPreservationDetail(
+						_this.modal.materialPreservationDetail().materialType(),
+						null,
+						_this.modal.materialPreservationDetail().storageTemperature(),
+						null,
+						_this.modal.materialPreservationDetail().macroscopicAssessment()
+					);
+				}
+				else {
+					var newMaterialPreservationDetail = new MaterialPreservationDetail(
+						_this.modal.materialPreservationDetail().materialType(),
+						_this.modal.materialPreservationDetail().preservationType(),
+						_this.modal.materialPreservationDetail().storageTemperature(),
+						null,
+						_this.modal.materialPreservationDetail().macroscopicAssessment()
+					);
+				}
 
 				_this.materialPreservationDetails.push(newMaterialPreservationDetail);
 
@@ -396,5 +443,7 @@ $(function () {
   //initialise VM after the validation extender is registered
   sampleSetVM = new AppViewModel();
   sampleSetVM.resetModalValues(); // Used to init values
-  ko.applyBindings(sampleSetVM);
+	ko.applyBindings(sampleSetVM);
 });
+
+
