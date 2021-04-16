@@ -31,7 +31,7 @@ namespace Biobanks.Entities.Api
         /// Optional Age of the individual when the sample was donated.
         /// At least one of Age or YearOfBirth are required.
         /// </summary>
-        public int? AgeAtDonation { get; set; }
+        public string AgeAtDonation { get; set; }
 
         /// <summary>
         /// Foreign key column.
@@ -147,7 +147,18 @@ namespace Biobanks.Entities.Api
     /// <summary>
     /// Subclass for EF Core
     /// </summary>
-    public class LiveSample : Sample { }
+    public class LiveSample : Sample 
+    {
+        /// <summary>
+        /// Flag for if the sample has been changed.
+        /// </summary>
+        public bool IsDirty { get; set; }
+
+        /// <summary>
+        /// Flag for if the sample has been deleted.
+        /// </summary>
+        public bool IsDeleted { get; set; }
+    }
 
     /// <summary>
     /// Subclass for EF Core

@@ -1083,7 +1083,7 @@ namespace Biobanks.Web.Controllers
 
             if (model.IsValid(ModelState) && apiCheck == false)
             {
-                var sampleSet = new CollectionSampleSet
+                var sampleSet = new SampleSet
                 {
                     CollectionId = id,
                     SexId = model.Sex,
@@ -1196,7 +1196,7 @@ namespace Biobanks.Web.Controllers
 
             if (model.IsValid(ModelState) && apiCheck == false)
             {
-                var sampleSet = new CollectionSampleSet
+                var sampleSet = new SampleSet
                 {
                     SampleSetId = id,
                     SexId = model.Sex,

@@ -19,7 +19,7 @@ namespace Biobanks.Submissions.Api.Models
         /// The age of the donor at time of making donation.
         /// </summary>
         [Range(0, 150)]
-        public int? AgeAtDonation { get; set; }
+        public string AgeAtDonation { get; set; }
 
         /// <summary>
         /// The material type of the sample donated.

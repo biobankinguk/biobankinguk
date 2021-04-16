@@ -18,5 +18,11 @@ namespace Biobanks.Web.Models.ADAC
         public int SortOrder { get; set; }
 
         public int SampleSetsCount { get; set; }
+
+        public string LowerBound { get; set; }
+        public string UpperBound { get; set; }
+
+        public string LowerDuration { get; set; }
+        public string UpperDuration { get; set; }
     }
 }

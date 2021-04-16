@@ -22,10 +22,10 @@ namespace Analytics.Services
         {
             _config = configuration;
             _googleAnalyticsReadService = googleAnalyticsReadService;
-            _numOfTopBiobanks = _config.GetValue<int>("metric-threshold", 10);
-            _eventThreshold = _config.GetValue<int>("event-threshold", 30); 
-            _filterByHost = _config.GetValue<bool>("filterby-host", true); 
-            _hostname = _config.GetValue<string>("directory-hostname",""); 
+            _numOfTopBiobanks = _config.GetValue<int>("MetricThreshold", 10);
+            _eventThreshold = _config.GetValue<int>("EventThreshold", 30); 
+            _filterByHost = _config.GetValue<bool>("FilterbyHost", true); 
+            _hostname = _config.GetValue<string>("DirectoryHostname",""); 
         }
 
         public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
