@@ -291,7 +291,7 @@ $(".help-label-adac-macroscopicassessment-override").click(function () {
 
 $(".help-label-submissions-publickey").click(function () {
     bootbox.dialog({
-        message: "The public key used to encrypt data when using the submission API",
+        message: "The public key used to encrypt data when using the submission API. Your public key is generated only once when you generate your first private key.",
         title: "Public Key",
         buttons: helpIconBootboxButtons
     });
