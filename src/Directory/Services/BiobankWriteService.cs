@@ -347,8 +347,8 @@ namespace Biobanks.Services
                     existingMaterialDetail.MaterialTypeId = materialDetail.MaterialTypeId;
                     existingMaterialDetail.StorageTemperatureId = materialDetail.StorageTemperatureId;
                     existingMaterialDetail.MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId;
-                    existingMaterialDetail.ExtractionProcedureId = materialDetail.ExtractionProcedureId;
-                    existingMaterialDetail.PreservationTypeId = materialDetail.PreservationTypeId;
+                    //existingMaterialDetail.ExtractionProcedureId = materialDetail.ExtractionProcedureId;
+                    //existingMaterialDetail.PreservationTypeId = materialDetail.PreservationTypeId;
                     existingMaterialDetail.CollectionPercentageId = materialDetail.CollectionPercentageId;
                 }
                 // Delete MaterialDetail
@@ -368,8 +368,8 @@ namespace Biobanks.Services
                         MaterialTypeId = materialDetail.MaterialTypeId,
                         StorageTemperatureId = materialDetail.StorageTemperatureId,
                         MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId,
-                        ExtractionProcedureId = materialDetail.ExtractionProcedureId,
-                        PreservationTypeId = materialDetail.PreservationTypeId,
+                        //ExtractionProcedureId = materialDetail.ExtractionProcedureId,
+                        //PreservationTypeId = materialDetail.PreservationTypeId,
                         CollectionPercentageId = materialDetail.CollectionPercentageId
                     }
                 );
