@@ -10,12 +10,21 @@
     document.execCommand("copy");
 }
 
-//wire up bootbox confirmation
+//copy text
 $(".copy-text").click(function (e) {
     e.preventDefault();
     var $btn = $(this);
     var txtbox = $btn.data("target")
     copyText(txtbox);
-    /* Alert the copied text */
-    alert("Copied the text: " + source.value);
 });
+
+//generate private key
+$("#generatekey").click(function (e) {
+    var $btn = $(this);
+    $.post($btn.data("generate-url"),
+        { biobankId: $btn.data("biobank-id") }, data => {
+            $("#PrivateKey").val(data.privatekey);
+            $("#PublicKey").val(data.publickey);
+            $("#privateKeyWrapper").removeAttr("hidden");
+    })
+})
