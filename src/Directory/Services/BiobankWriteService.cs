@@ -13,7 +13,6 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
-using AutoMapper.Internal;
 
 namespace Biobanks.Services
 {

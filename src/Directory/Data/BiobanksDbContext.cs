@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
