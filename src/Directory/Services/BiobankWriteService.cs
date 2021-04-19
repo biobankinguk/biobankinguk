@@ -337,48 +337,37 @@ namespace Biobanks.Services
             existingSampleSet.DonorCountId = sampleSet.DonorCountId;
             existingSampleSet.Collection.LastUpdated = DateTime.Now;
 
-            await _sampleSetRepository.SaveChangesAsync();
-
-
-            // Update MaterialDetails
-            var existingMaterialDetails = await _materialDetailRepository.ListAsync(
-                    tracking: true,
-                    filter: x => x.SampleSetId == existingSampleSet.Id
-                );
-
-            foreach (var materialDetail in existingSampleSet.MaterialDetails)
-            {
-                // Existing MaterialDetail Updated
-                if (sampleSet.MaterialDetails.Select(x => x.Id).Contains(materialDetail.Id))
-                {
-                }
-                // Exisiting MaterialDetail Deleted
-                else
-                {
-                    try
-                    {
-                        _materialDetailRepository.Delete(materialDetail);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
-            // Add New MaterialDetails
+            // New MaterialDetails
             foreach (var materialDetail in sampleSet.MaterialDetails.Where(x => x.Id == default))
             {
             }
 
-            try
+            // Existing MaterialDetails
+            foreach (var existingMaterialDetail in existingSampleSet.MaterialDetails.ToList())
             {
-                await _materialDetailRepository.SaveChangesAsync();
-            }
-            catch
-            {
+                var materialDetail = sampleSet.MaterialDetails.FirstOrDefault(x => x.Id == existingMaterialDetail.Id);
+
+                // Update MaterialDetail 
+                if (materialDetail != null)
+                {
+                    existingMaterialDetail.MaterialTypeId = materialDetail.MaterialTypeId;
+                    existingMaterialDetail.StorageTemperatureId = materialDetail.StorageTemperatureId;
+                    existingMaterialDetail.MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId;
+                    existingMaterialDetail.ExtractionProcedureId = materialDetail.ExtractionProcedureId;
+                    existingMaterialDetail.PreservationTypeId = materialDetail.PreservationTypeId;
+                    existingMaterialDetail.CollectionPercentageId = materialDetail.CollectionPercentageId;
+                }
+                // Delete MaterialDetail
+                else
+                {
+                    _materialDetailRepository.Delete(existingMaterialDetail);
+                }
             }
 
-            // Index Changes
+            await _sampleSetRepository.SaveChangesAsync();
+            await _materialDetailRepository.SaveChangesAsync();
+
+            // Update Search Index
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
             {
                 await _indexService.UpdateSampleSetDetails(sampleSet.Id);
