@@ -68,8 +68,8 @@
 
                 DELETE FROM Samples WHERE Id IN (SELECT Id FROM StagedSampleDeletes);
 
-                INSERT INTO Samples (OrganisationId, SubmissionTimestamp, IndividualReferenceId, Barcode, YearOfBirth, AgeAtDonation, MaterialTypeId, StorageTemperatureId, DateCreated, ExtractionSiteId, ExtractionSiteOntologyVersionId, ExtractionProcedureId, SampleContentId, SampleContentMethodId, SexId, CollectionName, IsDirty)
-	                SELECT OrganisationId, SubmissionTimestamp, IndividualReferenceId, Barcode, YearOfBirth, AgeAtDonation, MaterialTypeId, StorageTemperatureId, DateCreated, ExtractionSiteId, ExtractionSiteOntologyVersionId, ExtractionProcedureId, SampleContentId, SampleContentMethodId, SexId, CollectionName, 1 FROM StagedSamples WHERE OrganisationId = {organisationId};
+                INSERT INTO Samples (OrganisationId, SubmissionTimestamp, IndividualReferenceId, Barcode, YearOfBirth, AgeAtDonation, MaterialTypeId, StorageTemperatureId, DateCreated, ExtractionSiteId, ExtractionSiteOntologyVersionId, ExtractionProcedureId, SampleContentId, SampleContentMethodId, SexId, CollectionName, IsDirty, IsDeleted)
+	                SELECT OrganisationId, SubmissionTimestamp, IndividualReferenceId, Barcode, YearOfBirth, AgeAtDonation, MaterialTypeId, StorageTemperatureId, DateCreated, ExtractionSiteId, ExtractionSiteOntologyVersionId, ExtractionProcedureId, SampleContentId, SampleContentMethodId, SexId, CollectionName, 1, 0 FROM StagedSamples WHERE OrganisationId = {organisationId};
                      
                 DELETE FROM StagedSamples WHERE OrganisationId = {organisationId};";
 
