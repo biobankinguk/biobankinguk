@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="organisationId">The organisation ID to delete live samples for.</param>
         /// <returns></returns>
-        public static string DeleteAllLiveSamples(int organisationId) => $"DELETE FROM Samples WHERE OrganisationId = {organisationId};";
+        public static string DeleteAllLiveSamples(int organisationId) => $"UPDATE Samples SET IsDirty = 1, IsDeleted = 1 WHERE OrganisationId = {organisationId};";
         
         /// <summary>
         /// Deletes all live treatments for a given organisation.
@@ -68,7 +68,7 @@
 
                 DELETE FROM Samples WHERE Id IN (SELECT Id FROM StagedSampleDeletes);
 
-                INSERT INTO Samples (OrganisationId, SubmissionTimestamp, IndividualReferenceId, Barcode, YearOfBirth, AgeAtDonation, MaterialTypeId, StorageTemperatureId, DateCreated, ExtractionSiteId, ExtractionSiteOntologyVersionId, ExtractionProcedureId, SampleContentId, SampleContentMethodId, SexId, CollectionName, isDirty)
+                INSERT INTO Samples (OrganisationId, SubmissionTimestamp, IndividualReferenceId, Barcode, YearOfBirth, AgeAtDonation, MaterialTypeId, StorageTemperatureId, DateCreated, ExtractionSiteId, ExtractionSiteOntologyVersionId, ExtractionProcedureId, SampleContentId, SampleContentMethodId, SexId, CollectionName, IsDirty)
 	                SELECT OrganisationId, SubmissionTimestamp, IndividualReferenceId, Barcode, YearOfBirth, AgeAtDonation, MaterialTypeId, StorageTemperatureId, DateCreated, ExtractionSiteId, ExtractionSiteOntologyVersionId, ExtractionProcedureId, SampleContentId, SampleContentMethodId, SexId, CollectionName, 1 FROM StagedSamples WHERE OrganisationId = {organisationId};
                      
                 DELETE FROM StagedSamples WHERE OrganisationId = {organisationId};";
