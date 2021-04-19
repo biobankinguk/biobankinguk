@@ -110,13 +110,6 @@ namespace Biobanks.Data
                 .WithMany(y => y.MaterialTypeGroups);
 
             // Composite Primary Keys
-            model.Entity<MaterialDetail>()
-                .HasKey(x => new
-                {
-                    x.Id,
-                    x.SampleSetId
-                });
-
             model.Entity<CapabilityAssociatedData>()
                 .HasKey(x => new
                 {
@@ -246,8 +239,6 @@ namespace Biobanks.Data
                     x.LowerBound,
                     x.UpperBound
                 }).IsUnique();
-
-
         }
 
         public BiobanksDbContext(DbContextOptions options) : base(options) { }
