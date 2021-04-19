@@ -239,8 +239,8 @@ namespace Biobanks.Data
                     x.LowerBound,
                     x.UpperBound
                 }).IsUnique();
-        
-        
+
+
         }
 
         public BiobanksDbContext(DbContextOptions options) : base(options) { }
