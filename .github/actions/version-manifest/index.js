@@ -67,6 +67,11 @@ try {
   // record the updated version
   core.setOutput("version", manifest.version);
   console.log("version:", manifest.version);
+
+  // and if it's a prerelease
+  const isPrerelease = !!semver.prerelease(manifest.version);
+  core.setOutput("isPrerelease", isPrerelease);
+  console.log("isPrerelease:", isPrerelease);
 } catch (e) {
   core.setFailed(e.message);
 }
