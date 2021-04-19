@@ -7,10 +7,9 @@ namespace Biobanks.Entities.Data
 {
     public class MaterialDetail //"Material Preservation Details" in the model
     {
-        [Key, Column(Order = 0)]
+        [Key]
         public int Id { get; set; }
 
-        [Key, Column(Order = 1)]
         public int SampleSetId { get; set; } //"Sample Code" in the model
 
         public int MaterialTypeId { get; set; }

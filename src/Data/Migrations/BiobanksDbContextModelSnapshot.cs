@@ -765,10 +765,9 @@ namespace Biobanks.Data.Migrations
             modelBuilder.Entity("Biobanks.Entities.Data.MaterialDetail", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SampleSetId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int?>("CollectionPercentageId")
                         .HasColumnType("int");
@@ -785,10 +784,13 @@ namespace Biobanks.Data.Migrations
                     b.Property<int?>("PreservationTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SampleSetId")
+                        .HasColumnType("int");
+
                     b.Property<int>("StorageTemperatureId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id", "SampleSetId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CollectionPercentageId");
 

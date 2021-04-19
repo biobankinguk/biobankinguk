@@ -337,11 +337,6 @@ namespace Biobanks.Services
             existingSampleSet.DonorCountId = sampleSet.DonorCountId;
             existingSampleSet.Collection.LastUpdated = DateTime.Now;
 
-            // New MaterialDetails
-            foreach (var materialDetail in sampleSet.MaterialDetails.Where(x => x.Id == default))
-            {
-            }
-
             // Existing MaterialDetails
             foreach (var existingMaterialDetail in existingSampleSet.MaterialDetails.ToList())
             {
@@ -362,6 +357,23 @@ namespace Biobanks.Services
                 {
                     _materialDetailRepository.Delete(existingMaterialDetail);
                 }
+            }
+
+            // New MaterialDetails
+            foreach (var materialDetail in sampleSet.MaterialDetails.Where(x => x.Id == default))
+            {
+                _materialDetailRepository.Insert(
+                    new MaterialDetail
+                    {
+                        SampleSetId = existingSampleSet.Id,
+                        MaterialTypeId = materialDetail.MaterialTypeId,
+                        StorageTemperatureId = materialDetail.StorageTemperatureId,
+                        MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId,
+                        ExtractionProcedureId = materialDetail.ExtractionProcedureId,
+                        PreservationTypeId = materialDetail.PreservationTypeId,
+                        CollectionPercentageId = materialDetail.CollectionPercentageId
+                    }
+                );
             }
 
             await _sampleSetRepository.SaveChangesAsync();
