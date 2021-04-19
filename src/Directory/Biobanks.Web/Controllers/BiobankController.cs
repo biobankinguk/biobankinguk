@@ -1919,48 +1919,29 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
 
-            //update update api clients table
-            if (model.GenerateKey)
-            {
-                var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
-                var credentials = new KeyValuePair<string,string>();
-
-                //re-populate drop downs
-                model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    }).OrderBy(x => x.SortOrder);
-
-                model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    }).OrderBy(x => x.SortOrder);
-
-                if (existingclient) 
-                    credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
-                else
-                    credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
-
-                model.PublicKey = credentials.Key;
-                model.PrivateKey = credentials.Value;
-                model.GenerateKey = false;
-
-                SetTemporaryFeedbackMessage("New private key generated successfully!", FeedbackMessageType.Success);
-                return View(model);
-            }
-            else
-            {
-                //Set feedback and redirect
-                SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
-            }
+            //Set feedback and redirect
+            SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
 
             return RedirectToAction("Submissions");
+        }
+
+        [HttpPost]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
+        {
+            //update Organisations table
+            var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
+            KeyValuePair<string, string> credentials;
+
+            if (existingclient)
+                credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
+            else
+                credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+
+            return Json(new {
+                publickey = credentials.Key,
+                privatekey = credentials.Value
+            });
         }
 
         #endregion
