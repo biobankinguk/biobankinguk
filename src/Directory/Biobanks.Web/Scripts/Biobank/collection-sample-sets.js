@@ -21,6 +21,7 @@ function Lookup() {
 var lookup = new Lookup();
 
 function MaterialPreservationDetail(
+  id,
   materialType,
   storageTemperature,
   percentage,
@@ -35,6 +36,8 @@ function MaterialPreservationDetail(
 
 	return matches.length > 0 ? matches[0].label : "";
   };
+
+  this.id = id;
 
   this.materialType = ko.observable(materialType).extend({
 	min: { params: 1, message: "Please select a material type." },
@@ -87,6 +90,7 @@ function MaterialPreservationDetail(
 }
 
 function MaterialPreservationDetailModal(
+  id,
   materialType,
   storageTemperature,
   percentage,
@@ -100,6 +104,7 @@ function MaterialPreservationDetailModal(
 
   this.materialPreservationDetail = ko.observable(
 	new MaterialPreservationDetail(
+	  id,
 	  materialType,
 	  storageTemperature,
 	  percentage,
@@ -111,7 +116,7 @@ function MaterialPreservationDetailModal(
 function AppViewModel() {
   var _this = this;
   this.donorCount = ko.observable(0);
-  this.modal = new MaterialPreservationDetailModal(0, 0, 1, 0);
+  this.modal = new MaterialPreservationDetailModal(0, 0, 0, 1, 0);
   this.materialPreservationDetails = ko.observableArray([]);
   this.currentlyEdited = ko.observable(null);
 
@@ -168,6 +173,7 @@ function AppViewModel() {
 	) {
 	  if (_this.modal.materialPreservationDetail().errors().length === 0) {
 		var newMaterialPreservationDetail = new MaterialPreservationDetail(
+		  _this.modal.materialPreservationDetail().id,
 		  _this.modal.materialPreservationDetail().materialType(),
 		  _this.modal.materialPreservationDetail().storageTemperature(),
 		  _this.modal.materialPreservationDetail().percentage(),
@@ -227,6 +233,7 @@ function AppViewModel() {
 		) {
 			if (_this.modal.materialPreservationDetail().errors().length === 0) {
 				var newMaterialPreservationDetail = new MaterialPreservationDetail(
+					_this.modal.materialPreservationDetail().id,
 					_this.modal.materialPreservationDetail().materialType(),
 					_this.modal.materialPreservationDetail().storageTemperature(),
 					null,

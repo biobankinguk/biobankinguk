@@ -1048,7 +1048,7 @@ namespace Biobanks.Web.Controllers
                 }),
                 SampleSets = collection.SampleSets.Select(sampleSet => new CollectionSampleSetSummaryModel
                 {
-                    Id = sampleSet.SampleSetId,
+                    Id = sampleSet.Id,
                     Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Value,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
@@ -1165,7 +1165,7 @@ namespace Biobanks.Web.Controllers
 
             var model = new EditSampleSetModel
             {
-                Id = sampleSet.SampleSetId,
+                Id = sampleSet.Id,
                 CollectionId = sampleSet.CollectionId,
                 Sex = sampleSet.SexId,
                 AgeRange = sampleSet.AgeRangeId,
@@ -1173,6 +1173,7 @@ namespace Biobanks.Web.Controllers
 
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
+                    id = x.Id,
                     materialType = x.MaterialTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
@@ -1195,13 +1196,14 @@ namespace Biobanks.Web.Controllers
             {
                 var sampleSet = new SampleSet
                 {
-                    SampleSetId = id,
+                    Id = id,
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
                     MaterialDetails = model.MaterialPreservationDetails.Select(x =>
                         new MaterialDetail
                         {
+                            Id = x.id ?? 0,
                             MaterialTypeId = x.materialType,
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
@@ -1250,7 +1252,7 @@ namespace Biobanks.Web.Controllers
 
             var model = new SampleSetModel
             {
-                Id = sampleSet.SampleSetId,
+                Id = sampleSet.Id,
                 CollectionId = sampleSet.CollectionId,
                 Sex = sampleSet.Sex.Value,
                 AgeRange = sampleSet.AgeRange.Value,

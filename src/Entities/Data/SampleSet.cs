@@ -8,7 +8,7 @@ namespace Biobanks.Entities.Data
     public class SampleSet
     {
         [Key]
-        public int SampleSetId { get; set; } //"Sample Code" in model
+        public int Id { get; set; } //"Sample Code" in model
 
         public int CollectionId { get; set; }
         public virtual Collection Collection { get; set; }
