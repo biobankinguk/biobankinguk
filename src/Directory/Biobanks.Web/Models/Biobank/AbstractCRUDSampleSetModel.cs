@@ -79,7 +79,7 @@ namespace Biobanks.Web.Models.Biobank
 
     public class MaterialDetailModel
     {
-        public int? id { get; set; }
+        public int id { get; set; }
         public int materialType { get; set; }
         public int storageTemperature { get; set; }
         public int? percentage { get; set; }
