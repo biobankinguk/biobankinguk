@@ -25,7 +25,7 @@ namespace Biobanks.Aggregator.AzFunctions
                 // Group Into Collections
                 var collections = await _aggregationService.GroupByCollectionsAsync(dirtySamples);
 
-                // Delete Flagged Samples
+                // Delete Samples With isDeleted Flag
                 await _aggregationService.DeleteFlaggedSamplesAsync();
 
                 // Re-Build Collections

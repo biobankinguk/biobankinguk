@@ -20,7 +20,14 @@ namespace Biobanks.Aggregator.Core.Services
         }
 
         public Task<IEnumerable<Collection>> GroupByCollectionsAsync(IEnumerable<LiveSample> samples)
-            => throw new System.NotImplementedException();
+        {
+            var groups = samples.GroupBy(x => new { x.OrganisationId, x.CollectionName });
+
+           
+
+
+            return null;
+        }
 
         public Task<IEnumerable<LiveSample>> ListCollectionSamplesAsync(Collection collection)
             => throw new System.NotImplementedException();
