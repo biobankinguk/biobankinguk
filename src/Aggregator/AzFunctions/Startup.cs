@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Biobanks.Aggregator.Core.Services;
+using Biobanks.Aggregator.Core.Services.Contracts;
+using Biobanks.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -8,6 +12,17 @@ namespace Biobanks.Aggregator.AzFunctions
     {
         internal static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
+            // Register DbContext
+            services.AddDbContext<BiobanksDbContext>(options => options
+                .EnableSensitiveDataLogging()
+                .UseSqlServer(
+                    context.Configuration.GetConnectionString("Default")
+                ),
+                ServiceLifetime.Transient
+            );
+
+            // Services
+            services.AddTransient<IAggregationService, AggregationService>();
         }
     }
 }
