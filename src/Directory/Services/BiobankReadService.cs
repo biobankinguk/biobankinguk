@@ -81,6 +81,9 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<Publication> _publicationRepository;
 
+        private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
+        private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
+
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         private readonly ICacheProvider _cacheProvider;
@@ -148,7 +151,10 @@ namespace Biobanks.Services
             IGenericEFRepository<Country> countryRepository, 
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
-            IGenericEFRepository<Publication> publicationRespository)
+            IGenericEFRepository<Publication> publicationRespository,
+
+            IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
+            IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository)
         {
             _logoStorageProvider = logoStorageProvider;
 
@@ -212,6 +218,9 @@ namespace Biobanks.Services
             _associatedDataTypeRepository = associatedDataTypeRepository;
 
             _publicationRepository = publicationRespository;
+
+            _tokenValidationRecordRepository = tokenValidationRecordRepository;
+            _tokenIssueRecordRepository = tokenIssueRecordRepository;
         }
 
         #endregion
@@ -1551,5 +1560,29 @@ namespace Biobanks.Services
         public async Task<bool> OrganisationIncludesPublications(int biobankId)
             => (!(await GetBiobankByIdAsync(biobankId)).ExcludePublications);
 
+        public async Task<string> GetUnusedTokenByUser(string biobankUserId)
+        {
+            var tokenIssue = (await _tokenIssueRecordRepository.ListAsync(
+                                        false,
+                                        x => x.UserId.Contains(biobankUserId),
+                                        x => x.OrderBy(c => c.IssueDate))).FirstOrDefault();            
+
+            var tokenValidation = await _tokenValidationRecordRepository.ListAsync(
+                                            false,
+                                            x => x.UserId.Contains(biobankUserId));
+
+            List<string> token = tokenValidation.Select(t => t.Token).ToList();
+
+            if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token))
+            {
+                return await _userManager.GeneratePasswordResetTokenAsync(biobankUserId);
+            }                     
+            else
+            {
+                return tokenIssue.Token;
+            }           
+        }
+
+        
     }
 }

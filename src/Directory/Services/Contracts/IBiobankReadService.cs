@@ -286,5 +286,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAnnualStatisticGroupNameAsync(string annualStatisticGroupName);
         Task<bool> OrganisationIncludesPublications(int biobankId);
 
+        Task<string> GetUnusedTokenByUser(string biobankUserId);
     }
 }

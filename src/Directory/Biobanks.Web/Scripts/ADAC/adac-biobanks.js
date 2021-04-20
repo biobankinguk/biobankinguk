@@ -74,19 +74,27 @@
         ko.utils.domNodeDisposal["cleanExternalData"] = original;
     };
 
-    this.openResetBox = function () {
+    this.openResetBox = function (userid, username) {
         $.ajax({
             url: "/Adac/GenerateResetLinkAjax/",
-            data: { biobankUserId: _this.biobankUserId },
+            data: { biobankUserId: userid, biobankUsername: username },
             contentType: "application/html",
             success: function (content) {             
-                _this.cleanNodeJquerySafe(_this.elements.modal2);
+                //clear form errors (as these are in the page's ko model)
+                _this.dialogErrors.removeAll();
+
+                _this.cleanNodeJquerySafe(_this.elements.modal);
 
                 //populate the modal with the form
-                $(_this.elements.modal2).html(content);
+                $(_this.elements.modal).html(content);
 
                 //apply ko bindings to the ajax'd elements
-                ko.applyBindings(biobankAdminsVm, $(_this.elements.modal2)[0]);               
+                ko.applyBindings(biobankAdminsVm, $(_this.elements.modal)[0]);
+
+                //wire up the form submission
+                $(_this.elements.form).submit(function (e) {
+                    _this.submitInviteDialog(e);
+                });               
             },
         });
     }
@@ -156,13 +164,7 @@ $(function () {
 
 })
 
-function copyToClipboard() {
-    var copyText = document.getElementById("link");
-
-    copyText.select();
-    copyText.setSelectionRange(0, 99999);
-
-    document.execCommand("copy");
-
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);    
     alert("Copied");
 }
