@@ -678,8 +678,7 @@ namespace Biobanks.Web.Controllers
             return PartialView("_ModalResetPassword", new ResetPasswordEntityModel
             {
                 ResetLink = url
-            });
-            
+            });            
         }
 
         #endregion
