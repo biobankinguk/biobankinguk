@@ -17,7 +17,10 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public async Task<IEnumerable<Sample>> ListDirtySamples()
+        public async Task<IEnumerable<LiveSample>> ListDirtySamplesAsync()
             => await _db.Samples.Where(x => x.IsDirty).ToListAsync();
+
+        public async Task DeleteFlaggedSamplesAsync()
+            => await _db.Samples.Where(x => x.IsDeleted).DeleteFromQueryAsync();
     }
 }

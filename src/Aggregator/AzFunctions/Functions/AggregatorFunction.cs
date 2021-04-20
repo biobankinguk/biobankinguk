@@ -18,11 +18,16 @@ namespace Biobanks.Aggregator.AzFunctions
         [Function("Aggregator")]
         public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo timer)
         {
-            var dirtySamples = await _aggregationService.ListDirtySamples();
+            var dirtySamples = await _aggregationService.ListDirtySamplesAsync();
 
-            if (!dirtySamples.Any())
+            if (dirtySamples.Any())
             {
-                return;
+                // Group Into Collections
+
+                // Delete Flagged Samples
+                await _aggregationService.DeleteFlaggedSamplesAsync();
+
+                // Re-Build Collections
             }
         }
     }
