@@ -9,16 +9,22 @@ using Biobanks.Submissions.Core.Dto;
 using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Entities.Api;
 using System.Xml;
+using System.IO;
+using Newtonsoft.Json;
+using Biobanks.Submissions.Core.Config.LegacySupport;
+using Microsoft.Extensions.Logging;
 
 namespace Biobanks.Submissions.Core.Services
 {
     public class SampleValidationService : ISampleValidationService
     {
         private readonly IReferenceDataReadService _refDataReadService;
+        private readonly ILogger<SampleValidationService> _logger;
 
-        public SampleValidationService(IReferenceDataReadService refDataReadService)
+        public SampleValidationService(IReferenceDataReadService refDataReadService, ILogger<SampleValidationService> logger)
         {
             _refDataReadService = refDataReadService;
+            _logger = logger;
         }
 
         public async Task<StagedSample> ValidateAndPopulateSample(SampleDto dto, StagedSample sample = null)
@@ -271,6 +277,23 @@ namespace Biobanks.Submissions.Core.Services
 
         private async Task<StagedSample> ValidateStorageTemperature(SampleDto dto, StagedSample sample)
         {
+            string path = "../../../Config/LegacySupport/LegacyStorageTemperatures.json";
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                List<StorageTemperatureLegacyModel> legacyObjs = JsonConvert.DeserializeObject<List<StorageTemperatureLegacyModel>>(json);
+
+                foreach (var obj in legacyObjs)
+                {
+                    if (obj.Old.StorageTemperature == dto.StorageTemperature)
+                    {
+                        dto.StorageTemperature = obj.New.StorageTemperature;
+                        _logger.LogInformation($"The given storage temperature was mapped to {obj.New.StorageTemperature}");
+                        sample.PreservationType = await _refDataReadService.GetPreservationType(obj.New.PreservationType);
+                    }
+                }
+            }
             var result = await _refDataReadService.GetStorageTemperature(dto.StorageTemperature);
 
             if (result == null)
@@ -281,6 +304,7 @@ namespace Biobanks.Submissions.Core.Services
                     null, null);
 
             sample.StorageTemperatureId = result.Id;
+
             return sample;
         }
 
