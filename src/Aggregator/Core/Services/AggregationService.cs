@@ -1,5 +1,10 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using Biobanks.Data;
+using Biobanks.Entities.Api;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Core.Services
 {
@@ -11,5 +16,8 @@ namespace Biobanks.Aggregator.Core.Services
         {
             _db = db;
         }
+
+        public async Task<IEnumerable<Sample>> ListDirtySamples()
+            => await _db.Samples.Where(x => x.IsDirty).ToListAsync();
     }
 }
