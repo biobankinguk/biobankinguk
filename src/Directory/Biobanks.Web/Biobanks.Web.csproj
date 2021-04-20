@@ -462,6 +462,7 @@
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
+    <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
@@ -845,6 +846,7 @@
     <Content Include="Views\ADAC\BiobankAdmin.cshtml" />
     <Content Include="Views\ADAC\PreservationTypes.cshtml" />
     <Content Include="Views\SuperUser\Tools.cshtml" />
+    <Content Include="Views\ADAC\_ModalResetPassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

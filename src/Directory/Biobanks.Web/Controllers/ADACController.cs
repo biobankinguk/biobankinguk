@@ -675,11 +675,9 @@ namespace Biobanks.Web.Controllers
                 new { userId = biobankUserId, token = resetToken },
                 Request.Url.Scheme);
 
-            return PartialView("_reset-password", new InviteRegisterEntityAdminModel
+            return PartialView("_ModalResetPassword", new ResetPasswordEntityModel
             {
-                Entity = url,
-                EntityName = "resetlink",
-                ControllerName = "Biobank"
+                ResetLink = url
             });
             
         }

@@ -79,17 +79,14 @@
             url: "/Adac/GenerateResetLinkAjax/",
             data: { biobankUserId: _this.biobankUserId },
             contentType: "application/html",
-            success: function (content) {                
-                //clear form errors (as these are in the page's ko model)
-                _this.dialogErrors.removeAll();
-
+            success: function (content) {             
                 _this.cleanNodeJquerySafe(_this.elements.modal2);
 
                 //populate the modal with the form
                 $(_this.elements.modal2).html(content);
 
                 //apply ko bindings to the ajax'd elements
-                ko.applyBindings(biobankAdminsVm, $(_this.elements.modal2)[0]);                
+                ko.applyBindings(biobankAdminsVm, $(_this.elements.modal2)[0]);               
             },
         });
     }
