@@ -86,7 +86,7 @@ namespace Biobanks.Submissions.Core.Services
         private StagedSample ValidateAgeAndYearOfBirth(SampleDto dto, StagedSample sample)
         {
             // if neither YearOfBirth nor AgeAtDonation are provided, throw an error
-            if(dto.AgeAtDonation == null && dto.YearOfBirth == null) 
+            if(string.IsNullOrEmpty(dto.AgeAtDonation) && dto.YearOfBirth == null) 
                 throw new ValidationException(
                     new ValidationResult(
                         $"At least one of {nameof(dto.AgeAtDonation)} or {nameof(dto.YearOfBirth)} must be provided.",
