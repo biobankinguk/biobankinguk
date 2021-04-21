@@ -58,6 +58,10 @@ namespace Biobanks.Entities.Data
 
         public bool ExcludePublications { get; set; }
 
+        public int? AccessConditionId { get; set; }
+
+        public int? CollectionTypeId { get; set; }
+
         //1 -> M Navigation properties?
         public virtual ICollection<OrganisationNetwork> OrganisationNetworks { get; set; }
         public virtual ICollection<DiagnosisCapability> DiagnosisCapabilities { get; set; }
