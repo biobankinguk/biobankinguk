@@ -195,7 +195,6 @@ namespace Biobanks.Submissions.Api.Controllers
                             }
 
                         }
-                        else
                             samplesUpdates.Add(sampleModel);
                         break;
 
