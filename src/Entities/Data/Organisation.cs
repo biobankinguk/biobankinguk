@@ -70,6 +70,8 @@ namespace Biobanks.Entities.Data
 
         public virtual County County { get; set; }
         public virtual Country Country { get; set; }
+        public virtual AccessCondition AccessCondition { get; set; }
+        public virtual CollectionType CollectionType { get; set; }
 
         //Capabilities
         //Collections
