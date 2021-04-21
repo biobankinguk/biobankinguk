@@ -1,4 +1,5 @@
-﻿using Biobanks.Aggregator.Core.Services;
+﻿using Biobanks.Aggregator.Core;
+using Biobanks.Aggregator.Core.Services;
 using Biobanks.Aggregator.Core.Services.Contracts;
 using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace Biobanks.Aggregator.AzFunctions
 
             // Services
             services.AddTransient<IAggregationService, AggregationService>();
+            services.AddSingleton<AggregationTask>();
         }
     }
 }

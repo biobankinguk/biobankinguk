@@ -7,14 +7,19 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 {
     public interface IAggregationService
     {
-        Task<IEnumerable<Collection>> GroupByCollectionsAsync(IEnumerable<LiveSample> samples);
 
-        Task<IEnumerable<LiveSample>> ListCollectionSamplesAsync(Collection collection);
+        Task<IEnumerable<Collection>> GroupSamples(IEnumerable<LiveSample> samples);
+
+        Task<IEnumerable<LiveSample>> ListRelevantSamplesAsync(Collection collection);
 
         Task<IEnumerable<LiveSample>> ListDirtySamplesAsync();
         
         Task DeleteFlaggedSamplesAsync();
 
         Task DeleteCollectionAsync(Collection collection);
+
+        Task UpdateCollectionAsync(Collection collection);
+
+        Task AddCollectionAsync(Collection collection);
     }
 }

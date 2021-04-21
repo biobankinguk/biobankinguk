@@ -1,48 +1,21 @@
 using Biobanks.Aggregator.AzFunctions.Types;
-using Biobanks.Aggregator.Core.Services.Contracts;
+using Biobanks.Aggregator.Core;
 using Microsoft.Azure.Functions.Worker;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.AzFunctions
 {
     public class AggregatorFunction
     {
-        private readonly IAggregationService _aggregationService;
+        private readonly AggregationTask _aggregationTask;
 
-        public AggregatorFunction(IAggregationService aggregationService)
+        public AggregatorFunction(AggregationTask aggregationTask)
         {
-            _aggregationService = aggregationService;
+            _aggregationTask = aggregationTask;
         }
 
         [Function("Aggregator")]
         public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo timer)
-        {
-            var dirtySamples = await _aggregationService.ListDirtySamplesAsync();
-
-            if (dirtySamples.Any())
-            {
-                // Group Into Collections
-                var collections = await _aggregationService.GroupByCollectionsAsync(dirtySamples);
-
-                // Delete Samples With isDeleted Flag
-                await _aggregationService.DeleteFlaggedSamplesAsync();
-
-                // Re-Build Collections
-                foreach (var collection in collections)
-                {
-                    var samples = await _aggregationService.ListCollectionSamplesAsync(collection);
-
-                    if (samples.Any())
-                    {
-                        // Update Collection
-                    }
-                    else
-                    {
-                        await _aggregationService.DeleteCollectionAsync(collection);
-                    }
-                }
-            }
-        }
+            => await _aggregationTask.Run();
     }
 }
