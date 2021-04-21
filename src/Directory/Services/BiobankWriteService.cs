@@ -13,7 +13,9 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
-
+using Biobanks.Entities.Shared;
+using Biobanks.IdentityModel.Helpers;
+using Biobanks.IdentityModel.Extensions;
 
 namespace Biobanks.Services
 {
@@ -2118,6 +2120,35 @@ namespace Biobanks.Services
             await _annualStatisticGroupRepository.SaveChangesAsync();
 
             return annualStatisticGroup;
+        }
+
+        public async Task<KeyValuePair<string,string>> GenerateNewApiClientForBiobank(int biobankId, string clientName=null)
+        {
+            var clientId = Crypto.GenerateId();
+            var clientSecret = Crypto.GenerateId();
+            (await _organisationRepository.GetByIdAsync(biobankId)).ApiClients.Add(new ApiClient
+            {
+                Name = clientName ?? clientId,
+                ClientId = clientId,
+                ClientSecretHash = clientSecret.Sha256()
+            });
+
+            await _organisationRepository.SaveChangesAsync();
+            return new KeyValuePair<string, string> (clientId,clientSecret);
+        }
+
+        public async Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId)
+        {
+            //Generates and update biobank api client with new client secret.
+            var biobank = await _organisationRepository.GetByIdAsync(biobankId);
+
+            var newSecret = Crypto.GenerateId();
+            var credentials = biobank.ApiClients.First();
+            credentials.ClientSecretHash = newSecret.Sha256();
+
+            await _organisationRepository.SaveChangesAsync();
+            return new KeyValuePair<string, string>(credentials.ClientId, newSecret);
+
         }
     }
 }

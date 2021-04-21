@@ -126,6 +126,8 @@ namespace Biobanks.Web
                 "~/Scripts/Biobank/sampleset.js"));
             bundles.Add(new ScriptBundle("~/bundles/biobank/networkaccept").Include(
                 "~/Scripts/Biobank/network-acceptance.js"));
+            bundles.Add(new ScriptBundle("~/bundles/biobank/submissions").Include(
+                "~/Scripts/Biobank/submissions.js"));
 
             //Account
             bundles.Add(new ScriptBundle("~/bundles/reset-password").Include(
