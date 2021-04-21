@@ -53,6 +53,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Collection> _collectionRepository;
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
+        private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
 
         private readonly IGenericEFRepository<Network> _networkRepository;
         private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
@@ -110,6 +111,7 @@ namespace Biobanks.Services
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
+            IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<Network> networkRepository,
             IGenericEFRepository<NetworkUser> networkUserRepository,
             IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
@@ -167,6 +169,7 @@ namespace Biobanks.Services
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
             _sampleSetRepository = sampleSetRepository;
+            _materialDetailRepository = materialDetailRepository;
 
             _networkRepository = networkRepository;
             _networkUserRepository = networkUserRepository;
@@ -287,7 +290,7 @@ namespace Biobanks.Services
                 IList<int> sampleSetIDs = new List<int>();
                 foreach (SampleSet sampleSet in collection.SampleSets)
                 {
-                    sampleSetIDs.Add(sampleSet.SampleSetId);
+                    sampleSetIDs.Add(sampleSet.Id);
                 }
 
                 foreach (int sampleSetID in sampleSetIDs)
@@ -316,29 +319,73 @@ namespace Biobanks.Services
 
             // Index New SampleSet
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(sampleSet.CollectionId))
-                await _indexService.IndexSampleSet(sampleSet.SampleSetId);
+                await _indexService.IndexSampleSet(sampleSet.Id);
         }
 
         public async Task UpdateSampleSetAsync(SampleSet sampleSet)
         {
-            // Update exisiting SampleSet
+            // Update SampleSet
             var existingSampleSet = (await _sampleSetRepository.ListAsync(
-                true, x => x.SampleSetId == sampleSet.SampleSetId, null,
-                x => x.Collection, x => x.MaterialDetails)).First();
-
-            existingSampleSet.MaterialDetails.Clear();
+                    tracking: true,
+                    filter: x => x.Id == sampleSet.Id,
+                    orderBy: null,
+                    x => x.Collection,
+                    x => x.MaterialDetails)
+                )
+                .First();
 
             existingSampleSet.SexId = sampleSet.SexId;
             existingSampleSet.AgeRangeId = sampleSet.AgeRangeId;
             existingSampleSet.DonorCountId = sampleSet.DonorCountId;
-            existingSampleSet.MaterialDetails = sampleSet.MaterialDetails;
-
             existingSampleSet.Collection.LastUpdated = DateTime.Now;
 
-            await _sampleSetRepository.SaveChangesAsync();
+            // Existing MaterialDetails
+            foreach (var existingMaterialDetail in existingSampleSet.MaterialDetails.ToList())
+            {
+                var materialDetail = sampleSet.MaterialDetails.FirstOrDefault(x => x.Id == existingMaterialDetail.Id);
 
+                // Update MaterialDetail 
+                if (materialDetail != null)
+                {
+                    existingMaterialDetail.MaterialTypeId = materialDetail.MaterialTypeId;
+                    existingMaterialDetail.StorageTemperatureId = materialDetail.StorageTemperatureId;
+                    existingMaterialDetail.MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId;
+                    //existingMaterialDetail.ExtractionProcedureId = materialDetail.ExtractionProcedureId;
+                    //existingMaterialDetail.PreservationTypeId = materialDetail.PreservationTypeId;
+                    existingMaterialDetail.CollectionPercentageId = materialDetail.CollectionPercentageId;
+                }
+                // Delete MaterialDetail
+                else
+                {
+                    _materialDetailRepository.Delete(existingMaterialDetail);
+                }
+            }
+
+            // New MaterialDetails
+            foreach (var materialDetail in sampleSet.MaterialDetails.Where(x => x.Id == default))
+            {
+                _materialDetailRepository.Insert(
+                    new MaterialDetail
+                    {
+                        SampleSetId = existingSampleSet.Id,
+                        MaterialTypeId = materialDetail.MaterialTypeId,
+                        StorageTemperatureId = materialDetail.StorageTemperatureId,
+                        MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId,
+                        //ExtractionProcedureId = materialDetail.ExtractionProcedureId,
+                        //PreservationTypeId = materialDetail.PreservationTypeId,
+                        CollectionPercentageId = materialDetail.CollectionPercentageId
+                    }
+                );
+            }
+
+            await _sampleSetRepository.SaveChangesAsync();
+            await _materialDetailRepository.SaveChangesAsync();
+
+            // Update Search Index
             if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
-                await _indexService.UpdateSampleSetDetails(sampleSet.SampleSetId);
+            {
+                await _indexService.UpdateSampleSetDetails(sampleSet.Id);
+            }
         }
 
         public async Task DeleteSampleSetAsync(int id)
@@ -346,7 +393,11 @@ namespace Biobanks.Services
             //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
             var suspended = await _biobankReadService.IsSampleSetBiobankSuspendedAsync(id);
 
-            await _sampleSetRepository.DeleteWhereAsync(x => x.SampleSetId == id);
+            //delete materialdetails to avoid orphaned data or integrity errors
+            await _materialDetailRepository.DeleteWhereAsync(x => x.SampleSetId == id);
+            await _materialDetailRepository.SaveChangesAsync();
+
+            await _sampleSetRepository.DeleteWhereAsync(x => x.Id == id);
 
             await _sampleSetRepository.SaveChangesAsync();
 

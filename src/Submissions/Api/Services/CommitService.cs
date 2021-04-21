@@ -34,6 +34,7 @@ namespace Biobanks.Submissions.Api.Services
             if (replace)
             {
                 await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveDiagnoses(organisationId));
+                // soft deletes samples from live by setting IsDirty and IsDeleted = true
                 await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveSamples(organisationId));
                 await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveTreatments(organisationId));
             }

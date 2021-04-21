@@ -37,7 +37,8 @@
                 <li role="presentation"
                     class="@(Model == "Network Acceptance" ? "active" : "true")">
                     @Html.ActionLink("Network Acceptance", "NetworkAcceptance")
-                </li> 
+                </li>
+
             }
 
             @if (App.Config[ConfigKey.DisplayPublications] != "false")

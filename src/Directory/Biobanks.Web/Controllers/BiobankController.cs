@@ -1049,7 +1049,7 @@ namespace Biobanks.Web.Controllers
                 }),
                 SampleSets = collection.SampleSets.Select(sampleSet => new CollectionSampleSetSummaryModel
                 {
-                    Id = sampleSet.SampleSetId,
+                    Id = sampleSet.Id,
                     Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Value,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
@@ -1166,7 +1166,7 @@ namespace Biobanks.Web.Controllers
 
             var model = new EditSampleSetModel
             {
-                Id = sampleSet.SampleSetId,
+                Id = sampleSet.Id,
                 CollectionId = sampleSet.CollectionId,
                 Sex = sampleSet.SexId,
                 AgeRange = sampleSet.AgeRangeId,
@@ -1174,6 +1174,7 @@ namespace Biobanks.Web.Controllers
 
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
+                    id = x.Id,
                     materialType = x.MaterialTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
@@ -1196,13 +1197,14 @@ namespace Biobanks.Web.Controllers
             {
                 var sampleSet = new SampleSet
                 {
-                    SampleSetId = id,
+                    Id = id,
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
                     MaterialDetails = model.MaterialPreservationDetails.Select(x =>
                         new MaterialDetail
                         {
+                            Id = x.id ?? 0,
                             MaterialTypeId = x.materialType,
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
@@ -1251,7 +1253,7 @@ namespace Biobanks.Web.Controllers
 
             var model = new SampleSetModel
             {
-                Id = sampleSet.SampleSetId,
+                Id = sampleSet.Id,
                 CollectionId = sampleSet.CollectionId,
                 Sex = sampleSet.Sex.Value,
                 AgeRange = sampleSet.AgeRange.Value,
@@ -1879,11 +1881,11 @@ namespace Biobanks.Web.Controllers
             //populate drop downs
             model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
                 .Select(x => new ReferenceDataModel
-            {
-                Id = x.Id,
-                Description = x.Value,
-                SortOrder = x.SortOrder
-            }).OrderBy(x => x.SortOrder);
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                }).OrderBy(x => x.SortOrder);
 
             model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
                 .Select(x => new ReferenceDataModel
@@ -1898,9 +1900,8 @@ namespace Biobanks.Web.Controllers
             var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
             model.BiobankId = biobankId;
-            model.AccessCondition = biobank.DefaultSubmissionsAccessConditionId;
-            model.CollectionType = biobank.DefaultSubmissionsCollectionTypeId;
-            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
+            model.AccessCondition = biobank.AccessConditionId;
+            model.CollectionType = biobank.CollectionTypeId;
 
             return View(model);
         }
@@ -1914,8 +1915,8 @@ namespace Biobanks.Web.Controllers
             var biobankId = model.BiobankId;
             var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
-            biobank.DefaultSubmissionsCollectionTypeId = model.CollectionType;
-            biobank.DefaultSubmissionsAccessConditionId = model.AccessCondition;
+            biobank.CollectionTypeId = model.CollectionType;
+            biobank.AccessConditionId = model.AccessCondition;
 
             await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
 
@@ -1925,7 +1926,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("Submissions");
         }
 
-        [HttpPost]
+        HttpPost]
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
@@ -1938,12 +1939,12 @@ namespace Biobanks.Web.Controllers
             else
                 credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
 
-            return Json(new {
+            return Json(new
+            {
                 publickey = credentials.Key,
                 privatekey = credentials.Value
             });
         }
-
         #endregion
 
         public ActionResult Suspended(string biobankName)
