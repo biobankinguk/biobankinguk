@@ -1902,6 +1902,7 @@ namespace Biobanks.Web.Controllers
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
             model.CollectionType = biobank.CollectionTypeId;
+            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
 
             return View(model);
         }
@@ -1926,7 +1927,7 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction("Submissions");
         }
 
-        HttpPost]
+        [HttpPost]
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
