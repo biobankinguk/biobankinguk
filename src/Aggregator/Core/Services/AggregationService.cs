@@ -2,10 +2,13 @@
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Core.Services
@@ -19,16 +22,47 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public IEnumerable<SampleSet> GroupSampleSets(IEnumerable<LiveSample> samples)
+        public async Task<IEnumerable<SampleSet>> GroupSampleSets(IEnumerable<LiveSample> samples)
         {
+            var donorCounts = await _db.DonorCounts.ToListAsync();
+            var ageRanges = await _db.AgeRanges.ToListAsync();
+            var defaultAgeRange = ageRanges.FirstOrDefault(x => x.LowerBound == null && x.UpperBound == null);
+
+            // TODO: Some Error Logging If No Default Value Exists?
+            if (defaultAgeRange is null)
+            {
+            }
+
+            // Group Samples Into SampleSets
             return samples
+                .Select(sample => new
+                {
+                    Sample = sample,
+                    AgeRange = ageRanges.FirstOrDefault(y =>
+                        XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(sample.AgeAtDonation) &&
+                        XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(sample.AgeAtDonation)) ?? defaultAgeRange
+                })
                 .GroupBy(x => new
                 {
-                    x.SexId
-                    // AgeRange
+                    x.AgeRange.Id,
+                    x.Sample.SexId
                 })
-                .Select(x => new SampleSet
+                .Select(x => 
                 {
+                    var sample = x.First().Sample;
+                    var ageRange = x.First().AgeRange;
+
+                    // TODO: Error Handling - Possible DonorCount Bracket Doesn't Exist
+                    var donorCount = donorCounts.First(y => 
+                        y.LowerBound <= x.Count() && 
+                        y.UpperBound >= x.Count());
+
+                    return new SampleSet
+                    {
+                        SexId = sample.SexId ?? 0, // TODO: Do we need a default Sex?
+                        AgeRangeId = ageRange.Id,
+                        DonorCountId = donorCount.Id
+                    };
                 });
         }
 
@@ -66,33 +100,9 @@ namespace Biobanks.Aggregator.Core.Services
             return collections;
         }
 
-        public async Task<IEnumerable<LiveSample>> ListRelevantSamplesAsync(Collection collection)
+        public Task<IEnumerable<MaterialDetail>> GenerateMaterialDetails(IEnumerable<LiveSample> samples)
         {
-            return await _db.Samples
-                .Where(x =>
-                    x.OrganisationId == collection.OrganisationId &&
-                    x.CollectionName == collection.Title
-                )
-                .ToListAsync();
+            throw new System.NotImplementedException();
         }
-
-        public async Task<IEnumerable<LiveSample>> ListDirtySamplesAsync()
-            => await _db.Samples.Where(x => x.IsDirty).ToListAsync();
-
-        public async Task AddCollectionAsync(Collection collection)
-            => await _db.Collections.AddAsync(collection);
-
-        public async Task UpdateCollectionAsync(Collection collection)
-        {
-            _db.Update(collection);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteCollectionAsync(Collection collection)
-            => await _db.Collections.Where(x => x.CollectionId == collection.CollectionId).DeleteAsync();
-
-        public async Task DeleteFlaggedSamplesAsync()
-            => await _db.Samples.Where(x => x.IsDeleted).DeleteAsync();
-
     }
 }
