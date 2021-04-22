@@ -19,11 +19,24 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public async Task<IEnumerable<Collection>> GroupSamples(IEnumerable<LiveSample> samples)
+        public IEnumerable<SampleSet> GroupSampleSets(IEnumerable<LiveSample> samples)
+        {
+            return samples
+                .GroupBy(x => new
+                {
+                    x.SexId
+                    // AgeRange
+                })
+                .Select(x => new SampleSet
+                {
+                });
+        }
+
+        public async Task<IEnumerable<Collection>> GroupCollections(IEnumerable<LiveSample> samples)
         {
             // Currently Only Supports Extracted Samples
             var extractedMaterialGroups = await _db.MaterialTypeGroups.Where(x => x.Value.StartsWith("Extracted")).ToListAsync();
-            var extractedSamples = samples.Where(x => x.MaterialType.MaterialTypeGroups.Any(x => extractedMaterialGroups.Contains(x));
+            var extractedSamples = samples.Where(x => x.MaterialType.MaterialTypeGroups.Any(x => extractedMaterialGroups.Contains(x)));
 
             // Grouping Of Samples
             var collections = extractedSamples.GroupBy(x => 
