@@ -1,6 +1,7 @@
 using Biobanks.Directory.Data.Caching;
 using Biobanks.Directory.Data.Repositories;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Shared;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Identity.Contracts;
@@ -1560,5 +1561,7 @@ namespace Biobanks.Services
         public async Task<bool> OrganisationIncludesPublications(int biobankId)
             => (!(await GetBiobankByIdAsync(biobankId)).ExcludePublications);
 
+        public async Task<bool> IsBiobankAnApiClient(int biobankId)
+            => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
     }
 }

@@ -18,7 +18,6 @@ namespace Biobanks.Submissions.Api.Models
         /// <summary>
         /// The age of the donor at time of making donation.
         /// </summary>
-        [Range(0, 150)]
         public string AgeAtDonation { get; set; }
 
         /// <summary>
