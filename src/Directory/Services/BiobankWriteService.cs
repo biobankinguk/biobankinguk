@@ -390,6 +390,10 @@ namespace Biobanks.Services
             //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
             var suspended = await _biobankReadService.IsSampleSetBiobankSuspendedAsync(id);
 
+            //delete materialdetails to avoid orphaned data or integrity errors
+            await _materialDetailRepository.DeleteWhereAsync(x => x.SampleSetId == id);
+            await _materialDetailRepository.SaveChangesAsync();
+
             await _sampleSetRepository.DeleteWhereAsync(x => x.Id == id);
 
             await _sampleSetRepository.SaveChangesAsync();
