@@ -6,7 +6,6 @@ using Biobanks.Entities.Data.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Z.EntityFramework.Plus;
@@ -89,6 +88,7 @@ namespace Biobanks.Aggregator.Core.Services
                         x.FromApi
                     );
 
+                    // TODO: Seperate Out Grouping and New Collection Generation
                     return collection ?? new Collection
                     {
                         OrganisationId = sample.OrganisationId,
@@ -100,9 +100,36 @@ namespace Biobanks.Aggregator.Core.Services
             return collections;
         }
 
-        public Task<IEnumerable<MaterialDetail>> GenerateMaterialDetails(IEnumerable<LiveSample> samples)
+        public async Task<IEnumerable<MaterialDetail>> GenerateMaterialDetails(IEnumerable<LiveSample> samples)
         {
-            throw new System.NotImplementedException();
+            var collectionPercentages = await _db.CollectionPercentages.ToListAsync();
+
+            return samples
+                .Where(x => x.StorageTemperatureId != null) // TODO: How should this be handled
+                .GroupBy(x => new
+                {
+                    MaterialTypeId = x.MaterialTypeId,
+                    StorageTemperatureId = (int) x.StorageTemperatureId
+                })
+                .Select(x =>
+                {
+                    // TODO: Handle NULL Bounds
+                    var percentage = decimal.Divide(x.Count(), samples.Count());
+                    var collectionPercentage = collectionPercentages.FirstOrDefault(y =>
+                        y.LowerBound <= percentage &&
+                        y.UpperBound >= percentage
+                    );
+
+                    return new MaterialDetail
+                    {
+                        MaterialTypeId = x.Key.MaterialTypeId,
+                        StorageTemperatureId = x.Key.StorageTemperatureId,
+                        //MacroscopicAssessmentId = 0,
+                        //ExtractionProcedureId = "",
+                        //PreservationTypeId = 0,
+                        CollectionPercentageId = collectionPercentage.Id
+                    };
+                });
         }
     }
 }
