@@ -167,6 +167,10 @@ namespace Biobanks.Submissions.Api.Controllers
                             int ageAtDonationInt; 
                             if (int.TryParse(sampleModel.AgeAtDonation, out ageAtDonationInt))
                             {
+                                if (ageAtDonationInt > 150)
+                                {
+                                    return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid AgeAtDonation value, must not be greater than 150.");
+                                }
                                 // Check if negative
                                 bool isNegative = false;
                                 if (ageAtDonationInt < 0)
@@ -195,7 +199,6 @@ namespace Biobanks.Submissions.Api.Controllers
                             }
 
                         }
-                        else
                             samplesUpdates.Add(sampleModel);
                         break;
 
