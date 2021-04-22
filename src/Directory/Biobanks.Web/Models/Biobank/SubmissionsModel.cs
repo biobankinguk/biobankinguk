@@ -16,6 +16,7 @@ namespace Biobanks.Web.Models.Biobank
         #endregion
 
         #region Properties
+
         [HiddenInput(DisplayValue = false)]
         public int BiobankId { get; set; }
 
@@ -26,6 +27,10 @@ namespace Biobanks.Web.Models.Biobank
         [Required(ErrorMessage = "Please select a collection Type.")]
         [Display(Name = "Collection type")]
         public int? CollectionType { get; set; }
+
+        [Display(Name = "Public Key")]
+        public string PublicKey { get; set; }
+
         #endregion
     }
 }
