@@ -4,10 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.Models;
 using Biobanks.Submissions.Core.Services.Contracts;
-
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -22,14 +19,14 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     public class CommitController : ControllerBase
     {
         private readonly ISubmissionService _submissionService;
-        private readonly IQueueWriteService _queueWriteService;
+        private readonly IBackgroundJobEnqueueingService _backgroundJobEnqueueingService;
 
         /// <inheritdoc />
         public CommitController(
-            ISubmissionService submissionService, IQueueWriteService queueWriteService)
+            ISubmissionService submissionService, IBackgroundJobEnqueueingService backgroundJobEnqueueingService)
         {
             _submissionService = submissionService;
-            _queueWriteService = queueWriteService;
+            _backgroundJobEnqueueingService = backgroundJobEnqueueingService;
         }
 
         /// <summary>
@@ -61,16 +58,11 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
                 return BadRequest(JsonSerializer.Serialize(submissionsInProgress));
             }
 
-            //this needs replacing with a call to the SubmissionLiveFunction
-            await _queueWriteService.PushAsync("commits",
-                    JsonSerializer.Serialize(
-                        new CommitQueueItem
-                        {
-                            BiobankId = biobankId,
-                            Replace = type.Equals("replace", StringComparison.OrdinalIgnoreCase)
-                        }
-                        )
-                    );
+            //BackgroundJobEnqueueingService will then call either _queueWriteService or Hangfire to 
+            //queue the job up
+            //TODO: later PBI which will sort out conditional DI for which service to implement
+            _backgroundJobEnqueueingService.QueueCommittedData(biobankId, type.Equals("replace", StringComparison.OrdinalIgnoreCase);
+
             return NoContent();
         }
     }
