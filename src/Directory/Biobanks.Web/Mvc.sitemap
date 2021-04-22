@@ -29,6 +29,7 @@
       <mvcSiteMapNode title="Sample resource details" controller="Biobank" action="Index">
         <mvcSiteMapNode title="Edit sample resource details" controller="Biobank" action="Edit"/>
       </mvcSiteMapNode>
+      <mvcSiteMapNode title="Submissions" controller="Biobank" action="Submissions"/>
       <mvcSiteMapNode title="Admins" controller="Biobank" action="Admins"/>
       <mvcSiteMapNode title="Funders" controller="Biobank" action="Funders"/>
 		<mvcSiteMapNode title="Network Acceptance" controller="Biobank" action="NetworkAcceptance"/>
