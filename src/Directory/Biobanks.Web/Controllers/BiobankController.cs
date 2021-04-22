@@ -1901,6 +1901,7 @@ namespace Biobanks.Web.Controllers
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
             model.CollectionType = biobank.CollectionTypeId;
+            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
 
             return View(model);
         }
@@ -1911,7 +1912,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Submissions(SubmissionsModel model)
         {
             //update Organisations table
-            var biobankId = SessionHelper.GetBiobankId(Session);
+            var biobankId = model.BiobankId;
             var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
             biobank.CollectionTypeId = model.CollectionType;
@@ -1919,15 +1920,31 @@ namespace Biobanks.Web.Controllers
 
             await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
 
-            //update update api clients table
-
             //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
 
             return RedirectToAction("Submissions");
         }
 
+        [HttpPost]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
+        {
+            //update Organisations table
+            var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
+            KeyValuePair<string, string> credentials;
 
+            if (existingclient)
+                credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
+            else
+                credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+
+            return Json(new
+            {
+                publickey = credentials.Key,
+                privatekey = credentials.Value
+            });
+        }
         #endregion
 
         public ActionResult Suspended(string biobankName)
