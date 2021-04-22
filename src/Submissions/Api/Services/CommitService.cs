@@ -14,15 +14,12 @@ namespace Biobanks.Submissions.Api.Services
     /// <inheritdoc />
     public class CommitService : ICommitService
     {
-        private readonly IMapper _mapper;
-
         private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
         public CommitService(BiobanksDbContext db, IMapper mapper)
         {
             _db = db;
-            _mapper = mapper;
         }
 
         /// <inheritdoc />

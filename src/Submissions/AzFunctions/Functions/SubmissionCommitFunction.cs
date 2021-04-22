@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace AzFunctions.Functions
 {
-    class SubmissionLiveFunction
+    class SubmissionCommitFunction
     {
 
-        [Function("Submissions_Staging")]
+        [Function("Submissions_Commit")]
         public async Task Run()
         {
 

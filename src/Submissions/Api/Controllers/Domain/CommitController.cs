@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Core.Models;
 using Biobanks.Submissions.Core.Services.Contracts;
 
 using Hangfire;
@@ -20,15 +21,15 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     [ApiController]
     public class CommitController : ControllerBase
     {
-        private readonly ICommitService _commitService;
         private readonly ISubmissionService _submissionService;
+        private readonly IQueueWriteService _queueWriteService;
 
         /// <inheritdoc />
-        public CommitController(ICommitService commitService, 
-            ISubmissionService submissionService)
+        public CommitController(
+            ISubmissionService submissionService, IQueueWriteService queueWriteService)
         {
-            _commitService = commitService;
             _submissionService = submissionService;
+            _queueWriteService = queueWriteService;
         }
 
         /// <summary>
@@ -60,8 +61,16 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
                 return BadRequest(JsonSerializer.Serialize(submissionsInProgress));
             }
 
-            BackgroundJob.Enqueue(() => _commitService.CommitStagedData(type.Equals("replace", StringComparison.OrdinalIgnoreCase), biobankId));
-
+            //this needs replacing with a call to the SubmissionLiveFunction
+            await _queueWriteService.PushAsync("commits",
+                    JsonSerializer.Serialize(
+                        new CommitQueueItem
+                        {
+                            BiobankId = biobankId,
+                            Replace = type.Equals("replace", StringComparison.OrdinalIgnoreCase)
+                        }
+                        )
+                    );
             return NoContent();
         }
     }
