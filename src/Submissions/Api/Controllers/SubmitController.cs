@@ -160,13 +160,17 @@ namespace Biobanks.Submissions.Api.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid MaterialType value.");
                         else if (string.IsNullOrEmpty(sampleModel.StorageTemperature))
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid StorageTemperature value.");
-                        else if (sampleModel.AgeAtDonation == null && sampleModel.YearOfBirth == null)
+                        else if (string.IsNullOrEmpty(sampleModel.AgeAtDonation) && sampleModel.YearOfBirth == null)
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
-                        else if (sampleModel.AgeAtDonation != null)
+                        else if (!string.IsNullOrEmpty(sampleModel.AgeAtDonation))
                         {
                             int ageAtDonationInt; 
                             if (int.TryParse(sampleModel.AgeAtDonation, out ageAtDonationInt))
                             {
+                                if (ageAtDonationInt > 150)
+                                {
+                                    return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "Invalid AgeAtDonation value, must not be greater than 150.");
+                                }
                                 // Check if negative
                                 bool isNegative = false;
                                 if (ageAtDonationInt < 0)
@@ -195,7 +199,6 @@ namespace Biobanks.Submissions.Api.Controllers
                             }
 
                         }
-                        else
                             samplesUpdates.Add(sampleModel);
                         break;
 

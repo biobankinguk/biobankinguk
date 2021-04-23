@@ -57,7 +57,13 @@
             {
                 @:sampleSetVM.materialPreservationDetails(ko.utils.arrayMap(@Html.Raw(Model.MaterialPreservationDetailsJson), function(x)
                 @:{
-                @:    return new MaterialPreservationDetail(x.materialType, x.preservationType, x.storageTemperature, x.percentage, x.macroscopicAssessment);
+                @:    return new MaterialPreservationDetail(
+                @:      x.id,
+                @:      x.materialType,
+                @:      x.preservationType,
+                @:      x.storageTemperature,
+                @:      x.percentage,
+                @:      x.macroscopicAssessment);
                 @:}));
             }
         });

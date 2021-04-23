@@ -46,6 +46,7 @@ function Lookup() {
 var lookup = new Lookup();
 
 function MaterialPreservationDetail(
+  id,
   materialType,
   preservationType,
   storageTemperature,
@@ -61,6 +62,8 @@ function MaterialPreservationDetail(
 
 	return matches.length > 0 ? matches[0].label : "";
   };
+
+  this.id = id;
 
   this.materialType = ko.observable(materialType).extend({
 	min: { params: 1, message: "Please select a material type." },
@@ -121,6 +124,7 @@ function MaterialPreservationDetail(
 }
 
 function MaterialPreservationDetailModal(
+  id,
   materialType,
   preservationType,
   storageTemperature,
@@ -135,6 +139,7 @@ function MaterialPreservationDetailModal(
 
   this.materialPreservationDetail = ko.observable(
 	new MaterialPreservationDetail(
+	  id,
 	  materialType,
       preservationType,
 	  storageTemperature,
@@ -147,7 +152,7 @@ function MaterialPreservationDetailModal(
 function AppViewModel() {
   var _this = this;
   this.donorCount = ko.observable(0);
-  this.modal = new MaterialPreservationDetailModal(0,0, 0, 1, 0);
+  this.modal = new MaterialPreservationDetailModal(0, 0, 0, 0, 1, 0);
   this.materialPreservationDetails = ko.observableArray([]);
   this.currentlyEdited = ko.observable(null);
 
@@ -208,6 +213,7 @@ function AppViewModel() {
 
 		  if (_this.modal.materialPreservationDetail().preservationType() === 0) {
 			  var newMaterialPreservationDetail = new MaterialPreservationDetail(
+				  _this.modal.materialPreservationDetail().id,
 				  _this.modal.materialPreservationDetail().materialType(),
 				  null,
 				  _this.modal.materialPreservationDetail().storageTemperature(),
@@ -217,6 +223,7 @@ function AppViewModel() {
 		  }
 		  else {
 			  var newMaterialPreservationDetail = new MaterialPreservationDetail(
+				  _this.modal.materialPreservationDetail().id,
 				  _this.modal.materialPreservationDetail().materialType(),
 				  _this.modal.materialPreservationDetail().preservationType(),
 				  _this.modal.materialPreservationDetail().storageTemperature(),
@@ -286,6 +293,7 @@ function AppViewModel() {
 
 				if (_this.modal.materialPreservationDetail().preservationType() === 0) {
 					var newMaterialPreservationDetail = new MaterialPreservationDetail(
+						_this.modal.materialPreservationDetail().id,
 						_this.modal.materialPreservationDetail().materialType(),
 						null,
 						_this.modal.materialPreservationDetail().storageTemperature(),
@@ -295,6 +303,7 @@ function AppViewModel() {
 				}
 				else {
 					var newMaterialPreservationDetail = new MaterialPreservationDetail(
+						_this.modal.materialPreservationDetail().id,
 						_this.modal.materialPreservationDetail().materialType(),
 						_this.modal.materialPreservationDetail().preservationType(),
 						_this.modal.materialPreservationDetail().storageTemperature(),
