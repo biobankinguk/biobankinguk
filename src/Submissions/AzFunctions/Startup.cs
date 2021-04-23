@@ -34,7 +34,7 @@ namespace AzFunctions
                 c.ExpiryDays = config.GetValue("expiryDays", 30);
             });
 
-            services.Configure<StorageTemperatureLegacyModel>(context.Configuration.GetSection("storageTemperatures"));
+            services.Configure<StorageTemperatureLegacyModel>(context.Configuration.GetSection("StorageTemperatureLegacyModel"));
 
             // In-Memory Cache - Manually Called As Not Called By A Parent Service
             services.AddMemoryCache();

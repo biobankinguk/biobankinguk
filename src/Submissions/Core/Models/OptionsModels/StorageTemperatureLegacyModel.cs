@@ -1,38 +1,33 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Core.Models.OptionsModels
 {
-    
+
     public class StorageTemperatureLegacyModel
     {
-        [JsonProperty("storageTemperatures")]
-        public List<StorageTemperature> StorageTemperatures { get; set; }
+        public List<StorageTemperature> ListOfSettings { get; set; }
     }
 
     public class StorageTemperature
     {
-        [JsonProperty("old")]
-        public Old Old { get; set; }
-        [JsonProperty("new")]
-        public New New { get; set; }
+        public old old { get; set; }
+
+        public @new @new { get; set; }
     }
-    public class Old
+    public class old
     {
-        [JsonProperty("storageTemperature")]
-        public string StorageTemperature { get; set; }
+        public string storageTemperature { get; set; }
     }
 
-    public class New
+    public class @new
     {
-        [JsonProperty("storageTemperature")]
-        public string StorageTemperature { get; set; }
-
-        [JsonProperty("preservationType")]
-        public string PreservationType { get; set; }
+        public string storageTemperature { get; set; }
+        public string preservationType { get; set; }
     }
 }
