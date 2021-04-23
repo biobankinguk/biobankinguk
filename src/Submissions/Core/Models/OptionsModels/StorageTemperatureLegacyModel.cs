@@ -11,23 +11,28 @@ namespace Biobanks.Submissions.Core.Models.OptionsModels
 
     public class StorageTemperatureLegacyModel
     {
-        public List<StorageTemperature> ListOfSettings { get; set; }
+        [JsonProperty("listOfMappings")]
+        public List<StorageTemperature> ListOfMappings { get; set; }
     }
 
     public class StorageTemperature
     {
-        public old old { get; set; }
-
-        public @new @new { get; set; }
+        [JsonProperty("listOfMappings")]
+        public Old Old { get; set; }
+        [JsonProperty("listOfMappings")]
+        public New New { get; set; }
     }
-    public class old
+    public class Old
     {
-        public string storageTemperature { get; set; }
+        [JsonProperty("storageTemperature")]
+        public string StorageTemperature { get; set; }
     }
 
-    public class @new
+    public class New
     {
-        public string storageTemperature { get; set; }
-        public string preservationType { get; set; }
+        [JsonProperty("storageTemperature")]
+        public string StorageTemperature { get; set; }
+        [JsonProperty("preservationType")]
+        public string PreservationType { get; set; }
     }
 }

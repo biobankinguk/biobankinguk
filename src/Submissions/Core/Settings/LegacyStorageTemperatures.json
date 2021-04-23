@@ -1,6 +1,6 @@
 ﻿{
   "StorageTemperatureLegacyModel": {
-    "ListOfSettings": [
+    "listOfMappings": [
       {
         "old": {
           "storageTemperature": "Paraffin"
