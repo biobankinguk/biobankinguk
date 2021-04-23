@@ -19,12 +19,12 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public async Task<IEnumerable<LiveSample>> ListRelevantSamplesAsync(Collection collection)
+        public async Task<IEnumerable<LiveSample>> ListSimilarSamplesAsync(LiveSample sample)
         {
             return await _db.Samples
                 .Where(x =>
-                    x.OrganisationId == collection.OrganisationId &&
-                    x.CollectionName == collection.Title
+                    x.OrganisationId == sample.OrganisationId &&
+                    x.CollectionName == sample.CollectionName
                 )
                 .ToListAsync();
         }

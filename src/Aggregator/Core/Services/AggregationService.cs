@@ -22,58 +22,53 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public async Task<IEnumerable<Collection>> GroupCollections(IEnumerable<LiveSample> samples)
+        public IEnumerable<IEnumerable<LiveSample>> GroupIntoCollections(IEnumerable<LiveSample> samples)
         {
-            // Currently Only Supports Extracted Samples
-            var extractedMaterialGroups = await _db.MaterialTypeGroups.Where(x => x.Value.StartsWith("Extracted")).ToListAsync();
-            var extractedSamples = samples.Where(x => x.MaterialType.MaterialTypeGroups.Any(x => extractedMaterialGroups.Contains(x)));
-
-            // Grouping Of Samples
-            var collections = extractedSamples.GroupBy(x =>
-                new
+            return samples
+                .GroupBy(x => new
                 {
                     x.OrganisationId,
                     x.CollectionName,
                     x.SampleContentId
                 })
-                .Select(x =>
-                {
-                    // Find Exisiting Collection
-                    var collection = _db.Collections.FirstOrDefault(y =>
-                        y.OrganisationId == x.Key.OrganisationId &&
-                        y.Title == x.Key.CollectionName &&
-                        y.FromApi
-                    );
-
-                    if (collection != null)
-                    {
-                        return collection;
-                    }
-                    else
-                    {
-                        var samples = x.OrderBy(y => y.DateCreated);
-                        var complete = (DateTime.Now - samples.Last().DateCreated) > TimeSpan.FromDays(180);
-
-                        return new Collection
-                        {
-                            OrganisationId = x.Key.OrganisationId,
-                            Title = x.Key.CollectionName,
-                            //OntologyTermId
-                            //Description
-                            StartDate = samples.First().DateCreated,
-                            LastUpdated = DateTime.Now,
-                            //HtaStatusId   // TODO: Needs Deleting?
-                            //AccessConditionId
-                            //CollectionTypeId
-                            CollectionStatusId = GetCollectionStatus(complete).Id,
-                            //CollectionPointId // TODO: Needs Deleting?
-                            FromApi = true
-                        };
-                    }
-                });
-
-            return collections;
+                .Select(x => x.AsEnumerable())
+                .ToList();
         }
+
+        public async Task<Collection> GenerateCollection(IEnumerable<LiveSample> samples)
+        {
+            var sample = samples.OrderBy(y => y.DateCreated).Last();
+            var orderedSamples = samples.OrderBy(y => y.DateCreated);
+            var complete = (DateTime.Now - orderedSamples.Last().DateCreated) > TimeSpan.FromDays(180);
+
+            // Find Exisiting Collection
+            var collection = await _db.Collections.FirstOrDefaultAsync(y =>
+                y.OrganisationId == sample.OrganisationId &&
+                y.Title == sample.CollectionName &&
+                y.FromApi
+            )
+            ?? new Collection
+            {
+                OrganisationId = sample.OrganisationId,
+                Title = sample.CollectionName,
+                //OntologyTermId
+                //Description
+                StartDate = orderedSamples.First().DateCreated,
+                //HtaStatusId   // TODO: Needs Deleting?
+                //AccessConditionId
+                //CollectionTypeId
+                CollectionStatusId = GetCollectionStatus(complete).Id,
+                //CollectionPointId // TODO: Needs Deleting?
+                FromApi = true
+            };
+
+            // Set LastUpdated Timestamp
+            collection.LastUpdated = DateTime.Now;
+
+            return collection;
+        }
+
+
 
         public async Task<IEnumerable<SampleSet>> GroupSampleSets(IEnumerable<LiveSample> samples)
         {
@@ -119,7 +114,7 @@ namespace Biobanks.Aggregator.Core.Services
                 });
         }
 
-        public async Task<IEnumerable<MaterialDetail>> GenerateMaterialDetails(IEnumerable<LiveSample> samples)
+        public async Task<IEnumerable<MaterialDetail>> GroupMaterialDetails(IEnumerable<LiveSample> samples)
         {
             var collectionPercentages = await _db.CollectionPercentages.ToListAsync();
 
@@ -127,8 +122,8 @@ namespace Biobanks.Aggregator.Core.Services
                 .Where(x => x.StorageTemperatureId != null) // TODO: How should this be handled
                 .GroupBy(x => new
                 {
-                    MaterialTypeId = x.MaterialTypeId,
-                    StorageTemperatureId = (int) x.StorageTemperatureId
+                    x.MaterialTypeId,
+                    x.StorageTemperatureId
                 })
                 .Select(x =>
                 {
@@ -143,8 +138,8 @@ namespace Biobanks.Aggregator.Core.Services
 
                     return new MaterialDetail
                     {
-                        MaterialTypeId = x.Key.MaterialTypeId,
-                        StorageTemperatureId = x.Key.StorageTemperatureId,
+                        MaterialTypeId = sample.MaterialTypeId,
+                        StorageTemperatureId = sample.StorageTemperatureId ?? 0,
                         //MacroscopicAssessmentId = 0,  // TODO: Mapping rule unknown
                         ExtractionProcedureId = sample.ExtractionProcedureId,
                         PreservationTypeId = sample.PreservationTypeId,
@@ -154,8 +149,6 @@ namespace Biobanks.Aggregator.Core.Services
         }
 
         
-
-
         // Ref Data Helpers
         private CollectionStatus GetCollectionStatus(bool complete)
         {
