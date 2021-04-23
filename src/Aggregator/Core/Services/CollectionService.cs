@@ -17,7 +17,16 @@ namespace Biobanks.Aggregator.Core.Services
         }
 
         public async Task AddCollectionAsync(Collection collection)
-            => await _db.Collections.AddAsync(collection);
+        {
+            try
+            {
+                await _db.Collections.AddAsync(collection);
+                await _db.SaveChangesAsync();
+            }
+            catch
+            {
+            }
+        }
 
         public async Task UpdateCollectionAsync(Collection collection)
         {

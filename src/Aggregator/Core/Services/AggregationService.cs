@@ -71,11 +71,11 @@ namespace Biobanks.Aggregator.Core.Services
                 //OntologyTermId
                 //Description
                 StartDate = orderedSamples.First().DateCreated,
-                //HtaStatusId   // TODO: Needs Deleting?
-                //AccessConditionId
-                //CollectionTypeId
+                HtaStatusId = GetDefaultHtaStatus().Id,   // TODO: Needs Deleting?
+                AccessConditionId = GetDefaultAccessCondition().Id, // TODO: Temp Value
+                CollectionTypeId = GetDefaultCollectionType().Id, // TODO: Temp Value
                 CollectionStatusId = GetCollectionStatus(complete).Id,
-                //CollectionPointId // TODO: Needs Deleting?
+                CollectionPointId = GetCollectionPoint().Id, // TODO: Needs Deleting?
                 FromApi = true
             };
 
@@ -175,11 +175,26 @@ namespace Biobanks.Aggregator.Core.Services
                 });
         }
 
+        // RefData Helper - TODO: Put in won service
         private CollectionStatus GetCollectionStatus(bool complete)
         {
             return complete
                 ? _db.CollectionStatus.Where(x => x.Value == "Completed").First()
                 : _db.CollectionStatus.Where(x => x.Value == "In progress").First();
         }
+
+        private AccessCondition GetDefaultAccessCondition()
+            => _db.AccessConditions.OrderBy(x => x.SortOrder).First();
+
+        private CollectionType GetDefaultCollectionType()
+            => _db.CollectionTypes.OrderBy(x => x.SortOrder).First();
+
+        private CollectionPoint GetCollectionPoint()
+            => _db.CollectionPoints.OrderBy(x => x.SortOrder).First();
+
+        private HtaStatus GetDefaultHtaStatus()
+            => _db.HtaStatus.OrderBy(x => x.SortOrder).First();
+    
+        
     }
 }
