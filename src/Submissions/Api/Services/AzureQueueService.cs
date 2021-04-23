@@ -18,7 +18,7 @@ namespace Biobanks.Submissions.Api.Services
         }
 
         /// <inheritdoc />
-        public async Task QueueCommittedData(int biobankId, bool replace)
+        public async Task Commit(int biobankId, bool replace)
         {
             await _queueWriteService.PushAsync("commits",
                     JsonSerializer.Serialize(

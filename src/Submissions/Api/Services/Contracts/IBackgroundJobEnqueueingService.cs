@@ -14,6 +14,6 @@ namespace Biobanks.Submissions.Api.Services.Contracts
         /// <param name="biobankId">Identifier for the Biobank</param>
         /// <param name="replace">Confirms if all the current data in the live table should be deleted prior this commit</param>
         /// <returns></returns>
-        Task QueueCommittedData(int biobankId, bool replace);
+        Task Commit(int biobankId, bool replace);
     }
 }
