@@ -35,6 +35,16 @@ namespace Biobanks.Aggregator.Core.Services
                 .ToList();
         }
 
+        public IEnumerable<IEnumerable<LiveSample>> GroupIntoSampleSets(IEnumerable<LiveSample> samples)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IEnumerable<LiveSample>> GroupIntoMaterialDetails(IEnumerable<LiveSample> samples)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Collection> GenerateCollection(IEnumerable<LiveSample> samples)
         {
             var sample = samples.OrderBy(y => y.DateCreated).Last();
@@ -68,8 +78,18 @@ namespace Biobanks.Aggregator.Core.Services
             return collection;
         }
 
+        public Task<SampleSet> GenerateSampleSet(IEnumerable<LiveSample> samples)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<MaterialDetail> GenerateMaterialDetail(IEnumerable<LiveSample> samples)
+        {
+            throw new NotImplementedException();
+        }
 
 
+        // TODO: Refactor All Below
         public async Task<IEnumerable<SampleSet>> GroupSampleSets(IEnumerable<LiveSample> samples)
         {
             var donorCounts = await _db.DonorCounts.ToListAsync();
@@ -148,8 +168,6 @@ namespace Biobanks.Aggregator.Core.Services
                 });
         }
 
-        
-        // Ref Data Helpers
         private CollectionStatus GetCollectionStatus(bool complete)
         {
             return complete
