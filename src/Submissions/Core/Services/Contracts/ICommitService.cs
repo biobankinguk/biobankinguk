@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services.Contracts
+namespace Biobanks.Submissions.Core.Services.Contracts
 {
     /// <summary>
     /// Service for handling committing submissions.

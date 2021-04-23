@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
 using Biobanks.Submissions.Core.Services.Contracts;
-
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -20,15 +18,15 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     [ApiController]
     public class CommitController : ControllerBase
     {
-        private readonly ICommitService _commitService;
         private readonly ISubmissionService _submissionService;
+        private readonly IBackgroundJobEnqueueingService _backgroundJobEnqueueingService;
 
         /// <inheritdoc />
-        public CommitController(ICommitService commitService, 
-            ISubmissionService submissionService)
+        public CommitController(
+            ISubmissionService submissionService, IBackgroundJobEnqueueingService backgroundJobEnqueueingService)
         {
-            _commitService = commitService;
             _submissionService = submissionService;
+            _backgroundJobEnqueueingService = backgroundJobEnqueueingService;
         }
 
         /// <summary>
@@ -60,7 +58,10 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
                 return BadRequest(JsonSerializer.Serialize(submissionsInProgress));
             }
 
-            BackgroundJob.Enqueue(() => _commitService.CommitStagedData(type.Equals("replace", StringComparison.OrdinalIgnoreCase), biobankId));
+            //BackgroundJobEnqueueingService will then call either _queueWriteService or Hangfire to 
+            //queue the job up
+            //TODO: later PBI which will sort out conditional DI for which service to implement
+            await _backgroundJobEnqueueingService.Commit(biobankId, type.Equals("replace", StringComparison.OrdinalIgnoreCase));
 
             return NoContent();
         }
