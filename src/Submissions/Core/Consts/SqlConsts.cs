@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Consts
+﻿namespace Biobanks.Submissions.Core.Consts
 {
     /// <summary>
     /// SQL 'constants'
