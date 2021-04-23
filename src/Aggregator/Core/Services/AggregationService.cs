@@ -4,6 +4,7 @@ using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +20,59 @@ namespace Biobanks.Aggregator.Core.Services
         public AggregationService(BiobanksDbContext db)
         {
             _db = db;
+        }
+
+        public async Task<IEnumerable<Collection>> GroupCollections(IEnumerable<LiveSample> samples)
+        {
+            // Currently Only Supports Extracted Samples
+            var extractedMaterialGroups = await _db.MaterialTypeGroups.Where(x => x.Value.StartsWith("Extracted")).ToListAsync();
+            var extractedSamples = samples.Where(x => x.MaterialType.MaterialTypeGroups.Any(x => extractedMaterialGroups.Contains(x)));
+
+            // Grouping Of Samples
+            var collections = extractedSamples.GroupBy(x =>
+                new
+                {
+                    x.OrganisationId,
+                    x.CollectionName,
+                    x.SampleContentId
+                })
+                .Select(x =>
+                {
+                    // Find Exisiting Collection
+                    var collection = _db.Collections.FirstOrDefault(y =>
+                        y.OrganisationId == x.Key.OrganisationId &&
+                        y.Title == x.Key.CollectionName &&
+                        y.FromApi
+                    );
+
+                    if (collection != null)
+                    {
+                        return collection;
+                    }
+                    else
+                    {
+                        var samples = x.OrderBy(y => y.DateCreated);
+                        var complete = (DateTime.Now - samples.Last().DateCreated) > TimeSpan.FromDays(180);
+
+                        return new Collection
+                        {
+                            OrganisationId = x.Key.OrganisationId,
+                            Title = x.Key.CollectionName,
+                            //OntologyTermId
+                            //Description
+                            StartDate = samples.First().DateCreated,
+                            LastUpdated = DateTime.Now,
+                            //HtaStatusId   // TODO: Needs Deleting?
+                            //AccessConditionId
+                            //CollectionTypeId
+                            CollectionStatusId = GetCollectionStatus(complete).Id,
+                            //CollectionPointId // TODO: Needs Deleting?
+                            FromApi = true
+                        };
+                    }
+                });
+
+            return collections;
         }
 
         public async Task<IEnumerable<SampleSet>> GroupSampleSets(IEnumerable<LiveSample> samples)
@@ -65,41 +119,6 @@ namespace Biobanks.Aggregator.Core.Services
                 });
         }
 
-        public async Task<IEnumerable<Collection>> GroupCollections(IEnumerable<LiveSample> samples)
-        {
-            // Currently Only Supports Extracted Samples
-            var extractedMaterialGroups = await _db.MaterialTypeGroups.Where(x => x.Value.StartsWith("Extracted")).ToListAsync();
-            var extractedSamples = samples.Where(x => x.MaterialType.MaterialTypeGroups.Any(x => extractedMaterialGroups.Contains(x)));
-
-            // Grouping Of Samples
-            var collections = extractedSamples.GroupBy(x => 
-                new 
-                { 
-                    x.OrganisationId, 
-                    x.CollectionName,
-                    x.SampleContentId
-                })
-                .Select(group => group.First())
-                .Select(sample => 
-                {
-                    var collection = _db.Collections.FirstOrDefault(x =>
-                        x.OrganisationId == sample.OrganisationId &&
-                        x.Title == sample.CollectionName &&
-                        x.FromApi
-                    );
-
-                    // TODO: Seperate Out Grouping and New Collection Generation
-                    return collection ?? new Collection
-                    {
-                        OrganisationId = sample.OrganisationId,
-                        Title = sample.CollectionName,
-                        FromApi = true
-                    };
-                });
-
-            return collections;
-        }
-
         public async Task<IEnumerable<MaterialDetail>> GenerateMaterialDetails(IEnumerable<LiveSample> samples)
         {
             var collectionPercentages = await _db.CollectionPercentages.ToListAsync();
@@ -113,6 +132,8 @@ namespace Biobanks.Aggregator.Core.Services
                 })
                 .Select(x =>
                 {
+                    var sample = x.First();
+
                     // TODO: Handle NULL Bounds
                     var percentage = decimal.Divide(x.Count(), samples.Count());
                     var collectionPercentage = collectionPercentages.FirstOrDefault(y =>
@@ -124,12 +145,23 @@ namespace Biobanks.Aggregator.Core.Services
                     {
                         MaterialTypeId = x.Key.MaterialTypeId,
                         StorageTemperatureId = x.Key.StorageTemperatureId,
-                        //MacroscopicAssessmentId = 0,
-                        //ExtractionProcedureId = "",
-                        //PreservationTypeId = 0,
+                        //MacroscopicAssessmentId = 0,  // TODO: Mapping rule unknown
+                        ExtractionProcedureId = sample.ExtractionProcedureId,
+                        PreservationTypeId = sample.PreservationTypeId,
                         CollectionPercentageId = collectionPercentage.Id
                     };
                 });
+        }
+
+        
+
+
+        // Ref Data Helpers
+        private CollectionStatus GetCollectionStatus(bool complete)
+        {
+            return complete
+                ? _db.CollectionStatus.Where(x => x.Value == "Completed").First()
+                : _db.CollectionStatus.Where(x => x.Value == "In progress").First();
         }
     }
 }
