@@ -1,6 +1,7 @@
 ﻿using Biobanks.Data;
 using Biobanks.Submissions.Core.AzureStorage;
 using Biobanks.Submissions.Core.Config;
+using Biobanks.Submissions.Core.Models.OptionsModels;
 using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
 
@@ -8,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Configuration;
 
 namespace AzFunctions
 {
     class Startup
     {
-
         internal static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
 
@@ -32,6 +33,8 @@ namespace AzFunctions
             {
                 c.ExpiryDays = config.GetValue("expiryDays", 30);
             });
+
+            services.Configure<StorageTemperatureLegacyModel>(context.Configuration.GetSection("storageTemperatures"));
 
             // In-Memory Cache - Manually Called As Not Called By A Parent Service
             services.AddMemoryCache();

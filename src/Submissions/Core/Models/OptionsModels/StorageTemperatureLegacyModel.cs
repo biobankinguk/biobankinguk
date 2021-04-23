@@ -5,16 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Core.Config.LegacySupport
+namespace Biobanks.Submissions.Core.Models.OptionsModels
 {
+    
     public class StorageTemperatureLegacyModel
+    {
+        [JsonProperty("storageTemperatures")]
+        public List<StorageTemperature> StorageTemperatures { get; set; }
+    }
+
+    public class StorageTemperature
     {
         [JsonProperty("old")]
         public Old Old { get; set; }
         [JsonProperty("new")]
         public New New { get; set; }
     }
-
     public class Old
     {
         [JsonProperty("storageTemperature")]
