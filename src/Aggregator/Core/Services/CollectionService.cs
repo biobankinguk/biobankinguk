@@ -1,7 +1,9 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
+using System.Linq;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Core.Services
 {

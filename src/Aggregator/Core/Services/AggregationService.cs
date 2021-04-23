@@ -42,7 +42,14 @@ namespace Biobanks.Aggregator.Core.Services
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoMaterialDetails(IEnumerable<LiveSample> samples)
         {
-            throw new NotImplementedException();
+            return samples
+                .Where(x => x.StorageTemperatureId != null) // TODO: How should this be handled
+                .GroupBy(x => new
+                {
+                    x.MaterialTypeId,
+                    x.StorageTemperatureId
+                })
+                .Select(x => x.AsEnumerable());
         }
 
         public async Task<Collection> GenerateCollection(IEnumerable<LiveSample> samples)
