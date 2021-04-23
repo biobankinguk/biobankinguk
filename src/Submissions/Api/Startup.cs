@@ -150,8 +150,10 @@ namespace Biobanks.Submissions.Api
                 // Local Services
                 .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<IErrorService, ErrorService>()
-                .AddTransient<ICommitService, CommitService>()
-                .AddTransient<IRejectService, RejectService>();
+                .AddTransient<IRejectService, RejectService>()
+
+                //Conditional Service (todo setup hangfire specific DI)
+                .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
         }
 
         /// <summary>
