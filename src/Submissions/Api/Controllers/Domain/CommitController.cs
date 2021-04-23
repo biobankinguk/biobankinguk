@@ -61,7 +61,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
             //BackgroundJobEnqueueingService will then call either _queueWriteService or Hangfire to 
             //queue the job up
             //TODO: later PBI which will sort out conditional DI for which service to implement
-            _backgroundJobEnqueueingService.QueueCommittedData(biobankId, type.Equals("replace", StringComparison.OrdinalIgnoreCase);
+            await _backgroundJobEnqueueingService.QueueCommittedData(biobankId, type.Equals("replace", StringComparison.OrdinalIgnoreCase));
 
             return NoContent();
         }
