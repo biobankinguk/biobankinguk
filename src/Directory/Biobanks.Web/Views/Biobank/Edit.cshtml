@@ -144,7 +144,7 @@
         <div class="form-group">
             @Html.LabelFor(x => x.CountyId, new { @class = "col-sm-3 control-label required" })
             <div class="col-sm-6">
-                @Html.DropDownListFor(x => x.CountyId, new SelectList(items: Model.Counties.OrderBy(x => x.Country.Value).ThenBy(x => x.Value), dataValueField: "Id", dataTextField: "Value", dataGroupField: "Country.Value", selectedValue:null), "Select County", new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.CountyId, new SelectList(items: Model.Counties.OrderBy(x => x.Country.Value).ThenBy(x => x.Value), dataValueField: "Id", dataTextField: "Value", dataGroupField: "Country.Value", selectedValue: null), "Select County", new { @class = "form-control" })
                 @Html.ValidationMessageFor(x => x.CountyId)
             </div>
         </div>
@@ -152,7 +152,7 @@
         <div class="form-group">
             @Html.LabelFor(x => x.CountryId, new { @class = "col-sm-3 control-label required" })
             <div class="col-sm-6">
-                @Html.DropDownListFor(x => x.CountryId, new SelectList(Model.Countries, "Id", "Value"), "Select Country", new { @class = "form-control"})
+                @Html.DropDownListFor(x => x.CountryId, new SelectList(Model.Countries, "Id", "Value"), "Select Country", new { @class = "form-control" })
                 @Html.ValidationMessageFor(x => x.CountryId)
             </div>
         </div>
@@ -276,6 +276,9 @@
             @Html.ValidationMessageFor(x => x.OtherRegistrationReason)
         </div>
     </div>
+
+    @Html.HiddenFor(x => x.AccessConditionId)
+    @Html.HiddenFor(x => x.CollectionTypeId)
 
     @* TODO: 'other' registration reason *@
 
