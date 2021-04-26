@@ -1,0 +1,24 @@
+﻿{
+  "MaterialTypesLegacyModel": {
+    "listOfMappings": [
+      {
+        "old": {
+          "materialType": "Core biopsy"
+        },
+        "new": {
+          "materialType": "Tissue specimen",
+          "extractionProcedure": "Biopsy"
+        }
+      },
+      {
+        "old": {
+          "materialType": "Tissue sample"
+        },
+        "new": {
+          "materialType": "Tissue specimen",
+          "extractionProcedure": "Excision"
+        }
+      }
+    ]
+  }
+}
