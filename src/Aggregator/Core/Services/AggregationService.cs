@@ -15,10 +15,12 @@ namespace Biobanks.Aggregator.Core.Services
 {
     public class AggregationService : IAggregationService
     {
+        private readonly ICollectionService _collectionService;
         private readonly BiobanksDbContext _db;
-
-        public AggregationService(BiobanksDbContext db)
+        
+        public AggregationService(ICollectionService collectionService, BiobanksDbContext db)
         {
+            _collectionService = collectionService;
             _db = db;
         }
 
@@ -37,7 +39,24 @@ namespace Biobanks.Aggregator.Core.Services
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoSampleSets(IEnumerable<LiveSample> samples)
         {
-            throw new NotImplementedException();
+            var ageRanges = _db.AgeRanges.ToList();
+            var defaultAgeRange = GetDefaultAgeRange();
+
+            // Group Samples Into SampleSets
+            return samples
+                .Select(sample => new
+                {
+                    Sample = sample,
+                    AgeRange = ageRanges.FirstOrDefault(y =>
+                        XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(sample.AgeAtDonation) &&
+                        XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(sample.AgeAtDonation)) ?? defaultAgeRange
+                })
+                .GroupBy(x => new
+                {
+                    x.AgeRange.Id,
+                    x.Sample.SexId
+                })
+                .Select(x => x.Select(y => y.Sample));
         }
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoMaterialDetails(IEnumerable<LiveSample> samples)
@@ -61,25 +80,24 @@ namespace Biobanks.Aggregator.Core.Services
             var complete = (DateTime.Now - newestSample.DateCreated) > TimeSpan.FromDays(180);
 
             // Find Exisiting Collection
-            var collection = await _db.Collections.FirstOrDefaultAsync(y =>
-                y.OrganisationId == newestSample.OrganisationId &&
-                y.Title == newestSample.CollectionName &&
-                y.FromApi
-            )
-            ?? new Collection
-            {
-                OrganisationId = newestSample.OrganisationId,
-                Title = newestSample.CollectionName,
-                //OntologyTermId
-                //Description
-                StartDate = orderedSamples.First().DateCreated,
-                HtaStatusId = GetDefaultHtaStatus().Id,   // TODO: Needs Deleting?
-                AccessConditionId = GetDefaultAccessCondition().Id, // TODO: Temp Value
-                CollectionTypeId = GetDefaultCollectionType().Id, // TODO: Temp Value
-                CollectionStatusId = GetCollectionStatus(complete).Id,
-                CollectionPointId = GetCollectionPoint().Id, // TODO: Needs Deleting?
-                FromApi = true
-            };
+            var collection = await _collectionService.GetCollectionAsync(
+                    newestSample.OrganisationId, 
+                    newestSample.CollectionName)
+                ?? new Collection
+                {
+                    OrganisationId = newestSample.OrganisationId,
+                    Title = newestSample.CollectionName,
+                    //OntologyTermId
+                    //Description
+                    StartDate = orderedSamples.First().DateCreated,
+                    HtaStatusId = GetDefaultHtaStatus().Id,   // TODO: Needs Deleting?
+                    AccessConditionId = GetDefaultAccessCondition().Id, // TODO: Temp Value
+                    CollectionTypeId = GetDefaultCollectionType().Id, // TODO: Temp Value
+                    CollectionStatusId = GetCollectionStatus(complete).Id,
+                    CollectionPointId = GetDefaultCollectionPoint().Id, // TODO: Needs Deleting?
+                    FromApi = true,
+                    SampleSets = new List<SampleSet>()
+                };
 
             // Set LastUpdated Timestamp
             collection.LastUpdated = DateTime.Now;
@@ -87,9 +105,18 @@ namespace Biobanks.Aggregator.Core.Services
             return collection;
         }
 
-        public Task<SampleSet> GenerateSampleSet(IEnumerable<LiveSample> samples)
+        public async Task<SampleSet> GenerateSampleSet(IEnumerable<LiveSample> samples)
         {
-            throw new NotImplementedException();
+            var sample = samples.First();
+            var ageRange = GetAgeRange(sample.AgeAtDonation);
+            var donorCount = GetDonorCount(samples.Count());
+
+            return new SampleSet
+            {
+                SexId = sample.SexId ?? 0, // TODO: Do we need a default Sex?
+                AgeRangeId = ageRange.Id,
+                DonorCountId = donorCount.Id
+            };
         }
 
         public Task<MaterialDetail> GenerateMaterialDetail(IEnumerable<LiveSample> samples)
@@ -179,7 +206,17 @@ namespace Biobanks.Aggregator.Core.Services
                 });
         }
 
-        // RefData Helper - TODO: Put in won service
+
+
+        // RefData Helper - TODO: Put in own service?
+        private AgeRange GetAgeRange(string age)
+            => _db.AgeRanges.ToList().FirstOrDefault(y =>
+                        XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(age) &&
+                        XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(age)) ?? GetDefaultAgeRange();
+                
+        private DonorCount GetDonorCount(int count)
+            => _db.DonorCounts.First(x => x.LowerBound <= count && x.UpperBound >= count);
+
         private CollectionStatus GetCollectionStatus(bool complete)
         {
             return complete
@@ -193,12 +230,13 @@ namespace Biobanks.Aggregator.Core.Services
         private CollectionType GetDefaultCollectionType()
             => _db.CollectionTypes.OrderBy(x => x.SortOrder).First();
 
-        private CollectionPoint GetCollectionPoint()
+        private CollectionPoint GetDefaultCollectionPoint()
             => _db.CollectionPoints.OrderBy(x => x.SortOrder).First();
 
         private HtaStatus GetDefaultHtaStatus()
             => _db.HtaStatus.OrderBy(x => x.SortOrder).First();
-    
-        
+
+        private AgeRange GetDefaultAgeRange()
+            => _db.AgeRanges.First(x => x.LowerBound == null && x.UpperBound == null);
     }
 }

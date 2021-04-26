@@ -1,6 +1,7 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
@@ -15,6 +16,14 @@ namespace Biobanks.Aggregator.Core.Services
         {
             _db = db;
         }
+
+        public async Task<Collection> GetCollectionAsync(int organisationId, string collectionName)
+            => await _db.Collections
+                .Include(x => x.SampleSets)
+                .FirstOrDefaultAsync(x =>
+                    x.OrganisationId == organisationId && 
+                    x.Title == collectionName && 
+                    x.FromApi);
 
         public async Task AddCollectionAsync(Collection collection)
         {

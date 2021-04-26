@@ -28,13 +28,25 @@ namespace Biobanks.Aggregator.Core
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamplesAsync();
 
-            foreach (var groupedSamples in _aggregationService.GroupIntoCollections(dirtySamples))
+            // Group Samples Into Collections
+            foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtySamples))
             {
-                var samples = await _sampleService.ListSimilarSamplesAsync(groupedSamples.First());
-                var collection = await _aggregationService.GenerateCollection(samples.Any() ? samples : groupedSamples);
+                var samples = await _sampleService.ListSimilarSamplesAsync(collectionSamples.First());
+                var collection = await _aggregationService.GenerateCollection(samples.Any() ? samples : collectionSamples);
 
                 if (samples.Any())
                 {
+                    // Clear Current SampleSets - Rebuilt Below
+                    collection.SampleSets.Clear();
+
+                    // Group Into SampleSets
+                    foreach (var sampleSetSamples in _aggregationService.GroupIntoSampleSets(samples))
+                    {
+                        var sampleSet = await _aggregationService.GenerateSampleSet(sampleSetSamples);
+
+                        collection.SampleSets.Add(sampleSet);
+                    }
+
                     if (collection.CollectionId == default)
                     {
                         await _collectionService.AddCollectionAsync(collection);
