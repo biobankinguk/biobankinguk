@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -15,12 +14,12 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     [ApiController]
     public class RejectController : ControllerBase
     {
-        private readonly IRejectService _service;
+        private readonly IBackgroundJobEnqueueingService _backgroundJobEnqueueingService;
 
         /// <inheritdoc />
-        public RejectController(IRejectService service)
+        public RejectController(IBackgroundJobEnqueueingService backgroundJobEnqueueingService)
         {
-            _service = service;
+            _backgroundJobEnqueueingService = backgroundJobEnqueueingService;
         }
 
         /// <summary>
@@ -30,13 +29,13 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
         [HttpPost]
         [SwaggerResponse(204, Description = "The reject completed successfully.")]
         [SwaggerResponse(400, Description = "Organisation ID claim in bad format.")]
-        public IActionResult Post(int biobankId)
+        public async Task<IActionResult> PostAsync(int biobankId)
         {
             if (!User.HasClaim(CustomClaimTypes.BiobankId,
                 biobankId.ToString()))
                 return Forbid();
 
-            BackgroundJob.Enqueue(() => _service.RejectStagedData(biobankId));
+            await _backgroundJobEnqueueingService.Reject(biobankId);
 
             return NoContent();
         }
