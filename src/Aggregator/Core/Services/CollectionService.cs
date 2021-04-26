@@ -18,14 +18,8 @@ namespace Biobanks.Aggregator.Core.Services
 
         public async Task AddCollectionAsync(Collection collection)
         {
-            try
-            {
-                await _db.Collections.AddAsync(collection);
-                await _db.SaveChangesAsync();
-            }
-            catch
-            {
-            }
+            await _db.Collections.AddAsync(collection);
+            await _db.SaveChangesAsync();
         }
 
         public async Task UpdateCollectionAsync(Collection collection)
@@ -35,7 +29,9 @@ namespace Biobanks.Aggregator.Core.Services
         }
 
         public async Task DeleteCollectionAsync(Collection collection)
-            => await _db.Collections.Where(x => x.CollectionId == collection.CollectionId).DeleteAsync();
-
+        {
+            await _db.Collections.Where(x => x.CollectionId == collection.CollectionId).DeleteAsync();
+            await _db.SaveChangesAsync();
+        }
     }
 }

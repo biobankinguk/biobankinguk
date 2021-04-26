@@ -31,7 +31,7 @@ namespace Biobanks.Aggregator.Core
             foreach (var groupedSamples in _aggregationService.GroupIntoCollections(dirtySamples))
             {
                 var samples = await _sampleService.ListSimilarSamplesAsync(groupedSamples.First());
-                var collection = await _aggregationService.GenerateCollection(samples);
+                var collection = await _aggregationService.GenerateCollection(samples.Any() ? samples : groupedSamples);
 
                 if (samples.Any())
                 {

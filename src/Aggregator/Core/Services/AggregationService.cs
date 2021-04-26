@@ -54,20 +54,22 @@ namespace Biobanks.Aggregator.Core.Services
 
         public async Task<Collection> GenerateCollection(IEnumerable<LiveSample> samples)
         {
-            var sample = samples.OrderBy(y => y.DateCreated).Last();
             var orderedSamples = samples.OrderBy(y => y.DateCreated);
-            var complete = (DateTime.Now - orderedSamples.Last().DateCreated) > TimeSpan.FromDays(180);
+            var newestSample = orderedSamples.Last();
+
+            // Collection Complete If Newest Sample Older Than ~6 Months
+            var complete = (DateTime.Now - newestSample.DateCreated) > TimeSpan.FromDays(180);
 
             // Find Exisiting Collection
             var collection = await _db.Collections.FirstOrDefaultAsync(y =>
-                y.OrganisationId == sample.OrganisationId &&
-                y.Title == sample.CollectionName &&
+                y.OrganisationId == newestSample.OrganisationId &&
+                y.Title == newestSample.CollectionName &&
                 y.FromApi
             )
             ?? new Collection
             {
-                OrganisationId = sample.OrganisationId,
-                Title = sample.CollectionName,
+                OrganisationId = newestSample.OrganisationId,
+                Title = newestSample.CollectionName,
                 //OntologyTermId
                 //Description
                 StartDate = orderedSamples.First().DateCreated,
@@ -94,6 +96,8 @@ namespace Biobanks.Aggregator.Core.Services
         {
             throw new NotImplementedException();
         }
+
+
 
 
         // TODO: Refactor All Below
