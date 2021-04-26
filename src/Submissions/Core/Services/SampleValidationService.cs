@@ -280,24 +280,16 @@ namespace Biobanks.Submissions.Core.Services
 
         private async Task<StagedSample> ValidateStorageTemperature(SampleDto dto, StagedSample sample)
         {
-            /*
-            string path = "../../../Config/LegacySupport/LegacyStorageTemperatures.json";
-
-            using (StreamReader r = new StreamReader(path))
+            foreach (var obj in _storageTemperatureLegacy.ListOfMappings)
             {
-                string json = r.ReadToEnd();
-                List<StorageTemperatureLegacyModel> legacyObjs = JsonConvert.DeserializeObject<List<StorageTemperatureLegacyModel>>(json);
-                
-                foreach (var obj in legacyObjs)
+                if (obj.Old.StorageTemperature == dto.StorageTemperature)
                 {
-                    if (obj.Old.StorageTemperature == dto.StorageTemperature)
-                    {
-                        dto.StorageTemperature = obj.New.StorageTemperature;
-                        _logger.LogInformation($"The given storage temperature was mapped to {obj.New.StorageTemperature}");
-                        sample.PreservationType = await _refDataReadService.GetPreservationType(obj.New.PreservationType);
-                    }
-                } 
-            } */
+                    dto.StorageTemperature = obj.New.StorageTemperature;
+                    _logger.LogInformation($"The given storage temperature was mapped to {obj.New.StorageTemperature}");
+                    var preservationType = await _refDataReadService.GetPreservationType(obj.New.PreservationType);
+                    sample.PreservationTypeId = preservationType.Id;
+                }
+            } 
             var result = await _refDataReadService.GetStorageTemperature(dto.StorageTemperature);
 
             if (result == null)
