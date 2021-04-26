@@ -16,7 +16,55 @@
         },
         "new": {
           "materialType": "Tissue specimen",
-          "extractionProcedure": "Excision"
+          "extractionProcedure": "Surgical Procedure"
+        }
+      },
+      {
+        "old": {
+          "materialType": "Bone marrow"
+        },
+        "new": {
+          "materialType": "Whole bone marrow"
+        }
+      },
+      {
+        "old": {
+          "materialType": "Swabs"
+        },
+        "new": {
+          "materialType": "Swab"
+        }
+      },
+      {
+        "old": {
+          "materialType": "Mucus"
+        },
+        "new": {
+          "materialType": "Sputum"
+        }
+      },
+      {
+        "old": {
+          "materialType": "Blood spots"
+        },
+        "new": {
+          "materialType": "Dried whole blood"
+        }
+      },
+      {
+        "old": {
+          "materialType": "Pathogen"
+        },
+        "new": {
+          "materialType": "Isolated pathogens"
+        }
+      },
+      {
+        "old": {
+          "materialType": "Peripheral blood cells"
+        },
+        "new": {
+          "materialType": "Peripheral blood mononuclear cells (PBMC)"
         }
       }
     ]
