@@ -104,6 +104,12 @@ namespace Biobanks.Data
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            // Cascade Delete
+            model.Entity<Collection>()
+                .HasMany(p => p.SampleSets)
+                .WithOne(c => c.Collection)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Join Tables
             model.Entity<MaterialTypeGroup>()
                 .HasMany(x => x.MaterialTypes)
