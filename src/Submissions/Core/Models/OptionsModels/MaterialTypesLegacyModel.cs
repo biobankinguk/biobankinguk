@@ -36,5 +36,8 @@ namespace Biobanks.Submissions.Core.Models.OptionsModels
 
         [JsonProperty("extractionProcedure")]
         public string ExtractionProcedure { get; set; }
+
+        [JsonProperty("extractionProcedureOntologyField")]
+        public string ExtractionProcedureOntologyField { get; set; }
     }
 }

@@ -362,6 +362,12 @@ namespace Biobanks.Submissions.Core.Services
                 {
                     dto.MaterialType = obj.New.MaterialType;
                     _logger.LogInformation($"The given material type was mapped to {obj.New.MaterialType}");
+
+                    if (!string.IsNullOrEmpty(obj.New.ExtractionProcedure))
+                    {
+                        var ep = await _refDataReadService.GetSnomedExtractionProcedure(obj.New.ExtractionProcedure, obj.New.ExtractionProcedureOntologyField);
+                        sample.ExtractionProcedureId = ep.Id;
+                    }
                     
                 }
             }
