@@ -68,6 +68,7 @@ namespace AzFunctions
             services.AddTransient<IReferenceDataReadService, ReferenceDataReadService>();
             services.AddTransient<ITreatmentValidationService, TreatmentValidationService>();
             services.AddTransient<IDiagnosisValidationService, DiagnosisValidationService>();
+            services.AddTransient<ICommitService, CommitService>();
 
             // Submission Services
             services.AddTransient<IErrorService, ErrorService>();

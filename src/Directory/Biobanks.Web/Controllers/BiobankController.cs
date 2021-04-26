@@ -400,6 +400,8 @@ namespace Biobanks.Web.Controllers
                 BiobankId = bb.OrganisationId,
                 BiobankExternalId = bb.OrganisationExternalId,
                 OrganisationTypeId = bb.OrganisationTypeId,
+                AccessConditionId = bb.AccessConditionId,
+                CollectionTypeId = bb.CollectionTypeId,
                 OrganisationName = bb.Name,
                 Description = bb.Description,
                 Url = bb.Url,
@@ -1866,6 +1868,84 @@ namespace Biobanks.Web.Controllers
 
             var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
             return View(model);
+        }
+        #endregion
+
+        #region Submissions
+
+        [HttpGet]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<ActionResult> Submissions()
+        {
+            var model = new SubmissionsModel();
+
+            //populate drop downs
+            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+                .Select(x => new ReferenceDataModel
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                }).OrderBy(x => x.SortOrder);
+
+            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                .Select(x => new ReferenceDataModel
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                }).OrderBy(x => x.SortOrder);
+
+            //get currently selected values from org (if applicable)
+            var biobankId = SessionHelper.GetBiobankId(Session);
+            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+            model.BiobankId = biobankId;
+            model.AccessCondition = biobank.AccessConditionId;
+            model.CollectionType = biobank.CollectionTypeId;
+            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Submissions(SubmissionsModel model)
+        {
+            //update Organisations table
+            var biobankId = model.BiobankId;
+            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+            biobank.CollectionTypeId = model.CollectionType;
+            biobank.AccessConditionId = model.AccessCondition;
+
+            await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
+
+            //Set feedback and redirect
+            SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
+
+            return RedirectToAction("Submissions");
+        }
+
+        [HttpPost]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
+        {
+            //update Organisations table
+            var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
+            KeyValuePair<string, string> credentials;
+
+            if (existingclient)
+                credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
+            else
+                credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+
+            return Json(new
+            {
+                publickey = credentials.Key,
+                privatekey = credentials.Value
+            });
         }
         #endregion
 
