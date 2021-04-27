@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.IO;
 using Newtonsoft.Json;
-using System.Runtime.ExceptionServices;
-using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Linq;
-using Publications.Services.Contracts;
+using Biobanks.Publications.Services.Contracts;
 using Microsoft.Extensions.Configuration;
-using Publications.Services.Dto;
-using Microsoft.Extensions.Primitives;
+using Biobanks.Publications.Services.Dto;
 using Flurl;
 using Microsoft.Extensions.Logging;
 

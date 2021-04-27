@@ -1,10 +1,8 @@
-﻿using Publications.Services.Dto;
-using System;
+﻿using Biobanks.Publications.Services.Dto;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Publications.Services.Contracts
+namespace Biobanks.Publications.Services.Contracts
 {
     public interface IEpmcService
     {

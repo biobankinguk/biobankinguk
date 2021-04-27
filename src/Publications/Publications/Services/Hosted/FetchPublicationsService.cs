@@ -1,13 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Publications;
-using Publications.Services;
-using Publications.Services.Contracts;
-using System;
-using System.Collections.Generic;
+using Biobanks.Publications.Services;
+using Biobanks.Publications.Services.Contracts;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 

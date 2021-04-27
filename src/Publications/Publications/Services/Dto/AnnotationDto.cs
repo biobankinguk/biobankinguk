@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Publications.Services.Dto
+namespace Biobanks.Publications.Services.Dto
 {
     public class AnnotationResult
     {
