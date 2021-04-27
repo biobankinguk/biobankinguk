@@ -11,6 +11,8 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 
         Task<IEnumerable<LiveSample>> ListDirtySamplesAsync();
 
+        Task CleanSamplesAsync(IEnumerable<LiveSample> samples);
+
         Task DeleteFlaggedSamplesAsync();
     }
 }
