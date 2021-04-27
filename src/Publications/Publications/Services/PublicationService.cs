@@ -1,22 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Publications.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
+using Biobanks.Publications.Services;
+using Biobanks.Publications.Services.Dto;
+using Biobanks.Entities.Data;
+using Biobanks.Data;
 
 namespace Publications.Services
 {
     public class PublicationService : IPublicationService
     {
 
-        private PublicationDbContext _ctx;
+        private BiobanksDbContext _ctx;
 
-        public PublicationService(PublicationDbContext ctx)
+        public PublicationService(BiobanksDbContext ctx)
         {
             _ctx = ctx;
         }
