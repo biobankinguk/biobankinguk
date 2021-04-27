@@ -115,105 +115,37 @@ namespace Biobanks.Aggregator.Core.Services
             {
                 SexId = sample.SexId ?? 0, // TODO: Do we need a default Sex?
                 AgeRangeId = ageRange.Id,
-                DonorCountId = donorCount.Id
+                DonorCountId = donorCount.Id,
+                MaterialDetails = new List<MaterialDetail>()
             };
         }
 
-        public Task<MaterialDetail> GenerateMaterialDetail(IEnumerable<LiveSample> samples)
+        public async Task<MaterialDetail> GenerateMaterialDetail(IEnumerable<LiveSample> samples)
         {
-            throw new NotImplementedException();
-        }
+            var sample = samples.First();
 
-
-
-
-        // TODO: Refactor All Below
-        public async Task<IEnumerable<SampleSet>> GroupSampleSets(IEnumerable<LiveSample> samples)
-        {
-            var donorCounts = await _db.DonorCounts.ToListAsync();
-            var ageRanges = await _db.AgeRanges.ToListAsync();
-            var defaultAgeRange = ageRanges.FirstOrDefault(x => x.LowerBound == null && x.UpperBound == null);
-
-            // TODO: Some Error Logging If No Default Value Exists?
-            if (defaultAgeRange is null)
+            return new MaterialDetail
             {
-            }
-
-            // Group Samples Into SampleSets
-            return samples
-                .Select(sample => new
-                {
-                    Sample = sample,
-                    AgeRange = ageRanges.FirstOrDefault(y =>
-                        XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(sample.AgeAtDonation) &&
-                        XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(sample.AgeAtDonation)) ?? defaultAgeRange
-                })
-                .GroupBy(x => new
-                {
-                    x.AgeRange.Id,
-                    x.Sample.SexId
-                })
-                .Select(x => 
-                {
-                    var sample = x.First().Sample;
-                    var ageRange = x.First().AgeRange;
-
-                    // TODO: Error Handling - Possible DonorCount Bracket Doesn't Exist
-                    var donorCount = donorCounts.First(y => 
-                        y.LowerBound <= x.Count() && 
-                        y.UpperBound >= x.Count());
-
-                    return new SampleSet
-                    {
-                        SexId = sample.SexId ?? 0, // TODO: Do we need a default Sex?
-                        AgeRangeId = ageRange.Id,
-                        DonorCountId = donorCount.Id
-                    };
-                });
+                MaterialTypeId = sample.MaterialTypeId,
+                StorageTemperatureId = sample.StorageTemperatureId ?? 0,
+                MacroscopicAssessmentId = 3,  // TODO: Mapping rule unknown
+                ExtractionProcedureId = sample.ExtractionProcedureId,
+                PreservationTypeId = sample.PreservationTypeId,
+                CollectionPercentageId = GetCollectionPercentage(0).Id
+            };
         }
-
-        public async Task<IEnumerable<MaterialDetail>> GroupMaterialDetails(IEnumerable<LiveSample> samples)
-        {
-            var collectionPercentages = await _db.CollectionPercentages.ToListAsync();
-
-            return samples
-                .Where(x => x.StorageTemperatureId != null) // TODO: How should this be handled
-                .GroupBy(x => new
-                {
-                    x.MaterialTypeId,
-                    x.StorageTemperatureId
-                })
-                .Select(x =>
-                {
-                    var sample = x.First();
-
-                    // TODO: Handle NULL Bounds
-                    var percentage = decimal.Divide(x.Count(), samples.Count());
-                    var collectionPercentage = collectionPercentages.FirstOrDefault(y =>
-                        y.LowerBound <= percentage &&
-                        y.UpperBound >= percentage
-                    );
-
-                    return new MaterialDetail
-                    {
-                        MaterialTypeId = sample.MaterialTypeId,
-                        StorageTemperatureId = sample.StorageTemperatureId ?? 0,
-                        //MacroscopicAssessmentId = 0,  // TODO: Mapping rule unknown
-                        ExtractionProcedureId = sample.ExtractionProcedureId,
-                        PreservationTypeId = sample.PreservationTypeId,
-                        CollectionPercentageId = collectionPercentage.Id
-                    };
-                });
-        }
-
-
 
         // RefData Helper - TODO: Put in own service?
         private AgeRange GetAgeRange(string age)
             => _db.AgeRanges.ToList().FirstOrDefault(y =>
-                        XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(age) &&
-                        XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(age)) ?? GetDefaultAgeRange();
-                
+                    XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(age) &&
+                    XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(age)) ?? GetDefaultAgeRange();
+
+        private CollectionPercentage GetCollectionPercentage(decimal percentage)
+            => _db.CollectionPercentages.FirstOrDefault(y =>
+                    y.LowerBound <= percentage &&
+                    y.UpperBound >= percentage);
+
         private DonorCount GetDonorCount(int count)
             => _db.DonorCounts.First(x => x.LowerBound <= count && x.UpperBound >= count);
 

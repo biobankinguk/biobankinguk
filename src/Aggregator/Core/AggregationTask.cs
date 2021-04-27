@@ -39,14 +39,21 @@ namespace Biobanks.Aggregator.Core
                     // Clear Current SampleSets - Rebuilt Below
                     collection.SampleSets.Clear();
 
-                    // Group Into SampleSets
+                    // Group Samples Into SampleSets
                     foreach (var sampleSetSamples in _aggregationService.GroupIntoSampleSets(samples))
                     {
                         var sampleSet = await _aggregationService.GenerateSampleSet(sampleSetSamples);
 
+                        // Group Samples Into MaterialDetails
+                        foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
+                        {
+                            sampleSet.MaterialDetails.Add(await _aggregationService.GenerateMaterialDetail(materialDetailSamples));
+                        }
+
                         collection.SampleSets.Add(sampleSet);
                     }
 
+                    // Write Collection To DB
                     if (collection.CollectionId == default)
                     {
                         await _collectionService.AddCollectionAsync(collection);
@@ -60,6 +67,9 @@ namespace Biobanks.Aggregator.Core
                 {
                     await _collectionService.DeleteCollectionAsync(collection);
                 }
+
+                // Flag These Samples As Clean
+                await _sampleService.CleanSamplesAsync(collectionSamples);
             }
         }
     }
