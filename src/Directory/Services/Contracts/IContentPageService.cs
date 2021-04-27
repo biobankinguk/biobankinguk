@@ -8,6 +8,6 @@ namespace Biobanks.Services.Contracts
 {
     public interface IContentPageService
     {
-        Task CreateNewContentPage(string title, string body);
+        Task CreateNewContentPage(string routeSlug, string title, string body);
     }
 }
