@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Core.Types;
-using Biobanks.Submissions.Api.Services.Contracts;
 using Z.EntityFramework.Plus;
 using Biobanks.Data;
+using Biobanks.Submissions.Core.Services.Contracts;
 
-namespace Biobanks.Submissions.Api.Services
+namespace Biobanks.Submissions.Core.Services
 {
     /// <inheritdoc />
     public class RejectService : IRejectService
