@@ -400,6 +400,8 @@ namespace Biobanks.Web.Controllers
                 BiobankId = bb.OrganisationId,
                 BiobankExternalId = bb.OrganisationExternalId,
                 OrganisationTypeId = bb.OrganisationTypeId,
+                AccessConditionId = bb.AccessConditionId,
+                CollectionTypeId = bb.CollectionTypeId,
                 OrganisationName = bb.Name,
                 Description = bb.Description,
                 Url = bb.Url,

@@ -93,6 +93,7 @@ namespace Biobanks.Data
         public DbSet<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
         public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
+        public DbSet<ContentPage> ContentPages { get; set; }
         #endregion
 
         #region Application Data: Publications
