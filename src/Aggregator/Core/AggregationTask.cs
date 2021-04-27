@@ -1,7 +1,6 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Core
@@ -58,7 +57,7 @@ namespace Biobanks.Aggregator.Core
                         foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
                         {
                             var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
-                            var percentage = (decimal) sampleSetSamples.Count() / materialDetailSamples.Count();
+                            var percentage = decimal.Divide(sampleSetSamples.Count(), materialDetailSamples.Count());
 
                             materialDetail.CollectionPercentageId = _refDataService.GetCollectionPercentage(percentage).Id;
 

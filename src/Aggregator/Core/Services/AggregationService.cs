@@ -120,7 +120,6 @@ namespace Biobanks.Aggregator.Core.Services
                 MacroscopicAssessmentId = 3,  // TODO: Mapping rule unknown
                 ExtractionProcedureId = sample.ExtractionProcedureId,
                 PreservationTypeId = sample.PreservationTypeId,
-                CollectionPercentageId = _refDataService.GetCollectionPercentage(0).Id // TODO: Map In AggregationTask
             };
         }
     }
