@@ -31,8 +31,13 @@ namespace Biobanks.Aggregator.Core
             // Group Samples Into Collections
             foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtySamples))
             {
-                var samples = await _sampleService.ListSimilarSamplesAsync(collectionSamples.First());
-                var collection = await _aggregationService.GenerateCollection(samples.Any() ? samples : collectionSamples);
+                var sample = collectionSamples.First();
+                var samples = await _sampleService.ListSimilarSamplesAsync(sample);
+
+                // Find Exisiting Or Generate New Collection
+                var collection =
+                    await _collectionService.GetCollectionAsync(sample.OrganisationId, sample.CollectionName) ??
+                    _aggregationService.GenerateCollection(samples.Any() ? samples : collectionSamples);
 
                 if (samples.Any())
                 {
@@ -42,12 +47,12 @@ namespace Biobanks.Aggregator.Core
                     // Group Samples Into SampleSets
                     foreach (var sampleSetSamples in _aggregationService.GroupIntoSampleSets(samples))
                     {
-                        var sampleSet = await _aggregationService.GenerateSampleSet(sampleSetSamples);
+                        var sampleSet = _aggregationService.GenerateSampleSet(sampleSetSamples);
 
                         // Group Samples Into MaterialDetails
                         foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
                         {
-                            sampleSet.MaterialDetails.Add(await _aggregationService.GenerateMaterialDetail(materialDetailSamples));
+                            sampleSet.MaterialDetails.Add(_aggregationService.GenerateMaterialDetail(materialDetailSamples));
                         }
 
                         collection.SampleSets.Add(sampleSet);
