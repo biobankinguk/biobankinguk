@@ -38,7 +38,6 @@ namespace Biobanks.Services.Dto
         public string GoverningDepartment { get; set; }
 
         public string EthicsRegistration { get; set; }
-        public string HtaLicence { get; set; }
 
         // registration reasons
         public string OtherRegistrationReason { get; set; }

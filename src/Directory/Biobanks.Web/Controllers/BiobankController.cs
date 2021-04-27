@@ -424,7 +424,6 @@ namespace Biobanks.Web.Controllers
                 Countries = await _biobankReadService.ListCountriesAsync(),
                 SharingOptOut = bb.SharingOptOut,
                 EthicsRegistration = bb.EthicsRegistration,
-                HtaLicence = bb.HtaLicence,
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
                 OtherRegistrationReason = bb.OtherRegistrationReason
             };
