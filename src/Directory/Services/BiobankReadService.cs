@@ -1562,11 +1562,13 @@ namespace Biobanks.Services
 
         public async Task<string> GetUnusedTokenByUser(string biobankUserId)
         {
+            // Check most recent token record
             var tokenIssue = (await _tokenIssueRecordRepository.ListAsync(
                                         false,
                                         x => x.UserId.Contains(biobankUserId),
                                         x => x.OrderBy(c => c.IssueDate))).FirstOrDefault();            
 
+            // Check validation records
             var tokenValidation = await _tokenValidationRecordRepository.ListAsync(
                                             false,
                                             x => x.UserId.Contains(biobankUserId));
