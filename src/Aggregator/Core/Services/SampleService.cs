@@ -4,6 +4,7 @@ using Biobanks.Entities.Api;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
 
@@ -32,7 +33,9 @@ namespace Biobanks.Aggregator.Core.Services
             => await _db.Samples.Where(x => x.IsDirty).ToListAsync();
 
         public async Task CleanSamplesAsync(IEnumerable<LiveSample> samples)
-            => await _db.Samples.Where(x => samples.Any(y => y.Id == x.Id)).UpdateFromQueryAsync(x => new LiveSample { IsDirty = false });
+            => await _db.Samples
+                    .Where(x => samples.Select(x => x.Id).Contains(x.Id))
+                    .UpdateFromQueryAsync(x => new LiveSample { IsDirty = false });
 
         public async Task DeleteFlaggedSamplesAsync()
             => await _db.Samples.Where(x => x.IsDeleted).DeleteAsync();
