@@ -1574,8 +1574,9 @@ namespace Biobanks.Services
                                             x => x.UserId.Contains(biobankUserId));
 
             List<string> token = tokenValidation.Select(t => t.Token).ToList();
+            DateTime now = DateTime.Now;
 
-            if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token))
+            if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
             {
                 return await _userManager.GeneratePasswordResetTokenAsync(biobankUserId);
             }                     
