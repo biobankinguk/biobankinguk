@@ -1,9 +1,9 @@
-﻿using Directory.Data.Entities;
-using Publications.Entities;
+﻿using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Publications.Services.Contracts
+namespace Biobanks.Publications.Services.Contracts
 {
     public interface IBiobankReadService
     {
@@ -11,11 +11,7 @@ namespace Publications.Services.Contracts
         Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true);
         Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId);
 
-        Task<IEnumerable<PublicationAnnotation>> GetPublicationAnnotations(int publicationId);
+        Task<IEnumerable<Annotation>> GetPublicationAnnotations(int publicationId);
         Task<Publication> GetPublicationById(string publicationId);
-
-        Task<Annotation> GetAnnotationById(int annotationId);
-
-        Task<Annotation> GetAnnotationByName(string name);
     }
 }

@@ -1,23 +1,21 @@
-﻿using Directory.Data.Entities;
+﻿using Biobanks.Data;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Publications.Entities;
-using Publications.Services.Contracts;
+using Biobanks.Publications.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Publications.Services
+namespace Biobanks.Publications.Services
 {
     public class BiobankReadService : IBiobankReadService
     {
-        private PublicationDbContext _ctx;
+        private BiobanksDbContext _ctx;
 
         public BiobankReadService(
-            PublicationDbContext ctx)
+            BiobanksDbContext ctx)
         {
             _ctx = ctx;
         }
@@ -37,19 +35,11 @@ namespace Publications.Services
             .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1)).ToListAsync();
 
         //Uses Publication Id from EF
-        public async Task<IEnumerable<PublicationAnnotation>> GetPublicationAnnotations(int publicationId)
-            => await _ctx.PublicationAnnotations.Where(x => x.Publication_Id == publicationId).Include(a => a.Annotation).ToListAsync();
+        public async Task<IEnumerable<Annotation>> GetPublicationAnnotations(int publicationId)
+            => (await _ctx.Publications.FirstOrDefaultAsync(x => x.Id == publicationId)).Annotations.ToList();
         
         //Uses publicationId from API
         public async Task<Publication> GetPublicationById(string publicationId)
             => await _ctx.Publications.Where(x => x.PublicationId == publicationId).FirstOrDefaultAsync();
-
-        //Uses Annotation Id from EF
-        public async Task<Annotation> GetAnnotationById(int annotationId)
-            => await _ctx.Annotations.Where(x => x.Id == annotationId).FirstOrDefaultAsync();
-
-        public async Task<Annotation> GetAnnotationByName(string name)
-            => await _ctx.Annotations.Where(x => x.Name == name).Include(a => a.PublicationAnnotations).FirstOrDefaultAsync();
-
     }
 }
