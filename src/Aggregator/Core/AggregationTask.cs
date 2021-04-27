@@ -1,5 +1,7 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
+using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Core
@@ -7,15 +9,18 @@ namespace Biobanks.Aggregator.Core
     public class AggregationTask
     {
         private readonly IAggregationService _aggregationService;
+        private readonly IReferenceDataService _refDataService;
         private readonly ICollectionService _collectionService;
         private readonly ISampleService _sampleService;
 
         public AggregationTask(
             IAggregationService aggregationService,
+            IReferenceDataService refDataService,
             ICollectionService collectionService,
             ISampleService sampleService)
         {
             _aggregationService = aggregationService;
+            _refDataService = refDataService;
             _collectionService = collectionService;
             _sampleService = sampleService;
         }
@@ -52,11 +57,19 @@ namespace Biobanks.Aggregator.Core
                         // Group Samples Into MaterialDetails
                         foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
                         {
-                            sampleSet.MaterialDetails.Add(_aggregationService.GenerateMaterialDetail(materialDetailSamples));
+                            var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
+                            var percentage = (decimal) sampleSetSamples.Count() / materialDetailSamples.Count();
+
+                            materialDetail.CollectionPercentageId = _refDataService.GetCollectionPercentage(percentage).Id;
+
+                            sampleSet.MaterialDetails.Add(materialDetail);
                         }
 
                         collection.SampleSets.Add(sampleSet);
                     }
+
+                    // Update Timestamp
+                    collection.LastUpdated = DateTime.Now;
 
                     // Write Collection To DB
                     if (collection.CollectionId == default)

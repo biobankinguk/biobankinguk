@@ -80,9 +80,9 @@ namespace Biobanks.Aggregator.Core.Services
             return new Collection
             {
                 OrganisationId = newestSample.OrganisationId,
-                Title = newestSample.CollectionName,
+                Title = newestSample.CollectionName, //TODO: Generate Default CollectionName If Missing
                 //OntologyTermId
-                //Description
+                Description = "", // TODO: Generate from content
                 StartDate = orderedSamples.First().DateCreated,
                 HtaStatusId = _refDataService.GetDefaultHtaStatus().Id,   // TODO: Needs Deleting?
                 AccessConditionId = _refDataService.GetDefaultAccessCondition().Id, // TODO: Temp Value
