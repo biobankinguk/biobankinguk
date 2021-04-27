@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Biobanks.Directory.Data.Repositories;
 using Biobanks.Services.Contracts;
 using Biobanks.Entities.Data;
-
+using Biobanks.Directory.Data;
 
 namespace Biobanks.Services
 {
     public class ContentPageService : IContentPageService
     {
-        private readonly IGenericEFRepository<ContentPage> _contentPageRepository;
+        private readonly BiobanksDbContext _db;
 
-        public ContentPageService(IGenericEFRepository<ContentPage> contentPageRepository)
+        public ContentPageService(BiobanksDbContext db)
         {
-            _contentPageRepository = contentPageRepository;
+            _db = db;
         }
 
         public async Task CreateNewContentPage(string routeSlug, string title, string body)
@@ -29,9 +25,20 @@ namespace Biobanks.Services
                 LastUpdated = DateTime.Now,
                 IsEnabled = true
             };
-            _contentPageRepository.Insert(contentPage);
+            _db.ContentPages.Add(contentPage);
+            await _db.SaveChangesAsync();
+        }
 
-            await _contentPageRepository.SaveChangesAsync();
+        public async Task UpdateContentPage(string routeSlug, string title, string body)
+        {
+            var contentPage = new ContentPage
+            {
+                RouteSlug = routeSlug,
+                Title = title,
+                Body = body,
+                LastUpdated = DateTime.Now,
+                IsEnabled = true
+            };    
         }
     }
 }
