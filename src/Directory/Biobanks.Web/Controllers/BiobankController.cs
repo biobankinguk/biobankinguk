@@ -876,7 +876,6 @@ namespace Biobanks.Web.Controllers
                     Title = model.Title,
                     Description = model.Description,
                     StartDate = new DateTime(model.StartDate.Value, 1, 1), //DateTime.Parse(model.StartDate),
-                    HtaStatusId = model.HTAStatus,
                     AccessConditionId = model.AccessCondition,
                     CollectionTypeId = model.CollectionType,
                     CollectionStatusId = model.CollectionStatus,
@@ -920,7 +919,6 @@ namespace Biobanks.Web.Controllers
                 Title = collection.Title,
                 Description = collection.Description,
                 StartDate = collection.StartDate.Year,
-                HTAStatus = collection.HtaStatusId,
                 AccessCondition = collection.AccessCondition.Id,
                 FromApi = collection.FromApi,
                 CollectionType = collection.CollectionType?.Id,
@@ -974,7 +972,6 @@ namespace Biobanks.Web.Controllers
                     Title = model.Title,
                     Description = model.Description,
                     StartDate = new DateTime(model.StartDate.Value, 1, 1),
-                    HtaStatusId = model.HTAStatus,
                     AccessConditionId = model.AccessCondition,
                     FromApi = model.FromApi,
                     CollectionTypeId = model.CollectionType,
@@ -1304,15 +1301,6 @@ namespace Biobanks.Web.Controllers
                     .OrderBy(x => x.SortOrder);
 
                 model.CollectionPoints = (await _biobankReadService.ListCollectionPointsAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
-                model.HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
                     .Select(x => new ReferenceDataModel
                     {
                         Id = x.Id,
