@@ -11,7 +11,7 @@ using Biobanks.Publications.Services.Dto;
 using Flurl;
 using Microsoft.Extensions.Logging;
 
-namespace Publications
+namespace Biobanks.Publications.Services
 {
     public class EpmcWebService : IEpmcService
     {

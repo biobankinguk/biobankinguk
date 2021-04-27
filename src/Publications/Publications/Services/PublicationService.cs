@@ -6,7 +6,7 @@ using Biobanks.Publications.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Data;
 
-namespace Publications.Services
+namespace Biobanks.Publications.Services
 {
     public class PublicationService : IPublicationService
     {

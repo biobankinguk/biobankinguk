@@ -7,7 +7,7 @@ using Biobanks.Publications.Services.Dto;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Data;
 
-namespace Publications.Services
+namespace Biobanks.Publications.Services
 {
     public class AnnotationService : IAnnotationService
     {

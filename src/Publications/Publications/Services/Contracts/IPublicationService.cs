@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Services
+namespace Biobanks.Publications.Services.Contracts
 {
     public interface IPublicationService
     {
