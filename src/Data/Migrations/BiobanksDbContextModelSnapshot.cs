@@ -119,8 +119,8 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("AgeAtDonation")
-                        .HasColumnType("int");
+                    b.Property<string>("AgeAtDonation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Barcode")
                         .IsRequired()
@@ -393,8 +393,8 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("AgeAtDonation")
-                        .HasColumnType("int");
+                    b.Property<string>("AgeAtDonation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Barcode")
                         .IsRequired()
@@ -729,6 +729,33 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("Configs");
                 });
 
+            modelBuilder.Entity("Biobanks.Entities.Data.ContentPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RouteSlug")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContentPages");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Data.DiagnosisCapability", b =>
                 {
                     b.Property<int>("DiagnosisCapabilityId")
@@ -923,6 +950,9 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int?>("AccessConditionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("AddressLine1")
                         .HasColumnType("nvarchar(max)");
 
@@ -940,6 +970,9 @@ namespace Biobanks.Data.Migrations
 
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CollectionTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ContactEmail")
                         .IsRequired()
@@ -1006,6 +1039,10 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrganisationId");
+
+                    b.HasIndex("AccessConditionId");
+
+                    b.HasIndex("CollectionTypeId");
 
                     b.HasIndex("CountryId");
 
@@ -1658,7 +1695,7 @@ namespace Biobanks.Data.Migrations
 
             modelBuilder.Entity("Biobanks.Entities.Data.SampleSet", b =>
                 {
-                    b.Property<int>("SampleSetId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -1675,7 +1712,7 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("SexId")
                         .HasColumnType("int");
 
-                    b.HasKey("SampleSetId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AgeRangeId");
 
@@ -2432,6 +2469,14 @@ namespace Biobanks.Data.Migrations
 
             modelBuilder.Entity("Biobanks.Entities.Data.Organisation", b =>
                 {
+                    b.HasOne("Biobanks.Entities.Data.ReferenceData.AccessCondition", "AccessCondition")
+                        .WithMany("Organisations")
+                        .HasForeignKey("AccessConditionId");
+
+                    b.HasOne("Biobanks.Entities.Data.ReferenceData.CollectionType", "CollectionType")
+                        .WithMany("Organisations")
+                        .HasForeignKey("CollectionTypeId");
+
                     b.HasOne("Biobanks.Entities.Data.ReferenceData.Country", "Country")
                         .WithMany("Organisations")
                         .HasForeignKey("CountryId");
@@ -2445,6 +2490,10 @@ namespace Biobanks.Data.Migrations
                         .HasForeignKey("OrganisationTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AccessCondition");
+
+                    b.Navigation("CollectionType");
 
                     b.Navigation("Country");
 
@@ -2750,6 +2799,11 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("OrganisationUsers");
                 });
 
+            modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.AccessCondition", b =>
+                {
+                    b.Navigation("Organisations");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.AnnualStatistic", b =>
                 {
                     b.Navigation("OrganisationAnnualStatistics");
@@ -2763,6 +2817,11 @@ namespace Biobanks.Data.Migrations
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.AssociatedDataTypeGroup", b =>
                 {
                     b.Navigation("AssociatedDataTypes");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.CollectionType", b =>
+                {
+                    b.Navigation("Organisations");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.Country", b =>

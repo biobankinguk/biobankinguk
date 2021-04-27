@@ -1,19 +1,20 @@
+using Biobanks.Directory.Data.Caching;
+using Biobanks.Directory.Data.Repositories;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Shared;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Identity.Contracts;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Search.Legacy;
+using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Directory.Data.Caching;
-using Biobanks.Directory.Data.Repositories;
-using Biobanks.Identity.Contracts;
-using Biobanks.Search.Legacy;
-using Biobanks.Identity.Data.Entities;
-using Microsoft.AspNet.Identity;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Services.Contracts;
-using Biobanks.Services.Dto;
 
 namespace Biobanks.Services
 {
@@ -523,7 +524,7 @@ namespace Biobanks.Services
             => (await GetCollectionStatusCollectionCount(id) > 0);
 
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
-            => (await _sampleSetRepository.ListAsync()).Select(x => x.SampleSetId);
+            => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
 
         public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
             => (await _capabilityRepository.ListAsync()).Select(x => x.DiagnosisCapabilityId);
@@ -532,7 +533,7 @@ namespace Biobanks.Services
             IEnumerable<int> sampleSetIds)
         {
             var sampleSets = await _sampleSetRepository.ListAsync(false,
-                x => sampleSetIds.Contains(x.SampleSetId) && !x.Collection.Organisation.IsSuspended,
+                x => sampleSetIds.Contains(x.Id) && !x.Collection.Organisation.IsSuspended,
                 null,
                 x => x.Collection,
                 x => x.Collection.OntologyTerm,
@@ -576,7 +577,7 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(
                 IEnumerable<int> sampleSetIds)
-            => await _sampleSetRepository.ListAsync(false, x => sampleSetIds.Contains(x.SampleSetId), null,
+            => await _sampleSetRepository.ListAsync(false, x => sampleSetIds.Contains(x.Id), null,
                 x => x.Collection,
                 x => x.Collection.OntologyTerm,
                 x => x.Collection.Organisation,
@@ -819,7 +820,7 @@ namespace Biobanks.Services
         }
 
         public async Task<SampleSet> GetSampleSetByIdAsync(int id)
-            => (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
+            => (await _sampleSetRepository.ListAsync(false, x => x.Id == id, null,
                 x => x.Sex,
                 x => x.AgeRange,
                 x => x.DonorCount,
@@ -834,7 +835,7 @@ namespace Biobanks.Services
         {
             try
             {
-                var sets = (await _sampleSetRepository.ListAsync(false, x => x.SampleSetId == id, null,
+                var sets = (await _sampleSetRepository.ListAsync(false, x => x.Id == id, null,
                     x => x.Collection,
                     x => x.Collection.OntologyTerm,
                     x => x.Collection.Organisation,
@@ -878,7 +879,7 @@ namespace Biobanks.Services
             => _sampleSetRepository.List(
                 false,
                 x => x.Collection.OrganisationId == biobankId &&
-                     x.SampleSetId == sampleSetId).Any();
+                     x.Id == sampleSetId).Any();
 
         public async Task<DiagnosisCapability> GetCapabilityByIdAsync(int id)
             => (await _capabilityRepository.ListAsync(false,
@@ -1105,9 +1106,18 @@ namespace Biobanks.Services
             => (await GetAgeRangeUsageCount(id)) > 0;
 
         public async Task<bool> ValidAgeRangeAsync(string ageRangeDescription)
-        {
-            return (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
-        }
+            => (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
+        
+
+        public async Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription)
+            => (await _ageRangeRepository.ListAsync(
+                false,
+                x => x.Value == ageRangeDescription &&
+                     x.Id != ageRangeId)).Any();
+
+        public async Task<bool> AreAgeRangeBoundsNull(int id)
+            => (await _ageRangeRepository.ListAsync(false, x => x.Id == id))
+                .Where(x => string.IsNullOrEmpty(x.LowerBound) && string.IsNullOrEmpty(x.UpperBound)).Any();
         #endregion
 
         #region RefData: Preservation Type
@@ -1585,7 +1595,9 @@ namespace Biobanks.Services
                 return tokenIssue.Token;
             }           
         }
-
         
+        public async Task<bool> IsBiobankAnApiClient(int biobankId)
+            => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
+
     }
 }

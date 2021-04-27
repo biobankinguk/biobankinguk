@@ -985,9 +985,11 @@ namespace Biobanks.Web.Controllers
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id)
+                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id),
+                        LowerBound = ConvertFromIsoDuration(x.LowerBound),
+                        UpperBound = ConvertFromIsoDuration(x.UpperBound)
                     })
-                    .Result
+                    .Result 
                 )
                 .ToList();
 
@@ -997,6 +999,22 @@ namespace Biobanks.Web.Controllers
             });
 
         }
+
+        // Converting from Iso Duration to 'plain text' - e.g P6M -> 6 Months
+        private string ConvertFromIsoDuration(string bound)
+        {
+            var dict = new Dictionary<string, string>
+            {
+                { "D", "Days" },
+                { "M", "Months" },
+                { "Y", "Years" }
+            };
+
+            var converted = string.IsNullOrEmpty(bound) ? "" : bound.Replace("P", "").Replace(bound.Last().ToString(), " " + dict[bound.Last().ToString()]);
+
+            return converted;
+        }
+
         
         #endregion
         #region RefData: AssociatedDataProcurementTimeFrame

@@ -58,6 +58,10 @@ namespace Biobanks.Entities.Data
 
         public bool ExcludePublications { get; set; }
 
+        public int? AccessConditionId { get; set; }
+
+        public int? CollectionTypeId { get; set; }
+
         //1 -> M Navigation properties?
         public virtual ICollection<OrganisationNetwork> OrganisationNetworks { get; set; }
         public virtual ICollection<DiagnosisCapability> DiagnosisCapabilities { get; set; }
@@ -70,6 +74,8 @@ namespace Biobanks.Entities.Data
 
         public virtual County County { get; set; }
         public virtual Country Country { get; set; }
+        public virtual AccessCondition AccessCondition { get; set; }
+        public virtual CollectionType CollectionType { get; set; }
 
         //Capabilities
         //Collections

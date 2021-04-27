@@ -13,7 +13,7 @@ namespace Biobanks.Services.Extensions
         {
             return new CollectionDocument
             {
-                Id = sampleSet.SampleSetId,
+                Id = sampleSet.Id,
                 OntologyTerm = sampleSet.Collection.OntologyTerm.Value,
                 OntologyOtherTerms = ParseOtherTerms(sampleSet.Collection.OntologyTerm.OtherTerms),
                 BiobankId = sampleSet.Collection.OrganisationId,

@@ -111,7 +111,7 @@ namespace Biobanks.Services
 
             // Queue up a job to add the sample set to the search index.
             BackgroundJob.Enqueue(() => _indexProvider.IndexCollectionSearchDocument(
-                createdSampleSet.SampleSetId,
+                createdSampleSet.Id,
                 createdSampleSet.ToCollectionSearchDocument()));
         }
 
@@ -139,7 +139,7 @@ namespace Biobanks.Services
 
             // Queue up a job to update the sample set in the search index.
             BackgroundJob.Enqueue(() => _indexProvider.UpdateCollectionSearchDocument(
-                updatedSampleSet.SampleSetId,
+                updatedSampleSet.Id,
                 new PartialSampleSet
                 {
                     Sex = updatedSampleSet.Sex.Value,
@@ -239,7 +239,7 @@ namespace Biobanks.Services
                 // Queue up a job to update the search document.
                 BackgroundJob.Enqueue(() =>
                     _indexProvider.UpdateCollectionSearchDocument(
-                        sampleSet.SampleSetId,
+                        sampleSet.Id,
                         new PartialCollection
                         {
                             OntologyTerm = collection.OntologyTerm.Value,
@@ -286,7 +286,7 @@ namespace Biobanks.Services
                 // Queue up a job to update the search document.
                 BackgroundJob.Enqueue(() =>
                     _indexProvider.UpdateCollectionSearchDocument(
-                        sampleSet.SampleSetId,
+                        sampleSet.Id,
                         partialBiobank));
             }
 
@@ -320,7 +320,7 @@ namespace Biobanks.Services
                    // Queue up a job to update the search document.
                    BackgroundJob.Enqueue(() =>
                        _indexProvider.UpdateCollectionSearchDocument(
-                           sampleSet.SampleSetId,
+                           sampleSet.Id,
                            new PartialNetworks
                            {
                                Networks = networkDocuments
@@ -361,7 +361,7 @@ namespace Biobanks.Services
                 // Queue up a job to update the search document.
                 BackgroundJob.Enqueue(() =>
                     _indexProvider.UpdateCollectionSearchDocument(
-                        sampleSet.SampleSetId,
+                        sampleSet.Id,
                         new PartialNetworks
                         {
                             Networks = networkDocuments
@@ -379,7 +379,7 @@ namespace Biobanks.Services
                 BulkIndexSampleSets(
                     biobank.Collections
                         .SelectMany(x => x.SampleSets)
-                        .Select(x => x.SampleSetId)
+                        .Select(x => x.Id)
                         .ToList());
 
             //Index capabilities
@@ -462,7 +462,7 @@ namespace Biobanks.Services
             BulkDeleteSampleSets(
                     biobank.Collections
                         .SelectMany(x => x.SampleSets)
-                        .Select(x => x.SampleSetId)
+                        .Select(x => x.Id)
                         .ToList());
 
             //Remove capabilities from the index

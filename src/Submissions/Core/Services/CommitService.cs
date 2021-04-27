@@ -3,26 +3,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Data;
+using Biobanks.Submissions.Core.Consts;
+using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Submissions.Core.Types;
-using Biobanks.Submissions.Api.Consts;
-using Biobanks.Submissions.Api.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.Submissions.Api.Services
+namespace Biobanks.Submissions.Core.Services
 {
     /// <inheritdoc />
     public class CommitService : ICommitService
     {
-        private readonly IMapper _mapper;
-
         private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public CommitService(BiobanksDbContext db, IMapper mapper)
+        public CommitService(BiobanksDbContext db)
         {
             _db = db;
-            _mapper = mapper;
         }
 
         /// <inheritdoc />
@@ -34,6 +31,7 @@ namespace Biobanks.Submissions.Api.Services
             if (replace)
             {
                 await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveDiagnoses(organisationId));
+                // soft deletes samples from live by setting IsDirty and IsDeleted = true
                 await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveSamples(organisationId));
                 await _db.Database.ExecuteSqlRawAsync(SqlConsts.DeleteAllLiveTreatments(organisationId));
             }
