@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Publications.Services;
 using Biobanks.Publications.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Data;
+using Biobanks.Publications.Services.Contracts;
 
 namespace Biobanks.Publications.Services
 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Biobanks.Publications.Services;
 using Biobanks.Publications.Services.Contracts;
 using System.Linq;
 using System.Threading;
