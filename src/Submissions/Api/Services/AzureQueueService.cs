@@ -21,14 +21,28 @@ namespace Biobanks.Submissions.Api.Services
         public async Task Commit(int biobankId, bool replace)
         {
             await _queueWriteService.PushAsync("commits",
-                    JsonSerializer.Serialize(
-                        new CommitQueueItem
-                        {
-                            BiobankId = biobankId,
-                            Replace = replace
-                        }
-                        )
+                    JsonSerializer.Serialize
+                    (
+                            new CommitQueueItem
+                            {
+                                BiobankId = biobankId,
+                                Replace = replace
+                            }
+                    )
                     );
+        }
+
+        /// <inheritdoc />
+        public async Task Reject(int biobankId)
+        {
+            await _queueWriteService.PushAsync("reject", JsonSerializer.Serialize
+                (
+                    new RejectQueueItem
+                    {
+                        BiobankId = biobankId
+                    }
+                )
+                );
         }
     }
 }
