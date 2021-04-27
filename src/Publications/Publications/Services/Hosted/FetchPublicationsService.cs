@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Publications.Services
+namespace Biobanks.Publications.Services
 {
     public class FetchPublicationsService : IHostedService
     {

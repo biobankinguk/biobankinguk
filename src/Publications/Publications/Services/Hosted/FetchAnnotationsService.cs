@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
-namespace Publications.Services.Hosted
+namespace Biobanks.Publications.Services.Hosted
 {
     public class FetchAnnotationsService : IHostedService
     {
