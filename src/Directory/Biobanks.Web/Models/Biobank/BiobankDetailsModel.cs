@@ -13,7 +13,11 @@ namespace Biobanks.Web.Models.Biobank
         public int? BiobankId { get; set; } //nullable to allow for creation of new?
         public string BiobankExternalId { get; set; }
         public int? OrganisationTypeId { get; set; }
-        
+
+        public int? AccessConditionId { get; set; }
+
+        public int? CollectionTypeId { get; set; }
+
         [Required(ErrorMessage = "Please enter the name of the resource.")]
         [MaxLength(100, ErrorMessage = ModelErrors.MaxLength)]
         [Display(Name = "Name")]

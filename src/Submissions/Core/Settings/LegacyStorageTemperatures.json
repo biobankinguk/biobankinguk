@@ -1,0 +1,33 @@
+﻿{
+  "StorageTemperatureLegacyModel": {
+    "listOfMappings": [
+      {
+        "old": {
+          "storageTemperature": "Paraffin"
+        },
+        "new": {
+          "storageTemperature": "RT",
+          "preservationType": "Paraffin"
+        }
+      },
+      {
+        "old": {
+          "storageTemperature": "Resin (LM)"
+        },
+        "new": {
+          "storageTemperature": "RT",
+          "preservationType": "Resin (LM)"
+        }
+      },
+      {
+        "old": {
+          "storageTemperature": "Resin (EM)"
+        },
+        "new": {
+          "storageTemperature": "RT",
+          "preservationType": "Resin (EM)"
+        }
+      }
+    ]
+  }
+}

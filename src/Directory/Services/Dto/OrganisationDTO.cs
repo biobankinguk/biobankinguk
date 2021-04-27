@@ -43,8 +43,8 @@ namespace Biobanks.Services.Dto
         public string OtherRegistrationReason { get; set; }
         public bool ExcludePublications { get; set; }
 
-        public int AccessConditionId { get; set; }
+        public int? AccessConditionId { get; set; }
 
-        public int CollectionTypeId { get; set; }
+        public int? CollectionTypeId { get; set; }
     }
 }

@@ -1,16 +1,11 @@
 using AutoMapper;
-
 using Biobanks.Submissions.Core.Dto;
 using Biobanks.Submissions.Core.Exceptions;
 using Biobanks.Submissions.Core.Models;
 using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Submissions.Core.Types;
-
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-
-
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
