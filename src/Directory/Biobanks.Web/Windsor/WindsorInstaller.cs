@@ -108,6 +108,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(BiobankWriteService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IContentPageService))
+                    .ImplementedBy(typeof(ContentPageService))
+                    .LifeStyle.Transient,
+
                 // Doubled up For because Hangfire requires both concrete class and interface.
                 Component.For<ElasticCollectionSearchProvider, ICollectionSearchProvider>()
                     .ImplementedBy<ElasticCollectionSearchProvider>()

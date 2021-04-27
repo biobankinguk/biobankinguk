@@ -10,7 +10,9 @@ namespace Biobanks.Entities.Data
     {
         [Key]
         public int Id { get; set; }
+        [MaxLength(128)]
         public string RouteSlug { get; set; }
+        [MaxLength(250)]
         public string Title { get; set; }
         public string Body { get; set; }
         public DateTime LastUpdated { get; set; }
