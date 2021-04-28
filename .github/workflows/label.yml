@@ -10,7 +10,8 @@ on: [pull_request]
 
 jobs:
   label:
-    if: github.event.pull_request.draft == false
+    ## Condition doesnt work when flagged as ready for review
+    ## if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@v2
