@@ -206,10 +206,6 @@ namespace Biobanks.Web
                "~/Scripts/bootbox*",
                "~/Scripts/ADAC/adac-consent-restriction.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
-            bundles.Add(new ScriptBundle("~/bundles/adac/hta-status").Include(
-               "~/Scripts/bootbox*",
-               "~/Scripts/ADAC/adac-hta-status.js",
-                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/collection-status").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-collection-status.js",

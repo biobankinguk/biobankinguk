@@ -29,7 +29,6 @@ namespace Biobanks.Services.Extensions
                 CollectionPoint = sampleSet.Collection.CollectionPoint.Value,
                 CollectionStatus = sampleSet.Collection.CollectionStatus.Value,
                 ConsentRestrictions = BuildConsentRestrictions(sampleSet.Collection.ConsentRestrictions.ToList()),
-                HTA = sampleSet.Collection.HtaStatus?.Value ?? "not provided",
                 AccessCondition = sampleSet.Collection.AccessCondition.Value,
                 AccessConditionMetadata = JsonConvert.SerializeObject(new
                 {

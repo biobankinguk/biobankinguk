@@ -1617,35 +1617,6 @@ namespace Biobanks.Web.Controllers
         }
         #endregion
 
-        #region RefData: HtaStatus
-        public async Task<ActionResult> HtaStatus()
-        {
-            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.EnableHTA) == true)
-            {
-                return View(new Models.ADAC.HtaStatusModel
-                {
-                    HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
-                        .Select(x =>
-
-                    Task.Run(async () => new ReadHtaStatusModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.Id),
-                        SortOrder = x.SortOrder
-                    }).Result)
-
-                        .ToList()
-                });
-            }
-            else
-            {
-                return RedirectToAction("LockedRef");
-            }
-        }
-
-        #endregion
-
         #region RefData: Service Offerings
 
         public async Task<ActionResult> ServiceOffering()

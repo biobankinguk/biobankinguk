@@ -15,7 +15,6 @@ namespace Biobanks.Web.Models.Biobank
         public IEnumerable<ReferenceDataModel> CollectionTypes { get; set; }
         public IEnumerable<ReferenceDataModel> CollectionStatuses { get; set; }
         public IEnumerable<ReferenceDataModel> CollectionPoints { get; set; }
-        public IEnumerable<ReferenceDataModel> HtaStatuses { get; set; }
 
         #endregion
 
@@ -38,10 +37,6 @@ namespace Biobanks.Web.Models.Biobank
         [Range(1000, 9999, ErrorMessage = "Please enter a valid 4-digit year.")]
         [Display(Name = "Year started")]
         public int? StartDate { get; set; }
-
-        //[Required(ErrorMessage = "Please select a HTA status.")]
-        [Display(Name = "HTA status")]
-        public int? HTAStatus { get; set; }
 
         [Required(ErrorMessage = "Please select an access condition.")]
         [Display(Name = "Access condition")]

@@ -45,8 +45,7 @@
         public const string DonorCountName = "site.display.donorcount.name";
         public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
 
-        //Sample Resource Configuration Options
-        public const string EnableHTA = "site.sampleresource.hta";
+        // Sample Resource Configuration Options
         public const string EnableDataSharing = "site.sampleresource.datasharing";
         public const string EthicsFieldName = "site.sampleresource.ethics.name";
         public const string EthicsFieldIsCheckbox = "site.sampleresource.ethics.type";
