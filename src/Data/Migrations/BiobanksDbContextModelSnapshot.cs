@@ -746,10 +746,12 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RouteSlug")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
 
