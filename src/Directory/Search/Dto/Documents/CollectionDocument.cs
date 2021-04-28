@@ -28,9 +28,6 @@ namespace Biobanks.Search.Dto.Documents
         [Keyword(Name = "endYear")]
         public string EndYear { get; set; }
 
-        [Keyword(Name = "collectionPoint")]
-        public string CollectionPoint { get; set; }
-
         [Keyword(Name = "collectionStatus")]
         public string CollectionStatus { get; set; }
 

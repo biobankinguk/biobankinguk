@@ -233,7 +233,6 @@ namespace Biobanks.Search.Elastic
                 AccessCondition = document.AccessCondition,
                 CollectionType = document.CollectionType,
                 CollectionStatus = document.CollectionStatus,
-                CollectionPoint = document.CollectionPoint,
                 ConsentRestrictions = document.ConsentRestrictions.Select(x => x.Description)
             };
         }

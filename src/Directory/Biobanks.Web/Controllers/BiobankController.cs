@@ -882,7 +882,6 @@ namespace Biobanks.Web.Controllers
                     AccessConditionId = model.AccessCondition,
                     CollectionTypeId = model.CollectionType,
                     CollectionStatusId = model.CollectionStatus,
-                    CollectionPointId = model.CollectionPoint,
                     FromApi = model.FromApi
                 },
                 model.Diagnosis,
@@ -927,7 +926,6 @@ namespace Biobanks.Web.Controllers
                 FromApi = collection.FromApi,
                 CollectionType = collection.CollectionType?.Id,
                 CollectionStatus = collection.CollectionStatus.Id,
-                CollectionPoint = collection.CollectionPoint.Id,
                 Groups = groups.Groups
                 
             };
@@ -980,8 +978,7 @@ namespace Biobanks.Web.Controllers
                     AccessConditionId = model.AccessCondition,
                     FromApi = model.FromApi,
                     CollectionTypeId = model.CollectionType,
-                    CollectionStatusId = model.CollectionStatus,
-                    CollectionPointId = model.CollectionPoint
+                    CollectionStatusId = model.CollectionStatus
                 },
                 model.Diagnosis,
                 associatedData,
@@ -1297,15 +1294,6 @@ namespace Biobanks.Web.Controllers
                     .OrderBy(x => x.SortOrder);
 
                 model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
-                model.CollectionPoints = (await _biobankReadService.ListCollectionPointsAsync())
                     .Select(x => new ReferenceDataModel
                     {
                         Id = x.Id,

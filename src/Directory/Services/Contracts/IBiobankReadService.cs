@@ -81,10 +81,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsRegistrationReasonInUse(int id);
         Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription);
         Task<bool> ValidRegistrationReasonDescriptionAsync(string reasonDescription);
-        Task<IEnumerable<CollectionPoint>> ListCollectionPointsAsync();
-        Task<bool> ValidCollectionPointDescriptionAsync(string collectionPointDescription);
-        Task<bool> IsCollectionPointInUse(int id);
-        Task<int> GetCollectionPointUsageCount(int id);
 
         Task<int> GetHtaStatusCollectionCount(int id);
         Task<bool> IsHtaStatusInUse(int id);
