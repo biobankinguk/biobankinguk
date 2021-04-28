@@ -28,3 +28,5 @@
 # label types of changes contained in a PR
 "Contains: Migrations":
   - src/**/Migrations/*.cs
+"Contains: Search Index":
+  - ./elastic-search/directory index setup/*
