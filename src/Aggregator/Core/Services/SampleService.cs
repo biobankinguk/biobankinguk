@@ -35,5 +35,9 @@ namespace Biobanks.Aggregator.Core.Services
         public async Task DeleteFlaggedSamplesAsync()
             => await _db.Samples.Where(x => x.IsDeleted).DeleteAsync();
 
+        // Moved to its own specific service class in future?
+        public async Task DeleteSampleSetById(int id)
+            => await _db.SampleSets.Where(x => x.Id == id).DeleteAsync();
+
     }
 }
