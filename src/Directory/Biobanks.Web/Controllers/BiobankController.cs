@@ -1298,15 +1298,6 @@ namespace Biobanks.Web.Controllers
                     })
                     .OrderBy(x => x.SortOrder);
 
-                model.HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
                 model.ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
                     .OrderBy(x => x.SortOrder)
                     .Select(x => new Models.Biobank.ConsentRestrictionModel
