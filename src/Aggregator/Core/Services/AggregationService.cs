@@ -1,6 +1,7 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
+using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
@@ -113,11 +114,22 @@ namespace Biobanks.Aggregator.Core.Services
         {
             var sample = samples.First();
 
+            // TODO: Is there a better way rather than using hardcoded values?
+            // Map Macroscopic Assessment
+            var macro = 
+                sample.SampleContentMethod.Value.StartsWith("Microscopic") || 
+                sample.SampleContentMethod.Value.StartsWith("Macroscopic")
+                    ? sample.SampleContent.Id == "102499006" || 
+                      sample.SampleContent.Id == "23875004"
+                        ? _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Affected"))
+                        : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Affected"))
+                    : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Applicable"));
+
             return new MaterialDetail
             {
                 MaterialTypeId = sample.MaterialTypeId,
                 StorageTemperatureId = sample.StorageTemperatureId ?? 0,
-                MacroscopicAssessmentId = 3,  // TODO: Mapping rule unknown
+                MacroscopicAssessmentId = macro.Id,
                 ExtractionProcedureId = sample.ExtractionProcedureId,
                 PreservationTypeId = sample.PreservationTypeId,
             };
