@@ -33,9 +33,6 @@ namespace Biobanks.Search.Dto.Documents
 
         public IEnumerable<ConsentRestrictionDocument> ConsentRestrictions { get; set; }
 
-        [Keyword(Name = "hta")]
-        public string HTA { get; set; }
-
         [Keyword(Name = "accessCondition")]
         public string AccessCondition { get; set; }
 

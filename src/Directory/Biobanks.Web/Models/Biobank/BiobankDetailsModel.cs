@@ -90,10 +90,6 @@ namespace Biobanks.Web.Models.Biobank
         [MaxLength(100, ErrorMessage = ModelErrors.MaxLength)] //consider more accurate validation?
         public string EthicsRegistration { get; set; }
 
-        [Display(Name = "HTA Licence")]
-        [MaxLength(100, ErrorMessage = ModelErrors.MaxLength)] //consider more accurate validation?
-        public string HtaLicence { get; set; }
-
         [Display(Name = "Opt out of sharing data with other directories")]
         public bool SharingOptOut { get; set; }
 

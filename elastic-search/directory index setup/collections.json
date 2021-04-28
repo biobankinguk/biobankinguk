@@ -60,9 +60,6 @@
           }
         }
       },
-      "hta": {
-        "type": "keyword"
-      },
       "accessCondition": {
         "type": "keyword"
       },

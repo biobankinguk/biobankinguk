@@ -51,28 +51,6 @@
     </div>
 </div>
 
-@*<div class="form-group">
-        <label class="col-sm-4 control-label">
-            @Html.DisplayNameFor(x => x.HTAStatus)
-            <span class="fa fa-info-circle hta-status-help"></span>
-        </label>
-        <div class="col-sm-8">
-            <div class="row">
-                @foreach (var htaStatus in Model.HtaStatuses)
-                {
-                    <div class="col-sm-12 radio">
-                        <label>
-                            @Html.RadioButtonFor(x => x.HTAStatus, htaStatus.Id)
-                            @Html.Raw(htaStatus.Description)
-                        </label>
-                    </div>
-                }
-            </div>
-            @Html.ValidationMessageFor(x => x.HTAStatus)
-        </div>
-    </div>*@
-@Html.HiddenFor(x => x.HTAStatus) @* Preserve previously set values in case we want to use HTA Status again in future *@
-
 @Html.HiddenFor(x => x.FromApi, new { Value = false })
 
 <div class="form-group">

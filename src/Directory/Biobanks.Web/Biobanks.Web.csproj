@@ -449,7 +449,6 @@
     <Compile Include="ApiControllers\CountyController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusController.cs" />
     <Compile Include="ApiControllers\DonorCountController.cs" />
-    <Compile Include="ApiControllers\HtaStatusController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
     <Compile Include="ApiControllers\PreservationTypeController.cs" />
@@ -603,7 +602,6 @@
     <Content Include="Scripts\ADAC\adac-collection-status.js" />
     <Content Include="Scripts\ADAC\adac-age-ranges.js" />
     <Content Include="Scripts\ADAC\adac-donor-counts.js" />
-    <Content Include="Scripts\ADAC\adac-hta-status.js" />
     <Content Include="Scripts\ADAC\adac-macro-assessments.js" />
     <Content Include="Scripts\ADAC\adac-sample-collection-modes.js" />
     <Content Include="Scripts\ADAC\adac-access-conditions.js" />
@@ -675,7 +673,6 @@
     <Content Include="Views\ADAC\SopStatus.cshtml" />
     <Content Include="Views\ADAC\County.cshtml" />
     <Content Include="Views\ADAC\SampleCollectionModes.cshtml" />
-    <Content Include="Views\ADAC\HtaStatus.cshtml" />
     <Content Include="Views\ADAC\AnnualStatistics.cshtml" />
     <Content Include="Views\ADAC\RegistrationReason.cshtml" />
     <Content Include="Views\ADAC\CollectionStatus.cshtml" />
@@ -874,7 +871,6 @@
     <Compile Include="Models\ADAC\SampleCollectionModesModel.cs" />
     <Compile Include="Models\ADAC\AccessConditionsModel.cs" />
     <Compile Include="Models\ADAC\CountyModel.cs" />
-    <Compile Include="Models\ADAC\HtaStatusModel.cs" />
     <Compile Include="Models\ADAC\CollectionStatusModel.cs" />
     <Compile Include="Models\ADAC\AssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\ADAC\MaterialTypesModel.cs" />
@@ -885,7 +881,6 @@
     <Compile Include="Models\ADAC\SopStatusesModel.cs" />
     <Compile Include="Models\ADAC\AnnualStatisticsModel.cs" />
     <Compile Include="Models\ADAC\ReadAnnualStatisticGroupModel.cs" />
-    <Compile Include="Models\ADAC\ReadHtaStatusModel.cs" />
     <Compile Include="Models\ADAC\ReadAccessConditionsModel.cs" />
     <Compile Include="Models\ADAC\ReadCollectionStatusModel.cs" />
     <Compile Include="Models\ADAC\ReadCollectionTypeModel.cs" />
@@ -912,7 +907,6 @@
     <Compile Include="Models\Shared\AssociatedDataTypeGroupModel.cs" />
     <Compile Include="Models\Shared\CollectionTypeModel.cs" />
     <Compile Include="Models\Shared\ErrorStatusModel.cs" />
-    <Compile Include="Models\Shared\HtaStatusModel.cs" />
     <Compile Include="Models\Shared\CollectionStatusModel.cs" />
     <Compile Include="Models\Shared\MaterialTypeModel.cs" />
     <Compile Include="Models\Profile\BiobankPublicationsModel.cs" />

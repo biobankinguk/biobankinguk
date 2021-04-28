@@ -33,12 +33,6 @@ namespace Biobanks.Search.Dto.Facets
             },
             new FacetDetailSummary
             {
-                Label = "HTA",
-                Name = "hta",
-                Slug = "hta"
-            },
-            new FacetDetailSummary
-            {
                 Label = "Age Range",
                 Name = "ageRange",
                 Slug = "ager"

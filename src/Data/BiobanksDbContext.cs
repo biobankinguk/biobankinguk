@@ -35,7 +35,6 @@ namespace Biobanks.Data
         public DbSet<County> Counties { get; set; }
         public DbSet<DonorCount> DonorCounts { get; set; }
         public DbSet<Funder> Funders { get; set; }
-        public DbSet<HtaStatus> HtaStatus { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
         public DbSet<RegistrationReason> RegistrationReasons { get; set; }
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }

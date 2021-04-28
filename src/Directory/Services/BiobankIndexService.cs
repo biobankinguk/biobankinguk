@@ -247,7 +247,6 @@ namespace Biobanks.Services
                             StartYear = collection.StartDate.Year.ToString(),
                             CollectionStatus = collection.CollectionStatus.Value,
                             ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
-                            HTA = collection.HtaStatus != null ? collection.HtaStatus.Value : "not recorded",
                             AccessCondition = collection.AccessCondition.Value,
                             CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
                             AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument

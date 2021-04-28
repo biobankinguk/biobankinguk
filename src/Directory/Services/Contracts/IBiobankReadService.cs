@@ -43,7 +43,6 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<AccessCondition>> ListAccessConditionsAsync();
         Task<IEnumerable<CollectionType>> ListCollectionTypesAsync();
         Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync();
-        Task<IEnumerable<HtaStatus>> ListHtaStatusesAsync();
 
         Task<IEnumerable<Sex>> ListSexesAsync();
         Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync();
@@ -81,11 +80,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsRegistrationReasonInUse(int id);
         Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription);
         Task<bool> ValidRegistrationReasonDescriptionAsync(string reasonDescription);
-
-        Task<int> GetHtaStatusCollectionCount(int id);
-        Task<bool> IsHtaStatusInUse(int id);
-        Task<bool> ValidHtaStatusDescriptionAsync(int htaStatusId, string htaStatusDescription);
-        Task<bool> ValidHtaStatusDescriptionAsync(string htaStatusDescription);
 
         Task<int> GetCollectionStatusCollectionCount(int id);
         Task<bool> IsCollectionStatusInUse(int id);

@@ -43,7 +43,6 @@ namespace Biobanks.Directory.Data
         public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
         public DbSet<CollectionAssociatedData> CollectionAssociatedDatas { get; set; }
         public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
-        public DbSet<HtaStatus> HtaStatuses { get; set; }
 
         //Collection SampleSet details
         public DbSet<SampleSet> SampleSets { get; set; }
