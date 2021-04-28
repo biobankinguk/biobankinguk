@@ -6,12 +6,13 @@
 # https://github.com/actions/labeler
 
 name: Labeler
-on: [pull_request]
+on:
+  pull_request:
+    types: [ready_for_review, opened, synchronize, reopened]
 
 jobs:
   label:
-    ## Condition doesnt work when flagged as ready for review
-    ## if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@v2
