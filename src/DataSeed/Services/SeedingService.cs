@@ -51,7 +51,6 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<ConsentRestriction>,
                 SeedJson<DonorCount>,
                 SeedJson<Funder>,
-                SeedJson<HtaStatus>,
                 SeedJson<MacroscopicAssessment>,
                 SeedOrganisationTypes,
                 SeedJson<RegistrationReason>,
