@@ -49,9 +49,6 @@
       "endYear": {
         "type": "keyword"
       },
-      "collectionPoint": {
-        "type": "keyword"
-      },
       "collectionStatus": {
         "type": "keyword"
       },
