@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    [Migration("20210427112114_CreateContentPage")]
+    [Migration("20210427161809_CreateContentPage")]
     partial class CreateContentPage
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -748,10 +748,12 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RouteSlug")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
 
