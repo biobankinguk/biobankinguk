@@ -29,4 +29,4 @@
 "Contains: Migrations":
   - src/**/Migrations/*.cs
 "Contains: Search Index":
-  - ./elastic-search/directory index setup/*
+  - "elastic-search/directory index setup/*"
