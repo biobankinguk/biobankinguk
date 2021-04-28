@@ -2,7 +2,7 @@
 "Area: CI":
   - .azure/pipelines/**/*
   - .github/**/*
-"Area: Search Index":
+"Area: Elastic Search":
   - elastic-search/**/*
 "Area: Analytics":
   - src/Analytics/**/*
