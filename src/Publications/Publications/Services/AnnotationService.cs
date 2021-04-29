@@ -29,10 +29,7 @@ namespace Biobanks.Publications.Services
             {
                 foreach (var tags in annotation.Tags)
                 {
-                    var annotationEntity = new Annotation()
-                    {
-                        Name = tags.Name.ToLower()
-                    };
+                    var annotationEntity = new Annotation(){Name = tags.Name.ToLower()};
                     annotationList.Add(annotationEntity);
                 }
             }
