@@ -121,14 +121,6 @@
                         @Html.ActionLink("Disease statuses", "DiseaseStatuses")
                     </li>
 
-                    @if (App.Config[ConfigKey.EnableHTA] != "false")
-                    {
-                        <li role="presentation"
-                            class="@(Model == "Hta statuses" ? "active" : "true")">
-                            @Html.ActionLink("Hta Statuses", "HtaStatus")
-                        </li>
-                    }
-
                     <li role="presentation"
                         class="@(Model == $"{@App.Config[ConfigKey.MacroscopicAssessmentName]}" ? "active" : "true")">
                         @Html.ActionLink($"{@App.Config[ConfigKey.MacroscopicAssessmentName]}", "MacroscopicAssessments")

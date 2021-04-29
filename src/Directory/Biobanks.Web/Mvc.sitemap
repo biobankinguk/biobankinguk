@@ -84,7 +84,6 @@
     <mvcSiteMapNode title="Collection Percentages" controller="ADAC" action="CollectionPercentages"/>
     <mvcSiteMapNode title="Collection Points" controller="ADAC" action="CollectionPoints"/>
     <mvcSiteMapNode title="Donor Counts" controller="ADAC" action="DonorCounts"/>
-    <mvcSiteMapNode title="Hta Statuses" controller="ADAC" action="HtaStatus"/>
     <mvcSiteMapNode title="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
     <mvcSiteMapNode title="Material Types" controller="ADAC" action="MaterialTypes"/>
     <mvcSiteMapNode title="Preservation Types" controller="ADAC" action="PreservationTypes"/>

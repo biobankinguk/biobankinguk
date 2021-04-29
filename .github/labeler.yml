@@ -2,7 +2,7 @@
 "Area: CI":
   - .azure/pipelines/**/*
   - .github/**/*
-"Area: Search Index":
+"Area: Elastic Search":
   - elastic-search/**/*
 "Area: Analytics":
   - src/Analytics/**/*
@@ -28,3 +28,5 @@
 # label types of changes contained in a PR
 "Contains: Migrations":
   - src/**/Migrations/*.cs
+"Contains: Search Index":
+  - "elastic-search/directory index setup/*"

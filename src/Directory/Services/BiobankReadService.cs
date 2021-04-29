@@ -36,7 +36,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
-        private readonly IGenericEFRepository<HtaStatus> _htaStatusRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
@@ -105,7 +104,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
-            IGenericEFRepository<HtaStatus> htaStatusRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
@@ -170,7 +168,6 @@ namespace Biobanks.Services
             _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
-            _htaStatusRepository = htaStatusRepository;
             _ontologyTermRepository = ontologyTermRepository;
             _sampleSetRepository = sampleSetRepository;
             _siteConfigRepository = siteConfigRepository;
@@ -511,9 +508,6 @@ namespace Biobanks.Services
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
 
-        public async Task<bool> IsHtaStatusInUse(int id)
-            => (await GetHtaStatusCollectionCount(id) > 0);
-
         public async Task<bool> IsCountryInUse(int id)
             => (await GetCountryCountyOrganisationCount(id) > 0);
 
@@ -542,7 +536,6 @@ namespace Biobanks.Services
                 x => x.Collection.CollectionPoint,
                 x => x.Collection.CollectionStatus,
                 x => x.Collection.ConsentRestrictions,
-                x => x.Collection.HtaStatus,
                 x => x.Collection.AccessCondition,
                 x => x.Collection.CollectionType,
                 x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
@@ -585,7 +578,6 @@ namespace Biobanks.Services
                 x => x.Collection.CollectionPoint,
                 x => x.Collection.CollectionStatus,
                 x => x.Collection.ConsentRestrictions,
-                x => x.Collection.HtaStatus,
                 x => x.Collection.AccessCondition,
                 x => x.Collection.CollectionType,
                 x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
@@ -744,7 +736,6 @@ namespace Biobanks.Services
                 x => x.CollectionStatus,
                 x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
-                x => x.HtaStatus,
                 x => x.AssociatedData
             )).FirstOrDefault();
 
@@ -770,7 +761,6 @@ namespace Biobanks.Services
                 x => x.CollectionStatus,
                 x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
-                x => x.HtaStatus,
                 x => x.AssociatedData,
                 x => x.AssociatedData.Select(y => y.AssociatedDataType),
                 x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
@@ -843,7 +833,6 @@ namespace Biobanks.Services
                     x => x.Collection.CollectionPoint,
                     x => x.Collection.CollectionStatus,
                     x => x.Collection.ConsentRestrictions,
-                    x => x.Collection.HtaStatus,
                     x => x.Collection.AccessCondition,
                     x => x.Collection.CollectionType,
                     x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
@@ -944,9 +933,6 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync()
             => await _collectionStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<IEnumerable<HtaStatus>> ListHtaStatusesAsync()
-            => await _htaStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<IEnumerable<Sex>> ListSexesAsync()
             => await _sexRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
@@ -1268,15 +1254,6 @@ namespace Biobanks.Services
                 x => x.Value == procurementDescription &&
                      x.Id != procurementId)).Any();
 
-        public async Task<bool> ValidHtaStatusDescriptionAsync(string htaStatusDescription)
-            => (await _htaStatusRepository.ListAsync(false, x => x.Value == htaStatusDescription)).Any();
-
-        public async Task<bool> ValidHtaStatusDescriptionAsync(int htaStatusId, string htaStatusDescription)
-            => (await _htaStatusRepository.ListAsync(
-                false,
-                x => x.Value == htaStatusDescription &&
-                     x.Id != htaStatusId)).Any();
-
         public async Task<bool> ValidServiceOfferingName(string offeringName)
             => (await _serviceOfferingRepository.ListAsync(false, x => x.Value == offeringName)).Any();
 
@@ -1364,15 +1341,11 @@ namespace Biobanks.Services
             false,
              x => x.ServiceOfferingId == id)).Count();
 
-        public async Task<int> GetHtaStatusCollectionCount(int id)
-            => (await _collectionRepository.ListAsync(false, x => x.HtaStatusId == id)).Count();
         public async Task<int> GetRegistrationReasonOrganisationCount(int id)
-                    => (await _organisationRegistrationReasonRepository.ListAsync(false, x => x.RegistrationReasonId == id)).Count();
+            => await _organisationRegistrationReasonRepository.CountAsync(x => x.RegistrationReasonId == id);
 
         public async Task<int> GetSexCount(int id)
-        => (await _sampleSetRepository.ListAsync(
-                   false,
-                   x => x.SexId == id)).Count();
+            => await _sampleSetRepository.CountAsync(x => x.SexId == id);
 
         public async Task<bool> ValidSexDescriptionAsync(string sexDescription)
             => (await _sexRepository.ListAsync(false, x => x.Value == sexDescription)).Any();
