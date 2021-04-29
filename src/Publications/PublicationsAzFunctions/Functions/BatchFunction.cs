@@ -22,7 +22,7 @@ namespace PublicationsAzFunctions.Functions
 
 
         [Function("BatchFunction")]
-        public async Task Run([TimerTrigger("0 */5 * * * *",RunOnStartup =true)] TimerInfo myTimer, FunctionContext context)
+        public async Task Run([TimerTrigger("0 0 0 * * *")] TimerInfo myTimer, FunctionContext context)
         {
             var logger = context.GetLogger("BatchFunction");
             logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
