@@ -10,8 +10,5 @@ namespace Biobanks.Publications.Services.Contracts
         Task<IList<string>> GetOrganisationNames();
         Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true);
         Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId);
-
-        Task<IEnumerable<Annotation>> GetPublicationAnnotations(int publicationId);
-        Task<Publication> GetPublicationById(string publicationId);
     }
 }

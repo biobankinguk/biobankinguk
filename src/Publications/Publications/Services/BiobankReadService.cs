@@ -33,13 +33,5 @@ namespace Biobanks.Publications.Services
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
             => await _ctx.Publications.Where(x => x.OrganisationId == biobankId && x.Accepted == true)
             .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1)).ToListAsync();
-
-        //Uses Publication Id from EF
-        public async Task<IEnumerable<Annotation>> GetPublicationAnnotations(int publicationId)
-            => (await _ctx.Publications.FirstOrDefaultAsync(x => x.Id == publicationId)).Annotations.ToList();
-        
-        //Uses publicationId from API
-        public async Task<Publication> GetPublicationById(string publicationId)
-            => await _ctx.Publications.Where(x => x.PublicationId == publicationId).FirstOrDefaultAsync();
     }
 }
