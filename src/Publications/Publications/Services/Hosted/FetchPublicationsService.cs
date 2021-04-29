@@ -44,7 +44,7 @@ namespace Biobanks.Publications.Services.Hosted
                 var publications = await _epmcWebService.GetOrganisationPublications(biobank.Name);
                 await _publicationService.AddOrganisationPublications(biobank.OrganisationId, publications);
 
-                _logger.LogInformation($"Fetched {publications.Count()} publications for {biobank}");
+                _logger.LogInformation($"Fetched {publications.Count()} publications for {biobank.OrganisationExternalId}");
             }
         }
 
