@@ -190,10 +190,6 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-collection-percentages.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
-            bundles.Add(new ScriptBundle("~/bundles/adac/collection-points").Include(
-                "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-collection-points.js",
-                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sample-collection-modes").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sample-collection-modes.js",

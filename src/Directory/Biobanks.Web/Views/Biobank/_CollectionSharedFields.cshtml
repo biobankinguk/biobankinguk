@@ -139,28 +139,6 @@
 <div class="form-group">
     <div class="col-sm-10 col-sm-offset-1">
         <h4 class="required">
-            @Html.DisplayNameFor(x => x.CollectionPoint)
-            <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-collection-collectionpoint"></span>
-        </h4>
-    </div>
-
-    <div class="col-sm-10 col-sm-offset-2">
-        @foreach (var collectionPoint in Model.CollectionPoints)
-        {
-            <div class="col-sm-6 radio">
-                <label>
-                    @Html.RadioButtonFor(x => x.CollectionPoint, collectionPoint.Id)
-                    @Html.Raw(collectionPoint.Description)
-                </label>
-            </div>
-        }
-        @Html.ValidationMessageFor(x => x.CollectionPoint)
-    </div>
-</div>
-
-<div class="form-group">
-    <div class="col-sm-10 col-sm-offset-1">
-        <h4 class="required">
             @Html.DisplayNameFor(x => x.ConsentRestrictions)
 
             <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-collection-contentrestrictions"></span>
