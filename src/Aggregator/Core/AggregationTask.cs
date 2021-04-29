@@ -25,7 +25,6 @@ namespace Biobanks.Aggregator.Core
 
         public async Task Run()
         {
-            var count = 0;
             // All Samples Flagged For Update/Deletion
             var dirtySamples = await _sampleService.ListDirtySamplesAsync();
 
@@ -77,7 +76,6 @@ namespace Biobanks.Aggregator.Core
                 {
                     await _collectionService.DeleteCollectionAsync(collection);
                 }
-                count++;
             }
         }
     }
