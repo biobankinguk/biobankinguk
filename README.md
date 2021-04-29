@@ -45,7 +45,6 @@ The `src/` folder contains roughly project or app categorised folders, which als
 
 ## Repository structure:
 
-- `.azure/pipelines/` - Azure Pipelines for building the stack
 - `.github/` - GitHub Actions and Workflows for building and releasing the stack, managing the repo
 - `elastic-search/` - Configuration scripts to setup the required elastic search instance
 - `sample-seed-data/` - Sample Reference data for the directory database
