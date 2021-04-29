@@ -40,7 +40,6 @@ namespace PublicationsAzFunctions
             services.AddScoped<IBiobankReadService, BiobankReadService>();
             services.AddTransient<FetchPublicationsService>();
             services.AddTransient<FetchAnnotationsService>();
-            //services.AddLogging();
         }
     }
 }
