@@ -72,18 +72,23 @@ namespace Biobanks.Aggregator.Core.Services
         public Collection GenerateCollection(IEnumerable<LiveSample> samples)
         {
             var orderedSamples = samples.OrderBy(y => y.DateCreated);
+            var oldestSample = orderedSamples.First();
             var newestSample = orderedSamples.Last();
 
             // Collection Complete If Newest Sample Older Than ~6 Months
             var complete = (DateTime.Now - newestSample.DateCreated) > TimeSpan.FromDays(180);
 
-            // Find Exisiting Collection
+            // Generate Collection Name
+            var collectionName = string.IsNullOrEmpty(newestSample.CollectionName)
+                ? $"{newestSample.SampleContent.Value}"
+                : $"{newestSample.CollectionName} ({newestSample.SampleContent.Value})";
+
             return new Collection
             {
                 OrganisationId = newestSample.OrganisationId,
-                Title = newestSample.CollectionName, //TODO: Generate Default CollectionName If Missing
+                Title = collectionName,
                 OntologyTermId = newestSample.SampleContentId,
-                StartDate = orderedSamples.First().DateCreated,
+                StartDate = oldestSample.DateCreated,
                 CollectionStatusId = _refDataService.GetCollectionStatus(complete).Id,
                 FromApi = true,
                 SampleSets = new List<SampleSet>()
