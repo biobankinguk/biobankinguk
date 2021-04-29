@@ -185,14 +185,6 @@ $(".help-label-collection-collectionstatus").click(function () {
     });
 });
 
-$(".help-label-collection-collectionpoint").click(function () {
-    bootbox.dialog({
-        message: "Select a category that best describes the point in the diagnosis pathway that your samples were collected.",
-        title: "Collection Point",
-        buttons: helpIconBootboxButtons
-    });
-});
-
 $(".help-label-collection-contentrestrictions").click(function () {
     bootbox.dialog({
         message: "Please highlight any areas of research you do not have consent for.",

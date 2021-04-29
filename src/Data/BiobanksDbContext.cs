@@ -28,7 +28,6 @@ namespace Biobanks.Data
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
         public DbSet<AssociatedDataTypeGroup> AssociatedDataTypeGroups { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
-        public DbSet<CollectionPoint> CollectionPoints { get; set; }
         public DbSet<CollectionStatus> CollectionStatus { get; set; }
         public DbSet<CollectionType> CollectionTypes { get; set; }
         public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }

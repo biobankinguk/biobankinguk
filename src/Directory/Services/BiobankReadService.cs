@@ -32,7 +32,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
-        private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
@@ -100,7 +99,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
-            IGenericEFRepository<CollectionPoint> collectionPointRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
@@ -164,7 +162,6 @@ namespace Biobanks.Services
             _accessConditionRepository = accessConditionRepository;
             _collectionTypeRepository = collectionTypeRepository;
             _collectionStatusRepository = collectionStatusRepository;
-            _collectionPointRepository = collectionPointRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
@@ -533,7 +530,6 @@ namespace Biobanks.Services
                 x => x.Collection.OntologyTerm,
                 x => x.Collection.Organisation,
                 x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Collection.CollectionPoint,
                 x => x.Collection.CollectionStatus,
                 x => x.Collection.ConsentRestrictions,
                 x => x.Collection.AccessCondition,
@@ -575,7 +571,6 @@ namespace Biobanks.Services
                 x => x.Collection.OntologyTerm,
                 x => x.Collection.Organisation,
                 x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Collection.CollectionPoint,
                 x => x.Collection.CollectionStatus,
                 x => x.Collection.ConsentRestrictions,
                 x => x.Collection.AccessCondition,
@@ -734,7 +729,6 @@ namespace Biobanks.Services
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
-                x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
                 x => x.AssociatedData
             )).FirstOrDefault();
@@ -759,7 +753,6 @@ namespace Biobanks.Services
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
-                x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
                 x => x.AssociatedData,
                 x => x.AssociatedData.Select(y => y.AssociatedDataType),
@@ -775,7 +768,6 @@ namespace Biobanks.Services
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
-                x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
                 x => x.AssociatedData.Select(y => y.AssociatedDataType),
                 x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
@@ -830,7 +822,6 @@ namespace Biobanks.Services
                     x => x.Collection.OntologyTerm,
                     x => x.Collection.Organisation,
                     x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network),
-                    x => x.Collection.CollectionPoint,
                     x => x.Collection.CollectionStatus,
                     x => x.Collection.ConsentRestrictions,
                     x => x.Collection.AccessCondition,
@@ -947,20 +938,6 @@ namespace Biobanks.Services
             => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
         public async Task<IEnumerable<MaterialType>> ListMaterialTypesAsync()
             => await _materialTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        #region RefData: Collection Points
-        public async Task<IEnumerable<CollectionPoint>> ListCollectionPointsAsync()
-            => await _collectionPointRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidCollectionPointDescriptionAsync(string collectionPointDescription)
-            => (await _collectionPointRepository.ListAsync(false, x => x.Value == collectionPointDescription)).Any();
-
-        public async Task<bool> IsCollectionPointInUse(int id) 
-            => (await GetCollectionPointUsageCount(id)) > 0;
-        
-        public async Task<int> GetCollectionPointUsageCount(int id)
-            => (await _collectionRepository.ListAsync(false, x => x.CollectionPointId == id)).Count();
-        #endregion
 
         #region RefData: Collection Percentages
         public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()

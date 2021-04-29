@@ -45,7 +45,6 @@ namespace Biobanks.DataSeed.Services
                 SeedJson<AssociatedDataProcurementTimeframe>,
                 SeedAssociatedDataTypes,
                 SeedJson<CollectionPercentage>,
-                SeedJson<CollectionPoint>,
                 SeedJson<CollectionStatus>,
                 SeedJson<CollectionType>,
                 SeedJson<ConsentRestriction>,

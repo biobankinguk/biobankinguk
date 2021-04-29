@@ -21,12 +21,6 @@ namespace Biobanks.Search.Dto.Facets
             },
             new FacetDetailSummary
             {
-                Label = "Collection Point",
-                Name = "collectionPoint",
-                Slug = "colp"
-            },
-            new FacetDetailSummary
-            {
                 Label = "Collection Status",
                 Name = "collectionStatus",
                 Slug = "cols"

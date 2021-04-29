@@ -37,9 +37,6 @@ namespace Biobanks.Entities.Data
         public int CollectionStatusId { get; set; }
         public virtual CollectionStatus CollectionStatus { get; set; }
 
-        public int CollectionPointId { get; set; }
-        public virtual CollectionPoint CollectionPoint { get; set; }
-
         public virtual ICollection<SampleSet> SampleSets { get; set; }
 
         public virtual ICollection<CollectionAssociatedData> AssociatedData { get; set; }

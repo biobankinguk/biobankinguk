@@ -82,7 +82,6 @@
     <mvcSiteMapNode title="Counties" controller="ADAC" action="County"/>
     <mvcSiteMapNode title="Countries" controller="ADAC" action="Country"/>
     <mvcSiteMapNode title="Collection Percentages" controller="ADAC" action="CollectionPercentages"/>
-    <mvcSiteMapNode title="Collection Points" controller="ADAC" action="CollectionPoints"/>
     <mvcSiteMapNode title="Donor Counts" controller="ADAC" action="DonorCounts"/>
     <mvcSiteMapNode title="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
     <mvcSiteMapNode title="Material Types" controller="ADAC" action="MaterialTypes"/>

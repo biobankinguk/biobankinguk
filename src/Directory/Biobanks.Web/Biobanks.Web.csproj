@@ -442,7 +442,6 @@
     <Compile Include="ApiControllers\AssociatedDataTypeController.cs" />
     <Compile Include="ApiControllers\BiobankController.cs" />
     <Compile Include="ApiControllers\CollectionPercentageController.cs" />
-    <Compile Include="ApiControllers\CollectionPointController.cs" />
     <Compile Include="ApiControllers\CollectionStatusController.cs" />
     <Compile Include="ApiControllers\CollectionTypeController.cs" />
     <Compile Include="ApiControllers\ConsentRestrictionController.cs" />
@@ -588,7 +587,6 @@
     <Content Include="Scripts\ADAC\adac-tabs.js" />
     <Content Include="Scripts\Shared\mdd-editor.js" />
     <Content Include="Scripts\ADAC\adac-associated-data-type-group.js" />
-    <Content Include="Scripts\ADAC\adac-collection-points.js" />
     <Content Include="Scripts\ADAC\adac-analytics-directoryreport.js" />
     <Content Include="Scripts\ADAC\adac-sop-status.js" />
     <Content Include="Scripts\ADAC\adac-annual-statistics.js" />
@@ -660,7 +658,6 @@
     <Content Include="Views\ADAC\ConsentRestriction.cshtml" />
     <Content Include="Views\ADAC\Sexes.cshtml" />
     <Content Include="Views\ADAC\StorageTemperatures.cshtml" />
-    <Content Include="Views\ADAC\CollectionPoints.cshtml" />
     <Content Include="Views\ADAC\CollectionPercentages.cshtml" />
     <Content Include="Views\ADAC\AgeRanges.cshtml" />
     <Content Include="Views\ADAC\AnnualStatisticGroups.cshtml" />
@@ -879,7 +876,6 @@
     <Compile Include="Models\ADAC\MaterialTypesModel.cs" />
     <Compile Include="Models\ADAC\CollectionPercentagesModel.cs" />
     <Compile Include="Models\ADAC\DonorCountsModel.cs" />
-    <Compile Include="Models\ADAC\CollectionPointsModel.cs" />
     <Compile Include="Models\ADAC\AgeRangesModel.cs" />
     <Compile Include="Models\ADAC\MacroscopicAssessmentsModel.cs" />
     <Compile Include="Models\ADAC\SopStatusesModel.cs" />

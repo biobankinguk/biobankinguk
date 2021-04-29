@@ -245,7 +245,6 @@ namespace Biobanks.Services
                             OntologyTerm = collection.OntologyTerm.Value,
                             CollectionTitle = collection.Title,
                             StartYear = collection.StartDate.Year.ToString(),
-                            CollectionPoint = collection.CollectionPoint.Value,
                             CollectionStatus = collection.CollectionStatus.Value,
                             ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
                             AccessCondition = collection.AccessCondition.Value,
