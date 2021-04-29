@@ -668,6 +668,24 @@ namespace Biobanks.Web.Controllers
             return RedirectToAction($"BiobankAdmin", new { id = id });
         }
 
+        public async Task<ActionResult> GenerateResetLinkAjax(string biobankUserId, string biobankUsername)
+        {
+            // Get the reset token
+            var resetToken = await _biobankReadService.GetUnusedTokenByUser(biobankUserId);         
+            await _tokenLog.PasswordTokenIssued(resetToken.ToString(), biobankUserId);
+
+            // Generate the reset URL
+            var url = Url.Action("ResetPassword", "Account",
+                new { userId = biobankUserId, token = resetToken },
+                Request.Url.Scheme);            
+
+            return PartialView("_ModalResetPassword", new ResetPasswordEntityModel
+            {
+                ResetLink = url,
+                UserName = biobankUsername
+            });            
+        }
+
         #endregion
 
         #region Funders
@@ -1172,30 +1190,6 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
-        #region RefData: Collection Points
-        public async Task<ActionResult> CollectionPoints()
-        {
-            var models = (await _biobankReadService.ListCollectionPointsAsync())
-                .Select(x =>
-                    Task.Run(async () => new CollectionPointModel()
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPointUsageCount(x.Id)
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new CollectionPointsModel()
-            {
-                CollectionPoints = models
-            });
-        }
-
-        #endregion
-
         #region RefData: Donor Counts
 
         public async Task<ActionResult> DonorCounts()
@@ -1597,35 +1591,6 @@ namespace Biobanks.Web.Controllers
                 MacroscopicAssessments = models
             });
         }
-        #endregion
-
-        #region RefData: HtaStatus
-        public async Task<ActionResult> HtaStatus()
-        {
-            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.EnableHTA) == true)
-            {
-                return View(new Models.ADAC.HtaStatusModel
-                {
-                    HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
-                        .Select(x =>
-
-                    Task.Run(async () => new ReadHtaStatusModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        CollectionCount = await _biobankReadService.GetHtaStatusCollectionCount(x.Id),
-                        SortOrder = x.SortOrder
-                    }).Result)
-
-                        .ToList()
-                });
-            }
-            else
-            {
-                return RedirectToAction("LockedRef");
-            }
-        }
-
         #endregion
 
         #region RefData: Service Offerings

@@ -83,11 +83,6 @@
                     }
 
                     <li role="presentation"
-                        class="@(Model == "Collection Points" ? "active" : "true")">
-                        @Html.ActionLink("Collection Points", "CollectionPoints")
-                    </li>
-
-                    <li role="presentation"
                         class="@(Model == "Consent restrictions" ? "active" : "true")">
                         @Html.ActionLink("Consent Restrictions", "ConsentRestriction")
                     </li>
@@ -120,14 +115,6 @@
                         class="@(Model == "Disease statuses" ? "active" : "true")">
                         @Html.ActionLink("Disease statuses", "DiseaseStatuses")
                     </li>
-
-                    @if (App.Config[ConfigKey.EnableHTA] != "false")
-                    {
-                        <li role="presentation"
-                            class="@(Model == "Hta statuses" ? "active" : "true")">
-                            @Html.ActionLink("Hta Statuses", "HtaStatus")
-                        </li>
-                    }
 
                     <li role="presentation"
                         class="@(Model == $"{@App.Config[ConfigKey.MacroscopicAssessmentName]}" ? "active" : "true")">

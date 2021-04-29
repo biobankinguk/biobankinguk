@@ -11,6 +11,11 @@ var host = Host.CreateDefaultBuilder(args)
         Path.Combine(
             context.HostingEnvironment.ContentRootPath,
             "../../../Core/Settings/LegacyStorageTemperatures.json"),
+            optional: false)
+    .AddJsonFile(
+        Path.Combine(
+            context.HostingEnvironment.ContentRootPath,
+            "../../../Core/Settings/LegacyMaterialTypes.json"),
             optional: false))
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices(Startup.ConfigureServices);

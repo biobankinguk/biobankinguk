@@ -22,12 +22,14 @@ namespace Biobanks.Submissions.Core.Services
         private readonly IReferenceDataReadService _refDataReadService;
         private readonly ILogger<SampleValidationService> _logger;
         private readonly StorageTemperatureLegacyModel _storageTemperatureLegacy;
+        private readonly MaterialTypesLegacyModel _materialTypesLegacy;
 
-        public SampleValidationService(IReferenceDataReadService refDataReadService, ILogger<SampleValidationService> logger, IOptions<StorageTemperatureLegacyModel> storageTempLegacy)
+        public SampleValidationService(IReferenceDataReadService refDataReadService, ILogger<SampleValidationService> logger, IOptions<StorageTemperatureLegacyModel> storageTempLegacy, IOptions<MaterialTypesLegacyModel> materialTypeLegacy)
         {
             _refDataReadService = refDataReadService;
             _logger = logger;
             _storageTemperatureLegacy = storageTempLegacy.Value;
+            _materialTypesLegacy = materialTypeLegacy.Value;
         }
 
         public async Task<StagedSample> ValidateAndPopulateSample(SampleDto dto, StagedSample sample = null)
@@ -354,6 +356,22 @@ namespace Biobanks.Submissions.Core.Services
 
         private async Task<StagedSample> ValidateMaterialType(SampleDto dto, StagedSample sample)
         {
+            foreach (var obj in _materialTypesLegacy.ListOfMappings)
+            {
+                if (obj.Old.MaterialType == dto.MaterialType)
+                {
+                    dto.MaterialType = obj.New.MaterialType;
+                    _logger.LogInformation($"The given material type was mapped to {obj.New.MaterialType}");
+
+                    if (!string.IsNullOrEmpty(obj.New.ExtractionProcedure))
+                    {
+                        var ep = await _refDataReadService.GetSnomedExtractionProcedure(obj.New.ExtractionProcedure, obj.New.ExtractionProcedureOntologyField);
+                        sample.ExtractionProcedureId = ep.Id;
+                    }
+                    
+                }
+            }
+
             var result = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
 
             if (result == null)
@@ -364,6 +382,7 @@ namespace Biobanks.Submissions.Core.Services
                     null, null);
 
             sample.MaterialTypeId = result.Id;
+
             return sample;
         }
     }

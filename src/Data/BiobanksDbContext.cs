@@ -28,7 +28,6 @@ namespace Biobanks.Data
         public DbSet<AssociatedDataType> AssociatedDataTypes { get; set; }
         public DbSet<AssociatedDataTypeGroup> AssociatedDataTypeGroups { get; set; }
         public DbSet<CollectionPercentage> CollectionPercentages { get; set; }
-        public DbSet<CollectionPoint> CollectionPoints { get; set; }
         public DbSet<CollectionStatus> CollectionStatus { get; set; }
         public DbSet<CollectionType> CollectionTypes { get; set; }
         public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
@@ -36,7 +35,6 @@ namespace Biobanks.Data
         public DbSet<County> Counties { get; set; }
         public DbSet<DonorCount> DonorCounts { get; set; }
         public DbSet<Funder> Funders { get; set; }
-        public DbSet<HtaStatus> HtaStatus { get; set; }
         public DbSet<MacroscopicAssessment> MacroscopicAssessments { get; set; }
         public DbSet<RegistrationReason> RegistrationReasons { get; set; }
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
@@ -93,6 +91,7 @@ namespace Biobanks.Data
         public DbSet<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public DbSet<TokenIssueRecord> TokenIssueRecords { get; set; }
         public DbSet<TokenValidationRecord> TokenValidationRecords { get; set; }
+        public DbSet<ContentPage> ContentPages { get; set; }
         #endregion
 
         #region Application Data: Publications

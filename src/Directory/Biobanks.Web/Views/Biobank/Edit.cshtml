@@ -222,19 +222,7 @@
 
         </div>
     </div>
-    if (App.Config[ConfigKey.EnableHTA] == "true")
-    {
-        <div class="form-group">
-            <div class="col-sm-3 control-label">
-                @Html.LabelFor(x => x.HtaLicence)
-                <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-resource-htalicence"></span>
-            </div>
 
-            <div class="col-sm-6">
-                @Html.TextBoxFor(x => x.HtaLicence, new { @class = "form-control" })
-            </div>
-        </div>
-    }
     <h4>Services <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-resource-services"></span></h4>
 
     <div class="form-group">

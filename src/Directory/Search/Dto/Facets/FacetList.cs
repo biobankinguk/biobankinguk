@@ -150,18 +150,6 @@ namespace Biobanks.Search.Dto.Facets
                 },
                 SortOrderWithinGroup = 1
             },
-            new FacetDetail(FacetGroupId.CollectionDetails)
-            {
-                Label = "Collection Point",
-                Name = "collectionPoint",
-                Slug = "colp",
-                NestedAggregation = false,
-                SearchTypes = new List<SearchType>
-                {
-                    SearchType.Collection
-                },
-                SortOrderWithinGroup = 1
-            },
             new FacetDetail(FacetGroupId.AccessConditions)
             {
                 Label = "Collection Status",
@@ -188,18 +176,6 @@ namespace Biobanks.Search.Dto.Facets
                 },
                 SortOrderWithinGroup = 1
             },
-            //new FacetDetail(FacetGroupId.Governance)
-            //{
-            //    Label = "HTA",
-            //    Name = "hta",
-            //    Slug = "hta",
-            //    NestedAggregation = false,
-            //    SearchTypes = new List<SearchType>
-            //    {
-            //        SearchType.Collection
-            //    },
-            //    SortOrderWithinGroup = 1
-            //},
             new FacetDetail(FacetGroupId.CollectionDetails)
             {
                 Label = "Collection Type",
