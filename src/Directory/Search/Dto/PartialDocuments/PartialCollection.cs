@@ -18,16 +18,10 @@ namespace Biobanks.Search.Dto.PartialDocuments
         [Keyword(Name = "endYear")]
         public string EndYear { get; set; }
 
-        [Keyword(Name = "collectionPoint")]
-        public string CollectionPoint { get; set; }
-
         [Keyword(Name = "collectionStatus")]
         public string CollectionStatus { get; set; }
 
         public IEnumerable<ConsentRestrictionDocument> ConsentRestrictions { get; set; }
-
-        [Keyword(Name = "hta")]
-        public string HTA { get; set; }
 
         [Keyword(Name = "accessCondition")]
         public string AccessCondition { get; set; }

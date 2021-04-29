@@ -81,18 +81,6 @@ namespace Biobanks.Services
                 profileStatus.CapabilityStatusMessage = "Capabilities registered";
             }
 
-            //Check HRA/HTA Status
-            if (bb.EthicsRegistration == null || bb.HtaLicence == null)
-            {
-                profileStatus.HRA_HTAStatus = 0;
-                profileStatus.HRA_HTAStatusMessage = "HRA/HTA number missing";
-            }
-            else
-            {
-                profileStatus.HRA_HTAStatus = 1;
-                profileStatus.HRA_HTAStatusMessage = "HRA/HTA number has been recorded";
-            }
-
             return profileStatus;
         }
 

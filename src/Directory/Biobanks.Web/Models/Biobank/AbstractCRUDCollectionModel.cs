@@ -14,8 +14,6 @@ namespace Biobanks.Web.Models.Biobank
         public IEnumerable<ReferenceDataModel> AccessConditions { get; set; }
         public IEnumerable<ReferenceDataModel> CollectionTypes { get; set; }
         public IEnumerable<ReferenceDataModel> CollectionStatuses { get; set; }
-        public IEnumerable<ReferenceDataModel> CollectionPoints { get; set; }
-        public IEnumerable<ReferenceDataModel> HtaStatuses { get; set; }
 
         #endregion
 
@@ -39,10 +37,6 @@ namespace Biobanks.Web.Models.Biobank
         [Display(Name = "Year started")]
         public int? StartDate { get; set; }
 
-        //[Required(ErrorMessage = "Please select a HTA status.")]
-        [Display(Name = "HTA status")]
-        public int? HTAStatus { get; set; }
-
         [Required(ErrorMessage = "Please select an access condition.")]
         [Display(Name = "Access condition")]
         public int AccessCondition { get; set; }
@@ -53,10 +47,6 @@ namespace Biobanks.Web.Models.Biobank
         [Required(ErrorMessage = "Please select a collection status.")]
         [Display(Name = "Collection status")]
         public int CollectionStatus { get; set; }
-
-        [Required(ErrorMessage = "Please select a collection point.")]
-        [Display(Name = "Collection point")]
-        public int CollectionPoint { get; set; }
 
         [Required(ErrorMessage = "Please select a consent restriction.")]
         [Display(Name = "Consent restriction")]

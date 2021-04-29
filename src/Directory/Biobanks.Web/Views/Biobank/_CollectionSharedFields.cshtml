@@ -51,28 +51,6 @@
     </div>
 </div>
 
-@*<div class="form-group">
-        <label class="col-sm-4 control-label">
-            @Html.DisplayNameFor(x => x.HTAStatus)
-            <span class="fa fa-info-circle hta-status-help"></span>
-        </label>
-        <div class="col-sm-8">
-            <div class="row">
-                @foreach (var htaStatus in Model.HtaStatuses)
-                {
-                    <div class="col-sm-12 radio">
-                        <label>
-                            @Html.RadioButtonFor(x => x.HTAStatus, htaStatus.Id)
-                            @Html.Raw(htaStatus.Description)
-                        </label>
-                    </div>
-                }
-            </div>
-            @Html.ValidationMessageFor(x => x.HTAStatus)
-        </div>
-    </div>*@
-@Html.HiddenFor(x => x.HTAStatus) @* Preserve previously set values in case we want to use HTA Status again in future *@
-
 @Html.HiddenFor(x => x.FromApi, new { Value = false })
 
 <div class="form-group">
@@ -155,28 +133,6 @@
             </div>
         }
         @Html.ValidationMessageFor(x => x.CollectionStatus)
-    </div>
-</div>
-
-<div class="form-group">
-    <div class="col-sm-10 col-sm-offset-1">
-        <h4 class="required">
-            @Html.DisplayNameFor(x => x.CollectionPoint)
-            <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-collection-collectionpoint"></span>
-        </h4>
-    </div>
-
-    <div class="col-sm-10 col-sm-offset-2">
-        @foreach (var collectionPoint in Model.CollectionPoints)
-        {
-            <div class="col-sm-6 radio">
-                <label>
-                    @Html.RadioButtonFor(x => x.CollectionPoint, collectionPoint.Id)
-                    @Html.Raw(collectionPoint.Description)
-                </label>
-            </div>
-        }
-        @Html.ValidationMessageFor(x => x.CollectionPoint)
     </div>
 </div>
 

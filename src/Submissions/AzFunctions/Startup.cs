@@ -36,6 +36,8 @@ namespace AzFunctions
 
             services.Configure<StorageTemperatureLegacyModel>(context.Configuration.GetSection("StorageTemperatureLegacyModel"));
 
+            services.Configure<MaterialTypesLegacyModel>(context.Configuration.GetSection("MaterialTypesLegacyModel"));
+
             // In-Memory Cache - Manually Called As Not Called By A Parent Service
             services.AddMemoryCache();
 

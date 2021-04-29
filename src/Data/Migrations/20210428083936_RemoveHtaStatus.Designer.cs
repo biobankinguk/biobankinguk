@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210428083936_RemoveHtaStatus")]
+    partial class RemoveHtaStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -634,6 +636,9 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("AccessConditionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CollectionPointId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CollectionStatusId")
                         .HasColumnType("int");
 
@@ -665,6 +670,8 @@ namespace Biobanks.Data.Migrations
                     b.HasKey("CollectionId");
 
                     b.HasIndex("AccessConditionId");
+
+                    b.HasIndex("CollectionPointId");
 
                     b.HasIndex("CollectionStatusId");
 
@@ -1419,6 +1426,25 @@ namespace Biobanks.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CollectionPercentages");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.CollectionPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CollectionPoints");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.CollectionStatus", b =>
@@ -2250,6 +2276,12 @@ namespace Biobanks.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Biobanks.Entities.Data.ReferenceData.CollectionPoint", "CollectionPoint")
+                        .WithMany()
+                        .HasForeignKey("CollectionPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Biobanks.Entities.Data.ReferenceData.CollectionStatus", "CollectionStatus")
                         .WithMany()
                         .HasForeignKey("CollectionStatusId")
@@ -2271,6 +2303,8 @@ namespace Biobanks.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("AccessCondition");
+
+                    b.Navigation("CollectionPoint");
 
                     b.Navigation("CollectionStatus");
 
