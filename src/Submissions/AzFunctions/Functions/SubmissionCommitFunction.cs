@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AzFunctions.Functions
 {
-    class SubmissionCommitFunction
+    public class SubmissionCommitFunction
     {
         //Cloud Services
         private readonly IQueueWriteService _queueWriteService;

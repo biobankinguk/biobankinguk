@@ -119,6 +119,8 @@ namespace Biobanks.Directory.Data
 
         public DbSet<ApiClient> ApiClients { get; set; }
 
+        public DbSet<ContentPage> ContentPages { get; set; }
+
         public BiobanksDbContext() : this("Biobanks") { }
         
         public BiobanksDbContext(string connectionString) : base(connectionString)

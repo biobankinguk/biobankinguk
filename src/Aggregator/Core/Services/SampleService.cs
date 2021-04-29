@@ -1,7 +1,6 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
-using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +30,11 @@ namespace Biobanks.Aggregator.Core.Services
 
         public async Task<IEnumerable<LiveSample>> ListDirtySamplesAsync()
             => await _db.Samples.Where(x => x.IsDirty).ToListAsync();
+
+        public async Task CleanSamplesAsync(IEnumerable<LiveSample> samples)
+            => await _db.Samples
+                    .Where(x => samples.Select(x => x.Id).Contains(x.Id))
+                    .UpdateFromQueryAsync(x => new LiveSample { IsDirty = false });
 
         public async Task DeleteFlaggedSamplesAsync()
             => await _db.Samples.Where(x => x.IsDeleted).DeleteAsync();

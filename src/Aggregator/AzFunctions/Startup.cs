@@ -24,8 +24,10 @@ namespace Biobanks.Aggregator.AzFunctions
 
             // Services
             services.AddTransient<IAggregationService, AggregationService>();
+            services.AddTransient<IReferenceDataService, ReferenceDataService>();
             services.AddTransient<ICollectionService, CollectionService>();
             services.AddTransient<ISampleService, SampleService>();
+
             services.AddSingleton<AggregationTask>();
         }
     }

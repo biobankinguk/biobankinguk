@@ -1,8 +1,6 @@
 ﻿using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Core.Services.Contracts
 {
@@ -12,8 +10,8 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
         IEnumerable<IEnumerable<LiveSample>> GroupIntoSampleSets(IEnumerable<LiveSample> samples);
         IEnumerable<IEnumerable<LiveSample>> GroupIntoMaterialDetails(IEnumerable<LiveSample> samples);
 
-        Task<Collection> GenerateCollection(IEnumerable<LiveSample> samples);
-        Task<SampleSet> GenerateSampleSet(IEnumerable<LiveSample> samples);
-        Task<MaterialDetail> GenerateMaterialDetail(IEnumerable<LiveSample> samples);
+        Collection GenerateCollection(IEnumerable<LiveSample> samples);
+        SampleSet GenerateSampleSet(IEnumerable<LiveSample> samples);
+        MaterialDetail GenerateMaterialDetail(IEnumerable<LiveSample> samples);
     }
 }
