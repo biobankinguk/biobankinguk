@@ -21,6 +21,5 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 
         CollectionType GetDefaultCollectionType();
 
-        HtaStatus GetDefaultHtaStatus();
     }
 }

@@ -41,9 +41,6 @@ namespace Biobanks.Aggregator.Core.Services
         public AgeRange GetDefaultAgeRange()
             => _db.AgeRanges.First(x => x.LowerBound == null && x.UpperBound == null);
 
-        public HtaStatus GetDefaultHtaStatus()
-            => _db.HtaStatus.OrderBy(x => x.SortOrder).First();
-
         public CollectionPoint GetDefaultCollectionPoint()
             => _db.CollectionPoints.OrderBy(x => x.SortOrder).First();
 

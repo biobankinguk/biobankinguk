@@ -85,7 +85,6 @@ namespace Biobanks.Aggregator.Core.Services
                 //OntologyTermId
                 Description = "", // TODO: Generate from content
                 StartDate = orderedSamples.First().DateCreated,
-                HtaStatusId = _refDataService.GetDefaultHtaStatus().Id,   // TODO: Needs Deleting?
                 AccessConditionId = _refDataService.GetDefaultAccessCondition().Id, // TODO: Temp Value
                 CollectionTypeId = _refDataService.GetDefaultCollectionType().Id, // TODO: Temp Value
                 CollectionStatusId = _refDataService.GetCollectionStatus(complete).Id,
