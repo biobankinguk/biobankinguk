@@ -48,7 +48,7 @@ namespace Biobanks.Publications.Services.Hosted
 
                     await _annotationService.AddPublicationAnnotations(publication.PublicationId, annotations);
 
-                    _logger.LogInformation($"Fetched {annotations.Count()} annotations for {publication}");
+                    _logger.LogInformation($"Fetched {annotations.Count()} annotations for {publication.PublicationId}");
                 }
             }
         }
