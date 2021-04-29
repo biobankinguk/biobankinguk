@@ -1,6 +1,7 @@
 ﻿using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Core.Services.Contracts
 {
@@ -13,5 +14,7 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
         Collection GenerateCollection(IEnumerable<LiveSample> samples);
         SampleSet GenerateSampleSet(IEnumerable<LiveSample> samples);
         MaterialDetail GenerateMaterialDetail(IEnumerable<LiveSample> samples);
+
+        Task DeleteMaterialDetailsBySampleSetId(int id);
     }
 }

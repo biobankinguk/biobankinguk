@@ -91,6 +91,10 @@ namespace Biobanks.Aggregator.Core
                     }
                     else
                     {
+                        foreach (var ss in oldSampleSets.Distinct())
+                        {
+                            await _aggregationService.DeleteMaterialDetailsBySampleSetId(ss);
+                        }
                         await _collectionService.UpdateCollectionAsync(collection);
 
                         // Remove old sampleSets from db if present
