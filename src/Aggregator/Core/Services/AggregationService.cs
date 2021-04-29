@@ -88,7 +88,6 @@ namespace Biobanks.Aggregator.Core.Services
                 AccessConditionId = _refDataService.GetDefaultAccessCondition().Id, // TODO: Temp Value
                 CollectionTypeId = _refDataService.GetDefaultCollectionType().Id, // TODO: Temp Value
                 CollectionStatusId = _refDataService.GetCollectionStatus(complete).Id,
-                CollectionPointId = _refDataService.GetDefaultCollectionPoint().Id, // TODO: Needs Deleting?
                 FromApi = true,
                 SampleSets = new List<SampleSet>()
             };

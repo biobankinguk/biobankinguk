@@ -17,8 +17,6 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 
         AgeRange GetDefaultAgeRange();
 
-        CollectionPoint GetDefaultCollectionPoint();
-
         CollectionType GetDefaultCollectionType();
 
     }
