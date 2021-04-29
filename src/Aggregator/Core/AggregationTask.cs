@@ -59,6 +59,7 @@ namespace Biobanks.Aggregator.Core
                             var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
                             var percentage = decimal.Divide(sampleSetSamples.Count(), materialDetailSamples.Count());
 
+                            // Set Collection Percetnage For Material Detail
                             materialDetail.CollectionPercentageId = _refDataService.GetCollectionPercentage(percentage).Id;
 
                             sampleSet.MaterialDetails.Add(materialDetail);
@@ -67,8 +68,10 @@ namespace Biobanks.Aggregator.Core
                         collection.SampleSets.Add(sampleSet);
                     }
 
-                    // Update Timestamp
+                    // Update Collection Contextual Fields
                     collection.LastUpdated = DateTime.Now;
+                    collection.AccessConditionId = _refDataService.GetDefaultAccessCondition().Id;
+                    collection.CollectionTypeId = _refDataService.GetDefaultCollectionType().Id;
 
                     // Write Collection To DB
                     if (collection.CollectionId == default)

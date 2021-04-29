@@ -82,11 +82,8 @@ namespace Biobanks.Aggregator.Core.Services
             {
                 OrganisationId = newestSample.OrganisationId,
                 Title = newestSample.CollectionName, //TODO: Generate Default CollectionName If Missing
-                //OntologyTermId
-                Description = "", // TODO: Generate from content
+                OntologyTermId = newestSample.SampleContentId,
                 StartDate = orderedSamples.First().DateCreated,
-                AccessConditionId = _refDataService.GetDefaultAccessCondition().Id, // TODO: Temp Value
-                CollectionTypeId = _refDataService.GetDefaultCollectionType().Id, // TODO: Temp Value
                 CollectionStatusId = _refDataService.GetCollectionStatus(complete).Id,
                 FromApi = true,
                 SampleSets = new List<SampleSet>()
