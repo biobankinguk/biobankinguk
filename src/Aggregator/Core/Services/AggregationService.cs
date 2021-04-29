@@ -6,6 +6,7 @@ using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using Z.EntityFramework.Plus;
 
@@ -132,5 +133,8 @@ namespace Biobanks.Aggregator.Core.Services
                 PreservationTypeId = sample.PreservationTypeId,
             };
         }
+
+        public async Task DeleteMaterialDetailsBySampleSetId(int id)
+            => await _db.MaterialDetails.Where(x => x.SampleSetId == id).DeleteAsync(); 
     }
 }
