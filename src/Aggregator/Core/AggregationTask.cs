@@ -1,7 +1,10 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using System;
+using Biobanks.Entities.Data;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Biobanks.Aggregator.Core
 {
@@ -45,6 +48,13 @@ namespace Biobanks.Aggregator.Core
 
                 if (samples.Any())
                 {
+                    // List of collection sampleSets before clear()
+                    var oldSampleSets = new List<int>();
+                    foreach (var ss in collection.SampleSets)
+                    {
+                        oldSampleSets.Add(ss.Id);
+                    }
+
                     // Clear Current SampleSets - Rebuilt Below
                     collection.SampleSets.Clear();
 
@@ -81,6 +91,12 @@ namespace Biobanks.Aggregator.Core
                     else
                     {
                         await _collectionService.UpdateCollectionAsync(collection);
+
+                        // Remove old sampleSets from db if present
+                        foreach (var ss in oldSampleSets.Distinct())
+                        {
+                            await _sampleService.DeleteSampleSetById(ss);
+                        }
                     }
                 }
                 else
