@@ -1,10 +1,8 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using System;
-using Biobanks.Entities.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace Biobanks.Aggregator.Core
 {

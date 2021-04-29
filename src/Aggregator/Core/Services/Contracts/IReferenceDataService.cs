@@ -1,6 +1,5 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
 
-
 namespace Biobanks.Aggregator.Core.Services.Contracts
 {
     public interface IReferenceDataService
