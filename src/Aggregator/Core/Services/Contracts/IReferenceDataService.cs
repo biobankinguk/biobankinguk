@@ -13,11 +13,7 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 
         DonorCount GetDonorCount(int count);
 
-        AccessCondition GetDefaultAccessCondition();
-
         AgeRange GetDefaultAgeRange();
-
-        CollectionType GetDefaultCollectionType();
 
     }
 }

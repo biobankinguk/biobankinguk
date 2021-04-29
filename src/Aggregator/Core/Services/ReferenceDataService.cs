@@ -35,14 +35,8 @@ namespace Biobanks.Aggregator.Core.Services
         public DonorCount GetDonorCount(int count)
             => _db.DonorCounts.First(x => x.LowerBound <= count && x.UpperBound >= count);
 
-        public AccessCondition GetDefaultAccessCondition()
-            => _db.AccessConditions.OrderBy(x => x.SortOrder).First();
-
         public AgeRange GetDefaultAgeRange()
             => _db.AgeRanges.First(x => x.LowerBound == null && x.UpperBound == null);
-
-        public CollectionType GetDefaultCollectionType()
-            => _db.CollectionTypes.OrderBy(x => x.SortOrder).First();
 
     }
 }

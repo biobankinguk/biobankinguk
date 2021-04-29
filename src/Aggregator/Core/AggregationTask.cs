@@ -12,17 +12,20 @@ namespace Biobanks.Aggregator.Core
     {
         private readonly IAggregationService _aggregationService;
         private readonly IReferenceDataService _refDataService;
+        private readonly IOrganisationService _organisationService;
         private readonly ICollectionService _collectionService;
         private readonly ISampleService _sampleService;
 
         public AggregationTask(
             IAggregationService aggregationService,
             IReferenceDataService refDataService,
+            IOrganisationService organisationService,
             ICollectionService collectionService,
             ISampleService sampleService)
         {
             _aggregationService = aggregationService;
             _refDataService = refDataService;
+            _organisationService = organisationService;
             _collectionService = collectionService;
             _sampleService = sampleService;
         }
@@ -80,9 +83,9 @@ namespace Biobanks.Aggregator.Core
 
                     // Update Collection Contextual Fields
                     collection.LastUpdated = DateTime.Now;
-                    collection.AccessConditionId = _refDataService.GetDefaultAccessCondition().Id;
-                    collection.CollectionTypeId = _refDataService.GetDefaultCollectionType().Id;
-
+                    collection.CollectionTypeId ??= (await _organisationService.GetCollectionType(collection.Organisation)).Id;
+                    collection.AccessConditionId = (await _organisationService.GetAccessCondition(collection.Organisation)).Id;
+                    
                     // Write Collection To DB
                     if (collection.CollectionId == default)
                     {
