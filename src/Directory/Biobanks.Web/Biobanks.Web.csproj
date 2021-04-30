@@ -476,6 +476,7 @@
     <Compile Include="Models\Header\HeaderItemModel.cs" />
     <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
+    <Content Include="Scripts\ADAC\adac-email-config.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
     <Content Include="Scripts\ADAC\adac-refdata-utility.js" />
@@ -850,6 +851,7 @@
     <Content Include="Views\SuperUser\Tools.cshtml" />
     <Content Include="Views\ADAC\_ModalResetPassword.cshtml" />
     <Content Include="Views\Biobank\Submissions.cshtml" />
+    <Content Include="Views\ADAC\EmailConfig.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -914,6 +916,7 @@
     <Compile Include="Models\Shared\AssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\Shared\CountryModel.cs" />
     <Compile Include="Models\Shared\RefDataFeedbackModel.cs" />
+    <Compile Include="Models\Shared\RegistrationDomainRuleModel.cs" />
     <Compile Include="Models\Shared\RegistrationReasonModel.cs" />
     <Compile Include="Models\Shared\ServiceOfferingModel.cs" />
     <Compile Include="Models\Shared\SexModel.cs" />
