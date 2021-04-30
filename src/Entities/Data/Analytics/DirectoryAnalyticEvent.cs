@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Analytics.Data.Entities
+namespace Biobanks.Entities.Data.Analytics
 {
     public class DirectoryAnalyticEvent
     {
@@ -12,7 +8,7 @@ namespace Analytics.Data.Entities
         public DateTimeOffset Date { get; set; }
         public string EventCategory { get; set; }
         public string EventAction { get; set; }
-        public string Biobank { get; set; } 
+        public string Biobank { get; set; }
         public string Segment { get; set; }
         public string Source { get; set; }
         public string Hostname { get; set; }

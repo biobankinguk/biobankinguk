@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Analytics.Services</RootNamespace>
   </PropertyGroup>
 
@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Analytics\Data.csproj" />
+    <ProjectReference Include="..\..\Data\Data.csproj" />
+    <ProjectReference Include="..\..\Entities\Entities.csproj" />
   </ItemGroup>
 
 </Project>
