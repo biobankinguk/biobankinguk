@@ -195,6 +195,7 @@ function AppViewModel() {
   this.openModalForEdit = function () {
 	_this.modal.mode(_this.modal.modalModeEdit);
 	_this.showModal();
+	preservationValidation();
   };
 
   this.modalSubmit = function () {
