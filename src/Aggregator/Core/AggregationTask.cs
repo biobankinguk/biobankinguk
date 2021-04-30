@@ -56,12 +56,8 @@ namespace Biobanks.Aggregator.Core
                     collection.CollectionTypeId = organisation.CollectionTypeId;
                     collection.AccessConditionId = organisation.AccessConditionId ?? 0;
 
-                    // List of collection sampleSets before clear()
-                    var oldSampleSets = new List<int>();
-                    foreach (var ss in collection.SampleSets)
-                    {
-                        oldSampleSets.Add(ss.Id);
-                    }
+                    // Record Old SampleSet IDs
+                    var oldSampleSetIds = collection.SampleSets.Select(x => x.Id).Distinct().ToList();
 
                     // Clear Current SampleSets - Rebuilt Below
                     collection.SampleSets.Clear(); 
@@ -93,7 +89,7 @@ namespace Biobanks.Aggregator.Core
                     }
                     else
                     {
-                        foreach (var ss in oldSampleSets.Distinct())
+                        foreach (var ss in oldSampleSetIds)
                         {
                             await _aggregationService.DeleteMaterialDetailsBySampleSetId(ss);
                         }
@@ -101,7 +97,7 @@ namespace Biobanks.Aggregator.Core
                         await _collectionService.UpdateCollectionAsync(collection);
 
                         // Remove old sampleSets from db if present
-                        foreach (var ss in oldSampleSets.Distinct())
+                        foreach (var ss in oldSampleSetIds)
                         {
                             await _sampleService.DeleteSampleSetById(ss);
                         }
