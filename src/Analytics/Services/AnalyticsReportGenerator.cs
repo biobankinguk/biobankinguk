@@ -5,6 +5,7 @@ using Analytics.Services.Dto;
 using System.Linq;
 using System;
 using Microsoft.Extensions.Configuration;
+using Biobanks.Entities.Data.Analytics;
 
 namespace Analytics.Services
 {
@@ -28,7 +29,7 @@ namespace Analytics.Services
             _hostname = _config.GetValue<string>("DirectoryHostname",""); 
         }
 
-        public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<OrganisationAnalytic> biobankData)
         {
             var profileData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Profile/");
             var summary = _googleAnalyticsReadService.GetSummary(profileData);
@@ -48,7 +49,7 @@ namespace Analytics.Services
             };
         }
 
-        public SearchActivityDto GetSearchActivity(string biobankId, IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        public SearchActivityDto GetSearchActivity(string biobankId, IEnumerable<OrganisationAnalytic> biobankData)
         {
             var searchData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Search/");
             var bbSearchData = searchData.Where(x => x.OrganisationExternalId == biobankId);
@@ -77,7 +78,7 @@ namespace Analytics.Services
             };
         }
 
-        public ContactRequestsDto GetContactRequests(string biobankId, IEnumerable<Data.Entities.DirectoryAnalyticEvent> eventData)
+        public ContactRequestsDto GetContactRequests(string biobankId, IEnumerable<DirectoryAnalyticEvent> eventData)
         {
             var contactData = _googleAnalyticsReadService.FilterByEvent(eventData, "Add Contact to List");
             var summary = _googleAnalyticsReadService.GetSummary(contactData);
@@ -127,7 +128,7 @@ namespace Analytics.Services
             };
         }
 
-        public SessionStatDto GetSessionStats(IEnumerable<Data.Entities.DirectoryAnalyticMetric> metricData)
+        public SessionStatDto GetSessionStats(IEnumerable<DirectoryAnalyticMetric> metricData)
         {
             var sessionData = _googleAnalyticsReadService.ApplySessionMulitplication(metricData);
 
@@ -150,7 +151,7 @@ namespace Analytics.Services
             };
         }
 
-        public SessionStatDto GetSessionSearchStats(IEnumerable<Data.Entities.DirectoryAnalyticMetric> metricData)
+        public SessionStatDto GetSessionSearchStats(IEnumerable<DirectoryAnalyticMetric> metricData)
         {
             var searchData = _googleAnalyticsReadService.FilterByPagePath(metricData, "/Search/");
             var sessionData = _googleAnalyticsReadService.ApplySessionMulitplication(searchData);
@@ -174,7 +175,7 @@ namespace Analytics.Services
             };
         }
 
-        public SearchCharacteristicDto GetSearchCharacteristics(IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        public SearchCharacteristicDto GetSearchCharacteristics(IEnumerable<OrganisationAnalytic> biobankData)
         {
             var searchData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Search/");
 
@@ -194,7 +195,7 @@ namespace Analytics.Services
             };
         }
 
-        public EventStatDto GetEventStats(IEnumerable<Data.Entities.DirectoryAnalyticEvent> eventData)
+        public EventStatDto GetEventStats(IEnumerable<DirectoryAnalyticEvent> eventData)
         {
             var contactData = _googleAnalyticsReadService.FilterByEvent(eventData, "Add Contact to List");
             var mailtoData = _googleAnalyticsReadService.FilterByEvent(eventData, "Mailto clicked");
@@ -212,7 +213,7 @@ namespace Analytics.Services
             };
         }
 
-        public ProfilePageStatDto GetProfilePageStats(IEnumerable<Data.Entities.OrganisationAnalytic> biobankData)
+        public ProfilePageStatDto GetProfilePageStats(IEnumerable<OrganisationAnalytic> biobankData)
         {
             var profileData = _googleAnalyticsReadService.FilterByPagePath(biobankData, "/Profile/");
 

@@ -3,52 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
-using System.Threading;
-
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.AnalyticsReporting.v4;
 using Google.Apis.AnalyticsReporting.v4.Data;
-
-using Analytics.Data;
 using Analytics.Services.Dto;
 using Analytics.Services.Contracts;
-using Analytics.Data.Entities;
 using Analytics.Services.Helpers;
-
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Biobanks.Data;
+using Biobanks.Entities.Data.Analytics;
 
 namespace Analytics.Services
 {
     // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
-    public class GoogleAnalyticsReadService : IHostedService, IGoogleAnalyticsReadService
+    public class GoogleAnalyticsReadService : IGoogleAnalyticsReadService
     {
         private readonly string _viewId;
         private readonly string _startDate; //default: "2016-01-01"; //specified in _dateFormat
         private readonly string _dateFormat = "yyyy-MM-dd";
         private readonly IConfiguration _config;
 
-        private readonly AnalyticsDbContext _ctx;
+        private readonly BiobanksDbContext _context;
         private readonly GoogleCredential _credentials;
         private readonly AnalyticsReportingService _analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
         private readonly IBiobankWebService _biobankWebService;
 
-        public GoogleAnalyticsReadService(AnalyticsDbContext ctx,
+        public GoogleAnalyticsReadService(BiobanksDbContext context,
                                           IBiobankWebService biobankWebService,
                                           ILogger<GoogleAnalyticsReadService> logger,
                                           IConfiguration configuration)
-
         {
-            _ctx = ctx;
+            _context = context;
             _config = configuration;
-            _viewId = _config.GetValue<string>("AnalyticsViewid", "");
-            _startDate = _config.GetValue<string>("StartDate", "2016-01-01");
+            _viewId = _config.GetValue("AnalyticsViewid", "");
+            _startDate = _config.GetValue("StartDate", "2016-01-01");
 
-            _credentials = GoogleCredential.FromJson(_config.GetValue<string>("AnalyticsApikey", "{}"))
+            _credentials = GoogleCredential.FromJson(_config.GetValue("AnalyticsApikey", "{}"))
                 .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
 
             _analytics = new AnalyticsReportingService(
@@ -235,13 +229,13 @@ namespace Analytics.Services
 
         //or use function overloading or dynamic?
         public async Task<DateTimeOffset> GetLatestBiobankEntry()
-            => (await  _ctx.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await  _context.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestEventEntry()
-            => (await _ctx.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _context.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestMetricEntry()
-            => (await _ctx.DirectoryAnalyticMetrics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _context.DirectoryAnalyticMetrics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
 
         public DateTimeOffset ConvertToDateTime(string inputDateTime, string format)
@@ -267,7 +261,7 @@ namespace Analytics.Services
 
             foreach (ReportRow bbd in biobankData)
             {
-                 _ctx.OrganisationAnalytics.Add(new OrganisationAnalytic
+                 _context.OrganisationAnalytics.Add(new OrganisationAnalytic
                 {
                     Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                     PagePath = bbd.Dimensions[1],
@@ -280,7 +274,7 @@ namespace Analytics.Services
                     OrganisationExternalId = biobankId
                 });
             }
-            await _ctx.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task DownloadAllBiobankData(IList<DateRange> dateRanges)
@@ -301,7 +295,7 @@ namespace Analytics.Services
 
                 foreach (ReportRow bbd in biobankData)
                 {
-                     _ctx.OrganisationAnalytics.Add(new OrganisationAnalytic
+                     _context.OrganisationAnalytics.Add(new OrganisationAnalytic
                     {
                         Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                         PagePath = bbd.Dimensions[1],
@@ -314,7 +308,7 @@ namespace Analytics.Services
                         OrganisationExternalId = biobankId
                     });
                 }
-                await  _ctx.SaveChangesAsync();
+                await  _context.SaveChangesAsync();
                 _logger.LogInformation($"Fetched analytics for data for {biobankId}");
             }
         }
@@ -336,7 +330,7 @@ namespace Analytics.Services
 
             foreach (ReportRow events in eventData)
             {
-                _ctx.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
+                _context.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
                 {
                     Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
                     EventCategory = events.Dimensions[1],
@@ -349,11 +343,11 @@ namespace Analytics.Services
                     Counts = int.Parse(events.Metrics[0].Values[0]),
                 });
             }
-            await _ctx.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             foreach (ReportRow metric in metricData)
             {
-                _ctx.DirectoryAnalyticMetrics.Add(new DirectoryAnalyticMetric
+                _context.DirectoryAnalyticMetrics.Add(new DirectoryAnalyticMetric
                 {
                     Date = ConvertToDateTime(metric.Dimensions[0], "yyyyMMdd"),
                     PagePath = metric.Dimensions[1],
@@ -368,7 +362,7 @@ namespace Analytics.Services
                     AvgSessionDuration = Convert.ToInt32(double.Parse(metric.Metrics[0].Values[3])),
                 });
             }
-            await _ctx.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             _logger.LogInformation($"Fetched event and metric data for analytics");
         }
 
@@ -389,14 +383,14 @@ namespace Analytics.Services
 
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData()
-            => await _ctx.OrganisationAnalytics.ToListAsync();
+            => await _context.OrganisationAnalytics.ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData(DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _ctx.OrganisationAnalytics.Where(
+            return await _context.OrganisationAnalytics.Where(
                 x => x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
         }
@@ -406,7 +400,7 @@ namespace Analytics.Services
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _ctx.DirectoryAnalyticEvents.Where(
+            return await _context.DirectoryAnalyticEvents.Where(
                 x => x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
         }
@@ -416,20 +410,20 @@ namespace Analytics.Services
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _ctx.DirectoryAnalyticMetrics.Where(
+            return await _context.DirectoryAnalyticMetrics.Where(
                 x => x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId)
-            => await _ctx.OrganisationAnalytics.Where( x => x.OrganisationExternalId == biobankId).ToListAsync();
+            => await _context.OrganisationAnalytics.Where( x => x.OrganisationExternalId == biobankId).ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId, DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _ctx.OrganisationAnalytics.Where(
+            return await _context.OrganisationAnalytics.Where(
                 x => x.OrganisationExternalId == biobankId &&
                 x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
@@ -786,6 +780,10 @@ namespace Analytics.Services
         //typically performed quatertly. Should be hit by scheduler
         public async Task UpdateAnalyticsData()
         {
+            // Call directory for all active organisation
+            var biobanks = await _biobankWebService.GetOrganisationNames();
+            _logger.LogInformation($"Fetching analytics for {biobanks.Count()} organisations");
+
             var lastBiobankEntry = await GetLatestBiobankEntry();
             var lastEventEntry = await GetLatestMetricEntry();
             var lastMetricEntry = await GetLatestEventEntry();
@@ -808,26 +806,6 @@ namespace Analytics.Services
                 await DownloadAllBiobankData(dateRange);
                 await DownloadDirectoryData(dateRange);
             }
-            // if data is up to date
-            else
-            {
-                //do nothing
-            }
         }
-
-        //function is run everytime BatchFunction triggers
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            // Call directory for all active organisation
-            var biobanks = await _biobankWebService.GetOrganisationNames();
-
-            _logger.LogInformation($"Fetching analytics for {biobanks.Count()} organisations");
-
-            // Fetch and store analytics data for each organisation
-            await UpdateAnalyticsData();
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
     }
 }

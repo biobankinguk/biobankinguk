@@ -1,15 +1,15 @@
-﻿using Analytics.Data.Entities;
-using Analytics.Services.Dto;
+﻿using Analytics.Services.Dto;
 using Google.Apis.AnalyticsReporting.v4.Data;
 using System;
 using System.Collections.Generic;
 using Analytics.Services.Helpers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Biobanks.Entities.Data.Analytics;
 
 namespace Analytics.Services.Contracts
 {
-    public interface IGoogleAnalyticsReadService : IHostedService
+    public interface IGoogleAnalyticsReadService
     {
         IList<DimensionFilter> BiobankDimensionFilter(IList<string> biobankIDs);
         IList<DimensionFilterClause> ConstructDimensionFilter(IList<DimensionFilter> filters, string filterOperator = "AND");

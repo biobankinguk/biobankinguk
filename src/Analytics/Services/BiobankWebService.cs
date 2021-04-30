@@ -1,23 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Analytics.Services.Contracts;
-using Analytics.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Biobanks.Data;
+using Biobanks.Entities.Data;
 
 namespace Analytics.Services
 {
     public class BiobankWebService : IBiobankWebService
     {
-        private AnalyticsDbContext _ctx;
+        private BiobanksDbContext _context;
 
-        public BiobankWebService(AnalyticsDbContext ctx)
+        public BiobankWebService(BiobanksDbContext context)
         {
-            _ctx = ctx;
+            _context = context;
         }
 
         public async Task<IList<string>> GetOrganisationNames()
@@ -27,7 +24,7 @@ namespace Analytics.Services
 
         public async Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true)
         {
-            return await _ctx.Organisations.Where(x => x.Name.Contains(wildcard) && (includeSuspended || x.IsSuspended == false)).ToListAsync();
+            return await _context.Organisations.Where(x => x.Name.Contains(wildcard) && (includeSuspended || x.IsSuspended == false)).ToListAsync();
         }
 
 

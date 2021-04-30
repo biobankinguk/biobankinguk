@@ -1,5 +1,5 @@
-﻿using Analytics.Data.Entities;
-using Analytics.Services.Dto;
+﻿using Analytics.Services.Dto;
+using Biobanks.Entities.Data.Analytics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,34 +1,42 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using Biobanks.Data;
 using Analytics.Services.Contracts;
 using Analytics.Services;
-using Analytics.Data;
-using Analytics.Data.Entities;
-using System;
-
-[assembly: FunctionsStartup(typeof(Analytics.AnalyticsAzureFunctions.Startup))]
 
 namespace Analytics.AnalyticsAzureFunctions
 {
-    class Startup : FunctionsStartup
+    class Startup
     {
-        private IConfiguration _configuration;
-        public override void Configure(IFunctionsHostBuilder builder)
+        internal static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
-            _configuration = builder.Services.BuildServiceProvider()
-                .GetService<IConfiguration>();
+            var config = context.Configuration;
 
-            var sqlConnection = _configuration.GetConnectionString("Default");
-            builder.Services.AddDbContext<AnalyticsDbContext>(options =>
-               options.UseSqlServer(sqlConnection, options => options.EnableRetryOnFailure()));
+            // Application Insights Telemtry
+            var appInsightsKey = config.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
 
-            //Depedency Injection
-            builder.Services.AddHttpClient();
-            builder.Services.AddScoped<IAnalyticsReportGenerator, AnalyticsReportGenerator>();
-            builder.Services.AddTransient<IBiobankWebService, BiobankWebService>();
-            builder.Services.AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>();
+            if (!string.IsNullOrEmpty(appInsightsKey))
+            {
+                services.AddApplicationInsightsTelemetry(appInsightsKey);
+            }
+
+            // In-Memory Cache - Manually Called As Not Called By A Parent Service
+            services.AddMemoryCache();
+
+            // Register DbContext
+            services.AddDbContext<BiobanksDbContext>(options => options
+                .EnableSensitiveDataLogging()
+                .UseSqlServer(
+                    config.GetConnectionString("Default")
+                ),
+                ServiceLifetime.Transient
+            );
+
+            services.AddScoped<IAnalyticsReportGenerator, AnalyticsReportGenerator>();
+            services.AddTransient<IBiobankWebService, BiobankWebService>();
+            services.AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>();
         }
 
     }

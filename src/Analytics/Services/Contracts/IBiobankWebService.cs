@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Biobanks.Entities.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Analytics.Data;
 
 namespace Analytics.Services.Contracts
 {
