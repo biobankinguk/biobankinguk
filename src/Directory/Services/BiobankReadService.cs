@@ -32,11 +32,9 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
-        private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
-        private readonly IGenericEFRepository<HtaStatus> _htaStatusRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
@@ -82,6 +80,9 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<Publication> _publicationRepository;
 
+        private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
+        private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
+
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         private readonly ICacheProvider _cacheProvider;
@@ -98,11 +99,9 @@ namespace Biobanks.Services
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
-            IGenericEFRepository<CollectionPoint> collectionPointRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
-            IGenericEFRepository<HtaStatus> htaStatusRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
@@ -149,7 +148,10 @@ namespace Biobanks.Services
             IGenericEFRepository<Country> countryRepository, 
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
-            IGenericEFRepository<Publication> publicationRespository)
+            IGenericEFRepository<Publication> publicationRespository,
+
+            IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
+            IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository)
         {
             _logoStorageProvider = logoStorageProvider;
 
@@ -160,11 +162,9 @@ namespace Biobanks.Services
             _accessConditionRepository = accessConditionRepository;
             _collectionTypeRepository = collectionTypeRepository;
             _collectionStatusRepository = collectionStatusRepository;
-            _collectionPointRepository = collectionPointRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
-            _htaStatusRepository = htaStatusRepository;
             _ontologyTermRepository = ontologyTermRepository;
             _sampleSetRepository = sampleSetRepository;
             _siteConfigRepository = siteConfigRepository;
@@ -213,6 +213,9 @@ namespace Biobanks.Services
             _associatedDataTypeRepository = associatedDataTypeRepository;
 
             _publicationRepository = publicationRespository;
+
+            _tokenValidationRecordRepository = tokenValidationRecordRepository;
+            _tokenIssueRecordRepository = tokenIssueRecordRepository;
         }
 
         #endregion
@@ -502,9 +505,6 @@ namespace Biobanks.Services
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
 
-        public async Task<bool> IsHtaStatusInUse(int id)
-            => (await GetHtaStatusCollectionCount(id) > 0);
-
         public async Task<bool> IsCountryInUse(int id)
             => (await GetCountryCountyOrganisationCount(id) > 0);
 
@@ -530,10 +530,8 @@ namespace Biobanks.Services
                 x => x.Collection.OntologyTerm,
                 x => x.Collection.Organisation,
                 x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Collection.CollectionPoint,
                 x => x.Collection.CollectionStatus,
                 x => x.Collection.ConsentRestrictions,
-                x => x.Collection.HtaStatus,
                 x => x.Collection.AccessCondition,
                 x => x.Collection.CollectionType,
                 x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
@@ -573,10 +571,8 @@ namespace Biobanks.Services
                 x => x.Collection.OntologyTerm,
                 x => x.Collection.Organisation,
                 x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Collection.CollectionPoint,
                 x => x.Collection.CollectionStatus,
                 x => x.Collection.ConsentRestrictions,
-                x => x.Collection.HtaStatus,
                 x => x.Collection.AccessCondition,
                 x => x.Collection.CollectionType,
                 x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
@@ -733,9 +729,7 @@ namespace Biobanks.Services
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
-                x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
-                x => x.HtaStatus,
                 x => x.AssociatedData
             )).FirstOrDefault();
 
@@ -759,9 +753,7 @@ namespace Biobanks.Services
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
-                x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
-                x => x.HtaStatus,
                 x => x.AssociatedData,
                 x => x.AssociatedData.Select(y => y.AssociatedDataType),
                 x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
@@ -776,7 +768,6 @@ namespace Biobanks.Services
                 x => x.AccessCondition,
                 x => x.CollectionType,
                 x => x.CollectionStatus,
-                x => x.CollectionPoint,
                 x => x.ConsentRestrictions,
                 x => x.AssociatedData.Select(y => y.AssociatedDataType),
                 x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
@@ -831,10 +822,8 @@ namespace Biobanks.Services
                     x => x.Collection.OntologyTerm,
                     x => x.Collection.Organisation,
                     x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network),
-                    x => x.Collection.CollectionPoint,
                     x => x.Collection.CollectionStatus,
                     x => x.Collection.ConsentRestrictions,
-                    x => x.Collection.HtaStatus,
                     x => x.Collection.AccessCondition,
                     x => x.Collection.CollectionType,
                     x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
@@ -936,9 +925,6 @@ namespace Biobanks.Services
         public async Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync()
             => await _collectionStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
-        public async Task<IEnumerable<HtaStatus>> ListHtaStatusesAsync()
-            => await _htaStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
         public async Task<IEnumerable<Sex>> ListSexesAsync()
             => await _sexRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
@@ -952,20 +938,6 @@ namespace Biobanks.Services
             => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
         public async Task<IEnumerable<MaterialType>> ListMaterialTypesAsync()
             => await _materialTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        #region RefData: Collection Points
-        public async Task<IEnumerable<CollectionPoint>> ListCollectionPointsAsync()
-            => await _collectionPointRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidCollectionPointDescriptionAsync(string collectionPointDescription)
-            => (await _collectionPointRepository.ListAsync(false, x => x.Value == collectionPointDescription)).Any();
-
-        public async Task<bool> IsCollectionPointInUse(int id) 
-            => (await GetCollectionPointUsageCount(id)) > 0;
-        
-        public async Task<int> GetCollectionPointUsageCount(int id)
-            => (await _collectionRepository.ListAsync(false, x => x.CollectionPointId == id)).Count();
-        #endregion
 
         #region RefData: Collection Percentages
         public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()
@@ -1252,15 +1224,6 @@ namespace Biobanks.Services
                 x => x.Value == procurementDescription &&
                      x.Id != procurementId)).Any();
 
-        public async Task<bool> ValidHtaStatusDescriptionAsync(string htaStatusDescription)
-            => (await _htaStatusRepository.ListAsync(false, x => x.Value == htaStatusDescription)).Any();
-
-        public async Task<bool> ValidHtaStatusDescriptionAsync(int htaStatusId, string htaStatusDescription)
-            => (await _htaStatusRepository.ListAsync(
-                false,
-                x => x.Value == htaStatusDescription &&
-                     x.Id != htaStatusId)).Any();
-
         public async Task<bool> ValidServiceOfferingName(string offeringName)
             => (await _serviceOfferingRepository.ListAsync(false, x => x.Value == offeringName)).Any();
 
@@ -1348,15 +1311,11 @@ namespace Biobanks.Services
             false,
              x => x.ServiceOfferingId == id)).Count();
 
-        public async Task<int> GetHtaStatusCollectionCount(int id)
-            => (await _collectionRepository.ListAsync(false, x => x.HtaStatusId == id)).Count();
         public async Task<int> GetRegistrationReasonOrganisationCount(int id)
-                    => (await _organisationRegistrationReasonRepository.ListAsync(false, x => x.RegistrationReasonId == id)).Count();
+            => await _organisationRegistrationReasonRepository.CountAsync(x => x.RegistrationReasonId == id);
 
         public async Task<int> GetSexCount(int id)
-        => (await _sampleSetRepository.ListAsync(
-                   false,
-                   x => x.SexId == id)).Count();
+            => await _sampleSetRepository.CountAsync(x => x.SexId == id);
 
         public async Task<bool> ValidSexDescriptionAsync(string sexDescription)
             => (await _sexRepository.ListAsync(false, x => x.Value == sexDescription)).Any();
@@ -1554,7 +1513,34 @@ namespace Biobanks.Services
         public async Task<bool> OrganisationIncludesPublications(int biobankId)
             => (!(await GetBiobankByIdAsync(biobankId)).ExcludePublications);
 
+        public async Task<string> GetUnusedTokenByUser(string biobankUserId)
+        {
+            // Check most recent token record
+            var tokenIssue = (await _tokenIssueRecordRepository.ListAsync(
+                                        false,
+                                        x => x.UserId.Contains(biobankUserId),
+                                        x => x.OrderBy(c => c.IssueDate))).FirstOrDefault();            
+
+            // Check validation records
+            var tokenValidation = await _tokenValidationRecordRepository.ListAsync(
+                                            false,
+                                            x => x.UserId.Contains(biobankUserId));
+
+            List<string> token = tokenValidation.Select(t => t.Token).ToList();
+            DateTime now = DateTime.Now;
+
+            if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
+            {
+                return await _userManager.GeneratePasswordResetTokenAsync(biobankUserId);
+            }                     
+            else
+            {
+                return tokenIssue.Token;
+            }           
+        }
+        
         public async Task<bool> IsBiobankAnApiClient(int biobankId)
             => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
+
     }
 }

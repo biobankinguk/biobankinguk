@@ -442,7 +442,6 @@
     <Compile Include="ApiControllers\AssociatedDataTypeController.cs" />
     <Compile Include="ApiControllers\BiobankController.cs" />
     <Compile Include="ApiControllers\CollectionPercentageController.cs" />
-    <Compile Include="ApiControllers\CollectionPointController.cs" />
     <Compile Include="ApiControllers\CollectionStatusController.cs" />
     <Compile Include="ApiControllers\CollectionTypeController.cs" />
     <Compile Include="ApiControllers\ConsentRestrictionController.cs" />
@@ -450,7 +449,6 @@
     <Compile Include="ApiControllers\CountyController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusController.cs" />
     <Compile Include="ApiControllers\DonorCountController.cs" />
-    <Compile Include="ApiControllers\HtaStatusController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
     <Compile Include="ApiControllers\PreservationTypeController.cs" />
@@ -468,6 +466,7 @@
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
+    <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
     <Compile Include="Models\Biobank\SubmissionsModel.cs" />
@@ -588,7 +587,6 @@
     <Content Include="Scripts\ADAC\adac-tabs.js" />
     <Content Include="Scripts\Shared\mdd-editor.js" />
     <Content Include="Scripts\ADAC\adac-associated-data-type-group.js" />
-    <Content Include="Scripts\ADAC\adac-collection-points.js" />
     <Content Include="Scripts\ADAC\adac-analytics-directoryreport.js" />
     <Content Include="Scripts\ADAC\adac-sop-status.js" />
     <Content Include="Scripts\ADAC\adac-annual-statistics.js" />
@@ -604,7 +602,6 @@
     <Content Include="Scripts\ADAC\adac-collection-status.js" />
     <Content Include="Scripts\ADAC\adac-age-ranges.js" />
     <Content Include="Scripts\ADAC\adac-donor-counts.js" />
-    <Content Include="Scripts\ADAC\adac-hta-status.js" />
     <Content Include="Scripts\ADAC\adac-macro-assessments.js" />
     <Content Include="Scripts\ADAC\adac-sample-collection-modes.js" />
     <Content Include="Scripts\ADAC\adac-access-conditions.js" />
@@ -661,7 +658,6 @@
     <Content Include="Views\ADAC\ConsentRestriction.cshtml" />
     <Content Include="Views\ADAC\Sexes.cshtml" />
     <Content Include="Views\ADAC\StorageTemperatures.cshtml" />
-    <Content Include="Views\ADAC\CollectionPoints.cshtml" />
     <Content Include="Views\ADAC\CollectionPercentages.cshtml" />
     <Content Include="Views\ADAC\AgeRanges.cshtml" />
     <Content Include="Views\ADAC\AnnualStatisticGroups.cshtml" />
@@ -677,7 +673,6 @@
     <Content Include="Views\ADAC\SopStatus.cshtml" />
     <Content Include="Views\ADAC\County.cshtml" />
     <Content Include="Views\ADAC\SampleCollectionModes.cshtml" />
-    <Content Include="Views\ADAC\HtaStatus.cshtml" />
     <Content Include="Views\ADAC\AnnualStatistics.cshtml" />
     <Content Include="Views\ADAC\RegistrationReason.cshtml" />
     <Content Include="Views\ADAC\CollectionStatus.cshtml" />
@@ -853,6 +848,7 @@
     <Content Include="Views\ADAC\BiobankAdmin.cshtml" />
     <Content Include="Views\ADAC\PreservationTypes.cshtml" />
     <Content Include="Views\SuperUser\Tools.cshtml" />
+    <Content Include="Views\ADAC\_ModalResetPassword.cshtml" />
     <Content Include="Views\Biobank\Submissions.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -875,19 +871,16 @@
     <Compile Include="Models\ADAC\SampleCollectionModesModel.cs" />
     <Compile Include="Models\ADAC\AccessConditionsModel.cs" />
     <Compile Include="Models\ADAC\CountyModel.cs" />
-    <Compile Include="Models\ADAC\HtaStatusModel.cs" />
     <Compile Include="Models\ADAC\CollectionStatusModel.cs" />
     <Compile Include="Models\ADAC\AssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\ADAC\MaterialTypesModel.cs" />
     <Compile Include="Models\ADAC\CollectionPercentagesModel.cs" />
     <Compile Include="Models\ADAC\DonorCountsModel.cs" />
-    <Compile Include="Models\ADAC\CollectionPointsModel.cs" />
     <Compile Include="Models\ADAC\AgeRangesModel.cs" />
     <Compile Include="Models\ADAC\MacroscopicAssessmentsModel.cs" />
     <Compile Include="Models\ADAC\SopStatusesModel.cs" />
     <Compile Include="Models\ADAC\AnnualStatisticsModel.cs" />
     <Compile Include="Models\ADAC\ReadAnnualStatisticGroupModel.cs" />
-    <Compile Include="Models\ADAC\ReadHtaStatusModel.cs" />
     <Compile Include="Models\ADAC\ReadAccessConditionsModel.cs" />
     <Compile Include="Models\ADAC\ReadCollectionStatusModel.cs" />
     <Compile Include="Models\ADAC\ReadCollectionTypeModel.cs" />
@@ -914,7 +907,6 @@
     <Compile Include="Models\Shared\AssociatedDataTypeGroupModel.cs" />
     <Compile Include="Models\Shared\CollectionTypeModel.cs" />
     <Compile Include="Models\Shared\ErrorStatusModel.cs" />
-    <Compile Include="Models\Shared\HtaStatusModel.cs" />
     <Compile Include="Models\Shared\CollectionStatusModel.cs" />
     <Compile Include="Models\Shared\MaterialTypeModel.cs" />
     <Compile Include="Models\Profile\BiobankPublicationsModel.cs" />

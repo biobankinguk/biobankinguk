@@ -400,6 +400,8 @@ namespace Biobanks.Web.Controllers
                 BiobankId = bb.OrganisationId,
                 BiobankExternalId = bb.OrganisationExternalId,
                 OrganisationTypeId = bb.OrganisationTypeId,
+                AccessConditionId = bb.AccessConditionId,
+                CollectionTypeId = bb.CollectionTypeId,
                 OrganisationName = bb.Name,
                 Description = bb.Description,
                 Url = bb.Url,
@@ -424,7 +426,6 @@ namespace Biobanks.Web.Controllers
                 Countries = await _biobankReadService.ListCountriesAsync(),
                 SharingOptOut = bb.SharingOptOut,
                 EthicsRegistration = bb.EthicsRegistration,
-                HtaLicence = bb.HtaLicence,
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
                 OtherRegistrationReason = bb.OtherRegistrationReason
             };
@@ -876,11 +877,9 @@ namespace Biobanks.Web.Controllers
                     Title = model.Title,
                     Description = model.Description,
                     StartDate = new DateTime(model.StartDate.Value, 1, 1), //DateTime.Parse(model.StartDate),
-                    HtaStatusId = model.HTAStatus,
                     AccessConditionId = model.AccessCondition,
                     CollectionTypeId = model.CollectionType,
                     CollectionStatusId = model.CollectionStatus,
-                    CollectionPointId = model.CollectionPoint,
                     FromApi = model.FromApi
                 },
                 model.Diagnosis,
@@ -920,12 +919,10 @@ namespace Biobanks.Web.Controllers
                 Title = collection.Title,
                 Description = collection.Description,
                 StartDate = collection.StartDate.Year,
-                HTAStatus = collection.HtaStatusId,
                 AccessCondition = collection.AccessCondition.Id,
                 FromApi = collection.FromApi,
                 CollectionType = collection.CollectionType?.Id,
                 CollectionStatus = collection.CollectionStatus.Id,
-                CollectionPoint = collection.CollectionPoint.Id,
                 Groups = groups.Groups
                 
             };
@@ -974,12 +971,10 @@ namespace Biobanks.Web.Controllers
                     Title = model.Title,
                     Description = model.Description,
                     StartDate = new DateTime(model.StartDate.Value, 1, 1),
-                    HtaStatusId = model.HTAStatus,
                     AccessConditionId = model.AccessCondition,
                     FromApi = model.FromApi,
                     CollectionTypeId = model.CollectionType,
-                    CollectionStatusId = model.CollectionStatus,
-                    CollectionPointId = model.CollectionPoint
+                    CollectionStatusId = model.CollectionStatus
                 },
                 model.Diagnosis,
                 associatedData,
@@ -1300,24 +1295,6 @@ namespace Biobanks.Web.Controllers
                     .OrderBy(x => x.SortOrder);
 
                 model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
-                model.CollectionPoints = (await _biobankReadService.ListCollectionPointsAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
-                model.HtaStatuses = (await _biobankReadService.ListHtaStatusesAsync())
                     .Select(x => new ReferenceDataModel
                     {
                         Id = x.Id,

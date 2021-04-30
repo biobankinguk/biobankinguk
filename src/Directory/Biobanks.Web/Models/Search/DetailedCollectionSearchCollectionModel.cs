@@ -17,7 +17,6 @@ namespace Biobanks.Web.Models.Search
         public string AccessCondition { get; set; }
         public string CollectionType { get; set; }
         public string CollectionStatus { get; set; }
-        public string CollectionPoint { get; set; }
         public IEnumerable<string> ConsentRestrictions { get; set; }
 
         public IList<DetailedCollectionSearchSampleSetModel> SampleSets { get; set; }

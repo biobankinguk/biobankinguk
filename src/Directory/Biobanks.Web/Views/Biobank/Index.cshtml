@@ -78,12 +78,6 @@
                 <dt class="form-group">@Html.DisplayNameFor(x => x.EthicsRegistration)</dt>
                 <dd>@Html.DisplayFor(x => x.EthicsRegistration)</dd>
             }
-
-            @if (App.Config[ConfigKey.EnableHTA] == "true")
-            {
-                <dt class="form-group">@Html.DisplayNameFor(x => x.HtaLicence)</dt>
-                <dd>@Html.DisplayFor(x => x.HtaLicence)</dd>
-            }
         </dl>
 
         @if (Model.ServiceModels.Any(x => x.Active))

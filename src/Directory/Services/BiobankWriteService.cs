@@ -29,7 +29,6 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
-        private readonly IGenericEFRepository<CollectionPoint> _collectionPointRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
@@ -70,7 +69,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
-        private readonly IGenericEFRepository<HtaStatus> _htaStatusRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
 
@@ -96,7 +94,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<DonorCount> donorCountRepository,
-            IGenericEFRepository<CollectionPoint> collectionPointRepository,
             IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<AgeRange> ageRangeRepository,
@@ -128,7 +125,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
             IGenericEFRepository<RegistrationReason> registrationReasonRepository,
             IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
-            IGenericEFRepository<HtaStatus> htaStatusRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             IGenericEFRepository<Publication> publicationRepository,
@@ -147,7 +143,6 @@ namespace Biobanks.Services
             _ontologyTermRepository = ontologyTermRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _donorCountRepository = donorCountRepository;
-            _collectionPointRepository = collectionPointRepository;
             _ageRangeRepository = ageRangeRepository;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _storageTemperatureRepository = storageTemperatureRepository;
@@ -187,7 +182,6 @@ namespace Biobanks.Services
             _registrationReasonRepository = registrationReasonRepository;
             _serviceOfferingRepository = serviceOfferingRepository;
             _associatedDataProcurementTimeFrameRepository = associatedDataProcurementTimeFrameRepository;
-            _htaStatusRepository = htaStatusRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _publicationRespository = publicationRepository;
@@ -247,11 +241,9 @@ namespace Biobanks.Services
             existingCollection.Title = collection.Title;
             existingCollection.Description = collection.Description;
             existingCollection.StartDate = collection.StartDate;
-            existingCollection.HtaStatusId = collection.HtaStatusId;
             existingCollection.AccessConditionId = collection.AccessConditionId;
             existingCollection.CollectionTypeId = collection.CollectionTypeId;
             existingCollection.CollectionStatusId = collection.CollectionStatusId;
-            existingCollection.CollectionPointId = collection.CollectionPointId;
             existingCollection.LastUpdated = DateTime.Now;
 
             existingCollection.AssociatedData = associatedData.ToList();
@@ -828,65 +820,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: Collection Point
-        public async Task<CollectionPoint> AddCollectionPointAsync(CollectionPoint collectionPoint)
-        {
-            _collectionPointRepository.Insert(collectionPoint);
-            await _collectionPointRepository.SaveChangesAsync();
-
-            return collectionPoint;
-        }
-
-        public async Task<CollectionPoint> UpdateCollectionPointAsync(CollectionPoint collectionPoint, bool sortOnly = false)
-        {
-            var points = await _biobankReadService.ListCollectionPointsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                collectionPoint.Value =
-                    points
-                        .Where(x => x.Id == collectionPoint.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldPoint = points.Where(x => x.Id == collectionPoint.Id).First();
-            var reverse = (oldPoint.SortOrder < collectionPoint.SortOrder);
-
-            var newOrder = points
-                    .Prepend(collectionPoint)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_collectionPointRepository.Update);
-
-            await _collectionPointRepository.SaveChangesAsync();
-
-            return collectionPoint;
-        }
-
-        public async Task DeleteCollectionPointAsync(CollectionPoint collectionPoint)
-        {
-            await _collectionPointRepository.DeleteAsync(collectionPoint.Id);
-            await _collectionPointRepository.SaveChangesAsync();
-        }
-        #endregion
-
         #region RefData: Collection Percentage
         public async Task<CollectionPercentage> AddCollectionPercentageAsync(CollectionPercentage collectionPercentage)
         {
@@ -1439,65 +1372,6 @@ namespace Biobanks.Services
         {
             await _associatedDataProcurementTimeFrameRepository.DeleteAsync(associatedDataProcurementTimeframe.Id);
             await _associatedDataProcurementTimeFrameRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: HTA Status
-        public async Task<HtaStatus> AddHtaStatusAsync(HtaStatus htaStatus)
-        {
-            _htaStatusRepository.Insert(htaStatus);
-            await _htaStatusRepository.SaveChangesAsync();
-
-            return htaStatus;
-        }
-
-        public async Task<HtaStatus> UpdateHtaStatusAsync(HtaStatus htaStatus, bool sortOnly = false)
-        {
-            var statuses = await _biobankReadService.ListHtaStatusesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                htaStatus.Value =
-                    statuses
-                        .Where(x => x.Id == htaStatus.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.Id == htaStatus.Id).First();
-            var reverse = (oldStatus.SortOrder < htaStatus.SortOrder);
-
-            var newOrder = statuses
-                    .Prepend(htaStatus)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_htaStatusRepository.Update);
-
-            await _htaStatusRepository.SaveChangesAsync();
-
-            return htaStatus;
-        }
-
-        public async Task DeleteHtaStatusAsync(HtaStatus htaStatus)
-        {
-            await _htaStatusRepository.DeleteAsync(htaStatus.Id);
-            await _htaStatusRepository.SaveChangesAsync();
         }
         #endregion
 
