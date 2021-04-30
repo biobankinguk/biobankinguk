@@ -41,14 +41,21 @@ namespace Biobanks.Aggregator.Core
             {
                 var sample = collectionSamples.First();
                 var samples = await _sampleService.ListSimilarSamplesAsync(sample);
+                var organisation = await _organisationService.GetByIdAsync(sample.OrganisationId);
 
                 // Find Exisiting Or Generate New Collection
+                var collectionName = _aggregationService.GenerateCollectionName(sample);
                 var collection =
-                    await _collectionService.GetCollectionAsync(sample.OrganisationId, sample.CollectionName) ??
+                    await _collectionService.GetCollectionAsync(sample.OrganisationId, collectionName) ??
                     _aggregationService.GenerateCollection(samples.Any() ? samples : collectionSamples);
 
                 if (samples.Any())
                 {
+                    // Update Collection Contextual Fields
+                    collection.LastUpdated = DateTime.Now;
+                    collection.CollectionTypeId = organisation.CollectionTypeId;
+                    collection.AccessConditionId = organisation.AccessConditionId ?? 0;
+
                     // List of collection sampleSets before clear()
                     var oldSampleSets = new List<int>();
                     foreach (var ss in collection.SampleSets)
@@ -57,7 +64,7 @@ namespace Biobanks.Aggregator.Core
                     }
 
                     // Clear Current SampleSets - Rebuilt Below
-                    collection.SampleSets.Clear();
+                    collection.SampleSets.Clear(); 
 
                     // Group Samples Into SampleSets
                     foreach (var sampleSetSamples in _aggregationService.GroupIntoSampleSets(samples))
@@ -79,11 +86,6 @@ namespace Biobanks.Aggregator.Core
                         collection.SampleSets.Add(sampleSet);
                     }
 
-                    // Update Collection Contextual Fields
-                    collection.LastUpdated = DateTime.Now;
-                    collection.CollectionTypeId ??= (await _organisationService.GetCollectionType(collection.Organisation)).Id;
-                    collection.AccessConditionId = (await _organisationService.GetAccessCondition(collection.Organisation)).Id;
-                    
                     // Write Collection To DB
                     if (collection.CollectionId == default)
                     {
@@ -95,6 +97,7 @@ namespace Biobanks.Aggregator.Core
                         {
                             await _aggregationService.DeleteMaterialDetailsBySampleSetId(ss);
                         }
+
                         await _collectionService.UpdateCollectionAsync(collection);
 
                         // Remove old sampleSets from db if present

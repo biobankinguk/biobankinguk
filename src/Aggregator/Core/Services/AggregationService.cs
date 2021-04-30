@@ -79,9 +79,7 @@ namespace Biobanks.Aggregator.Core.Services
             var complete = (DateTime.Now - newestSample.DateCreated) > TimeSpan.FromDays(180);
 
             // Generate Collection Name
-            var collectionName = string.IsNullOrEmpty(newestSample.CollectionName)
-                ? $"{newestSample.SampleContent.Value}"
-                : $"{newestSample.CollectionName} ({newestSample.SampleContent.Value})";
+            var collectionName = GenerateCollectionName(newestSample); 
 
             return new Collection
             {
@@ -134,6 +132,11 @@ namespace Biobanks.Aggregator.Core.Services
                 PreservationTypeId = sample.PreservationTypeId,
             };
         }
+
+        public string GenerateCollectionName(LiveSample sample)
+            => string.IsNullOrEmpty(sample.CollectionName)
+                ? $"{sample.SampleContent.Value}"
+                : $"{sample.CollectionName} ({sample.SampleContent.Value})";
 
         public async Task DeleteMaterialDetailsBySampleSetId(int id)
             => await _db.MaterialDetails.Where(x => x.SampleSetId == id).DeleteAsync(); 

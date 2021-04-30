@@ -21,6 +21,7 @@ namespace Biobanks.Aggregator.Core.Services
         public async Task<IEnumerable<LiveSample>> ListSimilarSamplesAsync(LiveSample sample)
         {
             return await _db.Samples
+                .Include(x => x.SampleContent)
                 .Include(x => x.SampleContentMethod)
                 .Where(x =>
                     x.OrganisationId == sample.OrganisationId &&
