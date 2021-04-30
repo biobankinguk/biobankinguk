@@ -38,14 +38,13 @@ namespace Biobanks.Services.Dto
         public string GoverningDepartment { get; set; }
 
         public string EthicsRegistration { get; set; }
-        public string HtaLicence { get; set; }
 
         // registration reasons
         public string OtherRegistrationReason { get; set; }
         public bool ExcludePublications { get; set; }
 
-        public int AccessConditionId { get; set; }
+        public int? AccessConditionId { get; set; }
 
-        public int CollectionTypeId { get; set; }
+        public int? CollectionTypeId { get; set; }
     }
 }

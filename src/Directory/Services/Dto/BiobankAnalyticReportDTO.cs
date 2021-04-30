@@ -28,8 +28,6 @@ namespace Biobanks.Services.Dto
         public string CollectionStatusMessage { get; set; }
         public int CapabilityStatus { get; set; }
         public string CapabilityStatusMessage { get; set; }
-        public int HRA_HTAStatus { get; set; }
-        public string HRA_HTAStatusMessage { get; set; }
     }
 
     public partial class ProfilePageViewsDTO

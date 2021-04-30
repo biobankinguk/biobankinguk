@@ -25,10 +25,6 @@ namespace Biobanks.Services.Contracts
         Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
         Task DeleteCapabilityAsync(int id);
 
-        Task DeleteHtaStatusAsync(HtaStatus htaStatus);
-        Task<HtaStatus> UpdateHtaStatusAsync(HtaStatus htaStatus, bool sortOnly = false);
-        Task<HtaStatus> AddHtaStatusAsync(HtaStatus htaStatus);
-
         Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference);
         Task RemoveLogoAsync(int organisationId);
 
@@ -83,10 +79,6 @@ namespace Biobanks.Services.Contracts
         Task<AnnualStatistic> AddAnnualStatisticAsync(AnnualStatistic annualStatistic);
         Task<AnnualStatistic> UpdateAnnualStatisticAsync(AnnualStatistic annualStatistic, bool sortOnly = false);
         Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic);
-
-        Task<CollectionPoint> AddCollectionPointAsync(CollectionPoint collectionPoint);
-        Task<CollectionPoint> UpdateCollectionPointAsync(CollectionPoint collectionPoint, bool sortOnly = false);
-        Task DeleteCollectionPointAsync(CollectionPoint collectionPoint);
 
         Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason);
         Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason);

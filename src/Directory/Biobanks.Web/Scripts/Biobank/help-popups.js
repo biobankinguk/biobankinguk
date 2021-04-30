@@ -23,14 +23,6 @@ $(".diagnosis-help").click(function () {
     });
 });
 
-$(".hta-status-help").click(function () {
-    bootbox.dialog({
-        message: "Please indicate if the collection was completed prior to the Human Tissue Act 2004 and Human Tissue Act (Scotland) 2006 came into effect (1st September 2006) and therefore not under the remit of these respective legislations.",
-        title: "HTA Status",
-        buttons: helpIconBootboxButtons
-    });
-});
-
 $(".help-associateddata").click(function () {
     var $link = $(this);
     bootbox.dialog({
@@ -101,14 +93,6 @@ $(".help-label-resource-ethicsregistration").click(function () {
     bootbox.dialog({
         message: "IRAS number.",
         title: "Ethics Registration",
-        buttons: helpIconBootboxButtons
-    });
-});
-
-$(".help-label-resource-htalicence").click(function () {
-    bootbox.dialog({
-        message: "HTA licence number.",
-        title: "HTA Licence",
         buttons: helpIconBootboxButtons
     });
 });
@@ -197,14 +181,6 @@ $(".help-label-collection-collectionstatus").click(function () {
     bootbox.dialog({
         message: "At which point in the process of collecting are you?",
         title: "Collection Status",
-        buttons: helpIconBootboxButtons
-    });
-});
-
-$(".help-label-collection-collectionpoint").click(function () {
-    bootbox.dialog({
-        message: "Select a category that best describes the point in the diagnosis pathway that your samples were collected.",
-        title: "Collection Point",
         buttons: helpIconBootboxButtons
     });
 });

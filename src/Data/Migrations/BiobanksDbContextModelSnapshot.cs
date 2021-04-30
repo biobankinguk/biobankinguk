@@ -634,9 +634,6 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("AccessConditionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CollectionPointId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CollectionStatusId")
                         .HasColumnType("int");
 
@@ -648,9 +645,6 @@ namespace Biobanks.Data.Migrations
 
                     b.Property<bool>("FromApi")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("HtaStatusId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
@@ -672,13 +666,9 @@ namespace Biobanks.Data.Migrations
 
                     b.HasIndex("AccessConditionId");
 
-                    b.HasIndex("CollectionPointId");
-
                     b.HasIndex("CollectionStatusId");
 
                     b.HasIndex("CollectionTypeId");
-
-                    b.HasIndex("HtaStatusId");
 
                     b.HasIndex("OntologyTermId");
 
@@ -727,6 +717,35 @@ namespace Biobanks.Data.Migrations
                     b.HasKey("Key");
 
                     b.ToTable("Configs");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.ContentPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RouteSlug")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContentPages");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.DiagnosisCapability", b =>
@@ -974,9 +993,6 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GoverningInstitution")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HtaLicence")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsSuspended")
@@ -1405,25 +1421,6 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("CollectionPercentages");
                 });
 
-            modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.CollectionPoint", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CollectionPoints");
-                });
-
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.CollectionStatus", b =>
                 {
                     b.Property<int>("Id")
@@ -1554,25 +1551,6 @@ namespace Biobanks.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Funders");
-                });
-
-            modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.HtaStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("HtaStatus");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.ReferenceData.MacroscopicAssessment", b =>
@@ -2272,12 +2250,6 @@ namespace Biobanks.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biobanks.Entities.Data.ReferenceData.CollectionPoint", "CollectionPoint")
-                        .WithMany()
-                        .HasForeignKey("CollectionPointId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Biobanks.Entities.Data.ReferenceData.CollectionStatus", "CollectionStatus")
                         .WithMany()
                         .HasForeignKey("CollectionStatusId")
@@ -2287,10 +2259,6 @@ namespace Biobanks.Data.Migrations
                     b.HasOne("Biobanks.Entities.Data.ReferenceData.CollectionType", "CollectionType")
                         .WithMany()
                         .HasForeignKey("CollectionTypeId");
-
-                    b.HasOne("Biobanks.Entities.Data.ReferenceData.HtaStatus", "HtaStatus")
-                        .WithMany()
-                        .HasForeignKey("HtaStatusId");
 
                     b.HasOne("Biobanks.Entities.Shared.ReferenceData.OntologyTerm", "OntologyTerm")
                         .WithMany()
@@ -2304,13 +2272,9 @@ namespace Biobanks.Data.Migrations
 
                     b.Navigation("AccessCondition");
 
-                    b.Navigation("CollectionPoint");
-
                     b.Navigation("CollectionStatus");
 
                     b.Navigation("CollectionType");
-
-                    b.Navigation("HtaStatus");
 
                     b.Navigation("OntologyTerm");
 
