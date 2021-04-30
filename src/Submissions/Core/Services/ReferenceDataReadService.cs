@@ -110,6 +110,7 @@ namespace Biobanks.Submissions.Core.Services
                 CacheKeys.MaterialTypes,
                 async () => await _db.MaterialTypes.AsNoTracking()
                     .Include(x => x.ExtractionProcedures)
+                    .Include(x => x.MaterialTypeGroups)
                     .ToListAsync());
 
         public async Task<MaterialType> GetMaterialTypeWithGroups(string value)

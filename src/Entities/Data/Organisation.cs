@@ -48,8 +48,6 @@ namespace Biobanks.Entities.Data
 
         public string EthicsRegistration { get; set; }
 
-        public string HtaLicence { get; set; }
-
         public DateTime? LastUpdated { get; set; }
 
         public Guid? AnonymousIdentifier { get; set; } = new Guid();
