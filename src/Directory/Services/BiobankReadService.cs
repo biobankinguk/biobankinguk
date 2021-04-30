@@ -1088,7 +1088,7 @@ namespace Biobanks.Services
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<int> GetPreservationTypeUsageCount(int id)
-        => (await _materialDetailsRepository.ListAsync(false, x => x.PreservationTypeId == id)).Count();
+        => await _materialDetailsRepository.CountAsync(x => x.PreservationTypeId == id);
 
         public async Task<bool> IsPreservationTypeInUse(int id)
             => (await GetPreservationTypeUsageCount(id)) > 0;
