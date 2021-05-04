@@ -1,9 +1,9 @@
-﻿using Biobanks.Publications.Services.Contracts;
+﻿using Biobanks.Publications.Core.Services.Contracts;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
-namespace Biobanks.Publications.Services.Hosted
+namespace Biobanks.Publications.Core.Services.Hosted
 {
     public class FetchAnnotationsService
     {

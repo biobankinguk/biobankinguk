@@ -2,13 +2,13 @@
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Microsoft.EntityFrameworkCore;
-using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Core.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Services
+namespace Biobanks.Publications.Core.Services
 {
     public class BiobankReadService : IBiobankReadService
     {

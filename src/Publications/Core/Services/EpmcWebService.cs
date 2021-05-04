@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Linq;
-using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Core.Services.Contracts;
 using Microsoft.Extensions.Configuration;
-using Biobanks.Publications.Services.Dto;
+using Biobanks.Publications.Core.Services.Dto;
 using Flurl;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Publications.Services
+namespace Biobanks.Publications.Core.Services
 {
     public class EpmcWebService : IEpmcService
     {

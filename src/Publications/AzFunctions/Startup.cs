@@ -1,7 +1,7 @@
 ﻿using Biobanks.Data;
-using Biobanks.Publications.Services;
-using Biobanks.Publications.Services.Contracts;
-using Biobanks.Publications.Services.Hosted;
+using Biobanks.Publications.Core.Services;
+using Biobanks.Publications.Core.Services.Contracts;
+using Biobanks.Publications.Core.Services.Hosted;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

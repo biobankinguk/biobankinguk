@@ -3,7 +3,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Services.Contracts
+namespace Biobanks.Publications.Core.Services.Contracts
 {
     public interface IBiobankReadService
     {

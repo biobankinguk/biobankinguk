@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Core.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Services.Hosted
+namespace Biobanks.Publications.Core.Services.Hosted
 {
     public class FetchPublicationsService
     {

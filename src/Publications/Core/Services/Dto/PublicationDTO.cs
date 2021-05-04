@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Biobanks.Publications.Services.Dto
+namespace Biobanks.Publications.Core.Services.Dto
 {
     public class EpmcSearchResult
     {

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Publications.Services.Contracts;
-using Biobanks.Publications.Services.Dto;
+using Biobanks.Publications.Core.Services.Contracts;
+using Biobanks.Publications.Core.Services.Dto;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Publications.Services
+namespace Biobanks.Publications.Core.Services
 {
     public class AnnotationService : IAnnotationService
     {
