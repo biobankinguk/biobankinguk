@@ -5,14 +5,15 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - src/Publications/**
+      - src/Publications/Core/**
+      - src/Publications/AzFunctions/**
       - .github/workflows/build.publications.yml
 
 env:
   # Configure these
   CI_build-config: release
-  CI_dotnet-version: 3.1.x
-  CI_project: ./src/Publications/PublicationsAzureFunctions/PublicationsAzureFunctions.csproj
+  CI_dotnet-version: 5.0.x
+  CI_project: ./src/Publications/AzFunctions/AzFunctions.csproj
 
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
@@ -27,6 +28,13 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.CI_dotnet-version }}
+
+      # .NET Isolated Functions Worker still has a 3.1 SDK dependency for now
+      # https://github.com/Azure/azure-functions-dotnet-worker/issues/301
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      
       - name: dotnet build
         run: >-
           dotnet build
