@@ -34,10 +34,10 @@ namespace PublicationsAzFunctions
 
             //DI
             services.AddHttpClient();
-            services.AddScoped<IEpmcService, EpmcWebService>();
-            services.AddScoped<IPublicationService, PublicationService>();
-            services.AddScoped<IAnnotationService, AnnotationService>();
-            services.AddScoped<IBiobankReadService, BiobankReadService>();
+            services.AddTransient<IEpmcService, EpmcWebService>();
+            services.AddTransient<IPublicationService, PublicationService>();
+            services.AddTransient<IAnnotationService, AnnotationService>();
+            services.AddTransient<IBiobankReadService, BiobankReadService>();
             services.AddTransient<FetchPublicationsService>();
             services.AddTransient<FetchAnnotationsService>();
         }
