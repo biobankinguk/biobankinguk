@@ -729,33 +729,6 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("Configs");
                 });
 
-            modelBuilder.Entity("Biobanks.Entities.Data.ContentPage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RouteSlug")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContentPages");
-                });
-
             modelBuilder.Entity("Biobanks.Entities.Data.DiagnosisCapability", b =>
                 {
                     b.Property<int>("DiagnosisCapabilityId")
