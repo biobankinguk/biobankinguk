@@ -40,11 +40,9 @@ namespace Biobanks.Directory.Data
         public DbSet<AccessCondition> AccessConditions { get; set; }
         public DbSet<CollectionType> CollectionTypes { get; set; }
         public DbSet<CollectionStatus> CollectionStatuses { get; set; }
-        public DbSet<CollectionPoint> CollectionPoints { get; set; }
         public DbSet<ConsentRestriction> ConsentRestrictions { get; set; }
         public DbSet<CollectionAssociatedData> CollectionAssociatedDatas { get; set; }
         public DbSet<CapabilityAssociatedData> CapabilityAssociatedDatas { get; set; }
-        public DbSet<HtaStatus> HtaStatuses { get; set; }
 
         //Collection SampleSet details
         public DbSet<SampleSet> SampleSets { get; set; }

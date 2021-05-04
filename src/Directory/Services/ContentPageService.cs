@@ -7,6 +7,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Data.Entity;
 using System.Collections.Generic;
+using System.Text;
+using Biobanks.Directory.Data.Repositories;
+
 
 namespace Biobanks.Services
 {
@@ -62,5 +65,6 @@ namespace Biobanks.Services
         {
             return await _db.ContentPages.FindAsync(routeSlug);
         }
+
     }
 }

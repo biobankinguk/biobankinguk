@@ -21,12 +21,6 @@ namespace Biobanks.Search.Dto.Facets
             },
             new FacetDetailSummary
             {
-                Label = "Collection Point",
-                Name = "collectionPoint",
-                Slug = "colp"
-            },
-            new FacetDetailSummary
-            {
                 Label = "Collection Status",
                 Name = "collectionStatus",
                 Slug = "cols"
@@ -36,12 +30,6 @@ namespace Biobanks.Search.Dto.Facets
                 Label = "Consent Restriction",
                 Name = "consentRestriction",
                 Slug = "cons"
-            },
-            new FacetDetailSummary
-            {
-                Label = "HTA",
-                Name = "hta",
-                Slug = "hta"
             },
             new FacetDetailSummary
             {

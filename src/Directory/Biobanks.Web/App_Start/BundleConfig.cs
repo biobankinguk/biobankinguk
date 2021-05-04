@@ -190,10 +190,6 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-collection-percentages.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
-            bundles.Add(new ScriptBundle("~/bundles/adac/collection-points").Include(
-                "~/Scripts/bootbox*",
-                "~/Scripts/ADAC/adac-collection-points.js",
-                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sample-collection-modes").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sample-collection-modes.js",
@@ -205,10 +201,6 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/consent-restriction").Include(
                "~/Scripts/bootbox*",
                "~/Scripts/ADAC/adac-consent-restriction.js",
-                "~/Scripts/ADAC/adac-refdata-utility.js"));
-            bundles.Add(new ScriptBundle("~/bundles/adac/hta-status").Include(
-               "~/Scripts/bootbox*",
-               "~/Scripts/ADAC/adac-hta-status.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/collection-status").Include(
                 "~/Scripts/bootbox*",

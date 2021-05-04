@@ -207,15 +207,6 @@ namespace Biobanks.Directory.Data.Configs
             #endregion
 
             #region SampleResource Page
-            // Show HTA
-            new Config
-            {
-                Key = "site.sampleresource.hta",
-                Value = "true",
-                Name = "Use Hta",
-                Description = "Enable/Disable Hta",
-                ReadOnly = false
-            },
             // Show Data Sharing 
             new Config
             {

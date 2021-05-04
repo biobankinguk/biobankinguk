@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Models.ADAC
 {
-    public class HtaStatusModel
+    public class ResetPasswordEntityModel
     {
-        public ICollection<ReadHtaStatusModel> HtaStatuses;
+        public string ResetLink { get; set; }
+        public string UserName { get; set; }
     }
 }
