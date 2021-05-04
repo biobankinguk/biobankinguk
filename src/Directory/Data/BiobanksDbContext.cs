@@ -2,6 +2,7 @@ using System.Data.Entity;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.Analytics;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -118,6 +119,13 @@ namespace Biobanks.Directory.Data
         public DbSet<ApiClient> ApiClients { get; set; }
 
         public DbSet<ContentPage> ContentPages { get; set; }
+
+        //Analytics
+        public DbSet<DirectoryAnalyticEvent> DirectoryAnalyticEvents { get; set; }
+
+        public DbSet<DirectoryAnalyticMetric> DirectoryAnalyticMetric { get; set; }
+
+        public DbSet<OrganisationAnalytic> OrganisationAnalytics { get; set; }
 
         public BiobanksDbContext() : this("Biobanks") { }
         
