@@ -14,10 +14,8 @@ namespace Biobanks.Services.Contracts
         void UpdateContentPage(ContentPage contentPage);
         void DeleteContentPage(ContentPage contentPage);
         IEnumerable<ContentPage> ListContentPages(bool tracking = false,
-                                    Expression<Func<ContentPage, bool>> filter = null,
-                                    Func<IQueryable<ContentPage>, IOrderedQueryable<ContentPage>> orderBy = null,
-                                    params Expression<Func<ContentPage, object>>[] includeProperties);
-        Task<ContentPage> GetById(object id);
-        Task<ContentPage> GetBySlug(object routeSlug);
+                                    Expression<Func<ContentPage, bool>> filter = null);
+        Task<ContentPage> GetById(int id);
+        Task<ContentPage> GetBySlug(string routeSlug);
     }
 }

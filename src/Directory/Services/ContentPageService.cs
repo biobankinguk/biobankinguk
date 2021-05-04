@@ -41,33 +41,24 @@ namespace Biobanks.Services
         }
 
         public IEnumerable<ContentPage> ListContentPages(bool tracking = false,
-                                    Expression<Func<ContentPage, bool>> filter = null,
-                                    Func<IQueryable<ContentPage>, IOrderedQueryable<ContentPage>> orderBy = null,
-                                    params Expression<Func<ContentPage, object>>[] includeProperties)
+                                    Expression<Func<ContentPage, bool>> filter = null)
         {
             IQueryable<ContentPage> query = _db.ContentPages;
 
             if (filter != null)
             {
                 query = query.Where(filter);
-            }
-
-            query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-
-            if (orderBy != null)
-            {
-                return orderBy.Invoke(query).ToList();
-            }
+            } 
 
             return query.ToList();
         }
 
-        public async Task<ContentPage> GetById(object id)
+        public async Task<ContentPage> GetById(int id)
         {
             return await _db.ContentPages.FindAsync(id);
         }
 
-        public async Task<ContentPage> GetBySlug(object routeSlug)
+        public async Task<ContentPage> GetBySlug(string routeSlug)
         {
             return await _db.ContentPages.FindAsync(routeSlug);
         }
