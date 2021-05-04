@@ -1,37 +1,32 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Biobanks.Publications.Services.Contracts;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Biobanks.Publications.Services.Hosted
 {
-    public class FetchPublicationsService : IHostedService
+    public class FetchPublicationsService
     {
         private readonly IPublicationService _publicationService;
         private readonly IBiobankReadService _biobankReadService;
         private readonly IEpmcService _epmcWebService;
 
         private readonly ILogger<FetchPublicationsService> _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
 
         public FetchPublicationsService(IPublicationService publicationService,
             IBiobankReadService biobankReadService,
             IEpmcService epmcWebService,
-            ILogger<FetchPublicationsService> logger, 
-            IServiceScopeFactory scopeFactory)
+            ILogger<FetchPublicationsService> logger)
         {
             _publicationService = publicationService;
             _biobankReadService = biobankReadService;
             _epmcWebService = epmcWebService;
 
             _logger = logger;
-            _scopeFactory = scopeFactory;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync()
         {
             // Call directory for all active organisation
             var biobanks = (await _biobankReadService.ListBiobanksAsync()).Where(x => !x.ExcludePublications).ToList();
@@ -48,6 +43,6 @@ namespace Biobanks.Publications.Services.Hosted
             }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task StopAsync() => Task.CompletedTask;
     }
 }

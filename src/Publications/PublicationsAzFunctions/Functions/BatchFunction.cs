@@ -12,7 +12,6 @@ namespace PublicationsAzFunctions.Functions
     {
         private FetchPublicationsService _fetchPublicationsService;
         private FetchAnnotationsService _fetchAnnotationsService;
-        private readonly CancellationToken cancellationToken;
 
         public BatchFunction(FetchPublicationsService fetchPublicationsService, FetchAnnotationsService fetchAnnotationsService)
         {
@@ -28,12 +27,12 @@ namespace PublicationsAzFunctions.Functions
             logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
             //Pulls Biobanks from directory, gets publications from API and pushes to Azure DB
-            await _fetchPublicationsService.StartAsync(cancellationToken);
-            await _fetchPublicationsService.StopAsync(cancellationToken);
+            await _fetchPublicationsService.StartAsync();
+            await _fetchPublicationsService.StopAsync();
 
             //Pulls Publications from directory, gets annotations from API and pushes to Azure DB
-            await _fetchAnnotationsService.StartAsync(cancellationToken);
-            await _fetchAnnotationsService.StopAsync(cancellationToken);
+            await _fetchAnnotationsService.StartAsync();
+            await _fetchAnnotationsService.StopAsync();
 
             logger.LogInformation($"C# Timer trigger function executed successfully");
         }
