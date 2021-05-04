@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Linq;
 using Biobanks.Publications.Core.Services.Contracts;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Biobanks.Publications.Core.Services.Dto;
 using Flurl;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Biobanks.Publications.Core.Services
 {
@@ -77,7 +77,7 @@ namespace Biobanks.Publications.Core.Services
             string response = await _client.GetStringAsync(endpoint);
 
             // Parse JSON result
-            var result = JsonConvert.DeserializeObject<EpmcSearchResult>(response);
+            var result = JsonSerializer.Deserialize<EpmcSearchResult>(response);
 
             return result;
         }
@@ -119,7 +119,7 @@ namespace Biobanks.Publications.Core.Services
                 var response = await _client.GetStringAsync(url);
 
                 // Parse JSON result
-                result = JsonConvert.DeserializeObject<List<AnnotationResult>>(response);
+                result = JsonSerializer.Deserialize<List<AnnotationResult>>(response);
 
             }
             catch (Exception e)

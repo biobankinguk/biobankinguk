@@ -1,46 +1,46 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Biobanks.Publications.Core.Services.Dto
 {
     public class AnnotationResult
     {
-        [JsonProperty("source")]
+        [JsonPropertyName("source")]
         public string Source { get; set; }
 
-        [JsonProperty("extId")]
+        [JsonPropertyName("extId")]
         public string ExtId { get; set; }
 
-        [JsonProperty("annotations")]
+        [JsonPropertyName("annotations")]
         public List<AnnotationDTO> Annotations { get; set; }
     }
     public class AnnotationDTO
     {
-        [JsonProperty("exact")]
+        [JsonPropertyName("exact")]
         public string Exact { get; set; }
 
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public List<Tag> Tags { get; set; }
 
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [JsonProperty("section")]
+        [JsonPropertyName("section")]
         public string Section { get; set; }
 
-        [JsonProperty("provider")]
+        [JsonPropertyName("provider")]
         public string Provider { get; set; }
     }
 
     public class Tag
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("uri")]
+        [JsonPropertyName("uri")]
         public string Uri { get; set; }
     }
 }
