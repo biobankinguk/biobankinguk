@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Publications\Publications.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
