@@ -3,6 +3,10 @@ using System.Threading.Tasks;
 using Biobanks.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Directory.Data;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Data.Entity;
+using System.Collections.Generic;
 
 namespace Biobanks.Services
 {
@@ -15,30 +19,57 @@ namespace Biobanks.Services
             _db = db;
         }
 
-        public async Task CreateNewContentPage(string routeSlug, string title, string body)
-        {
-            var contentPage = new ContentPage
-            {
-                RouteSlug = routeSlug,
-                Title = title,
-                Body = body,
-                LastUpdated = DateTime.Now,
-                IsEnabled = true
-            };
+        public async Task CreateNewContentPage(ContentPage contentPage)
+        {            
             _db.ContentPages.Add(contentPage);
             await _db.SaveChangesAsync();
         }
 
-        public async Task UpdateContentPage(string routeSlug, string title, string body)
+        public void UpdateContentPage(ContentPage contentPage)
         {
-            var contentPage = new ContentPage
+            _db.ContentPages.Attach(contentPage);
+            _db.Entry(contentPage).State = EntityState.Modified;            
+        }
+
+        public void DeleteContentPage(ContentPage contentPage)
+        {
+            if (_db.Entry(contentPage).State == EntityState.Detached)
             {
-                RouteSlug = routeSlug,
-                Title = title,
-                Body = body,
-                LastUpdated = DateTime.Now,
-                IsEnabled = true
-            };    
+                _db.ContentPages.Attach(contentPage);
+            }
+            _db.ContentPages.Remove(contentPage);
+        }
+
+        public IEnumerable<ContentPage> ListContentPages(bool tracking = false,
+                                    Expression<Func<ContentPage, bool>> filter = null,
+                                    Func<IQueryable<ContentPage>, IOrderedQueryable<ContentPage>> orderBy = null,
+                                    params Expression<Func<ContentPage, object>>[] includeProperties)
+        {
+            IQueryable<ContentPage> query = _db.ContentPages;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+
+            if (orderBy != null)
+            {
+                return orderBy.Invoke(query).ToList();
+            }
+
+            return query.ToList();
+        }
+
+        public async Task<ContentPage> GetById(object id)
+        {
+            return await _db.ContentPages.FindAsync(id);
+        }
+
+        public async Task<ContentPage> GetBySlug(object routeSlug)
+        {
+            return await _db.ContentPages.FindAsync(routeSlug);
         }
     }
 }
