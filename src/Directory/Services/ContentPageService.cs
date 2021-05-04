@@ -48,12 +48,9 @@ namespace Biobanks.Services
         {
             IQueryable<ContentPage> query = _db.ContentPages;
 
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            } 
-
-            return query.ToList();
+            return filter == null
+                ? query.ToList()
+                : query.Where(filter).ToList();            
         }
 
         public async Task<ContentPage> GetById(int id)
