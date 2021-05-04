@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - src/Analytics/**
+      - src/Services/**
       - .github/workflows/build.analytics.yml
 
 env:
