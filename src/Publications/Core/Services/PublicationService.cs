@@ -11,16 +11,16 @@ namespace Biobanks.Publications.Core.Services
     public class PublicationService : IPublicationService
     {
 
-        private BiobanksDbContext _ctx;
+        private BiobanksDbContext _db;
 
-        public PublicationService(BiobanksDbContext ctx)
+        public PublicationService(BiobanksDbContext db)
         {
-            _ctx = ctx;
+            _db = db;
         }
 
         public async Task AddOrganisationPublications(int organisationId, IEnumerable<PublicationDto> publications)
         {
-            var existingPublications = _ctx.Publications.Where(x => x.OrganisationId == organisationId);
+            var existingPublications = _db.Publications.Where(x => x.OrganisationId == organisationId);
 
             var fetchedPublications = publications.Select(x => new Publication()
             {
@@ -43,7 +43,7 @@ namespace Biobanks.Publications.Core.Services
                 if (older is null)
                 {
                     // Add new Record
-                    _ctx.Add(newer);
+                    _db.Add(newer);
                 }
                 else
                 {
@@ -55,11 +55,11 @@ namespace Biobanks.Publications.Core.Services
                     older.DOI = newer.DOI;
                     older.Source = newer.Source;
 
-                    _ctx.Update(older);
+                    _db.Update(older);
                 }
             }
 
-            await _ctx.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
     }
 }

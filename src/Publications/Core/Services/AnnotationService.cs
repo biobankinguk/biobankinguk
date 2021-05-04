@@ -12,17 +12,17 @@ namespace Biobanks.Publications.Core.Services
 {
     public class AnnotationService : IAnnotationService
     {
-        private BiobanksDbContext _ctx;
+        private BiobanksDbContext _db;
 
-        public AnnotationService(BiobanksDbContext ctx)
+        public AnnotationService(BiobanksDbContext db)
         {
-            _ctx = ctx;
+            _db = db;
         }
 
 
         public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDTO> annotations)
         {
-            var publication = await _ctx.Publications.Include(o => o.Annotations).FirstOrDefaultAsync(x => x.PublicationId == publicationId);
+            var publication = await _db.Publications.Include(o => o.Annotations).FirstOrDefaultAsync(x => x.PublicationId == publicationId);
 
             var annotationList = new List<Annotation>();
             foreach (var annotation in annotations)
@@ -40,10 +40,10 @@ namespace Biobanks.Publications.Core.Services
             foreach (var annotation in annList)
             {
                 //If annotation doesn't already exist (new annotation)
-                if (_ctx.Annotations.Any(x => x.Name == annotation.Name))
+                if (_db.Annotations.Any(x => x.Name == annotation.Name))
                 {
                     //link annotation to publication
-                    var oldAnnotation = _ctx.Annotations.First(x => x.Name == annotation.Name);
+                    var oldAnnotation = _db.Annotations.First(x => x.Name == annotation.Name);
                     if (!publication.Annotations.Any(x => x.Id == oldAnnotation.Id))
                         publication.Annotations.Add(oldAnnotation);
                 }
@@ -55,7 +55,7 @@ namespace Biobanks.Publications.Core.Services
             }
 
             publication.AnnotationsSynced = DateTime.Now;
-            await _ctx.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
     }
 }

@@ -12,17 +12,17 @@ namespace Biobanks.Publications.Core.Services
 {
     public class BiobankReadService : IBiobankReadService
     {
-        private BiobanksDbContext _ctx;
+        private BiobanksDbContext _db;
 
         public BiobankReadService(
-            BiobanksDbContext ctx)
+            BiobanksDbContext db)
         {
-            _ctx = ctx;
+            _db = db;
         }
 
         public async Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "",
                 bool includeSuspended = true)
-            => await _ctx.Organisations.Where(
+            => await _db.Organisations.Where(
                 x => x.Name.Contains(wildcard) &&
                 (includeSuspended || x.IsSuspended == false)).ToListAsync();
 
@@ -31,7 +31,7 @@ namespace Biobanks.Publications.Core.Services
         
         //Gets Publications by OrganisationId, if Accepted is true, if the pub has no previously synced annotations and if last sync was over a month ago
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _ctx.Publications.Where(x => x.OrganisationId == biobankId && x.Accepted == true)
+            => await _db.Publications.Where(x => x.OrganisationId == biobankId && x.Accepted == true)
             .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1)).ToListAsync();
     }
 }
