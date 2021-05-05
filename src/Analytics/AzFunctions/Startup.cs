@@ -22,8 +22,7 @@ namespace Biobanks.Analytics.AzFunctions
                 services.AddApplicationInsightsTelemetry(appInsightsKey);
             }
 
-            // In-Memory Cache - Manually Called As Not Called By A Parent Service
-            services.AddMemoryCache();
+            services.AddHttpClient();
 
             // Register DbContext
             services.AddDbContext<BiobanksDbContext>(options => options

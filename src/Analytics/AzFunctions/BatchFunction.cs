@@ -17,7 +17,7 @@ namespace Biobanks.Analytics.AzFunctions
 
         [FunctionName("BatchFunction")]
         //Configured to run every quarter (At 00:00 on the 1st day in every 3rd month)
-        public async Task Run([TimerTrigger("0 0 0 1 */3 *", RunOnStartup = false)] ILogger log) //remove runonstartup before deploying
+        public async Task Run([TimerTrigger("0 0 0 1 */3 *", RunOnStartup = false)] TimerInfo myTimer, ILogger log) //remove runonstartup before deploying
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTimeOffset.Now}");
 
