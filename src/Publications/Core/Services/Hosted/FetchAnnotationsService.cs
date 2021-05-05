@@ -1,39 +1,30 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using Publications.Services.Contracts;
+﻿using Biobanks.Publications.Core.Services.Contracts;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
-namespace Publications.Services.Hosted
+namespace Biobanks.Publications.Core.Services.Hosted
 {
-    public class FetchAnnotationsService : IHostedService
+    public class FetchAnnotationsService
     {
         private readonly IAnnotationService _annotationService;
         private readonly IBiobankReadService _biobankReadService;
         private readonly IEpmcService _epmcWebService;
 
         private readonly ILogger<FetchAnnotationsService> _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
 
         public FetchAnnotationsService(IAnnotationService annotationService,
             IBiobankReadService biobankReadService,
             IEpmcService epmcWebService,
-            ILogger<FetchAnnotationsService> logger,
-            IServiceScopeFactory scopeFactory)
+            ILogger<FetchAnnotationsService> logger)
         {
             _annotationService = annotationService;
             _biobankReadService = biobankReadService;
             _epmcWebService = epmcWebService;
 
             _logger = logger;
-            _scopeFactory = scopeFactory;
         }
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync()
         {
             // Call directory for all active organisation
             var biobanks = (await _biobankReadService.ListBiobanksAsync()).Where(x => !x.ExcludePublications).ToList();
@@ -51,11 +42,11 @@ namespace Publications.Services.Hosted
 
                     await _annotationService.AddPublicationAnnotations(publication.PublicationId, annotations);
 
-                    _logger.LogInformation($"Fetched {annotations.Count()} annotations for {publication}");
+                    _logger.LogInformation($"Fetched {annotations.Count()} annotations for {publication.PublicationId}");
                 }
             }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task StopAsync() => Task.CompletedTask;
     }
 }

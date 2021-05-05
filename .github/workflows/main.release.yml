@@ -269,13 +269,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [init]
     env:
-      CI_project: ./src/Publications/PublicationsAzureFunctions/PublicationsAzureFunctions.csproj
+      CI_project: ./src/Publications/AzFunctions/AzFunctions.csproj
       CI_artifact-name: publications-azfunctions
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x # TODO revert to stack version after upgrade
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      # .NET Isolated Functions Worker still has a 3.1 SDK dependency for now
+      # https://github.com/Azure/azure-functions-dotnet-worker/issues/301
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
       - name: dotnet publish
         run: >-
           dotnet publish

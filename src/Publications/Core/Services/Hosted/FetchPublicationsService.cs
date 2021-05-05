@@ -1,42 +1,32 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Publications;
-using Publications.Services;
-using Publications.Services.Contracts;
-using System;
-using System.Collections.Generic;
+using Biobanks.Publications.Core.Services.Contracts;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace Publications.Services
+namespace Biobanks.Publications.Core.Services.Hosted
 {
-    public class FetchPublicationsService : IHostedService
+    public class FetchPublicationsService
     {
         private readonly IPublicationService _publicationService;
         private readonly IBiobankReadService _biobankReadService;
         private readonly IEpmcService _epmcWebService;
 
         private readonly ILogger<FetchPublicationsService> _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
 
         public FetchPublicationsService(IPublicationService publicationService,
             IBiobankReadService biobankReadService,
             IEpmcService epmcWebService,
-            ILogger<FetchPublicationsService> logger, 
-            IServiceScopeFactory scopeFactory)
+            ILogger<FetchPublicationsService> logger)
         {
             _publicationService = publicationService;
             _biobankReadService = biobankReadService;
             _epmcWebService = epmcWebService;
 
             _logger = logger;
-            _scopeFactory = scopeFactory;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync()
         {
             // Call directory for all active organisation
             var biobanks = (await _biobankReadService.ListBiobanksAsync()).Where(x => !x.ExcludePublications).ToList();
@@ -49,10 +39,10 @@ namespace Publications.Services
                 var publications = await _epmcWebService.GetOrganisationPublications(biobank.Name);
                 await _publicationService.AddOrganisationPublications(biobank.OrganisationId, publications);
 
-                _logger.LogInformation($"Fetched {publications.Count()} publications for {biobank}");
+                _logger.LogInformation($"Fetched {publications.Count()} publications for {biobank.OrganisationExternalId}");
             }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task StopAsync() => Task.CompletedTask;
     }
 }
