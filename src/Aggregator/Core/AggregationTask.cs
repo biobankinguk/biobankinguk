@@ -73,7 +73,7 @@ namespace Biobanks.Aggregator.Core
                             var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
                             var percentage = decimal.Divide(sampleSetSamples.Count(), materialDetailSamples.Count());
 
-                            // Set Collection Percetnage For Material Detail
+                            // Set Collection Percentage For Material Detail
                             materialDetail.CollectionPercentageId = _refDataService.GetCollectionPercentage(percentage).Id;
 
                             sampleSet.MaterialDetails.Add(materialDetail);
@@ -89,18 +89,9 @@ namespace Biobanks.Aggregator.Core
                     }
                     else
                     {
-                        foreach (var ss in oldSampleSetIds)
-                        {
-                            await _aggregationService.DeleteMaterialDetailsBySampleSetId(ss);
-                        }
-
+                        await _collectionService.DeleteMaterialDetailsBySampleSetIds(oldSampleSetIds);
                         await _collectionService.UpdateCollectionAsync(collection);
-
-                        // Remove old sampleSets from db if present
-                        foreach (var ss in oldSampleSetIds)
-                        {
-                            await _sampleService.DeleteSampleSetById(ss);
-                        }
+                        await _collectionService.DeleteSampleSetsByIds(oldSampleSetIds);
                     }
                 }
                 else
