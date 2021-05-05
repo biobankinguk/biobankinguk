@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Analytics.Services.Contracts;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
+using Biobanks.Analytics.Core.Contracts;
 
-namespace Analytics.Services
+namespace Biobanks.Analytics.Core
 {
     public class BiobankWebService : IBiobankWebService
     {

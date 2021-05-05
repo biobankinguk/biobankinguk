@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{F2A55195-716E-4786-9AA0-E63A7CE3C592}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{F2A55195-716E-4786-9AA0-E63A7CE3C592}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureFunctions", "AzureFunctions\AzureFunctions.csproj", "{33645D9F-EEF0-4750-938F-232B288B6837}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzFunctions", "AzFunctions\AzFunctions.csproj", "{33645D9F-EEF0-4750-938F-232B288B6837}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "..\Entities\Entities.csproj", "{54D56456-7BE7-476B-9DC5-FFA7C28DC6EC}"
 EndProject

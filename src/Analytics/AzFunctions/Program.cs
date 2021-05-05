@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Analytics.AnalyticsAzureFunctions;
+using Biobanks.Analytics.AzFunctions;
 
 // Configure the Host
 var host = Host.CreateDefaultBuilder(args)

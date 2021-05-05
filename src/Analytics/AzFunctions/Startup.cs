@@ -3,10 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Biobanks.Data;
-using Analytics.Services.Contracts;
-using Analytics.Services;
+using Biobanks.Analytics.Core.Contracts;
+using Biobanks.Analytics.Core;
 
-namespace Analytics.AnalyticsAzureFunctions
+namespace Biobanks.Analytics.AzFunctions
 {
     class Startup
     {

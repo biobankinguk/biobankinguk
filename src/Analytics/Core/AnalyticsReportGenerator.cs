@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using Analytics.Services.Contracts;
 using System.Threading.Tasks;
-using Analytics.Services.Dto;
 using System.Linq;
-using System;
 using Microsoft.Extensions.Configuration;
 using Biobanks.Entities.Data.Analytics;
+using Biobanks.Analytics.Core.Contracts;
+using Biobanks.Analytics.Core.Dto;
 
-namespace Analytics.Services
+namespace Biobanks.Analytics.Core
 {
     public class AnalyticsReportGenerator : IAnalyticsReportGenerator
     {
@@ -23,10 +22,10 @@ namespace Analytics.Services
         {
             _config = configuration;
             _googleAnalyticsReadService = googleAnalyticsReadService;
-            _numOfTopBiobanks = _config.GetValue<int>("MetricThreshold", 10);
-            _eventThreshold = _config.GetValue<int>("EventThreshold", 30); 
-            _filterByHost = _config.GetValue<bool>("FilterbyHost", true); 
-            _hostname = _config.GetValue<string>("DirectoryHostname",""); 
+            _numOfTopBiobanks = _config.GetValue("MetricThreshold", 10);
+            _eventThreshold = _config.GetValue("EventThreshold", 30);
+            _filterByHost = _config.GetValue("FilterbyHost", true);
+            _hostname = _config.GetValue("DirectoryHostname", "");
         }
 
         public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<OrganisationAnalytic> biobankData)
@@ -102,9 +101,9 @@ namespace Analytics.Services
             var eventData = await _googleAnalyticsReadService.GetDirectoryEventData(reportRange);
 
             //filter by host
-            if (_filterByHost == true && !String.IsNullOrEmpty(_hostname))
+            if (_filterByHost == true && !string.IsNullOrEmpty(_hostname))
             {
-                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData,_hostname);
+                biobankData = _googleAnalyticsReadService.FilterByHost(biobankData, _hostname);
                 eventData = _googleAnalyticsReadService.FilterByHost(eventData, _hostname);
             }
 
@@ -133,12 +132,13 @@ namespace Analytics.Services
             var sessionData = _googleAnalyticsReadService.ApplySessionMulitplication(metricData);
 
             (var sessionNumberLabels, var sessionNumberCount) = _googleAnalyticsReadService.GetSessionCount(sessionData);
-            (var avgBounceRateLabels, var avgBounceRateCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x=>x.BounceRate);
+            (var avgBounceRateLabels, var avgBounceRateCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.BounceRate);
             (var avgNewSessionLabels, var avgNewSessionCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.PercentNewSessions);
             (var avgSessionDurationLabels, var avgSessionDurationCount) = _googleAnalyticsReadService.GetWeightedAverage(sessionData, x => x.AvgSessionDuration);
-           // var avgSessionDurationCountLabel = avgSessionDurationCount.Select(x => $"{(int)(x / 60)}m {Convert.ToInt32(x % 60)}s").ToList(); //do in frontend
-            
-            return new SessionStatDto {
+            // var avgSessionDurationCountLabel = avgSessionDurationCount.Select(x => $"{(int)(x / 60)}m {Convert.ToInt32(x % 60)}s").ToList(); //do in frontend
+
+            return new SessionStatDto
+            {
                 SessionNumberLabels = sessionNumberLabels,
                 SessionNumberCount = sessionNumberCount,
                 AvgBounceRateLabels = avgBounceRateLabels,
@@ -185,7 +185,8 @@ namespace Analytics.Services
                                                _googleAnalyticsReadService.GetSearchType(x.PagePath) == "Diagnosis"), _googleAnalyticsReadService.GetSearchTerm);
             (var searchFilterLabels, var searchFilterCount) = _googleAnalyticsReadService.GetSearchFilters(searchData);
 
-            return new SearchCharacteristicDto {
+            return new SearchCharacteristicDto
+            {
                 SearchTypeLabels = searchTypeLabels,
                 SearchTypeCount = searchTypeCount,
                 SearchTermLabels = searchTermLabels,
@@ -203,7 +204,8 @@ namespace Analytics.Services
             (var filteredContactLabels, var filteredContactCount) = _googleAnalyticsReadService.GetFilteredEventCount(contactData, _eventThreshold);
             (var filteredMailtoLabels, var filteredMailtoCount) = _googleAnalyticsReadService.GetFilteredEventCount(mailtoData, _eventThreshold);
 
-            return new EventStatDto { 
+            return new EventStatDto
+            {
                 ContactNumberLabels = contactNumberLabels,
                 ContactNumberCount = contactNumberCount,
                 FilteredContactLabels = filteredContactLabels,
@@ -219,7 +221,7 @@ namespace Analytics.Services
 
             var profileSources = _googleAnalyticsReadService.GetPageSources(profileData, _numOfTopBiobanks);
             (var pageRoutes, var routeCount) = _googleAnalyticsReadService.GetPageRoutes(profileData);
-            
+
 
             return new ProfilePageStatDto
             {
@@ -238,7 +240,7 @@ namespace Analytics.Services
             var metricData = await _googleAnalyticsReadService.GetDirectoryMetricData(reportRange);
 
             //filter by host
-            if (_filterByHost == true && !String.IsNullOrEmpty(_hostname))
+            if (_filterByHost == true && !string.IsNullOrEmpty(_hostname))
             {
                 biobankData = _googleAnalyticsReadService.FilterByHost(biobankData, _hostname);
                 eventData = _googleAnalyticsReadService.FilterByHost(eventData, _hostname);

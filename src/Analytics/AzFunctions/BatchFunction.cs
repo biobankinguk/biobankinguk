@@ -1,12 +1,11 @@
 using System;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Analytics.Services.Contracts;
 using System.Threading.Tasks;
+using Biobanks.Analytics.Core.Contracts;
 
-namespace AnalyticsAzureFunctions
+namespace Biobanks.Analytics.AzFunctions
 {
-
     public class BatchFunction
     {
         private IGoogleAnalyticsReadService _googleAnalyticsReadService;
@@ -15,7 +14,7 @@ namespace AnalyticsAzureFunctions
         {
             _googleAnalyticsReadService = googleAnalyticsReadService;
         }
-  
+
         [FunctionName("BatchFunction")]
         //Configured to run every quarter (At 00:00 on the 1st day in every 3rd month)
         public async Task Run([TimerTrigger("0 0 0 1 */3 *", RunOnStartup = false)] ILogger log) //remove runonstartup before deploying

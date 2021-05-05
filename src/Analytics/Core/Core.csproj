@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Analytics.Services</RootNamespace>
+    <AssemblyName>Biobanks.Analytics.Core</AssemblyName>
+    <RootNamespace>Biobanks.Analytics.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

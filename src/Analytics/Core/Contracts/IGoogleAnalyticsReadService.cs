@@ -1,13 +1,12 @@
-﻿using Analytics.Services.Dto;
-using Google.Apis.AnalyticsReporting.v4.Data;
+﻿using Google.Apis.AnalyticsReporting.v4.Data;
 using System;
 using System.Collections.Generic;
-using Analytics.Services.Helpers;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 using Biobanks.Entities.Data.Analytics;
+using Biobanks.Analytics.Core.Dto;
+using Biobanks.Analytics.Core.Helpers;
 
-namespace Analytics.Services.Contracts
+namespace Biobanks.Analytics.Core.Contracts
 {
     public interface IGoogleAnalyticsReadService
     {

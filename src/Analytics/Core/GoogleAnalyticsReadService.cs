@@ -7,16 +7,16 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.AnalyticsReporting.v4;
 using Google.Apis.AnalyticsReporting.v4.Data;
-using Analytics.Services.Dto;
-using Analytics.Services.Contracts;
-using Analytics.Services.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Biobanks.Data;
 using Biobanks.Entities.Data.Analytics;
+using Biobanks.Analytics.Core.Contracts;
+using Biobanks.Analytics.Core.Dto;
+using Biobanks.Analytics.Core.Helpers;
 
-namespace Analytics.Services
+namespace Biobanks.Analytics.Core
 {
     // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
     public class GoogleAnalyticsReadService : IGoogleAnalyticsReadService
@@ -130,7 +130,7 @@ namespace Analytics.Services
 
         public IList<ReportRequest> ConstructRequest(IList<Metric> metrics, IList<Dimension> dimensions, IList<Segment> segments, IList<DateRange> dateRanges,
                                               IList<DimensionFilterClause> dimensionfilterclauses = null, int pagesize = 100000)
-        { 
+        {
             var request = new ReportRequest
             {
                 ViewId = _viewId,
@@ -229,7 +229,7 @@ namespace Analytics.Services
 
         //or use function overloading or dynamic?
         public async Task<DateTimeOffset> GetLatestBiobankEntry()
-            => (await  _context.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _context.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestEventEntry()
             => (await _context.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
@@ -261,7 +261,7 @@ namespace Analytics.Services
 
             foreach (ReportRow bbd in biobankData)
             {
-                 _context.OrganisationAnalytics.Add(new OrganisationAnalytic
+                _context.OrganisationAnalytics.Add(new OrganisationAnalytic
                 {
                     Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                     PagePath = bbd.Dimensions[1],
@@ -295,7 +295,7 @@ namespace Analytics.Services
 
                 foreach (ReportRow bbd in biobankData)
                 {
-                     _context.OrganisationAnalytics.Add(new OrganisationAnalytic
+                    _context.OrganisationAnalytics.Add(new OrganisationAnalytic
                     {
                         Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                         PagePath = bbd.Dimensions[1],
@@ -308,7 +308,7 @@ namespace Analytics.Services
                         OrganisationExternalId = biobankId
                     });
                 }
-                await  _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 _logger.LogInformation($"Fetched analytics for data for {biobankId}");
             }
         }
@@ -374,7 +374,7 @@ namespace Analytics.Services
             int month = endQuarter * monthsPerQuarter;
             int lastDayofQuarter = DateTime.DaysInMonth(year, month);
 
-            var endDate = new DateTimeOffset(year, month, lastDayofQuarter,0,0,0,TimeSpan.Zero);
+            var endDate = new DateTimeOffset(year, month, lastDayofQuarter, 0, 0, 0, TimeSpan.Zero);
             //get start date by subtracting report period (specified in quarters) from end date
             var startDate = endDate.AddMonths(-1 * reportPeriod * monthsPerQuarter).AddDays(1);
 
@@ -416,7 +416,7 @@ namespace Analytics.Services
         }
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId)
-            => await _context.OrganisationAnalytics.Where( x => x.OrganisationExternalId == biobankId).ToListAsync();
+            => await _context.OrganisationAnalytics.Where(x => x.OrganisationExternalId == biobankId).ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId, DateRange dateRange)
         {
@@ -448,7 +448,7 @@ namespace Analytics.Services
             => eventData.Where(x => x.EventAction == strEvent);
 
         public string GetQuarter(DateTimeOffset date)
-            => date.Year + "Q" + ((date.Month + 2) / 3);
+            => date.Year + "Q" + (date.Month + 2) / 3;
 
 
         public IEnumerable<QuarterlySummary> GetSummary(IEnumerable<OrganisationAnalytic> biobankData)
@@ -482,7 +482,7 @@ namespace Analytics.Services
                     Biobank = "Directory",
                     Quarter = key,
                     Count = group.Sum(),
-                }).OrderBy(x=>x.Quarter);
+                }).OrderBy(x => x.Quarter);
 
         public IEnumerable<QuarterlySummary> GetRankings(IEnumerable<QuarterlySummary> summary)
             => summary.GroupBy(
@@ -575,7 +575,7 @@ namespace Analytics.Services
                 return "UKCRC-TDCC Biobanks A-Z";
             else if (pagePath.Contains("/Profile/Network"))
                 return "Biobank Network Profile Pages";
-            else if ((pagePath.Contains("/Biobank/") && !pagePath.Contains("/Profile/Biobank/"))
+            else if (pagePath.Contains("/Biobank/") && !pagePath.Contains("/Profile/Biobank/")
                     || pagePath.Contains("/ADAC/") || pagePath.Contains("/Account/") || pagePath.Contains("/Register/"))
                 return "Account & Backend Management";
             else
@@ -697,7 +697,7 @@ namespace Analytics.Services
         {
             var eventSummary = eventData.GroupBy(
                 x => GetQuarter(x.Date),
-                x=> x.Counts,
+                x => x.Counts,
                 (key, group) => new QuarterlySummary
                 {
                     Biobank = "Directory",
@@ -731,7 +731,7 @@ namespace Analytics.Services
         public (IList<string>, IList<int>) GetFilteredEventCount(IEnumerable<DirectoryAnalyticEvent> eventData, int threshold)
         {
             var eventsPerCityPerDay = eventData.GroupBy(
-                x => new { city = x.City, date = x.Date.Date},
+                x => new { city = x.City, date = x.Date.Date },
                 x => x.Counts,
                 (key, group) => new
                 {
@@ -741,7 +741,7 @@ namespace Analytics.Services
                 });
 
             var summary = eventsPerCityPerDay
-                .Where(x=>x.Count <= threshold).GroupBy(
+                .Where(x => x.Count <= threshold).GroupBy(
                 x => GetQuarter(x.Date),
                 x => x.Count,
                 (key, group) => new QuarterlySummary
@@ -764,8 +764,8 @@ namespace Analytics.Services
                 {
                     Source = key,
                     Count = group.Count(),
-                    Percentage = (group.Count()/Convert.ToDouble(totalCount))*100
-                }).OrderByDescending(x=>x.Count).Take(numOfTopSources);
+                    Percentage = group.Count() / Convert.ToDouble(totalCount) * 100
+                }).OrderByDescending(x => x.Count).Take(numOfTopSources);
 
             sources = sources.Append(new SourceCountDto
             {
