@@ -1,17 +1,14 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Publications
+namespace Biobanks.Publications.Core.Services.Dto
 {
     public class EpmcSearchResult
     {
-        [JsonProperty("nextCursorMark")]
+        [JsonPropertyName("nextCursorMark")]
         public string Cursor { get; set; }
 
-        [JsonProperty("resultList")]
+        [JsonPropertyName("resultList")]
         public Results Results { get; set; }
 
         public List<PublicationDto> Publications => Results.Publications;
@@ -19,7 +16,7 @@ namespace Publications
 
     public class Results
     {
-        [JsonProperty("result")]
+        [JsonPropertyName("result")]
         public List<PublicationDto> Publications { get; set; }
     }
 
@@ -29,13 +26,13 @@ namespace Publications
 
         public string Title { get; set; }
 
-        [JsonProperty("authorString")]
+        [JsonPropertyName("authorString")]
         public string Authors { get; set; }
 
-        [JsonProperty("journalTitle")]
+        [JsonPropertyName("journalTitle")]
         public string Journal { get; set; }
 
-        [JsonProperty("pubYear")]
+        [JsonPropertyName("pubYear")]
         public int Year { get; set; }
 
         public string Doi { get; set; }
