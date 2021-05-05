@@ -314,8 +314,6 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync()
         {
-            try
-            {
                 var organisations = await _organisationRepository.ListAsync(
                     false,
                     b => !b.IsSuspended,
@@ -343,12 +341,6 @@ namespace Biobanks.Services
                             LastAdminLoginEmail = lastLoginUser?.Email,
                             LastAdminLoginTime = lastLoginUser?.LastLogin
                         }).ToList();
-            }
-            catch (Exception e)
-            {
-                var x = e.Message;
-                return null;
-            }
         }
 
         public async Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdAsync(int networkId)
