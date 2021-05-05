@@ -65,6 +65,7 @@ namespace Biobanks.Aggregator.Core
                     // Group Samples Into SampleSets
                     foreach (var sampleSetSamples in _aggregationService.GroupIntoSampleSets(samples))
                     {
+                        // Generate SampleSet
                         var sampleSet = _aggregationService.GenerateSampleSet(sampleSetSamples);
 
                         // Group Samples Into MaterialDetails
@@ -88,7 +89,7 @@ namespace Biobanks.Aggregator.Core
                         await _collectionService.AddCollectionAsync(collection);
                     }
                     else
-                    {
+                     {
                         foreach (var ss in oldSampleSetIds)
                         {
                             await _aggregationService.DeleteMaterialDetailsBySampleSetId(ss);
