@@ -10,11 +10,11 @@ namespace Biobanks.Analytics.Core
 {
     public class BiobankWebService : IBiobankWebService
     {
-        private BiobanksDbContext _context;
+        private BiobanksDbContext _db;
 
-        public BiobankWebService(BiobanksDbContext context)
+        public BiobankWebService(BiobanksDbContext db)
         {
-            _context = context;
+            _db = db;
         }
 
         public async Task<IList<string>> GetOrganisationNames()
@@ -24,7 +24,7 @@ namespace Biobanks.Analytics.Core
 
         public async Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true)
         {
-            return await _context.Organisations.Where(x => x.Name.Contains(wildcard) && (includeSuspended || x.IsSuspended == false)).ToListAsync();
+            return await _db.Organisations.Where(x => x.Name.Contains(wildcard) && (includeSuspended || x.IsSuspended == false)).ToListAsync();
         }
 
 

@@ -26,18 +26,18 @@ namespace Biobanks.Analytics.Core
         private readonly string _dateFormat = "yyyy-MM-dd";
         private readonly IConfiguration _config;
 
-        private readonly BiobanksDbContext _context;
+        private readonly BiobanksDbContext _db;
         private readonly GoogleCredential _credentials;
         private readonly AnalyticsReportingService _analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
         private readonly IBiobankWebService _biobankWebService;
 
-        public GoogleAnalyticsReadService(BiobanksDbContext context,
+        public GoogleAnalyticsReadService(BiobanksDbContext db,
                                           IBiobankWebService biobankWebService,
                                           ILogger<GoogleAnalyticsReadService> logger,
                                           IConfiguration configuration)
         {
-            _context = context;
+            _db = db;
             _config = configuration;
             _viewId = _config.GetValue("AnalyticsViewid", "");
             _startDate = _config.GetValue("StartDate", "2016-01-01");
@@ -229,13 +229,13 @@ namespace Biobanks.Analytics.Core
 
         //or use function overloading or dynamic?
         public async Task<DateTimeOffset> GetLatestBiobankEntry()
-            => (await _context.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _db.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestEventEntry()
-            => (await _context.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _db.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
         public async Task<DateTimeOffset> GetLatestMetricEntry()
-            => (await _context.DirectoryAnalyticMetrics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+            => (await _db.DirectoryAnalyticMetrics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
 
 
         public DateTimeOffset ConvertToDateTime(string inputDateTime, string format)
@@ -261,7 +261,7 @@ namespace Biobanks.Analytics.Core
 
             foreach (ReportRow bbd in biobankData)
             {
-                _context.OrganisationAnalytics.Add(new OrganisationAnalytic
+                _db.OrganisationAnalytics.Add(new OrganisationAnalytic
                 {
                     Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                     PagePath = bbd.Dimensions[1],
@@ -274,7 +274,7 @@ namespace Biobanks.Analytics.Core
                     OrganisationExternalId = biobankId
                 });
             }
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
         public async Task DownloadAllBiobankData(IList<DateRange> dateRanges)
@@ -295,7 +295,7 @@ namespace Biobanks.Analytics.Core
 
                 foreach (ReportRow bbd in biobankData)
                 {
-                    _context.OrganisationAnalytics.Add(new OrganisationAnalytic
+                    _db.OrganisationAnalytics.Add(new OrganisationAnalytic
                     {
                         Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
                         PagePath = bbd.Dimensions[1],
@@ -308,7 +308,7 @@ namespace Biobanks.Analytics.Core
                         OrganisationExternalId = biobankId
                     });
                 }
-                await _context.SaveChangesAsync();
+                await _db.SaveChangesAsync();
                 _logger.LogInformation($"Fetched analytics for data for {biobankId}");
             }
         }
@@ -330,7 +330,7 @@ namespace Biobanks.Analytics.Core
 
             foreach (ReportRow events in eventData)
             {
-                _context.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
+                _db.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
                 {
                     Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
                     EventCategory = events.Dimensions[1],
@@ -343,11 +343,11 @@ namespace Biobanks.Analytics.Core
                     Counts = int.Parse(events.Metrics[0].Values[0]),
                 });
             }
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
 
             foreach (ReportRow metric in metricData)
             {
-                _context.DirectoryAnalyticMetrics.Add(new DirectoryAnalyticMetric
+                _db.DirectoryAnalyticMetrics.Add(new DirectoryAnalyticMetric
                 {
                     Date = ConvertToDateTime(metric.Dimensions[0], "yyyyMMdd"),
                     PagePath = metric.Dimensions[1],
@@ -362,7 +362,7 @@ namespace Biobanks.Analytics.Core
                     AvgSessionDuration = Convert.ToInt32(double.Parse(metric.Metrics[0].Values[3])),
                 });
             }
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             _logger.LogInformation($"Fetched event and metric data for analytics");
         }
 
@@ -383,14 +383,14 @@ namespace Biobanks.Analytics.Core
 
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData()
-            => await _context.OrganisationAnalytics.ToListAsync();
+            => await _db.OrganisationAnalytics.ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetAllBiobankData(DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _context.OrganisationAnalytics.Where(
+            return await _db.OrganisationAnalytics.Where(
                 x => x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
         }
@@ -400,7 +400,7 @@ namespace Biobanks.Analytics.Core
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _context.DirectoryAnalyticEvents.Where(
+            return await _db.DirectoryAnalyticEvents.Where(
                 x => x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
         }
@@ -410,20 +410,20 @@ namespace Biobanks.Analytics.Core
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _context.DirectoryAnalyticMetrics.Where(
+            return await _db.DirectoryAnalyticMetrics.Where(
                 x => x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
         }
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId)
-            => await _context.OrganisationAnalytics.Where(x => x.OrganisationExternalId == biobankId).ToListAsync();
+            => await _db.OrganisationAnalytics.Where(x => x.OrganisationExternalId == biobankId).ToListAsync();
 
         public async Task<IEnumerable<OrganisationAnalytic>> GetBiobankDataById(string biobankId, DateRange dateRange)
         {
             var startDate = DateTimeOffset.Parse(dateRange.StartDate);
             var endDate = DateTimeOffset.Parse(dateRange.EndDate);
 
-            return await _context.OrganisationAnalytics.Where(
+            return await _db.OrganisationAnalytics.Where(
                 x => x.OrganisationExternalId == biobankId &&
                 x.Date >= startDate &&
                 x.Date <= endDate).ToListAsync();
