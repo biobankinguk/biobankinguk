@@ -8,11 +8,11 @@ using Biobanks.Analytics.Core.Contracts;
 
 namespace Biobanks.Analytics.Core
 {
-    public class BiobankWebService : IBiobankWebService
+    public class BiobankReadService : IBiobankReadService
     {
         private BiobanksDbContext _db;
 
-        public BiobankWebService(BiobanksDbContext db)
+        public BiobankReadService(BiobanksDbContext db)
         {
             _db = db;
         }

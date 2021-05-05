@@ -30,10 +30,10 @@ namespace Biobanks.Analytics.Core
         private readonly GoogleCredential _credentials;
         private readonly AnalyticsReportingService _analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
-        private readonly IBiobankWebService _biobankWebService;
+        private readonly IBiobankReadService _biobankReadService;
 
         public GoogleAnalyticsReadService(BiobanksDbContext db,
-                                          IBiobankWebService biobankWebService,
+                                          IBiobankReadService biobankReadService,
                                           ILogger<GoogleAnalyticsReadService> logger,
                                           IConfiguration configuration)
         {
@@ -51,7 +51,7 @@ namespace Biobanks.Analytics.Core
                     HttpClientInitializer = _credentials,
                     ApplicationName = "Google Analytics API v4 Biobanks"
                 });
-            _biobankWebService = biobankWebService;
+            _biobankReadService = biobankReadService;
             _logger = logger;
         }
 
@@ -283,7 +283,7 @@ namespace Biobanks.Analytics.Core
             var dimensions = GetBiobankDimensions();
             var segments = GetNottLoughSegment();
 
-            var biobanks = await _biobankWebService.GetOrganisationExternalIds();
+            var biobanks = await _biobankReadService.GetOrganisationExternalIds();
 
             foreach (var biobankId in biobanks)
             { //TODO: replicated as in biobank.analytics python script but should be re-written to compile all requests into one list and run GetReports once
@@ -781,7 +781,7 @@ namespace Biobanks.Analytics.Core
         public async Task UpdateAnalyticsData()
         {
             // Call directory for all active organisation
-            var biobanks = await _biobankWebService.GetOrganisationNames();
+            var biobanks = await _biobankReadService.GetOrganisationNames();
             _logger.LogInformation($"Fetching analytics for {biobanks.Count()} organisations");
 
             var lastBiobankEntry = await GetLatestBiobankEntry();

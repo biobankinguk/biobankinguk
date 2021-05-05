@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Analytics.Core.Contracts
 {
-    public interface IBiobankWebService
+    public interface IBiobankReadService
     {
         Task<IList<string>> GetOrganisationExternalIds();
         Task<IList<string>> GetOrganisationNames();

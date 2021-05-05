@@ -35,7 +35,7 @@ namespace Biobanks.Analytics.AzFunctions
             );
 
             services.AddScoped<IAnalyticsReportGenerator, AnalyticsReportGenerator>();
-            services.AddTransient<IBiobankWebService, BiobankWebService>();
+            services.AddTransient<IBiobankReadService, BiobankReadService>();
             services.AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>();
         }
 
