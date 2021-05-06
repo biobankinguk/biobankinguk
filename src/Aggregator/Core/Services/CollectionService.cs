@@ -2,7 +2,9 @@
 using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
 
@@ -43,12 +45,24 @@ namespace Biobanks.Aggregator.Core.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task DeleteSampleSetById(int id)
-            => await _db.SampleSets.Where(x => x.Id == id).DeleteAsync();
+        public async Task DeleteSampleSetByIds(IEnumerable<int> ids)
+        {
+            foreach (var sampleSet in _db.SampleSets.Where(x => ids.Contains(x.Id)))
+            {
+                _db.Remove(sampleSet);
+            }
 
-        public async Task DeleteMaterialDetailsBySampleSetId(int id)
-            => await _db.MaterialDetails.Where(x => x.SampleSetId == id).DeleteAsync();
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task DeleteMaterialDetailsBySampleSetIds(IEnumerable<int> ids)
+        {
+            foreach (var materialDetail in _db.MaterialDetails.Where(x => ids.Contains(x.SampleSetId)))
+            {
+                _db.Remove(materialDetail);
+            }
+
+            await _db.SaveChangesAsync();
+        }
     }
-
-
 }

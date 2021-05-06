@@ -89,18 +89,9 @@ namespace Biobanks.Aggregator.Core
                     }
                     else
                     {
-                        foreach (var ss in oldSampleSetIds)
-                        {
-                            await _collectionService.DeleteMaterialDetailsBySampleSetId(ss);
-                        }
-
+                        await _collectionService.DeleteMaterialDetailsBySampleSetIds(oldSampleSetIds);
                         await _collectionService.UpdateCollectionAsync(collection);
-
-                        // Remove old sampleSets from db if present
-                        foreach (var ss in oldSampleSetIds)
-                        {
-                            await _collectionService.DeleteSampleSetById(ss);
-                        }
+                        await _collectionService.DeleteSampleSetByIds(oldSampleSetIds);
                     }
                 }
                 else
