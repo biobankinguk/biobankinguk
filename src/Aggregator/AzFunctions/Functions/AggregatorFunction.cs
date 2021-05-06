@@ -15,7 +15,7 @@ namespace Biobanks.Aggregator.AzFunctions
         }
 
         [Function("Aggregator")]
-        public async Task Run([TimerTrigger("0 * * * * *")] TimerInfo timer)
+        public async Task Run([TimerTrigger("0 0 * * * *")] TimerInfo timer)
             =>  await _aggregationTask.Run();
     }
 }
