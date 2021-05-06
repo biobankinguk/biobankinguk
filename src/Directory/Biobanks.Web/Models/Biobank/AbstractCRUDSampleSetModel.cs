@@ -14,6 +14,7 @@ namespace Biobanks.Web.Models.Biobank
         public IEnumerable<ReferenceDataModel> AgeRanges { get; set; }
         public IEnumerable<ReferenceDataModel> DonorCounts { get; set; }
         public IEnumerable<ReferenceDataModel> MaterialTypes { get; set; }
+        public IEnumerable<ReferenceDataModel> PreservationTypes { get; set; }
         public IEnumerable<ReferenceDataModel> StorageTemperatures { get; set; }
         public IEnumerable<ReferenceDataModel> Percentages { get; set; }
         public IEnumerable<ReferenceDataModel> MacroscopicAssessments { get; set; }
@@ -81,6 +82,7 @@ namespace Biobanks.Web.Models.Biobank
     {
         public int? id { get; set; }
         public int materialType { get; set; }
+        public int? preservationType { get; set; }
         public int storageTemperature { get; set; }
         public int? percentage { get; set; }
         public int macroscopicAssessment { get; set; }

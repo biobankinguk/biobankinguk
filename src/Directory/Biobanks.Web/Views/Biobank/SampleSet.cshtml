@@ -60,36 +60,38 @@
                 <tr>
                     <th colspan="4"><h4>Material preservation details</h4></th>
                 </tr>
-				<tr>
-					<th>Material type</th>
+                <tr>
+                    <th>Material type</th>
+                    <th>Preservation type</th>
                     <th>@App.Config[ConfigKey.StorageTemperatureName]</th>
 
-					@if (Model.ShowMacroscopicAssessment)
-					{
-						<th>@App.Config[ConfigKey.MacroscopicAssessmentName]</th>
-					}
-					@if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
-					{
-						<th>Collection percentage</th>
-                    }                   
-					</tr>
+                    @if (Model.ShowMacroscopicAssessment)
+                    {
+                        <th>@App.Config[ConfigKey.MacroscopicAssessmentName]</th>
+                    }
+                    @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
+                    {
+                        <th>Collection percentage</th>
+                    }
+                </tr>
             </thead>
             <tbody>
                 @foreach (var data in Model.MaterialPreservationDetails)
                 {
-				<tr>
-					<td>@data.MaterialType</td>
-					<td>@data.StorageTemperature</td>
-					
+                <tr>
+                    <td>@data.MaterialType</td>
+                    <td>@data.PreservationType</td>
+                    <td>@data.StorageTemperature</td>
+
                     @if (Model.ShowMacroscopicAssessment)
-					{
-						<td>@data.MacroscopicAssessment</td>
-					}
+                    {
+                        <td>@data.MacroscopicAssessment</td>
+                    }
                     @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
-					{
-					    <td>@(data.CollectionPercentage ?? "Not Applicable") </td>
-					}
-				</tr>
+                    {
+                        <td>@(data.CollectionPercentage ?? "Not Applicable") </td>
+                    }
+                </tr>
                 }
             </tbody>
         </table>

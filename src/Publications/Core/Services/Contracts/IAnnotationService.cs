@@ -1,12 +1,8 @@
-﻿using Publications.Entities;
-using Publications.Services.Dto;
-using System;
+﻿using Biobanks.Publications.Core.Services.Dto;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Publications.Services.Contracts
+namespace Biobanks.Publications.Core.Services.Contracts
 {
     public interface IAnnotationService
     {
