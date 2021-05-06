@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Analytics.Services.Dto
+namespace Biobanks.Analytics.Core.Dto
 {
     public class OrganisationAnalyticReportDto
     {
@@ -21,31 +17,31 @@ namespace Analytics.Services.Dto
 
     public partial class ProfilePageViewsDto
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCountsDto> ProfileQuarters { get; set; }
         public IList<int> ViewsPerQuarter { get; set; }
         public IList<double> ViewsAverages { get; set; }
-        public IList<String> PageRouteLabels { get; set; }
+        public IList<string> PageRouteLabels { get; set; }
         public IList<int> RouteCount { get; set; }
     }
 
     public partial class SearchActivityDto
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCountsDto> SearchQuarters { get; set; }
         public IList<int> SearchPerQuarter { get; set; }
         public IList<double> SearchAverages { get; set; }
-        public IList<String> SearchTypeLabels { get; set; }
+        public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
-        public IList<String> SearchTermLabels { get; set; }
+        public IList<string> SearchTermLabels { get; set; }
         public IList<int> SearchTermCount { get; set; }
-        public IList<String> SearchFilterLabels { get; set; }
+        public IList<string> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
     }
 
     public partial class ContactRequestsDto
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCountsDto> ContactQuarters { get; set; }
         public IList<int> ContactsPerQuarter { get; set; }
         public IList<double> ContactAverages { get; set; }

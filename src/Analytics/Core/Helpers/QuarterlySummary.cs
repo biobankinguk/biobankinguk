@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Analytics.Services.Helpers
+﻿namespace Biobanks.Analytics.Core.Helpers
 {
     public class QuarterlySummary
     {

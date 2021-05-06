@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Biobanks.Entities.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Analytics.Data;
 
-namespace Analytics.Services.Contracts
+namespace Biobanks.Analytics.Core.Contracts
 {
-    public interface IBiobankWebService
+    public interface IBiobankReadService
     {
         Task<IList<string>> GetOrganisationExternalIds();
         Task<IList<string>> GetOrganisationNames();
