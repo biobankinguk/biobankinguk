@@ -25,11 +25,9 @@ namespace PublicationsAzFunctions
 
             // Register DbContext
             services.AddDbContext<BiobanksDbContext>(options => options
-                .EnableSensitiveDataLogging()
                 .UseSqlServer(
                     config.GetConnectionString("Default")
-                ),
-                ServiceLifetime.Transient
+                )
             );
 
             //DI
