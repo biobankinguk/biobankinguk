@@ -57,11 +57,9 @@ namespace Biobanks.Web.Controllers
             // Build the base model.
             var model = new BaseSearchModel
             {
-                OntologyTerm = ontologyTerm ?? " "  // Null values set to " " wildcard
+                // Extract the search facets.
+                SelectedFacets = ExtractSearchFacets(selectedFacets)
             };
-
-            // Extract the search facets.
-            model.SelectedFacets = ExtractSearchFacets(selectedFacets);
 
             // Search based on the provided criteria.
             var searchResults = _searchProvider.CollectionSearchByOntologyTerm(
