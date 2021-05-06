@@ -15,11 +15,9 @@ namespace Biobanks.Aggregator.AzFunctions
         {
             // Register DbContext
             services.AddDbContext<BiobanksDbContext>(options => options
-                .EnableSensitiveDataLogging()
                 .UseSqlServer(
                     context.Configuration.GetConnectionString("Default")
-                ),
-                ServiceLifetime.Transient
+                )
             );
 
             // Services

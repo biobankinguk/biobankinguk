@@ -138,7 +138,6 @@ namespace Biobanks.Aggregator.Core.Services
                 ? $"{sample.SampleContent.Value}"
                 : $"{sample.CollectionName} ({sample.SampleContent.Value})";
 
-        public async Task DeleteMaterialDetailsBySampleSetId(int id)
-            => await _db.MaterialDetails.Where(x => x.SampleSetId == id).DeleteAsync(); 
+
     }
 }

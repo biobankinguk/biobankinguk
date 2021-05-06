@@ -577,6 +577,129 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("Submissions");
                 });
 
+            modelBuilder.Entity("Biobanks.Entities.Data.Analytics.DirectoryAnalyticEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Biobank")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Counts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("EventAction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventCategory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hostname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Segment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DirectoryAnalyticEvents");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.Analytics.DirectoryAnalyticMetric", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AvgSessionDuration")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BounceRate")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Hostname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PagePathLevel1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PercentNewSessions")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Segment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Sessions")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DirectoryAnalyticMetrics");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.Analytics.OrganisationAnalytic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Counts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Hostname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganisationExternalId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviousPagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Segment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrganisationAnalytics");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Data.Blob", b =>
                 {
                     b.Property<int>("Id")
