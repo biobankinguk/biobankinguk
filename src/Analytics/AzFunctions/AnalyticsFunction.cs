@@ -4,9 +4,9 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Analytics.Services.Contracts;
+using Biobanks.Analytics.Core.Contracts;
 
-namespace Analytics.AnalyticsAzureFunctions
+namespace Biobanks.Analytics.AzFunctions
 {
     public class AnalyticsFunction
     {
@@ -29,7 +29,7 @@ namespace Analytics.AnalyticsAzureFunctions
             log.LogInformation($"Fetching analytics for {biobankId}");
 
             //Call GetBiobankReport method from service layer and load into DTO
-            var report = await _analyticsReportGenerator.GetBiobankReport(biobankId,year,endQuarter,reportPeriod);
+            var report = await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod);
 
             log.LogInformation($"Organisation report generated");
             return new OkObjectResult(report);

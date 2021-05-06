@@ -11,7 +11,7 @@
     @Scripts.Render("~/bundles/collection-sample-sets")
     @Scripts.Render("~/bundles/help-buttons")
 
-    <script>
+<script>
         $(function () {
             // Donor Count
             lookup.donorCounts(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.DonorCounts)), function (x) {
@@ -22,6 +22,10 @@
 
             // Material Type
             lookup.materialTypes(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.MaterialTypes)), function (x) {
+                return new RadioBinding(x.Id, x.Description, x.SortOrder);
+            }));
+
+            lookup.preservationTypes(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.PreservationTypes)), function (x) {
                 return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
 
@@ -52,11 +56,11 @@
             {
                 @:sampleSetVM.materialPreservationDetails(ko.utils.arrayMap(@Html.Raw(Model.MaterialPreservationDetailsJson), function(x)
                 @:{
-                @:    return new MaterialPreservationDetail(x.materialType, x.storageTemperatures, x.percentage, x.macroscopicAssessment);
+                @:    return new MaterialPreservationDetail(x.materialType, x.preservationTypes, x.storageTemperatures, x.percentage, x.macroscopicAssessment);
                 @:}));
             }
         });
-    </script>
+</script>
 }
 
 <h2>@ViewBag.Title</h2>

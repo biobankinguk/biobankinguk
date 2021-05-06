@@ -314,33 +314,33 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync()
         {
-            var organisations = await _organisationRepository.ListAsync(
-                false,
-                b => !b.IsSuspended,
-                null,
-                b => b.Collections,
-                b => b.DiagnosisCapabilities,
-                b => b.OrganisationUsers
-            );
+                var organisations = await _organisationRepository.ListAsync(
+                    false,
+                    b => !b.IsSuspended,
+                    null,
+                    b => b.Collections,
+                    b => b.DiagnosisCapabilities,
+                    b => b.OrganisationUsers
+                );
 
-            var organisationUsers = await _organisationUserRepository.ListAsync(false);
-            var identityUsers = await _userManager.Users.ToListAsync();
+                var organisationUsers = await _organisationUserRepository.ListAsync(false);
+                var identityUsers = await _userManager.Users.ToListAsync();
 
-            return (from organisation in organisations
-                let organisationUserIds = organisationUsers.Where(ou => ou.OrganisationId == organisation.OrganisationId).Select(ou => ou.OrganisationUserId)
-                let organisationIdentityUsers = identityUsers.Where(iu => organisationUserIds.Contains(iu.Id) && iu.LastLogin.HasValue)
-                let lastLoginUser = organisationIdentityUsers.OrderByDescending(iu => iu.LastLogin).FirstOrDefault()
-                select new BiobankActivityDTO
-                {
-                    OrganisationId = organisation.OrganisationId,
-                    Name = organisation.Name,
-                    ContactEmail = organisation.ContactEmail,
-                    LastUpdated = organisation.LastUpdated,
-                    LastCapabilityUpdated = organisation.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
-                    LastCollectionUpdated = organisation.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
-                    LastAdminLoginEmail = lastLoginUser?.Email,
-                    LastAdminLoginTime = lastLoginUser?.LastLogin
-                }).ToList();
+                return (from organisation in organisations
+                        let organisationUserIds = organisationUsers.Where(ou => ou.OrganisationId == organisation.OrganisationId).Select(ou => ou.OrganisationUserId)
+                        let organisationIdentityUsers = identityUsers.Where(iu => organisationUserIds.Contains(iu.Id) && iu.LastLogin.HasValue)
+                        let lastLoginUser = organisationIdentityUsers.OrderByDescending(iu => iu.LastLogin).FirstOrDefault()
+                        select new BiobankActivityDTO
+                        {
+                            OrganisationId = organisation.OrganisationId,
+                            Name = organisation.Name,
+                            ContactEmail = organisation.ContactEmail,
+                            LastUpdated = organisation.LastUpdated,
+                            LastCapabilityUpdated = organisation.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                            LastCollectionUpdated = organisation.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                            LastAdminLoginEmail = lastLoginUser?.Email,
+                            LastAdminLoginTime = lastLoginUser?.LastLogin
+                        }).ToList();
         }
 
         public async Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdAsync(int networkId)
@@ -1087,15 +1087,8 @@ namespace Biobanks.Services
         public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
-        // TODO: Should be updated to count the number of MaterialDetails with PreservationType, when implemented.
         public async Task<int> GetPreservationTypeUsageCount(int id)
-        {
-            var preservationType = (await _preservationTypeRepository.ListAsync(false, x => x.Id == id)).First();
-
-            return preservationType?.StorageTemperatureId != null
-                ? await GetStorageTemperatureUsageCount((int) preservationType.StorageTemperatureId) // Technically Upper Bound
-                : 0;
-        }
+        => await _materialDetailsRepository.CountAsync(x => x.PreservationTypeId == id);
 
         public async Task<bool> IsPreservationTypeInUse(int id)
             => (await GetPreservationTypeUsageCount(id)) > 0;

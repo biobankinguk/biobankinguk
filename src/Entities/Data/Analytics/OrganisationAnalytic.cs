@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Analytics.Data.Entities
+namespace Biobanks.Entities.Data.Analytics
 {
     public class OrganisationAnalytic
     {
