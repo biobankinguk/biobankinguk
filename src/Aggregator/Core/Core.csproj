@@ -6,4 +6,8 @@
     <RootNamespace>Biobanks.Aggregator.Core</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\Data.csproj" />
+  </ItemGroup>
+
 </Project>

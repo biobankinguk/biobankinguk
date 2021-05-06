@@ -1,6 +1,7 @@
 ﻿using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.Analytics;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -97,6 +98,14 @@ namespace Biobanks.Data
         #region Application Data: Publications
         public DbSet<Annotation> Annotations { get; set; }
         public DbSet<Publication> Publications { get; set; }
+        #endregion
+
+        #region Analytics
+
+        public DbSet<DirectoryAnalyticEvent> DirectoryAnalyticEvents { get; set; }
+        public DbSet<DirectoryAnalyticMetric> DirectoryAnalyticMetrics { get; set; }
+        public DbSet<OrganisationAnalytic> OrganisationAnalytics { get; set; }
+
         #endregion
 
         public DbSet<ApiClient> ApiClients { get; set; }
