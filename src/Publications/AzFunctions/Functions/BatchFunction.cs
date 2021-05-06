@@ -1,10 +1,8 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Biobanks.Publications.Core.Services.Hosted;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using PublicationsAzFunctions.Types;
 
 namespace PublicationsAzFunctions.Functions
 {
