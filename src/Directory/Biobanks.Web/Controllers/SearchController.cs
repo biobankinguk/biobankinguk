@@ -40,7 +40,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> Collections(string ontologyTerm, string selectedFacets)
         {
             // Check If Valid and Visible Term
-            if (!string.IsNullOrEmpty(ontologyTerm))
+            if (!string.IsNullOrWhiteSpace(ontologyTerm))
             {
                 var term = await _biobankReadService.GetOntologyTermByDescription(ontologyTerm);
 
