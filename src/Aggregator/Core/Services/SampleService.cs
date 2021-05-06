@@ -18,7 +18,7 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public async Task<IEnumerable<LiveSample>> ListSimilarSamplesAsync(LiveSample sample)
+        public async Task<IEnumerable<LiveSample>> ListSimilarSamples(LiveSample sample)
         {
             return await _db.Samples
                 .Include(x => x.SampleContent)
@@ -30,15 +30,15 @@ namespace Biobanks.Aggregator.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<LiveSample>> ListDirtySamplesAsync()
+        public async Task<IEnumerable<LiveSample>> ListDirtySamples()
             => await _db.Samples.Where(x => x.IsDirty).ToListAsync();
 
-        public async Task CleanSamplesAsync(IEnumerable<LiveSample> samples)
+        public async Task CleanSamples(IEnumerable<LiveSample> samples)
             => await _db.Samples
                     .Where(x => samples.Select(x => x.Id).Contains(x.Id))
                     .UpdateFromQueryAsync(x => new LiveSample { IsDirty = false });
 
-        public async Task DeleteFlaggedSamplesAsync()
+        public async Task DeleteFlaggedSamples()
             => await _db.Samples.Where(x => x.IsDeleted).DeleteAsync();
 
     }

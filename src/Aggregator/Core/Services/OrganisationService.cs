@@ -17,7 +17,7 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public async Task<Organisation> GetByIdAsync(int organisationId)
+        public async Task<Organisation> GetById(int organisationId)
             => await _db.Organisations.FirstOrDefaultAsync(x => x.OrganisationId == organisationId);
     }
 }

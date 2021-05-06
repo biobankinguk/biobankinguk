@@ -5,6 +5,6 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 {
     public interface IOrganisationService
     {
-        Task<Organisation> GetByIdAsync(int organisationId);
+        Task<Organisation> GetById(int organisationId);
     }
 }

@@ -6,13 +6,13 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 {
     public interface ICollectionService
     {
-        Task<Collection> GetCollectionAsync(int organisationId, string collectionName);
+        Task<Collection> GetCollection(int organisationId, string collectionName);
 
-        Task UpdateCollectionAsync(Collection collection);
+        Task UpdateCollection(Collection collection);
         
-        Task AddCollectionAsync(Collection collection);
+        Task AddCollection(Collection collection);
 
-        Task DeleteCollectionAsync(Collection collection);
+        Task DeleteCollection(Collection collection);
 
         Task DeleteSampleSetByIds(IEnumerable<int> ids);
 

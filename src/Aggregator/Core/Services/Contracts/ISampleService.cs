@@ -6,13 +6,13 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
 {
     public interface ISampleService
     {
-        Task<IEnumerable<LiveSample>> ListSimilarSamplesAsync(LiveSample sample);
+        Task<IEnumerable<LiveSample>> ListSimilarSamples(LiveSample sample);
 
-        Task<IEnumerable<LiveSample>> ListDirtySamplesAsync();
+        Task<IEnumerable<LiveSample>> ListDirtySamples();
 
-        Task CleanSamplesAsync(IEnumerable<LiveSample> samples);
+        Task CleanSamples(IEnumerable<LiveSample> samples);
 
-        Task DeleteFlaggedSamplesAsync();
+        Task DeleteFlaggedSamples();
 
     }
 }

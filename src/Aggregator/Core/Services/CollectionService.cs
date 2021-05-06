@@ -19,7 +19,7 @@ namespace Biobanks.Aggregator.Core.Services
             _db = db;
         }
 
-        public async Task<Collection> GetCollectionAsync(int organisationId, string collectionName)
+        public async Task<Collection> GetCollection(int organisationId, string collectionName)
             => await _db.Collections
                 .Include(x => x.SampleSets)
                 .FirstOrDefaultAsync(x =>
@@ -27,19 +27,19 @@ namespace Biobanks.Aggregator.Core.Services
                     x.Title == collectionName && 
                     x.FromApi);
 
-        public async Task AddCollectionAsync(Collection collection)
+        public async Task AddCollection(Collection collection)
         {
             await _db.Collections.AddAsync(collection);
             await _db.SaveChangesAsync();
         }
 
-        public async Task UpdateCollectionAsync(Collection collection)
+        public async Task UpdateCollection(Collection collection)
         {
             _db.Update(collection);
             await _db.SaveChangesAsync();
         }
 
-        public async Task DeleteCollectionAsync(Collection collection)
+        public async Task DeleteCollection(Collection collection)
         {
             await _db.Collections.Where(x => x.CollectionId == collection.CollectionId).DeleteAsync();
             await _db.SaveChangesAsync();
