@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 
-using AzFunctions.Types;
-
 using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.Azure.Functions.Worker;
 
