@@ -89,13 +89,13 @@ namespace Biobanks.Directory.Data.Configs
                 Description = "Enable/Disable third party contact in Contact List",
                 ReadOnly = false
             },
-            // Preservation Type Name Override
+            // Storage Temperature Name Override
             new Config 
             {
-                Key = "site.display.preservation.name",
-                Value = "Preservation Type",
-                Name = "Set Preservation Details Custom Name",
-                Description= "Set Preservation Details Custom Name",
+                Key = "site.display.storagetemperature.name",
+                Value = "Storage Temperature",
+                Name = "Set Storage Temperatures Custom Name",
+                Description= "Set Storage Temperatures Custom Name",
                 ReadOnly = true
             },
             // Donor Count Name Override
