@@ -26,11 +26,9 @@ namespace Biobanks.Analytics.AzFunctions
 
             // Register DbContext
             services.AddDbContext<BiobanksDbContext>(options => options
-                .EnableSensitiveDataLogging()
                 .UseSqlServer(
                     config.GetConnectionString("Default")
-                ),
-                ServiceLifetime.Transient
+                )
             );
 
             services.AddScoped<IAnalyticsReportGenerator, AnalyticsReportGenerator>();
