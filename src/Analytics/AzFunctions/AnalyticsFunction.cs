@@ -4,7 +4,6 @@ using Biobanks.Analytics.Core.Contracts;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using System.Net;
-using Flurl;
 
 namespace Biobanks.Analytics.AzFunctions
 {
@@ -20,15 +19,13 @@ namespace Biobanks.Analytics.AzFunctions
         [Function("AnalyticsFunction")]
         public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GetAnalyticsReport/{biobankId}/{year}/{endQuarter}/{reportPeriod}")] HttpRequestData req,
+            string biobankId,
+            int year,
+            int endQuarter,
+            int reportPeriod,
             FunctionContext functionContext)
         {
             var logger = functionContext.GetLogger<AnalyticsFunction>();
-
-            var queryParams = new Url(req.Url).QueryParams;
-            var biobankId = queryParams.FirstOrDefault("biobankId").ToString();
-            var year = int.Parse(queryParams.FirstOrDefault("year").ToString());
-            var endQuarter = int.Parse(queryParams.FirstOrDefault("endQuarter").ToString());
-            var reportPeriod = int.Parse(queryParams.FirstOrDefault("reportPeriod").ToString());
 
             logger.LogInformation($"Fetching analytics for {biobankId}");
 
