@@ -1,29 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Publications.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
+using Biobanks.Publications.Core.Services.Dto;
+using Biobanks.Entities.Data;
+using Biobanks.Data;
+using Biobanks.Publications.Core.Services.Contracts;
 
-namespace Publications.Services
+namespace Biobanks.Publications.Core.Services
 {
     public class PublicationService : IPublicationService
     {
 
-        private PublicationDbContext _ctx;
+        private BiobanksDbContext _db;
 
-        public PublicationService(PublicationDbContext ctx)
+        public PublicationService(BiobanksDbContext db)
         {
-            _ctx = ctx;
+            _db = db;
         }
 
         public async Task AddOrganisationPublications(int organisationId, IEnumerable<PublicationDto> publications)
         {
-            var existingPublications = _ctx.Publications.Where(x => x.OrganisationId == organisationId);
+            var existingPublications = _db.Publications.Where(x => x.OrganisationId == organisationId);
 
             var fetchedPublications = publications.Select(x => new Publication()
             {
@@ -46,7 +43,7 @@ namespace Publications.Services
                 if (older is null)
                 {
                     // Add new Record
-                    _ctx.Add(newer);
+                    _db.Add(newer);
                 }
                 else
                 {
@@ -58,11 +55,11 @@ namespace Publications.Services
                     older.DOI = newer.DOI;
                     older.Source = newer.Source;
 
-                    _ctx.Update(older);
+                    _db.Update(older);
                 }
             }
 
-            await _ctx.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
     }
 }
