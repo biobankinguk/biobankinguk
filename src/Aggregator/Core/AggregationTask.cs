@@ -56,9 +56,6 @@ namespace Biobanks.Aggregator.Core
                     collection.CollectionTypeId = organisation.CollectionTypeId;
                     collection.AccessConditionId = organisation.AccessConditionId ?? 0;
 
-                    // Record Old SampleSet IDs
-                    var oldSampleSetIds = collection.SampleSets.Select(x => x.Id).Distinct().ToList();
-
                     // Clear Current SampleSets - Rebuilt Below
                     collection.SampleSets.Clear(); 
 
@@ -89,9 +86,7 @@ namespace Biobanks.Aggregator.Core
                     }
                     else
                     {
-                        await _collectionService.DeleteMaterialDetailsBySampleSetIds(oldSampleSetIds);
                         await _collectionService.UpdateCollection(collection);
-                        await _collectionService.DeleteSampleSetByIds(oldSampleSetIds);
                     }
                 }
                 else
