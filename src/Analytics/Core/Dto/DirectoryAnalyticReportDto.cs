@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Analytics.Services.Dto
+namespace Biobanks.Analytics.Core.Dto
 {
     public class DirectoryAnalyticReportDto
     {
@@ -23,8 +22,8 @@ namespace Analytics.Services.Dto
     public partial class SessionStatDto
     {
         //use class for label count pair?
-        public IList<string>  SessionNumberLabels { get; set; }
-        public IList<int>    SessionNumberCount { get; set; }
+        public IList<string> SessionNumberLabels { get; set; }
+        public IList<int> SessionNumberCount { get; set; }
         public IList<string> AvgBounceRateLabels { get; set; }
         public IList<double> AvgBounceRateCount { get; set; }
         public IList<string> AvgNewSessionLabels { get; set; }
@@ -35,18 +34,18 @@ namespace Analytics.Services.Dto
 
     public partial class SearchCharacteristicDto
     {
-        public IList<String> SearchTypeLabels { get; set; }
+        public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
-        public IList<String> SearchTermLabels { get; set; }
+        public IList<string> SearchTermLabels { get; set; }
         public IList<int> SearchTermCount { get; set; }
-        public IList<String> SearchFilterLabels { get; set; }
+        public IList<string> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
     }
 
     public partial class EventStatDto
     {
         public IList<string> ContactNumberLabels { get; set; }
-        public IList<int> ContactNumberCount { get; set; } 
+        public IList<int> ContactNumberCount { get; set; }
         public IList<string> FilteredContactLabels { get; set; }
         public IList<int> FilteredContactCount { get; set; }
         public IList<string> FilteredMailToLabels { get; set; }
@@ -55,8 +54,8 @@ namespace Analytics.Services.Dto
 
     public partial class ProfilePageStatDto
     {
-        public IList<SourceCountDto> ProfileSources{ get; set; }
-        public IList<String> PageRouteLabels { get; set; }
+        public IList<SourceCountDto> ProfileSources { get; set; }
+        public IList<string> PageRouteLabels { get; set; }
         public IList<int> RouteCount { get; set; }
     }
 

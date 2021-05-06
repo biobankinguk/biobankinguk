@@ -1047,6 +1047,7 @@ namespace Biobanks.Web.Controllers
                     Sex = sampleSet.Sex.Value,
                     Age = sampleSet.AgeRange.Value,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
+                    PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
                     StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
                 })
             };
@@ -1063,7 +1064,6 @@ namespace Biobanks.Web.Controllers
             {
                 CollectionId = id
             };
-
             return View((AddSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
         }
 
@@ -1088,6 +1088,7 @@ namespace Biobanks.Web.Controllers
                         new MaterialDetail
                         {
                             MaterialTypeId = x.materialType,
+                            PreservationTypeId = x.preservationType,
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
                             MacroscopicAssessmentId = x.macroscopicAssessment
@@ -1127,6 +1128,7 @@ namespace Biobanks.Web.Controllers
                 MaterialPreservationDetailsJson = JsonConvert.SerializeObject(sampleSet.MaterialDetails.Select(x => new MaterialDetailModel
                 {
                     materialType = x.MaterialTypeId,
+                    preservationType = x.PreservationTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
@@ -1170,6 +1172,7 @@ namespace Biobanks.Web.Controllers
                 {
                     id = x.Id,
                     materialType = x.MaterialTypeId,
+                    preservationType = x.PreservationTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
                     macroscopicAssessment = x.MacroscopicAssessmentId
@@ -1200,6 +1203,7 @@ namespace Biobanks.Web.Controllers
                         {
                             Id = x.id ?? 0,
                             MaterialTypeId = x.materialType,
+                            PreservationTypeId = x.preservationType,
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
                             MacroscopicAssessmentId = x.macroscopicAssessment,
@@ -1257,6 +1261,7 @@ namespace Biobanks.Web.Controllers
                     CollectionPercentage = x.CollectionPercentage?.Value,
                     MacroscopicAssessment = x.MacroscopicAssessment.Value,
                     MaterialType = x.MaterialType.Value,
+                    PreservationType = x.PreservationType?.Value,
                     StorageTemperature = x.StorageTemperature.Value
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
@@ -1394,6 +1399,17 @@ namespace Biobanks.Web.Controllers
                 .OrderBy(x => x.SortOrder);
 
             model.MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
+                .Select(
+                    x =>
+                        new ReferenceDataModel
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            SortOrder = x.SortOrder
+                        })
+                .OrderBy(x => x.SortOrder);
+
+            model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
                 .Select(
                     x =>
                         new ReferenceDataModel
