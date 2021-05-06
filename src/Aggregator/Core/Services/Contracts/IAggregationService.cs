@@ -16,5 +16,7 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
         MaterialDetail GenerateMaterialDetail(IEnumerable<LiveSample> samples);
 
         string GenerateCollectionName(LiveSample sample);
+
+        Task DeleteMaterialDetailsBySampleSetId(int id);
     }
 }

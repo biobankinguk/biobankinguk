@@ -1,5 +1,4 @@
 ﻿using Biobanks.Entities.Data;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Core.Services.Contracts
@@ -8,14 +7,10 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
     {
         Task<Collection> GetCollectionAsync(int organisationId, string collectionName);
 
+        Task DeleteCollectionAsync(Collection collection);
+        
         Task UpdateCollectionAsync(Collection collection);
         
         Task AddCollectionAsync(Collection collection);
-
-        Task DeleteCollectionAsync(Collection collection);
-
-        Task DeleteSampleSetsByIds(IEnumerable<int> ids);
-
-        Task DeleteMaterialDetailsBySampleSetIds(IEnumerable<int> ids);
     }
 }
