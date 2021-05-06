@@ -25,8 +25,12 @@ namespace Biobanks.Aggregator.Core.Services
                 .Include(x => x.SampleContentMethod)
                 .Where(x =>
                     x.OrganisationId == sample.OrganisationId &&
+<<<<<<< HEAD
                     x.CollectionName == sample.CollectionName &&
                     x.SampleContentId == sample.SampleContentId
+=======
+                    x.CollectionName == sample.CollectionName
+>>>>>>> main
                 )
                 .ToListAsync();
         }
