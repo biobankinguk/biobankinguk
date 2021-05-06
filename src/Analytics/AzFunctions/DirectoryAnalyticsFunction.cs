@@ -1,10 +1,8 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Biobanks.Analytics.Core.Contracts;
+using Microsoft.Azure.Functions.Worker;
 
 namespace Biobanks.Analytics.AzFunctions
 {
@@ -17,7 +15,7 @@ namespace Biobanks.Analytics.AzFunctions
             _analyticsReportGenerator = analyticsReportGenerator;
         }
 
-        [FunctionName("DirectoryAnalyticsFunction")]
+        [Function("DirectoryAnalyticsFunction")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GetDirectoryAnalyticsReport/{year}/{endQuarter}/{reportPeriod}")] HttpRequest req,
             int year,
