@@ -25,6 +25,7 @@ namespace Biobanks.Web.Models.Biobank
         public string Sex { get; set; }
         public string Age { get; set; }
         public string MaterialTypes { get; set; }
+        public string PreservationTypes { get; set; }
         public string StorageTemperatures { get; set; }
     }
 }

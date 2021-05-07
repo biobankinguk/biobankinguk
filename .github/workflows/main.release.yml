@@ -35,6 +35,7 @@ env:
     artifacts/dataseed/*,
     artifacts/submissions-api/*,
     artifacts/submissions-workers-azfunctions/*,
+    artifacts/aggregator-azfunctions/*,
     artifacts/publications-azfunctions/*,
     artifacts/analytics-azfunctions/*,
     artifacts/directory/*,
@@ -56,6 +57,7 @@ jobs:
       - publish-identitytool
       - publish-submissions-api
       - publish-submissions-azfunctions
+      - publish-aggregator-azfunctions
       - publish-analytics-azfunctions
       - publish-publications-azfunctions
       - publish-directory
@@ -206,17 +208,53 @@ jobs:
           name: ${{ env.CI_artifact-name }}
           path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
 
+  publish-aggregator-azfunctions:
+    runs-on: ubuntu-latest
+    needs: [init]
+    env:
+      CI_project: ./src/Aggregator/AzFunctions/AzFunctions.csproj
+      CI_artifact-name: aggregator-azfunctions
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      # .NET Isolated Functions Worker still has a 3.1 SDK dependency for now
+      # https://github.com/Azure/azure-functions-dotnet-worker/issues/301
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      - name: dotnet publish
+        run: >-
+          dotnet publish
+          ${{ env.CI_project }}
+          -c ${{ env.CI_build-config }}
+          -o ${{ env.CI_publish-dir }}
+          /P:Version=${{ needs.init.outputs.version }}
+      - uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CI_artifact-name }}
+          path: ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip
+
   publish-analytics-azfunctions:
     runs-on: ubuntu-latest
     needs: [init]
     env:
-      CI_project: ./src/Analytics/AzureFunctions/AzureFunctions.csproj
+      CI_project: ./src/Analytics/AzFunctions/AzFunctions.csproj
       CI_artifact-name: analytics-azfunctions
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x # TODO revert to stack version after upgrade
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      # .NET Isolated Functions Worker still has a 3.1 SDK dependency for now
+      # https://github.com/Azure/azure-functions-dotnet-worker/issues/301
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
       - name: dotnet publish
         run: >-
           dotnet publish
@@ -236,13 +274,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [init]
     env:
-      CI_project: ./src/Publications/PublicationsAzureFunctions/PublicationsAzureFunctions.csproj
+      CI_project: ./src/Publications/AzFunctions/AzFunctions.csproj
       CI_artifact-name: publications-azfunctions
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x # TODO revert to stack version after upgrade
+          dotnet-version: ${{ env.CI_dotnet-version }}
+      # .NET Isolated Functions Worker still has a 3.1 SDK dependency for now
+      # https://github.com/Azure/azure-functions-dotnet-worker/issues/301
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
       - name: dotnet publish
         run: >-
           dotnet publish
