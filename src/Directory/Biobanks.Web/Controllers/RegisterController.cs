@@ -97,8 +97,8 @@ namespace Biobanks.Web.Controllers
                 return View(model);
             }
 
-            //check for duplicate name against non-declined requests too
-            if (!await _biobankReadService.ValidateOrganisationEmail(model.Email))
+            //Check if email is on the allow/block list
+            if (!await _biobankReadService.ValidateOrganisationEmail(model.Email) && !model.AdacInvited)
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(
@@ -191,6 +191,17 @@ namespace Biobanks.Web.Controllers
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
+
+                return View(model);
+            }
+
+            //Check if email is on the allow/block list
+            if (!await _biobankReadService.ValidateOrganisationEmail(model.Email) && !model.AdacInvited)
+            {
+                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                SetTemporaryFeedbackMessage(
+                    $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+                    FeedbackMessageType.Danger, true);
 
                 return View(model);
             }
