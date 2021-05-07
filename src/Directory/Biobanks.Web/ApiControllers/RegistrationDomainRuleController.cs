@@ -48,7 +48,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Post(RegistrationDomainRuleModel model)
         {
-          
+            //Checking if the given value is valid
+            if (!model.Value.Contains(".") && !model.Value.Contains("@"))
+            {
+                ModelState.AddModelError("Value", "That value is invalid and must contain at least one of '.' or '@'.");
+            }
+
 
             if (!ModelState.IsValid)
             {
@@ -116,27 +121,6 @@ namespace Biobanks.Web.ApiControllers
             await _biobankWriteService.DeleteRegistrationDomainRuleAsync(new RegistrationDomainRule()
             {
                 Id = model.Id,
-                RuleType = model.RuleType,
-                Value = model.Value,
-                Source = model.Source,
-                DateModified = model.DateModified
-            });
-
-            //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
-        }
-
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, RegistrationDomainRuleModel model)
-        {
-            await _biobankWriteService.UpdateRegistrationDomainRuleAsync(new RegistrationDomainRule()
-            {
-                Id = id,
                 RuleType = model.RuleType,
                 Value = model.Value,
                 Source = model.Source,

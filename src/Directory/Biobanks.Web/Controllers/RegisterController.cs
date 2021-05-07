@@ -97,6 +97,17 @@ namespace Biobanks.Web.Controllers
                 return View(model);
             }
 
+            //check for duplicate name against non-declined requests too
+            if (!await _biobankReadService.ValidateOrganisationEmail(model.Email))
+            {
+                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                SetTemporaryFeedbackMessage(
+                    $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+                    FeedbackMessageType.Danger, true);
+
+                return View(model);
+            }
+
             //get the org type id for biobanks
             var type = await _biobankReadService.GetBiobankOrganisationTypeAsync();
 

@@ -216,9 +216,12 @@ namespace Biobanks.Web.Controllers
             if (!await _biobankReadService.ValidateOrganisationEmail(model.ContactEmail))
             {
                 model = await AddCountiesToModel(model);
-                
+
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-                ModelState.AddModelError("",$"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact {supportEmail}");
+                SetTemporaryFeedbackMessage(
+                    $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+                    FeedbackMessageType.Danger, true);
+
                 return View(model);
             }
 
