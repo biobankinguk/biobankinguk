@@ -452,6 +452,7 @@
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
     <Compile Include="ApiControllers\PreservationTypeController.cs" />
+    <Compile Include="ApiControllers\RegistrationDomainRuleController.cs" />
     <Compile Include="ApiControllers\StorageTemperatureController.cs" />
     <Compile Include="ApiControllers\RegistrationReasonController.cs" />
     <Compile Include="ApiControllers\SampleCollectionModeController.cs" />
@@ -1102,6 +1103,7 @@
     <Folder Include="Views\MacroscopicAssessment\" />
     <Folder Include="Views\MaterialTypes\" />
     <Folder Include="Views\PreservationType\" />
+    <Folder Include="Views\RegistrationDomainRule\" />
     <Folder Include="Views\RegistrationReason\" />
     <Folder Include="Views\SampleCollectionModes\" />
     <Folder Include="Views\ServiceOfferings\" />

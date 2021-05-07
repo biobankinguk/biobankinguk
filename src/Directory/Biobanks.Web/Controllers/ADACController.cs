@@ -1671,6 +1671,28 @@ namespace Biobanks.Web.Controllers
             => View("HomepageConfigPreview", homepage);
         #endregion
 
+        #region Registration Domain Rules Config
+
+        public async Task<ActionResult> EmailConfig()
+        {
+         
+
+            return View((await _biobankReadService.ListRegistrationDomainRulesAsync())
+                .Select(x => new RegistrationDomainRuleModel
+                {
+                    Id = x.Id,
+                    RuleType = x.RuleType,
+                    Value = x.Value,
+                    Source = x.Source,
+                    DateModified = x.DateModified
+                }));
+         
+        }
+
+
+
+        #endregion
+
         #region Termpage Config
         public ActionResult TermpageConfig()
         {

@@ -24,6 +24,8 @@
                 <tr>
                     <th>Rule Type</th>
                     <th>Value</th>
+                    <th>Source</th>
+                    <th>Date Modified</th>
                     <th>@* Actions *@</th>
                 </tr>
             </thead>
@@ -31,34 +33,36 @@
             <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr data-resource-url="/api/Sex"
-                            data-sexes-id="@item.Id"
-                            data-sexes-desc="@item.Value">
+                <tr data-resource-url="/api/RegistrationDomainRule"
+                    data-registration-domain-rules-id="@item.Id"
+                    data-registration-domain-rules-desc="@item.Value">
 
-                            <td>@item.RuleType</td>
-                            <td>@item.Value</td>
+                    <td>@item.RuleType</td>
+                    <td>@item.Value</td>
+                    <td>@item.Source</td>
+                    <td>@item.DateModified</td>
 
-                            <td class="text-right">                         
-                                <a title="Edit"
-                                    class="action-icon"
-                                    href="#"
-                                    data-target="#registration-domain-rules-modal"
-                                    data-sex="@Json.Encode(item)"
-                                    data-bind="click: openModalForEdit">
-                                    <span class="fa fa-edit labelled-icon"></span>Edit
-                                </a>
+                    <td class="text-right">
+                        <a title="Edit"
+                           class="action-icon"
+                           href="#"
+                           data-target="#registration-domain-rules-modal"
+                           data-registration-domain-rule="@Json.Encode(item)"
+                           data-bind="click: openModalForEdit">
+                            <span class="fa fa-edit labelled-icon"></span>Edit
+                        </a>
 
-                                <a title="Delete"
-                                    class="action-icon delete-confirm"
-                                    data-refdata-model="@Json.Encode(item)"
-                                    data-resource-url="/api/RegistrationDomainRule"
-                                    data-success-redirect="@Url.Action("EmailConfig")"
-                                    data-refdata-type="Registration Domain Rule"
-                                    href="#">
-                                    <span class="fa fa-trash labelled-icon"></span>Delete
-                                </a>                            
-                            </td>
-                        </tr>
+                        <a title="Delete"
+                           class="action-icon delete-confirm"
+                           data-refdata-model="@Json.Encode(item)"
+                           data-resource-url="/api/RegistrationDomainRule"
+                           data-success-redirect="@Url.Action("EmailConfig")"
+                           data-refdata-type="Registration Domain Rule"
+                           href="#">
+                            <span class="fa fa-trash labelled-icon"></span>Delete
+                        </a>
+                    </td>
+                </tr>
                     }
 
             </tbody>
@@ -72,7 +76,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="registration-domain-rules-modal-label"><span data-bind="text: modal.mode"></span> sex</h4>
+                <h4 class="modal-title" id="registration-domain-rules-modal-label"><span data-bind="text: modal.mode"></span> registration domain rule</h4>
             </div>
 
             <div class="row">
@@ -135,5 +139,5 @@
 {
     @Scripts.Render("~/bundles/knockout")
     @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/adac/sexes")
+    @Scripts.Render("~/bundles/adac/email-config")
 }

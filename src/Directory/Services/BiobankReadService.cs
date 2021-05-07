@@ -232,9 +232,20 @@ namespace Biobanks.Services
             }
             else
             {
-                return (await _registrationDomainRuleRepository.ListAsync(false, x => x.RuleType == "Block")).Where(y => email.Contains(y.Value)).Any();
+                if ((await _registrationDomainRuleRepository.ListAsync(false, x => x.RuleType == "Block")).Where(y => email.Contains(y.Value)).Any())
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                  
             }      
         }
+
+        public async Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync() =>
+            (await _registrationDomainRuleRepository.ListAsync()).ToList();
 
         public async Task<OrganisationType> GetBiobankOrganisationTypeAsync()
             //if we ever have more types, maybe a type service could provide

@@ -18,7 +18,7 @@ function RegistrationDomainRuleModal(id, ruleType, value, source, dateModified) 
     );
 }
 
-function AdacRegistrationDomainRuleVMViewModel() {
+function AdacRegistrationDomainRuleViewModel() {
     var _this = this;
 
     this.modalId = "#registration-domain-rules-modal";
@@ -125,7 +125,7 @@ $(function () {
     })(jQuery);
 
     $("#modal-registration-domain-rules-form").submit(function (e) {
-        adacSexVM.modalSubmit(e);
+        adacRegistrationDomainRuleVM.modalSubmit(e);
     });
 
     $(".delete-confirm").click(function (e) {
@@ -135,7 +135,7 @@ $(function () {
         var linkData = $link.data("refdata-model")
         var url = $link.data("resource-url") + "/" + linkData.Id;
 
-        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
+        bootbox.confirm("Are you sure you want to delete " + linkData.Value + "?",
             function (confirmation) {
                 if (confirmation) {
                     deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
@@ -156,8 +156,7 @@ $(function () {
         autoWidth: false,
         rowReorder: true,
         columnDefs: [
-            { orderable: true, "visible": false, className: 'reorder', targets: 0 }, // Column must be orderable for rowReorder
-            { orderable: false, targets: '_all' }
+            { orderable: true, targets: '_all' }
         ],
         language: {
             search: "Filter: ",

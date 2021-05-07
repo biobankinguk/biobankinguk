@@ -78,6 +78,8 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
 
+        private readonly IGenericEFRepository<RegistrationDomainRule> _registrationDomainRuleRepository;
+
         private readonly IBiobankIndexService _indexService;
 
         private readonly IMapper _mapper;
@@ -130,6 +132,8 @@ namespace Biobanks.Services
             IGenericEFRepository<Publication> publicationRepository,
 
             IGenericEFRepository<Config> siteConfigRepository,
+
+            IGenericEFRepository<RegistrationDomainRule> registrationDomainRuleRepository,
 
             IBiobankIndexService indexService,
             IMapper mapper,
@@ -187,6 +191,8 @@ namespace Biobanks.Services
             _publicationRespository = publicationRepository;
 
             _siteConfigRepository = siteConfigRepository;
+
+            _registrationDomainRuleRepository = registrationDomainRuleRepository;
 
             _indexService = indexService;
 
@@ -1373,6 +1379,33 @@ namespace Biobanks.Services
             await _associatedDataProcurementTimeFrameRepository.DeleteAsync(associatedDataProcurementTimeframe.Id);
             await _associatedDataProcurementTimeFrameRepository.SaveChangesAsync();
         }
+        #endregion
+
+        #region Registration Domain Rules
+
+        public async Task<RegistrationDomainRule> AddRegistrationDomainRuleAsync(RegistrationDomainRule registrationDomainRule)
+        {
+            _registrationDomainRuleRepository.Insert(registrationDomainRule);
+            await _registrationDomainRuleRepository.SaveChangesAsync();
+
+            return registrationDomainRule;
+        }
+
+        public async Task<RegistrationDomainRule> UpdateRegistrationDomainRuleAsync(RegistrationDomainRule registrationDomainRule)
+        {
+            _registrationDomainRuleRepository.Update(registrationDomainRule);
+            await _registrationDomainRuleRepository.SaveChangesAsync();
+
+            return registrationDomainRule;
+        }
+
+        public async Task DeleteRegistrationDomainRuleAsync(RegistrationDomainRule registrationDomainRule)
+        {
+            await _registrationDomainRuleRepository.DeleteAsync(registrationDomainRule.Id);
+            await _registrationDomainRuleRepository.SaveChangesAsync();
+        }
+
+
         #endregion
 
         #region RefData: PreservationType

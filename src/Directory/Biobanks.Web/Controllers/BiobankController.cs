@@ -218,7 +218,7 @@ namespace Biobanks.Web.Controllers
                 model = await AddCountiesToModel(model);
                 
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-                ModelState.AddModelError("",$"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>");
+                ModelState.AddModelError("",$"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact {supportEmail}");
                 return View(model);
             }
 

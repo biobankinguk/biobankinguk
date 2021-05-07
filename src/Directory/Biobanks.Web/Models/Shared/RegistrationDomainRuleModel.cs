@@ -10,7 +10,7 @@ namespace Biobanks.Web.Models.Shared
     {
 
         [Required]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string RuleType { get; set; }

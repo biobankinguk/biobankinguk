@@ -112,6 +112,10 @@ namespace Biobanks.Services.Contracts
         Task<SampleCollectionMode> UpdateSampleCollectionModeAsync(SampleCollectionMode sampleCollection, bool sortOnly = false);
         Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
 
+        Task<RegistrationDomainRule> AddRegistrationDomainRuleAsync(RegistrationDomainRule registrationDomainRule);
+        Task<RegistrationDomainRule> UpdateRegistrationDomainRuleAsync(RegistrationDomainRule registrationDomainRule);
+        Task DeleteRegistrationDomainRuleAsync(RegistrationDomainRule registrationDomainRule);
+
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
         Task DeletePreservationTypeAsync(PreservationType preservationType);
