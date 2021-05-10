@@ -209,7 +209,7 @@ namespace Biobanks.Submissions.Api
 
                 // Hangfire
                 .UseHangfireServer()
-                .UseHangfireDashboard("/TasksDashboard", new DashboardOptions
+                .UseHangfireDashboard("/hangfire", new DashboardOptions
                 {
                     Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
                 });
