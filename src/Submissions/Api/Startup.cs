@@ -104,6 +104,8 @@ namespace Biobanks.Submissions.Api
                     o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
                     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
                         AuthPolicies.IsBasicAuthenticated);
+                    o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),
+                        AuthPolicies.IsSuperAdmin);
                 })
 
                 .AddSwaggerGen(opts =>
