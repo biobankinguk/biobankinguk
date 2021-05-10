@@ -31,17 +31,17 @@ namespace Biobanks.Aggregator.Core
         public async Task Run()
         {
             // All Samples Flagged For Update/Deletion
-            var dirtySamples = await _sampleService.ListDirtySamples();
+            var dirtyExtractedSamples = await _sampleService.ListDirtyExtractedSamples();
 
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamples();
 
             // Group Samples Into Collections
-            foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtySamples))
+            foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyExtractedSamples))
             {
-                var sample = collectionSamples.First(x => x.SampleContentId != default);
-                var samples = await _sampleService.ListSimilarSamplesAsync(collectionSamples);
-                var organisation = await _organisationService.GetByIdAsync(sample.OrganisationId);
+                var sample = collectionSamples.First();
+                var samples = await _sampleService.ListSimilarSamples(collectionSamples);
+                var organisation = await _organisationService.GetById(sample.OrganisationId);
 
                 // Find Exisiting Or Generate New Collection
                 var collectionName = _aggregationService.GenerateCollectionName(sample);
@@ -55,9 +55,6 @@ namespace Biobanks.Aggregator.Core
                     collection.LastUpdated = DateTime.Now;
                     collection.CollectionTypeId = organisation.CollectionTypeId;
                     collection.AccessConditionId = organisation.AccessConditionId ?? 0;
-
-                    // Record Old SampleSet IDs
-                    var oldSampleSetIds = collection.SampleSets.Select(x => x.Id).Distinct().ToList();
 
                     // Clear Current SampleSets - Rebuilt Below
                     collection.SampleSets.Clear(); 
@@ -98,7 +95,7 @@ namespace Biobanks.Aggregator.Core
                 }
 
                 // Flag These Samples As Clean
-                await _sampleService.CleanSamples(collectionSamples);
+                await _sampleService.CleanSamples(samples);
             }
         }
     }
