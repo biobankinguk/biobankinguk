@@ -207,14 +207,20 @@ namespace Biobanks.Submissions.Api
                 .UseAuthorization()
 
                 // Endpoint Routing
-                .UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization())
-
-                // Hangfire
-                .UseHangfireServer()
-                .UseHangfireDashboard("/hangfire", new DashboardOptions
+                .UseEndpoints(endpoints =>
                 {
-                    Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
-                });
+                    endpoints.MapControllers().RequireAuthorization();
+
+                    // Hangfire Dashboard with Auth Policy
+                    endpoints.MapHangfireDashboard("/hangfire", new DashboardOptions()
+                    {
+                        Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
+                    })
+                    .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                })
+
+                // Hangfire Server
+                .UseHangfireServer();
         }
     }
 }
