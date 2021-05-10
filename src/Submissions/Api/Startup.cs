@@ -12,6 +12,7 @@ using Biobanks.Submissions.Core.Services.Contracts;
 using ClacksMiddleware.Extensions;
 
 using Hangfire;
+using Hangfire.Dashboard;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -211,12 +212,9 @@ namespace Biobanks.Submissions.Api
                 {
                     endpoints.MapControllers().RequireAuthorization();
 
-                    // Hangfire Dashboard with Auth Policy
-                    endpoints.MapHangfireDashboard("/hangfire", new DashboardOptions()
-                    {
-                        Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
-                    })
-                    .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                    endpoints
+                        .MapHangfireDashboard("/hangfire")
+                        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
                 })
 
                 // Hangfire Server
