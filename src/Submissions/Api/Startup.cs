@@ -2,7 +2,6 @@
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
 using Biobanks.Submissions.Core.AzureStorage;
@@ -12,7 +11,6 @@ using Biobanks.Submissions.Core.Services.Contracts;
 using ClacksMiddleware.Extensions;
 
 using Hangfire;
-using Hangfire.Dashboard;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
