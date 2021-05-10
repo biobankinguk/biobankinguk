@@ -39,9 +39,9 @@ namespace Biobanks.Aggregator.Core
             // Group Samples Into Collections
             foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtySamples))
             {
-                var sample = collectionSamples.First();
-                var samples = await _sampleService.ListSimilarSamples(sample);
-                var organisation = await _organisationService.GetById(sample.OrganisationId);
+                var sample = collectionSamples.First(x => x.SampleContentId != default);
+                var samples = await _sampleService.ListSimilarSamplesAsync(collectionSamples);
+                var organisation = await _organisationService.GetByIdAsync(sample.OrganisationId);
 
                 // Find Exisiting Or Generate New Collection
                 var collectionName = _aggregationService.GenerateCollectionName(sample);

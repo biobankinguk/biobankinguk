@@ -79,7 +79,7 @@ namespace Biobanks.Aggregator.Core.Services
             var complete = (DateTime.Now - newestSample.DateCreated) > TimeSpan.FromDays(180);
 
             // Generate Collection Name
-            var collectionName = GenerateCollectionName(newestSample); 
+            var collectionName = GenerateCollectionName(orderedSamples.First(x => x.SampleContentId != default)); 
 
             return new Collection
             {
@@ -114,14 +114,17 @@ namespace Biobanks.Aggregator.Core.Services
 
             // TODO: Is there a better way rather than using hardcoded values?
             // Map Macroscopic Assessment
-            var macro = 
-                sample.SampleContentMethod.Value.StartsWith("Microscopic") || 
-                sample.SampleContentMethod.Value.StartsWith("Macroscopic")
-                    ? sample.SampleContent.Id == "102499006" || // Fit and Healthy
-                      sample.SampleContent.Id == "23875004"     // No pathelogical diagnosis
-                        ? _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Affected"))
-                        : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Affected"))
-                    : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Applicable"));
+            //var macro = 
+            //    sample.SampleContentMethod.Value.StartsWith("Microscopic") || 
+            //    sample.SampleContentMethod.Value.StartsWith("Macroscopic")
+            //        ? sample.SampleContent.Id == "102499006" || // Fit and Healthy
+            //          sample.SampleContent.Id == "23875004"     // No pathelogical diagnosis
+            //            ? _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Affected"))
+            //            : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Affected"))
+            //        : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Applicable"));
+
+            // TODO: Sort Out Non-Extracted Samples
+            var macro = _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Applicable"));
 
             return new MaterialDetail
             {

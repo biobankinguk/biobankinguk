@@ -2,8 +2,10 @@
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
 
@@ -20,13 +22,20 @@ namespace Biobanks.Aggregator.Core.Services
 
         public async Task<IEnumerable<LiveSample>> ListSimilarSamples(LiveSample sample)
         {
+            var sample = samples.First();
+            var latest = samples.Max(x => x.DateCreated) + TimeSpan.FromDays(180);
+            var earliest = samples.Min(x => x.DateCreated) - TimeSpan.FromDays(180);
+            
             return await _db.Samples
                 .Include(x => x.SampleContent)
                 .Include(x => x.SampleContentMethod)
+                .Where(x => x.OrganisationId == sample.OrganisationId)
                 .Where(x =>
-                    x.OrganisationId == sample.OrganisationId &&
-                    x.CollectionName == sample.CollectionName &&
-                    x.SampleContentId == sample.SampleContentId
+                    !string.IsNullOrEmpty(x.SampleContentId)
+                        // Extracted Samples
+                        ? x.CollectionName == sample.CollectionName && x.SampleContentId == sample.SampleContentId
+                        // Non-Extracted Samples
+                        : x.DateCreated >= earliest && x.DateCreated <= latest   
                 )
                 .ToListAsync();
         }
