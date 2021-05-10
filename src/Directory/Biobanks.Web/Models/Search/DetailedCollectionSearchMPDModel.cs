@@ -6,5 +6,6 @@
         public string StorageTemperature { get; set; }
         public string MacroscopicAssessment { get; set; }
         public string PercentageOfSampleSet { get; set; }
+        public string PreservationType { get; set; }
     }
 }
