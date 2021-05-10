@@ -5,8 +5,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - src/Publications/Core/**
-      - src/Publications/AzFunctions/**
+      - src/Publications/**
       - .github/workflows/build.publications.yml
 
 env:
