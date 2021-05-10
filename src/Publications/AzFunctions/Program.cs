@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Hosting;
-using PublicationsAzFunctions;
+using Biobanks.Publications.AzFunctions;
 
 // Configure the Host
 var host = Host.CreateDefaultBuilder(args)

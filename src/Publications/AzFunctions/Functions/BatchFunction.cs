@@ -4,7 +4,7 @@ using Biobanks.Publications.Core.Services.Hosted;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace PublicationsAzFunctions.Functions
+namespace Biobanks.Publications.AzFunctions.Functions
 {
     public class BatchFunction
     {
