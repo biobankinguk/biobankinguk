@@ -6,6 +6,6 @@ namespace Biobanks.Publications.Core.Services.Contracts
 {
     public interface IAnnotationService
     {
-        Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDTO> annotations);
+        Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDto> annotations);
     }
 }
