@@ -18,7 +18,7 @@ namespace Biobanks.Services.Contracts
 
         Task<bool> ValidateOrganisationEmail(string email);
 
-        Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync();
+        Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync(string wildcard = "");
 
         Task<Organisation> GetBiobankByIdAsync(int biobankId);
         Task<Organisation> GetBiobankByIdForIndexingAsync(int biobankId);

@@ -244,8 +244,8 @@ namespace Biobanks.Services
             }      
         }
 
-        public async Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync() =>
-            (await _registrationDomainRuleRepository.ListAsync()).ToList();
+        public async Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync(string wildcard = "") =>
+            (await _registrationDomainRuleRepository.ListAsync(false, x => x.Value.Contains(wildcard))).ToList();
 
         public async Task<OrganisationType> GetBiobankOrganisationTypeAsync()
             //if we ever have more types, maybe a type service could provide
