@@ -63,20 +63,15 @@ namespace Biobanks.Services
             }                                   
         }
 
-        public IEnumerable<ContentPage> ListContentPages()
-        {
-            IQueryable<ContentPage> query = _db.ContentPages;
-            return query.ToList();
-        }
+        public async Task<IEnumerable<ContentPage>> ListContentPages()
+            => await _db.ContentPages.ToListAsync();        
      
         public async Task<ContentPage> GetById(int id)
-            => await _db.ContentPages.FindAsync(id);
-          
+            => await _db.ContentPages.FindAsync(id);          
         
 
         public async Task<ContentPage> GetBySlug(string routeSlug)
-            => await _db.ContentPages.FirstOrDefaultAsync(x => x.RouteSlug == routeSlug);
-        
+            => await _db.ContentPages.FirstOrDefaultAsync(x => x.RouteSlug == routeSlug);        
 
     }
 }

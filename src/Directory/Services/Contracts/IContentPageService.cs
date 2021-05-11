@@ -13,7 +13,7 @@ namespace Biobanks.Services.Contracts
         Task Create(string title, string body, string slug);
         Task Update(int id, string title, string body, string slug);
         Task Delete(int id);
-        IEnumerable<ContentPage> ListContentPages();
+        Task<IEnumerable<ContentPage>> ListContentPages();
         Task<ContentPage> GetById(int id);
         Task<ContentPage> GetBySlug(string routeSlug);
     }
