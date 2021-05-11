@@ -5,18 +5,25 @@ using Biobanks.Publications.Core.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Data;
 using Biobanks.Publications.Core.Services.Contracts;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Publications.Core.Services
 {
     public class PublicationService : IPublicationService
     {
-
         private BiobanksDbContext _db;
 
         public PublicationService(BiobanksDbContext db)
         {
             _db = db;
         }
+
+        public async Task<IEnumerable<Publication>> ListOrganisationPublications(int organisationId)
+            => await _db.Publications
+                .Where(x => x.OrganisationId == organisationId && x.Accepted == true)
+                .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1))
+                .ToListAsync();
 
         public async Task AddOrganisationPublications(int organisationId, IEnumerable<PublicationDto> publications)
         {
