@@ -39,7 +39,7 @@
                     @foreach (var suggestion in Model.Suggestions)
                     {
                         <li>
-                            <a href="@baseSearchUrl?diagnosis=@suggestion.Description">@suggestion.Description</a>
+                            <a href="@baseSearchUrl?ontologyTerm=@suggestion.Description">@suggestion.Description</a>
                         </li>
                     }
                 </ul>
