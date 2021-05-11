@@ -1,5 +1,7 @@
 ﻿using Biobanks.Entities.Data;
 using Biobanks.IdentityModel.Helpers;
+using Biobanks.Publications.Core.Services;
+using Biobanks.Publications.Core.Services.Contracts;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
@@ -159,6 +161,11 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<IErrorService, ErrorService>()
 
+                .AddTransient<IPublicationService, PublicationService>()
+                .AddTransient<IAnnotationService, AnnotationService>()
+                .AddTransient<IEpmcService, EpmcWebService>()
+                .AddTransient<IBiobankReadService, BiobankReadService>()
+
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
 
@@ -227,6 +234,8 @@ namespace Biobanks.Submissions.Api
 
             // Hangfire Recurring Jobs
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily);
+
+            RecurringJob.Trigger("job-publications");
         }
     }
 }
