@@ -19,7 +19,10 @@ namespace Biobanks.Publications.Core.Services
         private readonly HttpClient _client;
         private readonly ILogger<EpmcWebService> _logger;
 
-        public EpmcWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<EpmcWebService> logger)
+        public EpmcWebService(
+            IHttpClientFactory httpClientFactory, 
+            IConfiguration configuration, 
+            ILogger<EpmcWebService> logger)
         {
             _client = httpClientFactory.CreateClient();
             _client.BaseAddress = new Uri(configuration["EpmcApiUrl"]);
@@ -27,14 +30,10 @@ namespace Biobanks.Publications.Core.Services
         }
 
         public async Task<PublicationDto> GetPublicationById(int publicationId)
-        {
-            return (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
-        }
+            => (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
 
         public async Task<List<AnnotationDTO>> GetPublicationAnnotations(string publicationId, string source)
-        {
-            return (await AnnotationSearch(publicationId, source));
-        }
+            => (await AnnotationSearch(publicationId, source));
 
         public async Task<List<PublicationDto>> GetOrganisationPublications(string biobank)
         {

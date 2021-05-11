@@ -19,7 +19,6 @@ namespace Biobanks.Publications.Core.Services
             _db = db;
         }
 
-
         public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDTO> annotations)
         {
             var publication = await _db.Publications.Include(o => o.Annotations).FirstOrDefaultAsync(x => x.PublicationId == publicationId);

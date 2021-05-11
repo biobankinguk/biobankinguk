@@ -1,4 +1,5 @@
-﻿using Biobanks.IdentityModel.Helpers;
+﻿using Biobanks.Entities.Data;
+using Biobanks.IdentityModel.Helpers;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
@@ -9,7 +10,7 @@ using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
 
 using ClacksMiddleware.Extensions;
-
+using Core.Jobs;
 using Hangfire;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -146,6 +147,8 @@ namespace Biobanks.Submissions.Api
                     typeof(Core.MappingProfiles.DiagnosisProfile),
                     typeof(Startup))
 
+                .AddHttpClient()
+
                 // Cloud services
                 .AddTransient<IBlobWriteService, AzureBlobWriteService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
@@ -162,6 +165,9 @@ namespace Biobanks.Submissions.Api
             //TODO Register these services if we're using hangfire
             //.AddTransient<IRejectService, RejectService>()
             //.AddTransient<ICommitService, CommitService>()
+
+            // Hangfire Recurring Jobs
+            RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily);
         }
 
         /// <summary>

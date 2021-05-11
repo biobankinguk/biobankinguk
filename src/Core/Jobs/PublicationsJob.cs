@@ -9,19 +9,19 @@ namespace Core.Jobs
 
         private readonly IPublicationService _publicationService;
         private readonly IAnnotationService _annotationService;
-        private readonly IBiobankReadService _biobankReadService;
         private readonly IEpmcService _epmcWebService;
-
+        private readonly IBiobankReadService _biobankReadService;
+        
         public PublicationsJob(
             IPublicationService publicationService,
             IAnnotationService annotationService,
-            IBiobankReadService biobankReadService,
-            IEpmcService epmcWebService)
+            IEpmcService epmcWebService,
+            IBiobankReadService biobankReadService)
         {
             _publicationService = publicationService;
             _annotationService = annotationService;
-            _biobankReadService = biobankReadService;
             _epmcWebService = epmcWebService;
+            _biobankReadService = biobankReadService;
         }
 
         public async Task Run()

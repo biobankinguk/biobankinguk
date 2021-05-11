@@ -49,7 +49,6 @@ namespace Biobanks.Publications.Core.Services
 
                 if (older is null)
                 {
-                    // Add new Record
                     _db.Add(newer);
                 }
                 else
