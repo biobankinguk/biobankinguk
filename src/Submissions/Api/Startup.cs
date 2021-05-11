@@ -164,7 +164,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IPublicationService, PublicationService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
-                .AddTransient<IBiobankReadService, BiobankReadService>()
+                .AddTransient<IOrganisationService, OrganisationService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();

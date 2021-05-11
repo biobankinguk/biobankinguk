@@ -10,25 +10,25 @@ namespace Core.Jobs
         private readonly IPublicationService _publicationService;
         private readonly IAnnotationService _annotationService;
         private readonly IEpmcService _epmcWebService;
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly IOrganisationService _organisationService;
         
         public PublicationsJob(
             IPublicationService publicationService,
             IAnnotationService annotationService,
             IEpmcService epmcWebService,
-            IBiobankReadService biobankReadService)
+            IOrganisationService biobankReadService)
         {
             _publicationService = publicationService;
             _annotationService = annotationService;
             _epmcWebService = epmcWebService;
-            _biobankReadService = biobankReadService;
+            _organisationService = biobankReadService;
         }
 
         public async Task Run()
         {
-            var biobanks = (await _biobankReadService.ListBiobanksAsync()).Where(x => !x.ExcludePublications).ToList();
-
-            foreach (var biobank in biobanks)
+            var biobanks = await _organisationService.List();
+            
+            foreach (var biobank in biobanks.Where(x => !x.ExcludePublications))
             {
                 // Update Biobanks Publication Collection
                 await _publicationService.AddOrganisationPublications(biobank.OrganisationId,

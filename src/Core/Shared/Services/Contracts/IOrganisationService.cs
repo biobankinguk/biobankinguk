@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Publications.Core.Services.Contracts
 {
-    public interface IBiobankReadService
+    public interface IOrganisationService
     {
-        Task<IList<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true);
+        Task<IEnumerable<Organisation>> List(bool includeSuspended = true);
     }
 }
