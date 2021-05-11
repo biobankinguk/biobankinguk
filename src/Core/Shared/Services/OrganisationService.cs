@@ -18,7 +18,7 @@ namespace Biobanks.Publications.Core.Services
             _db = db;
         }
 
-        public async Task<IEnumerable<Organisation>> List(bool includeSuspended = true)
-            => await _db.Organisations.Where(x => includeSuspended || !x.IsSuspended).ToListAsync();
+        public async Task<IEnumerable<Organisation>> List()
+            => await _db.Organisations.ToListAsync();
     }
 }
