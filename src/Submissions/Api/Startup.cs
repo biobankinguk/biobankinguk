@@ -165,9 +165,6 @@ namespace Biobanks.Submissions.Api
             //TODO Register these services if we're using hangfire
             //.AddTransient<IRejectService, RejectService>()
             //.AddTransient<ICommitService, CommitService>()
-
-            // Hangfire Recurring Jobs
-            RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily);
         }
 
         /// <summary>
@@ -227,6 +224,9 @@ namespace Biobanks.Submissions.Api
 
                 // Hangfire Server
                 .UseHangfireServer();
+
+            // Hangfire Recurring Jobs
+            RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily);
         }
     }
 }
