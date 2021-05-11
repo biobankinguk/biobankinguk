@@ -10,11 +10,10 @@ namespace Biobanks.Services.Contracts
 {
     public interface IContentPageService
     {
-        Task CreateNewContentPage(ContentPage contentPage);
-        void UpdateContentPage(ContentPage contentPage);
-        void DeleteContentPage(ContentPage contentPage);
-        IEnumerable<ContentPage> ListContentPages(bool tracking = false,
-                                    Expression<Func<ContentPage, bool>> filter = null);
+        Task Create(string title, string body, string slug);
+        Task Update(int id, string title, string body, string slug);
+        Task Delete(int id);
+        IEnumerable<ContentPage> ListContentPages();
         Task<ContentPage> GetById(int id);
         Task<ContentPage> GetBySlug(string routeSlug);
     }

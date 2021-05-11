@@ -22,35 +22,59 @@ namespace Biobanks.Services
             _db = db;
         }
 
-        public async Task CreateNewContentPage(ContentPage contentPage)
-        {            
-            _db.ContentPages.Add(contentPage);
+        public async Task Create(string title, string body, string slug)
+        {
+            var page = new ContentPage();
+            page.Title = title;
+            page.Body = body;
+            page.RouteSlug = slug;
+            page.LastUpdated = DateTime.UtcNow;
+
+            _db.ContentPages.Add(page);
             await _db.SaveChangesAsync();
         }
 
-        public void UpdateContentPage(ContentPage contentPage)
+        public async Task Update(int id, string title, string body, string slug)
         {
-            _db.ContentPages.Attach(contentPage);
-            _db.Entry(contentPage).State = EntityState.Modified;            
-        }
-
-        public void DeleteContentPage(ContentPage contentPage)
-        {
-            if (_db.Entry(contentPage).State == EntityState.Detached)
+            var page = await _db.ContentPages.FindAsync(id);
+            if (page == null)
             {
-                _db.ContentPages.Attach(contentPage);
+                throw new KeyNotFoundException();
             }
-            _db.ContentPages.Remove(contentPage);
+            else
+            {
+                page.Title = title;
+                page.Body = body;
+                page.RouteSlug = slug;
+                page.LastUpdated = DateTime.UtcNow;
+                await _db.SaveChangesAsync();
+                return;
+            }
+
+            //_db.ContentPages.Attach(contentPage);
+            //_db.Entry(contentPage).State = EntityState.Modified;            
         }
 
-        public IEnumerable<ContentPage> ListContentPages(bool tracking = false,
-                                    Expression<Func<ContentPage, bool>> filter = null)
+        public async Task Delete(int id)
+        {
+            var page = await _db.ContentPages.FindAsync(id);
+            if (page == null)
+            {
+                return;
+            }
+            else
+            {
+                _db.ContentPages.Remove(page);
+                await _db.SaveChangesAsync();
+                return;
+            }            
+        }
+
+        public IEnumerable<ContentPage> ListContentPages()
         {
             IQueryable<ContentPage> query = _db.ContentPages;
 
-            return filter == null
-                ? query.ToList()
-                : query.Where(filter).ToList();            
+            return query.ToList();                        
         }
 
         public async Task<ContentPage> GetById(int id)
@@ -60,7 +84,7 @@ namespace Biobanks.Services
 
         public async Task<ContentPage> GetBySlug(string routeSlug)
         {
-            return await _db.ContentPages.FindAsync(routeSlug);
+            return await _db.ContentPages.FirstOrDefaultAsync(x => x.RouteSlug == routeSlug);
         }
 
     }
