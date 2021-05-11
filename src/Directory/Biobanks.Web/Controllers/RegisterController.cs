@@ -11,6 +11,7 @@ using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
+using System.Linq;
 
 namespace Biobanks.Web.Controllers
 {
@@ -74,6 +75,37 @@ namespace Biobanks.Web.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+
+            //check if honeypot field is true
+            if (model.AcceptTerms && !model.AdacInvited)
+            {
+                //check if domain rule exist for user
+                var rules = await _biobankReadService.ListRegistrationDomainRulesAsync(model.Email);
+
+                if (rules.Any())
+                {
+                    //update rules to block user
+                    foreach (var rule in rules)
+                    {
+                        rule.RuleType = "Block";
+                        await _biobankWriteService.UpdateRegistrationDomainRuleAsync(rule);
+                    }
+                }
+                else
+                {
+                    // add new rule to block user
+                    await _biobankWriteService.AddRegistrationDomainRuleAsync(new RegistrationDomainRule
+                    {
+                        RuleType = "Block",
+                        Source = "Automatic block: honeypot",
+                        Value = model.Email,
+                        DateModified = DateTime.Now
+                    });
+                }
+
+                //return positive feedback
+                return View("RegisterConfirmation");
             }
 
             //check for duplicate Biobank name
