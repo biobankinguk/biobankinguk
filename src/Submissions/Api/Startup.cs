@@ -96,7 +96,11 @@ namespace Biobanks.Submissions.Api
                     opts.UseSqlServer(Configuration.GetConnectionString("Default"),
                         sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
 
-                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")))
+                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default"),
+                    new Hangfire.SqlServer.SqlServerStorageOptions
+                    {
+                        SchemaName = "apiHangfire"
+                    }))
 
                 .AddAuthorization(o =>
                 {
