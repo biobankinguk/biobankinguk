@@ -182,5 +182,11 @@ namespace Biobanks.Web.ApiControllers
             });
 
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("{storageTemperature}/preservationtype")]
+        public async Task<IList> GetValidPreservationTypes(int storageTemperature)
+        => (await _biobankReadService.ListPreservationTypesAsync()).Where(x => x.StorageTemperatureId == storageTemperature).Select(x => x.Id).ToList();
     }
 }
