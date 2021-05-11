@@ -2,7 +2,6 @@
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
 using Biobanks.Submissions.Core.AzureStorage;
@@ -97,13 +96,19 @@ namespace Biobanks.Submissions.Api
                     opts.UseSqlServer(Configuration.GetConnectionString("Default"),
                         sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
 
-                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")))
+                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default"),
+                    new Hangfire.SqlServer.SqlServerStorageOptions
+                    {
+                        SchemaName = "apiHangfire"
+                    }))
 
                 .AddAuthorization(o =>
                 {
                     o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
                     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
                         AuthPolicies.IsBasicAuthenticated);
+                    o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),
+                        AuthPolicies.IsSuperAdmin);
                 })
 
                 .AddSwaggerGen(opts =>
@@ -205,14 +210,17 @@ namespace Biobanks.Submissions.Api
                 .UseAuthorization()
 
                 // Endpoint Routing
-                .UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization())
-
-                // Hangfire
-                .UseHangfireServer()
-                .UseHangfireDashboard("/TasksDashboard", new DashboardOptions
+                .UseEndpoints(endpoints =>
                 {
-                    Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
-                });
+                    endpoints.MapControllers().RequireAuthorization();
+
+                    endpoints
+                        .MapHangfireDashboard("/hangfire")
+                        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                })
+
+                // Hangfire Server
+                .UseHangfireServer();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Biobanks.DataSeed
     {
         private static async Task Main(string[] args)
         {          
-            if (args[0].Equals("-v") || args[0].Equals("--version"))
+            if (args.Length > 0 && (args[0].Equals("-v") || args[0].Equals("--version")))
             {
                 VersionInformationService version = new VersionInformationService();                
                 Console.WriteLine(version.EntryAssembly());
