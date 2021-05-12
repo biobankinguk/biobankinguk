@@ -2,6 +2,8 @@
 "Area: CI":
   - .azure/pipelines/**/*
   - .github/**/*
+"Area: Core":
+  - src/Core/**/*
 "Area: Elastic Search":
   - elastic-search/**/*
 "Area: Analytics":
@@ -25,6 +27,7 @@
   - src/IdentityModel/**/*
 "Area: Aggregator":
   - src/Aggregator/**/*
+ 
 
 # label types of changes contained in a PR
 "Contains: Migrations":
