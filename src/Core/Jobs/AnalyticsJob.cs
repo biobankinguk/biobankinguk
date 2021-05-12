@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace Core.Jobs
 {
-    public class AnalyticsBatchJob
+    public class AnalyticsJob
     {
 
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
-        public AnalyticsBatchJob(IGoogleAnalyticsReadService googleAnalyticsReadService)
+        public AnalyticsJob(IGoogleAnalyticsReadService googleAnalyticsReadService)
         {
             _googleAnalyticsReadService = googleAnalyticsReadService;
         }
