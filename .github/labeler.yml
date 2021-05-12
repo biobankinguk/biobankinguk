@@ -17,7 +17,8 @@
 "Area: Directory Data":
   - src/Directory/Data/**/*
 "Area: Publications":
-  - src/Publications/**/*
+  - src/Core/Publications/**/*
+  - src/Core/Jobs/PublicationsJob.cs
 "Area: Entities":
   - src/Entities/**/*
 "Area: IdentityModel":
