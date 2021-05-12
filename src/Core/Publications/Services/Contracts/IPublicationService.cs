@@ -1,9 +1,9 @@
-﻿using Biobanks.Entities.Data;
-using Biobanks.Publications.Core.Services.Dto;
+﻿using Biobanks.Publications.Dto;
+using Biobanks.Entities.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Core.Services.Contracts
+namespace Biobanks.Publications.Services.Contracts
 {
     public interface IPublicationService
     {
