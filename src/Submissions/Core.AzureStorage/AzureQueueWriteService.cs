@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Biobanks.Submissions.Core.Services.Contracts;
 using Azure.Storage.Queues;
+using Core.Submissions.Services.Contracts;
 
-namespace Biobanks.Submissions.Core.AzureStorage
+namespace Core.AzureStorage
 {
     /// <inheritdoc />
     public class AzureQueueWriteService : IQueueWriteService
@@ -22,7 +22,7 @@ namespace Biobanks.Submissions.Core.AzureStorage
             {
                 MessageEncoding = QueueMessageEncoding.Base64
             });
-           
+
             await q.CreateIfNotExistsAsync();
             await q.SendMessageAsync(message);
         }

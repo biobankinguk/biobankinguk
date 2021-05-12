@@ -7,12 +7,12 @@ using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.AzureStorage;
-using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
 
 using ClacksMiddleware.Extensions;
+using Core.AzureStorage;
 using Core.Jobs;
+using Core.Submissions.Services;
 using Hangfire;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -146,7 +146,7 @@ namespace Biobanks.Submissions.Api
                     })
 
                 .AddAutoMapper(
-                    typeof(Core.MappingProfiles.DiagnosisProfile),
+                    typeof(Core.Submissions.MappingProfiles.DiagnosisProfile),
                     typeof(Startup))
 
                 .AddHttpClient()
@@ -234,6 +234,7 @@ namespace Biobanks.Submissions.Api
 
             // Hangfire Recurring Jobs
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily);
+            RecurringJob.AddOrUpdate<ExpiryJob>("job-expiry", x => x.Run(), Cron.Daily);
         }
     }
 }

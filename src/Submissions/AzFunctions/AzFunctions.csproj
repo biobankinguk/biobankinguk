@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core.AzureStorage\Core.AzureStorage.csproj" />
-    <ProjectReference Include="..\Core\Core.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
