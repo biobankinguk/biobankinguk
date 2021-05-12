@@ -3,15 +3,15 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
-using Biobanks.Publications.Core.Services.Contracts;
 using Microsoft.Extensions.Configuration;
-using Biobanks.Publications.Core.Services.Dto;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
+using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Dto;
 
-namespace Biobanks.Publications.Core.Services
+namespace Biobanks.Publications.Services
 {
     public class EpmcWebService : IEpmcService
     {

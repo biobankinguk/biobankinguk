@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Publications.Core.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Data;
-using Biobanks.Publications.Core.Services.Contracts;
 using System;
 using Microsoft.EntityFrameworkCore;
+using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Dto;
 
-namespace Biobanks.Publications.Core.Services
+namespace Biobanks.Publications.Services
 {
     public class PublicationService : IPublicationService
     {
