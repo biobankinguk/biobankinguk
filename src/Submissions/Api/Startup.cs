@@ -172,6 +172,10 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>()
 
+                .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
+                .AddTransient<IAnalyticsService, AnalyticsService>()
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
 
