@@ -18,12 +18,12 @@ namespace Core.Jobs
             IPublicationService publicationService,
             IAnnotationService annotationService,
             IEpmcService epmcWebService,
-            IOrganisationService biobankReadService)
+            IOrganisationService organisationService)
         {
             _publicationService = publicationService;
             _annotationService = annotationService;
             _epmcWebService = epmcWebService;
-            _organisationService = biobankReadService;
+            _organisationService = organisationService;
         }
 
         public async Task Run()

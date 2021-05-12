@@ -15,6 +15,7 @@ using Biobanks.Entities.Data.Analytics;
 using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Analytics.Helpers;
 using Biobanks.Analytics.Dto;
+using Biobanks.Shared.Services.Contracts;
 
 namespace Biobanks.Analytics.Services
 {
@@ -29,17 +30,17 @@ namespace Biobanks.Analytics.Services
         private readonly GoogleCredential _credentials;
         private readonly AnalyticsReportingService _analytics;
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly IOrganisationService _organisationService;
 
         public GoogleAnalyticsReadService(
             BiobanksDbContext db,
-            IBiobankReadService biobankReadService,
+            IOrganisationService organisationService,
             ILogger<GoogleAnalyticsReadService> logger,
             IConfiguration configuration)
         {
             _db = db;
             _logger = logger;
-            _biobankReadService = biobankReadService;
+            _organisationService = organisationService;
 
             _viewId = configuration["AnalyticsViewId"];
             _startDate = configuration["StartDate"] ?? "2016-01-01";
@@ -286,7 +287,7 @@ namespace Biobanks.Analytics.Services
             var dimensions = GetBiobankDimensions();
             var segments = GetNottLoughSegment();
 
-            var biobanks = await _biobankReadService.GetOrganisationExternalIds();
+            var biobanks = await _organisationService.ListExternalIds();
 
             foreach (var biobankId in biobanks)
             { //TODO: replicated as in biobank.analytics python script but should be re-written to compile all requests into one list and run GetReports once
@@ -784,8 +785,7 @@ namespace Biobanks.Analytics.Services
         public async Task UpdateAnalyticsData()
         {
             // Call directory for all active organisation
-            var biobanks = await _biobankReadService.GetOrganisationNames();
-            _logger.LogInformation($"Fetching analytics for {biobanks.Count()} organisations");
+            _logger.LogInformation($"Fetching analytics for { await _organisationService.Count() } organisations");
 
             var lastBiobankEntry = await GetLatestBiobankEntry();
             var lastEventEntry = await GetLatestMetricEntry();
