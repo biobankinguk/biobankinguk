@@ -1,4 +1,7 @@
-﻿using Biobanks.IdentityModel.Helpers;
+﻿using Biobanks.Entities.Data;
+using Biobanks.IdentityModel.Helpers;
+using Biobanks.Publications.Core.Services;
+using Biobanks.Publications.Core.Services.Contracts;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
@@ -9,7 +12,7 @@ using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
 
 using ClacksMiddleware.Extensions;
-
+using Core.Jobs;
 using Hangfire;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -146,6 +149,8 @@ namespace Biobanks.Submissions.Api
                     typeof(Core.MappingProfiles.DiagnosisProfile),
                     typeof(Startup))
 
+                .AddHttpClient()
+
                 // Cloud services
                 .AddTransient<IBlobWriteService, AzureBlobWriteService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
@@ -155,6 +160,11 @@ namespace Biobanks.Submissions.Api
                 // Local Services
                 .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<IErrorService, ErrorService>()
+
+                .AddTransient<IPublicationService, PublicationService>()
+                .AddTransient<IAnnotationService, AnnotationService>()
+                .AddTransient<IEpmcService, EpmcWebService>()
+                .AddTransient<IOrganisationService, OrganisationService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
@@ -221,6 +231,9 @@ namespace Biobanks.Submissions.Api
 
                 // Hangfire Server
                 .UseHangfireServer();
+
+            // Hangfire Recurring Jobs
+            RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily);
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿using Biobanks.Publications.Core.Services.Contracts;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Core.Jobs
+{
+    public class PublicationsJob
+    {
+
+        private readonly IPublicationService _publicationService;
+        private readonly IAnnotationService _annotationService;
+        private readonly IEpmcService _epmcWebService;
+        private readonly IOrganisationService _organisationService;
+        
+        public PublicationsJob(
+            IPublicationService publicationService,
+            IAnnotationService annotationService,
+            IEpmcService epmcWebService,
+            IOrganisationService biobankReadService)
+        {
+            _publicationService = publicationService;
+            _annotationService = annotationService;
+            _epmcWebService = epmcWebService;
+            _organisationService = biobankReadService;
+        }
+
+        public async Task Run()
+        {
+            var biobanks = await _organisationService.List();
+            
+            foreach (var biobank in biobanks.Where(x => !x.ExcludePublications))
+            {
+                // Update Biobanks Publication Collection
+                await _publicationService.AddOrganisationPublications(biobank.OrganisationId,
+                    await _epmcWebService.GetOrganisationPublications(biobank.Name));
+
+                // Update Publications Annotations
+                foreach (var publication in await _publicationService.ListOrganisationPublications(biobank.OrganisationId))
+                {
+                    await _annotationService.AddPublicationAnnotations(publication.PublicationId, 
+                        await _epmcWebService.GetPublicationAnnotations(publication.PublicationId, publication.Source));
+                }
+            }
+        }
+    }
+}
