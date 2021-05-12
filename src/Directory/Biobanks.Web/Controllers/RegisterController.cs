@@ -63,20 +63,8 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [AllowAnonymous]
-        [VerifyRecaptcha]
-        public async Task<ActionResult> Biobank(RegisterEntityModel model)
+        internal async Task<bool> RegistrationHoneypotTrap(RegisterEntityModel model)
         {
-            model.EntityName = "Biobank";
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             //check if honeypot field is true
             if (model.AcceptTerms && !model.AdacInvited)
             {
@@ -89,6 +77,8 @@ namespace Biobanks.Web.Controllers
                     foreach (var rule in rules)
                     {
                         rule.RuleType = "Block";
+                        rule.DateModified = DateTime.Now;
+                        rule.Source = "Automatic block: honeypot";
                         await _biobankWriteService.UpdateRegistrationDomainRuleAsync(rule);
                     }
                 }
@@ -104,9 +94,28 @@ namespace Biobanks.Web.Controllers
                     });
                 }
 
-                //return positive feedback
-                return View("RegisterConfirmation");
+                return true;
             }
+
+            return false;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        [VerifyRecaptcha]
+        public async Task<ActionResult> Biobank(RegisterEntityModel model)
+        {
+            model.EntityName = "Biobank";
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            //check for honeypot trap
+            if (await RegistrationHoneypotTrap(model))
+                return View("RegisterConfirmation");
 
             //check for duplicate Biobank name
             var existingOrg = await _biobankReadService.GetBiobankByNameAsync(model.Entity);
@@ -208,6 +217,10 @@ namespace Biobanks.Web.Controllers
             {
                 return View(model);
             }
+
+            //check for honeypot trap
+            if (await RegistrationHoneypotTrap(model))
+                return View("RegisterConfirmation");
 
             //check for duplicate Network name
             var existingNetwork = await _biobankReadService.GetNetworkByNameAsync(model.Entity);
