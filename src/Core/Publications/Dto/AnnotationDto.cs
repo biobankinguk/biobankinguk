@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Biobanks.Publications.Core.Services.Dto
+namespace Biobanks.Publications.Dto
 {
-    public class AnnotationResult
+    public class AnnotationResultDto
     {
         [JsonPropertyName("source")]
         public string Source { get; set; }
@@ -12,15 +12,16 @@ namespace Biobanks.Publications.Core.Services.Dto
         public string ExtId { get; set; }
 
         [JsonPropertyName("annotations")]
-        public List<AnnotationDTO> Annotations { get; set; }
+        public List<AnnotationDto> Annotations { get; set; }
     }
-    public class AnnotationDTO
+
+    public class AnnotationDto
     {
         [JsonPropertyName("exact")]
         public string Exact { get; set; }
 
         [JsonPropertyName("tags")]
-        public List<Tag> Tags { get; set; }
+        public List<TagDto> Tags { get; set; }
 
         [JsonPropertyName("id")]
         public string Id { get; set; }
@@ -35,7 +36,7 @@ namespace Biobanks.Publications.Core.Services.Dto
         public string Provider { get; set; }
     }
 
-    public class Tag
+    public class TagDto
     {
         [JsonPropertyName("name")]
         public string Name { get; set; }

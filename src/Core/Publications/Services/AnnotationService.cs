@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Publications.Core.Services.Contracts;
-using Biobanks.Publications.Core.Services.Dto;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
+using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Dto;
 
-namespace Biobanks.Publications.Core.Services
+namespace Biobanks.Publications.Services
 {
     public class AnnotationService : IAnnotationService
     {
@@ -19,8 +19,7 @@ namespace Biobanks.Publications.Core.Services
             _db = db;
         }
 
-
-        public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDTO> annotations)
+        public async Task AddPublicationAnnotations(string publicationId, IEnumerable<AnnotationDto> annotations)
         {
             var publication = await _db.Publications.Include(o => o.Annotations).FirstOrDefaultAsync(x => x.PublicationId == publicationId);
 

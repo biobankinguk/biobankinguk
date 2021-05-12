@@ -1,22 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Publications.Core.Services.Dto;
 using Biobanks.Entities.Data;
 using Biobanks.Data;
-using Biobanks.Publications.Core.Services.Contracts;
+using System;
+using Microsoft.EntityFrameworkCore;
+using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Dto;
 
-namespace Biobanks.Publications.Core.Services
+namespace Biobanks.Publications.Services
 {
     public class PublicationService : IPublicationService
     {
-
         private BiobanksDbContext _db;
 
         public PublicationService(BiobanksDbContext db)
         {
             _db = db;
         }
+
+        public async Task<IEnumerable<Publication>> ListOrganisationPublications(int organisationId)
+            => await _db.Publications
+                .Where(x => x.OrganisationId == organisationId && x.Accepted == true)
+                .Where(a => a.AnnotationsSynced == null || a.AnnotationsSynced < DateTime.Today.AddMonths(-1))
+                .ToListAsync();
 
         public async Task AddOrganisationPublications(int organisationId, IEnumerable<PublicationDto> publications)
         {
@@ -42,7 +49,6 @@ namespace Biobanks.Publications.Core.Services
 
                 if (older is null)
                 {
-                    // Add new Record
                     _db.Add(newer);
                 }
                 else

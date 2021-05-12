@@ -5,6 +5,7 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - src/Core/**
       - src/Submissions/Core/**
       - src/Submissions/Core.AzureStorage/**
       - src/Submissions/Api/**
