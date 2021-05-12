@@ -1,7 +1,6 @@
 ﻿using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data.Analytics;
-using Biobanks.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 

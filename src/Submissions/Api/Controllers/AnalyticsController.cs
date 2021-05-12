@@ -12,8 +12,7 @@ namespace Biobanks.Submissions.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize(nameof(AuthPolicies.IsSuperAdmin))]
-    [AllowAnonymous]
+    [Authorize(nameof(AuthPolicies.IsSuperAdmin))]
     public class AnalyticsController : ControllerBase
     {
         private readonly IAnalyticsReportGenerator _reports;

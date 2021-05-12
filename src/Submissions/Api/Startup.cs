@@ -38,6 +38,7 @@ using Biobanks.Shared.Services.Contracts;
 using Biobanks.Shared.Services;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Analytics;
 
 namespace Biobanks.Submissions.Api
 {
@@ -97,6 +98,7 @@ namespace Biobanks.Submissions.Api
 
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
+                .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
 
                 .AddApplicationInsightsTelemetry()
 

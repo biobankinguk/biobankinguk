@@ -16,7 +16,8 @@ namespace Biobanks.Submissions.Api.Auth
         private static Dictionary<string, string> _policySchemes = new()
         {
             [nameof(AuthPolicies.IsTokenAuthenticated)] = "jwtbearer",
-            [nameof(AuthPolicies.IsBasicAuthenticated)] = "basic"
+            [nameof(AuthPolicies.IsBasicAuthenticated)] = "basic",
+            [nameof(AuthPolicies.IsSuperAdmin)] = "basic",
         };
 
         private IEnumerable<string> GetDistinctAuthorizationPolicyNames(object[] attributes)
