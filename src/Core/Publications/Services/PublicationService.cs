@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Publications.Core.Services
 {
-
     public class PublicationService : IPublicationService
     {
         private BiobanksDbContext _db;
