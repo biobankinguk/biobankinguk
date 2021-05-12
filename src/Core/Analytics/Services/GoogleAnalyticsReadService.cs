@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Biobanks.Data;
 using Biobanks.Entities.Data.Analytics;
-using Biobanks.Analytics.Core.Contracts;
-using Biobanks.Analytics.Core.Dto;
-using Biobanks.Analytics.Core.Helpers;
+using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Analytics.Helpers;
+using Biobanks.Analytics.Dto;
 
-namespace Biobanks.Analytics.Core
+namespace Biobanks.Analytics.Services
 {
     // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
     public class GoogleAnalyticsReadService : IGoogleAnalyticsReadService
@@ -24,7 +24,6 @@ namespace Biobanks.Analytics.Core
         private readonly string _viewId;
         private readonly string _startDate; //default: "2016-01-01"; //specified in _dateFormat
         private readonly string _dateFormat = "yyyy-MM-dd";
-        private readonly IConfiguration _config;
 
         private readonly BiobanksDbContext _db;
         private readonly GoogleCredential _credentials;
@@ -32,27 +31,31 @@ namespace Biobanks.Analytics.Core
         private readonly ILogger<GoogleAnalyticsReadService> _logger;
         private readonly IBiobankReadService _biobankReadService;
 
-        public GoogleAnalyticsReadService(BiobanksDbContext db,
-                                          IBiobankReadService biobankReadService,
-                                          ILogger<GoogleAnalyticsReadService> logger,
-                                          IConfiguration configuration)
+        public GoogleAnalyticsReadService(
+            BiobanksDbContext db,
+            IBiobankReadService biobankReadService,
+            ILogger<GoogleAnalyticsReadService> logger,
+            IConfiguration configuration)
         {
             _db = db;
-            _config = configuration;
-            _viewId = _config.GetValue("AnalyticsViewid", "");
-            _startDate = _config.GetValue("StartDate", "2016-01-01");
-
-            _credentials = GoogleCredential.FromJson(_config.GetValue("AnalyticsApikey", "{}"))
-                .CreateScoped(new[] { AnalyticsReportingService.Scope.AnalyticsReadonly });
-
-            _analytics = new AnalyticsReportingService(
-                new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = _credentials,
-                    ApplicationName = "Google Analytics API v4 Biobanks"
-                });
-            _biobankReadService = biobankReadService;
             _logger = logger;
+            _biobankReadService = biobankReadService;
+
+            _viewId = configuration["AnalyticsViewId"];
+            _startDate = configuration["StartDate"] ?? "2016-01-01";
+
+            _credentials = GoogleCredential
+                .FromJson(configuration["AnalyticsApikey"] ?? "{}")
+                .CreateScoped(new[] 
+                { 
+                    AnalyticsReportingService.Scope.AnalyticsReadonly 
+                });
+
+            _analytics =  new AnalyticsReportingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = _credentials,
+                ApplicationName = "Google Analytics API v4 Biobanks"
+            });
         }
 
         #region GoogleAnalytics API - Data Download

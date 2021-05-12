@@ -1,9 +1,9 @@
-﻿using Biobanks.Analytics.Core.Dto;
+﻿using Biobanks.Analytics.Dto;
 using Biobanks.Entities.Data.Analytics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Analytics.Core.Contracts
+namespace Biobanks.Analytics.Services.Contracts
 {
     public interface IAnalyticsReportGenerator
     {

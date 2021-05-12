@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Analytics.Core.Contracts
+namespace Biobanks.Analytics.Services.Contracts
 {
     public interface IBiobankReadService
     {

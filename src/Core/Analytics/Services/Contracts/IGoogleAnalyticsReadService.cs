@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data.Analytics;
-using Biobanks.Analytics.Core.Dto;
-using Biobanks.Analytics.Core.Helpers;
+using Biobanks.Analytics.Dto;
+using Biobanks.Analytics.Helpers;
 
-namespace Biobanks.Analytics.Core.Contracts
+namespace Biobanks.Analytics.Services.Contracts
 {
     public interface IGoogleAnalyticsReadService
     {

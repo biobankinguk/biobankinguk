@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Biobanks.Analytics.Core.Dto
+namespace Biobanks.Analytics.Dto
 {
     public class OrganisationAnalyticReportDto
     {

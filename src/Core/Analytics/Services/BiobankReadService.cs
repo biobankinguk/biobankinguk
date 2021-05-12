@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
-using Biobanks.Analytics.Core.Contracts;
+using Biobanks.Analytics.Services.Contracts;
 
-namespace Biobanks.Analytics.Core
+namespace Biobanks.Analytics.Services
 {
     public class BiobankReadService : IBiobankReadService
     {

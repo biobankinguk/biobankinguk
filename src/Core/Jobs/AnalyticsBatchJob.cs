@@ -1,4 +1,4 @@
-﻿using Biobanks.Analytics.Core.Contracts;
+﻿using Biobanks.Analytics.Services.Contracts;
 using System.Threading.Tasks;
 
 namespace Core.Jobs

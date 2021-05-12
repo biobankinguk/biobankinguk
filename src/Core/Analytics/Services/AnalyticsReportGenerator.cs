@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Biobanks.Entities.Data.Analytics;
-using Biobanks.Analytics.Core.Contracts;
-using Biobanks.Analytics.Core.Dto;
+using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Analytics.Dto;
 
-namespace Biobanks.Analytics.Core
+namespace Biobanks.Analytics.Services
 {
     public class AnalyticsReportGenerator : IAnalyticsReportGenerator
     {
@@ -14,18 +14,16 @@ namespace Biobanks.Analytics.Core
         private readonly int _eventThreshold; //default: 30
         private readonly bool _filterByHost; //default: true
         private readonly string _hostname;
-        private readonly IConfiguration _config;
 
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
         public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService, IConfiguration configuration)
         {
-            _config = configuration;
             _googleAnalyticsReadService = googleAnalyticsReadService;
-            _numOfTopBiobanks = _config.GetValue("MetricThreshold", 10);
-            _eventThreshold = _config.GetValue("EventThreshold", 30);
-            _filterByHost = _config.GetValue("FilterbyHost", true);
-            _hostname = _config.GetValue("DirectoryHostname", "");
+            _numOfTopBiobanks = int.TryParse(configuration["MetricThreshold"], out var i) ? i : 10;
+            _eventThreshold = int.TryParse(configuration["EventThreshold"], out var j) ? j : 30;
+            _filterByHost = configuration["FilterbyHost"] == "true";
+            _hostname = configuration["DirectoryHostname"] ?? "";
         }
 
         public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<OrganisationAnalytic> biobankData)
