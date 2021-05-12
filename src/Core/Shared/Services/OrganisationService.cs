@@ -1,13 +1,13 @@
-﻿using Biobanks.Data;
+﻿using Biobanks.Shared.Services.Contracts;
+using Biobanks.Data;
 using Biobanks.Entities.Data;
+
 using Microsoft.EntityFrameworkCore;
-using Biobanks.Publications.Core.Services.Contracts;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Core.Services
+namespace Biobanks.Shared.Services
 {
     public class OrganisationService : IOrganisationService
     {

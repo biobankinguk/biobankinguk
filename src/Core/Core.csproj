@@ -1,7 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>Biobanks.Core</AssemblyName>
+    <RootNamespace>Biobanks</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,10 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Analytics\" />
   </ItemGroup>
 
 </Project>
