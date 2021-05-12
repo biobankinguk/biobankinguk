@@ -1,4 +1,6 @@
-﻿using Biobanks.Publications.Core.Services.Contracts;
+﻿using Biobanks.Publications.Services.Contracts;
+using Biobanks.Shared.Services.Contracts;
+
 using System.Linq;
 using System.Threading.Tasks;
 

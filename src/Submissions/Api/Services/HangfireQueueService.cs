@@ -19,15 +19,17 @@ namespace Biobanks.Submissions.Api.Services
         }
 
         /// <inheritdoc />
-        public async Task Commit(int biobankId, bool replace)
+        public Task Commit(int biobankId, bool replace)
         {
             BackgroundJob.Enqueue(() => _commitService.CommitStagedData(replace, biobankId));
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public async Task Reject(int biobankId)
+        public Task Reject(int biobankId)
         {
             BackgroundJob.Enqueue(() => _rejectService.RejectStagedData(biobankId));
+            return Task.CompletedTask;
         }
     }
 }
