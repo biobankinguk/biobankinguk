@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Analytics\" />
+  </ItemGroup>
+
 </Project>
