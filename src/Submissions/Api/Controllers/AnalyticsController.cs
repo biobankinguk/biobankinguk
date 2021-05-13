@@ -4,12 +4,16 @@ using Biobanks.Submissions.Api.Auth;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
+using Swashbuckle.AspNetCore.Annotations;
 
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
+    /// <summary>
+    /// Controller for generating Analytics Report data
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [Authorize(nameof(AuthPolicies.IsSuperAdmin))]
@@ -18,6 +22,7 @@ namespace Biobanks.Submissions.Api.Controllers
         private readonly IDirectoryReportGenerator _directoryReports;
         private readonly IOrganisationReportGenerator _organisationReports;
 
+        /// <inheritdoc />
         public AnalyticsController(
             IDirectoryReportGenerator directoryReports,
             IOrganisationReportGenerator organisationReports)
@@ -26,8 +31,15 @@ namespace Biobanks.Submissions.Api.Controllers
             _organisationReports = organisationReports;
         }
 
-        // TODO: Swagger
+        /// <summary>
+        /// Generate a report from the currently stored Directory Analytics data, for a specific Organisation
+        /// </summary>
+        /// <param name="year">Year in which reporting period ends</param>
+        /// <param name="endQuarter">Quarter in which reporting period ends</param>
+        /// <param name="reportPeriod">Length in months of reporting period, working back from the end of the specified quarter</param>
+        /// <param name="organisationId">External Id of the Directory Organisation to generate a report for</param>
         [HttpGet("{year}/{endQuarter}/{reportPeriod}/{organisationId}")]
+        [SwaggerResponse(200)]
         public async Task<ActionResult<OrganisationReportDto>> OrganisationReport(
             int year,
             int endQuarter,
@@ -35,8 +47,14 @@ namespace Biobanks.Submissions.Api.Controllers
             string organisationId)
             => await _organisationReports.GetReport(organisationId, year, endQuarter, reportPeriod);
 
-        // TODO: Swagger
+        /// <summary>
+        /// Generate an overall Directory report from the currently stored Directory Analytics data
+        /// </summary>
+        /// <param name="year">Year in which reporting period ends</param>
+        /// <param name="endQuarter">Quarter in which reporting period ends</param>
+        /// <param name="reportPeriod">Length in months of reporting period, working back from the end of the specified quarter</param>
         [HttpGet("{year}/{endQuarter}/{reportPeriod}")]
+        [SwaggerResponse(200)]
         public async Task<ActionResult<DirectoryReportDto>> DirectoryReport(
             int year,
             int endQuarter,

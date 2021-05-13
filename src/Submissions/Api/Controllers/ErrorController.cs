@@ -17,6 +17,7 @@ namespace Biobanks.Submissions.Api.Controllers
     /// </summary>
     [Route("status/{submissionId}/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
     public class ErrorController : ControllerBase
     {
         private readonly IErrorService _errors;

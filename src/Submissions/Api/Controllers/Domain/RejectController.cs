@@ -12,6 +12,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     /// </summary>
     [Route("{biobankId}/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
     public class RejectController : ControllerBase
     {
         private readonly IBackgroundJobEnqueueingService _backgroundJobEnqueueingService;

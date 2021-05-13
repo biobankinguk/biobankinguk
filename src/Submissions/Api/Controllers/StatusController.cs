@@ -18,6 +18,7 @@ namespace Biobanks.Submissions.Api.Controllers
     /// </summary>
     [Route("[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
     public class StatusController : ControllerBase
     {
         private readonly ISubmissionService _submissions;

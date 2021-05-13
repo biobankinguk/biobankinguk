@@ -39,6 +39,8 @@ using Biobanks.Shared.Services;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Analytics;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System;
 
 namespace Biobanks.Submissions.Api
 {
@@ -127,7 +129,7 @@ namespace Biobanks.Submissions.Api
                         opts.SwaggerDoc("v1",
                             new OpenApiInfo
                             {
-                                Title = "BiobankingUK Submissions API",
+                                Title = "BiobankingUK Directory API",
                                 Version = "v1"
                             });
 
@@ -150,6 +152,17 @@ namespace Biobanks.Submissions.Api
                             BearerFormat = "JWT"
                         });
                         opts.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                        // Allow grouping across controllers
+                        opts.TagActionsBy(api =>
+                        {
+                            var tag = api.GroupName
+                                ?? (api.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
+
+                            if(tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
+                            return new[] { tag };
+                        });
+                        opts.DocInclusionPredicate((name, api) => true);
                     })
 
                 .AddAutoMapper(

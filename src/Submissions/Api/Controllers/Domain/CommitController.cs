@@ -16,6 +16,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     /// </summary>
     [Route("{biobankId}/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
     public class CommitController : ControllerBase
     {
         private readonly ISubmissionService _submissionService;
