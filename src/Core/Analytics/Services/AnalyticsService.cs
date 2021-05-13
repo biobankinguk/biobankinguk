@@ -39,5 +39,16 @@ namespace Biobanks.Analytics.Services
                 .Where(x => x.Date >= startDate && x.Date <= endDate)
                 .ToListAsync();
 
+        /// <inheritdoc />
+        public async Task<DateTimeOffset> GetLatestOrganisationAnalyticsTimestamp()
+            => (await _db.OrganisationAnalytics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+
+        /// <inheritdoc />
+        public async Task<DateTimeOffset> GetLatestAnalyticsEventTimestamp()
+            => (await _db.DirectoryAnalyticEvents.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
+
+        /// <inheritdoc />
+        public async Task<DateTimeOffset> GetLatestAnalyticsMetricTimestamp()
+            => (await _db.DirectoryAnalyticMetrics.ToListAsync()).Select(x => x.Date).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
     }
 }

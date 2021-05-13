@@ -31,5 +31,20 @@ namespace Biobanks.Analytics.Services.Contracts
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         Task<IEnumerable<DirectoryAnalyticMetric>> GetAnalyticsMetrics(DateTimeOffset startDate, DateTimeOffset endDate);
+
+        /// <summary>
+        /// Get the timestamp of the most recent OrganisationAnalytics record
+        /// </summary>
+        Task<DateTimeOffset> GetLatestOrganisationAnalyticsTimestamp();
+
+        /// <summary>
+        /// Get the timestamp of the most recent DirectoryAnalyticsEvent record
+        /// </summary>
+        Task<DateTimeOffset> GetLatestAnalyticsEventTimestamp();
+
+        /// <summary>
+        /// Get the timestamp of the most recent DirectoryAnalyticsMetric record
+        /// </summary>
+        Task<DateTimeOffset> GetLatestAnalyticsMetricTimestamp();
     }
 }

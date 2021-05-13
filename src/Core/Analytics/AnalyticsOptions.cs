@@ -18,5 +18,21 @@
         /// above which will be excluded from plots
         /// </summary>
         public int EventThreshold { get; set; } = 30;
+
+        /// <summary>
+        /// Default StartDate for Analytics Records in yyyy-MM-dd (ISO-8601 short) format.
+        /// </summary>
+        public string StartDate { get; set; } = "2016-01-01";
+
+        /// <summary>
+        /// The Id from Google Analytics dashboard of the View from which analytics data should be fetched.
+        /// </summary>
+        public string GoogleAnalyticsViewId { get; set; }
+
+        /// <summary>
+        /// A JSON Service Account Key for Google Analytics Reporting API v4
+        /// </summary>
+        // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
+        public string GoogleAnalyticsReportingKey { get; set; }
     }
 }
