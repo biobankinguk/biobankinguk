@@ -14,6 +14,8 @@ using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Biobank;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
+
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 using Newtonsoft.Json;
@@ -1857,8 +1859,29 @@ namespace Biobanks.Web.Controllers
             if (reportPeriod == 0)
                 reportPeriod = 5;
 
-            var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
-            return View(model);
+            try
+            {
+                var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
+                return View(model);
+            } catch(Exception e)
+            {
+                var message = e switch
+                {
+                    JsonSerializationException _ => "The API Response Body could not be processed.",
+                    KeyNotFoundException _ => "Couldn't find the specified Biobank.",
+                    HttpRequestException _ => "The API Request failed.",
+                    _ => "An unknown error occurred and has been logged."
+                };
+
+                var outer = new Exception(message, e);
+
+                // Log Error via Application Insights
+                var ai = new TelemetryClient();
+                ai.TrackException(outer);
+
+                ModelState.AddModelError(Empty, outer);
+                return View();
+            }
         }
         #endregion
 

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Biobanks.Services.Dto
 {
@@ -19,10 +16,9 @@ namespace Biobanks.Services.Dto
         public ProfilePageViewsDTO ProfilePageViews { get; set; }
         public SearchActivityDTO SearchActivity { get; set; }
         public ContactRequestsDTO ContactRequests { get; set; }
-        public ErrorStatusModelDTO Error { get; set; }
     }
 
-    public partial class ProfileStatusDTO
+    public class ProfileStatusDTO
     {
         public int CollectionStatus { get; set; }
         public string CollectionStatusMessage { get; set; }
@@ -30,39 +26,39 @@ namespace Biobanks.Services.Dto
         public string CapabilityStatusMessage { get; set; }
     }
 
-    public partial class ProfilePageViewsDTO
+    public class ProfilePageViewsDTO
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCountsDTO> ProfileQuarters { get; set; }
         public IList<int> ViewsPerQuarter { get; set; }
         public IList<double> ViewsAverages { get; set; }
-        public IList<String> PageRouteLabels { get; set; }
+        public IList<string> PageRouteLabels { get; set; }
         public IList<int> RouteCount { get; set; }
     }
 
-    public partial class SearchActivityDTO
+    public class SearchActivityDTO
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCountsDTO> SearchQuarters { get; set; }
         public IList<int> SearchPerQuarter { get; set; }
         public IList<double> SearchAverages { get; set; }
-        public IList<String> SearchTypeLabels { get; set; }
+        public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
-        public IList<String> SearchTermLabels { get; set; }
+        public IList<string> SearchTermLabels { get; set; }
         public IList<int> SearchTermCount { get; set; }
-        public IList<String> SearchFilterLabels { get; set; }
+        public IList<string> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
     }
 
-    public partial class ContactRequestsDTO
+    public class ContactRequestsDTO
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCountsDTO> ContactQuarters { get; set; }
         public IList<int> ContactsPerQuarter { get; set; }
         public IList<double> ContactAverages { get; set; }
     }
 
-    public partial class QuarterlyCountsDTO
+    public class QuarterlyCountsDTO
     {
         public string BiobankId { get; set; }
         public int Total { get; set; }

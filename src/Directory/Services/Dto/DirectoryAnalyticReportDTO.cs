@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Biobanks.Services.Dto
 {
@@ -19,11 +16,9 @@ namespace Biobanks.Services.Dto
         public SearchCharacteristicDTO SearchCharacteristics { get; set; }
         public EventStatDTO EventStats { get; set; }
         public ProfilePageStatDTO ProfilePageStats { get; set; }
-
-        public ErrorStatusModelDTO Error { get; set; }
     }
 
-    public partial class SessionStatDTO
+    public class SessionStatDTO
     {
         public List<string> SessionNumberLabels { get; set; }
         public List<int> SessionNumberCount { get; set; }
@@ -35,16 +30,16 @@ namespace Biobanks.Services.Dto
         public IList<double> AvgSessionDurationCount { get; set; }
     }
 
-    public partial class SearchCharacteristicDTO
+    public class SearchCharacteristicDTO
     {
-        public IList<String> SearchTypeLabels { get; set; }
+        public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
-        public IList<String> SearchTermLabels { get; set; }
+        public IList<string> SearchTermLabels { get; set; }
         public IList<int> SearchTermCount { get; set; }
-        public IList<String> SearchFilterLabels { get; set; }
+        public IList<string> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
     }
-    public partial class EventStatDTO
+    public class EventStatDTO
     {
         public IList<string> ContactNumberLabels { get; set; }
         public IList<int> ContactNumberCount { get; set; }
@@ -54,10 +49,10 @@ namespace Biobanks.Services.Dto
         public IList<int> FilteredMailToCount { get; set; }
     }
 
-    public partial class ProfilePageStatDTO
+    public class ProfilePageStatDTO
     {
         public IList<SourceCountDTO> ProfileSources { get; set; }
-        public IList<String> PageRouteLabels { get; set; }
+        public IList<string> PageRouteLabels { get; set; }
         public IList<int> RouteCount { get; set; }
     }
 

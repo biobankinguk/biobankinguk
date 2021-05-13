@@ -13,10 +13,12 @@
 
 <div class="row">
     <div class="col-md-12">
-        @if (Model == null || Model.Error.ErrorCode < 0)
+        @if (!ViewData.ModelState.IsValid)
         {
             <div class="alert alert-warning">
-                Problem encountered while retrieving analytics data. Error Msg: @((Model != null) ? Model.Error.ErrorMessage : "")
+                Problem encountered while retrieving analytics data: @(
+                    ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? string.Empty;
+                )
             </div>
 
         }
