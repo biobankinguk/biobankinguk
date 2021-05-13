@@ -42,7 +42,7 @@ namespace Biobanks.Analytics.Services
             _organisationService = organisationService;
 
             _viewId = configuration["Analytics:ViewId"];
-            _startDate = configuration["Analytics:StartDate"] ?? "2016-01-01";
+            //_startDate = configuration["Analytics:StartDate"] ?? "2016-01-01";
 
             _credentials = GoogleCredential
                 .FromJson(configuration["Analytics:ApiKey"] ?? "{}")
