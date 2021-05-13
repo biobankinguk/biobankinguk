@@ -13,6 +13,8 @@ namespace Biobanks.Submissions.Api.Auth
     /// </summary>
     public class SecurityRequirementsOperationFilter : IOperationFilter
     {
+        const string _defaultScheme = "jwtbearer";
+
         private static Dictionary<string, string> _policySchemes = new()
         {
             [nameof(AuthPolicies.IsTokenAuthenticated)] = "jwtbearer",
@@ -44,7 +46,7 @@ namespace Biobanks.Submissions.Api.Auth
                 .ToList();
 
             // always use the default
-            if (!authPolicies.Any()) authPolicies = new() { nameof(AuthPolicies.IsTokenAuthenticated) };
+            if (authPolicies.Count == 0) authPolicies = new() { nameof(AuthPolicies.IsTokenAuthenticated) };
 
             // saves adding these per Endpoint!
             // TODO: allow overriding on the Controller Action?
@@ -60,7 +62,7 @@ namespace Biobanks.Submissions.Api.Auth
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = _policySchemes.GetValueOrDefault(policyName)
+                            Id = _policySchemes.GetValueOrDefault(policyName) ?? _defaultScheme // unknown policies use the default scheme
                         }
                     })
                 // filter out policies we don't care about
