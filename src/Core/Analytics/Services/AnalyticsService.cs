@@ -33,6 +33,11 @@ namespace Biobanks.Analytics.Services
                 .Where(x => x.Date >= startDate && x.Date <= endDate)
                 .ToListAsync();
 
+        /// <inheritdoc />
+        public async Task<IEnumerable<DirectoryAnalyticMetric>> GetAnalyticsMetrics(DateTimeOffset startDate, DateTimeOffset endDate)
+            => await _db.DirectoryAnalyticMetrics.AsNoTracking()
+                .Where(x => x.Date >= startDate && x.Date <= endDate)
+                .ToListAsync();
 
     }
 }

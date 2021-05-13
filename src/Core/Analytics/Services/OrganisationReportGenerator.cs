@@ -8,33 +8,31 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Biobanks.Analytics.Services
 {
-    public class AnalyticsReportGenerator : IAnalyticsReportGenerator
+    public class OrganisationReportGenerator : IOrganisationReportGenerator
     {
         private readonly IGoogleAnalyticsReportingService _ga;
         private readonly IAnalyticsService _analytics;
+        private readonly IReportDataTransformationService _transform;
         private readonly AnalyticsOptions _config;
 
-        public AnalyticsReportGenerator(
+        public OrganisationReportGenerator(
             IGoogleAnalyticsReportingService ga,
             IAnalyticsService analytics,
+            IReportDataTransformationService transform,
             IOptions<AnalyticsOptions> options)
         {
             _ga = ga;
             _analytics = analytics;
+            _transform = transform;
             _config = options.Value;
         }
 
-        #region Organisation Report
-        // TODO: may be own service, not just region?
-
         /// <inheritdoc />
-        public async Task<OrganisationReportDto> GetOrganisationReport(string organisationId, int year, int quarter, int period)
+        public async Task<OrganisationReportDto> GetReport(string organisationId, int year, int quarter, int period)
         {
             var (startDate, endDate) = _ga.GetDateRangeBounds(_ga.PeriodAsDateRange(year, quarter, period));
             var biobankData = await _analytics.GetOrganisationAnalytics(startDate, endDate);
@@ -73,7 +71,7 @@ namespace Biobanks.Analytics.Services
             (var viewsPerQuarter, var viewsAvgs) = GetQuarterlyAverages(summary, biobankId);
             (var pageRoutes, var routeCount) = GetPageRouteCounts(profileData.Where(x => x.OrganisationExternalId == biobankId));
 
-            return new ProfilePageViewsDto
+            return new()
             {
                 QuarterLabels = quarterLabels,
                 ProfileQuarters = topPageViews,
@@ -92,12 +90,14 @@ namespace Biobanks.Analytics.Services
             var ranking = GetRankings(summary);
             (var quarterLabels, var topSearches) = GetTopBiobanks(summary, ranking, biobankId, _config.MetricThreshold);
             (var searchPerQuarter, var searchAvgs) = GetQuarterlyAverages(summary, biobankId);
-            (var searchTypeLabels, var searchTypeCount) = GetSearchBreakdown(bbSearchData, GetSearchType);
-            (var searchTermLabels, var searchTermCount) = GetSearchBreakdown(bbSearchData.Where(x =>
-                                               GetSearchType(x.PagePath) == "Diagnosis"), GetSearchTerm);
-            (var searchFilterLabels, var searchFilterCount) = GetSearchFilters(bbSearchData);
+            (var searchTypeLabels, var searchTypeCount) =
+                _transform.GetSearchBreakdown(bbSearchData, _transform.GetSearchType);
+            (var searchTermLabels, var searchTermCount) = _transform.GetSearchBreakdown(
+                    bbSearchData.Where(x => _transform.GetSearchType(x.PagePath) == "Diagnosis"),
+                    _transform.GetSearchTerm);
+            (var searchFilterLabels, var searchFilterCount) = _transform.GetSearchFilters(bbSearchData);
 
-            return new SearchActivityDto
+            return new()
             {
                 QuarterLabels = quarterLabels,
                 SearchQuarters = topSearches,
@@ -119,7 +119,7 @@ namespace Biobanks.Analytics.Services
             (var quarterLabels, var topContactRequests) = GetTopBiobanks(summary, ranking, biobankId, _config.MetricThreshold);
             (var requestsPerQuarter, var requestsAvgs) = GetQuarterlyAverages(summary, biobankId);
 
-            return new ContactRequestsDto
+            return new()
             {
                 QuarterLabels = quarterLabels,
                 ContactQuarters = topContactRequests,
@@ -127,8 +127,6 @@ namespace Biobanks.Analytics.Services
                 ContactAverages = requestsAvgs,
             };
         }
-
-        #endregion
 
         #region Common Data Transformations
 
@@ -203,7 +201,6 @@ namespace Biobanks.Analytics.Services
                 foreach (var ql in quarterLabels) //done using a loop to fill in '0's for quarters with no data
                     qcount.Add(quarterCount.Where(x => x.Quarter == ql).Select(x => x.Count).FirstOrDefault());
 
-
                 profileQuarters.Add(new()
                 {
                     BiobankId = bb.Biobank,
@@ -258,113 +255,13 @@ namespace Biobanks.Analytics.Services
         {
             var query = biobankData
                 .GroupBy(
-                    x => GetViewRoute(x.PreviousPagePath),
+                    x => _transform.GetViewRoute(x.PreviousPagePath),
                     x => x.Counts,
                     (key, group) => (key, count: group.Sum()))
                 .OrderByDescending(x => x.count)
                 .ToList();
 
             return (query.ConvertAll(x => x.key), query.ConvertAll(x => x.count));
-        }
-
-        private string GetViewRoute(string pagePath)
-            => pagePath switch
-            {
-                _ when pagePath.Contains("/Search/Collection")
-                    => "Search Existing Samples Query",
-
-                _ when pagePath.Contains("/Search/Collection")
-                    => "Search Existing Samples Query",
-
-                _ when pagePath.Contains("/Search/Collection")
-                    => "Search Existing Samples Query",
-
-                _ when pagePath.Contains("/Search/Collection")
-                    => "Search Existing Samples Query",
-
-                _ when pagePath.Contains("/Search/Collection")
-                    => "Search Existing Samples Query",
-
-                _ when (pagePath.Contains("/Biobank/") && !pagePath.Contains("/Profile/Biobank/"))
-                        || pagePath.Contains("/ADAC/")
-                        || pagePath.Contains("/Account/")
-                        || pagePath.Contains("/Register/")
-                    => "Account & Backend Management",
-
-                _ => "Other"
-            };
-
-        private (IList<string>, IList<int>) GetSearchBreakdown(IEnumerable<OrganisationAnalytic> biobankData, Func<string, string> getSearchFunc)
-        {
-            var query = biobankData.GroupBy(
-                    x => getSearchFunc(x.PagePath),
-                    x => x.Counts,
-                    (key, group) => (key, count: group.Sum()))
-                .OrderByDescending(x => x.count)
-                .ToList();
-
-            return (query.ConvertAll(x => x.key), query.ConvertAll(x => x.count));
-        }
-
-        private string GetSearchType(string pagePath)
-            => pagePath switch
-            {
-                _ when pagePath.Contains("ontologyTerm=")
-                    => "Diagnosis", // TODO: update?
-                _ when pagePath.Contains("selectedFacets=")
-                    => "Filters", // of course, this isn't mutually exclusive with the above...
-                _ => "No specific search"
-            };
-
-        public string GetSearchTerm(string pagePath)
-            => pagePath switch
-            {
-                _ when pagePath.Contains("ontologyTerm=")
-                    => new Regex("ontologyTerm=([^&]+)").Match(pagePath) switch
-                    {
-                        var m when m.Success => m.Groups[1].Captures[0].Value,
-                        _ => ""
-                    },
-                _ when pagePath.Contains("selectedFacets=")
-                    => "Filter",
-                _ => "Other"
-            };
-
-        public string[] GetSearchFilters(string pagePath)
-            => new Regex("selectedFacets=([^&]+)").Match(pagePath) switch
-            {
-                var m when m.Success
-                    // TODO: are we sure the captured value has been URL decoded?!
-                    // if not, it won't be valid JSON yet, as the `[` `]` will still be encoded
-                    => JsonSerializer.Deserialize<string[]>(m.Groups[1].Captures[0].Value),
-                _ => new[] { "" }
-            };
-
-        private (IList<string>, IList<int>) GetSearchFilters(IEnumerable<OrganisationAnalytic> biobankData)
-        {
-            List<string> filters = new();
-            List<int> filterCount = new();
-
-            foreach (var bb in biobankData)
-            {
-                foreach (var term in GetSearchFilters(bb.PagePath))
-                {
-                    var sterm = term.Split('_').LastOrDefault()?.TrimStart(' ').TrimEnd(' ');
-                    if (string.IsNullOrEmpty(sterm))
-                        continue;
-
-                    if (!filters.Contains(sterm))
-                    {
-                        filters.Add(sterm);
-                        filterCount.Add(1);
-                    }
-                    else
-                    {
-                        filterCount[filters.IndexOf(sterm)]++;
-                    }
-                }
-            }
-            return (filters, filterCount);
         }
 
         #endregion

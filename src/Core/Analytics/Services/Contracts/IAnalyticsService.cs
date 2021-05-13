@@ -24,5 +24,12 @@ namespace Biobanks.Analytics.Services.Contracts
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         Task<IEnumerable<DirectoryAnalyticEvent>> GetAnalyticsEvents(DateTimeOffset startDate, DateTimeOffset endDate);
+
+        /// <summary>
+        /// Get DirectoryAnalyticsMetrics within a date range
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        Task<IEnumerable<DirectoryAnalyticMetric>> GetAnalyticsMetrics(DateTimeOffset startDate, DateTimeOffset endDate);
     }
 }

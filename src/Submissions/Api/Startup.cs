@@ -174,7 +174,9 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>()
 
-                .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
+                .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
+                .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+                .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
                 .AddTransient<IAnalyticsService, AnalyticsService>()
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 

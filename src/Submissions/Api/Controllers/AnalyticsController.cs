@@ -15,15 +15,15 @@ namespace Biobanks.Submissions.Api.Controllers
     [Authorize(nameof(AuthPolicies.IsSuperAdmin))]
     public class AnalyticsController : ControllerBase
     {
-        private readonly IAnalyticsReportGenerator _reports;
-        private readonly ILogger<AnalyticsController> _logger;
+        private readonly IDirectoryReportGenerator _directoryReports;
+        private readonly IOrganisationReportGenerator _organisationReports;
 
         public AnalyticsController(
-            IAnalyticsReportGenerator reports,
-            ILogger<AnalyticsController> logger)
+            IDirectoryReportGenerator directoryReports,
+            IOrganisationReportGenerator organisationReports)
         {
-            _reports = reports;
-            _logger = logger;
+            _directoryReports = directoryReports;
+            _organisationReports = organisationReports;
         }
 
         // TODO: Swagger
@@ -33,14 +33,14 @@ namespace Biobanks.Submissions.Api.Controllers
             int endQuarter,
             int reportPeriod,
             string organisationId)
-            => await _reports.GetOrganisationReport(organisationId, year, endQuarter, reportPeriod);
+            => await _organisationReports.GetReport(organisationId, year, endQuarter, reportPeriod);
 
         // TODO: Swagger
-        //[HttpGet("{year}/{endQuarter}/{reportPeriod}")]
-        //public async Task<ActionResult<OrganisationReportDto>> DirectoryReport(
-        //    int year,
-        //    int endQuarter,
-        //    int reportPeriod)
-        //    => await _reports.GetDirectoryReport(year, endQuarter, reportPeriod);
+        [HttpGet("{year}/{endQuarter}/{reportPeriod}")]
+        public async Task<ActionResult<DirectoryReportDto>> DirectoryReport(
+            int year,
+            int endQuarter,
+            int reportPeriod)
+            => await _directoryReports.GetReport(year, endQuarter, reportPeriod);
     }
 }

@@ -12,5 +12,11 @@
         /// Number of Organisations to include in the ranking for Organisation reports
         /// </summary>
         public int MetricThreshold { get; set; } = 10;
+
+        /// <summary>
+        /// Number of Event groups that originated from the same location on a particular day
+        /// above which will be excluded from plots
+        /// </summary>
+        public int EventThreshold { get; set; } = 30;
     }
 }
