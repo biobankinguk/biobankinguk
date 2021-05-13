@@ -14,7 +14,6 @@ namespace Core.Jobs
 
         private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
 
-
         public AnalyticsJob(IGoogleAnalyticsReadService googleAnalyticsReadService)
         {
             _googleAnalyticsReadService = googleAnalyticsReadService;
@@ -34,7 +33,7 @@ namespace Core.Jobs
             if (lastentry == DateTimeOffset.MinValue)
             {
                 var dateRange = new[] { new DateRange { StartDate = _startDate, EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
-                
+
                 //TODO: Refactor this service method to have parameters (DateTimeOffset start, DateTimeOffset end)
                 await _googleAnalyticsReadService.DownloadDirectoryData(dateRange);
             }
@@ -42,7 +41,7 @@ namespace Core.Jobs
             else if (lastentry > DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
             {
                 var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(_dateFormat), EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
-                
+
                 await _googleAnalyticsReadService.DownloadAllBiobankData(dateRange);
                 await _googleAnalyticsReadService.DownloadDirectoryData(dateRange);
             }

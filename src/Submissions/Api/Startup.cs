@@ -36,6 +36,8 @@ using System.Text.Json.Serialization;
 using UoN.AspNetCore.VersionMiddleware;
 using Biobanks.Shared.Services.Contracts;
 using Biobanks.Shared.Services;
+using Biobanks.Analytics.Services;
+using Biobanks.Analytics.Services.Contracts;
 
 namespace Biobanks.Submissions.Api
 {
@@ -168,6 +170,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
+                .AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
@@ -238,8 +241,6 @@ namespace Biobanks.Submissions.Api
             // Hangfire Recurring Jobs
             RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
-
-            RecurringJob.Trigger("job-analytics");
         }
     }
 }
