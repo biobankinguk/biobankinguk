@@ -1886,7 +1886,7 @@ namespace Biobanks.Web.Controllers
                 ai.TrackException(outer);
 
                 ModelState.AddModelError(Empty, outer);
-                return View();
+                return View(new BiobankAnalyticReport());
             }
         }
         #endregion

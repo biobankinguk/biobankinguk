@@ -93,7 +93,7 @@ namespace Biobanks.Submissions.Api
                         RequireExpirationTime = true
                     };
                 })
-                .AddBasic(opts => opts.Realm = "biobankinguk-submissions-accesstoken");
+                .AddBasic(opts => opts.Realm = "biobankinguk-api");
 
             services
                 .AddOptions()
@@ -116,7 +116,9 @@ namespace Biobanks.Submissions.Api
 
                 .AddAuthorization(o =>
                 {
-                    o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
+                    o.DefaultPolicy = AuthPolicies.IsAuthenticated;
+                    o.AddPolicy(nameof(AuthPolicies.IsTokenAuthenticated),
+                        AuthPolicies.IsTokenAuthenticated);
                     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
                         AuthPolicies.IsBasicAuthenticated);
                     o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),

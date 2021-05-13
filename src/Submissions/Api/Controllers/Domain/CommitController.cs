@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
 using Biobanks.Submissions.Core.Services.Contracts;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -17,6 +19,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     [Route("{biobankId}/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class CommitController : ControllerBase
     {
         private readonly ISubmissionService _submissionService;

@@ -7,6 +7,7 @@ using Biobanks.Submissions.Core.Models;
 using Biobanks.Submissions.Core.Services.Contracts;
 using Biobanks.Submissions.Core.Types;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -27,6 +28,7 @@ namespace Biobanks.Submissions.Api.Controllers
     [Route("[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class SubmitController : ControllerBase
     {
         private readonly IConfiguration _config;

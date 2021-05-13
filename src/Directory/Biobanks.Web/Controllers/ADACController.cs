@@ -942,7 +942,6 @@ namespace Biobanks.Web.Controllers
                 var message = e switch
                 {
                     JsonSerializationException _ => "The API Response Body could not be processed.",
-                    KeyNotFoundException _ => "Couldn't find the specified Biobank.",
                     HttpRequestException _ => "The API Request failed.",
                     _ => "An unknown error occurred and has been logged."
                 };
@@ -954,7 +953,7 @@ namespace Biobanks.Web.Controllers
                 ai.TrackException(outer);
 
                 ModelState.AddModelError(string.Empty, outer);
-                return View();
+                return View(new DirectoryAnalyticReport());
             }
         }
         #endregion

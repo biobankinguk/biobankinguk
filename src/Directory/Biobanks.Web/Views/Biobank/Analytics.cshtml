@@ -16,9 +16,8 @@
         @if (!ViewData.ModelState.IsValid)
         {
             <div class="alert alert-warning">
-                Problem encountered while retrieving analytics data: @(
-                    ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? string.Empty;
-                )
+                Problem encountered while retrieving analytics data:
+                @(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? string.Empty)
             </div>
 
         }
