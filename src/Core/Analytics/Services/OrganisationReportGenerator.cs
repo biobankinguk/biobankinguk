@@ -128,8 +128,6 @@ namespace Biobanks.Analytics.Services
             };
         }
 
-        #region Common Data Transformations
-
         // would be nice to genericise GetSummary, but the property names differ between data types
         private IEnumerable<QuarterlySummary> GetSummary(IEnumerable<OrganisationAnalytic> biobankData)
             => biobankData.GroupBy(
@@ -263,7 +261,5 @@ namespace Biobanks.Analytics.Services
 
             return (query.ConvertAll(x => x.key), query.ConvertAll(x => x.count));
         }
-
-        #endregion
     }
 }
