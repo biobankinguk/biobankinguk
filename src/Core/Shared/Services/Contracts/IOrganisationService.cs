@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Core.Services.Contracts
+namespace Biobanks.Shared.Services.Contracts
 {
     public interface IOrganisationService
     {
+        Task<int> Count();
+
         Task<IEnumerable<Organisation>> List();
+
+        Task<IEnumerable<string>> ListExternalIds();
     }
 }

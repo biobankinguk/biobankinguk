@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "..\Entities\Ent
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{E6110395-5696-4D01-BF99-A1BF9F0C6A2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.AzureStorage", "Core.AzureStorage\Core.AzureStorage.csproj", "{71C6B65A-A7AE-4395-8E52-561EFC42BC80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.AzureStorage", "..\Core.AzureStorage\Core.AzureStorage.csproj", "{71C6B65A-A7AE-4395-8E52-561EFC42BC80}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "..\IdentityModel\IdentityModel\IdentityModel.csproj", "{661FD3B0-D1F6-407D-8053-132CC04E8C5A}"
 EndProject

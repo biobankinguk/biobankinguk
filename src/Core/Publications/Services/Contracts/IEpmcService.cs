@@ -1,8 +1,9 @@
-﻿using Biobanks.Publications.Core.Services.Dto;
+﻿using Biobanks.Publications.Dto;
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Publications.Core.Services.Contracts
+namespace Biobanks.Publications.Services.Contracts
 {
     public interface IEpmcService
     {
@@ -12,6 +13,6 @@ namespace Biobanks.Publications.Core.Services.Contracts
         Task<List<PublicationDto>> GetOrganisationPublications(string biobank);
 
         //Annotations
-        Task<List<AnnotationDTO>> GetPublicationAnnotations(string publicationId, string source);
+        Task<List<AnnotationDto>> GetPublicationAnnotations(string publicationId, string source);
     }
 }

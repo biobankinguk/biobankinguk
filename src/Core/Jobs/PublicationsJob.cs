@@ -1,4 +1,6 @@
-﻿using Biobanks.Publications.Core.Services.Contracts;
+﻿using Biobanks.Publications.Services.Contracts;
+using Biobanks.Shared.Services.Contracts;
+
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,12 +18,12 @@ namespace Core.Jobs
             IPublicationService publicationService,
             IAnnotationService annotationService,
             IEpmcService epmcWebService,
-            IOrganisationService biobankReadService)
+            IOrganisationService organisationService)
         {
             _publicationService = publicationService;
             _annotationService = annotationService;
             _epmcWebService = epmcWebService;
-            _organisationService = biobankReadService;
+            _organisationService = organisationService;
         }
 
         public async Task Run()

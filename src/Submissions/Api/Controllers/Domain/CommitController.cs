@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.Services.Contracts;
+using Core.Submissions.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 

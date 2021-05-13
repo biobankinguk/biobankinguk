@@ -1,13 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>Biobanks.Core</AssemblyName>
+    <RootNamespace>Biobanks</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Flurl" Version="3.0.2" />
     <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="5.0.24" />
+    <PackageReference Include="Google.Apis.AnalyticsReporting.v4" Version="1.51.0.2197" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
   </ItemGroup>

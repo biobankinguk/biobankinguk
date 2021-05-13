@@ -3,9 +3,8 @@
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.EqualityComparers;
 using Biobanks.Submissions.Api.Models;
-using Biobanks.Submissions.Core.Models;
-using Biobanks.Submissions.Core.Services.Contracts;
 using Core.Submissions.Models;
+using Core.Submissions.Services.Contracts;
 using Core.Submissions.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

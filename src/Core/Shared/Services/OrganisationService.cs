@@ -1,13 +1,12 @@
-﻿using Biobanks.Data;
+﻿using Biobanks.Shared.Services.Contracts;
+using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore;
-using Biobanks.Publications.Core.Services.Contracts;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
 
-namespace Biobanks.Publications.Core.Services
+namespace Biobanks.Shared.Services
 {
     public class OrganisationService : IOrganisationService
     {
@@ -18,7 +17,14 @@ namespace Biobanks.Publications.Core.Services
             _db = db;
         }
 
+        public async Task<int> Count()
+            => await _db.Organisations.CountAsync();
+
         public async Task<IEnumerable<Organisation>> List()
             => await _db.Organisations.ToListAsync();
+
+        public async Task<IEnumerable<string>> ListExternalIds()
+            => await _db.Organisations.Select(x => x.OrganisationExternalId).ToListAsync();
+
     }
 }
