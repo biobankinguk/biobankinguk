@@ -1,5 +1,5 @@
 ﻿using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.Services.Contracts;
+using Core.Submissions.Services.Contracts;
 using Hangfire;
 using System.Threading.Tasks;
 

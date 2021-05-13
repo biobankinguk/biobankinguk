@@ -1,5 +1,4 @@
-﻿using Biobanks.Entities.Data;
-using Biobanks.IdentityModel.Helpers;
+﻿using Biobanks.IdentityModel.Helpers;
 using Biobanks.Publications.Core.Services;
 using Biobanks.Publications.Core.Services.Contracts;
 using Biobanks.Submissions.Api.Auth;
@@ -7,14 +6,12 @@ using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.Services.Contracts;
-
 using ClacksMiddleware.Extensions;
 using Core.AzureStorage;
 using Core.Jobs;
 using Core.Submissions.Services;
+using Core.Submissions.Services.Contracts;
 using Hangfire;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

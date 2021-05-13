@@ -2,7 +2,7 @@
 using System.Linq;
 using AutoMapper;
 using Biobanks.Entities.Api;
-using Biobanks.Submissions.Core.Models;
+using Core.Submissions.Models;
 
 namespace Core.Submissions.MappingProfiles
 {

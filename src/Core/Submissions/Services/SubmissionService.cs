@@ -8,18 +8,242 @@ using Biobanks.Data;
 using LinqKit;
 using Core.Submissions.Services.Contracts;
 using Core.Submissions.Types;
+using System.Text.Json;
+using AutoMapper;
+using Core.Submissions.Models;
+using Core.Submissions.Dto;
+using Core.Submissions.Exceptions;
 
 namespace Core.Submissions.Services
 {
     /// <inheritdoc />
     public class SubmissionService : ISubmissionService
     {
+        // Cloud Services
+        private readonly IBlobReadService _blobReader;
+        private readonly IBlobWriteService _blobWriter;
+
+        // Automapper
+        private readonly IMapper _mapper;
+
+        // Entity Validation and Write Services
+        private readonly IDiagnosisWriteService _diagnoses;
+        private readonly ISampleWriteService _samples;
+        private readonly ITreatmentWriteService _treatments;
+        private readonly IErrorService _errors;
+
+
         private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
         public SubmissionService(BiobanksDbContext db)
         {
             _db = db;
+        }
+
+        public async Task Staging(OperationsQueueItem operationQueueItem)
+        {
+            const string storageContainer = "submission-payload";
+
+            var blobContents = await _blobReader.GetObjectFromJsonAsync(storageContainer, operationQueueItem.BlobId);
+
+            // Get The Type From Stored String
+            var blobject = JsonSerializer.Deserialize(blobContents, Type.GetType(operationQueueItem.BlobType));
+            var subId = operationQueueItem.SubmissionId;
+
+            switch (blobject)
+            {
+                case List<DiagnosisModel> model:
+                    if (!model.Any()) break;
+
+                    switch (operationQueueItem.Operation)
+                    {
+                        case Operation.Submit:
+
+                            //Transform to a DTO and try to write it
+                            var diagnosisDtos = _mapper.Map<IEnumerable<DiagnosisDto>>(model);
+
+                            foreach (var dto in diagnosisDtos)
+                            {
+                                dto.OrganisationId = operationQueueItem.BiobankId;
+                            }
+
+                            try
+                            {
+                                await _diagnoses.ProcessDiagnoses(diagnosisDtos);
+                            }
+                            catch (AggregateBiobanksValidationException e)
+                            {
+                                await _errors.Add(
+                                    subId,
+                                    operationQueueItem.Operation,
+                                    "Diagnosis",
+                                    e.ValidationResults,
+                                    operationQueueItem.BiobankId);
+                            }
+
+                            await ProcessRecords(subId, diagnosisDtos.Count());
+
+                            break;
+
+                        case Operation.Delete:
+                            //Transform to a DTO and try to delete it
+                            var diagnosisDeletes = _mapper.Map<IEnumerable<DiagnosisDto>>(model);
+
+                            //additional bits automapper won't do
+                            foreach (var dto in diagnosisDeletes)
+                            {
+                                dto.OrganisationId = operationQueueItem.BiobankId;
+                            }
+
+                            try
+                            {
+                                await _diagnoses.DeleteDiagnosesIfExists(diagnosisDeletes);
+                            }
+                            catch (AggregateBiobanksValidationException e)
+                            {
+                                await _errors.Add(
+                                    subId,
+                                    operationQueueItem.Operation,
+                                    "Diagnosis",
+                                    e.ValidationResults,
+                                    operationQueueItem.BiobankId);
+                            }
+
+                            await ProcessRecords(subId, diagnosisDeletes.Count());
+
+                            break;
+                    }
+                    break;
+
+                case List<SampleModel> model:
+                    if (!model.Any()) break;
+
+                   // log.LogInformation($"blobject typematch: {model.GetType()}");
+                    switch (operationQueueItem.Operation)
+                    {
+                        case Operation.Submit:
+                            //Transform to a DTO and try to write it
+                            var sampleDtos = _mapper.Map<IEnumerable<SampleDto>>(model);
+
+                            foreach (var dto in sampleDtos)
+                            {
+                                dto.OrganisationId = operationQueueItem.BiobankId;
+                            }
+
+                            try
+                            {
+                                await _samples.ProcessSamples(sampleDtos);
+                            }
+                            catch (AggregateBiobanksValidationException e)
+                            {
+                                await _errors.Add(
+                                    subId,
+                                    operationQueueItem.Operation,
+                                    "Sample",
+                                    e.ValidationResults,
+                                    operationQueueItem.BiobankId);
+                            }
+
+                            await ProcessRecords(subId, sampleDtos.Count());
+
+                            break;
+
+                        case Operation.Delete:
+                            //Transform to a DTO and try to delete it
+                            var sampleDeletes = _mapper.Map<IEnumerable<SampleDto>>(model);
+
+                            //additional bits automapper won't do
+                            foreach (var dto in sampleDeletes)
+                            {
+                                dto.OrganisationId = operationQueueItem.BiobankId;
+                            }
+
+                            try
+                            {
+                                await _samples.DeleteSamplesIfExists(sampleDeletes);
+                            }
+                            catch (AggregateBiobanksValidationException e)
+                            {
+                                await _errors.Add(
+                                    subId,
+                                    operationQueueItem.Operation,
+                                    "Sample",
+                                    e.ValidationResults,
+                                    operationQueueItem.BiobankId);
+                            }
+
+                            await ProcessRecords(subId, sampleDeletes.Count());
+
+                            break;
+                    }
+                    break;
+
+                case List<TreatmentModel> model:
+                    if (!model.Any()) break;
+
+                  //  log.LogInformation($"blobject typematch: {model.GetType()}");
+                    switch (operationQueueItem.Operation)
+                    {
+                        case Operation.Submit:
+                            //Transform to a DTO and try to write it
+                            var treatmentDtos = _mapper.Map<IEnumerable<TreatmentDto>>(model);
+
+                            foreach (var dto in treatmentDtos)
+                            {
+                                dto.OrganisationId = operationQueueItem.BiobankId;
+                            }
+
+                            try
+                            {
+                                await _treatments.ProcessTreatments(treatmentDtos);
+                            }
+                            catch (AggregateBiobanksValidationException e)
+                            {
+                                await _errors.Add(
+                                    subId,
+                                    operationQueueItem.Operation,
+                                    "Treatment",
+                                    e.ValidationResults,
+                                    operationQueueItem.BiobankId);
+                            }
+
+                            await ProcessRecords(subId, treatmentDtos.Count());
+
+                            break;
+
+                        case Operation.Delete:
+                            //Transform to a DTO and try to delete it
+                            var treatmentDeletes = _mapper.Map<IEnumerable<TreatmentDto>>(model);
+
+                            //additional bits automapper won't do
+                            foreach (var dto in treatmentDeletes)
+                            {
+                                dto.OrganisationId = operationQueueItem.BiobankId;
+                            }
+
+                            try
+                            {
+                                await _treatments.DeleteTreatmentsIfExists(treatmentDeletes);
+                            }
+                            catch (AggregateBiobanksValidationException e)
+                            {
+                                await _errors.Add(
+                                    subId,
+                                    operationQueueItem.Operation,
+                                    "Treatment",
+                                    e.ValidationResults,
+                                    operationQueueItem.BiobankId);
+                            }
+
+                            await ProcessRecords(subId, treatmentDeletes.Count());
+
+                            break;
+                    }
+                    break;
+            }
+
+            await _blobWriter.DeleteAsync(storageContainer, operationQueueItem.BlobId);
         }
 
         /// <inheritdoc />
