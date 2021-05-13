@@ -270,6 +270,20 @@ namespace Biobanks.Search.Dto.Facets
                 },
                 SortOrderWithinGroup = 2
             },
+            new FacetDetail(FacetGroupId.SampleDetails)
+            {
+                Label = "Preservation Type",
+                Name = "preservationType",
+                Slug = "prsv",
+                NestedAggregation = true,
+                NestedAggregationPath = "materialPreservationDetails",
+                NestedAggregationFieldName = "preservationType",
+                SearchTypes = new List<SearchType>
+                {
+                    SearchType.Collection
+                },
+                SortOrderWithinGroup = 4
+            },
             new FacetDetail
             {
                 Label = "Protocols",
