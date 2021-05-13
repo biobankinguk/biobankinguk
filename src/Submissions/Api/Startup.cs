@@ -238,6 +238,8 @@ namespace Biobanks.Submissions.Api
             // Hangfire Recurring Jobs
             RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
+
+            RecurringJob.Trigger("job-analytics");
         }
     }
 }

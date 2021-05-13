@@ -20,10 +20,10 @@ namespace Biobanks.Analytics.Services
         public AnalyticsReportGenerator(IGoogleAnalyticsReadService googleAnalyticsReadService, IConfiguration configuration)
         {
             _googleAnalyticsReadService = googleAnalyticsReadService;
-            _numOfTopBiobanks = int.TryParse(configuration["MetricThreshold"], out var i) ? i : 10;
-            _eventThreshold = int.TryParse(configuration["EventThreshold"], out var j) ? j : 30;
-            _filterByHost = configuration["FilterbyHost"] == "true";
-            _hostname = configuration["DirectoryHostname"] ?? "";
+            _numOfTopBiobanks = int.TryParse(configuration["Analytics:MetricThreshold"], out var i) ? i : 10;
+            _eventThreshold = int.TryParse(configuration["Analytics:EventThreshold"], out var j) ? j : 30;
+            _filterByHost = configuration["Analytics:FilterByHost"] == "true";
+            _hostname = configuration["Analytics:DirectoryHostname"] ?? "";
         }
 
         public ProfilePageViewsDto GetProfilePageViews(string biobankId, IEnumerable<OrganisationAnalytic> biobankData)

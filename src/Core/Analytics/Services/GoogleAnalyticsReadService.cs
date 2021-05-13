@@ -42,11 +42,11 @@ namespace Biobanks.Analytics.Services
             _logger = logger;
             _organisationService = organisationService;
 
-            _viewId = configuration["AnalyticsViewId"];
-            _startDate = configuration["StartDate"] ?? "2016-01-01";
+            _viewId = configuration["Analytics:ViewId"];
+            _startDate = configuration["Analytics:StartDate"] ?? "2016-01-01";
 
             _credentials = GoogleCredential
-                .FromJson(configuration["AnalyticsApikey"] ?? "{}")
+                .FromJson(configuration["Analytics:ApiKey"] ?? "{}")
                 .CreateScoped(new[] 
                 { 
                     AnalyticsReportingService.Scope.AnalyticsReadonly 
