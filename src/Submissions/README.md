@@ -30,3 +30,9 @@ If that is not an option, it is recommended to use the **IdentityTool** in this 
 1. `dotnet run -- api-clients add --generate --connection-string "<connection-string>" <biobankId>`
 
 ApiClients are associated with Biobanks and the API verifies that the access token in use is authorised to act on a given Biobank's data.
+
+
+# Worker Jobs
+A series of background tasks are processed via the Submissions API as worker jobs. These jobs are defined in the `src/Core/Jobs` project folder. Each worker job is queued via the API's Hangfire instance, which uses the `apiHangfire` schema.
+
+Documentation for each worker job can be found on the [Wiki - Worker Jobs](https://github.com/biobankinguk/biobankinguk/wiki/Worker-Jobs).

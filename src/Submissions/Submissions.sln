@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "..\Entities\Ent
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{E6110395-5696-4D01-BF99-A1BF9F0C6A2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{724F723A-6318-4B52-AEF1-A7D8E03EA36E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Api", "Core\Core.Api.csproj", "{724F723A-6318-4B52-AEF1-A7D8E03EA36E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workers", "workers", "{7DE0CBBA-F5A0-4770-8F90-1AAA24E6FE64}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.AzureStorage", "Core.AzureStorage\Core.AzureStorage.csproj", "{71C6B65A-A7AE-4395-8E52-561EFC42BC80}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "..\IdentityModel\IdentityModel\IdentityModel.csproj", "{661FD3B0-D1F6-407D-8053-132CC04E8C5A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{661FD3B0-D1F6-407D-8053-132CC04E8C5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{661FD3B0-D1F6-407D-8053-132CC04E8C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{661FD3B0-D1F6-407D-8053-132CC04E8C5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{F46B616B-A978-4942-9015-1EB086B02EE9} = {7DE0CBBA-F5A0-4770-8F90-1AAA24E6FE64}
 		{71C6B65A-A7AE-4395-8E52-561EFC42BC80} = {E6110395-5696-4D01-BF99-A1BF9F0C6A2B}
 		{661FD3B0-D1F6-407D-8053-132CC04E8C5A} = {E6110395-5696-4D01-BF99-A1BF9F0C6A2B}
+		{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F} = {E6110395-5696-4D01-BF99-A1BF9F0C6A2B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09E011EE-A232-4E71-A777-D9BB21E3B503}

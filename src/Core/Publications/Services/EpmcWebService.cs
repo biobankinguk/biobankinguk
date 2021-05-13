@@ -2,16 +2,16 @@
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.WebUtilities;
 using System.Linq;
-using Biobanks.Publications.Core.Services.Contracts;
 using Microsoft.Extensions.Configuration;
-using Biobanks.Publications.Core.Services.Dto;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.AspNetCore.WebUtilities;
+using Biobanks.Publications.Services.Contracts;
+using Biobanks.Publications.Dto;
 
-namespace Biobanks.Publications.Core.Services
+namespace Biobanks.Publications.Services
 {
     public class EpmcWebService : IEpmcService
     {
@@ -19,22 +19,21 @@ namespace Biobanks.Publications.Core.Services
         private readonly HttpClient _client;
         private readonly ILogger<EpmcWebService> _logger;
 
-        public EpmcWebService(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<EpmcWebService> logger)
+        public EpmcWebService(
+            IHttpClientFactory httpClientFactory, 
+            IConfiguration configuration, 
+            ILogger<EpmcWebService> logger)
         {
             _client = httpClientFactory.CreateClient();
-            _client.BaseAddress = new Uri(configuration["EpmcApiUrl"]);
+            _client.BaseAddress = new Uri(configuration["Publications:EpmcApiUrl"]);
             _logger = logger;
         }
 
         public async Task<PublicationDto> GetPublicationById(int publicationId)
-        {
-            return (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
-        }
+            => (await PublicationSearch($"{publicationId}")).Publications.FirstOrDefault();
 
-        public async Task<List<AnnotationDTO>> GetPublicationAnnotations(string publicationId, string source)
-        {
-            return (await AnnotationSearch(publicationId, source));
-        }
+        public async Task<List<AnnotationDto>> GetPublicationAnnotations(string publicationId, string source)
+            => (await AnnotationSearch(publicationId, source));
 
         public async Task<List<PublicationDto>> GetOrganisationPublications(string biobank)
         {
@@ -82,10 +81,10 @@ namespace Biobanks.Publications.Core.Services
             return result;
         }
 
-        private async Task<List<AnnotationDTO>> AnnotationSearch(string publicationId, string source)
+        private async Task<List<AnnotationDto>> AnnotationSearch(string publicationId, string source)
         {
 
-            var annotations = new List<AnnotationDTO>();
+            var annotations = new List<AnnotationDto>();
 
             if (string.IsNullOrEmpty(source) || (string.IsNullOrEmpty(publicationId)))
             {
@@ -112,14 +111,14 @@ namespace Biobanks.Publications.Core.Services
 
             var url = new Url("annotations_api/annotationsByArticleIds");
             url.SetQueryParams(parameters).SetQueryParam("type", types);
-            var result = new List<AnnotationResult>();
+            var result = new List<AnnotationResultDto>();
 
             try 
             {
                 var response = await _client.GetStringAsync(url);
 
                 // Parse JSON result
-                result = JsonSerializer.Deserialize<List<AnnotationResult>>(response);
+                result = JsonSerializer.Deserialize<List<AnnotationResultDto>>(response);
 
             }
             catch (Exception e)
