@@ -58,7 +58,7 @@ namespace Biobanks.Analytics.Services.Contracts
         (IList<string>, IList<QuarterlyCountsDto>) GetTopBiobanks(IEnumerable<QuarterlySummary> summary, IEnumerable<QuarterlySummary> ranking, string biobankId, int numOfTopBiobanks);
         string GetViewRoute(string pagePath);
         (string, IList<SegmentFilterClause>) NottLoughSegmentClause();
-        Task UpdateAnalyticsData();
+
         IEnumerable<DirectoryAnalyticMetric> ApplySessionMulitplication(IEnumerable<DirectoryAnalyticMetric> metricData);
         (IList<string>, IList<int>) GetSessionCount(IEnumerable<DirectoryAnalyticMetric> sessionData);
         (IList<string>, IList<int>) GetContactCount(IEnumerable<DirectoryAnalyticEvent> eventData);

@@ -23,7 +23,6 @@ namespace Biobanks.Analytics.Services
     public class GoogleAnalyticsReadService : IGoogleAnalyticsReadService
     {
         private readonly string _viewId;
-        private readonly string _startDate; //default: "2016-01-01"; //specified in _dateFormat
         private readonly string _dateFormat = "yyyy-MM-dd";
 
         private readonly BiobanksDbContext _db;
@@ -781,34 +780,5 @@ namespace Biobanks.Analytics.Services
             return sources.ToList();
         }
 
-        //typically performed quatertly. Should be hit by scheduler
-        public async Task UpdateAnalyticsData()
-        {
-            // Call directory for all active organisation
-            _logger.LogInformation($"Fetching analytics for { await _organisationService.Count() } organisations");
-
-            var lastBiobankEntry = await GetLatestBiobankEntry();
-            var lastEventEntry = await GetLatestMetricEntry();
-            var lastMetricEntry = await GetLatestEventEntry();
-
-            //get most recent of all, assuming directory and biobank analytics data are always updated together
-            //consider using myTimer.ScheduleStatus.LastUpdated from Azure function
-            var lastentry = new[] { lastBiobankEntry, lastEventEntry, lastMetricEntry }.Max();
-
-            // If no previous analtytics record
-            if (lastentry == DateTimeOffset.MinValue)
-            {
-                var dateRange = new[] { new DateRange { StartDate = _startDate, EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
-                await DownloadAllBiobankData(dateRange);
-                await DownloadDirectoryData(dateRange);
-            }
-            // If last entry is in the past
-            else if (lastentry > DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
-            {
-                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(_dateFormat), EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
-                await DownloadAllBiobankData(dateRange);
-                await DownloadDirectoryData(dateRange);
-            }
-        }
     }
 }
