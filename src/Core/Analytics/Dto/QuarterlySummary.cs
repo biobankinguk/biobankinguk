@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Analytics.Helpers
+﻿namespace Biobanks.Analytics.Dto
 {
     public class QuarterlySummary
     {

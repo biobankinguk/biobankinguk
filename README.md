@@ -56,7 +56,6 @@ The `src/` folder contains roughly project or app categorised folders, which als
 
 | Folder | Description | `README` |
 | - | - | - |
-| `Analytics/` | .NET Core 3.1 Azure Function generating Google Analytics reports for the Directory | ✔
 | `Core/` | .NET 5 Central Class Libary of shared code with minimal shared dependencies | ❌
 | `Core/Jobs` | .NET 5 Collection of Worker Jobs used for background processes | ❌
 | `Data/` | EF Core 5 Database Context, and Migrations for the directory database | ❌

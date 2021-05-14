@@ -58,12 +58,12 @@
 
 <div class="row">
     <div class="col-md-12">
-        @if (Model == null || Model.Error.ErrorCode < 0)
+        @if (!ViewData.ModelState.IsValid)
         {
-        <div class="alert alert-warning">
-            Problem encountered while retrieving analytics data. Error Msg: @((Model != null) ? Model.Error.ErrorMessage : "")
-        </div>
-
+            <div class="alert alert-warning">
+                Problem encountered while retrieving analytics data:
+                @(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? "Unknown error")
+            </div>
         }
         else if (Model.IsNullOrEmpty())
         {
@@ -256,7 +256,7 @@
                         <div id="plotly-FilteredContactCount" class="col-sm-10 boxplot"></div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     @* Number of Mailto User Actions (Filtered by date and location) *@
                     <div class="col-sm-6">
@@ -299,7 +299,7 @@
                                     <tr>
                                         <td>@row.Source</td>
                                         <td>@row.Count</td>
-                                        <td>@Math.Round(row.Percentage,2)</td>
+                                        <td>@Math.Round(row.Percentage, 2)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -319,7 +319,7 @@
 
                 </div>
             </div>
-            
+
 
         }
 

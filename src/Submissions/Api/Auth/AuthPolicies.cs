@@ -12,13 +12,17 @@ namespace Biobanks.Submissions.Api.Auth
     /// </summary>
     public static class AuthPolicies
     {
-        private static AuthorizationPolicy IsAuthenticated
+        /// <summary>
+        /// Requires that a request is authenticated
+        /// </summary>
+        public static AuthorizationPolicy IsAuthenticated
             => new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
 
         /// <summary>
         /// Requires that a request is authenticated via Bearer Token
+        /// and expects all Token authenticated users to have a BiobankId claim
         /// </summary>
         public static AuthorizationPolicy IsTokenAuthenticated
             => new AuthorizationPolicyBuilder()

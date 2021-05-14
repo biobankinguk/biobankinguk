@@ -38,6 +38,9 @@ using Biobanks.Shared.Services.Contracts;
 using Biobanks.Shared.Services;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Analytics;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System;
 
 namespace Biobanks.Submissions.Api
 {
@@ -90,13 +93,14 @@ namespace Biobanks.Submissions.Api
                         RequireExpirationTime = true
                     };
                 })
-                .AddBasic(opts => opts.Realm = "biobankinguk-submissions-accesstoken");
+                .AddBasic(opts => opts.Realm = "biobankinguk-api");
 
             services
                 .AddOptions()
 
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
+                .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
 
                 .AddApplicationInsightsTelemetry()
 
@@ -112,7 +116,9 @@ namespace Biobanks.Submissions.Api
 
                 .AddAuthorization(o =>
                 {
-                    o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
+                    o.DefaultPolicy = AuthPolicies.IsAuthenticated;
+                    o.AddPolicy(nameof(AuthPolicies.IsTokenAuthenticated),
+                        AuthPolicies.IsTokenAuthenticated);
                     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
                         AuthPolicies.IsBasicAuthenticated);
                     o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),
@@ -125,7 +131,7 @@ namespace Biobanks.Submissions.Api
                         opts.SwaggerDoc("v1",
                             new OpenApiInfo
                             {
-                                Title = "BiobankingUK Submissions API",
+                                Title = "BiobankingUK Directory API",
                                 Version = "v1"
                             });
 
@@ -148,6 +154,17 @@ namespace Biobanks.Submissions.Api
                             BearerFormat = "JWT"
                         });
                         opts.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                        // Allow grouping across controllers
+                        opts.TagActionsBy(api =>
+                        {
+                            var tag = api.GroupName
+                                ?? (api.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
+
+                            if(tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
+                            return new[] { tag };
+                        });
+                        opts.DocInclusionPredicate((name, api) => true);
                     })
 
                 .AddAutoMapper(
@@ -170,7 +187,12 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
-                .AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>()
+
+                .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
+                .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+                .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
+                .AddTransient<IAnalyticsService, AnalyticsService>()
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();

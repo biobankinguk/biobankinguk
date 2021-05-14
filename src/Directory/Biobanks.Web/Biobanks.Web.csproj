@@ -16,6 +16,7 @@
     <RootNamespace>Biobanks.Web</RootNamespace>
     <AssemblyName>Biobanks.Web</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>8.0</LangVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44300</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
@@ -909,7 +910,6 @@
     <Compile Include="Models\Shared\AnnualStatisticGroupModel.cs" />
     <Compile Include="Models\Shared\AssociatedDataTypeGroupModel.cs" />
     <Compile Include="Models\Shared\CollectionTypeModel.cs" />
-    <Compile Include="Models\Shared\ErrorStatusModel.cs" />
     <Compile Include="Models\Shared\CollectionStatusModel.cs" />
     <Compile Include="Models\Shared\MaterialTypeModel.cs" />
     <Compile Include="Models\Profile\BiobankPublicationsModel.cs" />
@@ -1083,33 +1083,6 @@
   <ItemGroup>
     <Folder Include="Content\css\" />
     <Folder Include="Properties\" />
-    <Folder Include="Views\AgeRanges\" />
-    <Folder Include="Views\AnnualStatisticGroups\" />
-    <Folder Include="Views\AnnualStatistics\" />
-    <Folder Include="Views\ApiBase\" />
-    <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
-    <Folder Include="Views\AssociatedDataTypeGroups\" />
-    <Folder Include="Views\AssociatedDataTypes\" />
-    <Folder Include="Views\CollectionPercentages\" />
-    <Folder Include="Views\CollectionPoints\" />
-    <Folder Include="Views\CollectionStatus\" />
-    <Folder Include="Views\CollectionType\" />
-    <Folder Include="Views\ConsentRestrictions\" />
-    <Folder Include="Views\Country\" />
-    <Folder Include="Views\County\" />
-    <Folder Include="Views\DiseaseStatuses\" />
-    <Folder Include="Views\DonorCounts\" />
-    <Folder Include="Views\HtaStatus\" />
-    <Folder Include="Views\MacroscopicAssessment\" />
-    <Folder Include="Views\MaterialTypes\" />
-    <Folder Include="Views\PreservationType\" />
-    <Folder Include="Views\RegistrationDomainRule\" />
-    <Folder Include="Views\RegistrationReason\" />
-    <Folder Include="Views\SampleCollectionModes\" />
-    <Folder Include="Views\ServiceOfferings\" />
-    <Folder Include="Views\Sexes\" />
-    <Folder Include="Views\SopStatus\" />
-    <Folder Include="Views\Version\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj">
