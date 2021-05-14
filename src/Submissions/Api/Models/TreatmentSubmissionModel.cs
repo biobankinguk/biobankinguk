@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Biobanks.Submissions.Core.Models;
+using Core.Submissions.Models;
 using Core.Submissions.Types;
 
 namespace Biobanks.Submissions.Api.Models
