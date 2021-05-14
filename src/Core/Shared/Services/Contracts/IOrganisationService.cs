@@ -11,5 +11,7 @@ namespace Biobanks.Shared.Services.Contracts
         Task<IEnumerable<Organisation>> List();
 
         Task<IEnumerable<string>> ListExternalIds();
+
+        Task<Organisation> GetById(int organisationId);
     }
 }

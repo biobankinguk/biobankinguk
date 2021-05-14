@@ -1,4 +1,5 @@
 ﻿using Biobanks.Aggregator.Core.Services.Contracts;
+using Biobanks.Shared.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

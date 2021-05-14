@@ -38,6 +38,9 @@ using Biobanks.Shared.Services.Contracts;
 using Biobanks.Shared.Services;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Aggregator.Core;
+using Biobanks.Aggregator.Core.Services.Contracts;
+using Biobanks.Aggregator.Core.Services;
 
 namespace Biobanks.Submissions.Api
 {
@@ -166,10 +169,15 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<IErrorService, ErrorService>()
 
+                .AddTransient<IAggregationService, AggregationService>()
+                .AddTransient<ICollectionService, CollectionService>()
+                .AddTransient<ISampleService, SampleService>()
+                .AddTransient<IOrganisationService, OrganisationService>()
+                .AddTransient<IReferenceDataReadService, ReferenceDataReadService>()
                 .AddTransient<IPublicationService, PublicationService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
-                .AddTransient<IOrganisationService, OrganisationService>()
+                
                 .AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
@@ -239,6 +247,7 @@ namespace Biobanks.Submissions.Api
                 .UseHangfireServer();
 
             // Hangfire Recurring Jobs
+            RecurringJob.AddOrUpdate<AggregationJob>("job-aggregator", x => x.Run(), Cron.Daily());
             RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
         }

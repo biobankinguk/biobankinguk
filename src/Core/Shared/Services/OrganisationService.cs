@@ -26,5 +26,7 @@ namespace Biobanks.Shared.Services
         public async Task<IEnumerable<string>> ListExternalIds()
             => await _db.Organisations.Select(x => x.OrganisationExternalId).ToListAsync();
 
+        public async Task<Organisation> GetById(int organisationId)
+            => await _db.Organisations.FirstOrDefaultAsync(x => x.OrganisationId == organisationId);
     }
 }
