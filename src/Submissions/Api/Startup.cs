@@ -247,7 +247,7 @@ namespace Biobanks.Submissions.Api
                 .UseHangfireServer();
 
             // Hangfire Recurring Jobs
-            RecurringJob.AddOrUpdate<AggregationJob>("job-aggregator", x => x.Run(), Cron.Daily());
+            RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
             RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
         }

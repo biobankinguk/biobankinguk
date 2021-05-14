@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Core
 {
-    public class AggregationJob
+    public class AggregatorJob
     {
         private readonly IAggregationService _aggregationService;
         private readonly IReferenceDataService _refDataService;
@@ -15,7 +15,7 @@ namespace Biobanks.Aggregator.Core
         private readonly ICollectionService _collectionService;
         private readonly ISampleService _sampleService;
 
-        public AggregationJob(
+        public AggregatorJob(
             IAggregationService aggregationService,
             IReferenceDataService refDataService,
             IOrganisationService organisationService,
