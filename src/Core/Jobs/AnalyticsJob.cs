@@ -1,5 +1,9 @@
-﻿using Biobanks.Analytics.Services.Contracts;
-using Google.Apis.AnalyticsReporting.v4.Data;
+﻿using Biobanks.Analytics;
+using Biobanks.Analytics.Services;
+using Biobanks.Analytics.Services.Contracts;
+
+using Microsoft.Extensions.Options;
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,42 +12,42 @@ namespace Core.Jobs
 {
     public class AnalyticsJob
     {
+        private readonly IGoogleAnalyticsReportingService _ga;
+        private readonly IAnalyticsService _analytics;
+        private readonly AnalyticsOptions _config;
 
-        private readonly string _startDate = "2016-01-01"; //TODO: Get via configuration
-        private readonly string _dateFormat = "yyyy-MM-dd";
-
-        private readonly IGoogleAnalyticsReadService _googleAnalyticsReadService;
-
-        public AnalyticsJob(IGoogleAnalyticsReadService googleAnalyticsReadService)
+        public AnalyticsJob(
+            IGoogleAnalyticsReportingService ga,
+            IAnalyticsService analytics,
+            IOptions<AnalyticsOptions> options)
         {
-            _googleAnalyticsReadService = googleAnalyticsReadService;
+            _ga = ga;
+            _analytics = analytics;
+            _config = options.Value;
         }
 
         public async Task Run()
         {
             // Get Latest Analytics Data
-            var lastBiobankEntry = await _googleAnalyticsReadService.GetLatestBiobankEntry();
-            var lastEventEntry = await _googleAnalyticsReadService.GetLatestMetricEntry();
-            var lastMetricEntry = await _googleAnalyticsReadService.GetLatestEventEntry();
+            var lastBiobankEntry = await _analytics.GetLatestOrganisationAnalyticsTimestamp();
+            var lastEventEntry = await _analytics.GetLatestAnalyticsEventTimestamp();
+            var lastMetricEntry = await _analytics.GetLatestAnalyticsMetricTimestamp();
 
             // Find Lastest Entry Date
             var lastentry = new[] { lastBiobankEntry, lastEventEntry, lastMetricEntry }.Max();
 
-            // No Previous Analytics
-            if (lastentry == DateTimeOffset.MinValue)
-            {
-                var dateRange = new[] { new DateRange { StartDate = _startDate, EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
+            // Set Date Range based on lastentry
+            var startDate = lastentry == DateTimeOffset.MinValue
+                ? DateTimeOffset.Parse(_config.StartDate)
+                : lastentry;
 
-                //TODO: Refactor this service method to have parameters (DateTimeOffset start, DateTimeOffset end)
-                await _googleAnalyticsReadService.DownloadDirectoryData(dateRange);
-            }
-            // If last entry is in the past
-            else if (lastentry > DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
-            {
-                var dateRange = new[] { new DateRange { StartDate = lastentry.ToString(_dateFormat), EndDate = DateTimeOffset.Now.ToString(_dateFormat) } };
+            var endDate = DateTimeOffset.Now;
 
-                await _googleAnalyticsReadService.DownloadAllBiobankData(dateRange);
-                await _googleAnalyticsReadService.DownloadDirectoryData(dateRange);
+            // As long as lastentry is within an acceptable range, fetch the data
+            if(lastentry >= DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
+            {
+                await _ga.DownloadAllBiobankData(startDate, endDate);
+                await _ga.DownloadDirectoryData(startDate, endDate);
             }
         }
     }
