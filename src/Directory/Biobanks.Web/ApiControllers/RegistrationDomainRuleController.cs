@@ -26,7 +26,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IList> Get()
+        public async Task<IList> Get() 
         {
             var model = (await _biobankReadService.ListRegistrationDomainRulesAsync())
                 .Select(x =>
@@ -54,6 +54,16 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Value", "That value is invalid and must contain at least one of '.' or '@'.");
             }
 
+            if (model.Value.Length <= 1)
+            {
+                ModelState.AddModelError("Value", "That value is invalid and must contain more than one character.");
+            }
+
+            if ((await _biobankReadService.GetRegistrationDomainRuleByValueAsync(model.Value)) != null)
+            {
+                ModelState.AddModelError("Value", "A rule with that value already exists");
+            }
+
 
             if (!ModelState.IsValid)
             {
@@ -76,7 +86,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Value,
+                name = model.Value
             });
         }
 
@@ -103,7 +113,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Value,
+                name = model.Value
             });
         }
 
@@ -131,7 +141,7 @@ namespace Biobanks.Web.ApiControllers
             return Json(new
             {
                 success = true,
-                name = model.Value,
+                name = model.Value
             });
         }
     }
