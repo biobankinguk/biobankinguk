@@ -22,6 +22,9 @@ using Biobanks.Web.Models.Search;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
 using System.Data.Entity;
+using Newtonsoft.Json;
+using System.Net.Http;
+using Microsoft.ApplicationInsights;
 
 namespace Biobanks.Web.Controllers
 {
@@ -386,16 +389,17 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> ManualActivation(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
-            
+
             if (user != null && !user.EmailConfirmed)
             {
                 // Generate Token Link
                 var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                var tokenLink = Url.Action("Confirm", "Account", 
-                    new {
+                var tokenLink = Url.Action("Confirm", "Account",
+                    new
+                    {
                         userId = user.Id,
                         token = confirmToken
-                    }, 
+                    },
                     Request.Url.Scheme);
 
                 // Log Token Issuing
@@ -456,7 +460,7 @@ namespace Biobanks.Web.Controllers
 
             SetTemporaryFeedbackMessage($"{userFullName} has been removed from the admins!", FeedbackMessageType.Success);
 
-            return RedirectToAction("BiobankAdmin", new { id = biobankId } );
+            return RedirectToAction("BiobankAdmin", new { id = biobankId });
         }
 
         public async Task<ActionResult> Biobanks()
@@ -671,19 +675,19 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> GenerateResetLinkAjax(string biobankUserId, string biobankUsername)
         {
             // Get the reset token
-            var resetToken = await _biobankReadService.GetUnusedTokenByUser(biobankUserId);         
+            var resetToken = await _biobankReadService.GetUnusedTokenByUser(biobankUserId);
             await _tokenLog.PasswordTokenIssued(resetToken.ToString(), biobankUserId);
 
             // Generate the reset URL
             var url = Url.Action("ResetPassword", "Account",
                 new { userId = biobankUserId, token = resetToken },
-                Request.Url.Scheme);            
+                Request.Url.Scheme);
 
             return PartialView("_ModalResetPassword", new ResetPasswordEntityModel
             {
                 ResetLink = url,
                 UserName = biobankUsername
-            });            
+            });
         }
 
         #endregion
@@ -928,8 +932,29 @@ namespace Biobanks.Web.Controllers
             if (reportPeriod == 0)
                 reportPeriod = 5;
 
-            var model = _mapper.Map<DirectoryAnalyticReport>(await _analyticsReportGenerator.GetDirectoryReport(year, endQuarter, reportPeriod));
-            return View(model);
+            try
+            {
+                var model = _mapper.Map<DirectoryAnalyticReport>(await _analyticsReportGenerator.GetDirectoryReport(year, endQuarter, reportPeriod));
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                var message = e switch
+                {
+                    JsonSerializationException _ => "The API Response Body could not be processed.",
+                    HttpRequestException _ => "The API Request failed.",
+                    _ => "An unknown error occurred and has been logged."
+                };
+
+                var outer = new Exception(message, e);
+
+                // Log Error via Application Insights
+                var ai = new TelemetryClient();
+                ai.TrackException(outer);
+
+                ModelState.AddModelError(string.Empty, outer);
+                return View(new DirectoryAnalyticReport());
+            }
         }
         #endregion
 
@@ -989,7 +1014,7 @@ namespace Biobanks.Web.Controllers
                         LowerBound = ConvertFromIsoDuration(x.LowerBound),
                         UpperBound = ConvertFromIsoDuration(x.UpperBound)
                     })
-                    .Result 
+                    .Result
                 )
                 .ToList();
 
@@ -1015,7 +1040,7 @@ namespace Biobanks.Web.Controllers
             return converted;
         }
 
-        
+
         #endregion
         #region RefData: AssociatedDataProcurementTimeFrame
         public async Task<ActionResult> AssociatedDataProcurementTimeFrame()
@@ -1103,7 +1128,7 @@ namespace Biobanks.Web.Controllers
         {
             return View((await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
 
-                Task.Run(async() => new ReadOntologyTermModel
+                Task.Run(async () => new ReadOntologyTermModel
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
@@ -1197,14 +1222,14 @@ namespace Biobanks.Web.Controllers
             var models = (await _biobankReadService.ListDonorCountsAsync(true))
                 .Select(x =>
                     Task.Run(async () => new DonorCountModel()
-                        {
-                            Id = x.Id,
-                            Description = x.Value,
-                            SortOrder = x.SortOrder,
-                            LowerBound = x.LowerBound,
-                            UpperBound = x.UpperBound,
-                            SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
-                        })
+                    {
+                        Id = x.Id,
+                        Description = x.Value,
+                        SortOrder = x.SortOrder,
+                        LowerBound = x.LowerBound,
+                        UpperBound = x.UpperBound,
+                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
+                    })
                         .Result
                 )
                 .ToList();
@@ -1239,7 +1264,7 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region RefData: Storage Temperature
-        
+
         public async Task<ActionResult> StorageTemperatures()
         {
             var models = (await _biobankReadService.ListStorageTemperaturesAsync())

@@ -90,7 +90,6 @@ namespace Biobanks.Web
                 cfg.CreateMap<SearchActivityDTO, SearchActivity>();
                 cfg.CreateMap<ContactRequestsDTO, ContactRequests>();
                 cfg.CreateMap<QuarterlyCountsDTO, QuarterlyCounts>();
-                cfg.CreateMap<ErrorStatusModelDTO, ErrorStatusModel>();
 
                 cfg.CreateMap<DirectoryAnalyticReportDTO, DirectoryAnalyticReport>();
                 cfg.CreateMap<SessionStatDTO, SessionStat>();
@@ -98,7 +97,6 @@ namespace Biobanks.Web
                 cfg.CreateMap<EventStatDTO, EventStat>();
                 cfg.CreateMap<ProfilePageStatDTO, ProfilePageStat>(); 
                 cfg.CreateMap<SourceCountDTO, SourceCount>();
-
             });
         }
     }

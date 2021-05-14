@@ -2,7 +2,7 @@
 
 namespace Biobanks.Analytics.Dto
 {
-    public class DirectoryAnalyticReportDto
+    public class DirectoryReportDto
     {
         public int Year { get; set; }
         public int EndQuarter { get; set; }
@@ -15,11 +15,9 @@ namespace Biobanks.Analytics.Dto
         public SearchCharacteristicDto SearchCharacteristics { get; set; }
         public EventStatDto EventStats { get; set; }
         public ProfilePageStatDto ProfilePageStats { get; set; }
-
-        public ErrorStatusDto Error { get; set; }
     }
 
-    public partial class SessionStatDto
+    public class SessionStatDto
     {
         //use class for label count pair?
         public IList<string> SessionNumberLabels { get; set; }
@@ -32,7 +30,7 @@ namespace Biobanks.Analytics.Dto
         public IList<double> AvgSessionDurationCount { get; set; }
     }
 
-    public partial class SearchCharacteristicDto
+    public class SearchCharacteristicDto
     {
         public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
@@ -42,7 +40,7 @@ namespace Biobanks.Analytics.Dto
         public IList<int> SearchFilterCount { get; set; }
     }
 
-    public partial class EventStatDto
+    public class EventStatDto
     {
         public IList<string> ContactNumberLabels { get; set; }
         public IList<int> ContactNumberCount { get; set; }
@@ -52,7 +50,7 @@ namespace Biobanks.Analytics.Dto
         public IList<int> FilteredMailToCount { get; set; }
     }
 
-    public partial class ProfilePageStatDto
+    public class ProfilePageStatDto
     {
         public IList<SourceCountDto> ProfileSources { get; set; }
         public IList<string> PageRouteLabels { get; set; }

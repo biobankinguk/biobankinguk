@@ -5,15 +5,22 @@ using System.Configuration;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
 using Newtonsoft.Json;
+using System.Text;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Biobanks.Services
 {
+    /// <summary>
+    /// This Service makes HTTP calls to an API to generate Analytics Reports for the Directory
+    /// </summary>
     public class AnalyticsReportGenerator : IDisposable, IAnalyticsReportGenerator
     {
-        private readonly string _analyticsUrl = ConfigurationManager.AppSettings["AnalyticsServiceUrl"] ?? "";
-        private readonly string _analyticsKey = ConfigurationManager.AppSettings["AnalyticsFunctionKey"] ?? "";
+        // TODO: genericise this for Directory calls to the Directory API
+        private readonly string _apiUrl = ConfigurationManager.AppSettings["DirectoryApiUrl"] ?? "";
+        private readonly string _apiClientId = ConfigurationManager.AppSettings["DirectoryApiClientId"] ?? "";
+        private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
 
-        // Service for reading from the seperate analytics service - ie. The Azure Function App
         private readonly HttpClient _client;
         private readonly IBiobankReadService _biobankReadService;
 
@@ -22,13 +29,15 @@ namespace Biobanks.Services
             _biobankReadService = biobankReadService;
             _client = new HttpClient();
 
-            if (!string.IsNullOrEmpty(_analyticsUrl))
+            if (!string.IsNullOrEmpty(_apiUrl))
             {
-                _client.BaseAddress = new Uri(_analyticsUrl);
-            }
-            if (!string.IsNullOrEmpty(_analyticsKey))
-            {
-                _client.DefaultRequestHeaders.Add("x-functions-key", _analyticsKey);
+                _client.BaseAddress = new Uri(_apiUrl);
+
+                if (new[] { _apiClientId, _apiClientSecret }.All(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    _client.DefaultRequestHeaders.Add("Authorization",
+                        $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_apiClientId}:{_apiClientSecret}"))}");
+                }
             }
         }
 
@@ -89,86 +98,33 @@ namespace Biobanks.Services
             var bb = await _biobankReadService.GetBiobankByIdAsync(Id);
             var biobankId = bb.OrganisationExternalId;
 
-            if (bb == null)
-                return new BiobankAnalyticReportDTO
-                {
-                    Error = new ErrorStatusModelDTO { ErrorCode = -1, ErrorMessage = "Biobank Not Found" }
-                };
+            if (bb is null) throw new KeyNotFoundException();
 
-            // Build endpoint
-            var apikey = ConfigurationManager.AppSettings["AnalyticsFunctionKey"]; 
-            var endpoint = $"api/GetAnalyticsReport/{biobankId}/{year}/{quarter}/{period}";
+            var endpoint = $"analytics/{year}/{quarter}/{period}/{biobankId}";
+            var response = await _client.GetAsync(endpoint);
+            var contents = await response.Content.ReadAsStringAsync();
 
-            try
-            {
-                // Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
 
-                //check response is Successful
-                if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    // Fail safely - will render a warning message in the view?
-                    return new BiobankAnalyticReportDTO
-                    {
-                        Error = new ErrorStatusModelDTO { ErrorCode = -2, ErrorMessage = "API request failed!" }
-                    };  //TODO:change to use HttpStatusCode codes?
-                }
+            var report = JsonConvert.DeserializeObject<BiobankAnalyticReportDTO>(contents);
 
-                // Deserialize and Map array
-                var report = JsonConvert.DeserializeObject<BiobankAnalyticReportDTO>(contents);
+            var profileStatus = await GetProfileStatus(biobankId);
+            report.Name = bb.Name;
+            report.Logo = bb.Logo;
+            report.BiobankStatus = profileStatus;
 
-                // Add extra report info
-                var profileStatus = await GetProfileStatus(biobankId);
-                report.Name = bb.Name;
-                report.Logo = bb.Logo;
-                report.BiobankStatus = profileStatus;
-
-                return report;
-            }
-            catch (Exception)
-            {
-                return new BiobankAnalyticReportDTO
-                {
-                    Error = new ErrorStatusModelDTO { ErrorCode = -2, ErrorMessage = "API request failed!" }
-                }; //TODO:change to use HttpStatusCode codes?
-            }
+            return report;
         }
 
         public async Task<DirectoryAnalyticReportDTO> GetDirectoryReport(int year, int quarter, int period)
         {
-            // Build endpoint
-            var apikey = ConfigurationManager.AppSettings["AnalyticsFunctionKey"];
-            var endpoint = $"api/GetDirectoryAnalyticsReport/{year}/{quarter}/{period}";
+            var endpoint = $"analytics/{year}/{quarter}/{period}";
+            var response = await _client.GetAsync(endpoint);
+            var contents = await response.Content.ReadAsStringAsync();
 
-            try
-            {
-                // Make request
-                var response = await _client.GetAsync(endpoint);
-                var contents = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
 
-                //check response is Successful
-                if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    // Fail safely - will render a warning message in the view?
-                    return new DirectoryAnalyticReportDTO
-                    {
-                        Error = new ErrorStatusModelDTO { ErrorCode = -2, ErrorMessage = "API request failed!" }
-                    };  //TODO:change to use HttpStatusCode codes?
-                }
-                    
-                // Deserialize and Map array
-                var report = JsonConvert.DeserializeObject<DirectoryAnalyticReportDTO>(contents);
-                return report;
-            }
-            catch (Exception)
-            {
-                // Fail safely - will render a warning message in the view?
-                return new DirectoryAnalyticReportDTO
-                {
-                    Error = new ErrorStatusModelDTO { ErrorCode = -2, ErrorMessage = "API request failed!" }
-                }; //TODO:change to use HttpStatusCode codes?
-            }
+            return JsonConvert.DeserializeObject<DirectoryAnalyticReportDTO>(contents);
         }
 
         public void Dispose()
