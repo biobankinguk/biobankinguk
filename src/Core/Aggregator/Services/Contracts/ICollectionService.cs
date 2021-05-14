@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Aggregator.Core.Services.Contracts
+namespace Biobanks.Aggregator.Services.Contracts
 {
     public interface ICollectionService
     {

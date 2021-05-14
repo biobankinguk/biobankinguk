@@ -1,14 +1,13 @@
-﻿using Biobanks.Aggregator.Core.Services.Contracts;
+﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.Aggregator.Core.Services
+namespace Biobanks.Aggregator.Services
 {
     public class CollectionService : ICollectionService
     {

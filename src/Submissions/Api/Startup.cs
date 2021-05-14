@@ -39,8 +39,8 @@ using Biobanks.Shared.Services;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Aggregator.Core;
-using Biobanks.Aggregator.Core.Services.Contracts;
-using Biobanks.Aggregator.Core.Services;
+using Biobanks.Aggregator.Services.Contracts;
+using Biobanks.Aggregator.Services;
 
 namespace Biobanks.Submissions.Api
 {
@@ -159,6 +159,8 @@ namespace Biobanks.Submissions.Api
 
                 .AddHttpClient()
 
+                .AddMemoryCache()
+
                 // Cloud services
                 .AddTransient<IBlobWriteService, AzureBlobWriteService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
@@ -168,12 +170,13 @@ namespace Biobanks.Submissions.Api
                 // Local Services
                 .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<IErrorService, ErrorService>()
-
-                .AddTransient<IAggregationService, AggregationService>()
+                
+                .AddTransient<IReferenceDataService, ReferenceDataService>()
                 .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
-                .AddTransient<IReferenceDataReadService, ReferenceDataReadService>()
+                .AddTransient<IAggregationService, AggregationService>()
+
                 .AddTransient<IPublicationService, PublicationService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
@@ -250,6 +253,8 @@ namespace Biobanks.Submissions.Api
             RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
             RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
+
+            RecurringJob.Trigger("job-aggregator");
         }
     }
 }

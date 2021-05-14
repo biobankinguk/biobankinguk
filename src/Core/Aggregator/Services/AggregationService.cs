@@ -1,15 +1,14 @@
-﻿using Biobanks.Aggregator.Core.Services.Contracts;
+﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Xml;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.Aggregator.Core.Services
+namespace Biobanks.Aggregator.Services
 {
     public class AggregationService : IAggregationService
     {
