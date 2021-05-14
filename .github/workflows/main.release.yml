@@ -35,7 +35,6 @@ env:
     artifacts/dataseed/*,
     artifacts/submissions-api/*,
     artifacts/submissions-workers-azfunctions/*,
-    artifacts/aggregator-azfunctions/*,
     artifacts/analytics-azfunctions/*,
     artifacts/directory/*,
     artifacts/identity-migrations/*,
@@ -56,7 +55,6 @@ jobs:
       - publish-identitytool
       - publish-submissions-api
       - publish-submissions-azfunctions
-      - publish-aggregator-azfunctions
       - publish-analytics-azfunctions
       - publish-directory
       - publish-data-migrations
