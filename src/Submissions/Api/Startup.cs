@@ -41,6 +41,8 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Aggregator.Services;
+using System.Linq;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api
 {
@@ -70,6 +72,7 @@ namespace Biobanks.Submissions.Api
         {
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
+            var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>();
 
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
@@ -101,18 +104,13 @@ namespace Biobanks.Submissions.Api
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
+                .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
 
                 .AddApplicationInsightsTelemetry()
 
                 .AddDbContext<Data.BiobanksDbContext>(opts =>
                     opts.UseSqlServer(Configuration.GetConnectionString("Default"),
                         sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
-
-                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default"),
-                    new Hangfire.SqlServer.SqlServerStorageOptions
-                    {
-                        SchemaName = "apiHangfire"
-                    }))
 
                 .AddAuthorization(o =>
                 {
@@ -161,7 +159,7 @@ namespace Biobanks.Submissions.Api
                             var tag = api.GroupName
                                 ?? (api.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
 
-                            if(tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
+                            if (tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
                             return new[] { tag };
                         });
                         opts.DocInclusionPredicate((name, api) => true);
@@ -200,14 +198,33 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
                 .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
                 .AddTransient<IAnalyticsService, AnalyticsService>()
-                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>();
 
-                //Conditional Service (todo setup hangfire specific DI)
-                .AddTransient<IBackgroundJobEnqueueingService, HangfireQueueService>();
+            // Conditional services
+            if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
+            {
+                services.AddHangfire(x => x.UseSqlServerStorage(
+                    Configuration.GetConnectionString("Default"),
+                    new Hangfire.SqlServer.SqlServerStorageOptions
+                    {
+                        SchemaName = "apiHangfire"
+                    }));
+            }
 
-            //TODO Register these services if we're using hangfire
-            //.AddTransient<IRejectService, RejectService>()
-            //.AddTransient<ICommitService, CommitService>()
+            switch (workersConfig.QueueService)
+            {
+                case WorkersQueueService.AzureQueueStorage:
+                    services.AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
+                    break;
+                // case WorkersQueueService.Hangfire: // this is the default!
+                default:
+                    // TODO: Add Hangfire implementation
+                    //.AddTransient<IBackgroundJobEnqueueingService, HangfireQueueService>();
+                    //TODO Register these services if we're using hangfire
+                    //.AddTransient<IRejectService, RejectService>()
+                    //.AddTransient<ICommitService, CommitService>()
+                    break;
+            }
         }
 
         /// <summary>
@@ -215,8 +232,11 @@ namespace Biobanks.Submissions.Api
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="workersOptions"></param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<WorkersOptions> workersOptions, IServiceProvider services)
         {
+            var test = services.GetService<IBackgroundJobEnqueueingService>();
+
             // Early pipeline config
             app
                 .GnuTerryPratchett()
@@ -268,13 +288,28 @@ namespace Biobanks.Submissions.Api
                 // Hangfire Server
                 .UseHangfireServer();
 
-            // Hangfire Recurring Jobs
-            RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
-            RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
-            RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
-            RecurringJob.AddOrUpdate<ExpiryJob>("job-expiry", x => x.Run(), Cron.Daily);
+            // App Startup tasks
+            ConfigureHangfireRecurringJobs(workersOptions.Value);
+        }
 
-            RecurringJob.Trigger("job-aggregator");
+        private void ConfigureHangfireRecurringJobs(WorkersOptions workersConfig)
+        {
+            // Hangfire Recurring Jobs, as configured
+            Dictionary<string, Action> jobs = new()
+            {
+                [WorkersRecurringJobs.Analytics] = ()
+                    => RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *"),
+
+                [WorkersRecurringJobs.Publications] = ()
+                    => RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily()),
+
+                //[WorkersRecurringJobs.Aggregator] = ()
+                //    => RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
+        };
+
+            // run each job the config opts us in to
+            foreach (var job in workersConfig.HangfireRecurringJobs)
+                if (jobs.ContainsKey(job)) jobs[job]();
         }
     }
 }
