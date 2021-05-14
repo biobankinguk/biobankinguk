@@ -38,7 +38,6 @@ using Biobanks.Shared.Services.Contracts;
 using Biobanks.Shared.Services;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
-using Biobanks.Aggregator.Core;
 using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Aggregator.Services;
 
