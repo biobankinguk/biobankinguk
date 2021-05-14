@@ -103,7 +103,6 @@
                         <div class="col-sm-12">
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.registrationDomainRule().id">
 
-
                             <!-- Rule Type -->
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Rule Type</label>
@@ -125,14 +124,7 @@
                             </div>
 
                             <!-- Source -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Source</label>
-                                <div class="col-sm-9">
-                                    <select id="Source" name="Source" data-bind="value: modal.registrationDomainRule().source()">
-                                        <option value="ADAC">ADAC</option>
-                                    </select>
-                                </div>
-                            </div>
+                            <input type="hidden" id="Source" name="Source" data-bind="value: 'ADAC'">
 
                         </div>
                     </div>
