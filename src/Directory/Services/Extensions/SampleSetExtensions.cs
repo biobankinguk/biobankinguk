@@ -78,7 +78,8 @@ namespace Biobanks.Services.Extensions
                             x.StorageTemperature.SortOrder
                         }),
                         MacroscopicAssessment = x.MacroscopicAssessment.Value,
-                        PercentageOfSampleSet = x.CollectionPercentage?.Value
+                        PercentageOfSampleSet = x.CollectionPercentage?.Value,
+                        PreservationType = x.PreservationType?.Value
                     }),
 
                 BiobankServices = sampleSet.Collection.Organisation.OrganisationServiceOfferings

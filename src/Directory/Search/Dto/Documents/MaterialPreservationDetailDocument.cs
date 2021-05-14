@@ -18,5 +18,8 @@ namespace Biobanks.Search.Dto.Documents
 
         [Keyword(Name = "percentageOfSampleSet")]
         public string PercentageOfSampleSet { get; set; }
+
+        [Keyword(Name = "preservationType")]
+        public string PreservationType { get; set; }
     }
 }

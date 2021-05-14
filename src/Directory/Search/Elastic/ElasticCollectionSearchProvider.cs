@@ -210,7 +210,8 @@ namespace Biobanks.Search.Elastic
                         MaterialType = mpd.MaterialType,
                         StorageTemperature = mpd.StorageTemperature,
                         MacroscopicAssessment = mpd.MacroscopicAssessment,
-                        PercentageOfSampleSet = mpd.PercentageOfSampleSet
+                        PercentageOfSampleSet = mpd.PercentageOfSampleSet,
+                        PreservationType = mpd.PreservationType
                     })
                 });
             }
