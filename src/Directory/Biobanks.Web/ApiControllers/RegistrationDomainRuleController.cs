@@ -24,7 +24,7 @@ namespace Biobanks.Web.ApiControllers
         [HttpGet]
         [Route("")]
         public async Task<IList> Get() =>
-            (await _registrationDomainService.ListRegistrationDomainRulesAsync())
+            (await _registrationDomainService.ListRegistrationDomainRules())
                 .Select(x =>
                     new RegistrationDomainRuleModel()
                     {
@@ -52,7 +52,7 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Value", "That value is invalid and must contain more than one character.");
             }
 
-            if ((await _registrationDomainService.GetRegistrationDomainRuleByValueAsync(model.Value)) != null)
+            if ((await _registrationDomainService.GetRegistrationDomainRuleByValue(model.Value)) != null)
             {
                 ModelState.AddModelError("Value", "A rule with that value already exists");
             }
@@ -111,7 +111,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _registrationDomainService.ListRegistrationDomainRulesAsync()).FirstOrDefault(x => x.Id == id);
+            var model = (await _registrationDomainService.ListRegistrationDomainRules()).FirstOrDefault(x => x.Id == id);
 
             if (model == null)
             {

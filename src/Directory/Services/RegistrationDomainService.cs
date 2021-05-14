@@ -70,10 +70,10 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync() =>
+        public async Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRules() =>
             await _db.RegistrationDomainRules.ToListAsync();
 
-        public async Task<RegistrationDomainRule> GetRegistrationDomainRuleByValueAsync(string ruleValue) =>
+        public async Task<RegistrationDomainRule> GetRegistrationDomainRuleByValue(string ruleValue) =>
             await _db.RegistrationDomainRules.FirstOrDefaultAsync(x => x.Value == ruleValue);
 
     }

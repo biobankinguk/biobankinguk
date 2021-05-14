@@ -15,7 +15,7 @@ namespace Biobanks.Services.Contracts
         Task Delete(RegistrationDomainRule registrationDomainRule);
 
         Task<bool> ValidateRegistrationEmailAddress(string email);
-        Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync();
-        Task<RegistrationDomainRule> GetRegistrationDomainRuleByValueAsync(string ruleValue);
+        Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRules();
+        Task<RegistrationDomainRule> GetRegistrationDomainRuleByValue(string ruleValue);
     }
 }
