@@ -3,6 +3,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
+using System.Security.Claims;
+
 namespace Biobanks.Submissions.Api.Auth
 {
     /// <summary>
@@ -32,6 +34,15 @@ namespace Biobanks.Submissions.Api.Auth
             => new AuthorizationPolicyBuilder()
                 .Combine(IsAuthenticated)
                 .AddAuthenticationSchemes(BasicAuthDefaults.AuthenticationScheme)
+                .Build();
+
+        /// <summary>
+        /// Requires that a request is authorised to access SuperAdmin functionality
+        /// </summary>
+        public static AuthorizationPolicy IsSuperAdmin
+            => new AuthorizationPolicyBuilder()
+                .Combine(IsBasicAuthenticated)
+                .RequireClaim(ClaimTypes.Role, CustomRoles.SuperAdmin)
                 .Build();
     }
 }

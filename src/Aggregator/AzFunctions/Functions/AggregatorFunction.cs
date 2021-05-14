@@ -1,4 +1,3 @@
-using Biobanks.Aggregator.AzFunctions.Types;
 using Biobanks.Aggregator.Core;
 using Microsoft.Azure.Functions.Worker;
 using System.Threading.Tasks;

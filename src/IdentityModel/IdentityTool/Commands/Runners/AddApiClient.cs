@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using ConsoleTableExt;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Biobanks.IdentityTool.Commands.Runners
 {
@@ -27,9 +28,10 @@ namespace Biobanks.IdentityTool.Commands.Runners
             _db = db;
         }
 
-        public async Task Run(IConsole console, bool generate, int biobankId, string clientId, string clientSecret, string clientName)
+        public async Task Run(IConsole console, bool generate, List<int> biobankIds, string clientId, string clientSecret, string clientName)
         {
             #region conditional / dependent argument validation
+
 
             if (generate)
             {
@@ -61,32 +63,58 @@ namespace Biobanks.IdentityTool.Commands.Runners
                 return;
             }
 
-            #endregion
-
-            var biobank = await _db.Organisations
-                .Include(o => o.ApiClients)
-                .SingleOrDefaultAsync(x => x.OrganisationId == biobankId);
-            if (biobank is null)
+            // Confirm before adding SuperAdmin
+            if (!biobankIds.Any())
             {
-                var message = "Could not find the specified Biobank with ID: {0}";
-                _logger.LogError(message, biobankId);
-                console.Error.WriteLine(string.Format($"Error: {message}", biobankId));
-                return;
+                bool? proceed = null;
+                while (proceed is null)
+                {
+                    console.Out.WriteLine("No Biobank Ids were specified. This will create SuperAdmin credentials. Is this correct? (y/N)");
+                    var keyInfo = System.Console.ReadKey();
+                    proceed = keyInfo.Key switch
+                    {
+                        System.ConsoleKey.Y => true,
+                        System.ConsoleKey.N => false,
+                        System.ConsoleKey.Enter => false,
+                        _ => null
+                    };
+                }
+                if (!proceed.GetValueOrDefault()) return;
             }
 
-            biobank.ApiClients.Add(new ApiClient
+            #endregion
+
+            var apiClient = new ApiClient
             {
                 Name = clientName ?? clientId,
                 ClientId = clientId,
-                ClientSecretHash = clientSecret.Sha256()
-            });
+                ClientSecretHash = clientSecret.Sha256(),
+                Organisations = new List<Entities.Data.Organisation>()
+            };
 
+            foreach (var id in biobankIds)
+            {
+                var biobank = await _db.Organisations
+                    .Include(o => o.ApiClients)
+                    .SingleOrDefaultAsync(x => x.OrganisationId == id);
+                if (biobank is null)
+                {
+                    var message = "Could not find the specified Biobank with ID: {0}";
+                    _logger.LogError(message, id);
+                    console.Error.WriteLine(string.Format($"Error: {message}", id));
+                    return;
+                }
+
+                apiClient.Organisations.Add(biobank);
+            }
+
+            await _db.ApiClients.AddAsync(apiClient);
             await _db.SaveChangesAsync();
 
             // Output
-            var successMessage = "Client `{0}` added successfully to Biobank ID: {1}";
-            _logger.LogInformation(successMessage, clientName ?? clientId, biobankId);
-            console.Out.WriteLine(string.Format(successMessage, clientName ?? clientId, biobankId));
+            var successMessage = "Client `{0}` added successfully to Biobank Ids: {1}";
+            _logger.LogInformation(successMessage, clientName ?? clientId, biobankIds);
+            console.Out.WriteLine(string.Format(successMessage, clientName ?? clientId, biobankIds));
 
             if (generate)
             {

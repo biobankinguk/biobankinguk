@@ -1,8 +1,9 @@
-﻿using Biobanks.IdentityModel.Helpers;
+﻿using Biobanks.Publications.Services;
+using Biobanks.Publications.Services.Contracts;
+using Biobanks.IdentityModel.Helpers;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
 using Biobanks.Submissions.Core.AzureStorage;
@@ -10,6 +11,8 @@ using Biobanks.Submissions.Core.Services;
 using Biobanks.Submissions.Core.Services.Contracts;
 
 using ClacksMiddleware.Extensions;
+
+using Core.Jobs;
 
 using Hangfire;
 
@@ -31,6 +34,13 @@ using System.IO;
 using System.Text.Json.Serialization;
 
 using UoN.AspNetCore.VersionMiddleware;
+using Biobanks.Shared.Services.Contracts;
+using Biobanks.Shared.Services;
+using Biobanks.Analytics.Services;
+using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Aggregator.Core;
+using Biobanks.Aggregator.Services.Contracts;
+using Biobanks.Aggregator.Services;
 
 namespace Biobanks.Submissions.Api
 {
@@ -97,13 +107,19 @@ namespace Biobanks.Submissions.Api
                     opts.UseSqlServer(Configuration.GetConnectionString("Default"),
                         sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
 
-                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default")))
+                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default"),
+                    new Hangfire.SqlServer.SqlServerStorageOptions
+                    {
+                        SchemaName = "apiHangfire"
+                    }))
 
                 .AddAuthorization(o =>
                 {
                     o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
                     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
                         AuthPolicies.IsBasicAuthenticated);
+                    o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),
+                        AuthPolicies.IsSuperAdmin);
                 })
 
                 .AddSwaggerGen(opts =>
@@ -141,6 +157,10 @@ namespace Biobanks.Submissions.Api
                     typeof(Core.MappingProfiles.DiagnosisProfile),
                     typeof(Startup))
 
+                .AddHttpClient()
+
+                .AddMemoryCache()
+
                 // Cloud services
                 .AddTransient<IBlobWriteService, AzureBlobWriteService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
@@ -150,6 +170,18 @@ namespace Biobanks.Submissions.Api
                 // Local Services
                 .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<IErrorService, ErrorService>()
+                
+                .AddTransient<IReferenceDataService, ReferenceDataService>()
+                .AddTransient<ICollectionService, CollectionService>()
+                .AddTransient<ISampleService, SampleService>()
+                .AddTransient<IOrganisationService, OrganisationService>()
+                .AddTransient<IAggregationService, AggregationService>()
+
+                .AddTransient<IPublicationService, PublicationService>()
+                .AddTransient<IAnnotationService, AnnotationService>()
+                .AddTransient<IEpmcService, EpmcWebService>()
+                
+                .AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
@@ -205,14 +237,24 @@ namespace Biobanks.Submissions.Api
                 .UseAuthorization()
 
                 // Endpoint Routing
-                .UseEndpoints(endpoints => endpoints.MapControllers().RequireAuthorization())
-
-                // Hangfire
-                .UseHangfireServer()
-                .UseHangfireDashboard("/TasksDashboard", new DashboardOptions
+                .UseEndpoints(endpoints =>
                 {
-                    Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
-                });
+                    endpoints.MapControllers().RequireAuthorization();
+
+                    endpoints
+                        .MapHangfireDashboard("/hangfire")
+                        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                })
+
+                // Hangfire Server
+                .UseHangfireServer();
+
+            // Hangfire Recurring Jobs
+            RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
+            RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
+            RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
+
+            RecurringJob.Trigger("job-aggregator");
         }
     }
 }
