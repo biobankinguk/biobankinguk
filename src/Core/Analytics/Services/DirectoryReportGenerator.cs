@@ -36,7 +36,7 @@ namespace Biobanks.Analytics.Services
         /// <inheritdoc />
         public async Task<DirectoryReportDto> GetReport(int year, int quarter, int period)
         {
-            var (startDate, endDate) = _ga.GetDateRangeBounds(_ga.PeriodAsDateRange(year, quarter, period));
+            var (startDate, endDate) = _transform.PeriodAsDateRange(year, quarter, period);
             var biobankData = await _analytics.GetOrganisationAnalytics(startDate, endDate);
             var eventData = await _analytics.GetAnalyticsEvents(startDate, endDate);
             var metricData = await _analytics.GetAnalyticsMetrics(startDate, endDate);

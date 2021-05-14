@@ -12,6 +12,20 @@ namespace Biobanks.Analytics.Services
     /// <inheritdoc />
     public class ReportDataTransformationService : IReportDataTransformationService
     {
+        /// <inheritdoc />
+        public (DateTimeOffset startDate, DateTimeOffset endDate) PeriodAsDateRange(int year, int endQuarter, int reportPeriod)
+        {
+            const int monthsPerQuarter = 3;
+            var month = endQuarter * monthsPerQuarter;
+            var lastDayofQuarter = DateTime.DaysInMonth(year, month);
+
+            var endDate = new DateTimeOffset(year, month, lastDayofQuarter, 0, 0, 0, TimeSpan.Zero);
+            //get start date by subtracting report period (specified in quarters) from end date
+            var startDate = endDate.AddMonths(-1 * reportPeriod * monthsPerQuarter).AddDays(1);
+
+            return (startDate, endDate);
+        }
+
         public string GetViewRoute(string pagePath)
             => pagePath switch
             {

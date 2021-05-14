@@ -11,6 +11,15 @@ namespace Biobanks.Analytics.Services.Contracts
     /// </summary>
     public interface IReportDataTransformationService
     {
+        /// <summary>
+        /// Get DateTimeOffset bounds for a range of dates from
+        /// parameters describing a reporting period
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="endQuarter"></param>
+        /// <param name="reportPeriod"></param>
+        (DateTimeOffset startDate, DateTimeOffset endDate) PeriodAsDateRange(int year, int endQuarter, int reportPeriod);
+
         string GetViewRoute(string pagePath);
 
         (IList<string>, IList<int>) GetSearchBreakdown(IEnumerable<OrganisationAnalytic> biobankData, Func<string, string> getSearchFunc);

@@ -53,44 +53,20 @@ namespace Biobanks.Analytics.Services
             });
         }
 
-        /// <inheritdoc />
-        public DateRange PeriodAsDateRange(int year, int endQuarter, int reportPeriod)
-        {
-            const int monthsPerQuarter = 3;
-            var month = endQuarter * monthsPerQuarter;
-            var lastDayofQuarter = DateTime.DaysInMonth(year, month);
-
-            var endDate = new DateTimeOffset(year, month, lastDayofQuarter, 0, 0, 0, TimeSpan.Zero);
-            //get start date by subtracting report period (specified in quarters) from end date
-            var startDate = endDate.AddMonths(-1 * reportPeriod * monthsPerQuarter).AddDays(1);
-
-            return new()
-            {
-                StartDate = startDate.ToString(_gaDateRangeFormat),
-                EndDate = endDate.ToString(_gaDateRangeFormat)
-            };
-        }
-
-        /// <inheritdoc />
-        public DateRange DateRangeFromBounds(DateTimeOffset startDate, DateTimeOffset endDate)
+        /// <summary>
+        /// Get a Google AnalyticsReporting DateRange from
+        /// DateTimeOffset values for start and end dates.
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        private DateRange DateRangeFromBounds(DateTimeOffset startDate, DateTimeOffset endDate)
             => new() { StartDate = startDate.ToString(_gaDateRangeFormat), EndDate = endDate.ToString(_gaDateRangeFormat) };
-        /// <inheritdoc />
-        public DateRange DateRangeFromBounds(string startDate, DateTimeOffset endDate)
-            => new() { StartDate = startDate, EndDate = endDate.ToString(_gaDateRangeFormat) };
-        /// <inheritdoc />
-        public DateRange DateRangeFromBounds(DateTimeOffset startDate, string endDate)
-            => new() { StartDate = startDate.ToString(_gaDateRangeFormat), EndDate = endDate };
-        /// <inheritdoc />
-        public DateRange DateRangeFromBounds(string startDate, string endDate)
-            => new() { StartDate = startDate, EndDate = endDate };
 
         /// <inheritdoc />
-        public (DateTimeOffset startDate, DateTimeOffset endDate) GetDateRangeBounds(DateRange dateRange)
-            => (DateTimeOffset.Parse(dateRange.StartDate), DateTimeOffset.Parse(dateRange.EndDate));
-
-        /// <inheritdoc />
-        public async Task DownloadAllBiobankData(IList<DateRange> dateRanges)
+        public async Task DownloadAllBiobankData(DateTimeOffset startDate, DateTimeOffset endDate)
         {
+            var dateRanges = new[] { DateRangeFromBounds(startDate, endDate) };
+
             var metrics = GetBiobankMetrics();
             var dimensions = GetBiobankDimensions();
             var segments = GetNottLoughSegment();
@@ -126,8 +102,10 @@ namespace Biobanks.Analytics.Services
         }
 
         /// <inheritdoc />
-        public async Task DownloadDirectoryData(IList<DateRange> dateRanges)
+        public async Task DownloadDirectoryData(DateTimeOffset startDate, DateTimeOffset endDate)
         {
+            var dateRanges = new[] { DateRangeFromBounds(startDate, endDate) };
+
             var metricMetrics = GetDirectoryMetricMetrics();
             var eventMetrics = GetDirectoryEventMetrics();
             var eventDimensions = GetDirectoryEventDimensions();

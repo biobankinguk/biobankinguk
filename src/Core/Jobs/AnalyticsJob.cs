@@ -36,20 +36,18 @@ namespace Core.Jobs
             // Find Lastest Entry Date
             var lastentry = new[] { lastBiobankEntry, lastEventEntry, lastMetricEntry }.Max();
 
-            // No Previous Analytics
-            if (lastentry == DateTimeOffset.MinValue)
-            {
-                var dateRanges = new[] { _ga.DateRangeFromBounds(_config.StartDate, DateTimeOffset.Now) };
+            // Set Date Range based on lastentry
+            var startDate = lastentry == DateTimeOffset.MinValue
+                ? DateTimeOffset.Parse(_config.StartDate)
+                : lastentry;
 
-                await _ga.DownloadDirectoryData(dateRanges);
-            }
-            // If last entry is in the past
-            else if (lastentry > DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
-            {
-                var dateRanges = new[] { _ga.DateRangeFromBounds(lastentry, DateTimeOffset.Now) };
+            var endDate = DateTimeOffset.Now;
 
-                await _ga.DownloadAllBiobankData(dateRanges);
-                await _ga.DownloadDirectoryData(dateRanges);
+            // As long as lastentry is within an acceptable range, fetch the data
+            if(lastentry >= DateTimeOffset.MinValue && lastentry < DateTimeOffset.Now)
+            {
+                await _ga.DownloadAllBiobankData(startDate, endDate);
+                await _ga.DownloadDirectoryData(startDate, endDate);
             }
         }
     }
