@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Biobanks.Services.Dto
+namespace Biobanks.Analytics.Dto
 {
-    public class DirectoryAnalyticReportDTO
+    public class DirectoryReportDto
     {
         public int Year { get; set; }
         public int EndQuarter { get; set; }
@@ -11,26 +10,27 @@ namespace Biobanks.Services.Dto
         public int NumOfTopBiobanks { get; set; }
         public int EventsPerCityThreshold { get; set; }
 
-        public SessionStatDTO SessionStats { get; set; }
-        public SessionStatDTO SessionSearchStats { get; set; }
-        public SearchCharacteristicDTO SearchCharacteristics { get; set; }
-        public EventStatDTO EventStats { get; set; }
-        public ProfilePageStatDTO ProfilePageStats { get; set; }
+        public SessionStatDto SessionStats { get; set; }
+        public SessionStatDto SessionSearchStats { get; set; }
+        public SearchCharacteristicDto SearchCharacteristics { get; set; }
+        public EventStatDto EventStats { get; set; }
+        public ProfilePageStatDto ProfilePageStats { get; set; }
     }
 
-    public class SessionStatDTO
+    public class SessionStatDto
     {
-        public List<string> SessionNumberLabels { get; set; }
-        public List<int> SessionNumberCount { get; set; }
-        public List<string> AvgBounceRateLabels { get; set; }
-        public List<double> AvgBounceRateCount { get; set; }
-        public List<string> AvgNewSessionLabels { get; set; }
-        public List<double> AvgNewSessionCount { get; set; }
-        public List<string> AvgSessionDurationLabels { get; set; }
+        //use class for label count pair?
+        public IList<string> SessionNumberLabels { get; set; }
+        public IList<int> SessionNumberCount { get; set; }
+        public IList<string> AvgBounceRateLabels { get; set; }
+        public IList<double> AvgBounceRateCount { get; set; }
+        public IList<string> AvgNewSessionLabels { get; set; }
+        public IList<double> AvgNewSessionCount { get; set; }
+        public IList<string> AvgSessionDurationLabels { get; set; }
         public IList<double> AvgSessionDurationCount { get; set; }
     }
 
-    public class SearchCharacteristicDTO
+    public class SearchCharacteristicDto
     {
         public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
@@ -39,7 +39,8 @@ namespace Biobanks.Services.Dto
         public IList<string> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
     }
-    public class EventStatDTO
+
+    public class EventStatDto
     {
         public IList<string> ContactNumberLabels { get; set; }
         public IList<int> ContactNumberCount { get; set; }
@@ -49,14 +50,14 @@ namespace Biobanks.Services.Dto
         public IList<int> FilteredMailToCount { get; set; }
     }
 
-    public class ProfilePageStatDTO
+    public class ProfilePageStatDto
     {
-        public IList<SourceCountDTO> ProfileSources { get; set; }
+        public IList<SourceCountDto> ProfileSources { get; set; }
         public IList<string> PageRouteLabels { get; set; }
         public IList<int> RouteCount { get; set; }
     }
 
-    public class SourceCountDTO
+    public class SourceCountDto
     {
         public string Source { get; set; }
         public int Count { get; set; }
