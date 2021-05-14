@@ -89,10 +89,22 @@ namespace Biobanks.Submissions.Api.Auth.Basic
             // Successful Credentials Validation - create a ClaimsPrincipal
 
             // Populate Claims
-            var claims = client.Organisations
-                .Select(o => new Claim(CustomClaimTypes.BiobankId, o.OrganisationId.ToString())) // TODO: is this the correct ID that clients will be submitting?
-                .ToList();
+            List<Claim> claims = new();
+            if (client.Organisations.Any())
+            {
+                claims.AddRange(client.Organisations
+                    .Select(o => new Claim(
+                        CustomClaimTypes.BiobankId,
+                        o.OrganisationId.ToString()))); // TODO: is this the correct ID that clients will be submitting?
+            }
+            else
+            {
+                // TODO: Fix SuperAdmin to use formal persisted scopes
+                // instead of assuming no org == superadmin ;)
+                claims.Add(new Claim(ClaimTypes.Role, CustomRoles.SuperAdmin));
+            }
             claims.Add(new Claim(CustomClaimTypes.ClientId, clientId));
+
 
             // Create the Identity and Principal
             var identity = new ClaimsIdentity(claims, Scheme.Name);

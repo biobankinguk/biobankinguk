@@ -14,9 +14,12 @@ namespace Biobanks.IdentityTool.Commands
         public AddApiClient(string name)
             : base(name, "Add a new ApiClient to target BiobankingUK Directory Database")
         {
-            AddArgument(new Argument<int>(
-                "biobankId",
-                "The Database Record ID for the Biobank to associate this Client with."));
+            AddArgument(new Argument<List<int>>(
+                "biobankIds",
+                "The Database Record Ids for Biobanks to associate this Client with. No Biobanks will result in a SuperAdmin.")
+            {
+                Arity = ArgumentArity.ZeroOrMore
+            });
 
             new List<Option>
             {
@@ -59,7 +62,7 @@ namespace Biobanks.IdentityTool.Commands
                 IHost host,
                 IConsole console,
                 bool generate,
-                int biobankId,
+                List<int> biobankIds,
                 string clientId,
                 string clientSecret,
                 string clientName) =>
@@ -89,7 +92,7 @@ namespace Biobanks.IdentityTool.Commands
                     await host.Services.GetRequiredService<Runners.AddApiClient>().Run(
                         console,
                         generate,
-                        biobankId,
+                        biobankIds ?? new (),
                         clientId,
                         clientSecret,
                         clientName);
