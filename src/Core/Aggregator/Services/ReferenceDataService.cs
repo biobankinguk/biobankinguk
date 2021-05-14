@@ -1,10 +1,10 @@
-﻿using Biobanks.Aggregator.Services.Contracts;
+﻿using Biobanks.Aggregator.Core.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using System.Linq;
 using System.Xml;
 
-namespace Biobanks.Aggregator.Services
+namespace Biobanks.Aggregator.Core.Services
 {
     public class ReferenceDataService : IReferenceDataService
     {

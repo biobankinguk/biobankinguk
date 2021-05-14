@@ -1,8 +1,9 @@
 ﻿using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Biobanks.Aggregator.Services.Contracts
+namespace Biobanks.Aggregator.Core.Services.Contracts
 {
     public interface IAggregationService
     {
