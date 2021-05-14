@@ -19,6 +19,7 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IEmailService _emailService;
+        private readonly IRegistrationDomainService _registrationDomainService;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
@@ -26,12 +27,14 @@ namespace Biobanks.Web.Controllers
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IEmailService emailService)
+            IEmailService emailService, 
+            IRegistrationDomainService registrationDomainService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _userManager = userManager;
             _emailService = emailService;
+            _registrationDomainService = registrationDomainService;
         }
 
         // GET: Register
@@ -98,7 +101,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Check if email is on the allow/block list
-            if (!await _biobankReadService.ValidateOrganisationEmail(model.Email) && !model.AdacInvited)
+            if (!await _registrationDomainService.ValidateRegistrationEmailAddress(model.Email) && !model.AdacInvited)
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(
@@ -196,7 +199,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Check if email is on the allow/block list
-            if (!await _biobankReadService.ValidateOrganisationEmail(model.Email) && !model.AdacInvited)
+            if (!await _registrationDomainService.ValidateRegistrationEmailAddress(model.Email) && !model.AdacInvited)
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(

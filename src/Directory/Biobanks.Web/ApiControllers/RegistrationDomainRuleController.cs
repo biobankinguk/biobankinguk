@@ -14,21 +14,17 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/RegistrationDomainRule")]
     public class RegistrationDomainRuleController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IRegistrationDomainService _registrationDomainService;
 
-        public RegistrationDomainRuleController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public RegistrationDomainRuleController(IRegistrationDomainService registrationDomainService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _registrationDomainService = registrationDomainService;
         }
 
         [HttpGet]
         [Route("")]
-        public async Task<IList> Get() 
-        {
-            var model = (await _biobankReadService.ListRegistrationDomainRulesAsync())
+        public async Task<IList> Get() =>
+            (await _registrationDomainService.ListRegistrationDomainRulesAsync())
                 .Select(x =>
                     new RegistrationDomainRuleModel()
                     {
@@ -40,10 +36,7 @@ namespace Biobanks.Web.ApiControllers
                     }
                 )
                 .ToList();
-
-            return model;
-        }
-
+      
         [HttpPost]
         [Route("")]
         public async Task<IHttpActionResult> Post(RegistrationDomainRuleModel model)
@@ -59,11 +52,10 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Value", "That value is invalid and must contain more than one character.");
             }
 
-            if ((await _biobankReadService.GetRegistrationDomainRuleByValueAsync(model.Value)) != null)
+            if ((await _registrationDomainService.GetRegistrationDomainRuleByValueAsync(model.Value)) != null)
             {
                 ModelState.AddModelError("Value", "A rule with that value already exists");
             }
-
 
             if (!ModelState.IsValid)
             {
@@ -79,9 +71,8 @@ namespace Biobanks.Web.ApiControllers
                 DateModified = System.DateTime.Now
             };
 
-            await _biobankWriteService.AddRegistrationDomainRuleAsync(type);
-            await _biobankWriteService.UpdateRegistrationDomainRuleAsync(type); // Ensure sortOrder is correct
-
+            await _registrationDomainService.Add(type);
+            
             // Success response
             return Json(new
             {
@@ -93,14 +84,13 @@ namespace Biobanks.Web.ApiControllers
         [HttpPut]
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, RegistrationDomainRuleModel model)
-        {
-            
+        {        
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateRegistrationDomainRuleAsync(new RegistrationDomainRule()
+            await _registrationDomainService.Update(new RegistrationDomainRule()
             {
                 Id = id,
                 RuleType = model.RuleType,
@@ -121,14 +111,22 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListRegistrationDomainRulesAsync()).First(x => x.Id == id);
+            var model = (await _registrationDomainService.ListRegistrationDomainRulesAsync()).FirstOrDefault(x => x.Id == id);
+
+            if (model == null)
+            {
+                return Json(new
+                {
+                    success = true
+                });
+            }
 
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteRegistrationDomainRuleAsync(new RegistrationDomainRule()
+            await _registrationDomainService.Delete(new RegistrationDomainRule()
             {
                 Id = model.Id,
                 RuleType = model.RuleType,

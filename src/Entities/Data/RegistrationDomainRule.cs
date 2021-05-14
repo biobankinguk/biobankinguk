@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Biobanks.Entities.Data
-
 {
     public class RegistrationDomainRule
     {

@@ -33,6 +33,7 @@ namespace Biobanks.Web.Controllers
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IEmailService _emailService;
+        private readonly IRegistrationDomainService _registrationDomainService;
 
         private readonly IBiobankIndexService _indexService;
 
@@ -47,6 +48,7 @@ namespace Biobanks.Web.Controllers
             IAnalyticsReportGenerator analyticsReportGenerator,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
+            IRegistrationDomainService registrationDomainService,
             IBiobankIndexService indexService,
             ISearchProvider searchProvider,
             IMapper mapper,
@@ -57,6 +59,7 @@ namespace Biobanks.Web.Controllers
             _analyticsReportGenerator = analyticsReportGenerator;
             _userManager = userManager;
             _emailService = emailService;
+            _registrationDomainService = registrationDomainService;
             _indexService = indexService;
             _searchProvider = searchProvider;
             _mapper = mapper;
@@ -1675,9 +1678,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> EmailConfig()
         {
-         
-
-            return View((await _biobankReadService.ListRegistrationDomainRulesAsync())
+            return View((await _registrationDomainService.ListRegistrationDomainRulesAsync())
                 .Select(x => new RegistrationDomainRuleModel
                 {
                     Id = x.Id,
@@ -1685,11 +1686,8 @@ namespace Biobanks.Web.Controllers
                     Value = x.Value,
                     Source = x.Source,
                     DateModified = x.DateModified
-                }));
-         
+                }));     
         }
-
-
 
         #endregion
 
