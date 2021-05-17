@@ -35,8 +35,6 @@ env:
     artifacts/dataseed/*,
     artifacts/submissions-api/*,
     artifacts/submissions-workers-azfunctions/*,
-
-    artifacts/analytics-azfunctions/*,
     artifacts/directory/*,
     artifacts/identity-migrations/*,
     artifacts/data-migrations/*
@@ -55,8 +53,7 @@ jobs:
       - publish-dataseed
       - publish-identitytool
       - publish-submissions-api
-      - publish-analytics-azfunctions
-      - publish-analytics-azfunctions
+      - publish-submissions-azfunctions
       - publish-directory
       - publish-data-migrations
     runs-on: ubuntu-latest
