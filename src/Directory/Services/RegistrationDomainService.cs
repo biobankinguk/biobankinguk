@@ -1,15 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Biobanks.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Directory.Data;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Data.Entity;
 using System.Collections.Generic;
-using System.Text;
-using Biobanks.Directory.Data.Repositories;
-
 
 namespace Biobanks.Services
 {
@@ -21,6 +16,12 @@ namespace Biobanks.Services
         {
             _db = db;
         }
+
+        public async Task<ICollection<RegistrationDomainRule>> ListRules()
+            => await _db.RegistrationDomainRules.ToListAsync();
+
+        public async Task<RegistrationDomainRule> GetRuleByValue(string ruleValue)
+            => await _db.RegistrationDomainRules.FirstOrDefaultAsync(x => x.Value == ruleValue);
 
         public async Task Add(RegistrationDomainRule registrationDomainRule)
         {
@@ -56,25 +57,14 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task<bool> ValidateRegistrationEmailAddress(string email)
+        public async Task<bool> ValidateEmail(string email)
         {
-            //Check the allow list, if no match is found determine if in the block list.
-            if ((await _db.RegistrationDomainRules.ToListAsync()).Where(x => x.RuleType == "Allow" && email.Contains(x.Value)).Any())
-            {
-                return true;
-            }
-            else
-            {
-                //If the condition is true (A Block rule which applies is found), then we need to invert the response.
-                return !(await _db.RegistrationDomainRules.ToListAsync()).Where(x => x.RuleType == "Block" && email.Contains(x.Value)).Any();
-            }
+            var rules = await _db.RegistrationDomainRules
+                .Where(x => email.EndsWith(x.Value))
+                .ToListAsync();
+
+            return rules.Any(x => x.RuleType == "Allow") || !rules.Any(x => x.RuleType == "Block");
         }
-
-        public async Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRules() =>
-            await _db.RegistrationDomainRules.ToListAsync();
-
-        public async Task<RegistrationDomainRule> GetRegistrationDomainRuleByValue(string ruleValue) =>
-            await _db.RegistrationDomainRules.FirstOrDefaultAsync(x => x.Value == ruleValue);
 
     }
 }

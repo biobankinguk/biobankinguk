@@ -101,7 +101,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Check if email is on the allow/block list
-            if (!await _registrationDomainService.ValidateRegistrationEmailAddress(model.Email) && !model.AdacInvited)
+            if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(
@@ -199,7 +199,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Check if email is on the allow/block list
-            if (!await _registrationDomainService.ValidateRegistrationEmailAddress(model.Email) && !model.AdacInvited)
+            if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(

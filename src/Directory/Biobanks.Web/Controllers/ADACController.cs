@@ -1703,7 +1703,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> EmailConfig()
         {
-            return View((await _registrationDomainService.ListRegistrationDomainRules())
+            return View((await _registrationDomainService.ListRules())
                 .Select(x => new RegistrationDomainRuleModel
                 {
                     Id = x.Id,
