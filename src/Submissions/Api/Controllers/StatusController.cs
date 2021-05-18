@@ -6,6 +6,7 @@ using Biobanks.Submissions.Api.Auth;
 using Core.Submissions.Models;
 using Core.Submissions.Services.Contracts;
 using Core.Submissions.Types;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
