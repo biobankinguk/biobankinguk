@@ -23,27 +23,12 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            /*return View((await _contentPageService.ListContentPages())
+            return View((await _contentPageService.ListContentPages())
                 .Select(x => new ContentPageModel
                 {
                     Id = x.Id,
                     Title = x.Title
-                }));*/
-            var contentPages = (await _contentPageService.ListContentPages())
-                .Select(x =>
-                    Task.Run(async () => new ContentPageModel()
-                    {
-                        Id = x.Id,
-                        Title = x.Title
-                    })
-                    .Result
-                )
-                .ToList();
-
-            return View(new ContentPagesModel()
-            {
-                ContentPages = contentPages
-            });
+                }));            
         }
     }
 }

@@ -1,0 +1,41 @@
+﻿@using Biobanks.Web.Models.ADAC
+@model IEnumerable<ContentPageModel>
+
+@{ ViewBag.Title = "Content Page Admin"; }
+
+<h1>Content Page Admin @Html.ActionLink("Create", "Create", "PagesAdmin", new { @class = "btn btn-success" })</h1>
+<div class="row">
+    <table id="contentPages" class="table table-striped">
+        <tr>
+            <th width="50"></th>
+            <th width="350">Title</th>
+            <th width="50"></th>
+            <th width="50"></th>
+        </tr>
+
+        @foreach (var page in Model)
+        {
+            <tr>
+                <td></td>
+                <td>@page.Title</td>
+                <td><a href="@Url.Action(
+                            "Edit", "PagesAdmin",
+                            new
+                            {
+                                id = page.Id
+                            })">Edit</a></td>
+                <td><a href="@Url.Action(
+                            "Delete", "PagesAdmin",
+                            new
+                            {
+                                id = page.Id
+                            })"
+                       script="bootbox.confirm('Are you sure?')">Delete</a></td>
+            </tr>
+         }
+        </table>
+    </div>
+
+    @section FooterScripts
+{
+    }

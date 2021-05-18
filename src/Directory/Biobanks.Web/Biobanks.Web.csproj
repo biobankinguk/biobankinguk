@@ -464,7 +464,6 @@
     <Compile Include="Controllers\VersionController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
-    <Compile Include="Models\ADAC\ContentPagesModel.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
@@ -852,7 +851,7 @@
     <Content Include="Views\SuperUser\Tools.cshtml" />
     <Content Include="Views\ADAC\_ModalResetPassword.cshtml" />
     <Content Include="Views\Biobank\Submissions.cshtml" />
-    <Content Include="Views\ADAC\ContentPageAdmin.cshtml" />
+    <Content Include="Views\PagesAdmin\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
