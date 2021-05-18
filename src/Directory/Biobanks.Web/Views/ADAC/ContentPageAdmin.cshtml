@@ -4,6 +4,26 @@
 @{ ViewBag.Title = "Content Page Admin"; }
 
 <h1>Content Page Admin</h1>
+<div class="row">
+    <table id="contentPages" class="table table-striped">
+        <tr>
+            <th width="50"></th>
+            <th width="350">Title</th>
+            <th width="50"></th>
+            <th width="50"></th>
+
+            @foreach (var contentPage in Model)
+            {
+                <tr>
+                    <td></td>
+                    <td>@contentPage.Title</td>
+                    <td><a href="/edit">Edit</a></td>
+                    <td><a href="/delete">Delete</a></td>
+                </tr>
+            }
+        </tr>
+    </table>
+</div>
 
 @section FooterScripts
 {
