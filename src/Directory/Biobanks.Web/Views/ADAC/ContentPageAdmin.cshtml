@@ -1,5 +1,5 @@
 ﻿@using Biobanks.Web.Models.ADAC
-@model IEnumerable<ContentPageModel>
+@model ContentPagesModel
 
 @{ ViewBag.Title = "Content Page Admin"; }
 
@@ -12,16 +12,16 @@
             <th width="50"></th>
             <th width="50"></th>
 
-            @foreach (var contentPage in Model)
+            @foreach (var page in Model.ContentPages)
             {
                 <tr>
                     <td></td>
-                    <td>@contentPage.Title</td>
+                    <td>@page.Title</td>
                     <td><a href="/edit">Edit</a></td>
                     <td><a href="/delete">Delete</a></td>
                 </tr>
             }
-        </tr>
+         </tr>
     </table>
 </div>
 

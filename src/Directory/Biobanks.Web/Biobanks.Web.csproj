@@ -464,6 +464,7 @@
     <Compile Include="Controllers\VersionController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
+    <Compile Include="Models\ADAC\ContentPagesModel.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
