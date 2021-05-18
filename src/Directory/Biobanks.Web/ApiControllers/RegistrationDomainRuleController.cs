@@ -36,9 +36,6 @@ namespace Biobanks.Web.ApiControllers
                     }
                 )
                 .ToList();
-      
-            return model;
-        }
 
         [HttpPost]
         [Route("")]
