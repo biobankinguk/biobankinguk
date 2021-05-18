@@ -20,32 +20,41 @@ namespace Core.Submissions.Services
     public class SubmissionService : ISubmissionService
     {
         // Cloud Services
-        private readonly IBlobReadService _blobReader;
-        private readonly IBlobWriteService _blobWriter;
+        private readonly IBlobReadService _blobReadService;
+        private readonly IBlobWriteService _blobWriteService;
 
         // Automapper
         private readonly IMapper _mapper;
 
         // Entity Validation and Write Services
-        private readonly IDiagnosisWriteService _diagnoses;
-        private readonly ISampleWriteService _samples;
-        private readonly ITreatmentWriteService _treatments;
-        private readonly IErrorService _errors;
-
+        private readonly IDiagnosisWriteService _diagnosisWriteService;
+        private readonly ISampleWriteService _sampleWriteService;
+        private readonly ITreatmentWriteService _treatmentWriteService;
+        private readonly IErrorService _errorService;
 
         private readonly BiobanksDbContext _db;
 
         /// <inheritdoc />
-        public SubmissionService(BiobanksDbContext db)
+        public SubmissionService(BiobanksDbContext db, IBlobReadService blobReadService,
+            IBlobWriteService blobWriteService, IMapper mapper, IDiagnosisWriteService diagnosisWriteService,
+            ISampleWriteService sampleWriteService, ITreatmentWriteService treatmentWriteService,
+            IErrorService errorService)
         {
             _db = db;
+            _blobReadService = blobReadService;
+            _blobWriteService = blobWriteService;
+            _mapper = mapper;
+            _diagnosisWriteService = diagnosisWriteService;
+            _sampleWriteService = sampleWriteService;
+            _treatmentWriteService = treatmentWriteService;
+            _errorService = errorService;
         }
 
         public async Task Staging(OperationsQueueItem operationQueueItem)
         {
             const string storageContainer = "submission-payload";
 
-            var blobContents = await _blobReader.GetObjectFromJsonAsync(storageContainer, operationQueueItem.BlobId);
+            var blobContents = await _blobReadService.GetObjectFromJsonAsync(storageContainer, operationQueueItem.BlobId);
 
             // Get The Type From Stored String
             var blobject = JsonSerializer.Deserialize(blobContents, Type.GetType(operationQueueItem.BlobType));
@@ -70,11 +79,11 @@ namespace Core.Submissions.Services
 
                             try
                             {
-                                await _diagnoses.ProcessDiagnoses(diagnosisDtos);
+                                await _diagnosisWriteService.ProcessDiagnoses(diagnosisDtos);
                             }
                             catch (AggregateBiobanksValidationException e)
                             {
-                                await _errors.Add(
+                                await _errorService.Add(
                                     subId,
                                     operationQueueItem.Operation,
                                     "Diagnosis",
@@ -98,11 +107,11 @@ namespace Core.Submissions.Services
 
                             try
                             {
-                                await _diagnoses.DeleteDiagnosesIfExists(diagnosisDeletes);
+                                await _diagnosisWriteService.DeleteDiagnosesIfExists(diagnosisDeletes);
                             }
                             catch (AggregateBiobanksValidationException e)
                             {
-                                await _errors.Add(
+                                await _errorService.Add(
                                     subId,
                                     operationQueueItem.Operation,
                                     "Diagnosis",
@@ -133,11 +142,11 @@ namespace Core.Submissions.Services
 
                             try
                             {
-                                await _samples.ProcessSamples(sampleDtos);
+                                await _sampleWriteService.ProcessSamples(sampleDtos);
                             }
                             catch (AggregateBiobanksValidationException e)
                             {
-                                await _errors.Add(
+                                await _errorService.Add(
                                     subId,
                                     operationQueueItem.Operation,
                                     "Sample",
@@ -161,11 +170,11 @@ namespace Core.Submissions.Services
 
                             try
                             {
-                                await _samples.DeleteSamplesIfExists(sampleDeletes);
+                                await _sampleWriteService.DeleteSamplesIfExists(sampleDeletes);
                             }
                             catch (AggregateBiobanksValidationException e)
                             {
-                                await _errors.Add(
+                                await _errorService.Add(
                                     subId,
                                     operationQueueItem.Operation,
                                     "Sample",
@@ -196,11 +205,11 @@ namespace Core.Submissions.Services
 
                             try
                             {
-                                await _treatments.ProcessTreatments(treatmentDtos);
+                                await _treatmentWriteService.ProcessTreatments(treatmentDtos);
                             }
                             catch (AggregateBiobanksValidationException e)
                             {
-                                await _errors.Add(
+                                await _errorService.Add(
                                     subId,
                                     operationQueueItem.Operation,
                                     "Treatment",
@@ -224,11 +233,11 @@ namespace Core.Submissions.Services
 
                             try
                             {
-                                await _treatments.DeleteTreatmentsIfExists(treatmentDeletes);
+                                await _treatmentWriteService.DeleteTreatmentsIfExists(treatmentDeletes);
                             }
                             catch (AggregateBiobanksValidationException e)
                             {
-                                await _errors.Add(
+                                await _errorService.Add(
                                     subId,
                                     operationQueueItem.Operation,
                                     "Treatment",
@@ -243,7 +252,7 @@ namespace Core.Submissions.Services
                     break;
             }
 
-            await _blobWriter.DeleteAsync(storageContainer, operationQueueItem.BlobId);
+            await _blobWriteService.DeleteAsync(storageContainer, operationQueueItem.BlobId);
         }
 
         /// <inheritdoc />
