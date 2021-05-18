@@ -84,8 +84,7 @@ namespace Biobanks.Web.ApiControllers
         [HttpPut]
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, RegistrationDomainRuleModel model)
-        {        
-            
+        {           
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);

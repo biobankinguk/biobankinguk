@@ -16,10 +16,6 @@ namespace Biobanks.Services.Contracts
 
         Task<NetworkRegisterRequest> GetNetworkRegisterRequestByUserEmailAsync(string email);
 
-        Task<bool> ValidateOrganisationEmail(string email);
-
-        Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync(string wildcard = "");
-
         Task<Organisation> GetBiobankByIdAsync(int biobankId);
         Task<Organisation> GetBiobankByIdForIndexingAsync(int biobankId);
         Task<Organisation> GetBiobankByNameAsync(string biobankName);
