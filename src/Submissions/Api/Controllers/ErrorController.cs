@@ -7,6 +7,7 @@ using Biobanks.Submissions.Api.Models;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 using Core.Submissions.Types;
 using Core.Submissions.Services.Contracts;
 
@@ -17,6 +18,8 @@ namespace Biobanks.Submissions.Api.Controllers
     /// </summary>
     [Route("status/{submissionId}/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class ErrorController : ControllerBase
     {
         private readonly IErrorService _errors;

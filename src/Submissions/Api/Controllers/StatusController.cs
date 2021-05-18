@@ -18,6 +18,8 @@ namespace Biobanks.Submissions.Api.Controllers
     /// </summary>
     [Route("[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class StatusController : ControllerBase
     {
         private readonly ISubmissionService _submissions;

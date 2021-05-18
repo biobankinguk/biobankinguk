@@ -36,6 +36,11 @@ using Biobanks.Shared.Services.Contracts;
 using Biobanks.Shared.Services;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Analytics;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System;
+using Biobanks.Aggregator.Services.Contracts;
+using Biobanks.Aggregator.Services;
 
 namespace Biobanks.Submissions.Api
 {
@@ -88,13 +93,14 @@ namespace Biobanks.Submissions.Api
                         RequireExpirationTime = true
                     };
                 })
-                .AddBasic(opts => opts.Realm = "biobankinguk-submissions-accesstoken");
+                .AddBasic(opts => opts.Realm = "biobankinguk-api");
 
             services
                 .AddOptions()
 
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
+                .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
 
                 .AddApplicationInsightsTelemetry()
 
@@ -110,7 +116,9 @@ namespace Biobanks.Submissions.Api
 
                 .AddAuthorization(o =>
                 {
-                    o.DefaultPolicy = AuthPolicies.IsTokenAuthenticated;
+                    o.DefaultPolicy = AuthPolicies.IsAuthenticated;
+                    o.AddPolicy(nameof(AuthPolicies.IsTokenAuthenticated),
+                        AuthPolicies.IsTokenAuthenticated);
                     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
                         AuthPolicies.IsBasicAuthenticated);
                     o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),
@@ -123,7 +131,7 @@ namespace Biobanks.Submissions.Api
                         opts.SwaggerDoc("v1",
                             new OpenApiInfo
                             {
-                                Title = "BiobankingUK Submissions API",
+                                Title = "BiobankingUK Directory API",
                                 Version = "v1"
                             });
 
@@ -146,6 +154,17 @@ namespace Biobanks.Submissions.Api
                             BearerFormat = "JWT"
                         });
                         opts.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                        // Allow grouping across controllers
+                        opts.TagActionsBy(api =>
+                        {
+                            var tag = api.GroupName
+                                ?? (api.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
+
+                            if(tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
+                            return new[] { tag };
+                        });
+                        opts.DocInclusionPredicate((name, api) => true);
                     })
 
                 .AddAutoMapper(
@@ -153,6 +172,8 @@ namespace Biobanks.Submissions.Api
                     typeof(Startup))
 
                 .AddHttpClient()
+
+                .AddMemoryCache()
 
                 // Cloud services
                 .AddTransient<IBlobWriteService, AzureBlobWriteService>(
@@ -163,12 +184,23 @@ namespace Biobanks.Submissions.Api
                 // Local Services
                 .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<IErrorService, ErrorService>()
+                
+                .AddTransient<IReferenceDataService, ReferenceDataService>()
+                .AddTransient<ICollectionService, CollectionService>()
+                .AddTransient<ISampleService, SampleService>()
+                .AddTransient<IOrganisationService, OrganisationService>()
+                .AddTransient<IAggregationService, AggregationService>()
 
                 .AddTransient<IPublicationService, PublicationService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
-                .AddTransient<IGoogleAnalyticsReadService, GoogleAnalyticsReadService>()
+
+                .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
+                .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+                .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
+                .AddTransient<IAnalyticsService, AnalyticsService>()
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
                 .AddTransient<IBackgroundJobEnqueueingService, HangfireQueueService>();
@@ -237,9 +269,12 @@ namespace Biobanks.Submissions.Api
                 .UseHangfireServer();
 
             // Hangfire Recurring Jobs
+            RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
             RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
             RecurringJob.AddOrUpdate<ExpiryJob>("job-expiry", x => x.Run(), Cron.Daily);
+
+            RecurringJob.Trigger("job-aggregator");
         }
     }
 }

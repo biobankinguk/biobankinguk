@@ -3,6 +3,11 @@
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.EqualityComparers;
 using Biobanks.Submissions.Api.Models;
+using Biobanks.Submissions.Core.Models;
+using Biobanks.Submissions.Core.Services.Contracts;
+using Biobanks.Submissions.Core.Types;
+
+using Microsoft.AspNetCore.Authorization;
 using Core.Submissions.Models;
 using Core.Submissions.Services.Contracts;
 using Core.Submissions.Types;
@@ -20,12 +25,13 @@ using System.Xml;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-    /// <inheritdoc />
     /// <summary>
     /// Controller for handling submissions of data for a biobank
     /// </summary>
     [Route("[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class SubmitController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -51,8 +57,8 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <summary>
         /// Inserts or updates a sample.
         /// </summary>
-        /// <param name="model">The sample model to be inserted to or updated in staging.</param>
         /// <param name="biobankId">The ID of the biobank to operate on.</param>
+        /// <param name="model">The sample model to be inserted to or updated in staging.</param>
         /// <returns>The created content.</returns>
         [HttpPost("{biobankId}")]
         [SwaggerResponse(202, Type = typeof(SubmissionSummaryModel))]
