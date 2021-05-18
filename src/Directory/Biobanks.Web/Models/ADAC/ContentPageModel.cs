@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Biobanks.Web.Models.ADAC
 {
-    public class ViewModel
+    public class ContentPageModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
