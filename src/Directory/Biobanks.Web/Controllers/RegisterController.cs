@@ -66,29 +66,26 @@ namespace Biobanks.Web.Controllers
             });
         }
 
-        internal async Task<bool> RegistrationHoneypotTrap(RegisterEntityModel model)
+        public async Task<bool> RegistrationHoneypotTrap(RegisterEntityModel model)
         {
             //check if honeypot field is true
             if (model.AcceptTerms && !model.AdacInvited)
             {
                 //check if domain rule exist for user
-                var rules = await _biobankReadService.ListRegistrationDomainRulesAsync(model.Email);
+                var rule = await _registrationDomainService.GetRuleByValue(model.Email);
 
-                if (rules.Any())
+                if (rule != null)
                 {
-                    //update rules to block user
-                    foreach (var rule in rules)
-                    {
-                        rule.RuleType = "Block";
-                        rule.DateModified = DateTime.Now;
-                        rule.Source = "Automatic block: honeypot";
-                        await _biobankWriteService.UpdateRegistrationDomainRuleAsync(rule);
-                    }
+                    //update rule to block user
+                    rule.RuleType = "Block";
+                    rule.DateModified = DateTime.Now;
+                    rule.Source = "Automatic block: honeypot";
+                    await _registrationDomainService.Update(rule);
                 }
                 else
                 {
                     // add new rule to block user
-                    await _biobankWriteService.AddRegistrationDomainRuleAsync(new RegistrationDomainRule
+                    await _registrationDomainService.Add(new RegistrationDomainRule
                     {
                         RuleType = "Block",
                         Source = "Automatic block: honeypot",
