@@ -39,8 +39,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
-        private readonly IGenericEFRepository<RegistrationDomainRule> _registrationDomainRuleRepository;
-
+        
         private readonly IGenericEFRepository<Network> _networkRepository;
         private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
         private readonly IGenericEFRepository<NetworkRegisterRequest> _networkRegisterRequestRepository;
@@ -107,7 +106,6 @@ namespace Biobanks.Services
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
-            IGenericEFRepository<RegistrationDomainRule> registrationDomainRuleRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
 
             IGenericEFRepository<Network> networkRepository,
@@ -171,7 +169,6 @@ namespace Biobanks.Services
             _sampleSetRepository = sampleSetRepository;
             _siteConfigRepository = siteConfigRepository;
             _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
-            _registrationDomainRuleRepository = registrationDomainRuleRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
 
             _networkRepository = networkRepository;
@@ -222,30 +219,6 @@ namespace Biobanks.Services
         }
 
         #endregion
-
-        public async Task<bool> ValidateOrganisationEmail(string email)
-        {
-            //Check the allow list, if no match is found determine if in the block list.
-            if ((await _registrationDomainRuleRepository.ListAsync(false, x => x.RuleType == "Allow")).Where(y => email.Contains(y.Value)).Any())
-            {
-                return true;
-            }
-            else
-            {
-                if ((await _registrationDomainRuleRepository.ListAsync(false, x => x.RuleType == "Block")).Where(y => email.Contains(y.Value)).Any())
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-                  
-            }      
-        }
-
-        public async Task<ICollection<RegistrationDomainRule>> ListRegistrationDomainRulesAsync(string wildcard = "") =>
-            (await _registrationDomainRuleRepository.ListAsync(false, x => x.Value.Contains(wildcard))).ToList();
 
         public async Task<OrganisationType> GetBiobankOrganisationTypeAsync()
             //if we ever have more types, maybe a type service could provide

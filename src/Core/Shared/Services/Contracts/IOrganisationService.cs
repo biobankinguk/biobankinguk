@@ -6,6 +6,12 @@ namespace Biobanks.Shared.Services.Contracts
 {
     public interface IOrganisationService
     {
+        Task<int> Count();
+
         Task<IEnumerable<Organisation>> List();
+
+        Task<IEnumerable<string>> ListExternalIds();
+
+        Task<Organisation> GetById(int organisationId);
     }
 }

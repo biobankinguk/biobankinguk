@@ -118,6 +118,9 @@
           },
           "percentageOfSampleSet": {
             "type": "keyword"
+          },
+          "preservationType": {
+            "type": "keyword"
           }
         }
       },
