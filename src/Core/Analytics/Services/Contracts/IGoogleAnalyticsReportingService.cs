@@ -1,7 +1,4 @@
-﻿using Google.Apis.AnalyticsReporting.v4.Data;
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace Biobanks.Analytics.Services
@@ -23,7 +20,8 @@ namespace Biobanks.Analytics.Services
         /// <para>Fetch Directory level analytics data from the configured Google Analytics Reporting view, within the specified date range.</para>
         /// <para>The data is subsequently written to the local database.</para>
         /// </summary>
-        /// <param name="dateRanges"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         Task DownloadDirectoryData(DateTimeOffset startDate, DateTimeOffset endDate);
     }
 }
