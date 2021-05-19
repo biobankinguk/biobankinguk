@@ -98,7 +98,8 @@ namespace Biobanks.Web
                         "~/Scripts/bootbox*",
                         "~/Scripts/typeahead.bundle*",
                         "~/Scripts/Biobank/associated-data-highlight.js",
-                        "~/Scripts/Shared/diagnosis-type-ahead.js"));
+                        "~/Scripts/Shared/diagnosis-type-ahead.js",
+                        "~/Scripts/Biobank/collection-crud.js"));
             bundles.Add(new ScriptBundle("~/bundles/help-buttons").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/Biobank/help-popups.js"));
