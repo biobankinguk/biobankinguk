@@ -62,6 +62,9 @@ namespace Biobanks.Directory.Data
         public DbSet<NetworkRegisterRequest> NetworkRegisterRequests { get; set; }
         public DbSet<NetworkUser> NetworkUsers { get; set; }
 
+        //Domain Registration Rules
+        public DbSet<RegistrationDomainRule> RegistrationDomainRules { get; set; }
+
         //Site Config
         public DbSet<Config> Configs { get; set; }
 

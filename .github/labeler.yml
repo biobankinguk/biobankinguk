@@ -27,7 +27,8 @@
 "Area: IdentityModel":
   - src/IdentityModel/**/*
 "Area: Aggregator":
-  - src/Aggregator/**/*
+  - src/Core/Aggregator/**/*
+  - src/Core/Jobs/AggregatorJob.cs
  
 
 # label types of changes contained in a PR

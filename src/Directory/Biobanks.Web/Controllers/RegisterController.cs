@@ -19,6 +19,7 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IEmailService _emailService;
+        private readonly IRegistrationDomainService _registrationDomainService;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
@@ -26,12 +27,14 @@ namespace Biobanks.Web.Controllers
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IEmailService emailService)
+            IEmailService emailService, 
+            IRegistrationDomainService registrationDomainService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _userManager = userManager;
             _emailService = emailService;
+            _registrationDomainService = registrationDomainService;
         }
 
         // GET: Register
@@ -92,6 +95,17 @@ namespace Biobanks.Web.Controllers
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(
                     $"Registration is already in progress for {model.Entity}. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+                    FeedbackMessageType.Danger, true);
+
+                return View(model);
+            }
+
+            //Check if email is on the allow/block list
+            if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
+            {
+                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                SetTemporaryFeedbackMessage(
+                    $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
                     FeedbackMessageType.Danger, true);
 
                 return View(model);
@@ -180,6 +194,17 @@ namespace Biobanks.Web.Controllers
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
+
+                return View(model);
+            }
+
+            //Check if email is on the allow/block list
+            if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
+            {
+                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                SetTemporaryFeedbackMessage(
+                    $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+                    FeedbackMessageType.Danger, true);
 
                 return View(model);
             }
