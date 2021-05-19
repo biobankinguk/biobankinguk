@@ -1,5 +1,5 @@
 ﻿using Biobanks.IdentityModel.Helpers;
-﻿using Biobanks.Publications.Services;
+using Biobanks.Publications.Services;
 using Biobanks.Publications.Services.Contracts;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
@@ -66,13 +66,12 @@ namespace Biobanks.Submissions.Api
         /// Configures the app's global services.
         /// </summary>
         /// <param name="services">Collection of services to be configured.</param>
-        /// <returns></returns>
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
-            var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>();
+            var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
 
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
@@ -174,15 +173,24 @@ namespace Biobanks.Submissions.Api
                 .AddMemoryCache()
 
                 // Cloud services
-                .AddTransient<IBlobWriteService, AzureBlobWriteService>(
+                .AddTransient<IBlobWriteService, AzureBlobWriteService>( // TODO: Merge Blob Read and Write services
+                    _ => new(Configuration.GetConnectionString("AzureStorage")))
+                .AddTransient<IBlobReadService, AzureBlobReadService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
                 .AddTransient<IQueueWriteService, AzureQueueWriteService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
 
                 // Local Services
                 .AddTransient<ISubmissionService, SubmissionService>()
+                .AddTransient<IDiagnosisWriteService, DiagnosisWriteService>()
+                .AddTransient<IDiagnosisValidationService, DiagnosisValidationService>()
+                .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
+                .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
+                .AddTransient<ISampleWriteService, SampleWriteService>()
+                .AddTransient<ISampleValidationService, SampleValidationService>()
+                .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
                 .AddTransient<IErrorService, ErrorService>()
-                
+
                 .AddTransient<IReferenceDataService, ReferenceDataService>()
                 .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
@@ -218,11 +226,10 @@ namespace Biobanks.Submissions.Api
                     break;
                 // case WorkersQueueService.Hangfire: // this is the default!
                 default:
-                    // TODO: Add Hangfire implementation
-                    //.AddTransient<IBackgroundJobEnqueueingService, HangfireQueueService>();
-                    //TODO Register these services if we're using hangfire
-                    //.AddTransient<IRejectService, RejectService>()
-                    //.AddTransient<ICommitService, CommitService>()
+                    services
+                        .AddTransient<IBackgroundJobEnqueueingService, HangfireQueueService>()
+                        .AddTransient<IRejectService, RejectService>()
+                        .AddTransient<ICommitService, CommitService>();
                     break;
             }
         }
@@ -280,9 +287,10 @@ namespace Biobanks.Submissions.Api
                 {
                     endpoints.MapControllers().RequireAuthorization();
 
-                    endpoints
-                        .MapHangfireDashboard("/hangfire")
-                        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                    var hangfireEndpoint = endpoints.MapHangfireDashboard("/hangfire");
+
+
+                    if (!env.IsDevelopment()) hangfireEndpoint.RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
                 })
 
                 // Hangfire Server
@@ -303,9 +311,12 @@ namespace Biobanks.Submissions.Api
                 [WorkersRecurringJobs.Publications] = ()
                     => RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily()),
 
-                //[WorkersRecurringJobs.Aggregator] = ()
-                //    => RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
-        };
+                [WorkersRecurringJobs.Aggregator] = ()
+                    => RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily()),
+
+                [WorkersRecurringJobs.SubmissionsExpiry] = ()
+                    => RecurringJob.AddOrUpdate<ExpiryJob>("job-expiry", x => x.Run(), Cron.Daily())
+            };
 
             // run each job the config opts us in to
             foreach (var job in workersConfig.HangfireRecurringJobs)

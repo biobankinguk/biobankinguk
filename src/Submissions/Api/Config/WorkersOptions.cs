@@ -30,7 +30,7 @@ namespace Biobanks.Submissions.Api.Config
     /// </summary>
     public class WorkersOptions
     {
-        public List<string> HangfireRecurringJobs { get; set; }
+        public List<string> HangfireRecurringJobs { get; set; } = new();
 
         public WorkersQueueService QueueService { get; set; } = WorkersQueueService.Hangfire;
     }

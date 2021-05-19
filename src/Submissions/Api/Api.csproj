@@ -34,7 +34,6 @@
     <ProjectReference Include="..\..\Core\Core.csproj" />
     <ProjectReference Include="..\..\Data\Data.csproj" />
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj" />
-    <ProjectReference Include="..\Core.AzureStorage\Core.AzureStorage.csproj" />
   </ItemGroup>
 
   <ItemGroup>
