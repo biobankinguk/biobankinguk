@@ -21,5 +21,7 @@ namespace Biobanks.Web.Models.Register
         public string Entity { get; set; }
 
         public bool AdacInvited { get; set; } //did ADAC make this registration as an invite? it should be auto-accepted
+
+        public bool AcceptTerms { get; set; } //Honeypot field
     }
 }

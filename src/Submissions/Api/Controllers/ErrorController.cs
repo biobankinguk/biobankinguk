@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Core.Types;
 using Biobanks.Submissions.Api.Models;
-using Biobanks.Submissions.Core.Services.Contracts;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Authorization;
+using Core.Submissions.Types;
+using Core.Submissions.Services.Contracts;
 
 namespace Biobanks.Submissions.Api.Controllers
 {

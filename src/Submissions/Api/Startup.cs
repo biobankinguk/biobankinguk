@@ -1,21 +1,19 @@
-﻿using Biobanks.Publications.Services;
+﻿using Biobanks.IdentityModel.Helpers;
+using Biobanks.Publications.Services;
 using Biobanks.Publications.Services.Contracts;
-using Biobanks.IdentityModel.Helpers;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.AzureStorage;
-using Biobanks.Submissions.Core.Services;
-using Biobanks.Submissions.Core.Services.Contracts;
-
 using ClacksMiddleware.Extensions;
+using Core.AzureStorage;
 
 using Core.Jobs;
+using Core.Submissions.Services;
+using Core.Submissions.Services.Contracts;
 
 using Hangfire;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +41,8 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Aggregator.Services;
+using System.Linq;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api
 {
@@ -66,12 +66,12 @@ namespace Biobanks.Submissions.Api
         /// Configures the app's global services.
         /// </summary>
         /// <param name="services">Collection of services to be configured.</param>
-        /// <returns></returns>
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
+            var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
 
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
@@ -103,18 +103,13 @@ namespace Biobanks.Submissions.Api
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
+                .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
 
                 .AddApplicationInsightsTelemetry()
 
                 .AddDbContext<Data.BiobanksDbContext>(opts =>
                     opts.UseSqlServer(Configuration.GetConnectionString("Default"),
                         sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)))
-
-                .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("Default"),
-                    new Hangfire.SqlServer.SqlServerStorageOptions
-                    {
-                        SchemaName = "apiHangfire"
-                    }))
 
                 .AddAuthorization(o =>
                 {
@@ -163,14 +158,14 @@ namespace Biobanks.Submissions.Api
                             var tag = api.GroupName
                                 ?? (api.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
 
-                            if(tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
+                            if (tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
                             return new[] { tag };
                         });
                         opts.DocInclusionPredicate((name, api) => true);
                     })
 
                 .AddAutoMapper(
-                    typeof(Core.MappingProfiles.DiagnosisProfile),
+                    typeof(Core.Submissions.MappingProfiles.DiagnosisProfile),
                     typeof(Startup))
 
                 .AddHttpClient()
@@ -178,15 +173,24 @@ namespace Biobanks.Submissions.Api
                 .AddMemoryCache()
 
                 // Cloud services
-                .AddTransient<IBlobWriteService, AzureBlobWriteService>(
+                .AddTransient<IBlobWriteService, AzureBlobWriteService>( // TODO: Merge Blob Read and Write services
+                    _ => new(Configuration.GetConnectionString("AzureStorage")))
+                .AddTransient<IBlobReadService, AzureBlobReadService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
                 .AddTransient<IQueueWriteService, AzureQueueWriteService>(
                     _ => new(Configuration.GetConnectionString("AzureStorage")))
 
                 // Local Services
                 .AddTransient<ISubmissionService, SubmissionService>()
+                .AddTransient<IDiagnosisWriteService, DiagnosisWriteService>()
+                .AddTransient<IDiagnosisValidationService, DiagnosisValidationService>()
+                .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
+                .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
+                .AddTransient<ISampleWriteService, SampleWriteService>()
+                .AddTransient<ISampleValidationService, SampleValidationService>()
+                .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
                 .AddTransient<IErrorService, ErrorService>()
-                
+
                 .AddTransient<IReferenceDataService, ReferenceDataService>()
                 .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
@@ -202,14 +206,32 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
                 .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
                 .AddTransient<IAnalyticsService, AnalyticsService>()
-                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>();
 
-                //Conditional Service (todo setup hangfire specific DI)
-                .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
+            // Conditional services
+            if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
+            {
+                services.AddHangfire(x => x.UseSqlServerStorage(
+                    Configuration.GetConnectionString("Default"),
+                    new Hangfire.SqlServer.SqlServerStorageOptions
+                    {
+                        SchemaName = "apiHangfire"
+                    }));
+            }
 
-            //TODO Register these services if we're using hangfire
-            //.AddTransient<IRejectService, RejectService>()
-            //.AddTransient<ICommitService, CommitService>()
+            switch (workersConfig.QueueService)
+            {
+                case WorkersQueueService.AzureQueueStorage:
+                    services.AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
+                    break;
+                // case WorkersQueueService.Hangfire: // this is the default!
+                default:
+                    services
+                        .AddTransient<IBackgroundJobEnqueueingService, HangfireQueueService>()
+                        .AddTransient<IRejectService, RejectService>()
+                        .AddTransient<ICommitService, CommitService>();
+                    break;
+            }
         }
 
         /// <summary>
@@ -217,7 +239,8 @@ namespace Biobanks.Submissions.Api
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="workersOptions"></param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<WorkersOptions> workersOptions)
         {
             // Early pipeline config
             app
@@ -262,20 +285,40 @@ namespace Biobanks.Submissions.Api
                 {
                     endpoints.MapControllers().RequireAuthorization();
 
-                    endpoints
-                        .MapHangfireDashboard("/hangfire")
-                        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                    var hangfireEndpoint = endpoints.MapHangfireDashboard("/hangfire");
+
+
+                    if (!env.IsDevelopment()) hangfireEndpoint.RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
                 })
 
                 // Hangfire Server
                 .UseHangfireServer();
 
-            // Hangfire Recurring Jobs
-            RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
-            RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
-            RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
+            // App Startup tasks
+            ConfigureHangfireRecurringJobs(workersOptions.Value);
+        }
 
-            RecurringJob.Trigger("job-aggregator");
+        private void ConfigureHangfireRecurringJobs(WorkersOptions workersConfig)
+        {
+            // Hangfire Recurring Jobs, as configured
+            Dictionary<string, Action> jobs = new()
+            {
+                [WorkersRecurringJobs.Analytics] = ()
+                    => RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *"),
+
+                [WorkersRecurringJobs.Publications] = ()
+                    => RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily()),
+
+                [WorkersRecurringJobs.Aggregator] = ()
+                    => RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily()),
+
+                [WorkersRecurringJobs.SubmissionsExpiry] = ()
+                    => RecurringJob.AddOrUpdate<ExpiryJob>("job-expiry", x => x.Run(), Cron.Daily())
+            };
+
+            // run each job the config opts us in to
+            foreach (var job in workersConfig.HangfireRecurringJobs)
+                if (jobs.ContainsKey(job)) jobs[job]();
         }
     }
 }
