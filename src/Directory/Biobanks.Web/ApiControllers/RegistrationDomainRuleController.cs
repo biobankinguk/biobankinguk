@@ -36,7 +36,7 @@ namespace Biobanks.Web.ApiControllers
                     }
                 )
                 .ToList();
-      
+
         [HttpPost]
         [Route("")]
         public async Task<IHttpActionResult> Post(RegistrationDomainRuleModel model)
@@ -84,7 +84,7 @@ namespace Biobanks.Web.ApiControllers
         [HttpPut]
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, RegistrationDomainRuleModel model)
-        {        
+        {           
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
