@@ -14,6 +14,7 @@
   - src/Core/Jobs/RejectJob.cs
   - src/Core/Jobs/ExpiryJob.cs
   - src/Core/Jobs/CommitJob.cs
+  - src/Core/Jobs/StagingJob.cs
 "Area: Data":
   - src/Data/**/*
 "Area: DataSeed":
