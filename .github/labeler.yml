@@ -11,6 +11,9 @@
   - src/Core/Jobs/AnalyticsJob.cs
 "Area: Submissions":
   - src/Submissions/**/*
+  - src/Core/Jobs/RejectJob.cs
+  - src/Core/Jobs/ExpiryJob.cs
+  - src/Core/Jobs/CommitJob.cs
 "Area: Data":
   - src/Data/**/*
 "Area: DataSeed":
