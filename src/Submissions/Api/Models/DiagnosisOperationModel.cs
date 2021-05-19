@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Core.Models;
+﻿using Core.Submissions.Models;
 
 namespace Biobanks.Submissions.Api.Models
 {

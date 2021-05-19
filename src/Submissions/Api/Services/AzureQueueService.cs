@@ -1,6 +1,6 @@
 ﻿using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.Models;
-using Biobanks.Submissions.Core.Services.Contracts;
+using Core.Submissions.Models;
+using Core.Submissions.Services.Contracts;
 using System.Text.Json;
 using System.Threading.Tasks;
 

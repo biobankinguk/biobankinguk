@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Biobanks.Submissions.Api.Models;
-using SampleModel = Biobanks.Submissions.Core.Models.SampleModel;
+using Core.Submissions.Models;
 
 namespace Biobanks.Submissions.Api.MappingProfiles
 {

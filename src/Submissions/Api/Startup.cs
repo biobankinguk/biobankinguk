@@ -1,21 +1,19 @@
+﻿using Biobanks.IdentityModel.Helpers;
 ﻿using Biobanks.Publications.Services;
 using Biobanks.Publications.Services.Contracts;
-using Biobanks.IdentityModel.Helpers;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.AzureStorage;
-using Biobanks.Submissions.Core.Services;
-using Biobanks.Submissions.Core.Services.Contracts;
-
 using ClacksMiddleware.Extensions;
+using Core.AzureStorage;
 
 using Core.Jobs;
+using Core.Submissions.Services;
+using Core.Submissions.Services.Contracts;
 
 using Hangfire;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -170,7 +168,7 @@ namespace Biobanks.Submissions.Api
                     })
 
                 .AddAutoMapper(
-                    typeof(Core.MappingProfiles.DiagnosisProfile),
+                    typeof(Core.Submissions.MappingProfiles.DiagnosisProfile),
                     typeof(Startup))
 
                 .AddHttpClient()
@@ -205,7 +203,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
                 //Conditional Service (todo setup hangfire specific DI)
-                .AddTransient<IBackgroundJobEnqueueingService, AzureQueueService>();
+                .AddTransient<IBackgroundJobEnqueueingService, HangfireQueueService>();
 
             //TODO Register these services if we're using hangfire
             //.AddTransient<IRejectService, RejectService>()
@@ -274,6 +272,7 @@ namespace Biobanks.Submissions.Api
             RecurringJob.AddOrUpdate<AggregatorJob>("job-aggregator", x => x.Run(), Cron.Daily());
             RecurringJob.AddOrUpdate<AnalyticsJob>("job-analytics", x => x.Run(), "0 0 1 */3 *");
             RecurringJob.AddOrUpdate<PublicationsJob>("job-publications", x => x.Run(), Cron.Daily());
+            RecurringJob.AddOrUpdate<ExpiryJob>("job-expiry", x => x.Run(), Cron.Daily);
 
             RecurringJob.Trigger("job-aggregator");
         }
