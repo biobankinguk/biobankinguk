@@ -240,10 +240,8 @@ namespace Biobanks.Submissions.Api
         /// <param name="app"></param>
         /// <param name="env"></param>
         /// <param name="workersOptions"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<WorkersOptions> workersOptions, IServiceProvider services)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<WorkersOptions> workersOptions)
         {
-            var test = services.GetService<IBackgroundJobEnqueueingService>();
-
             // Early pipeline config
             app
                 .GnuTerryPratchett()
