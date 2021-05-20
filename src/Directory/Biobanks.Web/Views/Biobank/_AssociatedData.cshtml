@@ -7,7 +7,7 @@
 <div class="row">
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <table class="table table-striped">
+            <table id="Groups" class="table table-striped">
                 <thead>
                     <tr>
                         <th>Data type</th>
@@ -20,13 +20,14 @@
                         <tr><td colspan="5" class="info">@Html.Raw(Model.Groups[i].Name)</td></tr>
                         for (int j = 0; j < Model.Groups[i].Types.Count(); j++)
                         {
-                          @Html.EditorFor(x => Model.Groups[i].Types[j])               
+                            @Html.EditorFor(x => Model.Groups[i].Types[j])
                         }
 
                     }
 
                 </tbody>
             </table>
+            @Html.ValidationMessageFor(x => x.Groups)
         </div>
         </div>
     </div>

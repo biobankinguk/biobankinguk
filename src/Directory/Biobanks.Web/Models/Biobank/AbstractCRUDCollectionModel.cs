@@ -64,7 +64,7 @@ namespace Biobanks.Web.Models.Biobank
                 if (!await biobankReadService.ValidOntologyTermDescriptionAsync(Diagnosis))
                 {
                     modelState.AddModelError("Diagnosis",
-                        "Please enter a valid Diagnosis or select one from the type ahead results.");
+                        "Please enter a valid Diagnosis or select one from the type ahead results lalallal.");
 
                     return false;
                 }
@@ -74,7 +74,7 @@ namespace Biobanks.Web.Models.Biobank
                     return true;
                 }
 
-                modelState.AddModelError("AssociatedData",
+                modelState.AddModelError("Groups",
                     "Please make sure you have selected a provision time for all selected data types.");
             }
 
