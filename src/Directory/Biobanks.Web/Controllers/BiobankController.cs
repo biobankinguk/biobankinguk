@@ -960,10 +960,11 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            if (model.FromApi)
+            //Retrieve collection
+            var collection = await _biobankReadService.GetCollectionByIdAsync(model.Id);
+
+            if (collection.FromApi)
             {
-                //Retrieve collection
-                var collection = await _biobankReadService.GetCollectionByIdAsync(model.Id);
                 var associatedData = collection.AssociatedData
                     .Select(y => new CollectionAssociatedData
                     {
