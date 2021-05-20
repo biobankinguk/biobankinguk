@@ -295,10 +295,10 @@ namespace Biobanks.Submissions.Api
                             .MapHangfireDashboard("/hangfire")
                             .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
                     }
-                })
+                });
 
                 // Hangfire Server
-                .UseHangfireServer();
+                //.UseHangfireServer();
 
             // App Startup tasks
             ConfigureHangfireRecurringJobs(workersOptions.Value);
