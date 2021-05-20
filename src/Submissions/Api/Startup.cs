@@ -43,6 +43,7 @@ using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Aggregator.Services;
 using System.Linq;
 using Microsoft.Extensions.Options;
+using Hangfire.Dashboard;
 
 namespace Biobanks.Submissions.Api
 {
@@ -285,10 +286,21 @@ namespace Biobanks.Submissions.Api
                 {
                     endpoints.MapControllers().RequireAuthorization();
 
-                    var hangfireEndpoint = endpoints.MapHangfireDashboard("/hangfire");
+                    if (env.IsDevelopment())
+                    {
+                        endpoints.MapHangfireDashboard("/hangfire");
+                    }
+                    else
+                    {
+                        var dashboardOptions = new DashboardOptions()
+                        {
+                            Authorization = Array.Empty<IDashboardAuthorizationFilter>() // Removes Default Local-Auth Filter
+                        };
 
-
-                    if (!env.IsDevelopment()) hangfireEndpoint.RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                        endpoints
+                            .MapHangfireDashboard("/hangfire", dashboardOptions)
+                            .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                    }
                 })
 
                 // Hangfire Server
