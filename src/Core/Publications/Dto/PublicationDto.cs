@@ -33,7 +33,7 @@ namespace Biobanks.Publications.Dto
         public string Journal { get; set; }
 
         [JsonPropertyName("pubYear")]
-        public int Year { get; set; }
+        public string Year { get; set; }
 
         public string Doi { get; set; }
         

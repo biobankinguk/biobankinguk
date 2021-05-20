@@ -29,7 +29,7 @@ namespace Core.Jobs
         public async Task Run()
         {
             var biobanks = await _organisationService.List();
-            
+
             foreach (var biobank in biobanks.Where(x => !x.ExcludePublications))
             {
                 // Update Biobanks Publication Collection
@@ -39,7 +39,7 @@ namespace Core.Jobs
                 // Update Publications Annotations
                 foreach (var publication in await _publicationService.ListOrganisationPublications(biobank.OrganisationId))
                 {
-                    await _annotationService.AddPublicationAnnotations(publication.PublicationId, 
+                    await _annotationService.AddPublicationAnnotations(publication.PublicationId,
                         await _epmcWebService.GetPublicationAnnotations(publication.PublicationId, publication.Source));
                 }
             }
