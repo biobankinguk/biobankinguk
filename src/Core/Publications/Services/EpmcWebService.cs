@@ -10,7 +10,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Biobanks.Publications.Services.Contracts;
 using Biobanks.Publications.Dto;
-using Newtonsoft.Json.Linq;
+
 
 namespace Biobanks.Publications.Services
 {
