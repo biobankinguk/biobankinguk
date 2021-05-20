@@ -294,7 +294,7 @@ namespace Biobanks.Submissions.Api
                     {
                         var dashboardOptions = new DashboardOptions()
                         {
-                            Authorization = Array.Empty<IDashboardAuthorizationFilter>(),
+                            Authorization = Array.Empty<IDashboardAuthorizationFilter>() // Removes Default Local-Auth Filter
                         };
 
                         endpoints
