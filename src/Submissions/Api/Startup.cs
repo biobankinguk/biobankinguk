@@ -285,10 +285,16 @@ namespace Biobanks.Submissions.Api
                 {
                     endpoints.MapControllers().RequireAuthorization();
 
-                    var hangfireEndpoint = endpoints.MapHangfireDashboard("/hangfire");
-
-
-                    if (!env.IsDevelopment()) hangfireEndpoint.RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                    if (env.IsDevelopment())
+                    {
+                        endpoints.MapHangfireDashboard("/hangfire");
+                    }
+                    else
+                    {
+                        endpoints
+                            .MapHangfireDashboard("/hangfire")
+                            .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+                    }
                 })
 
                 // Hangfire Server
