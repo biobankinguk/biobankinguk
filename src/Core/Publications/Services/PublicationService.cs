@@ -36,7 +36,7 @@ namespace Biobanks.Publications.Services
                 Title = x.Title,
                 Authors = x.Authors,
                 Journal = x.Journal,
-                Year = x.Year,
+                Year = int.Parse(x.Year),
                 DOI = x.Doi,
                 Source = x.Source
             });
