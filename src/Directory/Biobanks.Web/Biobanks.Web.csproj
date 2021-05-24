@@ -854,6 +854,7 @@
     <Content Include="Views\ADAC\_ModalResetPassword.cshtml" />
     <Content Include="Views\Biobank\Submissions.cshtml" />
     <Content Include="Views\ADAC\EmailConfig.cshtml" />
+    <Content Include="Views\ADAC\BlockAllowList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
