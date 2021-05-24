@@ -207,7 +207,9 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
                 .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
                 .AddTransient<IAnalyticsService, AnalyticsService>()
-                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>();
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+
+                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>();
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
