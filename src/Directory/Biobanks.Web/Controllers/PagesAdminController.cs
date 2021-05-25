@@ -1,12 +1,8 @@
-﻿using AutoMapper;
-using Biobanks.Services.Contracts;
+﻿using Biobanks.Services.Contracts;
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.ADAC;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Biobanks.Web.Controllers
@@ -29,6 +25,23 @@ namespace Biobanks.Web.Controllers
                     Id = x.Id,
                     Title = x.Title
                 }));            
+        }
+
+        public async Task<ActionResult> ContentPage(string slug)
+        {
+            var page = await _contentPageService.GetBySlug(slug);
+
+            if (page == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(new PageModel
+            {
+                Title = page.Title,
+                Body = page.Body,
+                LastUpdated = page.LastUpdated
+            });
         }
     }
 }
