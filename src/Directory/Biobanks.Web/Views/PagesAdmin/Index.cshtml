@@ -1,4 +1,5 @@
 ﻿@using Biobanks.Web.Models.ADAC
+@using System.Web.Optimization
 @model IEnumerable<ContentPageModel>
 
 @{ ViewBag.Title = "Content Page Admin"; }
@@ -18,24 +19,29 @@
             <tr>
                 <td></td>
                 <td>@page.Title</td>
-                <td><a href="@Url.Action(
+                <td>
+                    <a href="@Url.Action(
                             "Edit", "PagesAdmin",
                             new
                             {
                                 id = page.Id
-                            })">Edit</a></td>
-                <td><a href="@Url.Action(
+                            })">Edit</a>
+                </td>
+                <td>
+                    <a href="@Url.Action(
                             "Delete", "PagesAdmin",
                             new
                             {
                                 id = page.Id
                             })"
-                       script="bootbox.confirm('Are you sure?')">Delete</a></td>
+                       class="delete-confirm">Delete</a>
+                </td>
             </tr>
-         }
-        </table>
-    </div>
+        }
+    </table>
+</div>
 
-    @section FooterScripts
+@section FooterScripts
 {
-    }
+    @Scripts.Render("~/bundles/pagesadmin")
+}

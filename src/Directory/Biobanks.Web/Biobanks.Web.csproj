@@ -477,6 +477,7 @@
     <Compile Include="Models\Header\HeaderItemModel.cs" />
     <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
+    <Content Include="Scripts\ADAC\adac-pages-admin.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
     <Content Include="Scripts\ADAC\adac-refdata-utility.js" />
