@@ -36,12 +36,56 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(new PageModel
+            return View(new ContentPageModel
             {
                 Title = page.Title,
                 Body = page.Body,
                 LastUpdated = page.LastUpdated
             });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> CreateEdit(int id)
+        {
+            // Create
+            if (id == 0)
+            {
+                return View(new ContentPageModel());
+            }
+            // Edit
+            else
+            {
+                var page = await _contentPageService.GetById(id);
+
+                if (page == null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View(new ContentPageModel
+                {
+                    Title = page.Title,
+                    Body = page.Body,
+                    RouteSlug = page.RouteSlug
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateEdit(ContentPageModel page)
+        {
+            // Create
+            if (page.Id == 0)
+            {
+                await _contentPageService.Create(page.Title, page.Body, page.RouteSlug);
+                return RedirectToAction("Index", "PagesAdmin");
+            }
+            // Edit
+            else
+            {
+                await _contentPageService.Update(page.Id, page.Title, page.Body, page.RouteSlug);
+                return RedirectToAction("Index", "PagesAdmin");
+            }
         }
     }
 }

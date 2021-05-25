@@ -1,10 +1,12 @@
 ﻿@using Biobanks.Web.Models.ADAC
 @using System.Web.Optimization
+@using System.Web.Mvc.Html 
 @model IEnumerable<ContentPageModel>
 
 @{ ViewBag.Title = "Content Page Admin"; }
 
-<h1>Content Page Admin @Html.ActionLink("Create", "Create", "PagesAdmin", new { @class = "btn btn-success" })</h1>
+<!-- NOT CURRENTLY WORKING - Id should be a parameter eg /CreateEdit?Id=0-->
+<h1>Content Page Admin @Html.ActionLink("Create", "CreateEdit", "PagesAdmin", new { Id = "0" }, new { @class = "btn btn-success" })</h1>
 <div class="row">
     <table id="contentPages" class="table table-striped">
         <tr>
@@ -21,7 +23,7 @@
                 <td>@page.Title</td>
                 <td>
                     <a href="@Url.Action(
-                            "Edit", "PagesAdmin",
+                            "CreateEdit", "PagesAdmin",
                             new
                             {
                                 id = page.Id

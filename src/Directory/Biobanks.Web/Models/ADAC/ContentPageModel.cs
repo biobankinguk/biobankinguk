@@ -9,5 +9,8 @@ namespace Biobanks.Web.Models.ADAC
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string RouteSlug { get; set; }
+        public string Body { get; set; }
+        public DateTime LastUpdated { get; set; }
     }
 }
