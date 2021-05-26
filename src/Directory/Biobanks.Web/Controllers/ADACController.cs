@@ -1972,6 +1972,29 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
+        #region Block/Allow List
+        public async Task<ActionResult> BlockAllowList()
+        {
+            var rules = (await _registrationDomainService.ListRules())
+            .Select(x => new RegistrationDomainRuleModel
+            {
+                Id = x.Id,
+                DateModified = x.DateModified,
+                RuleType = x.RuleType,
+                Source = x.Source,
+                Value = x.Value
+
+            })
+            .ToList();
+
+            return View(new BlockAllowListModel
+            {
+                RegistrationDomainRules = rules
+            });
+        }
+
+        #endregion
+
         private JsonResult JsonModelInvalidResponse(ModelStateDictionary state)
         {
             return Json(new
