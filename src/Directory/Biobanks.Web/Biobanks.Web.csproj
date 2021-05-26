@@ -471,6 +471,7 @@
     <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
+    <Compile Include="Models\ADAC\BlockAllowListModel.cs" />
     <Compile Include="Models\Biobank\SubmissionsModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
@@ -478,6 +479,7 @@
     <Compile Include="Models\Header\HeaderItemModel.cs" />
     <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
+    <Content Include="Scripts\ADAC\adac-blockallow-list.js" />
     <Content Include="Scripts\ADAC\adac-email-config.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
