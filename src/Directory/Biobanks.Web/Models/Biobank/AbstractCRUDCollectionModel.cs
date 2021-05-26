@@ -74,7 +74,7 @@ namespace Biobanks.Web.Models.Biobank
                     return true;
                 }
 
-                modelState.AddModelError("AssociatedData",
+                modelState.AddModelError("Groups",
                     "Please make sure you have selected a provision time for all selected data types.");
             }
 

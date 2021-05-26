@@ -991,6 +991,12 @@ namespace Biobanks.Web.Controllers
 
                 return RedirectToAction("Collection", new { id = model.Id });
             }
+            else
+            {
+                //Populate Groups
+                model.Groups = null;
+                await PopulateAbstractCRUDCollectionModel(model);
+            }
 
             return View((EditCollectionModel)(await PopulateAbstractCRUDCollectionModel(model)));
         }

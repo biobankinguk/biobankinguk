@@ -51,102 +51,102 @@
 </head>
 <body class="@((ViewBag.WhiteBackground ?? false) ? "white-bg" : "")">
 
-	<!-- Google Tag Manager -->
+    <!-- Google Tag Manager -->
 
-	<noscript>
-		<iframe src="//www.googletagmanager.com/ns.html?id=GTM-WVWBJR"
-				height="0" width="0" style="display:none;visibility:hidden"></iframe>
-	</noscript>
+    <noscript>
+        <iframe src="//www.googletagmanager.com/ns.html?id=" + @ConfigurationManager.AppSettings["GoogleTagId"]
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
 
-	<script>
-		(function (w, d, s, l, i) {
-			w[l] = w[l] || []; w[l].push({
-				'gtm.start':
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
 
-					new Date().getTime(), event: 'gtm.js'
-			}); var f = d.getElementsByTagName(s)[0],
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
 
-				j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
 
-					'//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+                    '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
 
-		})(window, document, 'script', 'dataLayer', 'GTM-WVWBJR');
-	</script>
+        })(window, document, 'script', 'dataLayer', @ConfigurationManager.AppSettings["GoogleTagId"]);
+    </script>
 
-	<!-- End Google Tag Manager -->
+    <!-- End Google Tag Manager -->
 
-	<div class="skipnav">
-		<a href="#skip">Skip to main content</a>
-	</div>
+    <div class="skipnav">
+        <a href="#skip">Skip to main content</a>
+    </div>
 
-	<header role="banner" class="topBanner">
-		@Html.Action("Header", "Header")
-	</header>
+    <header role="banner" class="topBanner">
+        @Html.Action("Header", "Header")
+    </header>
 
-	<main role="main" class="top-padding">
+    <main role="main" class="top-padding">
 
-		@* Breadcrumb trail *@
-		@Html.MvcSiteMap().SiteMapPath("BootstrapSiteMapPathHelperModel")
+        @* Breadcrumb trail *@
+        @Html.MvcSiteMap().SiteMapPath("BootstrapSiteMapPathHelperModel")
 
-		@* Feedback Message *@
-		@if (!(ViewBag.SuppressDefaultFeedbackMessage ?? false))
-		{
-			<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
-				@Html.Partial("_SuspendedWarning")
-				@Html.Partial("_FeedbackMessage")
-			</section>
-		}
+        @* Feedback Message *@
+        @if (!(ViewBag.SuppressDefaultFeedbackMessage ?? false))
+        {
+            <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+                @Html.Partial("_SuspendedWarning")
+                @Html.Partial("_FeedbackMessage")
+            </section>
+        }
 
-		@* Page Body Content *@
-		<section>
-			<div id="skip-wrapper">
-				<a id="skip" tabindex="-1">&nbsp;</a>
-			</div>
+        @* Page Body Content *@
+        <section>
+            <div id="skip-wrapper">
+                <a id="skip" tabindex="-1">&nbsp;</a>
+            </div>
 
-			@* Deal easily with full width pages (like Home/Index) vs the rest of the site *@
-			@if (!(ViewBag.WideLayout ?? false))
-			{
-				<div class="container">
-					@if (!(ViewBag.SuppressFormErrorAlert ?? false))
-					{
-						@Html.ValidationSummary(true, "Errors were detected in the data you submitted. Please see below for further detail.", new { @class = "alert alert-danger" })
-					}
+            @* Deal easily with full width pages (like Home/Index) vs the rest of the site *@
+            @if (!(ViewBag.WideLayout ?? false))
+            {
+                <div class="container">
+                    @if (!(ViewBag.SuppressFormErrorAlert ?? false))
+                    {
+                        @Html.ValidationSummary(true, "Errors were detected in the data you submitted. Please see below for further detail.", new { @class = "alert alert-danger" })
+                    }
 
-					@RenderBody()
-				</div>
-			}
-			else
-			{
-				if (!(ViewBag.SuppressFormErrorAlert ?? false))
-				{
-					@Html.ValidationSummary(true, "Errors were detected in the data you submitted. Please see below for further detail.", new { @class = "alert alert-danger" })
-				}
+                    @RenderBody()
+                </div>
+            }
+            else
+            {
+                if (!(ViewBag.SuppressFormErrorAlert ?? false))
+                {
+                    @Html.ValidationSummary(true, "Errors were detected in the data you submitted. Please see below for further detail.", new { @class = "alert alert-danger" })
+                }
 
-				@RenderBody()
-			}
-		</section>
-	</main>
+                @RenderBody()
+            }
+        </section>
+    </main>
 
-	<footer class="@(ViewBag.NoFooterMargin ?? false ? "no-footer-margin" : "")">
-		@Html.Action("Footer", "Footer")
-	</footer>
+    <footer class="@(ViewBag.NoFooterMargin ?? false ? "no-footer-margin" : "")">
+        @Html.Action("Footer", "Footer")
+    </footer>
 
-	@Scripts.Render("~/bundles/jquery")
-	@Scripts.Render("~/bundles/jqueryval")
-	@Scripts.Render("~/bundles/bootstrap")
-	@Scripts.Render("~/bundles/bootbox")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/bootbox")
 
-	<script>
+    <script>
     @* To get the querystring to include ?logoName= we need to specify
         a value for the Url Helper, then remove client-side.. *@
     var logoBaseUrl = "@Url.Action("Index", "Logo", new {logoName = "LOGONAME"})".replace("LOGONAME", "");
-	</script>
-	@Scripts.Render("~/bundles/shared")
+    </script>
+    @Scripts.Render("~/bundles/shared")
 
-	@if (Request.IsAuthenticated)
-	{
-		@Scripts.Render("~/bundles/session-timeout")
-		<script>
+    @if (Request.IsAuthenticated)
+    {
+        @Scripts.Render("~/bundles/session-timeout")
+        <script>
             $.sessionTimeout({
                 keepAliveUrl: '@Html.Raw(@Url.Action("KeepSessionAliveAjax", "Account"))',
                 keepAliveInterval: 30000,
@@ -155,59 +155,57 @@
                 warnAfter: parseInt('@Html.Action("GetClientTimeoutAjax", "Account")') - 60000, //1 minute warning
                 redirAfter: parseInt('@Html.Action("GetClientTimeoutAjax", "Account")')
             });
-		</script>
-	}
+        </script>
+    }
 
-	@if (ConfigurationManager.AppSettings["GoogleAnalyticsEnabled"] == "true")
-	{
-		<script>
-            (function (i, s, o, g, r, a, m) {
-                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date(); a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    @if (ConfigurationManager.AppSettings["GoogleAnalyticsEnabled"] == "true")
+    {
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=" + @ConfigurationManager.AppSettings["GoogleAnalyticsTrackingCode"]></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
 
-            ga('create', '@ConfigurationManager.AppSettings["GoogleAnalyticsTrackingCode"]', 'auto');
-            ga('send', 'pageview');
-		</script>
-	}
+            gtag('config', '@ConfigurationManager.AppSettings["GoogleAnalyticsTrackingCode"]');
+        </script>
+    }
 
-	@RenderSection("FooterScripts", false)
+    @RenderSection("FooterScripts", false)
 
-	<!--Start of Tawk.to Script-->
-	@if (App.Config[ConfigKey.DisplayLiveChat] == "true")
-	{
-		<script type="text/javascript">
-			var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-			(function () {
-				var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-				s1.async = true;
-				s1.src = 'https://embed.tawk.to/58456ac9e2def07b70a4e280/default';
-				s1.charset = 'UTF-8';
-				s1.setAttribute('crossorigin', '*');
-				s0.parentNode.insertBefore(s1, s0);
-			})();
-		</script>
-	}
-	<!--End of Tawk.to Script-->
+    <!--Start of Tawk.to Script-->
+    @if (App.Config[ConfigKey.DisplayLiveChat] == "true")
+    {
+        <script type="text/javascript">
+            var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+            (function () {
+                var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+                s1.async = true;
+                s1.src = 'https://embed.tawk.to/58456ac9e2def07b70a4e280/default';
+                s1.charset = 'UTF-8';
+                s1.setAttribute('crossorigin', '*');
+                s0.parentNode.insertBefore(s1, s0);
+            })();
+        </script>
+    }
+    <!--End of Tawk.to Script-->
 
-	<script type="text/javascript">
-		// Focus Button Animation
-		$(document).on('click', 'a[href^="#"]', function (event) {
-			event.preventDefault();
+    <script type="text/javascript">
+        // Focus Button Animation
+        $(document).on('click', 'a[href^="#"]', function (event) {
+            event.preventDefault();
 
-			$('html, body').animate({
-				scrollTop: $($.attr(this, 'href')).offset().top - 200
-			}, 500);
-		});
-	</script>
+            $('html, body').animate({
+                scrollTop: $($.attr(this, 'href')).offset().top - 200
+            }, 500);
+        });
+    </script>
 
-	@* Load client side Profiler UI *@
-	@if (ProfilerConfig.ProfilerEnabled)
-	{
-		@MiniProfiler.Current.RenderIncludes()
-	}
+    @* Load client side Profiler UI *@
+    @if (ProfilerConfig.ProfilerEnabled)
+    {
+        @MiniProfiler.Current.RenderIncludes()
+    }
 
 </body>
 </html>

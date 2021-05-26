@@ -29,18 +29,12 @@ namespace Core.Submissions.Services
             var expiry = DateTime.Now.Subtract(TimeSpan.FromDays(_expiryDays));
 
             return await _db.Submissions
-                .GroupBy(s => s.BiobankId)
-                .Select(g =>
-                    // Select Latest Open Submission
-                    g.Where(s => s.Status.Value == Statuses.Open)
-                        .OrderByDescending(s => s.StatusChangeTimestamp)
-                        .FirstOrDefault()
-                )
                 .Where(s =>
-                    // Filter Out Submission That Haven't Expired
-                    s != null && s.StatusChangeTimestamp < expiry
+                    s.Status.Value == Statuses.Open &&
+                    s.StatusChangeTimestamp < expiry
                 )
                 .Select(s => s.BiobankId)
+                .Distinct()
                 .ToListAsync();
         }
 
