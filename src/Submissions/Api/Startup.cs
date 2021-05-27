@@ -44,6 +44,7 @@ using Biobanks.Aggregator.Services;
 using System.Linq;
 using Microsoft.Extensions.Options;
 using Hangfire.Dashboard;
+using Biobanks.Submissions.Api.JsonConverters;
 
 namespace Biobanks.Submissions.Api
 {
@@ -80,6 +81,7 @@ namespace Biobanks.Submissions.Api
                 {
                     o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
                 });
 
             // Authentication
