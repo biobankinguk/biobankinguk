@@ -13,6 +13,11 @@
             </li>
 
             <li role="presentation"
+                class="@(Model == "BlockAllowList" ? "active" : "true")">
+                @Html.ActionLink("Block/Allow", "BlockAllowList")
+            </li>
+
+            <li role="presentation"
                 class="@(Model == "Historical" ? "active" : "true")">
                 @Html.ActionLink("Historical", "Historical")
             </li>
