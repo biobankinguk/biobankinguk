@@ -38,8 +38,6 @@ function AdacRegistrationDomainRuleViewModel() {
         _this.modal.mode(_this.modal.modalModeAdd);
         _this.modal.registrationDomainRule(new RegistrationDomainRule(0, "", "Block"));
 
-        // allow selecting ruletype 
-        $('#ruleTypes').find('input:radio').attr('disabled', false);
         _this.showModal();
     };
 
@@ -56,9 +54,10 @@ function AdacRegistrationDomainRuleViewModel() {
             )
         );
 
-        // turn off editing ruletype 
-        $('#ruleTypes').find('input:radio').attr('disabled', true);
         _this.showModal();
+
+        // turn off editing ruletype 
+        $('#ruleTypes').find('input:radio:not(:checked)').attr('disabled', true);
     };
 
     this.modalSubmit = function (e) {
@@ -100,6 +99,11 @@ $(function () {
 
     adacRegistrationDomainRuleVM = new AdacRegistrationDomainRuleViewModel();
     ko.applyBindings(adacRegistrationDomainRuleVM);
+
+    // re-enable radio buttons on modal close
+    $('#domain-rule-modal').on('hidden.bs.modal', function (e) {
+        $('#ruleTypes').find('input:radio').attr('disabled', false);
+    })
 });
 
 // DataTables
