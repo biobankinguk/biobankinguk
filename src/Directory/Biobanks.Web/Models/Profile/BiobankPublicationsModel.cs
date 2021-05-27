@@ -14,7 +14,7 @@ namespace Biobanks.Web.Models.Profile
     {
         public string Title { get; set; }
         public string Authors { get; set; }
-        public int Year { get; set; }
+        public int? Year { get; set; }
         public string Journal { get; set; }
         public string DOI { get; set; }
     }
