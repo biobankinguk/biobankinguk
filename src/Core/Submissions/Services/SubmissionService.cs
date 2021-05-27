@@ -329,6 +329,7 @@ namespace Core.Submissions.Services
                 && s.Status.Value == Statuses.Open
                 && s.RecordsProcessed != s.TotalRecords)
                 .AsNoTracking()
+                .Include(x => x.Status)
                 .ToListAsync();
 
         /// <inheritdoc />
