@@ -22,7 +22,7 @@ namespace Biobanks.Entities.Data
 
         public string Journal { get; set; }
 
-        public int Year { get; set; }
+        public int? Year { get; set; }
 
         public string DOI { get; set; }
 
