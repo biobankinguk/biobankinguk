@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Biobanks.Submissions.Api.JsonConverters
 {
     /// <summary>
-    /// A System.Text.Json converter that will parse integers into strings
+    /// A System.Text.Json converter that will parse a number into a string
     /// such that JSON string fields can accept numeric types
     /// </summary>
     public class JsonNumberAsStringConverter : JsonConverter<string>
