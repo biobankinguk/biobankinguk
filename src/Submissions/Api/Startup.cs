@@ -45,6 +45,7 @@ using System.Linq;
 using Microsoft.Extensions.Options;
 using Hangfire.Dashboard;
 using Biobanks.Submissions.Api.JsonConverters;
+using Core.Submissions.Models.OptionsModels;
 
 namespace Biobanks.Submissions.Api
 {
@@ -108,6 +109,9 @@ namespace Biobanks.Submissions.Api
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
                 .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
 
+                .Configure<MaterialTypesLegacyModel>(Configuration.GetSection("MaterialTypesLegacyModel"))
+                .Configure<StorageTemperatureLegacyModel>(Configuration.GetSection("StorageTemperatureLegacyModel"))
+                
                 .AddApplicationInsightsTelemetry()
 
                 .AddDbContext<Data.BiobanksDbContext>(opts =>
