@@ -7,12 +7,7 @@
     <AssemblyName>Biobanks.Submissions.Api</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="Settings\LegacyMaterialTypes.json" />
-    <Content Remove="Settings\LegacyStorageTemperatures.json" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <Content Include="swagger.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
