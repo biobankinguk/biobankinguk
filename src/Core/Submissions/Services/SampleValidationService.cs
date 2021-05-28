@@ -280,7 +280,7 @@ namespace Core.Submissions.Services
 
         private async Task<StagedSample> ValidateStorageTemperature(SampleDto dto, StagedSample sample)
         {
-            foreach (var obj in _storageTemperatureLegacy.ListOfMappings)
+            foreach (var obj in _storageTemperatureLegacy?.ListOfMappings ?? new ())
             {
                 if (obj.Old.StorageTemperature == dto.StorageTemperature)
                 {
@@ -354,7 +354,7 @@ namespace Core.Submissions.Services
 
         private async Task<StagedSample> ValidateMaterialType(SampleDto dto, StagedSample sample)
         {
-            foreach (var obj in _materialTypesLegacy.ListOfMappings)
+            foreach (var obj in _materialTypesLegacy?.ListOfMappings ?? new ())
             {
                 if (obj.Old.MaterialType == dto.MaterialType)
                 {
