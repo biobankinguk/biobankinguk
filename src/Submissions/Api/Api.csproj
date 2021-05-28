@@ -9,9 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Settings\LegacyMaterialTypes.json" />
+    <Content Remove="Settings\LegacyStorageTemperatures.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="swagger.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Settings\LegacyMaterialTypes.json" />
+    <None Include="Settings\LegacyStorageTemperatures.json" />
   </ItemGroup>
 
   <ItemGroup>
