@@ -1,6 +1,7 @@
 ﻿using Biobanks.Services.Contracts;
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.ADAC;
+using Biobanks.Web.Models.Shared;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -38,8 +39,10 @@ namespace Biobanks.Web.Controllers
 
             return View(new ContentPageModel
             {
+                Id = page.Id,
                 Title = page.Title,
                 Body = page.Body,
+                RouteSlug = page.RouteSlug,
                 LastUpdated = page.LastUpdated
             });
         }
@@ -64,15 +67,38 @@ namespace Biobanks.Web.Controllers
 
                 return View(new ContentPageModel
                 {
+                    Id = page.Id,
                     Title = page.Title,
                     Body = page.Body,
-                    RouteSlug = page.RouteSlug
+                    RouteSlug = page.RouteSlug,
+                    LastUpdated = page.LastUpdated
                 });
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEdit(ContentPageModel page)
+        public ActionResult CreateEdit(ContentPageModel page)
+        {
+
+            if (page == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(new ContentPageModel
+            {
+                Id = page.Id,
+                Title = page.Title,
+                Body = page.Body,
+                RouteSlug = page.RouteSlug,
+                LastUpdated = page.LastUpdated
+            });
+            
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Submit(ContentPageModel page)
         {
             // Create
             if (page.Id == 0)
@@ -87,5 +113,26 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "PagesAdmin");
             }
         }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var pageName = (await _contentPageService.GetById(id)).Title;
+            await _contentPageService.Delete(id);
+
+            return Json(new
+            {
+                success = true,
+                name = pageName
+            });
+        }
+
+        public ActionResult CreateEditPreview()
+         => Redirect("Index");
+
+        [HttpPost]
+        public ActionResult CreateEditPreview(ContentPageModel page)
+            => View("CreateEditPreview", page);
+
     }
 }

@@ -27,16 +27,18 @@
                             new
                             {
                                 id = page.Id
-                            })">Edit</a>
+                            })"><span class="fa fa-edit labelled-icon"></span>Edit</a>
                 </td>
                 <td>
-                    <a href="@Url.Action(
-                            "Delete", "PagesAdmin",
-                            new
-                            {
-                                id = page.Id
-                            })"
-                       class="delete-confirm">Delete</a>
+                    <a title="Delete"
+                       class="action-icon delete-confirm"
+                       data-refdata-model="@Json.Encode(page)"
+                       data-resource-url="/PagesAdmin/Delete"
+                       data-success-redirect="/PagesAdmin/Index"
+                       data-refdata-type="Content Page"
+                       href="#">
+                        <span class="fa fa-trash labelled-icon"></span>Delete
+                    </a>
                 </td>
             </tr>
         }

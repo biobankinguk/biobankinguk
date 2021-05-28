@@ -856,6 +856,7 @@
     <Content Include="Views\PagesAdmin\Index.cshtml" />
     <Content Include="Views\PagesAdmin\ContentPage.cshtml" />
     <Content Include="Views\PagesAdmin\CreateEdit.cshtml" />
+    <Content Include="Views\PagesAdmin\CreateEditPreview.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
