@@ -24,7 +24,8 @@ namespace Biobanks.Web.Controllers
                 .Select(x => new ContentPageModel
                 {
                     Id = x.Id,
-                    Title = x.Title
+                    Title = x.Title,
+                    RouteSlug = x.RouteSlug
                 }));            
         }
 

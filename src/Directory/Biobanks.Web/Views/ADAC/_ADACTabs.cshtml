@@ -210,6 +210,11 @@
                 </ul>
             </li>
 
+            <li role="presentation"
+                class="@(Model == "Content Pages" ? "active" : "true")">
+                @Html.ActionLink("Content Pages ", "Index", "PagesAdmin")
+            </li>
+
             @if (App.Config[ConfigKey.DisplayAnalytics] != "false")
             {
                 <li role="presentation"
@@ -217,7 +222,6 @@
                     @Html.ActionLink("Analytics", "Analytics")
                 </li>
             }
-
         </ul>
     </div>
 </div>

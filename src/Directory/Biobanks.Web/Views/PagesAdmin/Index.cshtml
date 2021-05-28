@@ -10,7 +10,6 @@
 <div class="row">
     <table id="contentPages" class="table table-striped">
         <tr>
-            <th width="50"></th>
             <th width="350">Title</th>
             <th width="50"></th>
             <th width="50"></th>
@@ -19,8 +18,7 @@
         @foreach (var page in Model)
         {
             <tr>
-                <td></td>
-                <td>@page.Title</td>
+                <td><a href="@Url.Action("ContentPage", "PagesAdmin", new { slug = page.RouteSlug })">@page.Title</a></td>
                 <td>
                     <a href="@Url.Action(
                             "CreateEdit", "PagesAdmin",
