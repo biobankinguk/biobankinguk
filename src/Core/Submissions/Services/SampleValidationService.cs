@@ -158,7 +158,7 @@ namespace Core.Submissions.Services
                 return sample;
 
             //check if extracted sample
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var mt = await _refDataReadService.GetMaterialType(dto.MaterialType);
             if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
@@ -217,7 +217,7 @@ namespace Core.Submissions.Services
         private async Task<StagedSample> ValidateExtractionSite(SampleDto dto, StagedSample sample)
         {
             //check if tissue sample
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var mt = await _refDataReadService.GetMaterialType(dto.MaterialType);
 
             if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.TissueSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
@@ -265,7 +265,7 @@ namespace Core.Submissions.Services
                 return sample;
 
             //check if extracted sample
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var mt = await _refDataReadService.GetMaterialType(dto.MaterialType);
             if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
@@ -374,7 +374,7 @@ namespace Core.Submissions.Services
                 }
             }
 
-            var result = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var result = await _refDataReadService.GetMaterialType(dto.MaterialType);
 
             if (result == null)
                 throw new ValidationException(
