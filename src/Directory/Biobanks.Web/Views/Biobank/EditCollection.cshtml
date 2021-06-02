@@ -13,12 +13,9 @@
 <h2>@ViewBag.Title</h2>
 
 
-@if (Model.FromApi == false)
-{
-
 @Html.Partial("_DataProtectionAlert")
 
-using (Html.BeginForm("EditCollection", "Biobank", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+@using (Html.BeginForm("EditCollection", "Biobank", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
 {
     @Html.AntiForgeryToken()
 
@@ -32,11 +29,4 @@ using (Html.BeginForm("EditCollection", "Biobank", FormMethod.Post, new { @class
             <button type="submit" class="btn btn-primary">Update collection</button>
         </div>
     </div>
-}
-}
-else
-{
-    <h3>This collection is locked for editing.</h3>
-
-
 }
