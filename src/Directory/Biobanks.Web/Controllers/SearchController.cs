@@ -57,6 +57,7 @@ namespace Biobanks.Web.Controllers
             // Build the base model.
             var model = new BaseSearchModel
             {
+                OntologyTerm = ontologyTerm,
                 // Extract the search facets.
                 SelectedFacets = ExtractSearchFacets(selectedFacets)
             };
@@ -91,7 +92,7 @@ namespace Biobanks.Web.Controllers
             model.Suggestions = await GetOntologyTermSearchResultsAsync(model.SearchType, model.OntologyTerm?.ToLower());
 
             //BIO-455 special case for cancer (will override this with a genericised approach in BIO-447
-            if (model.OntologyTerm.ToLower() == "cancer")
+            if (string.Equals(model.OntologyTerm, "cancer", StringComparison.CurrentCultureIgnoreCase))
             {
                 //get suggestions for the relevant correct searches
                 var malignant = await GetOntologyTermSearchResultsAsync(model.SearchType, "malignant");
@@ -163,7 +164,7 @@ namespace Biobanks.Web.Controllers
             // Build the base model.
             var model = new BaseSearchModel
             {
-                OntologyTerm = ontologyTerm ?? " "
+                OntologyTerm = ontologyTerm
             };
 
             // Extract the search facets.
