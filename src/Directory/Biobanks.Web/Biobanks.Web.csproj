@@ -858,6 +858,7 @@
     <Content Include="Views\Biobank\Submissions.cshtml" />
     <Content Include="Views\ADAC\EmailConfig.cshtml" />
     <Content Include="Views\ADAC\BlockAllowList.cshtml" />
+    <Content Include="Views\Header\_NavItemSuperUser.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
