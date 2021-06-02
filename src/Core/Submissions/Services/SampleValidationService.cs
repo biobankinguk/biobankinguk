@@ -22,12 +22,16 @@ namespace Core.Submissions.Services
         private readonly StorageTemperatureLegacyModel _storageTemperatureLegacy;
         private readonly MaterialTypesLegacyModel _materialTypesLegacy;
 
-        public SampleValidationService(IReferenceDataReadService refDataReadService, ILogger<SampleValidationService> logger, IOptions<StorageTemperatureLegacyModel> storageTempLegacy, IOptions<MaterialTypesLegacyModel> materialTypeLegacy)
+        public SampleValidationService(
+            IReferenceDataReadService refDataReadService, 
+            IOptions<StorageTemperatureLegacyModel> storageTempLegacy, 
+            IOptions<MaterialTypesLegacyModel> materialTypeLegacy,
+            ILogger<SampleValidationService> logger)
         {
             _refDataReadService = refDataReadService;
-            _logger = logger;
             _storageTemperatureLegacy = storageTempLegacy.Value;
             _materialTypesLegacy = materialTypeLegacy.Value;
+            _logger = logger;
         }
 
         public async Task<StagedSample> ValidateAndPopulateSample(SampleDto dto, StagedSample sample = null)
@@ -280,7 +284,7 @@ namespace Core.Submissions.Services
 
         private async Task<StagedSample> ValidateStorageTemperature(SampleDto dto, StagedSample sample)
         {
-            foreach (var obj in _storageTemperatureLegacy.ListOfMappings)
+            foreach (var obj in _storageTemperatureLegacy?.ListOfMappings ?? new ())
             {
                 if (obj.Old.StorageTemperature == dto.StorageTemperature)
                 {
@@ -354,7 +358,7 @@ namespace Core.Submissions.Services
 
         private async Task<StagedSample> ValidateMaterialType(SampleDto dto, StagedSample sample)
         {
-            foreach (var obj in _materialTypesLegacy.ListOfMappings)
+            foreach (var obj in _materialTypesLegacy?.ListOfMappings ?? new ())
             {
                 if (obj.Old.MaterialType == dto.MaterialType)
                 {

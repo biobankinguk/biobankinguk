@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Biobanks.Publications.Services.Contracts;
 using Biobanks.Publications.Dto;
 
+
 namespace Biobanks.Publications.Services
 {
     public class EpmcWebService : IEpmcService
@@ -75,10 +76,15 @@ namespace Biobanks.Publications.Services
             string endpoint = QueryHelpers.AddQueryString("webservices/rest/search", parameters);
             string response = await _client.GetStringAsync(endpoint);
 
-            // Parse JSON result
-            var result = JsonSerializer.Deserialize<EpmcSearchResult>(response);
-
-            return result;
+            // Parse JSON results
+            try
+            {
+                return JsonSerializer.Deserialize<EpmcSearchResult>(response);
+            }
+            catch (JsonException e)
+            {
+                throw new Exception($"JSON Parse Exception for { query } at cursor mark { cursorMark }", e);
+            }
         }
 
         private async Task<List<AnnotationDto>> AnnotationSearch(string publicationId, string source)

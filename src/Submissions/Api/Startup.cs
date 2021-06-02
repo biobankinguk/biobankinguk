@@ -44,6 +44,8 @@ using Biobanks.Aggregator.Services;
 using System.Linq;
 using Microsoft.Extensions.Options;
 using Hangfire.Dashboard;
+using Biobanks.Submissions.Api.JsonConverters;
+using Core.Submissions.Models.OptionsModels;
 
 namespace Biobanks.Submissions.Api
 {
@@ -80,6 +82,7 @@ namespace Biobanks.Submissions.Api
                 {
                     o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
                 });
 
             // Authentication
@@ -106,6 +109,9 @@ namespace Biobanks.Submissions.Api
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
                 .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
 
+                .Configure<MaterialTypesLegacyModel>(Configuration.GetSection("MaterialTypesLegacyModel"))
+                .Configure<StorageTemperatureLegacyModel>(Configuration.GetSection("StorageTemperatureLegacyModel"))
+                
                 .AddApplicationInsightsTelemetry()
 
                 .AddDbContext<Data.BiobanksDbContext>(opts =>
@@ -207,7 +213,9 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
                 .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
                 .AddTransient<IAnalyticsService, AnalyticsService>()
-                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>();
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+
+                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>();
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
