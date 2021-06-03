@@ -111,11 +111,10 @@ namespace Core.Submissions.Services
                     .Include(x => x.MaterialTypeGroups)
                     .ToListAsync());
 
-        public async Task<MaterialType> GetMaterialTypeWithGroups(string value)
+        public async Task<MaterialType> GetMaterialType(string value)
             => (await ListMaterialTypes())
                 .FirstOrDefault(x =>
-                    x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase) &&
-                    (x.MaterialTypeGroups?.Any() ?? false));
+                    x.Value.Equals(value, StringComparison.CurrentCultureIgnoreCase));
 
         public async Task<IEnumerable<SampleContentMethod>> ListSampleContentMethods()
             => await CacheGetOrCreateWithAbsoluteExpiry(
