@@ -41,6 +41,12 @@ namespace Biobanks.Services
             //Building the Search Index
 
             var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+            var indexNames = new Dictionary<string, string>
+            {
+                ["collections"] = ConfigurationManager.AppSettings["DefaultCollectionsSearchIndex"],
+                ["capabilities"] = ConfigurationManager.AppSettings["DefaultCapabilitiesSearchIndex"]
+            };
+
             var _navPaths = new List<string>()
             {
                 HostingEnvironment.MapPath(@"~/App_Config/capabilities.json"),
@@ -53,13 +59,16 @@ namespace Biobanks.Services
                     foreach (var path in _navPaths)
                     {
                         var fileName = Path.GetFileNameWithoutExtension(path);
+                        var indexName = indexNames.ContainsKey(fileName)
+                            ? indexNames[fileName]
+                            : fileName;
                     
                         //Deleting the Index
-                        var deleteResponse = await client.DeleteAsync($"{searchBase}/{fileName}");
+                        var deleteResponse = await client.DeleteAsync($"{searchBase}/{indexName}");
 
                         //Creating the Index                      
-                        HttpContent pathContent = new StringContent(System.IO.File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
-                        var createResponse = await client.PutAsync($"{searchBase}/{fileName}", pathContent);
+                        HttpContent pathContent = new StringContent(File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
+                        var createResponse = await client.PutAsync($"{searchBase}/{indexName}", pathContent);
 
                         //Preventing Index Replication              
                         var indexString = "{ \"index\": { \"number_of_replicas\": 0 }}";
