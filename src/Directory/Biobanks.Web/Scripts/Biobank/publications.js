@@ -122,8 +122,13 @@ $(function () {
         .css("margin-bottom", "10px")
         .prependTo("#biobank-publications_wrapper")
         .children();
+
+    var rightCtrls = $("<div class='row pull-right'><div class='col-md-12'>")
+        .prependTo("#biobank-publications_wrapper")
+        .children();
+
     $('#biobank-publications_wrapper').hide();
-    new $.fn.dataTable.Buttons(table, {
+    var filterBtns = new $.fn.dataTable.Buttons(table, {
         buttons: [
             "colvis",
             {
@@ -165,7 +170,27 @@ $(function () {
         ]
     });
 
-    table.buttons().container().prependTo(controls);
+    var addBtn = new $.fn.dataTable.Buttons(table, {
+        buttons: [
+            {
+                text: 'Add Publication',
+                action: function (e, dt, node, conf) {
+                    $("#publications-modal").modal("show");
+                }
+            },
+        ],
+        dom: {
+            button: {
+                className: 'btn btn-success'
+            }
+        }
+    });
+
+    filterBtns.container().prependTo(controls);
+    addBtn.container().prependTo(rightCtrls);
+    //table.buttons().container().prependTo(controls);
+
+
     $.getJSON('/api/Biobank/IncludePublications/' + biobankId, function (data) {
         if (data) {
             $('#IncludePublications').prop('checked', true);
@@ -175,6 +200,13 @@ $(function () {
             $('#IncludePublications').prop('checked', false);
             $('#biobank-publications_wrapper').hide();
         }
+    });
+
+    publicationsVM = new PublicationsViewModel();
+    ko.applyBindings(publicationsVM);
+
+    $("#publications-modal").submit(function (e) {
+        publicationsVM.modalSubmit(e);
     });
 });
 
@@ -194,3 +226,61 @@ $('#IncludePublications').change(function () {
 
 //Biobank Id
 var biobankId = $('#BiobankId').data("biobank-id");
+
+
+// Modals
+var publicationsVM;
+
+
+function PublicationsModal(id) {
+    this.modalModeSearch = "Search";
+    this.modalModeApprove = "Approve";
+
+    this.mode = ko.observable(this.modalModeSearch);
+
+    this.pubmedId = ko.observable(id);
+}
+
+function PublicationsViewModel() {
+    var _this = this;
+
+    this.modalId = "#publications-modal";
+    this.modal = new PublicationsModal(0);
+    this.dialogErrors = ko.observableArray([]);
+
+    this.showModal = function () {
+        _this.dialogErrors.removeAll(); //clear errors on a new show
+        $(_this.modalId).modal("show");
+    };
+
+    this.hideModal = function () {
+        $(_this.modalId).modal("hide");
+    };
+
+    this.openModal = function () {
+        _this.modal.mode(_this.modal.modalModeSearch);
+        _this.modal.pubmedId(0);
+        _this.showModal();
+    };
+
+
+    this.modalSubmit = function (e) {
+        e.preventDefault();
+        var form = $(e.target); // get form as a jquery object
+
+        // Get Action Type
+        var action = _this.modal.mode();
+        if (action == _this.modal.modalModeSearch) {
+            alert('Searching...');
+
+            // If successfull search
+            _this.modal.mode(_this.modal.modalModeApprove);
+
+        } else if (action == _this.modal.modalModeApprove) {
+            alert('Adding...');
+
+            //if successfull
+
+        }
+    };
+}
