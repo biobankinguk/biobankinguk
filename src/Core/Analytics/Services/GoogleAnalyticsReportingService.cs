@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Biobanks.Analytics.Services
@@ -40,7 +41,7 @@ namespace Biobanks.Analytics.Services
             _logger = logger;
 
             var gaCredentials = GoogleCredential
-                .FromJson(_config.GoogleAnalyticsReportingKey)
+                .FromJson(JsonSerializer.Serialize(_config.GoogleAnalyticsReportingKey))
                 .CreateScoped(new[]
                 {
                     AnalyticsReportingService.Scope.AnalyticsReadonly

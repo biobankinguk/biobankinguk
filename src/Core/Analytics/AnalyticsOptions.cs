@@ -1,4 +1,6 @@
-﻿namespace Biobanks.Analytics
+﻿using Biobanks.Analytics.Dto;
+
+namespace Biobanks.Analytics
 {
     public class AnalyticsOptions
     {
@@ -27,12 +29,12 @@
         /// <summary>
         /// The Id from Google Analytics dashboard of the View from which analytics data should be fetched.
         /// </summary>
-        public string GoogleAnalyticsViewId { get; set; }
+        public string GoogleAnalyticsViewId { get; set; } = string.Empty;
 
         /// <summary>
         /// A JSON Service Account Key for Google Analytics Reporting API v4
         /// </summary>
         // https://developers.google.com/analytics/devguides/reporting/core/v4/authorization
-        public string GoogleAnalyticsReportingKey { get; set; }
+        public GoogleAnalyticsReportingKey GoogleAnalyticsReportingKey { get; set; }
     }
 }
