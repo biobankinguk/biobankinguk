@@ -108,7 +108,9 @@
 
     <!-- Content Pages -->
     <mvcSiteMapNode title="ADAC" controller="ADAC" action="Index">
-      <mvcSiteMapNode title="Content Pages Admin" controller="PagesAdmin" action="Index"/>      
+      <mvcSiteMapNode title="Content Pages Admin" controller="PagesAdmin" action="Index">
+        <mvcSiteMapNode title="CreateEdit" controller="PagesAdmin" action="CreateEdit" preservedRouteParameters="id"/>
+      </mvcSiteMapNode>
     </mvcSiteMapNode>
     <mvcSiteMapNode title="Pages" controller="PagesAdmin" action="ContentPage" preservedRouteParameters="slug"/>
     

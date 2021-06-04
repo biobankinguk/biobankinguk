@@ -26,7 +26,9 @@ namespace Biobanks.Web.Controllers
                 {
                     Id = x.Id,
                     Title = x.Title,
-                    RouteSlug = x.RouteSlug
+                    RouteSlug = x.RouteSlug,
+                    LastUpdated = x.LastUpdated,
+                    IsEnabled = x.IsEnabled
                 }));            
         }
 

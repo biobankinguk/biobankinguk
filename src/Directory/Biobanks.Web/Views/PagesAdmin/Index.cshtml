@@ -9,7 +9,10 @@
 <div class="row">
     <table id="contentPages" class="table table-striped">
         <tr>
-            <th>Title</th>           
+            <th>Title</th>
+            <th>Slug</th>
+            <th>Last Updated</th>
+            <th>IsEnabled</th>
             <th></th>
         </tr>
 
@@ -17,6 +20,9 @@
         {
             <tr>
                 <td><a href="@Url.Action("ContentPage", "PagesAdmin", new { slug = page.RouteSlug })">@page.Title</a></td>
+                <td>@page.RouteSlug</td>
+                <td>@page.LastUpdated.ToShortDateString()</td>
+                <td>@page.IsEnabled</td>
                 <td class="text-right">
                     <a href="@Url.Action(
                             "CreateEdit", "PagesAdmin",
