@@ -1,59 +1,58 @@
 ﻿using AutoMapper;
-
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.EqualityComparers;
 using Biobanks.Submissions.Api.Models;
-using Biobanks.Submissions.Core.Models;
-using Biobanks.Submissions.Core.Services.Contracts;
-using Biobanks.Submissions.Core.Types;
-
+using Microsoft.AspNetCore.Authorization;
+using Core.Submissions.Models;
+using Core.Submissions.Services.Contracts;
+using Core.Submissions.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-
 using Swashbuckle.AspNetCore.Annotations;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
+using Biobanks.Submissions.Api.Services.Contracts;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-    /// <inheritdoc />
     /// <summary>
     /// Controller for handling submissions of data for a biobank
     /// </summary>
     [Route("[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class SubmitController : ControllerBase
     {
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly ISubmissionService _submissionService;
         private readonly IBlobWriteService _blobWriteService;
-        private readonly IQueueWriteService _queueWriteService;
+        private readonly IBackgroundJobEnqueueingService _backgroundQueueService;
 
         /// <inheritdoc />
         public SubmitController(IConfiguration config,
             IMapper mapper,
             ISubmissionService submissionService,
             IBlobWriteService blobWriteService,
-            IQueueWriteService queueWriteService)
+            IBackgroundJobEnqueueingService backgroundQueueService)
         {
             _config = config;
             _mapper = mapper;
             _submissionService = submissionService;
             _blobWriteService = blobWriteService;
-            _queueWriteService = queueWriteService;
+            _backgroundQueueService = backgroundQueueService;
         }
 
         /// <summary>
         /// Inserts or updates a sample.
         /// </summary>
-        /// <param name="model">The sample model to be inserted to or updated in staging.</param>
         /// <param name="biobankId">The ID of the biobank to operate on.</param>
+        /// <param name="model">The sample model to be inserted to or updated in staging.</param>
         /// <returns>The created content.</returns>
         [HttpPost("{biobankId}")]
         [SwaggerResponse(202, Type = typeof(SubmissionSummaryModel))]
@@ -255,122 +254,56 @@ namespace Biobanks.Submissions.Api.Controllers
             // Push Diagnoses Updates/Inserts To Queue
             if (diagnosesUpdates.Any())
             {
-                var diagnosesUpdatesBlobId =
-                    await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesUpdates);
+                var blobId = await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesUpdates);
+                var blobType = diagnosesUpdates.GetType().FullName;
 
-                await _queueWriteService.PushAsync("operations",
-                    JsonSerializer.Serialize(
-                        new OperationsQueueItem
-                        {
-                            SubmissionId = submission.Id,
-                            Operation = Operation.Submit,
-                            BlobId = diagnosesUpdatesBlobId,
-                            BlobType = diagnosesUpdates.GetType().FullName,
-                            BiobankId = biobankId
-                        }
-                    )
-                );
+                await _backgroundQueueService.Stage(biobankId, submission.Id, blobId, blobType, Operation.Submit);
             }
 
             // Push Diagnoses Deletes To Queue
             if (diagnosesDeletes.Any())
             {
-                var diagnosesDeletesBlobId =
-                    await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesDeletes);
+                var blobId = await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", diagnosesDeletes);
+                var blobType = diagnosesDeletes.GetType().FullName;
 
-                await _queueWriteService.PushAsync("operations",
-                    JsonSerializer.Serialize(
-                        new OperationsQueueItem
-                        {
-                            SubmissionId = submission.Id,
-                            Operation = Operation.Delete,
-                            BlobId = diagnosesDeletesBlobId,
-                            BlobType = diagnosesDeletes.GetType().FullName,
-                            BiobankId = biobankId
-                        }
-                    )
-                );
+                await _backgroundQueueService.Stage(biobankId, submission.Id, blobId, blobType, Operation.Delete);
             }
 
             // Push Samples Updates/Inserts To Queue
             if (samplesUpdates.Any())
             {
-                var samplesUpdatesBlobId =
-                    await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesUpdates);
+                var blobId = await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesUpdates);
+                var blobType = samplesUpdates.GetType().FullName;
 
-                await _queueWriteService.PushAsync("operations",
-                    JsonSerializer.Serialize(
-                        new OperationsQueueItem
-                        {
-                            SubmissionId = submission.Id,
-                            Operation = Operation.Submit,
-                            BlobId = samplesUpdatesBlobId,
-                            BlobType = samplesUpdates.GetType().FullName,
-                            BiobankId = biobankId
-                        }
-                    )
-                );
+                await _backgroundQueueService.Stage(biobankId, submission.Id, blobId, blobType, Operation.Submit);
             }
 
             // Push Samples Deletes To Queue
             if (samplesDeletes.Any())
             {
-                var samplesDeletesBlobId =
-                    await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesDeletes);
+                var blobId = await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", samplesDeletes);
+                var blobType = samplesDeletes.GetType().FullName;
 
-                await _queueWriteService.PushAsync("operations",
-                    JsonSerializer.Serialize(
-                        new OperationsQueueItem
-                        {
-                            SubmissionId = submission.Id,
-                            Operation = Operation.Delete,
-                            BlobId = samplesDeletesBlobId,
-                            BlobType = samplesDeletes.GetType().FullName,
-                            BiobankId = biobankId
-                        }
-                    )
-                );
+                await _backgroundQueueService.Stage(biobankId, submission.Id, blobId, blobType, Operation.Delete);
             }
 
             // Push Treatments Updates/Inserts To Queue
             if (treatmentsUpdates.Any())
             {
-                var treatmentsUpdatesBlobId =
-                    await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsUpdates);
+                var blobId = await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsUpdates);
+                var blobType = treatmentsUpdates.GetType().FullName;
 
-                await _queueWriteService.PushAsync("operations",
-                    JsonSerializer.Serialize(
-                        new OperationsQueueItem
-                        {
-                            SubmissionId = submission.Id,
-                            Operation = Operation.Submit,
-                            BlobId = treatmentsUpdatesBlobId,
-                            BlobType = treatmentsUpdates.GetType().FullName,
-                            BiobankId = biobankId
-                        }
-                    )
-                );
+                await _backgroundQueueService.Stage(biobankId, submission.Id, blobId, blobType, Operation.Submit);
             }
 
             // Push Treatments Deletes To Queue
             if (treatmentsDeletes.Any())
             {
                 // Send the treatment deletes up to queue
-                var treatmentsDeletesBlobId =
-                    await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsDeletes);
+                var blobId = await _blobWriteService.StoreObjectAsJsonAsync("submission-payload", treatmentsDeletes);
+                var blobType = treatmentsDeletes.GetType().FullName;
 
-                await _queueWriteService.PushAsync("operations",
-                    JsonSerializer.Serialize(
-                        new OperationsQueueItem
-                        {
-                            SubmissionId = submission.Id,
-                            Operation = Operation.Delete,
-                            BlobId = treatmentsDeletesBlobId,
-                            BlobType = treatmentsDeletes.GetType().FullName,
-                            BiobankId = biobankId
-                        }
-                    )
-                );
+                await _backgroundQueueService.Stage(biobankId, submission.Id, blobId, blobType, Operation.Delete);
             }
 
             // return the status object

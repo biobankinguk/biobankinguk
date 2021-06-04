@@ -77,6 +77,7 @@ namespace Biobanks.Data
         public DbSet<Collection> Collections { get; set; }
         public DbSet<SampleSet> SampleSets { get; set; }
         public DbSet<Config> Configs { get; set; }
+        public DbSet<RegistrationDomainRule> RegistrationDomainRules { get; set; }
         public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
         public DbSet<MaterialDetail> MaterialDetails { get; set; }
         public DbSet<Network> Networks { get; set; }

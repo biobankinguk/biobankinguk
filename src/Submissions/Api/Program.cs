@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace Biobanks.Submissions.Api
@@ -24,6 +25,11 @@ namespace Biobanks.Submissions.Api
         /// <returns></returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostContext, config) =>
+                {
+                    config.AddJsonFile("Settings/LegacyMaterialTypes.json", optional: true);
+                    config.AddJsonFile("Settings/LegacyStorageTemperatures.json", optional: true);
+                })
                 .ConfigureWebHostDefaults(b =>
                 {
                     b.UseStartup<Startup>();

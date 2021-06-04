@@ -7,11 +7,11 @@
 }
 @if (App.Config[ConfigKey.RegisterRegistrationHelpUrl] != "" && App.Config[ConfigKey.EnableRegisterRegistrationHelpUrl] == "true")
 {
-<div class="row">
-    <div class="alert alert-info col-sm-3 info-help">
-        <p>For guidance, go to our <a href="@App.Config[ConfigKey.RegisterRegistrationHelpUrl]">help page</a>.</p>
+    <div class="row">
+        <div class="alert alert-info col-sm-3 info-help">
+            <p>For guidance, go to our <a href="@App.Config[ConfigKey.RegisterRegistrationHelpUrl]">help page</a>.</p>
+        </div>
     </div>
-</div>
 }
 <h2>@App.Config[ConfigKey.RegisterBiobankTitle]</h2>
 
@@ -54,5 +54,20 @@
         function onRecaptchaSubmit(token) {
             document.getElementById("register-form").submit();
         }
+    </script>
+}
+
+@section FooterScripts
+{
+    <script>
+        $(function () {
+            // Checkboxes emit booleans
+            $('input[type=checkbox]').each(function () {
+                $(this).prop("checked", $(this).val() == "true");
+            });
+            $('input[type=checkbox]').change(function () {
+                $(this).val($(this).prop("checked"));
+            });
+        });
     </script>
 }

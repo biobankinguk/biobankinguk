@@ -98,7 +98,8 @@ namespace Biobanks.Web
                         "~/Scripts/bootbox*",
                         "~/Scripts/typeahead.bundle*",
                         "~/Scripts/Biobank/associated-data-highlight.js",
-                        "~/Scripts/Shared/diagnosis-type-ahead.js"));
+                        "~/Scripts/Shared/diagnosis-type-ahead.js",
+                        "~/Scripts/Biobank/collection-crud.js"));
             bundles.Add(new ScriptBundle("~/bundles/help-buttons").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/Biobank/help-popups.js"));
@@ -275,6 +276,18 @@ namespace Biobanks.Web
 
             bundles.Add(new ScriptBundle("~/bundles/adac/tabs").Include(
                 "~/Scripts/ADAC/adac-tabs.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/adac/block-allow-list").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-blockallow-list.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
+
+            // Registration Domain Rules
+            bundles.Add(new ScriptBundle("~/bundles/adac/email-config").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-refdata-utility.js",
+                "~/Scripts/ADAC/adac-email-config.js"));
+
 
             // Site Config
             bundles.Add(new ScriptBundle("~/bundles/adac/site-config").Include(

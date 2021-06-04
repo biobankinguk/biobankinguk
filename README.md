@@ -56,14 +56,14 @@ The `src/` folder contains roughly project or app categorised folders, which als
 
 | Folder | Description | `README` |
 | - | - | - |
-| `Analytics/` | .NET Core 3.1 Azure Function generating Google Analytics reports for the Directory | ✔
+| `Core/` | .NET 5 Central Class Libary of shared code with minimal shared dependencies | ❌
+| `Core/Jobs` | .NET 5 Collection of Worker Jobs used for background processes | ❌
 | `Data/` | EF Core 5 Database Context, and Migrations for the directory database | ❌
 | `DataSeed/` | A dedicated CLI tool for seeding a directory database with required reference data | ❌
 | `Directory/` | ASP.NET 4.8 Web App - The core functionality of the Tissue Directory | ✔
 | `Entities/` | Entity classes representing tables in the database. These are shared between the main Data project (EF Core) and the Directory Data project (EF6) | ❌
 | `IdentityModel/` | A library to support shared Identity/Authentication behaviour between apps | ❌
 | `IdentityModel/IdentityTool/` | A dedicated CLI tool for Identity/Auth related actions | ✔
-| `Publications/` | .NET Core 3.1 Azure Function which fetches and stores relevant metadata on articles published by Directory users on EuropePMC | ✔
 | `Submissions/` | .NET 5 Web API and workers for bulk submission of data to the directory database | ✔
 
 # 🧾 License

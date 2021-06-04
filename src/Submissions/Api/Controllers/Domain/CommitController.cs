@@ -4,7 +4,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.Services.Contracts;
+
+using Microsoft.AspNetCore.Authorization;
+using Core.Submissions.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -16,6 +18,8 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
     /// </summary>
     [Route("{biobankId}/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class CommitController : ControllerBase
     {
         private readonly ISubmissionService _submissionService;
@@ -45,7 +49,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
         [SwaggerResponse(400, Description = "There are Open Submissions which have not been processed.")]
         public async Task<IActionResult> Post(int biobankId, string type = null)
         {
-            if (type == null) 
+            if (type == null)
                 return BadRequest("Expected Type parameter to specify 'update' or 'replace'");
 
             if (!User.HasClaim(CustomClaimTypes.BiobankId,
@@ -55,7 +59,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
             var submissionsInProgress = await _submissionService.ListSubmissionsInProgress(biobankId);
             if (submissionsInProgress.Any())
             {
-                return BadRequest(JsonSerializer.Serialize(submissionsInProgress));
+                return BadRequest(submissionsInProgress);
             }
 
             //BackgroundJobEnqueueingService will then call either _queueWriteService or Hangfire to 
@@ -63,7 +67,7 @@ namespace Biobanks.Submissions.Api.Controllers.Domain
             //TODO: later PBI which will sort out conditional DI for which service to implement
             await _backgroundJobEnqueueingService.Commit(biobankId, type.Equals("replace", StringComparison.OrdinalIgnoreCase));
 
-            return NoContent();
+            return Accepted();
         }
     }
 }

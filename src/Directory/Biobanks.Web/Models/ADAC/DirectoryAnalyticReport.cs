@@ -1,8 +1,5 @@
-﻿using Biobanks.Web.Models.Shared;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Biobanks.Web.Models.ADAC
 {
@@ -21,22 +18,15 @@ namespace Biobanks.Web.Models.ADAC
         public EventStat EventStats { get; set; }
         public ProfilePageStat ProfilePageStats { get; set; }
 
-        public ErrorStatusModel Error { get; set; }
-
-        public bool IsNullOrEmpty()
-        {
-            if ((SessionStats == null || SessionStats.IsEmpty()) &&
-               (SessionSearchStats == null || SessionSearchStats.IsEmpty()) &&
-               (SearchCharacteristics == null || SearchCharacteristics.IsEmpty()) &&
-               (EventStats == null || EventStats.IsEmpty()) &&
-               (ProfilePageStats == null || ProfilePageStats.IsEmpty()) )
-                return true;
-            else
-                return false;
-        }
+        public bool IsNullOrEmpty() =>
+            (SessionStats?.IsEmpty() != false) &&
+            (SessionSearchStats?.IsEmpty() != false) &&
+            (SearchCharacteristics?.IsEmpty() != false) &&
+            (EventStats?.IsEmpty() != false) &&
+            (ProfilePageStats?.IsEmpty() != false);
     }
 
-    public partial class SessionStat
+    public class SessionStat
     {
         public List<string> SessionNumberLabels { get; set; }
         public List<int> SessionNumberCount { get; set; }
@@ -47,39 +37,31 @@ namespace Biobanks.Web.Models.ADAC
         public List<string> AvgSessionDurationLabels { get; set; }
         public IList<double> AvgSessionDurationCount { get; set; }
 
-        public bool IsEmpty()
-        {
-            if ((this.SessionNumberCount?.Count() +
-                this.AvgBounceRateCount?.Count() +
-                this.AvgNewSessionCount?.Count() +
-                this.AvgSessionDurationCount?.Count()) == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => (
+            SessionNumberCount?.Count() +
+            AvgBounceRateCount?.Count() +
+            AvgNewSessionCount?.Count() +
+            AvgSessionDurationCount?.Count())
+            == 0;
     }
 
-    public partial class SearchCharacteristic
+    public class SearchCharacteristic
     {
-        public IList<String> SearchTypeLabels { get; set; }
+        public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
-        public IList<String> SearchTermLabels { get; set; }
+        public IList<string> SearchTermLabels { get; set; }
         public IList<int> SearchTermCount { get; set; }
-        public IList<String> SearchFilterLabels { get; set; }
+        public IList<string> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
 
-        public bool IsEmpty()
-        {
-            if ((this.SearchTypeCount?.Count() +
-                this.SearchTermCount?.Count() +
-                this.SearchFilterCount?.Count()) == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => (
+            SearchTypeCount?.Count() +
+            SearchTermCount?.Count() +
+            SearchFilterCount?.Count())
+            == 0;
     }
 
-    public partial class EventStat
+    public class EventStat
     {
         public IList<string> ContactNumberLabels { get; set; }
         public IList<int> ContactNumberCount { get; set; }
@@ -88,35 +70,27 @@ namespace Biobanks.Web.Models.ADAC
         public IList<string> FilteredMailToLabels { get; set; }
         public IList<int> FilteredMailToCount { get; set; }
 
-        public bool IsEmpty()
-        {
-            if ((this.ContactNumberCount?.Count() +
-                this.FilteredContactCount?.Count() +
-                this.FilteredMailToCount?.Count()) == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => (
+            ContactNumberCount?.Count() +
+            FilteredContactCount?.Count() +
+            FilteredMailToCount?.Count())
+            == 0;
     }
 
-    public partial class ProfilePageStat
+    public class ProfilePageStat
     {
         public IList<SourceCount> ProfileSources { get; set; }
-        public IList<String> PageRouteLabels { get; set; }
+        public IList<string> PageRouteLabels { get; set; }
         public IList<int> RouteCount { get; set; }
 
-        public bool IsEmpty()
-        {
-            if ((this.ProfileSources?.Count() == 0 ||
-                (this.ProfileSources?.Count() == 1 &&
-                this.ProfileSources.FirstOrDefault().Source == "Others" &&
-                this.ProfileSources.FirstOrDefault().Percentage == 100 &&
-                this.ProfileSources.FirstOrDefault().Count == 0)) &&
-                this.RouteCount?.Count() == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => (
+                ProfileSources?.Count() == 0 ||
+                (ProfileSources?.Count() == 1 &&
+                ProfileSources.FirstOrDefault().Source == "Others" &&
+                ProfileSources.FirstOrDefault().Percentage == 100 &&
+                ProfileSources.FirstOrDefault().Count == 0)
+            )
+            && RouteCount?.Count() == 0;
     }
 
     public class SourceCount
