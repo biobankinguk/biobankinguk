@@ -1762,6 +1762,36 @@ namespace Biobanks.Web.Controllers
             return Json(biobankPublications, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<JsonResult> GetPublicationsAjax(string publicationId)
+        {
+            var biobankId = SessionHelper.GetBiobankId(Session);
+
+            if (biobankId == 0 || String.IsNullOrEmpty(publicationId))
+            {
+                return Json("");
+            }
+            else
+            {
+                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+                // Find Given Publication
+                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+                //retrieve from EPMC if not found
+                if (publication == null)
+                {
+                    //retrieve
+                }
+
+                return Json(_mapper.Map<BiobankPublicationModel>(publication),
+                    JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
         [HttpPost]
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> ClaimPublicationAjax(string publicationId, bool accept)
