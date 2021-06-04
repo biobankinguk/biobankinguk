@@ -55,6 +55,17 @@
 
                     <input type="hidden" id="LastUpdated" name="LastUpdated" value="@Model.LastUpdated">
 
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Enable Page</label>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(x => x.IsEnabled)
+                                </label>
+                            </div>
+                        </div>                    
+                    </div>
+
                 </div>
             </div>
         </form>

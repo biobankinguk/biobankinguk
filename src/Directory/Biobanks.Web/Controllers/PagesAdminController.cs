@@ -29,6 +29,7 @@ namespace Biobanks.Web.Controllers
                 }));            
         }
 
+        [AllowAnonymous]
         public async Task<ActionResult> ContentPage(string slug)
         {
             var page = await _contentPageService.GetBySlug(slug);
@@ -36,6 +37,25 @@ namespace Biobanks.Web.Controllers
             if (page == null)
             {
                 return RedirectToAction("Index", "Home");
+            }
+
+            if (!page.IsEnabled)
+            {
+                if (User.IsInRole("ADAC"))
+                {
+                    return View(new ContentPageModel
+                    {
+                        Id = page.Id,
+                        Title = page.Title,
+                        Body = page.Body,
+                        RouteSlug = page.RouteSlug,
+                        LastUpdated = page.LastUpdated
+                    });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }            
             }
 
             return View(new ContentPageModel
@@ -72,7 +92,8 @@ namespace Biobanks.Web.Controllers
                     Title = page.Title,
                     Body = page.Body,
                     RouteSlug = page.RouteSlug,
-                    LastUpdated = page.LastUpdated
+                    LastUpdated = page.LastUpdated,
+                    IsEnabled = page.IsEnabled
                 });
             }
         }
@@ -92,7 +113,8 @@ namespace Biobanks.Web.Controllers
                 Title = page.Title,
                 Body = page.Body,
                 RouteSlug = page.RouteSlug,
-                LastUpdated = page.LastUpdated
+                LastUpdated = page.LastUpdated,
+                IsEnabled = page.IsEnabled
             });
             
         }
@@ -104,13 +126,13 @@ namespace Biobanks.Web.Controllers
             // Create
             if (page.Id == 0)
             {
-                await _contentPageService.Create(page.Title, page.Body, page.RouteSlug);
+                await _contentPageService.Create(page.Title, page.Body, page.RouteSlug, page.IsEnabled);
                 return RedirectToAction("Index", "PagesAdmin");
             }
             // Edit
             else
             {
-                await _contentPageService.Update(page.Id, page.Title, page.Body, page.RouteSlug);
+                await _contentPageService.Update(page.Id, page.Title, page.Body, page.RouteSlug, page.IsEnabled);
                 return RedirectToAction("Index", "PagesAdmin");
             }
         }
