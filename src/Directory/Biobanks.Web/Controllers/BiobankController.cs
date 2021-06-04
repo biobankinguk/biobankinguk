@@ -22,7 +22,7 @@ using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 
 using Newtonsoft.Json;
-
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -1783,11 +1783,22 @@ namespace Biobanks.Web.Controllers
                 //retrieve from EPMC if not found
                 if (publication == null)
                 {
-                    //retrieve
+                    var query = $"/webservices/rest/search" +
+                        $"?query={publicationId}" +
+                        $"&cursorMark=*" +
+                        $"&resultType=lite" +
+                        $"&format=json";
+
+                    using var client = new HttpClient();
+                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["EpmcApiUrl"]);
+                    var response = await client.GetStringAsync(query);
+
+                    var jPublications = JObject.Parse(response).GetValue("resultList.result");
+                    publication = jPublications.ToObject<List<Publication>>().FirstOrDefault();
                 }
 
                 return Json(_mapper.Map<BiobankPublicationModel>(publication),
-                    JsonRequestBehavior.AllowGet);
+                JsonRequestBehavior.AllowGet);
             }
 
         }
