@@ -2,6 +2,7 @@
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
+using Biobanks.Web.Utilities;
 using MvcSiteMapProvider.Web.Mvc.Filters;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,13 +131,34 @@ namespace Biobanks.Web.Controllers
             // Create
             if (page.Id == 0)
             {
-                await _contentPageService.Create(page.Title, page.Body, page.RouteSlug, page.IsEnabled);
+                if ((await _contentPageService.GetBySlug(page.RouteSlug)) != null)
+                {
+                    SetTemporaryFeedbackMessage($"A content page with the slug '{page.RouteSlug}' already exists.", FeedbackMessageType.Warning);
+                }
+                else
+                {
+                    await _contentPageService.Create(page.Title, page.Body, page.RouteSlug, page.IsEnabled);
+                    SetTemporaryFeedbackMessage($"The content page '{page.Title}' has been created successfully.", FeedbackMessageType.Success);
+                }
+            
                 return RedirectToAction("Index", "PagesAdmin");
             }
             // Edit
             else
             {
-                await _contentPageService.Update(page.Id, page.Title, page.Body, page.RouteSlug, page.IsEnabled);
+                var existingPage = await _contentPageService.GetById(page.Id);
+
+                //Checking if the user is changing the slug value and if the new value already exists
+                if (existingPage.RouteSlug != page.RouteSlug && (await _contentPageService.GetBySlug(page.RouteSlug)) != null)
+                {
+                    SetTemporaryFeedbackMessage($"A content page with the slug '{page.RouteSlug}' already exists.", FeedbackMessageType.Warning);
+                }
+                else
+                {
+                    await _contentPageService.Update(page.Id, page.Title, page.Body, page.RouteSlug, page.IsEnabled);
+                    SetTemporaryFeedbackMessage($"The content page '{page.Title}' has been edited successfully.", FeedbackMessageType.Success);
+                }
+
                 return RedirectToAction("Index", "PagesAdmin");
             }
         }
@@ -146,7 +168,7 @@ namespace Biobanks.Web.Controllers
         {
             var pageName = (await _contentPageService.GetById(id)).Title;
             await _contentPageService.Delete(id);
-
+            SetTemporaryFeedbackMessage($"The content page '{pageName}' has been deleted successfully.", FeedbackMessageType.Success);
             return Json(new
             {
                 success = true,
