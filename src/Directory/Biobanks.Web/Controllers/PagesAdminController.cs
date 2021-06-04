@@ -2,6 +2,7 @@
 using Biobanks.Web.Filters;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
+using MvcSiteMapProvider.Web.Mvc.Filters;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -30,6 +31,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [AllowAnonymous]
+        [SiteMapTitle("Title")]
         public async Task<ActionResult> ContentPage(string slug)
         {
             var page = await _contentPageService.GetBySlug(slug);
