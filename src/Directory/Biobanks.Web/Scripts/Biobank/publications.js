@@ -29,9 +29,9 @@ function rejectPublication(publicationId) { claimPublication(publicationId, fals
 var table;
 
 function colorRow(row, data) {
-    $(row).toggleClass("success", data.Approved == true);
-    $(row).toggleClass("danger", data.Approved == false);
-    $(row).find(".status").toggleClass("flex-around", data.Approved == null);
+    $(row).toggleClass("success", data.Accepted == true);
+    $(row).toggleClass("danger", data.Accepted == false);
+    $(row).find(".status").toggleClass("flex-around", data.Accepted == null);
 }
 
 function formatTitle(data, type, row) {
@@ -43,10 +43,10 @@ function formatTitle(data, type, row) {
 }
 
 function formatStatus(data, type, row) {
-    if (row.Approved == true) {
+    if (row.Accepted == true) {
         return link("Accepted", "btn btn-success btn-full");
     }
-    else if (row.Approved == false) {
+    else if (row.Accepted == false) {
         return link("Rejected", "btn btn-danger btn-full");
     }
     else {
@@ -111,7 +111,7 @@ $(function () {
             { title: "Authors", width: "160px", data: "Authors", render: formatAuthor},
             { title: "Year",    width: "35px",  data: "Year" },
             { title: "Journal", width: "140px", data: "Journal" },
-            { title: "Status",  width: "120px", data: "Approved", render: formatStatus, className: "status" }
+            { title: "Status",  width: "120px", data: "Accepted", render: formatStatus, className: "status" }
         ],
         "rowId": 'PublicationId',
         "rowCallback": colorRow
@@ -136,7 +136,7 @@ $(function () {
                 action: function (e, dt, node, conf) {
                     toggleButton(node);
                     filter(function (row) {
-                        return row.data().Approved == true;
+                        return row.data().Accepted == true;
                     });
                 }
             },
@@ -145,7 +145,7 @@ $(function () {
                 action: function (e, dt, node, conf) {
                     toggleButton(node);
                     filter(function (row) {
-                        return row.data().Approved == false;
+                        return row.data().Accepted == false;
                     });
                 }
             },
@@ -154,7 +154,7 @@ $(function () {
                 action: function (e, dt, node, conf) {
                     toggleButton(node);
                     filter(function (row) {
-                        return row.data().Approved == null;
+                        return row.data().Accepted == null;
                     });
                 }
             },

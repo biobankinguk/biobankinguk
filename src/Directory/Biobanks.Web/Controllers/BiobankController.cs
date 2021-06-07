@@ -1743,20 +1743,9 @@ namespace Biobanks.Web.Controllers
             if (biobankId != 0)
             {
                 var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-                var publiations = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
 
-                biobankPublications = publiations.Select(x => new BiobankPublicationModel
-                {
-                    PublicationId = x.PublicationId,
-                    Title = x.Title,
-                    Authors = x.Authors,
-                    Year = x.Year,
-                    Journal = x.Journal,
-                    DOI = x.DOI,
-                    Approved = x.Accepted,
-                    Source = x.Source
-
-                });
+                return Json(_mapper.Map<List<BiobankPublicationModel>>(publications), JsonRequestBehavior.AllowGet);
             }
 
             return Json(biobankPublications, JsonRequestBehavior.AllowGet);
@@ -1901,17 +1890,7 @@ namespace Biobanks.Web.Controllers
                 // Add To Publication DB
                 await _biobankWriteService.AddOrganisationPublicationAsync(publication);
 
-                return Json(new BiobankPublicationModel
-                {
-                    PublicationId = publication.PublicationId,
-                    Title = publication.Title,
-                    Authors = publication.Authors,
-                    Year = publication.Year,
-                    Journal = publication.Journal,
-                    DOI = publication.DOI,
-                    Approved = publication.Accepted,
-                    Source = publication.Source
-                });
+                return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
             }
         }
 
