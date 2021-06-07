@@ -188,8 +188,6 @@ $(function () {
 
     filterBtns.container().prependTo(controls);
     addBtn.container().prependTo(rightCtrls);
-    //table.buttons().container().prependTo(controls);
-
 
     $.getJSON('/api/Biobank/IncludePublications/' + biobankId, function (data) {
         if (data) {
@@ -227,8 +225,7 @@ $('#IncludePublications').change(function () {
 //Biobank Id
 var biobankId = $('#BiobankId').data("biobank-id");
 
-
-// Modals
+// Publication ViewModel
 var publicationsVM;
 
 
