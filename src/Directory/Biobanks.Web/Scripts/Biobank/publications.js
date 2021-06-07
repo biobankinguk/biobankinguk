@@ -228,7 +228,6 @@ var biobankId = $('#BiobankId').data("biobank-id");
 // Publication ViewModel
 var publicationsVM;
 
-
 function PublicationsModal(id) {
     this.modalModeSearch = "Search";
     this.modalModeApprove = "Approve";
