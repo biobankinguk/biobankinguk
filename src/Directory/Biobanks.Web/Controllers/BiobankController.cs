@@ -1773,22 +1773,28 @@ namespace Biobanks.Web.Controllers
             //retrieve from EPMC if not found
             if (publication == null)
             {
-                var query = $"/webservices/rest/search" +
-                    $"?query={publicationId}" +
-                    $"&cursorMark=*" +
-                    $"&resultType=lite" +
-                    $"&format=json";
-
                 try
                 {
                     using var client = new HttpClient();
-                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["EpmcApiUrl"]);
-                    var response = await client.GetStringAsync(query);
+                    var buildUrl = new UriBuilder(ConfigurationManager.AppSettings["EpmcApiUrl"])
+                    {
+                        Path = "/europepmc/webservices/rest/search",
+                        Query = $"query=ext_id:{publicationId} AND SRC:MED" +
+                                $"&cursorMark=*" +
+                                $"&resultType=lite" +
+                                $"&format=json"
+                    };
 
-                    var jPublications = JObject.Parse(response).GetValue("resultList.result");
-                    publication = jPublications.ToObject<List<Publication>>().FirstOrDefault();
+                    var response = await client.GetStringAsync(buildUrl.Uri);
+
+                    var jPublications = JObject.Parse(response).SelectToken("resultList.result");
+                    publication = jPublications != null
+                        ? _mapper.Map<Publication>(jPublications.ToObject<List<PublicationSearchModel>>().FirstOrDefault())
+                        : null;
                 }
-                catch (HttpRequestException)
+                catch (Exception e) when (
+                    e is HttpRequestException || 
+                    e is JsonReaderException)
                 {
                     return null;
                 }
@@ -1804,7 +1810,7 @@ namespace Biobanks.Web.Controllers
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
 
-            if (biobankId == 0 || String.IsNullOrEmpty(publicationId))
+            if (biobankId == 0 || IsNullOrEmpty(publicationId))
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
@@ -1830,7 +1836,7 @@ namespace Biobanks.Web.Controllers
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
 
-            if (biobankId == 0 || String.IsNullOrEmpty(publicationId))
+            if (biobankId == 0 || IsNullOrEmpty(publicationId))
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
