@@ -158,7 +158,7 @@ namespace Core.Submissions.Services
                 return sample;
 
             //check if extracted sample
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var mt = await _refDataReadService.GetMaterialType(dto.MaterialType);
             if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
@@ -217,7 +217,7 @@ namespace Core.Submissions.Services
         private async Task<StagedSample> ValidateExtractionSite(SampleDto dto, StagedSample sample)
         {
             //check if tissue sample
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var mt = await _refDataReadService.GetMaterialType(dto.MaterialType);
 
             if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.TissueSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
@@ -265,7 +265,7 @@ namespace Core.Submissions.Services
                 return sample;
 
             //check if extracted sample
-            var mt = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var mt = await _refDataReadService.GetMaterialType(dto.MaterialType);
             if (!(mt?.MaterialTypeGroups.Any(x => x.Value == MaterialTypeGroups.ExtractedSample) ?? false))
                 return sample; //not invalid, but irrelevant, so no value
 
@@ -358,23 +358,16 @@ namespace Core.Submissions.Services
 
         private async Task<StagedSample> ValidateMaterialType(SampleDto dto, StagedSample sample)
         {
-            foreach (var obj in _materialTypesLegacy?.ListOfMappings ?? new ())
+            var legacyMapping = _materialTypesLegacy?.ListOfMappings.FirstOrDefault(x => x.Old.MaterialType == dto.MaterialType);
+
+            if (legacyMapping != null)
             {
-                if (obj.Old.MaterialType == dto.MaterialType)
-                {
-                    dto.MaterialType = obj.New.MaterialType;
-                    _logger.LogInformation($"The given material type was mapped to {obj.New.MaterialType}");
-
-                    if (!string.IsNullOrEmpty(obj.New.ExtractionProcedure))
-                    {
-                        var ep = await _refDataReadService.GetSnomedExtractionProcedure(obj.New.ExtractionProcedure, obj.New.ExtractionProcedureOntologyField);
-                        sample.ExtractionProcedureId = ep.Id;
-                    }
-
-                }
+                dto.MaterialType = legacyMapping.New.MaterialType;
+                dto.ExtractionProcedure = legacyMapping.New.ExtractionProcedure;
+                dto.ExtractionProcedureOntologyField = legacyMapping.New.ExtractionProcedureOntologyField;
             }
 
-            var result = await _refDataReadService.GetMaterialTypeWithGroups(dto.MaterialType);
+            var result = await _refDataReadService.GetMaterialType(dto.MaterialType);
 
             if (result == null)
                 throw new ValidationException(

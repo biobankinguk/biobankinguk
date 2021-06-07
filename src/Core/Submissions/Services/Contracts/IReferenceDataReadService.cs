@@ -36,7 +36,7 @@ namespace Core.Submissions.Services.Contracts
 
         Task<OntologyTerm> GetSnomedExtractionProcedure(string value, string field);
 
-        Task<MaterialType> GetMaterialTypeWithGroups(string value);
+        Task<MaterialType> GetMaterialType(string value);
 
         Task<SampleContentMethod> GetSampleContentMethod(string value);
 

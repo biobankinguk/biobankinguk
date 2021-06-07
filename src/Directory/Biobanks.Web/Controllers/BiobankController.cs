@@ -855,7 +855,7 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> AddCollection()
         {
-            return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(new AddCollectionModel())));
+            return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(new AddCollectionModel {FromApi = false })));
         }
 
         [HttpPost]
@@ -959,6 +959,29 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
+
+            //Retrieve collection
+            var collection = await _biobankReadService.GetCollectionByIdAsync(model.Id);
+
+            if (collection.FromApi)
+            {
+                var associatedData = collection.AssociatedData
+                    .Select(y => new CollectionAssociatedData
+                    {
+                        CollectionId = y.CollectionId,
+                        AssociatedDataTypeId = y.AssociatedDataTypeId,
+                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId
+                    }).ToList();
+
+                // Update description
+                collection.Description = model.Description;
+                await _biobankWriteService.UpdateCollectionAsync(collection, collection.OntologyTerm.Value,
+                    associatedData, collection.ConsentRestrictions.Select(x=>x.Id));
+
+                SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
+
+                return RedirectToAction("Collection", new { id = model.Id });
+            }
 
             if (await model.IsValid(ModelState, _biobankReadService) && model.FromApi == false)
             {
