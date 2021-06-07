@@ -1807,7 +1807,8 @@ namespace Biobanks.Web.Controllers
                 }
                 catch (Exception e) when (
                     e is HttpRequestException || 
-                    e is JsonReaderException)
+                    e is JsonReaderException  ||
+                    e is UriFormatException)
                 {
                     return null;
                 }
