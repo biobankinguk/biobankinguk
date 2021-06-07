@@ -1808,7 +1808,16 @@ namespace Biobanks.Web.Controllers
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
-                var publication = await PublicationSearch(publicationId, biobankId);
+                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+                // Find Publication locally
+                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+                // search online
+                if (publication == null)
+                    publication = await PublicationSearch(publicationId, biobankId);
+
                 return publication != null 
                     ?Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet) 
                     :Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
@@ -1825,16 +1834,37 @@ namespace Biobanks.Web.Controllers
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
-                var publication = await PublicationSearch(publicationId, biobankId);
+                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+                // Find Publication locally
+                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
                 if (publication != null)
                 {
-                    // Add To Publication DB
+                    // Update Publication in DB
                     publication.Accepted = true;
-                    await _biobankWriteService.AddOrganisationPublicationAsync(publication);
+                    await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
+
                     return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
                 }
                 else
-                    return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
+                {
+                    // search online
+                    publication = await PublicationSearch(publicationId, biobankId);
+
+                    if (publication != null)
+                    {
+                        // Add Publication to DB
+                        publication.Accepted = true;
+                        publication.OrganisationId = biobankId;
+
+                        await _biobankWriteService.AddOrganisationPublicationAsync(publication);
+                        return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
+                }  
             }
         }
 
