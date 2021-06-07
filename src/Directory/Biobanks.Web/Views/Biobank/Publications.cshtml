@@ -72,15 +72,22 @@
 
             <!-- Modal Form -->
             <form id="modal-publications-form"
-                  data-resource-url="/api/Publications"
+                  data-success-redirect="@Url.Action("AddPublicationSuccessFeedback")"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Pubmed ID</label>
+                                <label class="col-sm-3 control-label">PubMed ID</label>
                                 <div class="col-sm-9">
-                                    <input type="text" id="Id" name="Id" class="form-control">
+                                    <input type="text" id="publicationId" name="Id" class="form-control" data-bind="value: modal.publicationId" required>
+                                </div>
+                            </div>
+                            <div class="form-group" data-bind="visible: searchResult().length > 0">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <div class="alert alert-info">
+                                        <span id="Id" name="Id" data-bind="text: searchResult"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
