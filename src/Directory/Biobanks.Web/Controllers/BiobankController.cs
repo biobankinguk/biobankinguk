@@ -1885,10 +1885,9 @@ namespace Biobanks.Web.Controllers
 
                 // Claim publication
                 publication.Accepted = accept;
-                publication.OrganisationId = biobankId;
 
                 // Add To Publication DB
-                await _biobankWriteService.AddOrganisationPublicationAsync(publication);
+                await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
 
                 return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
             }
