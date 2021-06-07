@@ -276,14 +276,15 @@ function PublicationsViewModel() {
             $.getJSON("RetrievePublicationsAjax?publicationId=" + _this.modal.publicationId(), function (data) {
                 if (data && !jQuery.isEmptyObject(data)) {
                     // If successfull search
-                    _this.searchResult(data.Authors + " \"" + data.Title + "\", " + data.Year);
+                    _this.searchResult("<b>If this is the correct publication, then press the approve button to add this publication to your Biobanks approved publications list</b> <br/>"
+                        + "<br/>" + data.Authors + " \"" + data.Title + "\", " + data.Year + ". "
+                        + link("View on PubMed", "", null, ("https://pubmed.ncbi.nlm.nih.gov/" + data.PublicationId)));
                     $("#publicationId").attr("readonly", true);
                     _this.modal.mode(_this.modal.modalModeApprove);
                 }
                 else {
                     // no results
                     _this.searchResult("No publication found for the given PubMed Id.");
-                    _this.modal.mode(_this.modal.modalModeApprove);
                 }
             });
         } else if (action == _this.modal.modalModeApprove) {
@@ -295,7 +296,7 @@ function PublicationsViewModel() {
                         + "?publicationId=" + publicationId;
                 }
                 else
-                    _this.dialogErrors.push("Something went wrong! Please try again.")
+                    _this.dialogErrors.push("Something went wrong! Please try again later.")
             });
         }
     };
