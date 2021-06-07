@@ -78,7 +78,12 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">PubMed ID</label>
+                                <div class="col-sm-3">
+                                    <label class="control-label">
+                                        PubMed ID
+                                        <span class="fa fa-info-circle labelled-icon" data-toggle="tooltip" data-placement="right" title="PMID of the publication from PubMed (https://pubmed.ncbi.nlm.nih.gov/)"></span>
+                                    </label>          
+                                </div>
                                 <div class="col-sm-9">
                                     <input type="text" id="publicationId" name="Id" class="form-control" data-bind="value: modal.publicationId" required>
                                 </div>
