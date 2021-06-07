@@ -175,7 +175,7 @@ $(function () {
             {
                 text: 'Add Publication',
                 action: function (e, dt, node, conf) {
-                    $("#publications-modal").modal("show");
+                    publicationsVM.openModal();
                 }
             },
         ],
@@ -238,18 +238,20 @@ function PublicationsModal(id) {
 
     this.mode = ko.observable(this.modalModeSearch);
 
-    this.pubmedId = ko.observable(id);
+    this.publicationId = ko.observable(id);
 }
 
 function PublicationsViewModel() {
     var _this = this;
 
     this.modalId = "#publications-modal";
-    this.modal = new PublicationsModal(0);
+    this.modal = new PublicationsModal("");
     this.dialogErrors = ko.observableArray([]);
+    this.searchResult = ko.observable("");
 
     this.showModal = function () {
         _this.dialogErrors.removeAll(); //clear errors on a new show
+        _this.searchResult(""); //clear search result
         $(_this.modalId).modal("show");
     };
 
@@ -258,29 +260,43 @@ function PublicationsViewModel() {
     };
 
     this.openModal = function () {
+        $("#publicationId").attr("readonly", false);
         _this.modal.mode(_this.modal.modalModeSearch);
-        _this.modal.pubmedId(0);
+        _this.modal.publicationId("");
         _this.showModal();
     };
 
 
     this.modalSubmit = function (e) {
         e.preventDefault();
-        var form = $(e.target); // get form as a jquery object
 
         // Get Action Type
         var action = _this.modal.mode();
         if (action == _this.modal.modalModeSearch) {
-            alert('Searching...');
-
-            // If successfull search
-            _this.modal.mode(_this.modal.modalModeApprove);
-
+            $.getJSON("RetrievePublicationsAjax?publicationId=" + _this.modal.publicationId(), function (data) {
+                if (data && !jQuery.isEmptyObject(data)) {
+                    // If successfull search
+                    _this.searchResult(data.Authors + " \"" + data.Title + "\", " + data.Year);
+                    $("#publicationId").attr("readonly", true);
+                    _this.modal.mode(_this.modal.modalModeApprove);
+                }
+                else {
+                    // no results
+                    _this.searchResult("No publication found for the given PubMed Id.");
+                    _this.modal.mode(_this.modal.modalModeApprove);
+                }
+            });
         } else if (action == _this.modal.modalModeApprove) {
-            alert('Adding...');
-
-            //if successfull
-
+            var publicationId = _this.modal.publicationId();
+            $.post("AddPublicationAjax", { publicationId }, function (data) {
+                //if successfull
+                if (data && !jQuery.isEmptyObject(data)) {
+                    window.location.href = $(e.target).data("success-redirect")
+                        + "?publicationId=" + publicationId;
+                }
+                else
+                    _this.dialogErrors.push("Something went wrong! Please try again.")
+            });
         }
     };
 }
