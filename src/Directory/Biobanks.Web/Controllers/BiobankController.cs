@@ -1764,6 +1764,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
         {
+            //TODO: Merge with core for when we rewrite the directory in core.
             var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
             // Find Given Publication
@@ -1808,6 +1809,7 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> RetrievePublicationsAjax(string publicationId)
         {
+            //TODO: Merge with core for when we rewrite the directory in core.
             var biobankId = SessionHelper.GetBiobankId(Session);
 
             if (biobankId == 0 || IsNullOrEmpty(publicationId))
