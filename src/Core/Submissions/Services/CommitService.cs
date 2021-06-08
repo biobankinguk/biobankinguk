@@ -43,12 +43,14 @@ namespace Core.Submissions.Services
             _db.Database.CommitTransaction();
 
             // mark the open submissions as committed
+            var committedStatus = _db.Statuses.FirstOrDefault(s => s.Value == Statuses.Committed);
+
             foreach (var submission in _db.Submissions
                 .Include(s => s.Status)
                 .Where(s => s.BiobankId == organisationId && s.Status.Value == Statuses.Open))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.Status = _db.Statuses.FirstOrDefault(s => s.Value == Statuses.Committed);
+                submission.Status = committedStatus;
             }
 
             await _db.SaveChangesAsync();
