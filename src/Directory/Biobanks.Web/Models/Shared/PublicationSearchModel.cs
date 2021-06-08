@@ -20,5 +20,7 @@ namespace Biobanks.Web.Models.Shared
 
         public string DOI { get; set; }
 
+        public string Source { get; set; }
+
     }
 }
