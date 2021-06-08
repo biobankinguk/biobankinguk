@@ -289,7 +289,7 @@ function PublicationsViewModel() {
                 //if successfull
                 if (data && !jQuery.isEmptyObject(data)) {
                     window.location.href = $(e.target).data("success-redirect")
-                        + "?publicationId=" + publicationId;
+                        + "?publicationId=" + data.PublicationId;
                 }
                 else
                     _this.dialogErrors.push("Something went wrong! Please try again later.")

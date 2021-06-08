@@ -1852,7 +1852,7 @@ namespace Biobanks.Web.Controllers
             var biobankId = SessionHelper.GetBiobankId(Session);
 
             if (biobankId == 0 || IsNullOrEmpty(publicationId))
-                return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
+                return Json(new EmptyResult());
             else
             {
                 var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
@@ -1867,7 +1867,7 @@ namespace Biobanks.Web.Controllers
                     publication.Accepted = true;
                     await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
 
-                    return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
+                    return Json(_mapper.Map<BiobankPublicationModel>(publication));
                 }
                 else
                 {
@@ -1881,10 +1881,10 @@ namespace Biobanks.Web.Controllers
                         publication.OrganisationId = biobankId;
 
                         await _biobankWriteService.AddOrganisationPublicationAsync(publication);
-                        return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
+                        return Json(_mapper.Map<BiobankPublicationModel>(publication));
                     }
                     else
-                        return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
+                        return Json(new EmptyResult());
                 }  
             }
         }
