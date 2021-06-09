@@ -33,14 +33,17 @@ namespace Core.Submissions.Services
             await _db.StagedTreatmentDeletes.Where(std => std.OrganisationId == organisationId).DeleteAsync();
 
             // mark the submissions as rejected
+            var rejected = _db.Statuses.FirstOrDefault(s => s.Value == Statuses.Rejected);
+
             foreach (var submission in _db.Submissions.Where(s => s.BiobankId == organisationId))
             {
                 submission.StatusChangeTimestamp = DateTime.Now;
-                submission.Status = _db.Statuses.FirstOrDefault(s => s.Value == Statuses.Rejected);
+                submission.Status = rejected;
             }
 
             // save the submission changes to db
             await _db.SaveChangesAsync();
         }
     }
+
 }
