@@ -163,8 +163,8 @@
                                 <div class="col-sm-9">
                                     <input type="text" id="Value" name="Value" class="form-control" 
                                            data-bind="value: modal.registrationDomainRule().value()"
-                                           pattern="^[a-zA-Z0-9_.+-]+(?:[@('@')a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]"
-                                           title="A valid email address e.g. 'john@doe.com' or domain name e.g. doe.com">
+                                           pattern="@(@"^[^@\s]*@?[^@\s]*\.[^@\s]+[^@\.]$")"
+                                           title="A valid full or partial email address containg at least one '.' e.g. 'john@doe.com' '@("@")doe.com', 'doe.com' or '.com'">
                                 </div>
                             </div>
 
