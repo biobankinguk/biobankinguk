@@ -1182,7 +1182,7 @@
       <Compile Include="$(IntermediateOutputPath)Version.cs" />
     </ItemGroup>
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="BeforeBuild">
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\collections.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
   </Target>
