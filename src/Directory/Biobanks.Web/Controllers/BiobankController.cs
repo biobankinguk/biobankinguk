@@ -1801,15 +1801,17 @@ namespace Biobanks.Web.Controllers
                     var response = await client.GetStringAsync(buildUrl.Uri);
 
                     var jPublications = JObject.Parse(response).SelectToken("resultList.result");
-                    publication = jPublications != null
-                        ? _mapper.Map<Publication>(jPublications.ToObject<List<PublicationSearchModel>>().FirstOrDefault())
-                        : null;
+                    return _mapper.Map<Publication>(jPublications?.ToObject<List<PublicationSearchModel>>().FirstOrDefault());
                 }
                 catch (Exception e) when (
                     e is HttpRequestException || 
                     e is JsonReaderException  ||
                     e is UriFormatException)
                 {
+                    // Log Error via Application Insights
+                    var ai = new TelemetryClient();
+                    ai.TrackException(e);
+
                     return null;
                 }
                 
