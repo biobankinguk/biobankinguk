@@ -34,6 +34,9 @@ namespace Core.Jobs
             // All Samples Flagged For Update/Deletion
             var dirtySamples = await _sampleService.ListDirtySamples();
 
+            // TODO: Remove When Non-Extracted Samples Are Supported
+            dirtySamples = dirtySamples.Where(x => x.SampleContent != null && x.SampleContentMethod != null);
+
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamples();
 
