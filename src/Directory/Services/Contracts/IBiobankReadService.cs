@@ -130,6 +130,13 @@ namespace Biobanks.Services.Contracts
         Task<int> GetOntologyTermCollectionCapabilityCount(string id);
         Task<bool> IsOntologyTermInUse(string id);
 
+        Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
+        Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
+        Task<bool> IsExtractionProcedureInUse(string id);
+
+        Task<IEnumerable<SnomedTag>> ListSnomedTags();
+        Task<SnomedTag> GetSnomedTagByDescription(string description);
+
         Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription);

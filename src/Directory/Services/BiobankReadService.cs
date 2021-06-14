@@ -36,6 +36,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
+        private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
@@ -103,6 +104,7 @@ namespace Biobanks.Services
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
+            IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
@@ -166,6 +168,7 @@ namespace Biobanks.Services
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
             _ontologyTermRepository = ontologyTermRepository;
+            _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
             _siteConfigRepository = siteConfigRepository;
             _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
@@ -1184,6 +1187,31 @@ namespace Biobanks.Services
         public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
             => await _collectionRepository.CountAsync(x => x.OntologyTermId == id) 
                + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
+        #endregion
+
+        #region RefData: Extraction Procedure
+
+        public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
+            => await _ontologyTermRepository.ListAsync(filter: 
+                x => x.SnomedTag.Value == "Extraction Procedure" 
+                     && x.Value.Contains(wildcard) 
+                     && x.DisplayOnDirectory);
+
+        public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
+            => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
+
+        public async Task<bool> IsExtractionProcedureInUse(string id)
+            => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);
+
+        #endregion
+
+        #region RefData: Snomed Tags
+        public async Task<IEnumerable<SnomedTag>> ListSnomedTags()
+        => await _snomedTagRepository.ListAsync();
+
+        public async Task<SnomedTag> GetSnomedTagByDescription(string description)
+            => (await _snomedTagRepository.ListAsync(filter: x => x.Value == description)).SingleOrDefault();
+
         #endregion
 
         #region Site Config
