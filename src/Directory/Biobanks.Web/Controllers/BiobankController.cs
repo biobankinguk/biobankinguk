@@ -1800,13 +1800,12 @@ namespace Biobanks.Web.Controllers
                     using var client = new HttpClient();
                     var buildUrl = new UriBuilder(ConfigurationManager.AppSettings["EpmcApiUrl"])
                     {
-                        Path = "/europepmc/webservices/rest/search",
                         Query = $"query=ext_id:{publicationId} AND SRC:MED" +
                                 $"&cursorMark=*" +
                                 $"&resultType=lite" +
                                 $"&format=json"
                     };
-
+                    buildUrl.Path += "webservices/rest/search";
                     var response = await client.GetStringAsync(buildUrl.Uri);
 
                     var jPublications = JObject.Parse(response).SelectToken("resultList.result");
