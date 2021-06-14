@@ -88,7 +88,7 @@ namespace Biobanks.Web.ApiControllers
             {
                 //Allow editing of only Other terms field if ontologyterm in use
                 if (ontologyTerm.Value != model.Description)
-                    ModelState.AddModelError("Description", "This disease status or extraction procedure is currently in use and cannot be edited.");
+                    ModelState.AddModelError("Description", "This extraction procedure is currently in use and cannot be edited.");
             }
 
             if (!ModelState.IsValid)

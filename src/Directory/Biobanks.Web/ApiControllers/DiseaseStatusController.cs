@@ -79,7 +79,7 @@ namespace Biobanks.Web.ApiControllers
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(id, model.Description))
             {
-                ModelState.AddModelError("Description", "That description is already in use by another disease status. Disease status descriptions must be unique.");
+                ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Disease status descriptions must be unique.");
             }
 
             if (await _biobankReadService.IsOntologyTermInUse(id))
@@ -118,7 +118,7 @@ namespace Biobanks.Web.ApiControllers
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
             {
-                ModelState.AddModelError("Description", "That description is already in use. Disease status descriptions must be unique.");
+                ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Disease status descriptions must be unique.");
             }
 
             if (!ModelState.IsValid)
