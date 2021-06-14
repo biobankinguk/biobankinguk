@@ -1960,7 +1960,7 @@ namespace Biobanks.Web.Controllers
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
             model.CollectionType = biobank.CollectionTypeId;
-            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
+            model.ClientId = biobank.ApiClients.FirstOrDefault()?.ClientId;
 
             return View(model);
         }
@@ -1989,19 +1989,15 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
-            //update Organisations table
-            var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
-            KeyValuePair<string, string> credentials;
-
-            if (existingclient)
-                credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
-            else
-                credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+            var credentials = 
+                await _biobankReadService.IsBiobankAnApiClient(biobankId)
+                    ? await _biobankWriteService.GenerateNewSecretForBiobank(biobankId)
+                    : await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
 
             return Json(new
             {
-                publickey = credentials.Key,
-                privatekey = credentials.Value
+                ClientId = credentials.Key,
+                ClientSecret = credentials.Value
             });
         }
         #endregion

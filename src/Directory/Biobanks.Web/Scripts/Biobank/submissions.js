@@ -18,13 +18,13 @@ $(".copy-text").click(function (e) {
     copyText(txtbox);
 });
 
-//generate private key
+//generate client id
 $("#generatekey").click(function (e) {
     var $btn = $(this);
     $.post($btn.data("generate-url"),
         { biobankId: $btn.data("biobank-id") }, data => {
-            $("#PrivateKey").val(data.privatekey);
-            $("#PublicKey").val(data.publickey);
-            $("#privateKeyWrapper").removeAttr("hidden");
+            $("#clientId").val(data.ClientId);
+            $("#clientSecret").val(data.ClientSecret);
+            $("#clientSecretWrapper").removeAttr("hidden");
     })
 })
