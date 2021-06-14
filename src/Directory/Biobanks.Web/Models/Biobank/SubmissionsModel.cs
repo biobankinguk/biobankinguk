@@ -28,8 +28,8 @@ namespace Biobanks.Web.Models.Biobank
         [Display(Name = "Collection type")]
         public int? CollectionType { get; set; }
 
-        [Display(Name = "Public Key")]
-        public string PublicKey { get; set; }
+        [Display(Name = "Client ID")]
+        public string ClientId { get; set; }
 
         #endregion
     }
