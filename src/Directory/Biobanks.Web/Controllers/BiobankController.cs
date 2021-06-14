@@ -1782,7 +1782,15 @@ namespace Biobanks.Web.Controllers
                 });
             }
 
-            return Json(biobankPublications, JsonRequestBehavior.AllowGet);
+            return new JsonResult
+            {
+                Data = biobankPublications,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+
+                // Handle biobanks with large amount of publications
+                // Ideally switch to server-side processing with multiple GET requests
+                MaxJsonLength = Int32.MaxValue
+            };
         }
 
         [HttpPost]
