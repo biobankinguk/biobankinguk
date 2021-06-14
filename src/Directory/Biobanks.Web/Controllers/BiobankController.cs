@@ -1960,7 +1960,7 @@ namespace Biobanks.Web.Controllers
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
             model.CollectionType = biobank.CollectionTypeId;
-            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
+            model.ClientId = biobank.ApiClients.FirstOrDefault()?.ClientId;
 
             return View(model);
         }
