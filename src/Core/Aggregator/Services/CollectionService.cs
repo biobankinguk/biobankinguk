@@ -4,7 +4,6 @@ using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
 
@@ -40,16 +39,12 @@ namespace Biobanks.Aggregator.Services
                 .Select(x => x.Id)
                 .ToList();
 
-<<<<<<<< HEAD:src/Core/Aggregator/Services/CollectionService.cs
-        public async Task DeleteCollection(int id)
-            => await _db.Collections.Where(x => x.CollectionId == id).DeleteAsync();
-========
             // Delete Old Material Details
             foreach (var materialDetail in _db.MaterialDetails.Where(x => oldSampleSetIds.Contains(x.SampleSetId)))
             {
                 _db.Remove(materialDetail);
             }
->>>>>>>> aggregator-fix-deletes:src/Aggregator/Core/Services/CollectionService.cs
+
 
             // Delete Old SampleSets
             foreach (var sampleSet in _db.SampleSets.Where(x => oldSampleSetIds.Contains(x.Id)))
@@ -64,9 +59,26 @@ namespace Biobanks.Aggregator.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task DeleteCollection(Collection collection)
+        public async Task DeleteCollection(int id)
+            => await _db.Collections.Where(x => x.CollectionId == id).DeleteAsync();
+
+        public async Task DeleteSampleSetByIds(IEnumerable<int> ids)
         {
-            await _db.Collections.Where(x => x.CollectionId == collection.CollectionId).DeleteAsync();
+            foreach (var sampleSet in _db.SampleSets.Where(x => ids.Contains(x.Id)))
+            {
+                _db.Remove(sampleSet);
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task DeleteMaterialDetailsBySampleSetIds(IEnumerable<int> ids)
+        {
+            foreach (var materialDetail in _db.MaterialDetails.Where(x => ids.Contains(x.SampleSetId)))
+            {
+                _db.Remove(materialDetail);
+            }
+
             await _db.SaveChangesAsync();
         }
     }
