@@ -1981,19 +1981,15 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
-            //update Organisations table
-            var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
-            KeyValuePair<string, string> credentials;
-
-            if (existingclient)
-                credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
-            else
-                credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+            var credentials = 
+                await _biobankReadService.IsBiobankAnApiClient(biobankId)
+                    ? await _biobankWriteService.GenerateNewSecretForBiobank(biobankId)
+                    : await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
 
             return Json(new
             {
-                publickey = credentials.Key,
-                privatekey = credentials.Value
+                ClientId = credentials.Key,
+                ClientSecret = credentials.Value
             });
         }
         #endregion
