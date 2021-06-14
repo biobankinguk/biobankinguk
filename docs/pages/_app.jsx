@@ -50,10 +50,10 @@ export default function App(props) {
             <RouterLink href={routes.API}>
               <Link>API</Link>
             </RouterLink>,
-            <RouterLink href="/">
+            <RouterLink href={routes.INSTALLATION}>
               <Link>Installation</Link>
             </RouterLink>,
-            <RouterLink href="/">
+            <RouterLink href={routes.DEV}>
               <Link>Developers</Link>
             </RouterLink>,
             <GithubLink
