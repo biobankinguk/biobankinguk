@@ -56,9 +56,8 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
-        private readonly IGenericEFRepository<MaterialDetail> _materialDetailsRepository;
-        private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
+        private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
         private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
@@ -122,7 +121,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<DonorCount> donorCountRepository,
-            IGenericEFRepository<MaterialDetail> materialDetailsRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
@@ -185,7 +183,6 @@ namespace Biobanks.Services
             _sexRepository = sexRepository;
             _ageRangeRepository = ageRangeRepository;
             _donorCountRepository = donorCountRepository;
-            _materialDetailsRepository = materialDetailsRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
@@ -953,7 +950,7 @@ namespace Biobanks.Services
             => (await GetCollectionPercentageUsageCount(id)) > 0;
 
         public async Task<int> GetCollectionPercentageUsageCount(int id)
-            => (await _materialDetailsRepository.ListAsync(false, x => x.CollectionPercentageId == id)).Count();
+            => (await _materialDetailRepository.ListAsync(false, x => x.CollectionPercentageId == id)).Count();
         #endregion
 
         #region RefData: Collection Type
@@ -982,7 +979,7 @@ namespace Biobanks.Services
             => (await GetMacroscopicAssessmentUsageCount(id)) > 0;
 
         public async Task<int> GetMacroscopicAssessmentUsageCount(int id)
-            => (await _materialDetailsRepository.ListAsync(false, x => x.MacroscopicAssessmentId == id)).Count();
+            => (await _materialDetailRepository.ListAsync(false, x => x.MacroscopicAssessmentId == id)).Count();
         #endregion
 
         #region RefData: Annual Statistics
@@ -1091,7 +1088,7 @@ namespace Biobanks.Services
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<int> GetPreservationTypeUsageCount(int id)
-        => await _materialDetailsRepository.CountAsync(x => x.PreservationTypeId == id);
+        => await _materialDetailRepository.CountAsync(x => x.PreservationTypeId == id);
 
         public async Task<bool> IsPreservationTypeInUse(int id)
             => (await GetPreservationTypeUsageCount(id)) > 0;
@@ -1136,7 +1133,7 @@ namespace Biobanks.Services
             => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<int> GetStorageTemperatureUsageCount(int id)
-            => (await _materialDetailsRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
+            => (await _materialDetailRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
 
         public async Task<bool> IsStorageTemperatureInUse(int id)
             => (await GetStorageTemperatureUsageCount(id)) > 0;
