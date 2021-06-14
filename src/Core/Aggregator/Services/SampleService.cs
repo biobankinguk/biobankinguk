@@ -31,7 +31,10 @@ namespace Biobanks.Aggregator.Services
         }
 
         public async Task<IEnumerable<LiveSample>> ListDirtySamples()
-            => await _db.Samples.Where(x => x.IsDirty).ToListAsync();
+            => await _db.Samples.Where(x => x.IsDirty)
+                .Include(x => x.SampleContent)
+                .Include(x => x.SampleContentMethod)
+                .ToListAsync();
 
         public async Task CleanSamples(IEnumerable<LiveSample> samples)
             => await _db.Samples

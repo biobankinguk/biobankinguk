@@ -34,6 +34,9 @@ namespace Core.Jobs
             // All Samples Flagged For Update/Deletion
             var dirtySamples = await _sampleService.ListDirtySamples();
 
+            // TODO: Remove When Non-Extracted Samples Are Supported
+            dirtySamples = dirtySamples.Where(x => x.SampleContent != null && x.SampleContentMethod != null);
+
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamples();
 
@@ -72,10 +75,11 @@ namespace Core.Jobs
                         foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
                         {
                             var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
-                            var percentage = decimal.Divide(sampleSetSamples.Count(), materialDetailSamples.Count());
 
-                            // Set Collection Percetnage For Material Detail
-                            materialDetail.CollectionPercentageId = _refDataService.GetCollectionPercentage(percentage).Id;
+                            // Set Collection Percentage For Material Detail
+                            materialDetail.CollectionPercentage =
+                                _refDataService.GetCollectionPercentage(
+                                    100m * materialDetailSamples.Count() / sampleSetSamples.Count());
 
                             sampleSet.MaterialDetails.Add(materialDetail);
                         }
