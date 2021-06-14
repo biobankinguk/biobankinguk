@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Aggregator.Core.Services.Contracts
+namespace Biobanks.Aggregator.Services.Contracts
 {
     public interface ICollectionService
     {
@@ -12,6 +12,11 @@ namespace Biobanks.Aggregator.Core.Services.Contracts
         
         Task AddCollection(Collection collection);
 
-        Task DeleteCollection(Collection collection);
+        Task DeleteCollection(int id);
+
+        Task DeleteSampleSetByIds(IEnumerable<int> ids);
+
+        Task DeleteMaterialDetailsBySampleSetIds(IEnumerable<int> ids);
+
     }
 }

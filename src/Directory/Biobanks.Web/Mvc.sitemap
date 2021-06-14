@@ -64,6 +64,7 @@
     </mvcSiteMapNode>
 
     <mvcSiteMapNode title="Requests" controller="ADAC" action="Requests"/>
+    <mvcSiteMapNode title="Block/Allow" controller="ADAC" action="BlockAllowList"/>
     <mvcSiteMapNode title="Request history" controller="ADAC" action="Historical"/>
     <mvcSiteMapNode title="Biobanks" controller="ADAC" action="Biobanks"/>
     <mvcSiteMapNode title="Biobank Activity" controller="ADAC" action="BiobankActivity"/>

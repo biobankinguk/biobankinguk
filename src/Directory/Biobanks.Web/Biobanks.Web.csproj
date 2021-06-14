@@ -16,6 +16,7 @@
     <RootNamespace>Biobanks.Web</RootNamespace>
     <AssemblyName>Biobanks.Web</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>8.0</LangVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44300</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
@@ -452,6 +453,7 @@
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
     <Compile Include="ApiControllers\PreservationTypeController.cs" />
+    <Compile Include="ApiControllers\RegistrationDomainRuleController.cs" />
     <Compile Include="ApiControllers\StorageTemperatureController.cs" />
     <Compile Include="ApiControllers\RegistrationReasonController.cs" />
     <Compile Include="ApiControllers\SampleCollectionModeController.cs" />
@@ -469,6 +471,7 @@
     <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
+    <Compile Include="Models\ADAC\BlockAllowListModel.cs" />
     <Compile Include="Models\Biobank\SubmissionsModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
@@ -476,6 +479,8 @@
     <Compile Include="Models\Header\HeaderItemModel.cs" />
     <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
+    <Content Include="Scripts\ADAC\adac-blockallow-list.js" />
+    <Content Include="Scripts\ADAC\adac-email-config.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
     <Content Include="Scripts\ADAC\adac-refdata-utility.js" />
@@ -493,6 +498,7 @@
     <Content Include="App_Config\footer.json" />
     <Content Include="App_Config\header.json" />
     <None Include="Scripts\jquery-2.2.2.intellisense.js" />
+    <Content Include="Scripts\Biobank\collection-crud.js" />
     <Content Include="Scripts\Biobank\edit-details.js" />
     <Content Include="Scripts\Biobank\submissions.js" />
     <Content Include="Scripts\bootbox.js" />
@@ -850,6 +856,9 @@
     <Content Include="Views\SuperUser\Tools.cshtml" />
     <Content Include="Views\ADAC\_ModalResetPassword.cshtml" />
     <Content Include="Views\Biobank\Submissions.cshtml" />
+    <Content Include="Views\ADAC\EmailConfig.cshtml" />
+    <Content Include="Views\ADAC\BlockAllowList.cshtml" />
+    <Content Include="Views\Header\_NavItemSuperUser.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -906,7 +915,6 @@
     <Compile Include="Models\Shared\AnnualStatisticGroupModel.cs" />
     <Compile Include="Models\Shared\AssociatedDataTypeGroupModel.cs" />
     <Compile Include="Models\Shared\CollectionTypeModel.cs" />
-    <Compile Include="Models\Shared\ErrorStatusModel.cs" />
     <Compile Include="Models\Shared\CollectionStatusModel.cs" />
     <Compile Include="Models\Shared\MaterialTypeModel.cs" />
     <Compile Include="Models\Profile\BiobankPublicationsModel.cs" />
@@ -914,6 +922,7 @@
     <Compile Include="Models\Shared\AssociatedDataProcurementTimeFrameModel.cs" />
     <Compile Include="Models\Shared\CountryModel.cs" />
     <Compile Include="Models\Shared\RefDataFeedbackModel.cs" />
+    <Compile Include="Models\Shared\RegistrationDomainRuleModel.cs" />
     <Compile Include="Models\Shared\RegistrationReasonModel.cs" />
     <Compile Include="Models\Shared\ServiceOfferingModel.cs" />
     <Compile Include="Models\Shared\SexModel.cs" />
@@ -1079,32 +1088,6 @@
   <ItemGroup>
     <Folder Include="Content\css\" />
     <Folder Include="Properties\" />
-    <Folder Include="Views\AgeRanges\" />
-    <Folder Include="Views\AnnualStatisticGroups\" />
-    <Folder Include="Views\AnnualStatistics\" />
-    <Folder Include="Views\ApiBase\" />
-    <Folder Include="Views\AssociatedDataProcurementTimeFrame\" />
-    <Folder Include="Views\AssociatedDataTypeGroups\" />
-    <Folder Include="Views\AssociatedDataTypes\" />
-    <Folder Include="Views\CollectionPercentages\" />
-    <Folder Include="Views\CollectionPoints\" />
-    <Folder Include="Views\CollectionStatus\" />
-    <Folder Include="Views\CollectionType\" />
-    <Folder Include="Views\ConsentRestrictions\" />
-    <Folder Include="Views\Country\" />
-    <Folder Include="Views\County\" />
-    <Folder Include="Views\DiseaseStatuses\" />
-    <Folder Include="Views\DonorCounts\" />
-    <Folder Include="Views\HtaStatus\" />
-    <Folder Include="Views\MacroscopicAssessment\" />
-    <Folder Include="Views\MaterialTypes\" />
-    <Folder Include="Views\PreservationType\" />
-    <Folder Include="Views\RegistrationReason\" />
-    <Folder Include="Views\SampleCollectionModes\" />
-    <Folder Include="Views\ServiceOfferings\" />
-    <Folder Include="Views\Sexes\" />
-    <Folder Include="Views\SopStatus\" />
-    <Folder Include="Views\Version\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj">
@@ -1198,9 +1181,15 @@
     <ItemGroup>
       <Compile Include="$(IntermediateOutputPath)Version.cs" />
     </ItemGroup>
-  </Target>
-  <Target Name="AfterBuild">
+    
+    <!-- Elastic Search Index Descriptions -->
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\collections.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
+
+    <ItemGroup>
+      <Content Include="./App_Config/*.json">
+        <CopyToOutputDirectory></CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
   </Target>
 </Project>

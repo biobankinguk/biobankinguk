@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Entities.Data;
@@ -14,9 +15,14 @@ using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Biobank;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
+
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNet.Identity;
+
 using MvcSiteMapProvider;
+
 using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -26,6 +32,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+
 using static System.String;
 
 namespace Biobanks.Web.Controllers
@@ -145,7 +152,7 @@ namespace Biobanks.Web.Controllers
             request.OrganisationCreatedDate = DateTime.Now;
             request.OrganisationExternalId = biobank.OrganisationExternalId;
             await _biobankWriteService.UpdateOrganisationRegisterRequestAsync(request);
-            
+
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
                     {
@@ -212,7 +219,7 @@ namespace Biobanks.Web.Controllers
                 model = await AddCountiesToModel(model);
                 return View(model);
             }
-
+     
             //Extra form validation that the model state can't do for us
 
             //Logo, if any
@@ -436,7 +443,7 @@ namespace Biobanks.Web.Controllers
         }
 
         #endregion
-        
+
         #region Temp Logo Management
 
         [HttpPost]
@@ -848,7 +855,7 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> AddCollection()
         {
-            return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(new AddCollectionModel())));
+            return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(new AddCollectionModel {FromApi = false })));
         }
 
         [HttpPost]
@@ -924,7 +931,7 @@ namespace Biobanks.Web.Controllers
                 CollectionType = collection.CollectionType?.Id,
                 CollectionStatus = collection.CollectionStatus.Id,
                 Groups = groups.Groups
-                
+
             };
 
             var assdatlist = model.ListAssociatedDataModels();
@@ -952,6 +959,29 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
+
+            //Retrieve collection
+            var collection = await _biobankReadService.GetCollectionByIdAsync(model.Id);
+
+            if (collection.FromApi)
+            {
+                var associatedData = collection.AssociatedData
+                    .Select(y => new CollectionAssociatedData
+                    {
+                        CollectionId = y.CollectionId,
+                        AssociatedDataTypeId = y.AssociatedDataTypeId,
+                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId
+                    }).ToList();
+
+                // Update description
+                collection.Description = model.Description;
+                await _biobankWriteService.UpdateCollectionAsync(collection, collection.OntologyTerm.Value,
+                    associatedData, collection.ConsentRestrictions.Select(x=>x.Id));
+
+                SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
+
+                return RedirectToAction("Collection", new { id = model.Id });
+            }
 
             if (await model.IsValid(ModelState, _biobankReadService) && model.FromApi == false)
             {
@@ -983,6 +1013,12 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
                 return RedirectToAction("Collection", new { id = model.Id });
+            }
+            else
+            {
+                //Populate Groups
+                model.Groups = null;
+                await PopulateAbstractCRUDCollectionModel(model);
             }
 
             return View((EditCollectionModel)(await PopulateAbstractCRUDCollectionModel(model)));
@@ -1084,7 +1120,7 @@ namespace Biobanks.Web.Controllers
                     SexId = model.Sex,
                     AgeRangeId = model.AgeRange,
                     DonorCountId = model.DonorCountId,
-                    MaterialDetails = model.MaterialPreservationDetails.Select(x => 
+                    MaterialDetails = model.MaterialPreservationDetails.Select(x =>
                         new MaterialDetail
                         {
                             MaterialTypeId = x.materialType,
@@ -1179,7 +1215,7 @@ namespace Biobanks.Web.Controllers
                 }))
             };
 
-              return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+            return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
         }
 
         [HttpPost]
@@ -1276,50 +1312,50 @@ namespace Biobanks.Web.Controllers
             IEnumerable<ConsentRestriction> consentRestrictions = null)
         {
 
-                model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
-                model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
-                model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
-                    .Select(x => new ReferenceDataModel
-                    {
-                        Id = x.Id,
-                        Description = x.Value,
-                        SortOrder = x.SortOrder
-                    })
-                    .OrderBy(x => x.SortOrder);
-
-                model.ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
-                    .OrderBy(x => x.SortOrder)
-                    .Select(x => new Models.Biobank.ConsentRestrictionModel
-                    {
-                        ConsentRestrictionId = x.Id,
-                        Description = x.Value,
-                        Active = consentRestrictions != null && consentRestrictions.Any(y => y.Id == x.Id)
-                    });
-
-                //if not null keeps previous groups values
-                if (model.Groups ==null)
+            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+                .Select(x => new ReferenceDataModel
                 {
-                    var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
-                    model.Groups = groups.Groups;
-                }
-                    
-            
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                })
+                .OrderBy(x => x.SortOrder);
+
+            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                .Select(x => new ReferenceDataModel
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                })
+                .OrderBy(x => x.SortOrder);
+
+            model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
+                .Select(x => new ReferenceDataModel
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                })
+                .OrderBy(x => x.SortOrder);
+
+            model.ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+                .OrderBy(x => x.SortOrder)
+                .Select(x => new Models.Biobank.ConsentRestrictionModel
+                {
+                    ConsentRestrictionId = x.Id,
+                    Description = x.Value,
+                    Active = consentRestrictions != null && consentRestrictions.Any(y => y.Id == x.Id)
+                });
+
+            //if not null keeps previous groups values
+            if (model.Groups == null)
+            {
+                var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
+                model.Groups = groups.Groups;
+            }
+
+
             return model;
         }
 
@@ -1342,24 +1378,24 @@ namespace Biobanks.Web.Controllers
                          DataGroupId = x.AssociatedDataTypeGroupId,
                          Message = x.Message,
                          TimeFrames = timeFrames
-                });
+                     });
 
-                model.Groups = new List<AssociatedDataGroupModel>();
-                var groups = await _biobankReadService.ListAssociatedDataTypeGroupsAsync();
-                foreach (var g in groups)
-                {
-                    var groupModel = new AssociatedDataGroupModel();
-                    groupModel.GroupId = g.Id;
-                    groupModel.Name = g.Value;
-                    groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
-                    model.Groups.Add(groupModel);
-                }
+            model.Groups = new List<AssociatedDataGroupModel>();
+            var groups = await _biobankReadService.ListAssociatedDataTypeGroupsAsync();
+            foreach (var g in groups)
+            {
+                var groupModel = new AssociatedDataGroupModel();
+                groupModel.GroupId = g.Id;
+                groupModel.Name = g.Value;
+                groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
+                model.Groups.Add(groupModel);
+            }
 
-                //Check if types are valid
-                foreach (var type in types)
-                {
-                    type.Active = model.AssociatedDataModelsValid();
-                }
+            //Check if types are valid
+            foreach (var type in types)
+            {
+                type.Active = model.AssociatedDataModelsValid();
+            }
 
             return model;
         }
@@ -1742,10 +1778,10 @@ namespace Biobanks.Web.Controllers
                     DOI = x.DOI,
                     Approved = x.Accepted,
                     Source = x.Source
-                    
+
                 });
             }
-                
+
             return Json(biobankPublications, JsonRequestBehavior.AllowGet);
         }
 
@@ -1857,8 +1893,30 @@ namespace Biobanks.Web.Controllers
             if (reportPeriod == 0)
                 reportPeriod = 5;
 
-            var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
-            return View(model);
+            try
+            {
+                var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                var message = e switch
+                {
+                    JsonSerializationException _ => "The API Response Body could not be processed.",
+                    KeyNotFoundException _ => "Couldn't find the specified Biobank.",
+                    HttpRequestException _ => "The API Request failed.",
+                    _ => "An unknown error occurred and has been logged."
+                };
+
+                var outer = new Exception(message, e);
+
+                // Log Error via Application Insights
+                var ai = new TelemetryClient();
+                ai.TrackException(outer);
+
+                ModelState.AddModelError(Empty, outer);
+                return View(new BiobankAnalyticReport());
+            }
         }
         #endregion
 

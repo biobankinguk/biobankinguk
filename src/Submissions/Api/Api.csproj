@@ -7,11 +7,16 @@
     <AssemblyName>Biobanks.Submissions.Api</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <Content Include="swagger.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Settings\LegacyMaterialTypes.json" />
+    <None Include="Settings\LegacyStorageTemperatures.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,11 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core.AzureStorage\Core.AzureStorage.csproj" />
     <ProjectReference Include="..\..\Core\Core.csproj" />
     <ProjectReference Include="..\..\Data\Data.csproj" />
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj" />
-    <ProjectReference Include="..\Core.AzureStorage\Core.AzureStorage.csproj" />
-    <ProjectReference Include="..\Core\Core.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

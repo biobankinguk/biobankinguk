@@ -18,10 +18,7 @@
 			}))
 	{
 
-		if (Model.FromApi == false)
-		{
-			@Html.ActionLink("Edit", "EditCollection", new { Model.Id }, new { @class = "btn btn-primary" });
-		}
+		@Html.ActionLink("Edit", "EditCollection", new { Model.Id }, new { @class = "btn btn-primary" });
 		@Html.AntiForgeryToken()
 		@Html.Hidden("id", Model.Id)
 		<button type="submit" class="btn btn-default bootbox-confirm" data-form-id="DeleteCollection" data-confirm-message="Are you sure you wish to delete this collection?">Delete</button>
@@ -37,7 +34,7 @@
 @if (Model.FromApi)
 {
 	<div class="alert alert-info feedback-message" role="alert">
-		This collection and any associated sample sets are read-only.
+		Only selected fields of this collection and associated sample sets are editable.
 	</div>
 }
 

@@ -9,6 +9,9 @@
 				"action": "adac"
 			},
 			{
+				"action": "superuser"
+			},
+			{
 				"action": "biobanks"
 			},
 			{

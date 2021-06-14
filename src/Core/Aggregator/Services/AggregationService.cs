@@ -1,15 +1,15 @@
-﻿using Biobanks.Aggregator.Core.Services.Contracts;
+﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
+using Biobanks.Submissions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Xml;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.Aggregator.Core.Services
+namespace Biobanks.Aggregator.Services
 {
     public class AggregationService : IAggregationService
     {
@@ -37,17 +37,15 @@ namespace Biobanks.Aggregator.Core.Services
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoSampleSets(IEnumerable<LiveSample> samples)
         {
-            var ageRanges = _db.AgeRanges.ToList();
             var defaultAgeRange = _refDataService.GetDefaultAgeRange();
+            var ageRanges = _db.AgeRanges.Where(x => x.Id != defaultAgeRange.Id).ToList();
 
             // Group Samples Into SampleSets
             return samples
                 .Select(sample => new
                 {
                     Sample = sample,
-                    AgeRange = ageRanges.FirstOrDefault(y =>
-                        XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(sample.AgeAtDonation) &&
-                        XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(sample.AgeAtDonation)) ?? defaultAgeRange
+                    AgeRange = ageRanges.FirstOrDefault(y => y.ContainsTimeSpan(sample.AgeAtDonation)) ?? defaultAgeRange
                 })
                 .GroupBy(x => new
                 {

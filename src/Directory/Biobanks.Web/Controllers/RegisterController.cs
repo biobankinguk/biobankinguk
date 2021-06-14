@@ -11,6 +11,7 @@ using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
+using System.Linq;
 
 namespace Biobanks.Web.Controllers
 {
@@ -19,6 +20,7 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IEmailService _emailService;
+        private readonly IRegistrationDomainService _registrationDomainService;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
@@ -26,12 +28,14 @@ namespace Biobanks.Web.Controllers
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IEmailService emailService)
+            IEmailService emailService, 
+            IRegistrationDomainService registrationDomainService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _userManager = userManager;
             _emailService = emailService;
+            _registrationDomainService = registrationDomainService;
         }
 
         // GET: Register
@@ -62,6 +66,39 @@ namespace Biobanks.Web.Controllers
             });
         }
 
+        public async Task<bool> RegistrationHoneypotTrap(RegisterEntityModel model)
+        {
+            //check if honeypot field is true
+            if (model.AcceptTerms && !model.AdacInvited)
+            {
+                //check if domain rule exist for user
+                var rule = await _registrationDomainService.GetRuleByValue(model.Email);
+
+                if (rule != null)
+                {
+                    //update rule to block user
+                    rule.RuleType = "Block";
+                    rule.DateModified = DateTime.Now;
+                    rule.Source = "Automatic block: honeypot";
+                    await _registrationDomainService.Update(rule);
+                }
+                else
+                {
+                    // add new rule to block user
+                    await _registrationDomainService.Add(new RegistrationDomainRule
+                    {
+                        RuleType = "Block",
+                        Source = "Automatic block: honeypot",
+                        Value = model.Email,
+                        DateModified = DateTime.Now
+                    });
+                }
+
+                return true;
+            }
+
+            return false;
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -75,6 +112,10 @@ namespace Biobanks.Web.Controllers
             {
                 return View(model);
             }
+
+            //check for honeypot trap
+            if (await RegistrationHoneypotTrap(model))
+                return View("RegisterConfirmation");
 
             //check for duplicate Biobank name
             var existingOrg = await _biobankReadService.GetBiobankByNameAsync(model.Entity);
@@ -92,6 +133,17 @@ namespace Biobanks.Web.Controllers
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(
                     $"Registration is already in progress for {model.Entity}. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+                    FeedbackMessageType.Danger, true);
+
+                return View(model);
+            }
+
+            //Check if email is on the allow/block list
+            if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
+            {
+                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                SetTemporaryFeedbackMessage(
+                    $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
                     FeedbackMessageType.Danger, true);
 
                 return View(model);
@@ -166,6 +218,10 @@ namespace Biobanks.Web.Controllers
                 return View(model);
             }
 
+            //check for honeypot trap
+            if (await RegistrationHoneypotTrap(model))
+                return View("RegisterConfirmation");
+
             //check for duplicate Network name
             var existingNetwork = await _biobankReadService.GetNetworkByNameAsync(model.Entity);
 
@@ -180,6 +236,17 @@ namespace Biobanks.Web.Controllers
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
+
+                return View(model);
+            }
+
+            //Check if email is on the allow/block list
+            if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
+            {
+                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                SetTemporaryFeedbackMessage(
+                    $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+                    FeedbackMessageType.Danger, true);
 
                 return View(model);
             }

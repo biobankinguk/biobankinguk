@@ -1347,7 +1347,7 @@ namespace Biobanks.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Year")
+                    b.Property<int?>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1765,6 +1765,32 @@ namespace Biobanks.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SopStatus");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.RegistrationDomainRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RuleType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RegistrationDomainRules");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.SampleSet", b =>

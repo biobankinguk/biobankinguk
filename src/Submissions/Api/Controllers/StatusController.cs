@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Core.Models;
-using Biobanks.Submissions.Core.Services.Contracts;
-using Biobanks.Submissions.Core.Types;
+using Core.Submissions.Models;
+using Core.Submissions.Services.Contracts;
+using Core.Submissions.Types;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,6 +19,8 @@ namespace Biobanks.Submissions.Api.Controllers
     /// </summary>
     [Route("[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Submissions")]
+    [Authorize(nameof(AuthPolicies.IsTokenAuthenticated))]
     public class StatusController : ControllerBase
     {
         private readonly ISubmissionService _submissions;

@@ -32,16 +32,19 @@ namespace Core.Jobs
         public async Task Run()
         {
             // All Samples Flagged For Update/Deletion
-            var dirtySamples = await _sampleService.ListDirtySamples();
+            var dirtyExtractedSamples = await _sampleService.ListDirtyExtractedSamples();
+
+            // TODO: Remove When Non-Extracted Samples Are Supported
+            dirtySamples = dirtySamples.Where(x => x.SampleContent != null && x.SampleContentMethod != null);
 
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamples();
 
             // Group Samples Into Collections
-            foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtySamples))
+            foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyExtractedSamples))
             {
                 var sample = collectionSamples.First();
-                var samples = await _sampleService.ListSimilarSamples(sample);
+                var samples = await _sampleService.ListSimilarSamples(collectionSamples);
                 var organisation = await _organisationService.GetById(sample.OrganisationId);
 
                 // Find Exisiting Or Generate New Collection
@@ -57,9 +60,6 @@ namespace Core.Jobs
                     collection.CollectionTypeId = organisation.CollectionTypeId;
                     collection.AccessConditionId = organisation.AccessConditionId ?? 0;
 
-                    // Record Old SampleSet IDs
-                    var oldSampleSetIds = collection.SampleSets.Select(x => x.Id).Distinct().ToList();
-
                     // Clear Current SampleSets - Rebuilt Below
                     collection.SampleSets.Clear(); 
 
@@ -72,10 +72,11 @@ namespace Core.Jobs
                         foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
                         {
                             var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
-                            var percentage = decimal.Divide(sampleSetSamples.Count(), materialDetailSamples.Count());
 
-                            // Set Collection Percetnage For Material Detail
-                            materialDetail.CollectionPercentageId = _refDataService.GetCollectionPercentage(percentage).Id;
+                            // Set Collection Percentage For Material Detail
+                            materialDetail.CollectionPercentage =
+                                _refDataService.GetCollectionPercentage(
+                                    100m * materialDetailSamples.Count() / sampleSetSamples.Count());
 
                             sampleSet.MaterialDetails.Add(materialDetail);
                         }
@@ -90,18 +91,18 @@ namespace Core.Jobs
                     }
                     else
                     {
-                        await _collectionService.DeleteMaterialDetailsBySampleSetIds(oldSampleSetIds);
                         await _collectionService.UpdateCollection(collection);
-                        await _collectionService.DeleteSampleSetByIds(oldSampleSetIds);
                     }
                 }
                 else
                 {
-                    await _collectionService.DeleteCollection(collection);
+                    await _collectionService.DeleteMaterialDetailsBySampleSetIds(collection.SampleSets.Select(x => x.Id));
+                    await _collectionService.DeleteSampleSetByIds(collection.SampleSets.Select(x => x.Id));
+                    await _collectionService.DeleteCollection(collection.CollectionId);
                 }
 
                 // Flag These Samples As Clean
-                await _sampleService.CleanSamples(collectionSamples);
+                await _sampleService.CleanSamples(samples);
             }
         }
     }

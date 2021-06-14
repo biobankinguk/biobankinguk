@@ -1,6 +1,9 @@
 ﻿using Biobanks.Submissions.Api.Services.Contracts;
-using Biobanks.Submissions.Core.Services.Contracts;
+using Core.Jobs;
+using Core.Submissions.Models;
+using Core.Submissions.Types;
 using Hangfire;
+using System;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Services
@@ -8,27 +11,34 @@ namespace Biobanks.Submissions.Api.Services
     /// <inheritdoc />
     public class HangfireQueueService : IBackgroundJobEnqueueingService
     {
-        private readonly ICommitService _commitService;
-        private readonly IRejectService _rejectService;
-
         /// <inheritdoc />
-        public HangfireQueueService(ICommitService commitService, IRejectService rejectService)
+        public Task Stage(int biobankId, int submissionId, Guid blobId, string blobType, Operation op)
         {
-            _commitService = commitService;
-            _rejectService = rejectService;
+            BackgroundJob.Enqueue<StagingJob>(x => x.Run(
+                new OperationsQueueItem
+                {
+                    SubmissionId = submissionId,
+                    Operation = op,
+                    BlobId = blobId,
+                    BlobType = blobType,
+                    BiobankId = biobankId
+                }
+            ));
+
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />
         public Task Commit(int biobankId, bool replace)
         {
-            BackgroundJob.Enqueue(() => _commitService.CommitStagedData(replace, biobankId));
+            BackgroundJob.Enqueue<CommitJob>(x => x.Run(biobankId, replace));
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
         public Task Reject(int biobankId)
         {
-            BackgroundJob.Enqueue(() => _rejectService.RejectStagedData(biobankId));
+            BackgroundJob.Enqueue<RejectJob>(x => x.Run(biobankId));
             return Task.CompletedTask;
         }
     }

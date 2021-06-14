@@ -1,16 +1,15 @@
 ﻿using Biobanks.Web.Models.Shared;
-using Microsoft.Ajax.Utilities;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Biobanks.Web.Models.Biobank
 {
     public class BiobankAnalyticReport
     {
         public string Name { get; set; }
-        public string ExternalId { get; set; } //maybe use external ID
+        public string ExternalId { get; set; }
         public string Logo { get; set; }
         public int Year { get; set; }
         public int EndQuarter { get; set; }
@@ -20,20 +19,14 @@ namespace Biobanks.Web.Models.Biobank
         public ProfilePageViews ProfilePageViews { get; set; }
         public SearchActivity SearchActivity { get; set; }
         public ContactRequests ContactRequests { get; set; }
-        public ErrorStatusModel Error { get; set; }
 
-        public bool IsNullOrEmpty()
-        {
-            if ((ProfilePageViews == null || ProfilePageViews.IsEmpty()) &&
-               (SearchActivity == null || SearchActivity.IsEmpty()) &&
-               (ContactRequests == null || ContactRequests.IsEmpty()))
-                return true;
-            else
-                return false;
-        }
+        public bool IsNullOrEmpty() =>
+            (ProfilePageViews?.IsEmpty() != false) &&
+            (SearchActivity?.IsEmpty() != false) &&
+            (ContactRequests?.IsEmpty() != false);
     }
 
-    public partial class ProfileStatus
+    public class ProfileStatus
     {
         public int CollectionStatus { get; set; }
         public string CollectionStatusMessage { get; set; }
@@ -41,84 +34,66 @@ namespace Biobanks.Web.Models.Biobank
         public string CapabilityStatusMessage { get; set; }
     }
 
-    public partial class ProfilePageViews
+    public class ProfilePageViews
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCounts> ProfileQuarters { get; set; }
         public IList<int> ViewsPerQuarter { get; set; }
         public IList<double> ViewsAverages { get; set; }
-        public IList<String> PageRouteLabels { get; set; }
+        public IList<string> PageRouteLabels { get; set; }
         public IList<int> RouteCount { get; set; }
 
-        public bool IsEmpty()
-        {
-            if ((this.ViewsPerQuarter?.Count() +
-                this.RouteCount?.Count() +
-                this.ViewsAverages?.Count() +
-                this.ProfileQuarters?.Where(x => x.QuarterCount.Count > 0).Count()) == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => (
+            ViewsPerQuarter?.Count() +
+            RouteCount?.Count() +
+            ViewsAverages?.Count() +
+            ProfileQuarters?.Where(x => x.QuarterCount.Count > 0).Count())
+            == 0;
     }
 
-    public partial class SearchActivity
+    public class SearchActivity
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCounts> SearchQuarters { get; set; }
         public IList<int> SearchPerQuarter { get; set; }
         public IList<double> SearchAverages { get; set; }
-        public IList<String> SearchTypeLabels { get; set; }
+        public IList<string> SearchTypeLabels { get; set; }
         public IList<int> SearchTypeCount { get; set; }
-        public IList<String> SearchTermLabels { get; set; }
+        public IList<string> SearchTermLabels { get; set; }
         public IList<int> SearchTermCount { get; set; }
-        public IList<String> SearchFilterLabels { get; set; }
+        public IList<string> SearchFilterLabels { get; set; }
         public IList<int> SearchFilterCount { get; set; }
 
-        public bool IsEmpty()
-        {
-            if ((this.SearchPerQuarter?.Count() +
-                this.SearchAverages?.Count() + 
-                this.SearchTypeCount?.Count() +
-                this.SearchTermCount?.Count() +
-                this.SearchFilterCount?.Count() +
-                this.SearchQuarters?.Where(x => x.QuarterCount.Count > 0).Count()) == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => (
+            SearchPerQuarter?.Count() +
+            SearchAverages?.Count() +
+            SearchTypeCount?.Count() +
+            SearchTermCount?.Count() +
+            SearchFilterCount?.Count() +
+            SearchQuarters?.Where(x => x.QuarterCount.Count > 0).Count())
+            == 0;
     }
 
-    public partial class ContactRequests
+    public class ContactRequests
     {
-        public IList<String> QuarterLabels { get; set; }
+        public IList<string> QuarterLabels { get; set; }
         public IList<QuarterlyCounts> ContactQuarters { get; set; }
         public IList<int> ContactsPerQuarter { get; set; }
         public IList<double> ContactAverages { get; set; }
 
-        public bool IsEmpty()
-        {
-            if ((this.ContactsPerQuarter?.Count() +
-                this.ContactAverages?.Count() +
-                this.ContactQuarters?.Where(x => x.QuarterCount.Count > 0).Count()) == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => (
+            ContactsPerQuarter?.Count() +
+            ContactAverages?.Count() +
+            ContactQuarters?.Where(x => x.QuarterCount.Count > 0).Count())
+            == 0;
     }
 
-    public partial class QuarterlyCounts
+    public class QuarterlyCounts
     {
         public string BiobankId { get; set; } //use external ID as this is serialized in HTML page 
         public int Total { get; set; }
         public IList<int> QuarterCount { get; set; }
 
-        public bool IsEmpty()
-        {
-            if (this.QuarterCount?.Count() == 0)
-                return true;
-            else
-                return false;
-        }
+        public bool IsEmpty() => QuarterCount?.Count() == 0;
     }
 }

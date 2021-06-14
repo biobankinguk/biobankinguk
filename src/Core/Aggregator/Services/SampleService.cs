@@ -1,4 +1,4 @@
-﻿using Biobanks.Aggregator.Core.Services.Contracts;
+﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
 
-namespace Biobanks.Aggregator.Core.Services
+namespace Biobanks.Aggregator.Services
 {
     public class SampleService : ISampleService
     {
@@ -39,11 +39,18 @@ namespace Biobanks.Aggregator.Core.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<LiveSample>> ListDirtySamples()
+            => await _db.Samples.Where(x => x.IsDirty)
+                .Include(x => x.SampleContent)
+                .Include(x => x.SampleContentMethod)
+                .ToListAsync();
+
         public async Task<IEnumerable<LiveSample>> ListDirtyExtractedSamples()
             => await _db.Samples.Where(x => x.IsDirty && !string.IsNullOrEmpty(x.SampleContentId)).ToListAsync();
 
         public async Task<IEnumerable<LiveSample>> ListDirtyNonExtractedSamples()
             => await _db.Samples.Where(x => x.IsDirty && string.IsNullOrEmpty(x.SampleContentId)).ToListAsync();
+
 
         public async Task CleanSamples(IEnumerable<LiveSample> samples)
             => await _db.Samples
