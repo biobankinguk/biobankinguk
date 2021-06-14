@@ -38,11 +38,8 @@ namespace Biobanks.Aggregator.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task DeleteCollection(Collection collection)
-        {
-            await _db.Collections.Where(x => x.CollectionId == collection.CollectionId).DeleteAsync();
-            await _db.SaveChangesAsync();
-        }
+        public async Task DeleteCollection(int id)
+            => await _db.Collections.Where(x => x.CollectionId == id).DeleteAsync();
 
         public async Task DeleteSampleSetByIds(IEnumerable<int> ids)
         {
