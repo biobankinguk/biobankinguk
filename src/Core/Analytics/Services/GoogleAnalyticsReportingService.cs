@@ -120,22 +120,26 @@ namespace Biobanks.Analytics.Services
             var eventData = reportResponse.Reports[0].Data.Rows;
             var metricData = reportResponse.Reports[1].Data.Rows;
 
-            foreach (ReportRow events in eventData)
+            //If the job has run recently after the previous run, eventData returned will be null
+            if (eventData != null)
             {
-                _db.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
+                foreach (ReportRow events in eventData)
                 {
-                    Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
-                    EventCategory = events.Dimensions[1],
-                    EventAction = events.Dimensions[2],
-                    Biobank = events.Dimensions[3],
-                    Segment = events.Dimensions[4],
-                    Source = events.Dimensions[5],
-                    Hostname = events.Dimensions[6],
-                    City = events.Dimensions[7],
-                    Counts = int.Parse(events.Metrics[0].Values[0]),
-                });
+                    _db.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
+                    {
+                        Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
+                        EventCategory = events.Dimensions[1],
+                        EventAction = events.Dimensions[2],
+                        Biobank = events.Dimensions[3],
+                        Segment = events.Dimensions[4],
+                        Source = events.Dimensions[5],
+                        Hostname = events.Dimensions[6],
+                        City = events.Dimensions[7],
+                        Counts = int.Parse(events.Metrics[0].Values[0]),
+                    });
+                }
+                await _db.SaveChangesAsync();
             }
-            await _db.SaveChangesAsync();
 
             foreach (ReportRow metric in metricData)
             {
