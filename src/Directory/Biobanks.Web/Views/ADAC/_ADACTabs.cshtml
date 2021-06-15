@@ -122,6 +122,11 @@
                     </li>
 
                     <li role="presentation"
+                        class="@(Model == "Extraction Procedures" ? "active" : "true")">
+                        @Html.ActionLink("Extraction Procedures", "ExtractionProcedure")
+                    </li>
+
+                    <li role="presentation"
                         class="@(Model == $"{@App.Config[ConfigKey.MacroscopicAssessmentName]}" ? "active" : "true")">
                         @Html.ActionLink($"{@App.Config[ConfigKey.MacroscopicAssessmentName]}", "MacroscopicAssessments")
                     </li>
