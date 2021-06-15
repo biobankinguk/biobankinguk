@@ -90,6 +90,10 @@ namespace Biobanks.Web.ApiControllers
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
 
+            //if new id is in use by another ontology term
+            if (id != model.OntologyTermId && (await _biobankReadService.ListOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
+                ModelState.AddModelError("OntologyTermId", "This Id is currently in use by another Disease status or extraction procedure. Ontology Term Ids must be unique");
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
@@ -115,6 +119,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
+            //if ontology term id is in use by another ontology term
+            if ((await _biobankReadService.ListOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
+                ModelState.AddModelError("OntologyTermId", "This Id is currently in use by another Disease status or extraction procedure. Ontology Term Ids must be unique");
+
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
             {
