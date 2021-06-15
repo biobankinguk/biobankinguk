@@ -10,14 +10,14 @@ using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
 {
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/DiseaseStatus")]
-    public class DiseaseStatusController : ApiBaseController
+    //[UserApiAuthorize(Roles = "ADAC")]
+    [RoutePrefix("api/ExtractionProcedure")]
+    public class ExtractionProcedureController : ApiBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public DiseaseStatusController(IBiobankReadService biobankReadService, IBiobankWriteService biobankWriteService)
+        public ExtractionProcedureController(IBiobankReadService biobankReadService, IBiobankWriteService biobankWriteService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -28,13 +28,14 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            return (await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
+            return (await _biobankReadService.ListExtractionProceduresAsync())
+                .Select(x =>
 
-                Task.Run(async () => new ReadOntologyTermModel
+                Task.Run(async () => new ReadExtractionProcedureModel
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
@@ -46,11 +47,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListOntologyTermsAsync()).Where(x => x.Id == id).First();
+            var model = (await _biobankReadService.ListExtractionProceduresAsync()).Where(x => x.Id == id).First();
 
-            if (await _biobankReadService.IsOntologyTermInUse(id))
+            if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
-                ModelState.AddModelError("Description", $"The disease status \"{model.Value}\" is currently in use, and cannot be deleted.");
+                ModelState.AddModelError("Description", $"The extraction procedure \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -79,15 +80,15 @@ namespace Biobanks.Web.ApiControllers
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(id, model.Description))
             {
-                ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Disease status descriptions must be unique.");
+                ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Extraction procedure descriptions must be unique.");
             }
 
-            if (await _biobankReadService.IsOntologyTermInUse(id))
+            var ontologyTerm = (await _biobankReadService.ListExtractionProceduresAsync()).Where(x => x.Id == id).First();
+            if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
-                //Allow editing of only Other terms field if diagnosis in use
-                var diagnosis = (await _biobankReadService.ListOntologyTermsAsync()).Where(x => x.Id == id).First();
-                if (diagnosis.Value != model.Description)
-                    ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
+                //Allow editing of only Other terms field if ontologyterm in use
+                if (ontologyTerm.Value != model.Description)
+                    ModelState.AddModelError("Description", "This extraction procedure is currently in use and cannot be edited.");
             }
 
             if (!ModelState.IsValid)
@@ -97,9 +98,10 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateOntologyTermAsync(new OntologyTerm
             {
-                Id = model.OntologyTermId,
+                Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
+                SnomedTagId = ontologyTerm.SnomedTagId,
                 DisplayOnDirectory = true
             });
 
@@ -118,7 +120,7 @@ namespace Biobanks.Web.ApiControllers
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
             {
-                ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Disease status descriptions must be unique.");
+                ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Extraction procedure descriptions must be unique.");
             }
 
             if (!ModelState.IsValid)
@@ -131,6 +133,7 @@ namespace Biobanks.Web.ApiControllers
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
+                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
                 DisplayOnDirectory = true
             });
 
