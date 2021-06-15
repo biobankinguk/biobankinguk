@@ -91,10 +91,6 @@ namespace Biobanks.Web.ApiControllers
                     ModelState.AddModelError("Description", "This extraction procedure is currently in use and cannot be edited.");
             }
 
-            //if ontology term id is modified
-            if (id != model.OntologyTermId)
-                ModelState.AddModelError("OntologyTermId", "You cannot modify the extraction procedure id. Please delete the extraction procedure if it's not in use and re-add it with a new Id.");
-
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
@@ -102,7 +98,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateOntologyTermAsync(new OntologyTerm
             {
-                Id = model.OntologyTermId,
+                Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
