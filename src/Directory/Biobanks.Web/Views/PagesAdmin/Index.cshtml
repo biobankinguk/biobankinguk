@@ -1,52 +1,57 @@
 ﻿@using Biobanks.Web.Models.ADAC
 @using System.Web.Optimization
-@using System.Web.Mvc.Html 
+@using System.Web.Mvc.Html
 @model IEnumerable<ContentPageModel>
 
-@{ ViewBag.Title = "Content Page Admin"; }
+@{
+	ViewBag.Title = "Content Page Admin";
+}
 
-<h1>Content Page Admin @Html.ActionLink("Create", "CreateEdit", "PagesAdmin", new { Id = "0" }, new { @class = "btn btn-success" })</h1>
+@Html.Partial("~/Views/ADAC/_ADACTabs.cshtml", "Content Pages")
+
+<h3>
+	@ViewBag.Title
+	@Html.ActionLink("Create", "CreateEdit", "PagesAdmin", new { Id = "0" }, new { @class = "btn btn-success pull-right" })
+</h3>
+<br />
 <div class="row">
-    <table id="contentPages" class="table table-striped">
-        <tr>
-            <th>Title</th>
-            <th>Slug</th>
-            <th>Last Updated</th>
-            <th>IsEnabled</th>
-            <th></th>
-        </tr>
+	<table id="contentPages" class="table table-striped">
+		<tr>
+			<th>Title</th>
+			<th>Slug</th>
+			<th>Last Updated</th>
+			<th>IsEnabled</th>
+			<th></th>
+		</tr>
 
-        @foreach (var page in Model)
-        {
-            <tr>
-                <td><a href="@Url.Action("ContentPage", "PagesAdmin", new { slug = page.RouteSlug })">@page.Title</a></td>
-                <td>@page.RouteSlug</td>
-                <td>@page.LastUpdated.ToShortDateString()</td>
-                <td>@page.IsEnabled</td>
-                <td class="text-right">
-                    <a href="@Url.Action(
-                            "CreateEdit", "PagesAdmin",
-                            new
-                            {
-                                id = page.Id
-                            })"><span class="fa fa-edit labelled-icon"></span>Edit</a>
-                    
-                    <a title="Delete"
-                       class="action-icon delete-confirm"
-                       data-refdata-model="@Json.Encode(page)"
-                       data-resource-url="/PagesAdmin/Delete"
-                       data-success-redirect="/PagesAdmin/Index"
-                       data-refdata-type="Content Page"
-                       href="#">
-                        <span class="fa fa-trash labelled-icon"></span>Delete
-                    </a>
-                </td>
-            </tr>
-        }
-    </table>
+		@foreach (var page in Model)
+		{
+			<tr>
+				<td><a href="@Url.Action("ContentPage", "PagesAdmin", new { slug = page.RouteSlug })">@page.Title</a></td>
+				<td>@page.RouteSlug</td>
+				<td>@page.LastUpdated.ToShortDateString()</td>
+				<td>@page.IsEnabled</td>
+				<td class="text-right">
+					<a href="@Url.Action("CreateEdit", "PagesAdmin", new { id = page.Id })">
+						<span class="fa fa-edit labelled-icon"></span>Edit
+					</a>
+
+					<a title="Delete"
+					   class="action-icon delete-confirm"
+					   data-refdata-model="@Json.Encode(page)"
+					   data-resource-url="/PagesAdmin/Delete"
+					   data-success-redirect="/PagesAdmin/Index"
+					   data-refdata-type="Content Page"
+					   href="#">
+						<span class="fa fa-trash labelled-icon"></span>Delete
+					</a>
+				</td>
+			</tr>
+		}
+	</table>
 </div>
 
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/pagesadmin")
+	@Scripts.Render("~/bundles/pagesadmin")
 }

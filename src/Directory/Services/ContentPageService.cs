@@ -3,13 +3,8 @@ using System.Threading.Tasks;
 using Biobanks.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Directory.Data;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Data.Entity;
 using System.Collections.Generic;
-using System.Text;
-using Biobanks.Directory.Data.Repositories;
-
 
 namespace Biobanks.Services
 {
@@ -58,6 +53,7 @@ namespace Biobanks.Services
         public async Task Delete(int id)
         {
             var page = await _db.ContentPages.FindAsync(id);
+            
             if (page != null)
             {
                 _db.ContentPages.Remove(page);
@@ -71,7 +67,6 @@ namespace Biobanks.Services
         public async Task<ContentPage> GetById(int id)
             => await _db.ContentPages.FindAsync(id);          
         
-
         public async Task<ContentPage> GetBySlug(string routeSlug)
             => await _db.ContentPages.FirstOrDefaultAsync(x => x.RouteSlug == routeSlug);        
 
