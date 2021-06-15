@@ -482,6 +482,7 @@
     <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
     <Content Include="Scripts\ADAC\adac-blockallow-list.js" />
+    <Content Include="Scripts\ADAC\adac-extraction-procedure.js" />
     <Content Include="Scripts\ADAC\adac-email-config.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
