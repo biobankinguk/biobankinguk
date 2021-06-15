@@ -90,9 +90,9 @@ namespace Biobanks.Web.ApiControllers
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
 
-            //if new id is in use by another ontology term
-            if (id != model.OntologyTermId && (await _biobankReadService.ListOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
-                ModelState.AddModelError("OntologyTermId", "This Id is currently in use by another Disease status or extraction procedure. Ontology Term Ids must be unique");
+            //if ontology term id is modified
+            if (id != model.OntologyTermId )
+                ModelState.AddModelError("OntologyTermId", "You cannot modify the Ontology Term Id. Please delete the ontology term if it's not in use and re-add it with a new Id.");
 
             if (!ModelState.IsValid)
             {

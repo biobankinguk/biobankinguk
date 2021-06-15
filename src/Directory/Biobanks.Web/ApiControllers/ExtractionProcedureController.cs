@@ -91,9 +91,9 @@ namespace Biobanks.Web.ApiControllers
                     ModelState.AddModelError("Description", "This extraction procedure is currently in use and cannot be edited.");
             }
 
-            //if new id is in use by another ontology term
-            if (id != model.OntologyTermId && (await _biobankReadService.ListOntologyTermsAsync()).Any(x=>x.Id == model.OntologyTermId))
-                ModelState.AddModelError("OntologyTermId", "This Id is currently in use by another Disease status or extraction procedure.");
+            //if ontology term id is modified
+            if (id != model.OntologyTermId)
+                ModelState.AddModelError("OntologyTermId", "You cannot modify the extraction procedure id. Please delete the extraction procedure if it's not in use and re-add it with a new Id.");
 
             if (!ModelState.IsValid)
             {
