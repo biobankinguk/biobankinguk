@@ -56,10 +56,12 @@
 					@Html.ActionLink("Analytics", "Analytics")
 				</li>
 			}
-			<li role="presentation"
-				class="@(Model == "Submissions" ? "active" : "true")">
-				@Html.ActionLink("Bulk Submissions", "Submissions")
-			</li>
+			@if (App.Config[ConfigKey.DisplaySubmissions] != "false")
+			{
+				<li role="presentation" class="@(Model == "Submissions" ? "active" : "true")">
+					@Html.ActionLink("Bulk Submissions", "Submissions")
+				</li>
+			}
 		</ul>
     </div>
 </div>
