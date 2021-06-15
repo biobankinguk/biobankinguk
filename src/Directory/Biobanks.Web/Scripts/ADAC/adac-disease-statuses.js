@@ -57,7 +57,7 @@ function AdacDiseaseStatusViewModel() {
 
       )
     );
-
+    $("#OntologyTermId").prop('readonly', true);
     _this.setPartialEdit($(event.currentTarget).data("partial-edit"));
     _this.showModal();
   };
@@ -82,14 +82,10 @@ function AdacDiseaseStatusViewModel() {
 
     //Turns on/off partial editing of some input fields
     this.setPartialEdit = function (flag) {
-        if (flag == true) {
-            $("#OntologyTermId").prop('readonly', true);
+        if (flag == true)
             $("#Description").prop('readonly', true);
-        }
-        else {
-            $("#OntologyTermId").prop('readonly', false);
+        else
             $("#Description").prop('readonly', false);
-        }
     }
 
     this.addOtherTerms = function () {
