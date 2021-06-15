@@ -92,7 +92,7 @@ namespace Biobanks.Web.ApiControllers
 
             //if ontology term id is modified
             if (id != model.OntologyTermId )
-                ModelState.AddModelError("OntologyTermId", "You cannot modify the Ontology Term Id. Please delete the ontology term if it's not in use and re-add it with a new Id.");
+                ModelState.AddModelError("OntologyTermId", "You cannot modify the Ontology Term Id. Please delete the disease status if it's not in use to re-add it with a new Id.");
 
             if (!ModelState.IsValid)
             {
