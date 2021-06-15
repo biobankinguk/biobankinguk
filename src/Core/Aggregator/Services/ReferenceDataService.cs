@@ -1,8 +1,8 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Extensions;
 using System.Linq;
-using System.Xml;
 
 namespace Biobanks.Aggregator.Services
 {
@@ -16,9 +16,7 @@ namespace Biobanks.Aggregator.Services
         }
 
         public AgeRange GetAgeRange(string age)
-            => _db.AgeRanges.ToList().FirstOrDefault(y =>
-                    XmlConvert.ToTimeSpan(y.LowerBound) <= XmlConvert.ToTimeSpan(age) &&
-                    XmlConvert.ToTimeSpan(y.UpperBound) >= XmlConvert.ToTimeSpan(age)) ?? GetDefaultAgeRange();
+            => _db.AgeRanges.ToList().FirstOrDefault(y => y.ContainsTimeSpan(age)) ?? GetDefaultAgeRange();
 
         public CollectionPercentage GetCollectionPercentage(decimal percentage)
             => _db.CollectionPercentages.FirstOrDefault(y =>
@@ -26,11 +24,9 @@ namespace Biobanks.Aggregator.Services
                     y.UpperBound >= percentage);
 
         public CollectionStatus GetCollectionStatus(bool complete)
-        {
-            return complete
+            => complete
                 ? _db.CollectionStatus.Where(x => x.Value == "Completed").First()
                 : _db.CollectionStatus.Where(x => x.Value == "In progress").First();
-        }
 
         public DonorCount GetDonorCount(int count)
             => _db.DonorCounts.First(x => x.LowerBound <= count && x.UpperBound >= count);

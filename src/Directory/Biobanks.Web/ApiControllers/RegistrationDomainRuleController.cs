@@ -7,6 +7,7 @@ using Biobanks.Services.Contracts;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Filters;
+using System.Text.RegularExpressions;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -42,7 +43,8 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(RegistrationDomainRuleModel model)
         {
             //Checking if the given value is valid
-            if (!model.Value.Contains(".") && !model.Value.Contains("@"))
+            var validPattern = new Regex(@"^[^@\s]*@?[^@\s]*\.[^@\s]+[^@\.]$");
+            if (!validPattern.IsMatch(model.Value))
             {
                 ModelState.AddModelError("Value", "That value is invalid and must contain at least one of '.' or '@'.");
             }

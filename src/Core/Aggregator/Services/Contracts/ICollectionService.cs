@@ -12,7 +12,7 @@ namespace Biobanks.Aggregator.Services.Contracts
         
         Task AddCollection(Collection collection);
 
-        Task DeleteCollection(Collection collection);
+        Task DeleteCollection(int id);
 
         Task DeleteSampleSetByIds(IEnumerable<int> ids);
 
