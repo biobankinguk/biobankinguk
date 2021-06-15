@@ -1644,6 +1644,23 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
+        #region RefData: Extraction Procedure
+        public async Task<ActionResult> ExtractionProcedure()
+        {
+            return View((await _biobankReadService.ListExtractionProceduresAsync()).Select(x =>
+
+                Task.Run(async () => new ReadExtractionProcedureModel
+                {
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            ));
+        }
+        #endregion
+
         #endregion
 
         #region Site Configuration
