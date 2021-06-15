@@ -123,6 +123,10 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Extraction procedure descriptions must be unique.");
             }
 
+            //if ontology term id is in use by another ontology term
+            if ((await _biobankReadService.ListOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
+                ModelState.AddModelError("OntologyTermId", "This Id is currently in use by another Disease status or extraction procedure.");
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);

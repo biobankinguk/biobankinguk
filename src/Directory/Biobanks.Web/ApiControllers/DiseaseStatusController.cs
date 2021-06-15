@@ -97,7 +97,7 @@ namespace Biobanks.Web.ApiControllers
 
             await _biobankWriteService.UpdateOntologyTermAsync(new OntologyTerm
             {
-                Id = model.OntologyTermId,
+                Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 DisplayOnDirectory = true
@@ -115,6 +115,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
+            //if ontology term id is in use by another ontology term
+            if ((await _biobankReadService.ListOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
+                ModelState.AddModelError("OntologyTermId", "This Id is currently in use by another Disease status or extraction procedure. Ontology Term Ids must be unique");
+
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
             {
