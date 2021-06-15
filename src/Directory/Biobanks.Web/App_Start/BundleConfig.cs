@@ -281,6 +281,10 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-blockallow-list.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/extraction-procedure").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-extraction-procedure.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
 
             // Registration Domain Rules
             bundles.Add(new ScriptBundle("~/bundles/adac/email-config").Include(
