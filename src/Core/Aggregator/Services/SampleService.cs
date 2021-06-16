@@ -1,6 +1,7 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
+using Biobanks.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,20 +31,15 @@ namespace Biobanks.Aggregator.Services
                 .Include(x => x.SampleContentMethod)
                 .Where(x => x.OrganisationId == sample.OrganisationId)
                 .Where(x =>
-                    !string.IsNullOrEmpty(x.SampleContentId)
-                        // Extracted Samples
+                    x.IsExtracted()
                         ? x.CollectionName == sample.CollectionName && x.SampleContentId == sample.SampleContentId
-                        // Non-Extracted Samples
-                        : x.DateCreated >= earliest && x.DateCreated <= latest   
+                        : x.DateCreated >= earliest && x.DateCreated <= latest
                 )
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<LiveSample>> ListDirtyExtractedSamples()
-            => await _db.Samples.Where(x => x.IsDirty && !string.IsNullOrEmpty(x.SampleContentId)).ToListAsync();
-
-        public async Task<IEnumerable<LiveSample>> ListDirtyNonExtractedSamples()
-            => await _db.Samples.Where(x => x.IsDirty && string.IsNullOrEmpty(x.SampleContentId)).ToListAsync();
+            => await _db.Samples.Where(x => x.IsDirty && x.IsExtracted()).ToListAsync();
 
         public async Task CleanSamples(IEnumerable<LiveSample> samples)
             => await _db.Samples
