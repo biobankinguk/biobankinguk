@@ -15,7 +15,7 @@ namespace Biobanks.Web.Models.Biobank
         public int? Year { get; set; }
         public string Journal { get; set; }
         public string DOI { get; set; }
-        public bool? Approved { get; set; }
+        public bool? Accepted { get; set; }
         public string Source { get; set; }
     }
 }

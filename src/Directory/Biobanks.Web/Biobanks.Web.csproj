@@ -472,6 +472,7 @@
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
     <Compile Include="Models\ADAC\BlockAllowListModel.cs" />
+    <Compile Include="Models\Shared\PublicationSearchModel.cs" />
     <Compile Include="Models\Biobank\SubmissionsModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
