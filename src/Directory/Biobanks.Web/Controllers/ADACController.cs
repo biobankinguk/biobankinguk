@@ -1129,7 +1129,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View((await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
+            return View((await _biobankReadService.ListDiseaseOntologyTermsAsync()).Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
