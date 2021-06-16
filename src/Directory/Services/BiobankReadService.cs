@@ -1186,6 +1186,22 @@ namespace Biobanks.Services
                + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
         #endregion
 
+        #region RefData: Disease Statuses
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "")
+            => await _ontologyTermRepository.ListAsync(filter: x => 
+                x.SnomedTag.Value == "Disease" && 
+                x.Value.Contains(wildcard) && 
+                x.DisplayOnDirectory);
+        public async Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x =>
+                    x.SnomedTag.Value == "Disease" &&
+                    x.Value == ontologyTermDescription &&
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        #endregion
         #region RefData: Extraction Procedure
 
         public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
