@@ -160,6 +160,7 @@ namespace Biobanks.Services.Contracts
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);
 
         Task<Publication> AddOrganisationPublicationAsync(Publication publication);
+        Task<Publication> UpdateOrganisationPublicationAsync(Publication publication);
         Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
