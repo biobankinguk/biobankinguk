@@ -326,6 +326,11 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/analytics/directoryreport").Include(
                 "~/Scripts/ADAC/adac-analytics-directoryreport.js",
                 "~/Scripts/plotly-latest.min.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/pagesadmin").Include(
+                "~/Scripts/ADAC/adac-pages-admin.js",
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             #endregion
         }
     }
