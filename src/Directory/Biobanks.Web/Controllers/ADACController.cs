@@ -1110,15 +1110,16 @@ namespace Biobanks.Web.Controllers
 
             return View(new MaterialTypesModel
             {
-                MaterialTypes = materialTypes.Select(async x => new ReadMaterialTypeModel
-                {
-                    Id = x.Id,
-                    Description = x.Value,
-                    SortOrder = x.SortOrder,
-                    MaterialTypeGroups = x.MaterialTypeGroups.Select(x => x.Value),
-                    MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id)
+                MaterialTypes = materialTypes.Select(x => Task.Run(
+                    async () => new ReadMaterialTypeModel
+                    {
+                        Id = x.Id,
+                        Description = x.Value,
+                        SortOrder = x.SortOrder,
+                        MaterialTypeGroups = x.MaterialTypeGroups.Select(x => x.Value),
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id)
 
-                })
+                    }))
                 .Select(x => x.Result)
                 .ToList()
             });
