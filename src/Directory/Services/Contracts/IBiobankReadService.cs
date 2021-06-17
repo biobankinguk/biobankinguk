@@ -134,6 +134,7 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription);
 
         Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
+        Task<OntologyTerm> GetExtractionProcedureById(string id);
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
         Task<bool> IsExtractionProcedureInUse(string id);
 

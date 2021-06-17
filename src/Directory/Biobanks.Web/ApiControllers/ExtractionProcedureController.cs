@@ -47,7 +47,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListExtractionProceduresAsync()).Where(x => x.Id == id).First();
+            var model = await _biobankReadService.GetExtractionProcedureById(id);
 
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
@@ -83,7 +83,7 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Description", "That description is already in use by another disease status or extraction procedure. Extraction procedure descriptions must be unique.");
             }
 
-            var ontologyTerm = (await _biobankReadService.ListExtractionProceduresAsync()).Where(x => x.Id == id).First();
+            var ontologyTerm = await _biobankReadService.GetExtractionProcedureById(id);
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
                 //Allow editing of only Other terms field if ontologyterm in use

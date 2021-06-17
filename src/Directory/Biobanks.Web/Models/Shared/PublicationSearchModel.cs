@@ -1,13 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Biobanks.Services.Dto
+namespace Biobanks.Web.Models.Shared
 {
-    public class PublicationDTO
+    public class PublicationSearchModel
     {
         [JsonProperty("id")]
         public string PublicationId { get; set; }
@@ -24,6 +19,8 @@ namespace Biobanks.Services.Dto
         public int Year { get; set; }
 
         public string DOI { get; set; }
+
+        public string Source { get; set; }
 
     }
 }

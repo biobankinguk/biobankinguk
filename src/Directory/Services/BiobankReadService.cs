@@ -1210,6 +1210,11 @@ namespace Biobanks.Services
                      && x.Value.Contains(wildcard) 
                      && x.DisplayOnDirectory);
 
+        public async Task<OntologyTerm> GetExtractionProcedureById(string id)
+            => (await _ontologyTermRepository.ListAsync(filter:
+                x => x.SnomedTag.Value == "Extraction Procedure"
+                     && x.Id == id
+                     && x.DisplayOnDirectory)).FirstOrDefault();
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
             => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
 
