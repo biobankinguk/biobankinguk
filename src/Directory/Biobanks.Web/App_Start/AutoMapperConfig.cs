@@ -81,8 +81,8 @@ namespace Biobanks.Web
                 cfg.CreateMap<OrganisationRegisterRequest, OrganisationRegisterRequest>();
                 cfg.CreateMap<NetworkRegisterRequest, NetworkRegisterRequest>();
 
-                cfg.CreateMap<PublicationDTO, Publication>();
-                cfg.CreateMap<Publication, PublicationDTO>();
+                cfg.CreateMap<PublicationSearchModel, Publication>();
+                cfg.CreateMap<Publication, BiobankPublicationModel>();
 
                 cfg.CreateMap<BiobankAnalyticReportDTO, BiobankAnalyticReport>();
                 cfg.CreateMap<ProfileStatusDTO, ProfileStatus>();

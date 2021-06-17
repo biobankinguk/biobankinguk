@@ -467,6 +467,7 @@
     <Compile Include="Controllers\VersionController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
+    <Compile Include="HtmlHelpers\DisabledHelper.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
@@ -474,6 +475,7 @@
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
     <Compile Include="Models\ADAC\BlockAllowListModel.cs" />
+    <Compile Include="Models\Shared\PublicationSearchModel.cs" />
     <Compile Include="Models\Biobank\SubmissionsModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
@@ -1188,14 +1190,13 @@
     <ItemGroup>
       <Compile Include="$(IntermediateOutputPath)Version.cs" />
     </ItemGroup>
-    
     <!-- Elastic Search Index Descriptions -->
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\collections.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
-
     <ItemGroup>
       <Content Include="./App_Config/*.json">
-        <CopyToOutputDirectory></CopyToOutputDirectory>
+        <CopyToOutputDirectory>
+        </CopyToOutputDirectory>
       </Content>
     </ItemGroup>
   </Target>
