@@ -62,8 +62,6 @@ namespace Biobanks.Web.Controllers
 
         public ActionResult Cookies() => View();
 
-        public ActionResult Privacy() => View();
-
         public ViewResult Contact() => View();
 
         [HttpPost]

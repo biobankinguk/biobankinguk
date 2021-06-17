@@ -852,7 +852,6 @@
     <Content Include="Views\SuperUser\_SuperUserTabs.cshtml" />
     <Content Include="Views\Shared\_SuspendedWarning.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\AddFunderModel.cshtml" />
-    <Content Include="Views\Home\Privacy.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
     <Content Include="Views\Header\_NavItemAbout.cshtml" />
