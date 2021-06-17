@@ -270,33 +270,6 @@ namespace Biobanks.Services
             return true;
         }
 
-        //Specific functionality for Collections added via the API
-        public async Task<bool> DeleteAPICollectionAsync(int id)
-        {
-            var collection = (await _collectionRepository
-                .ListAsync(true, x => x.CollectionId == id, null, x => x.SampleSets))
-                .First();
-           
-            if (collection.SampleSets.Any())
-            {
-                IList<int> sampleSetIDs = new List<int>();
-                foreach (SampleSet sampleSet in collection.SampleSets)
-                {
-                    sampleSetIDs.Add(sampleSet.Id);
-                }
-
-                foreach (int sampleSetID in sampleSetIDs)
-                {
-                    await DeleteSampleSetAsync(sampleSetID);
-                }
-                
-            }
-
-            await _collectionRepository.DeleteWhereAsync(x => x.CollectionId == id);
-            await _collectionRepository.SaveChangesAsync();
-
-            return true;
-        }
 
         public async Task AddSampleSetAsync(SampleSet sampleSet)
         {

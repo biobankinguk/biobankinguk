@@ -107,6 +107,14 @@
     <mvcSiteMapNode title="Register Network Configuration" controller="ADAC" action="RegisterNetworkConfig"/>
     <mvcSiteMapNode title="Site Configuration" controller="ADAC" action="SiteConfig"/>
     <mvcSiteMapNode title="Sample Resource Configuration" controller="ADAC" action="SampleResourceConfig"/>
+
+    <!-- Content Pages -->
+    <mvcSiteMapNode title="ADAC" controller="ADAC" action="Index">
+      <mvcSiteMapNode title="Content Pages Admin" controller="PagesAdmin" action="Index">
+        <mvcSiteMapNode title="CreateEdit" controller="PagesAdmin" action="CreateEdit" preservedRouteParameters="id"/>
+      </mvcSiteMapNode>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Pages" controller="PagesAdmin" action="ContentPage" preservedRouteParameters="slug"/>
     
   </mvcSiteMapNode>
 </mvcSiteMap>

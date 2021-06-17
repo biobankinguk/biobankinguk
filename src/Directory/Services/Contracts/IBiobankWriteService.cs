@@ -15,7 +15,7 @@ namespace Biobanks.Services.Contracts
         Task UpdateCollectionAsync(Collection collection, string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
         Task<bool> DeleteCollectionAsync(int id);
-        Task<bool> DeleteAPICollectionAsync(int id);
+
         Task AddSampleSetAsync(SampleSet sampleSet);
         Task UpdateSampleSetAsync(SampleSet sampleSet);
         Task DeleteSampleSetAsync(int id);
