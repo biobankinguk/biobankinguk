@@ -43,7 +43,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(MaterialTypeModel model)
+        public async Task<IHttpActionResult> Post(MaterialTypeGroupModel model)
         {
             if (await _biobankReadService.ValidMaterialTypeGroupDescriptionAsync(model.Description))
             {
@@ -70,7 +70,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, MaterialTypeModel model)
+        public async Task<IHttpActionResult> Put(int id, MaterialTypeGroupModel model)
         {
             // Validate model
             if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))

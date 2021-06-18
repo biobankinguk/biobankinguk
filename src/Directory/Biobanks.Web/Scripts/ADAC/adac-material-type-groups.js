@@ -5,7 +5,7 @@ function MaterialTypeGroup(id, description) {
     this.description = ko.observable(description);
 }
 
-function MaterialTypeModal(id, description) {
+function MaterialTypeGroupModal(id, description) {
   this.modalModeAdd = "Add";
   this.modalModeEdit = "Update";
 
@@ -18,8 +18,8 @@ function MaterialTypeModal(id, description) {
 function AdacMaterialTypeViewModel() {
   var _this = this;
 
-  this.modalId = "#material-type-modal";
-  this.modal = new MaterialTypeModal(0, "");
+  this.modalId = "#material-type-group-modal";
+  this.modal = new MaterialTypeGroupModal(0, "");
   this.dialogErrors = ko.observableArray([]);
 
   this.showModal = function () {
