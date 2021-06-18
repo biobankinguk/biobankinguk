@@ -42,130 +42,135 @@
                     Reference Data
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu refdata-menu" id="refdropdown">
-                    <li role="presentation"
-                        class="@(Model == "Access Conditions" ? "active" : "true")">
-                        @Html.ActionLink("Access Conditions", "AccessConditions", "ADAC")
-                    </li>
+				<ul class="dropdown-menu refdata-menu" id="refdropdown">
+					<li role="presentation"
+						class="@(Model == "Access Conditions" ? "active" : "true")">
+						@Html.ActionLink("Access Conditions", "AccessConditions", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Age Ranges" ? "active" : "true")">
-                        @Html.ActionLink("Age Ranges", "AgeRanges", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Age Ranges" ? "active" : "true")">
+						@Html.ActionLink("Age Ranges", "AgeRanges", "ADAC")
+					</li>
 
 
-                    <li role="presentation"
-                        class="@(Model == "Annual Statistics" ? "active" : "true")">
-                        @Html.ActionLink("Annual Statistics", "AnnualStatistics", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Annual Statistics" ? "active" : "true")">
+						@Html.ActionLink("Annual Statistics", "AnnualStatistics", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Annual Statistic Groups" ? "active" : "true")">
-                        @Html.ActionLink("Annual Statistic Groups", "AnnualStatisticGroups", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Annual Statistic Groups" ? "active" : "true")">
+						@Html.ActionLink("Annual Statistic Groups", "AnnualStatisticGroups", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Associated Data Types" ? "active" : "true")">
-                        @Html.ActionLink("Associated Data Types", "AssociatedDataTypes", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Associated Data Types" ? "active" : "true")">
+						@Html.ActionLink("Associated Data Types", "AssociatedDataTypes", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Associated Data Type Groups" ? "active" : "true")">
-                        @Html.ActionLink("Associated Data Type Groups", "AssociatedDataTypeGroups", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Associated Data Type Groups" ? "active" : "true")">
+						@Html.ActionLink("Associated Data Type Groups", "AssociatedDataTypeGroups", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Associated Data Procurement Time Frame" ? "active" : "true")">
-                        @Html.ActionLink("Associated Data Procurement Time Frame", "AssociatedDataProcurementTimeFrame", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Associated Data Procurement Time Frame" ? "active" : "true")">
+						@Html.ActionLink("Associated Data Procurement Time Frame", "AssociatedDataProcurementTimeFrame", "ADAC")
+					</li>
 
-                    @if (App.Config[ConfigKey.ShowPreservationPercentage] != "false")
-                    {
-                        <li role="presentation"
-                            class="@(Model == "Collection Percentages" ? "active" : "true")">
-                            @Html.ActionLink("Collection Percentages", "CollectionPercentages", "ADAC")
-                        </li>
-                    }
+					@if (App.Config[ConfigKey.ShowPreservationPercentage] != "false")
+					{
+						<li role="presentation"
+							class="@(Model == "Collection Percentages" ? "active" : "true")">
+							@Html.ActionLink("Collection Percentages", "CollectionPercentages", "ADAC")
+						</li>
+					}
 
-                    <li role="presentation"
-                        class="@(Model == "Consent restrictions" ? "active" : "true")">
-                        @Html.ActionLink("Consent Restrictions", "ConsentRestriction", "ADAC")
-                    </li>
-                    <li role="presentation"
-                        class="@(Model == $"{@App.Config[ConfigKey.DonorCountName]}" ? "active" : "true")">
-                        @Html.ActionLink($"{@App.Config[ConfigKey.DonorCountName]}", "DonorCounts", "ADAC")
-                    </li>
-                    <li role="presentation"
-                        class="@(Model == "Collection statuses" ? "active" : "true")">
-                        @Html.ActionLink("Collection Statuses", "CollectionStatus", "ADAC")
-                    </li>
-                    <li role="presentation"
-                        class="@(Model == "Collection types" ? "active" : "true")">
-                        @Html.ActionLink("Collection Types", "CollectionType", "ADAC")
-                    </li>
-                    <li role="presentation"
-                        class="@(Model == "Countries" ? "active" : "true")">
-                        @Html.ActionLink("Countries", "Country", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Consent restrictions" ? "active" : "true")">
+						@Html.ActionLink("Consent Restrictions", "ConsentRestriction", "ADAC")
+					</li>
+					<li role="presentation"
+						class="@(Model == $"{@App.Config[ConfigKey.DonorCountName]}" ? "active" : "true")">
+						@Html.ActionLink($"{@App.Config[ConfigKey.DonorCountName]}", "DonorCounts", "ADAC")
+					</li>
+					<li role="presentation"
+						class="@(Model == "Collection statuses" ? "active" : "true")">
+						@Html.ActionLink("Collection Statuses", "CollectionStatus", "ADAC")
+					</li>
+					<li role="presentation"
+						class="@(Model == "Collection types" ? "active" : "true")">
+						@Html.ActionLink("Collection Types", "CollectionType", "ADAC")
+					</li>
+					<li role="presentation"
+						class="@(Model == "Countries" ? "active" : "true")">
+						@Html.ActionLink("Countries", "Country", "ADAC")
+					</li>
 
-                    @if (App.Config[ConfigKey.ShowCounties] != "false")
-                    {
-                        <li role="presentation"
-                            class="@(Model == "Counties" ? "active" : "true")">
-                            @Html.ActionLink("Counties", "County", "ADAC")
-                        </li>
-                    }
+					@if (App.Config[ConfigKey.ShowCounties] != "false")
+					{
+						<li role="presentation"
+							class="@(Model == "Counties" ? "active" : "true")">
+							@Html.ActionLink("Counties", "County", "ADAC")
+						</li>
+					}
 
-                    <li role="presentation"
-                        class="@(Model == "Disease statuses" ? "active" : "true")">
-                        @Html.ActionLink("Disease statuses", "DiseaseStatuses", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Disease statuses" ? "active" : "true")">
+						@Html.ActionLink("Disease statuses", "DiseaseStatuses", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == $"{@App.Config[ConfigKey.MacroscopicAssessmentName]}" ? "active" : "true")">
-                        @Html.ActionLink($"{@App.Config[ConfigKey.MacroscopicAssessmentName]}", "MacroscopicAssessments", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == $"{@App.Config[ConfigKey.MacroscopicAssessmentName]}" ? "active" : "true")">
+						@Html.ActionLink($"{@App.Config[ConfigKey.MacroscopicAssessmentName]}", "MacroscopicAssessments", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Material Types" ? "active" : "true")">
-                        @Html.ActionLink("Material Types", "MaterialTypes", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Material Types" ? "active" : "true")">
+						@Html.ActionLink("Material Types", "MaterialTypes", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Preservation Types" ? "active" : "true")">
-                        @Html.ActionLink("Preservation Types", "PreservationTypes", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Material Type Groups" ? "active" : "true")">
+						@Html.ActionLink("Material Type Groups", "MaterialTypeGroups", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == $"{@App.Config[ConfigKey.StorageTemperatureName]}" ? "active" : "true")">
-                        @Html.ActionLink($"{@App.Config[ConfigKey.StorageTemperatureName]}", "StorageTemperatures", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Preservation Types" ? "active" : "true")">
+						@Html.ActionLink("Preservation Types", "PreservationTypes", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Registration Reasons" ? "active" : "true")">
-                        @Html.ActionLink("Registration Reasons", "RegistrationReason", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == $"{@App.Config[ConfigKey.StorageTemperatureName]}" ? "active" : "true")">
+						@Html.ActionLink($"{@App.Config[ConfigKey.StorageTemperatureName]}", "StorageTemperatures", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Sample Collection Modes" ? "active" : "true")">
-                        @Html.ActionLink("Sample Collection Modes", "SampleCollectionModes", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Registration Reasons" ? "active" : "true")">
+						@Html.ActionLink("Registration Reasons", "RegistrationReason", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Service Offerings" ? "active" : "true")">
-                        @Html.ActionLink("Service Offerings", "ServiceOffering", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Sample Collection Modes" ? "active" : "true")">
+						@Html.ActionLink("Sample Collection Modes", "SampleCollectionModes", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Sexes" ? "active" : "true")">
-                        @Html.ActionLink("Sexes", "Sexes", "ADAC")
-                    </li>
+					<li role="presentation"
+						class="@(Model == "Service Offerings" ? "active" : "true")">
+						@Html.ActionLink("Service Offerings", "ServiceOffering", "ADAC")
+					</li>
 
-                    <li role="presentation"
-                        class="@(Model == "Sop Status" ? "active" : "true")">
-                        @Html.ActionLink("Sop Status", "SopStatus", "ADAC")
-                    </li>
-                </ul>
+					<li role="presentation"
+						class="@(Model == "Sexes" ? "active" : "true")">
+						@Html.ActionLink("Sexes", "Sexes", "ADAC")
+					</li>
+
+					<li role="presentation"
+						class="@(Model == "Sop Status" ? "active" : "true")">
+						@Html.ActionLink("Sop Status", "SopStatus", "ADAC")
+					</li>
+				</ul>
             </li>
 
             <li role="presentation"

@@ -1124,7 +1124,22 @@ namespace Biobanks.Web.Controllers
                 .ToList()
             });
         }
+        #endregion
 
+        #region RefData: Material Type Groups
+        public async Task<ActionResult> MaterialTypeGroups()
+        {
+            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
+
+            return View(materialTypes.Select(x => new MaterialTypeGroupModel
+            {
+                Id = x.Id,
+                Description = x.Value,
+                SortOrder = x.SortOrder,
+                MaterialTypes = x.MaterialTypeGroups.Select(x => x.Value),
+                MaterialDetailCount = 0
+            }));
+        }
         #endregion
 
         #region RefData: Disease Status
