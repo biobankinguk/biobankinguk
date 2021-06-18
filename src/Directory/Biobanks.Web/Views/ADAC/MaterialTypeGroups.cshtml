@@ -9,11 +9,11 @@
 @Html.Partial("_ADACTabs", (string) ViewBag.Title)
 
 <h3>
-    Material Types
+    Material Type Groups
     <a href="#"
        class="btn btn-success pull-right"
        data-target="#material-type-modal"
-       data-bind="click: openModalForAdd">Add material type</a>
+       data-bind="click: openModalForAdd">Add material type group</a>
 </h3>
 
 <div class="row">
@@ -23,29 +23,27 @@
 
             <thead>
 				<tr>
-					<th>Sort Order</th>
 					<th>Description</th>
                     <th>Material Type Groups</th>
-					<th>Material Detail Count</th>
+					<th>Material Type Count</th>
 					<th>@* Actions *@</th>
 				</tr>
             </thead>
 
 			<tbody>
-				@foreach (var materialType in Model)
+				@foreach (var materialTypeGroup in Model)
 				{
-					<tr class="@(materialType.MaterialDetailCount > 0 ? "info" : "")"
+					<tr class="@(materialTypeGroup.MaterialTypeCount > 0 ? "info" : "")"
 						data-resource-url="/api/MaterialType"
-						data-material-type-id="@materialType.Id"
-						data-material-type-desc="@materialType.Description">
+						data-material-type-id="@materialTypeGroup.Id"
+						data-material-type-desc="@materialTypeGroup.Description">
 
-						<td>@materialType.SortOrder</td>
-						<td>@materialType.Description</td>
-                        <td>@string.Join(",", materialType.MaterialTypes)</td>
-						<td>@materialType.MaterialDetailCount</td>
+						<td>@materialTypeGroup.Description</td>
+                        <td>@string.Join(",", materialTypeGroup.MaterialTypes)</td>
+						<td>@materialTypeGroup.MaterialTypeCount</td>
 
 						<td class="text-right">
-							@if (materialType.MaterialDetailCount > 0)
+							@if (materialTypeGroup.MaterialTypeCount > 0)
 							{
 								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Material type in use")
 							}
@@ -55,14 +53,14 @@
 								   class="action-icon"
 								   href="#"
 								   data-target="#material-type-modal"
-								   data-material-type="@Json.Encode(materialType)"
+								   data-material-type="@Json.Encode(materialTypeGroup)"
 								   data-bind="click: openModalForEdit">
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Encode(materialType)"
+                                   data-refdata-model="@Json.Encode(materialTypeGroup)"
                                    data-resource-url="/api/MaterialType"
                                    data-success-redirect="@Url.Action("MaterialTypes")"
                                    data-refdata-type="Material Type"
@@ -102,16 +100,15 @@
 
             <!-- Modal Form -->
             <form id="modal-material-type-form"
-                  data-resource-url="/api/MaterialType"
-                  data-success-redirect="@Url.Action("MaterialTypes")"
-                  data-refdata-type="Material Type"
+                  data-resource-url="/api/MaterialTypeGroup"
+                  data-success-redirect="@Url.Action("MaterialTypeGroups")"
+                  data-refdata-type="Material Type Groups"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
 
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.materialType().id">
-                            <input type="hidden" id="SortOrder" name="SortOrder" data-bind="value: modal.materialType().sortOrder()">
 
                             <!-- Description -->
                             <div class="form-group">

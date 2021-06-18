@@ -11,9 +11,6 @@ namespace Biobanks.Web.Models.ADAC
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public int SortOrder { get; set; }
-
         public int MaterialDetailCount { get; set; }
 
         public IEnumerable<string> MaterialTypes { get; set; }

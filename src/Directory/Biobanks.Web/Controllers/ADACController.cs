@@ -1129,15 +1129,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Type Groups
         public async Task<ActionResult> MaterialTypeGroups()
         {
-            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
+            var materialTypes = await _biobankReadService.ListMaterialTypeGroupsAsync();
 
             return View(materialTypes.Select(x => new MaterialTypeGroupModel
             {
                 Id = x.Id,
                 Description = x.Value,
-                SortOrder = x.SortOrder,
-                MaterialTypes = x.MaterialTypeGroups.Select(x => x.Value),
-                MaterialDetailCount = 0
+                MaterialTypes = x.MaterialTypes.Select(x => x.Value),
+                MaterialDetailCount = x.MaterialTypes.Count()
             }));
         }
         #endregion

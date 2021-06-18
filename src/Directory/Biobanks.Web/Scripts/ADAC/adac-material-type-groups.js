@@ -1,18 +1,17 @@
 ﻿var adacMaterialTypeVM;
 
-function MaterialType(id, description, sortOrder) {
+function MaterialTypeGroup(id, description) {
     this.id = ko.observable(id);
     this.description = ko.observable(description);
-    this.sortOrder = ko.observable(sortOrder)
 }
 
-function MaterialTypeModal(id, description, sortOrder) {
+function MaterialTypeModal(id, description) {
   this.modalModeAdd = "Add";
   this.modalModeEdit = "Update";
 
   this.mode = ko.observable(this.modalModeAdd);
     this.materialType = ko.observable(
-        new MaterialType(id, description, sortOrder)
+        new MaterialTypeGroup(id, description)
   );
 }
 
@@ -20,7 +19,7 @@ function AdacMaterialTypeViewModel() {
   var _this = this;
 
   this.modalId = "#material-type-modal";
-  this.modal = new MaterialTypeModal(0, "", 0);
+  this.modal = new MaterialTypeModal(0, "");
   this.dialogErrors = ko.observableArray([]);
 
   this.showModal = function () {
@@ -34,7 +33,7 @@ function AdacMaterialTypeViewModel() {
 
   this.openModalForAdd = function () {
     _this.modal.mode(_this.modal.modalModeAdd);
-      _this.modal.materialType(new MaterialType(0, "", 0));
+      _this.modal.materialType(new MaterialTypeGroup(0, ""));
     _this.showModal();
   };
 
@@ -43,11 +42,9 @@ function AdacMaterialTypeViewModel() {
 
     var materialType = $(event.currentTarget).data("material-type");
     _this.modal.materialType(
-      new MaterialType(
+      new MaterialTypeGroup(
           materialType.Id,
           materialType.Description,
-          materialType.SortOrder
-
       )
     );
 
@@ -70,114 +67,40 @@ function AdacMaterialTypeViewModel() {
     };
 }
 
-$(function () {
-  //jquery plugin to serialise checkboxes as bools
-  (function ($) {
-    $.fn.serialize = function () {
-      return $.param(this.serializeArray());
-    };
-
-    $.fn.serializeArray = function () {
-      var o = $.extend(
-        {
-          checkboxesAsBools: true,
-        },
-        {}
-      );
-
-      var rselectTextarea = /select|textarea/i;
-      var rinput = /text|hidden|password|search/i;
-
-      return this.map(function () {
-        return this.elements ? $.makeArray(this.elements) : this;
-      })
-        .filter(function () {
-          return (
-            this.name &&
-            !this.disabled &&
-            (this.checked ||
-              (o.checkboxesAsBools && this.type === "checkbox") ||
-              rselectTextarea.test(this.nodeName) ||
-              rinput.test(this.type))
-          );
-        })
-        .map(function (i, elem) {
-          const val = $(this).val();
-          return val == null
-            ? null
-            : $.isArray(val)
-            ? $.map(val, (innerVal) => ({ name: elem.name, value: innerVal }))
-            : {
-                name: elem.name,
-                value:
-                  o.checkboxesAsBools && this.type === "checkbox" //moar ternaries!
-                    ? this.checked
-                      ? "true"
-                      : "false"
-                    : val,
-              };
-        })
-        .get();
-    };
-  })(jQuery);
-
-  $("#modal-material-type-form").submit(function (e) {
-      adacMaterialTypeVM.modalSubmit(e);
-  });
-
-  $(".delete-confirm").click(function (e) {
-      e.preventDefault();
-
-      var $link = $(this);
-      var linkData = $link.data("refdata-model")
-      var url = $link.data("resource-url") + "/" + linkData.Id;
-
-      bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
-          function (confirmation) {
-              if (confirmation) {
-                  deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
-              }
-          }
-      );
-  });
-
-  adacMaterialTypeVM = new AdacMaterialTypeViewModel();
-  ko.applyBindings(adacMaterialTypeVM);
-});
-
 // DataTables
 $(function () {
     var table = $("#material-types")["DataTable"]({
         paging: false,
         info: false,
         autoWidth: false,
-        rowReorder: true,
-        columnDefs: [
-            { orderable: true, "visible": false, className: 'reorder', targets: 0 }, // Column must be orderable for rowReorder
-            { orderable: false, targets: '_all' }
-        ],
         language: {
             search: "Filter: ",
         },
     });
+});
 
-    // Re-Order Event
-    table.on('row-reorder', function (e, diff, edit) {
-
-        // Find the row that was moved
-        var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
-
-        //AJAX Update
-        $.ajax({
-            url: $(triggerRow.node).data('resource-url') +
-                "/" + $(triggerRow.node).data('material-type-id') + "/move",
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                id: $(triggerRow.node).data('material-type-id'),
-                description: $(triggerRow.node).data('material-type-desc'),
-                sortOrder: (triggerRow.newPosition + 1) //1-indexable
-            }
-        });
+// Events
+$(function () {
+    $("#modal-material-type-form").submit(function (e) {
+        adacMaterialTypeVM.modalSubmit(e);
     });
+
+    $(".delete-confirm").click(function (e) {
+        e.preventDefault();
+
+        var $link = $(this);
+        var linkData = $link.data("refdata-model")
+        var url = $link.data("resource-url") + "/" + linkData.Id;
+
+        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
+            function (confirmation) {
+                if (confirmation) {
+                    deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
+                }
+            }
+        );
+    });
+
+    adacMaterialTypeVM = new AdacMaterialTypeViewModel();
+    ko.applyBindings(adacMaterialTypeVM);
 });
