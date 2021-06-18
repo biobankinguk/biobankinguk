@@ -34,7 +34,7 @@
 				@foreach (var materialTypeGroup in Model)
 				{
 					<tr class="@(materialTypeGroup.MaterialTypeCount > 0 ? "info" : "")"
-						data-resource-url="/api/MaterialType"
+						data-resource-url="/api/MaterialTypeGroup"
 						data-material-type-id="@materialTypeGroup.Id"
 						data-material-type-desc="@materialTypeGroup.Description">
 
@@ -61,8 +61,8 @@
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
                                    data-refdata-model="@Json.Encode(materialTypeGroup)"
-                                   data-resource-url="/api/MaterialType"
-                                   data-success-redirect="@Url.Action("MaterialTypes")"
+                                   data-resource-url="/api/MaterialTypeGroup"
+                                   data-success-redirect="@Url.Action("MaterialTypeGroups")"
                                    data-refdata-type="Material Type"
                                    href="#">
                                     <span class="fa fa-trash labelled-icon"></span>Delete

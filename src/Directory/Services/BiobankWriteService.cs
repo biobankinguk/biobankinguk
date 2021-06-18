@@ -35,6 +35,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
+        private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
         private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
@@ -87,6 +88,7 @@ namespace Biobanks.Services
             ILogoStorageProvider logoStorageProvider,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
+            IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
@@ -154,6 +156,7 @@ namespace Biobanks.Services
             _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _accessConditionRepository = accessConditionRepository;
             _materialTypeRepository = materialTypeRepository;
+            _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
             _consentRestrictionRepository = consentRestrictionRepository;
             _countryRepository = countryRepository;
@@ -1519,6 +1522,30 @@ namespace Biobanks.Services
             await _materialTypeRepository.SaveChangesAsync();
 
             return materialType;
+        }
+        #endregion
+
+        #region RefData: Material Type Group
+        public async Task DeleteMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
+        {
+            await _materialTypeGroupRepository.DeleteAsync(materialTypeGroup.Id);
+            await _materialTypeGroupRepository.SaveChangesAsync();
+        }
+
+        public async Task<MaterialTypeGroup> UpdateMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
+        {
+            _materialTypeGroupRepository.Update(materialTypeGroup);
+            await _materialTypeRepository.SaveChangesAsync();
+
+            return materialTypeGroup;
+        }
+
+        public async Task<MaterialTypeGroup> AddMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
+        {
+            _materialTypeGroupRepository.Insert(materialTypeGroup);
+            await _materialTypeGroupRepository.SaveChangesAsync();
+
+            return materialTypeGroup;
         }
         #endregion
 

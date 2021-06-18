@@ -47,6 +47,13 @@ namespace Biobanks.Directory.Data.Repositories
                 : await _dbSet.Where(filter).CountAsync();
         }
 
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> filter = null)
+        {
+            return filter == null
+                ? await _dbSet.AnyAsync()
+                : await _dbSet.Where(filter).AnyAsync();
+        }
+
         public IEnumerable<TEntity> List(bool tracking = false,
                                     Expression<Func<TEntity, bool>> filter = null,
                                     Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,

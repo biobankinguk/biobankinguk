@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Nest;
 
 namespace Biobanks.Services
 {
@@ -936,8 +937,16 @@ namespace Biobanks.Services
                 orderBy: x => x.OrderBy(y => y.SortOrder), 
                 includeProperties: x => x.MaterialTypeGroups);
 
+        #region RefData: MaterialTypeGroup
         public async Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync()
             => await _materialTypeGroupRepository.ListAsync(includeProperties: x => x.MaterialTypes);
+
+        public async Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeGroupDescription)
+            => await _materialTypeGroupRepository.AnyAsync(x => x.Value == materialTypeGroupDescription);
+
+        public async Task<bool> IsMaterialTypeGroupInUse(int id)
+            => await _materialTypeGroupRepository.AnyAsync(x => x.Id == id && x.MaterialTypes.Count > 0);
+        #endregion
 
         #region RefData: Collection Percentages
         public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()

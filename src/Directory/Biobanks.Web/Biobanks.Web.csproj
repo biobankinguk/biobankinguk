@@ -451,6 +451,7 @@
     <Compile Include="ApiControllers\DiseaseStatusController.cs" />
     <Compile Include="ApiControllers\DonorCountController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
+    <Compile Include="ApiControllers\MaterialTypeGroupController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
     <Compile Include="ApiControllers\PreservationTypeController.cs" />
     <Compile Include="ApiControllers\RegistrationDomainRuleController.cs" />

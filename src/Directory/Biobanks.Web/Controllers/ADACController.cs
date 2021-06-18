@@ -1136,7 +1136,7 @@ namespace Biobanks.Web.Controllers
                 Id = x.Id,
                 Description = x.Value,
                 MaterialTypes = x.MaterialTypes.Select(x => x.Value),
-                MaterialDetailCount = x.MaterialTypes.Count()
+                MaterialTypeCount = x.MaterialTypes.Count()
             }));
         }
         #endregion

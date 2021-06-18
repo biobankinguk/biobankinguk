@@ -53,7 +53,11 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName);
         
         Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
+
         Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync();
+        Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
+        Task<bool> IsMaterialTypeGroupInUse(int id);
+
 
         Task<IEnumerable<AgeRange>> ListAgeRangesAsync();
         Task<bool> ValidAgeRangeAsync(string ageRangeDescription);
