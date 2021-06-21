@@ -2002,6 +2002,13 @@ namespace Biobanks.Services
             _publicationRespository.Insert(publication);
             await _publicationRespository.SaveChangesAsync();
 
+            return publication;
+        }
+
+        public async Task<Publication> UpdateOrganisationPublicationAsync(Publication publication)
+        {
+            _publicationRespository.Update(publication);
+            await _publicationRespository.SaveChangesAsync();
 
             return publication;
         }
