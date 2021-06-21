@@ -24,7 +24,7 @@
             <thead>
 				<tr>
 					<th>Description</th>
-                    <th>Material Type Groups</th>
+                    <th>Material Types</th>
 					<th>Material Type Count</th>
 					<th>@* Actions *@</th>
 				</tr>
@@ -39,9 +39,26 @@
 						data-material-type-desc="@materialTypeGroup.Description">
 
 						<td>@materialTypeGroup.Description</td>
-                        <td>@string.Join(",", materialTypeGroup.MaterialTypes)</td>
-						<td>@materialTypeGroup.MaterialTypeCount</td>
+                        
+                        <!-- Material Types In Group -->
+						<td>
+							<!-- Link To MaterialTypes In This Group -->
+							@if (materialTypeGroup.MaterialTypeCount == 1)
+							{
+								<span>@materialTypeGroup.MaterialTypes.First()</span>
+							}
+							else if (materialTypeGroup.MaterialTypeCount > 1)
+							{
+								<span>
+									@materialTypeGroup.MaterialTypes.First(),
+									@Html.ActionLink("See More", "MaterialTypes", new { filter = materialTypeGroup.Description })
+								</span>
+							}
+						</td>
+						
+                        <td>@materialTypeGroup.MaterialTypeCount</td>
 
+                        <!-- Actions -->
 						<td class="text-right">
 							@if (materialTypeGroup.MaterialTypeCount > 0)
 							{
