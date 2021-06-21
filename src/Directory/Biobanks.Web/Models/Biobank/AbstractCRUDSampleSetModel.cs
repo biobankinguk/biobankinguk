@@ -86,5 +86,6 @@ namespace Biobanks.Web.Models.Biobank
         public int storageTemperature { get; set; }
         public int? percentage { get; set; }
         public int macroscopicAssessment { get; set; }
+        public int? extractionProcedure { get; set; }
     }
 }
