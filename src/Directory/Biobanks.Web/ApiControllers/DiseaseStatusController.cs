@@ -7,6 +7,7 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -35,7 +36,8 @@ namespace Biobanks.Web.ApiControllers
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    DisplayOnDirectory = x.DisplayOnDirectory
                 })
                 .Result
             )
@@ -100,7 +102,7 @@ namespace Biobanks.Web.ApiControllers
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = model.DisplayOnDirectory
             });
 
             //Everything went A-OK!
@@ -131,7 +133,7 @@ namespace Biobanks.Web.ApiControllers
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = model.DisplayOnDirectory
             });
 
             //Everything went A-OK!

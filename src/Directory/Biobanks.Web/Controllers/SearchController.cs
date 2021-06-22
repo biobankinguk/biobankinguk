@@ -14,8 +14,6 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
@@ -266,6 +264,7 @@ namespace Biobanks.Web.Controllers
                         OntologyTermId = directoryTerm.Id,
                         Description = directoryTerm.Value,
                         OtherTerms = directoryTerm.OtherTerms ?? "",
+                        DisplayOnDirectory = directoryTerm.DisplayOnDirectory,
                         MatchingOtherTerms = searchTerm.MatchingOtherTerms,
                         NonMatchingOtherTerms = nonMatchingTerms ?? new List<string>()
                     };
@@ -283,7 +282,8 @@ namespace Biobanks.Web.Controllers
                {
                    OntologyTermId = x.Id,
                    Description = x.Value,
-                   OtherTerms = x.OtherTerms
+                   OtherTerms = x.OtherTerms,
+                   DisplayOnDirectory = x.DisplayOnDirectory
                }
             )
             .ToList();

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Biobanks.Web.Models.Shared;
+﻿using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Models.ADAC
 {
@@ -7,7 +6,5 @@ namespace Biobanks.Web.Models.ADAC
     {
         //Sum of all Collections and Capabilities
         public int CollectionCapabilityCount { get; set; }
-        
-        public bool DisplayOnDirectory { get; set; }
     }
 }
