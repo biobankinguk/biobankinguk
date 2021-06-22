@@ -1127,7 +1127,8 @@ namespace Biobanks.Web.Controllers
                             PreservationTypeId = x.preservationType,
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
-                            MacroscopicAssessmentId = x.macroscopicAssessment
+                            MacroscopicAssessmentId = x.macroscopicAssessment,
+                            ExtractionProcedureId = x.extractionProcedure
                         }
                     )
                     .ToList()
@@ -1167,7 +1168,8 @@ namespace Biobanks.Web.Controllers
                     preservationType = x.PreservationTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
-                    macroscopicAssessment = x.MacroscopicAssessmentId
+                    macroscopicAssessment = x.MacroscopicAssessmentId,
+                    extractionProcedure = x.ExtractionProcedureId
                 }))
             };
 
@@ -1211,7 +1213,8 @@ namespace Biobanks.Web.Controllers
                     preservationType = x.PreservationTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
-                    macroscopicAssessment = x.MacroscopicAssessmentId
+                    macroscopicAssessment = x.MacroscopicAssessmentId,
+                    extractionProcedure = x.ExtractionProcedureId
                 }))
             };
 
@@ -1444,6 +1447,16 @@ namespace Biobanks.Web.Controllers
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
+
+            model.ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+                .Select(
+                    x =>
+                        new OntologyTermModel
+                        {
+                            OntologyTermId = x.Id,
+                            Description = x.Value,
+                        })
+                .OrderBy(x => x.Description);
 
             model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
                 .Select(
