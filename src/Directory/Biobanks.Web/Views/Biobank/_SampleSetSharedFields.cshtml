@@ -211,7 +211,8 @@
                             </p>
                             <div class="col-sm-12 dropdown">
                                 <label data-bind="validationOptions: {insertMessages: false}">
-                                    <select name="ddExtraction" data-bind="options: lookup.materialExtractionProcedures, optionsText: 'label', optionsCaption: 'Choose...', value:$root.modal.materialPreservationDetail().extractionProcedure"></select>
+                                    <select name="ddExtraction" 
+                                            data-bind="options: lookup.materialExtractionProcedures, optionsText: 'label', optionsValue: 'value', optionsCaption: 'Choose...', value:$root.modal.materialPreservationDetail().extractionProcedure"></select>
                                 </label>
                             </div>
                         </div>

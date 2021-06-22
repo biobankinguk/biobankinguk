@@ -36,7 +36,7 @@ function extractionValidation() {
 	var selectedOption = $("input[name='radMaterial']:checked").val();
 	//Resetting the stored list and selected value
 	lookup.materialExtractionProcedures([]);
-	sampleSetVM.modal.materialPreservationDetail().extractionProcedure(new DropDownBinding(null, null));
+	sampleSetVM.modal.materialPreservationDetail().extractionProcedure("");
 
 	//AJAX Update
 	$.ajax({
@@ -126,13 +126,9 @@ function MaterialPreservationDetail(
   });
 
 	this.extractionProcedureDescription = ko.computed(function () {
-		var eps = lookup.extractionProcedures()
-		var ep = _this.extractionProcedure()
-		var tt = _this.extractionProcedure() ? _this.extractionProcedure().value : null
-
 	  return _this.getRadioBindingLabel(
 		lookup.extractionProcedures(),
-		  _this.extractionProcedure() ? _this.extractionProcedure().value : null
+		  _this.extractionProcedure() 
 	);
   });
 
@@ -195,7 +191,7 @@ function MaterialPreservationDetailModal(
 function AppViewModel() {
   var _this = this;
   this.donorCount = ko.observable(0);
-  this.modal = new MaterialPreservationDetailModal(0, 0, 0, 0, 1, 0,new DropDownBinding(null,null));
+  this.modal = new MaterialPreservationDetailModal(0, 0, 0, 0, 1, 0,"");
   this.materialPreservationDetails = ko.observableArray([]);
   this.currentlyEdited = ko.observable(null);
 
