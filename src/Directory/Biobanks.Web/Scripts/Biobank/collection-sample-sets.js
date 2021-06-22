@@ -4,6 +4,12 @@ function RadioBinding(value, label, sortOrder) {
     this.sortOrder = sortOrder;
 }
 
+function DropDownBinding(id, description) {
+	this.value = id;
+	this.label = description;
+};
+
+
 function preservationValidation() {
 	var selectedOption = $("input[name='radPreservation']:checked").val();
 	$("input[name='radPreservationType']").attr('disabled', true)
@@ -26,6 +32,26 @@ function preservationValidation() {
 
 }
 
+function extractionValidation() {
+	var selectedOption = $("input[name='radMaterial']:checked").val();
+	//Resetting the stored list and selected value
+	lookup.materialExtractionProcedures([]);
+	sampleSetVM.modal.materialPreservationDetail().extractionProcedure(new DropDownBinding(null, null));
+
+	//AJAX Update
+	$.ajax({
+		url: '/api/' + 'MaterialType' + "/" + selectedOption + "/extractionprocedure",
+		type: 'GET',
+		success: function (data) {
+			lookup.materialExtractionProcedures(ko.utils.arrayMap(data, function (x) {
+				return new DropDownBinding(x.Id, x.Value);
+			}));
+
+		}
+	});
+}
+
+
 function Lookup() {
     var initValue = "Initial value to get it to build the vm model correctly.";
     this.ageRanges = ko.observableArray([new RadioBinding(0, initValue, 0)]);
@@ -40,7 +66,9 @@ function Lookup() {
     this.macroscopicAssessments = ko.observableArray([
         new RadioBinding(0, initValue, 0),
     ]);
-    this.percentages = ko.observableArray([new RadioBinding(0, initValue, 0)]);
+	this.percentages = ko.observableArray([new RadioBinding(0, initValue, 0)]);
+	this.extractionProcedures = ko.observableArray([new DropDownBinding("", initValue)]);
+	this.materialExtractionProcedures = ko.observableArray([new DropDownBinding("", initValue)]);
 }
 
 var lookup = new Lookup();
@@ -51,7 +79,8 @@ function MaterialPreservationDetail(
   preservationType,
   storageTemperature,
   percentage,
-  macroscopicAssessment
+  macroscopicAssessment,
+  extractionProcedure
 ) {
   var _this = this;
 
@@ -68,6 +97,7 @@ function MaterialPreservationDetail(
   this.materialType = ko.observable(materialType).extend({
 	min: { params: 1, message: "Please select a material type." },
   });
+  this.extractionProcedure = ko.observable(extractionProcedure);
   this.preservationType = ko.observable(preservationType);
   this.storageTemperature = ko.observable(storageTemperature).extend({
 	min: { params: 1, message: "Please select a storage temperature." },
@@ -92,6 +122,17 @@ function MaterialPreservationDetail(
 	return _this.getRadioBindingLabel(
 	  lookup.materialTypes(),
 	  _this.materialType()
+	);
+  });
+
+	this.extractionProcedureDescription = ko.computed(function () {
+		var eps = lookup.extractionProcedures()
+		var ep = _this.extractionProcedure()
+		var tt = _this.extractionProcedure() ? _this.extractionProcedure().value : null
+
+	  return _this.getRadioBindingLabel(
+		lookup.extractionProcedures(),
+		  _this.extractionProcedure() ? _this.extractionProcedure().value : null
 	);
   });
 
@@ -129,7 +170,8 @@ function MaterialPreservationDetailModal(
   preservationType,
   storageTemperature,
   percentage,
-  macroscopicAssessment
+  macroscopicAssessment,
+  extractionProcedure
 ) {
   this.modalModeAdd = "Add";
   this.modalModeEdit = "Update";
@@ -144,7 +186,8 @@ function MaterialPreservationDetailModal(
       preservationType,
 	  storageTemperature,
 	  percentage,
-	  macroscopicAssessment
+	  macroscopicAssessment,
+	  extractionProcedure
 	)
   );
 }
@@ -152,7 +195,7 @@ function MaterialPreservationDetailModal(
 function AppViewModel() {
   var _this = this;
   this.donorCount = ko.observable(0);
-  this.modal = new MaterialPreservationDetailModal(0, 0, 0, 0, 1, 0);
+  this.modal = new MaterialPreservationDetailModal(0, 0, 0, 0, 1, 0,new DropDownBinding(null,null));
   this.materialPreservationDetails = ko.observableArray([]);
   this.currentlyEdited = ko.observable(null);
 
@@ -196,6 +239,7 @@ function AppViewModel() {
 	_this.modal.mode(_this.modal.modalModeEdit);
 	_this.showModal();
 	preservationValidation();
+	extractionValidation();
   };
 
   this.modalSubmit = function () {
@@ -219,7 +263,8 @@ function AppViewModel() {
 				  null,
 				  _this.modal.materialPreservationDetail().storageTemperature(),
 				  _this.modal.materialPreservationDetail().percentage(),
-				  _this.modal.materialPreservationDetail().macroscopicAssessment()
+				  _this.modal.materialPreservationDetail().macroscopicAssessment(),
+				  _this.modal.materialPreservationDetail().extractionProcedure()
 			  );
 		  }
 		  else {
@@ -229,7 +274,8 @@ function AppViewModel() {
 				  _this.modal.materialPreservationDetail().preservationType(),
 				  _this.modal.materialPreservationDetail().storageTemperature(),
 				  _this.modal.materialPreservationDetail().percentage(),
-				  _this.modal.materialPreservationDetail().macroscopicAssessment()
+				  _this.modal.materialPreservationDetail().macroscopicAssessment(),
+				  _this.modal.materialPreservationDetail().extractionProcedure()
 			  );
           }
 
@@ -267,6 +313,11 @@ function AppViewModel() {
 		  .macroscopicAssessment(
 			_this.modal.materialPreservationDetail().macroscopicAssessment()
 		  );
+		_this
+			.currentlyEdited()
+			.extractionProcedure(
+				_this.modal.materialPreservationDetail().extractionProcedure()
+			);
 
 		_this.resetModalValues();
 		_this.currentlyEdited(null);
@@ -299,7 +350,8 @@ function AppViewModel() {
 						null,
 						_this.modal.materialPreservationDetail().storageTemperature(),
 						null,
-						_this.modal.materialPreservationDetail().macroscopicAssessment()
+						_this.modal.materialPreservationDetail().macroscopicAssessment(),
+						_this.modal.materialPreservationDetail().extractionProcedure()
 					);
 				}
 				else {
@@ -309,7 +361,8 @@ function AppViewModel() {
 						_this.modal.materialPreservationDetail().preservationType(),
 						_this.modal.materialPreservationDetail().storageTemperature(),
 						null,
-						_this.modal.materialPreservationDetail().macroscopicAssessment()
+						_this.modal.materialPreservationDetail().macroscopicAssessment(),
+						_this.modal.materialPreservationDetail().extractionProcedure()
 					);
 				}
 
@@ -347,6 +400,11 @@ function AppViewModel() {
 					.macroscopicAssessment(
 						_this.modal.materialPreservationDetail().macroscopicAssessment()
 					);
+				_this
+					.currentlyEdited()
+					.extractionProcedure(
+						_this.modal.materialPreservationDetail().extractionProcedure()
+					);
 
 				_this.resetModalValues();
 				_this.currentlyEdited(null);
@@ -365,8 +423,10 @@ function AppViewModel() {
 	_this.modal.materialPreservationDetail().storageTemperature(0);
 	_this.modal.materialPreservationDetail().percentage(1);
 	_this.modal.materialPreservationDetail().macroscopicAssessment(3); // Default: 'Not-Applicable'
+	_this.modal.materialPreservationDetail().extractionProcedure(null);
 
 	_this.modal.materialPreservationDetail().materialType.isModified(false);
+	_this.modal.materialPreservationDetail().extractionProcedure.isModified(false);
 	_this.modal.materialPreservationDetail().preservationType.isModified(false);
 	_this.modal.materialPreservationDetail().storageTemperature.isModified(false);
 	_this.modal.materialPreservationDetail().percentage.isModified(false);
@@ -400,6 +460,9 @@ function AppViewModel() {
 	_this.modal
 	  .materialPreservationDetail()
 	  .macroscopicAssessment(details.macroscopicAssessment());
+	_this.modal
+	  .materialPreservationDetail()
+	  .extractionProcedure(details.extractionProcedure());
 
 	_this.openModalForEdit();
   };
@@ -418,7 +481,9 @@ function AppViewModel() {
 	_this.modal
 	  .materialPreservationDetail()
 	  .macroscopicAssessment(details.macroscopicAssessment());
-
+	_this.modal
+	  .materialPreservationDetail()
+	  .extractionProcedure(details.extractionProcedure());
 	_this.openModalForCopy();
   };
 
@@ -431,7 +496,8 @@ function AppViewModel() {
 		  item.materialType() === details.materialType() &&
 		  item.preservationType() === details.preservationType() &&
 		  item.storageTemperature() === details.storageTemperature() &&
-		  item.macroscopicAssessment() === details.macroscopicAssessment()
+		  item.macroscopicAssessment() === details.macroscopicAssessment() &&
+		  item.extractionProcedure() === details.extractionProcedure()
 		);
 	  }
 	);
