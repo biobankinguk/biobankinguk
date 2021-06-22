@@ -7,6 +7,7 @@ namespace Biobanks.Web.Models.ADAC
     {
         //Sum of all Collections and Capabilities
         public int CollectionCapabilityCount { get; set; }
-
+        
+        public bool DisplayOnDirectory { get; set; }
     }
 }

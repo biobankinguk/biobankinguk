@@ -27,6 +27,7 @@
 					<th>Ontology Term ID</th>
 					<th>Other Terms</th>
 					<th>Collection and Capability Count</th>
+                    <th>Displayed On Directory</th>
 					<th>@* Actions *@</th>
 				</tr>
 			</thead>
@@ -35,54 +36,52 @@
 				@foreach (var ontologyTerm in Model)
 				{
 					<tr class="@(ontologyTerm.CollectionCapabilityCount > 0 ? "info" : "")">
-						<td>
-							<div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.Description)</div>
-						</td>
-						<td>
-							@Html.DisplayFor(x => ontologyTerm.OntologyTermId)
-						</td>
-						<td><div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.OtherTerms)</div></td>
+                        <td>@Html.DisplayFor(x => ontologyTerm.Description)</td>
+						<td>@Html.DisplayFor(x => ontologyTerm.OntologyTermId)</td>
+						<td>@Html.DisplayFor(x => ontologyTerm.OtherTerms)</td>
 						<td>@ontologyTerm.CollectionCapabilityCount</td>
+                        <td>@ontologyTerm.DisplayOnDirectory</td>
 
-                    <td class="text-right">
-                        @if (ontologyTerm.CollectionCapabilityCount > 0)
-                        {
-                            <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
-                            //Allow editing of 'other terms' only
-                            <a title="Edit"
-                               class="action-icon"
-                               href="#"
-                               data-target="#disease-status-modal"
-                               data-disease-status="@Json.Encode(ontologyTerm)"
-                               data-bind="click: openModalForEdit"
-                               data-partial-edit="true">
-                                <span class="fa fa-edit labelled-icon"></span>Edit
-                            </a>
-                        }
-                        else
-                        {
-                            <a title="Edit"
-                               class="action-icon"
-                               href="#"
-                               data-target="#disease-status-modal"
-                               data-disease-status="@Json.Encode(ontologyTerm)"
-                               data-bind="click: openModalForEdit">
-                                <span class="fa fa-edit labelled-icon"></span>Edit
-                            </a>
+                        <!-- Actions -->
+                        <td class="text-right">
+                            @if (ontologyTerm.CollectionCapabilityCount > 0)
+                            {
+                                <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Disease status in use")
+                                //Allow editing of 'other terms' only
+                                <a title="Edit"
+                                   class="action-icon"
+                                   href="#"
+                                   data-target="#disease-status-modal"
+                                   data-disease-status="@Json.Encode(ontologyTerm)"
+                                   data-bind="click: openModalForEdit"
+                                   data-partial-edit="true">
+                                    <span class="fa fa-edit labelled-icon"></span>Edit
+                                </a>
+                            }
+                            else
+                            {
+                                <a title="Edit"
+                                   class="action-icon"
+                                   href="#"
+                                   data-target="#disease-status-modal"
+                                   data-disease-status="@Json.Encode(ontologyTerm)"
+                                   data-bind="click: openModalForEdit">
+                                    <span class="fa fa-edit labelled-icon"></span>Edit
+                                </a>
 
-                            <a title="Delete"
-                               class="action-icon delete-confirm"
-                               data-refdata-model="@Json.Encode(ontologyTerm)"
-                               data-resource-url="/api/DiseaseStatus"
-                               data-success-redirect="@Url.Action("DiseaseStatuses")"
-                               data-refdata-type="Disease status"
-                               href="#">
-                                <span class="fa fa-trash labelled-icon"></span>Delete
-                            </a>
-                        }
-                    </td>
-                </tr>
-            }
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(ontologyTerm)"
+                                   data-resource-url="/api/DiseaseStatus"
+                                   data-success-redirect="@Url.Action("DiseaseStatuses")"
+                                   data-refdata-type="Disease status"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -119,43 +118,57 @@
 				<div class="modal-body">
 
 					<div class="row">
-                        <div class="col-sm-12">
+						<div class="col-sm-12">
 
-                            <input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().ontologyTermId()">
-                            <input type="hidden" id="OtherTerms" name="OtherTerms">
-                            <!-- SNOMED ID -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Ontology Term ID</label>
-                                <div class="col-sm-9">
-                                    <input type="text" id="OntologyTermId" name="OntologyTermId" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().ontologyTermId()" maxlength="20">
-                                </div>
-                            </div>
+							<input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().ontologyTermId()">
+							<input type="hidden" id="OtherTerms" name="OtherTerms">
 
-                            <!-- Description -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" id="Description" name="Description" class="form-control"
-                                           data-bind="value: modal.diseaseStatus().description()">
-                                </div>
-                            </div>
 
-                            <!-- Other Terms -->
-                            <div data-bind="foreach: modal.diseaseStatus().otherTerms()">
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Other Terms</label>
-                                    <div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
-                                        <input type="text" class="form-control"
-                                               data-bind="textInput: $parent.modal.diseaseStatus().otherTerms()[$index()]">
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right"
-                                                data-bind="click: function() { $parent.removeOtherTerms($index())}" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+							<!-- SNOMED ID -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Ontology Term ID</label>
+								<div class="col-sm-9">
+									<input type="text" id="OntologyTermId" name="OntologyTermId" class="form-control"
+										   data-bind="value: modal.diseaseStatus().ontologyTermId()" maxlength="20">
+								</div>
+							</div>
+
+							<!-- Description -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Name</label>
+								<div class="col-sm-9">
+									<input type="text" id="Description" name="Description" class="form-control"
+										   data-bind="value: modal.diseaseStatus().description()">
+								</div>
+							</div>
+
+							<!-- Other Terms -->
+							<div data-bind="foreach: modal.diseaseStatus().otherTerms()">
+								<div class="form-group">
+									<label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Other Terms</label>
+									<div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
+										<input type="text" class="form-control"
+											   data-bind="textInput: $parent.modal.diseaseStatus().otherTerms()[$index()]">
+									</div>
+									<div class="col-sm-1">
+										<button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right"
+												data-bind="click: function() { $parent.removeOtherTerms($index())}" />
+									</div>
+								</div>
+							</div>
+
+							<!-- Displayed On Directory Checkbox -->
+							<div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label">Displayed On Directory</label>
+									<div class="col-sm-1">
+										<input type="checkbox" id="DisplayOnDirectory" name="DisplayOnDirectory" class=" form-control" 
+											   data-bind="checked: modal.diseaseStatus().displayOnDirectory()"/>
+									</div>
+								</div>
+							</div>
+						</div>
                     </div>
 				</div>
                 <div class="modal-footer">

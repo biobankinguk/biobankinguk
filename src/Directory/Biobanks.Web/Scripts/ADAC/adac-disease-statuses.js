@@ -1,17 +1,18 @@
-function DiseaseStatus(ontologyTermId, description, otherTerms) {
+function DiseaseStatus(ontologyTermId, description, otherTerms, displayOnDirectory) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.otherTerms = ko.observableArray(otherTerms);
+    this.displayOnDirectory = ko.observable(displayOnDirectory);
 }
 
-function DiseaseStatusModal(ontologyTermId, description, otherTerms) {
+function DiseaseStatusModal(ontologyTermId, description, otherTerms, displayOnDirectory) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.diseaseStatus = ko.observable(
-        new DiseaseStatus(ontologyTermId, description, otherTerms)
+        new DiseaseStatus(ontologyTermId, description, otherTerms, displayOnDirectory)
     );
 }
 
@@ -20,7 +21,7 @@ function AdacDiseaseStatusViewModel() {
     var _this = this;
 
     this.modalId = "#disease-status-modal";
-    this.modal = new DiseaseStatusModal("", "", []);
+    this.modal = new DiseaseStatusModal("", "", [], false);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -36,7 +37,7 @@ function AdacDiseaseStatusViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.diseaseStatus(new DiseaseStatus("", "",[]));
+        _this.modal.diseaseStatus(new DiseaseStatus("", "", [], false));
         _this.setPartialEdit(false);
         _this.showModal();
     };
@@ -53,8 +54,8 @@ function AdacDiseaseStatusViewModel() {
       new DiseaseStatus(
           diseaseStatus.OntologyTermId,
           diseaseStatus.Description,
-          otherTerms
-
+          otherTerms,
+          diseaseStatus.DisplayOnDirectory
       )
     );
 
