@@ -810,7 +810,8 @@ namespace Biobanks.Services
                 x => x.MaterialDetails.Select(y => y.CollectionPercentage),
                 x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
                 x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.StorageTemperature)
+                x => x.MaterialDetails.Select(y => y.StorageTemperature),
+                x => x.MaterialDetails.Select(y => y.ExtractionProcedure)
             )).FirstOrDefault();
 
         public async Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id)
@@ -1201,6 +1202,11 @@ namespace Biobanks.Services
                      && x.DisplayOnDirectory)).FirstOrDefault();
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
             => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
+
+        public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id)
+            => (await _materialTypeRepository.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures))
+            .FirstOrDefault()?.ExtractionProcedures
+            .ToList();
 
         public async Task<bool> IsExtractionProcedureInUse(string id)
             => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);

@@ -133,6 +133,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
         Task<OntologyTerm> GetExtractionProcedureById(string id);
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
+        Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id);
         Task<bool> IsExtractionProcedureInUse(string id);
 
         Task<IEnumerable<SnomedTag>> ListSnomedTags();
