@@ -29,7 +29,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            return (await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
+            return (await _biobankReadService.ListDisplayableOntologyTerms()).Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
@@ -48,7 +48,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListOntologyTermsAsync()).Where(x => x.Id == id).First();
+            var model = (await _biobankReadService.ListDisplayableOntologyTerms()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {
@@ -87,7 +87,7 @@ namespace Biobanks.Web.ApiControllers
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {
                 //Allow editing of only Other terms field if diagnosis in use
-                var diagnosis = (await _biobankReadService.ListOntologyTermsAsync()).Where(x => x.Id == id).First();
+                var diagnosis = (await _biobankReadService.ListDisplayableOntologyTerms()).Where(x => x.Id == id).First();
                 if ((diagnosis.Value != model.Description) || (diagnosis.Value != model.Description))
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }

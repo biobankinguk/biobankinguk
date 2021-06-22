@@ -1141,13 +1141,17 @@ namespace Biobanks.Services
         #endregion
 
         #region RefData: OntologyTerm
-        public async Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(filter: x => x.Value.Contains(wildcard) && x.DisplayOnDirectory);
+        public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string filter = "", bool onlyDisplayable = false)
+            => await _ontologyTermRepository.ListAsync(filter: x => x.Value.Contains(filter) && (x.DisplayOnDirectory || !onlyDisplayable));
+
+        public async Task<IEnumerable<OntologyTerm>> ListDisplayableOntologyTerms(string filter = "")
+            => await ListOntologyTerms(filter, onlyDisplayable: true);
+
 
         public async Task<IEnumerable<OntologyTerm>> GetUsedOntologyTermsAsync()
         {
             var collections = await _collectionRepository.ListAsync(false);
-            var ontologyTerms = await ListOntologyTermsAsync();
+            var ontologyTerms = await ListDisplayableOntologyTerms();
 
             return ontologyTerms.Where(x => collections.Any(y => y.OntologyTermId == x.Id));
         }
