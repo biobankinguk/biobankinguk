@@ -1,16 +1,37 @@
-﻿namespace Biobanks.Analytics.Dto
+﻿using Newtonsoft.Json;
+
+namespace Biobanks.Analytics.Dto
 {
     public class GoogleAnalyticsReportingKey
     {
-        public string type { get; set; }
-        public string project_id { get; set; }
-        public string private_key_id { get; set; }
-        public string private_key { get; set; }
-        public string client_email { get; set; }
-        public string client_id { get; set; }
-        public string auth_uri { get; set; }
-        public string token_uri { get; set; }
-        public string auth_provider_x509_cert_url { get; set; }
-        public string client_x509_cert_url { get; set; }
+        [JsonProperty("type")]
+        public string Type{ get; set; }
+
+        [JsonProperty("project_id")]
+        public string ProjectId { get; set; }
+
+        [JsonProperty("private_key_id")]
+        public string PrivateKeyId { get; set; }
+
+        [JsonProperty("private_key")]
+        public string PrivateKey { get; set; }
+
+        [JsonProperty("client_email")]
+        public string ClientEmail { get; set; }
+
+        [JsonProperty("client_id")]
+        public string ClientId { get; set; }
+
+        [JsonProperty("auth_uri")]
+        public string AuthUri { get; set; }
+
+        [JsonProperty("token_uri")]
+        public string TokenUri { get; set; }
+
+        [JsonProperty("auth_provider_x509_cert_url")]
+        public string AuthProviderCertUrl { get; set; }
+
+        [JsonProperty("client_x509_cert_url")]
+        public string ClientCertUrl { get; set; }
     }
 }
