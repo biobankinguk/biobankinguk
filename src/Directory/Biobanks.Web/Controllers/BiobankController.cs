@@ -1247,6 +1247,7 @@ namespace Biobanks.Web.Controllers
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
                             MacroscopicAssessmentId = x.macroscopicAssessment,
+                            ExtractionProcedureId = x.extractionProcedure
                         }
                     )
                     .ToList()
