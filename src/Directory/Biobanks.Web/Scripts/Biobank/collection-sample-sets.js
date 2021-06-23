@@ -28,15 +28,10 @@ function preservationValidation() {
             }
 		}
 	});
-
-
 }
 
 function extractionValidation() {
 	var selectedOption = $("input[name='radMaterial']:checked").val();
-	//Resetting the stored list and selected value
-	lookup.materialExtractionProcedures([]);
-	sampleSetVM.modal.materialPreservationDetail().extractionProcedure("");
 
 	//AJAX Update
 	$.ajax({
@@ -50,7 +45,6 @@ function extractionValidation() {
 		}
 	});
 }
-
 
 function Lookup() {
     var initValue = "Initial value to get it to build the vm model correctly.";
@@ -125,10 +119,10 @@ function MaterialPreservationDetail(
 	);
   });
 
-	this.extractionProcedureDescription = ko.computed(function () {
-	  return _this.getRadioBindingLabel(
+  this.extractionProcedureDescription = ko.computed(function () {
+	return _this.getRadioBindingLabel(
 		lookup.extractionProcedures(),
-		  _this.extractionProcedure() 
+		_this.extractionProcedure() 
 	);
   });
 
@@ -229,19 +223,34 @@ function AppViewModel() {
   this.openModalForCopy = function () {
 	_this.modal.mode(_this.modal.modalModeCopy);
 	_this.showModal();
-  };
-
-  this.openModalForEdit = function () {
-	_this.modal.mode(_this.modal.modalModeEdit);
-	_this.showModal();
-	preservationValidation();
 	extractionValidation();
   };
+
+	this.openModalForEdit = function () {
+	_this.modal.mode(_this.modal.modalModeEdit);
+	_this.showModal();
+
+	extractionValidation();
+	preservationValidation();
+  };
+
+	this.validateExtractionOnSubmit = function () {
+		var eplabel = _this.modal.materialPreservationDetail().getRadioBindingLabel(
+			lookup.materialExtractionProcedures(),
+			_this.modal.materialPreservationDetail().extractionProcedure()
+		);
+		return eplabel != "" ? true : false; 
+    }
 
   this.modalSubmit = function () {
 
 	//check to ensure details are unique
 	_this.validateDetailUnique(_this.modal.materialPreservationDetail());
+
+	//validate extraction procedure
+	var extractionProcedure = _this.validateExtractionOnSubmit() ?
+		_this.modal.materialPreservationDetail().extractionProcedure()
+		: null;
 
 	//Copy is the same as Add for the purposes of submission
 	if (
@@ -260,7 +269,7 @@ function AppViewModel() {
 				  _this.modal.materialPreservationDetail().storageTemperature(),
 				  _this.modal.materialPreservationDetail().percentage(),
 				  _this.modal.materialPreservationDetail().macroscopicAssessment(),
-				  _this.modal.materialPreservationDetail().extractionProcedure()
+				  extractionProcedure
 			  );
 		  }
 		  else {
@@ -271,7 +280,7 @@ function AppViewModel() {
 				  _this.modal.materialPreservationDetail().storageTemperature(),
 				  _this.modal.materialPreservationDetail().percentage(),
 				  _this.modal.materialPreservationDetail().macroscopicAssessment(),
-				  _this.modal.materialPreservationDetail().extractionProcedure()
+				  extractionProcedure
 			  );
           }
 
@@ -309,11 +318,9 @@ function AppViewModel() {
 		  .macroscopicAssessment(
 			_this.modal.materialPreservationDetail().macroscopicAssessment()
 		  );
-		_this
-			.currentlyEdited()
-			.extractionProcedure(
-				_this.modal.materialPreservationDetail().extractionProcedure()
-			);
+
+		_this.currentlyEdited().extractionProcedure(extractionProcedure);
+		
 
 		_this.resetModalValues();
 		_this.currentlyEdited(null);
@@ -331,6 +338,11 @@ function AppViewModel() {
 		//check to ensure details are unique
 		_this.validateDetailUnique(_this.modal.materialPreservationDetail());
 
+		//validate extraction procedure
+		var extractionProcedure = _this.validateExtractionOnSubmit() ?
+			_this.modal.materialPreservationDetail().extractionProcedure()
+			: null;
+
 		//Copy is the same as Add for the purposes of submission
 		if (
 			_this.modal.mode() == _this.modal.modalModeAdd ||
@@ -347,7 +359,7 @@ function AppViewModel() {
 						_this.modal.materialPreservationDetail().storageTemperature(),
 						null,
 						_this.modal.materialPreservationDetail().macroscopicAssessment(),
-						_this.modal.materialPreservationDetail().extractionProcedure()
+						extractionProcedure
 					);
 				}
 				else {
@@ -358,7 +370,7 @@ function AppViewModel() {
 						_this.modal.materialPreservationDetail().storageTemperature(),
 						null,
 						_this.modal.materialPreservationDetail().macroscopicAssessment(),
-						_this.modal.materialPreservationDetail().extractionProcedure()
+						extractionProcedure
 					);
 				}
 
@@ -396,11 +408,8 @@ function AppViewModel() {
 					.macroscopicAssessment(
 						_this.modal.materialPreservationDetail().macroscopicAssessment()
 					);
-				_this
-					.currentlyEdited()
-					.extractionProcedure(
-						_this.modal.materialPreservationDetail().extractionProcedure()
-					);
+
+				_this.currentlyEdited().extractionProcedure(extractionProcedure);
 
 				_this.resetModalValues();
 				_this.currentlyEdited(null);
@@ -441,7 +450,7 @@ function AppViewModel() {
   };
 
   this.editDetails = function (details) {
-	_this.currentlyEdited(details);
+	  _this.currentlyEdited(details);
 
 	_this.modal
 	  .materialPreservationDetail()
@@ -457,9 +466,8 @@ function AppViewModel() {
 	  .materialPreservationDetail()
 	  .macroscopicAssessment(details.macroscopicAssessment());
 	_this.modal
-	  .materialPreservationDetail()
-	  .extractionProcedure(details.extractionProcedure());
-
+		.materialPreservationDetail()
+		.extractionProcedure(details.extractionProcedure());
 	_this.openModalForEdit();
   };
 
