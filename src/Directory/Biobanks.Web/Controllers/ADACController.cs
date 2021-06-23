@@ -33,7 +33,7 @@ namespace Biobanks.Web.Controllers
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
-        private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
+        private readonly IAnalyticsService _analyticsService;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IEmailService _emailService;
         private readonly IRegistrationDomainService _registrationDomainService;
@@ -48,7 +48,7 @@ namespace Biobanks.Web.Controllers
         public ADACController(
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
-            IAnalyticsReportGenerator analyticsReportGenerator,
+            IAnalyticsService analyticsService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
             IRegistrationDomainService registrationDomainService,
@@ -59,7 +59,7 @@ namespace Biobanks.Web.Controllers
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
-            _analyticsReportGenerator = analyticsReportGenerator;
+            _analyticsService = analyticsService;
             _userManager = userManager;
             _emailService = emailService;
             _registrationDomainService = registrationDomainService;
@@ -937,7 +937,7 @@ namespace Biobanks.Web.Controllers
 
             try
             {
-                var model = _mapper.Map<DirectoryAnalyticReport>(await _analyticsReportGenerator.GetDirectoryReport(year, endQuarter, reportPeriod));
+                var model = _mapper.Map<DirectoryAnalyticReport>(await _analyticsService.GetDirectoryReport(year, endQuarter, reportPeriod));
                 return View(model);
             }
             catch (Exception e)

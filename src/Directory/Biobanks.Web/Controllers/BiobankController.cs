@@ -43,7 +43,7 @@ namespace Biobanks.Web.Controllers
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
-        private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
+        private readonly IAnalyticsService _analyticsService;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IEmailService _emailService;
@@ -57,7 +57,7 @@ namespace Biobanks.Web.Controllers
 
         public BiobankController(IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
-            IAnalyticsReportGenerator analyticsReportGenerator,
+            IAnalyticsService analyticsService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
             IMapper mapper,
@@ -66,7 +66,7 @@ namespace Biobanks.Web.Controllers
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
-            _analyticsReportGenerator = analyticsReportGenerator;
+            _analyticsService = analyticsService;
             _userManager = userManager;
             _emailService = emailService;
             _mapper = mapper;
@@ -1895,7 +1895,7 @@ namespace Biobanks.Web.Controllers
 
             try
             {
-                var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsReportGenerator.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
+                var model = _mapper.Map<BiobankAnalyticReport>(await _analyticsService.GetBiobankReport(biobankId, year, endQuarter, reportPeriod));
                 return View(model);
             }
             catch (Exception e)

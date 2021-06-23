@@ -8,13 +8,15 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using Biobanks.Directory.Data;
+using Biobanks.Entities.Data;
 
 namespace Biobanks.Services
 {
     /// <summary>
     /// This Service makes HTTP calls to an API to generate Analytics Reports for the Directory
     /// </summary>
-    public class AnalyticsReportGenerator : IDisposable, IAnalyticsReportGenerator
+    public class AnalyticsService : IDisposable, IAnalyticsService
     {
         // TODO: genericise this for Directory calls to the Directory API
         private readonly string _apiUrl = ConfigurationManager.AppSettings["DirectoryApiUrl"] ?? "";
@@ -22,11 +24,11 @@ namespace Biobanks.Services
         private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
 
         private readonly HttpClient _client;
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly BiobanksDbContext _db;
 
-        public AnalyticsReportGenerator(IBiobankReadService biobankReadService)
+        public AnalyticsService(BiobanksDbContext db)
         {
-            _biobankReadService = biobankReadService;
+            _db = db;
             _client = new HttpClient();
 
             if (!string.IsNullOrEmpty(_apiUrl))
@@ -41,20 +43,19 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task<ProfileStatusDTO> GetProfileStatus(string biobankId)
+        private async Task<ProfileStatusDTO> GetProfileStatus(Organisation biobank)
         {
             //can split into two functions that returns status code and status message
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(biobankId);
-            int collectionCount = bb.Collections.Count;
-            int capabilitiesCount = bb.DiagnosisCapabilities.Count;
+            int collectionCount = biobank.Collections.Count;
+            int capabilitiesCount = biobank.DiagnosisCapabilities.Count;
 
             bool missingSampleSet = false;
             ProfileStatusDTO profileStatus = new ProfileStatusDTO();
 
-            foreach (var col in bb.Collections)
+            foreach (var col in biobank.Collections)
             {
-                var ss = await _biobankReadService.GetCollectionWithSampleSetsByIdAsync(col.CollectionId);
-                if (ss.SampleSets.Count == 0)
+                var collection = _db.Collections.Include("SampleSets").SingleOrDefault(x => x.CollectionId == col.CollectionId);
+                if (collection.SampleSets.Count == 0)
                 { // Check if any collection exists without a sample set
                     missingSampleSet = true;
                     break;
@@ -95,10 +96,10 @@ namespace Biobanks.Services
 
         public async Task<BiobankAnalyticReportDTO> GetBiobankReport(int Id, int year, int quarter, int period)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(Id);
-            var biobankId = bb.OrganisationExternalId;
+            var biobank = _db.Organisations.SingleOrDefault(x => x.OrganisationId == Id);
+            var biobankId = biobank.OrganisationExternalId;
 
-            if (bb is null) throw new KeyNotFoundException();
+            if (biobank is null) throw new KeyNotFoundException();
 
             var endpoint = $"analytics/{year}/{quarter}/{period}/{biobankId}";
             var response = await _client.GetAsync(endpoint);
@@ -108,9 +109,9 @@ namespace Biobanks.Services
 
             var report = JsonConvert.DeserializeObject<BiobankAnalyticReportDTO>(contents);
 
-            var profileStatus = await GetProfileStatus(biobankId);
-            report.Name = bb.Name;
-            report.Logo = bb.Logo;
+            var profileStatus = await GetProfileStatus(biobank);
+            report.Name = biobank.Name;
+            report.Logo = biobank.Logo;
             report.BiobankStatus = profileStatus;
 
             return report;

@@ -239,8 +239,8 @@ namespace Biobanks.Web.Windsor
 
             //Google Analytics 
             container.Register(
-                    Component.For(typeof(IAnalyticsReportGenerator))
-                    .ImplementedBy(typeof(AnalyticsReportGenerator))
+                    Component.For(typeof(IAnalyticsService))
+                    .ImplementedBy(typeof(AnalyticsService))
                     .LifeStyle.Transient);
 
         }

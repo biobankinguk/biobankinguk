@@ -1,7 +1,6 @@
 using Biobanks.Directory.Data.Caching;
 using Biobanks.Directory.Data.Repositories;
 using Biobanks.Entities.Data;
-using Biobanks.Entities.Shared;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Identity.Contracts;
