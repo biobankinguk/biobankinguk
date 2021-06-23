@@ -123,6 +123,8 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
+        Task<int> CountOntologyTerms(string filter = "");
+        Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string filter = "");
         Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string filter = "", bool onlyDisplayable = false);
         Task<IEnumerable<OntologyTerm>> ListDisplayableOntologyTerms(string filter = "");
         Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);

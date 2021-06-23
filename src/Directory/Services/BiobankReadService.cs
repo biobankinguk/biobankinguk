@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Directory.Data;
 
 namespace Biobanks.Services
 {
@@ -89,6 +90,8 @@ namespace Biobanks.Services
 
         private readonly ISearchProvider _searchProvider;
 
+        private readonly BiobanksDbContext _context;
+
         public BiobankReadService(
             ILogoStorageProvider logoStorageProvider,
 
@@ -151,7 +154,9 @@ namespace Biobanks.Services
             IGenericEFRepository<Publication> publicationRespository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
-            IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository)
+            IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
+            
+            BiobanksDbContext context)
         {
             _logoStorageProvider = logoStorageProvider;
 
@@ -216,6 +221,8 @@ namespace Biobanks.Services
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
+
+            _context = context;
         }
 
         #endregion
@@ -1141,12 +1148,22 @@ namespace Biobanks.Services
         #endregion
 
         #region RefData: OntologyTerm
+        public async Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string filter = "")
+            => await _context.OntologyTerms
+                    .Where(x => x.Value.Contains(filter))
+                    .OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Id)
+                    .Skip(start)
+                    .Take(length)
+                    .ToListAsync();
+
+        public async Task<int> CountOntologyTerms(string filter = "")
+            => await _ontologyTermRepository.CountAsync(x => x.Value.Contains(filter));
+
         public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string filter = "", bool onlyDisplayable = false)
             => await _ontologyTermRepository.ListAsync(filter: x => x.Value.Contains(filter) && (x.DisplayOnDirectory || !onlyDisplayable));
 
         public async Task<IEnumerable<OntologyTerm>> ListDisplayableOntologyTerms(string filter = "")
             => await ListOntologyTerms(filter, onlyDisplayable: true);
-
 
         public async Task<IEnumerable<OntologyTerm>> GetUsedOntologyTermsAsync()
         {

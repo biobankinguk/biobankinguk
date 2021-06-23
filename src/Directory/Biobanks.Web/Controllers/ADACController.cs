@@ -1127,20 +1127,32 @@ namespace Biobanks.Web.Controllers
         #endregion
 
         #region RefData: Disease Status
-        public async Task<ActionResult> DiseaseStatuses()
-        {
-            return View((await _biobankReadService.ListDisplayableOntologyTerms()).Select(x =>
+        public ActionResult DiseaseStatuses()
+            => View(Enumerable.Empty<ReadOntologyTermModel>());
 
-                Task.Run(async () => new ReadOntologyTermModel
-                {
-                    OntologyTermId = x.Id,
-                    Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
-                    OtherTerms = x.OtherTerms,
-                    DisplayOnDirectory = x.DisplayOnDirectory
-                })
-                .Result
-            ));
+        public async Task<ActionResult> PagingatedDiseaseStatuses(int draw, int start, int length, string search = "")
+        {
+            var ontologyTerms = await _biobankReadService.PaginateOntologyTerms(start, length, search);
+            var filteredCount = await _biobankReadService.CountOntologyTerms(filter: search);
+            var totalCount = await _biobankReadService.CountOntologyTerms();
+
+            var data = ontologyTerms.Select(x => new ReadOntologyTermModel
+            {
+                OntologyTermId = x.Id,
+                Description = x.Value,
+                OtherTerms = x.OtherTerms,
+                CollectionCapabilityCount = 0,
+                DisplayOnDirectory = x.DisplayOnDirectory
+            });
+
+            return Json(new
+            {
+                draw,
+                data, 
+                recordsTotal = totalCount,
+                recordsFiltered = filteredCount
+            },
+            JsonRequestBehavior.AllowGet);
         }
 
         public async Task<ActionResult> DeleteDiseaseStatus(OntologyTermModel model)

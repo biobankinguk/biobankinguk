@@ -103,6 +103,43 @@ function AdacDiseaseStatusViewModel() {
 
 var adacDiseaseStatusVM;
 
+// DataTables
+$(function () {
+
+    $("#disease-statuses")["DataTable"]({
+        ajax: "./PagingatedDiseaseStatuses",
+        processing: true,
+        serverSide: true,
+        paging: true,
+        ordering: false,
+        info: false,
+        autoWidth: false,
+        columns: [
+            { data: "Description" },
+            { data: "OntologyTermId" },
+            { data: "OtherTerms" },
+            { data: "CollectionCapabilityCount" },
+            { data: "DisplayOnDirectory" },
+            {
+                data: function (row, type, val, meta) {
+
+                    // Cannot Edit As In Use
+                    if (row.CollectionCapabilityCount > 0) {
+                        return "Disease Status In Use";
+                    }
+                    else {
+                        return "Edit"
+                    }
+                }
+            }
+        ],
+        language: {
+            search: "Filter: ",
+        },
+    });
+});
+
+// Start-Up
 $(function () {
     // jquery plugin to serialise checkboxes as bools
     (function ($) {
@@ -154,19 +191,6 @@ $(function () {
         };
     }
     )(jQuery);
-
-    $("#disease-statuses")["DataTable"]({
-        columnDefs: [
-            { orderable: false, targets: 4 },
-            { width: "180px", targets: 4 },
-        ],
-        paging: false,
-        info: false,
-        autoWidth: false,
-        language: {
-            search: "Filter: ",
-        },
-    });
 
     $("#modal-disease-status-form").submit(function (e) {
         adacDiseaseStatusVM.modalSubmit(e);
