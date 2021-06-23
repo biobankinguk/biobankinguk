@@ -1084,7 +1084,8 @@ namespace Biobanks.Web.Controllers
                     Age = sampleSet.AgeRange.Value,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
                     PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
-                    StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
+                    StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct()),
+                    ExtractionProcedures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.ExtractionProcedure?.Value).Distinct())
                 })
             };
 
@@ -1301,7 +1302,9 @@ namespace Biobanks.Web.Controllers
                     MacroscopicAssessment = x.MacroscopicAssessment.Value,
                     MaterialType = x.MaterialType.Value,
                     PreservationType = x.PreservationType?.Value,
-                    StorageTemperature = x.StorageTemperature.Value
+                    StorageTemperature = x.StorageTemperature.Value,
+                    ExtractionProcedure = x.ExtractionProcedure?.Value
+                    
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
             };
