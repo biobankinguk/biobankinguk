@@ -148,7 +148,6 @@ $(function () {
                     });
 
                     if (row.CollectionCapabilityCount == 0) {
-
                         // Delete Link - Triggered By jQuery
                         var deleteLink = $('<a/>', {
                             "data-row": meta.row,
@@ -171,8 +170,7 @@ $(function () {
                             .html();
                     }
                     else {
-
-                        // In-Use Edit Only
+                        // In Use -> Edit Only
                         return $('<div/>')
                             .append(editLink)
                             .html();
@@ -181,7 +179,7 @@ $(function () {
             }
         ],
         createdRow: function (row, data, dataIndex) {
-            // Highlight In-Use Disease Statuses
+            // Highlight In Use Disease Statuses
             if (data.CollectionCapabilityCount > 0) {
                 $(row).addClass("info");
             }
@@ -206,11 +204,12 @@ $(function () {
 
         var rowIndex = $(this).data("row")
         var data = dataTable.row(rowIndex).data();
+        var url = apiUrl + "/" + data.OntologyTermId;
 
         bootbox.confirm("Are you sure you want to delete " + data.Description + "?",
             function (confirmation) {
                 if (confirmation) {
-                    deleteRefData(apiUrl, redirectUrl, refdataType);
+                    deleteRefData(url, redirectUrl, refdataType);
                 }
             }
         );
