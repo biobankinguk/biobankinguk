@@ -45,7 +45,6 @@
       </mvcSiteMapNode>
     </mvcSiteMapNode>
 
-    <mvcSiteMapNode title="About" controller="Home" action="About"/>
     <mvcSiteMapNode title="Contact Biobanks" controller="Home" action="Contact"/>
     <mvcSiteMapNode title="Cookie policy" controller="Home" action="Cookies"/>
 
