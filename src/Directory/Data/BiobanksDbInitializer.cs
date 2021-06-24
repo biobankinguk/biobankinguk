@@ -3,6 +3,7 @@ using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 
 
@@ -14,6 +15,7 @@ namespace Biobanks.Directory.Data
         {
             SeedDirectoryConfigs(context);
             SeedOrganisationTypes(context);
+            SeedContentPages(context);
         }
 
         private void SeedDirectoryConfigs(BiobanksDbContext context)
@@ -49,6 +51,39 @@ namespace Biobanks.Directory.Data
                  .Where(x => !set.Any(y => y.Description == x.Description))
                  .ToList()
                  .ForEach(x => set.Add(x));
+
+            context.SaveChanges();
+        }
+    
+        private void SeedContentPages(BiobanksDbContext context)
+        {
+            var pages = new[]
+            {
+                new ContentPage
+                {
+                    Title = "About",
+                    Body = "",
+                    RouteSlug = "About",
+                    IsEnabled = true,
+                    LastUpdated = DateTime.UtcNow
+                },
+                new ContentPage
+                {
+                    Title = "Privacy Policy",
+                    Body = "",
+                    RouteSlug = "Privacy",
+                    IsEnabled = true,
+                    LastUpdated = DateTime.UtcNow
+                }
+            };
+
+            foreach (var page in pages)
+            {
+                if (!context.ContentPages.Any(x => x.RouteSlug == page.RouteSlug))
+                {
+                    context.ContentPages.Add(page);
+                }
+            }
 
             context.SaveChanges();
         }

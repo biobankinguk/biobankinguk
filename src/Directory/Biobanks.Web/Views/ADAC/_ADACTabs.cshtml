@@ -193,14 +193,6 @@
                         @Html.ActionLink("Term Page Config", "TermpageConfig", "ADAC")
                     </li>
 
-                    @if (App.Config[ConfigKey.DisplayAboutPage] != "false")
-                    {
-                        <li role="presentation"
-                            class="@(Model == "Aboutpage Config" ? "active" : "true")">
-                            @Html.ActionLink("About Page Config", "AboutpageConfig", "ADAC")
-                        </li>
-                    }
-
                     <li role="presentation"
                         class="@(Model == "Register Pages Config" ? "active" : "true")">
                         @Html.ActionLink("Register Pages Config", "RegisterPagesConfig", "ADAC")
