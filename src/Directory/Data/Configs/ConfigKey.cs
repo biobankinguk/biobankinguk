@@ -7,7 +7,7 @@
         public const string DisplayLiveChat = "site.display.livechat";
         public const string DisplayAnalytics = "site.display.analytics";
         public const string DisplayPublications = "site.display.publications";
-        public const string DisplayAboutPage = "site.display.aboutpage";
+        public const string DisplaySubmissions = "site.display.submissions";
 
         public const string FundersFreeText = "site.display.funders.freetext";
 
@@ -50,9 +50,6 @@
         public const string EthicsFieldName = "site.sampleresource.ethics.name";
         public const string EthicsFieldIsCheckbox = "site.sampleresource.ethics.type";
         public const string SampleResourceName = "site.sampleresource.name";
-
-        // Editable About Page
-        public const string AboutBodyText = "site.aboutpage.bodytext";
 
     }
 }

@@ -732,17 +732,8 @@ namespace Biobanks.Services
                 x => x.AssociatedData
             )).FirstOrDefault();
 
-        // A method to search for a specific collection and get the value of it's FromApi boolean property.
         public async Task<bool> IsCollectionFromApi(int id)
-        {
-            Collection matchingCollection = (await _collectionRepository.ListAsync(false,
-                 x => x.CollectionId == id,
-                 null
-             )).First();
-
-            return matchingCollection.FromApi;
-        }
-
+            => (await _collectionRepository.CountAsync(x => x.CollectionId == id && x.FromApi)) > 0;
 
         public async Task<Collection> GetCollectionByIdForIndexingAsync(int id)
             => (await _collectionRepository.ListAsync(false,

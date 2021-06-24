@@ -15,7 +15,7 @@ namespace Biobanks.Services.Contracts
         Task UpdateCollectionAsync(Collection collection, string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
         Task<bool> DeleteCollectionAsync(int id);
-        Task<bool> DeleteAPICollectionAsync(int id);
+
         Task AddSampleSetAsync(SampleSet sampleSet);
         Task UpdateSampleSetAsync(SampleSet sampleSet);
         Task DeleteSampleSetAsync(int id);
@@ -160,6 +160,7 @@ namespace Biobanks.Services.Contracts
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);
 
         Task<Publication> AddOrganisationPublicationAsync(Publication publication);
+        Task<Publication> UpdateOrganisationPublicationAsync(Publication publication);
         Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);

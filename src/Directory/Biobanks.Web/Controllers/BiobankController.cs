@@ -22,7 +22,7 @@ using Microsoft.AspNet.Identity;
 using MvcSiteMapProvider;
 
 using Newtonsoft.Json;
-
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -1029,20 +1029,9 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<RedirectToRouteResult> DeleteCollection(int id)
         {
-            var result = false;
-            if (await _biobankReadService.IsCollectionFromApi(id) == false)
-            {
-                result = await _biobankWriteService.DeleteCollectionAsync(id);
-            }
-            else
-            {
-                result = await _biobankWriteService.DeleteAPICollectionAsync(id);
-            }
-
-            if (result)
+            if (!await _biobankReadService.IsCollectionFromApi(id) && await _biobankWriteService.DeleteCollectionAsync(id))
             {
                 SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
-
                 return RedirectToAction("Collections");
             }
             else
@@ -1050,7 +1039,6 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage(
                     "The system was unable to delete this collection. Please make sure it doesn't contain any Sample Sets before trying again.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("Collection", new { id });
             }
         }
@@ -1766,23 +1754,137 @@ namespace Biobanks.Web.Controllers
             if (biobankId != 0)
             {
                 var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-                var publiations = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
 
-                biobankPublications = publiations.Select(x => new BiobankPublicationModel
+                biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
+            }
+                        
+            return new JsonResult
+            {
+                Data = biobankPublications,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+
+                // Handle biobanks with large amount of publications
+                // Ideally switch to server-side processing with multiple GET requests
+                MaxJsonLength = Int32.MaxValue
+            };
+
+        }
+
+        public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
+        {
+            //TODO: Merge with core for when we rewrite the directory in core.
+            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+            // Find Given Publication
+            var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+            var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+            //retrieve from EPMC if not found
+            if (publication == null)
+            {
+                try
                 {
-                    PublicationId = x.PublicationId,
-                    Title = x.Title,
-                    Authors = x.Authors,
-                    Year = x.Year,
-                    Journal = x.Journal,
-                    DOI = x.DOI,
-                    Approved = x.Accepted,
-                    Source = x.Source
+                    using var client = new HttpClient();
+                    var buildUrl = new UriBuilder(ConfigurationManager.AppSettings["EpmcApiUrl"])
+                    {
+                        Query = $"query=ext_id:{publicationId} AND SRC:MED" +
+                                $"&cursorMark=*" +
+                                $"&resultType=lite" +
+                                $"&format=json"
+                    };
+                    buildUrl.Path += "webservices/rest/search";
+                    var response = await client.GetStringAsync(buildUrl.Uri);
 
-                });
+                    var jPublications = JObject.Parse(response).SelectToken("resultList.result");
+                    return _mapper.Map<Publication>(jPublications?.ToObject<List<PublicationSearchModel>>().FirstOrDefault());
+                }
+                catch (Exception e) when (
+                    e is HttpRequestException || 
+                    e is JsonReaderException  ||
+                    e is UriFormatException)
+                {
+                    // Log Error via Application Insights
+                    var ai = new TelemetryClient();
+                    ai.TrackException(e);
+
+                    return null;
+                }
+                
             }
 
-            return Json(biobankPublications, JsonRequestBehavior.AllowGet);
+            return publication;
+        }
+
+        [HttpGet]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<JsonResult> RetrievePublicationsAjax(string publicationId)
+        {
+            //TODO: Merge with core for when we rewrite the directory in core.
+            var biobankId = SessionHelper.GetBiobankId(Session);
+
+            if (biobankId == 0 || IsNullOrEmpty(publicationId))
+                return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
+            else
+            {
+                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+                // Find Publication locally
+                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+                // search online
+                if (publication == null)
+                    publication = await PublicationSearch(publicationId, biobankId);
+
+                return publication != null 
+                    ?Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet) 
+                    :Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
+            }                
+        }
+
+        [HttpPost]
+        [Authorize(ClaimType = CustomClaimType.Biobank)]
+        public async Task<JsonResult> AddPublicationAjax(string publicationId)
+        {
+            var biobankId = SessionHelper.GetBiobankId(Session);
+
+            if (biobankId == 0 || IsNullOrEmpty(publicationId))
+                return Json(new EmptyResult());
+            else
+            {
+                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+
+                // Find Publication locally
+                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+                if (publication != null)
+                {
+                    // Update Publication in DB
+                    publication.Accepted = true;
+                    await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
+
+                    return Json(_mapper.Map<BiobankPublicationModel>(publication));
+                }
+                else
+                {
+                    // search online
+                    publication = await PublicationSearch(publicationId, biobankId);
+
+                    if (publication != null)
+                    {
+                        // Add Publication to DB
+                        publication.Accepted = true;
+                        publication.OrganisationId = biobankId;
+
+                        await _biobankWriteService.AddOrganisationPublicationAsync(publication);
+                        return Json(_mapper.Map<BiobankPublicationModel>(publication));
+                    }
+                    else
+                        return Json(new EmptyResult());
+                }  
+            }
         }
 
         [HttpPost]
@@ -1805,23 +1907,18 @@ namespace Biobanks.Web.Controllers
 
                 // Claim publication
                 publication.Accepted = accept;
-                publication.OrganisationId = biobankId;
 
                 // Add To Publication DB
-                await _biobankWriteService.AddOrganisationPublicationAsync(publication);
+                await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
 
-                return Json(new BiobankPublicationModel
-                {
-                    PublicationId = publication.PublicationId,
-                    Title = publication.Title,
-                    Authors = publication.Authors,
-                    Year = publication.Year,
-                    Journal = publication.Journal,
-                    DOI = publication.DOI,
-                    Approved = publication.Accepted,
-                    Source = publication.Source
-                });
+                return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
             }
+        }
+
+        public ActionResult AddPublicationSuccessFeedback(string publicationId)
+        {
+            SetTemporaryFeedbackMessage($"The publication with PubMed ID \"{publicationId}\" has been added successfully.", FeedbackMessageType.Success);
+            return Redirect("Publications");
         }
         #endregion
 
@@ -1952,7 +2049,7 @@ namespace Biobanks.Web.Controllers
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
             model.CollectionType = biobank.CollectionTypeId;
-            model.PublicKey = biobank.ApiClients.FirstOrDefault()?.ClientId;
+            model.ClientId = biobank.ApiClients.FirstOrDefault()?.ClientId;
 
             return View(model);
         }
@@ -1981,19 +2078,15 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
-            //update Organisations table
-            var existingclient = await _biobankReadService.IsBiobankAnApiClient(biobankId);
-            KeyValuePair<string, string> credentials;
-
-            if (existingclient)
-                credentials = await _biobankWriteService.GenerateNewSecretForBiobank(biobankId);
-            else
-                credentials = await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+            var credentials = 
+                await _biobankReadService.IsBiobankAnApiClient(biobankId)
+                    ? await _biobankWriteService.GenerateNewSecretForBiobank(biobankId)
+                    : await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
 
             return Json(new
             {
-                publickey = credentials.Key,
-                privatekey = credentials.Value
+                ClientId = credentials.Key,
+                ClientSecret = credentials.Value
             });
         }
         #endregion
