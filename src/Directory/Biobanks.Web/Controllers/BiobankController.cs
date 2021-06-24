@@ -1029,20 +1029,9 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<RedirectToRouteResult> DeleteCollection(int id)
         {
-            var result = false;
-            if (await _biobankReadService.IsCollectionFromApi(id) == false)
-            {
-                result = await _biobankWriteService.DeleteCollectionAsync(id);
-            }
-            else
-            {
-                result = await _biobankWriteService.DeleteAPICollectionAsync(id);
-            }
-
-            if (result)
+            if (!await _biobankReadService.IsCollectionFromApi(id) && await _biobankWriteService.DeleteCollectionAsync(id))
             {
                 SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
-
                 return RedirectToAction("Collections");
             }
             else
@@ -1050,7 +1039,6 @@ namespace Biobanks.Web.Controllers
                 SetTemporaryFeedbackMessage(
                     "The system was unable to delete this collection. Please make sure it doesn't contain any Sample Sets before trying again.",
                     FeedbackMessageType.Danger);
-
                 return RedirectToAction("Collection", new { id });
             }
         }
