@@ -202,16 +202,16 @@
                         </div>
 
                         <!-- Extraction Procedure -->
-                        <div class="col-sm-12 form-group">
+                        <div class="col-sm-12">
                             <label class="control-label">Extraction Procedure</label>
                             <p class="help-block col-sm-12">
                                 <span class="fa fa-info-circle"></span>
                                 Please select the extraction procedure for the material type;
                                 if is not there please get in touch.
                             </p>
-                            <div class="col-sm-12 dropdown">
+                            <div class="col-sm-12">
                                 <label data-bind="validationOptions: {insertMessages: false}">
-                                    <select name="ddExtraction" 
+                                    <select name="ddExtraction" class="form-control" style="width:300px"
                                             data-bind="options: lookup.materialExtractionProcedures, optionsText: 'label', optionsValue: 'value', optionsCaption: 'Choose...', valueAllowUnset: true, value:$root.modal.materialPreservationDetail().extractionProcedure"></select>
                                 </label>
                             </div>
