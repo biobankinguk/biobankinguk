@@ -7,6 +7,7 @@
         public const string DisplayLiveChat = "site.display.livechat";
         public const string DisplayAnalytics = "site.display.analytics";
         public const string DisplayPublications = "site.display.publications";
+        public const string DisplaySubmissions = "site.display.submissions";
         public const string DisplayAboutPage = "site.display.aboutpage";
 
         public const string FundersFreeText = "site.display.funders.freetext";

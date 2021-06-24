@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Biobanks.Directory.Data.Constants;
 using Biobanks.Entities.Data;
 
 namespace Biobanks.Directory.Data.Configs
@@ -70,6 +71,14 @@ namespace Biobanks.Directory.Data.Configs
                 Name = "Show Publications",
                 Description= "Enable/Disable Publications View",
                 ReadOnly = false
+            },
+            // Show Submissions View
+            new Config
+            {
+                Key = ConfigKey.DisplaySubmissions,
+                Value = "true",
+                Name = "Show Submissions API Config",
+                Description= "Enable/Disable Submissions API Config View"
             },
             // Show Preservation Type Percentage
             new Config 
