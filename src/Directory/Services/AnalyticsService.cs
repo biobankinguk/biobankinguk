@@ -43,7 +43,7 @@ namespace Biobanks.Services
             }
         }
 
-        private async Task<ProfileStatusDTO> GetProfileStatus(Organisation biobank)
+        private ProfileStatusDTO GetProfileStatus(Organisation biobank)
         {
             //can split into two functions that returns status code and status message
             int collectionCount = biobank.Collections.Count;
@@ -109,7 +109,7 @@ namespace Biobanks.Services
 
             var report = JsonConvert.DeserializeObject<BiobankAnalyticReportDTO>(contents);
 
-            var profileStatus = await GetProfileStatus(biobank);
+            var profileStatus = GetProfileStatus(biobank);
             report.Name = biobank.Name;
             report.Logo = biobank.Logo;
             report.BiobankStatus = profileStatus;
