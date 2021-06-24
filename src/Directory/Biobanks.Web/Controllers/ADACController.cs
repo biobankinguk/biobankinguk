@@ -1136,19 +1136,21 @@ namespace Biobanks.Web.Controllers
             var filteredCount = await _biobankReadService.CountOntologyTerms(filter: search);
             var totalCount = await _biobankReadService.CountOntologyTerms();
 
-            var data = ontologyTerms.Select(x => new ReadOntologyTermModel
-            {
-                OntologyTermId = x.Id,
-                Description = x.Value,
-                OtherTerms = x.OtherTerms,
-                CollectionCapabilityCount = 0,
-                DisplayOnDirectory = x.DisplayOnDirectory
-            });
+            var data = ontologyTerms.Select(x =>
+                Task.Run(async () => new ReadOntologyTermModel
+                {
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            );
 
             return Json(new
             {
                 draw,
-                data, 
+                data,
                 recordsTotal = totalCount,
                 recordsFiltered = filteredCount
             },
