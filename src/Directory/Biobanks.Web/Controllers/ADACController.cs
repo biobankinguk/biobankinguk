@@ -1128,7 +1128,7 @@ namespace Biobanks.Web.Controllers
 
         #region RefData: Disease Status
         public ActionResult DiseaseStatuses()
-            => View(Enumerable.Empty<ReadOntologyTermModel>());
+            => View();
 
         public async Task<ActionResult> PagingatedDiseaseStatuses(int draw, int start, int length, IDictionary<string, string> search)
         {
