@@ -47,7 +47,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListDisplayableOntologyTerms()).Where(x => x.Id == id).First();
+            var model = (await _biobankReadService.ListOntologyTerms()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {

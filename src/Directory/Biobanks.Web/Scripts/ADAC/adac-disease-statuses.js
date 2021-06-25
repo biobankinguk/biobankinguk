@@ -82,11 +82,16 @@ function AdacDiseaseStatusViewModel() {
         // Get Action Type
         var action = _this.modal.mode();
         if (action == 'Add') {
-            addRefData(_this, form.data("resource-url"), form.serialize(),
-                form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
-        } else if (action == 'Update') {
-            editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
-                form.data("success-redirect"), form.data("refdata-type"));
+            addRefData(_this, apiUrl, form.serialize(), redirectUrl, refdataType);
+        }
+        else if (action == 'Update') {
+
+            // Parse Edit Url
+            var rowIndex = $(this).data("row")
+            var data = dataTable.row(rowIndex).data();
+            var url = apiUrl + "/" + data.OntologyTermId;
+
+            editRefData(_this, url, form.serialize(), redirectUrl, refdataType);
         }
     };
 
@@ -120,7 +125,7 @@ $(function () {
         processing: true,
         serverSide: true,
         paging: true,
-        pageLength: 50,
+        pageLength: 25,
         ordering: false,
         info: false,
         autoWidth: false,
