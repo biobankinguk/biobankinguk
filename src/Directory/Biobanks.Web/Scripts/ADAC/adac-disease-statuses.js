@@ -120,6 +120,7 @@ $(function () {
         processing: true,
         serverSide: true,
         paging: true,
+        pageLength: 50,
         ordering: false,
         info: false,
         autoWidth: false,

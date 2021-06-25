@@ -1151,7 +1151,7 @@ namespace Biobanks.Services
         public async Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string filter = "")
             => await _context.OntologyTerms
                     .Where(x => x.Value.Contains(filter))
-                    .OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Id)
+                    .OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Value)
                     .Skip(start)
                     .Take(length)
                     .ToListAsync();
