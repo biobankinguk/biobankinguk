@@ -1130,10 +1130,14 @@ namespace Biobanks.Web.Controllers
         public ActionResult DiseaseStatuses()
             => View(Enumerable.Empty<ReadOntologyTermModel>());
 
-        public async Task<ActionResult> PagingatedDiseaseStatuses(int draw, int start, int length, string search = "")
+        public async Task<ActionResult> PagingatedDiseaseStatuses(int draw, int start, int length, IDictionary<string, string> search)
         {
-            var ontologyTerms = await _biobankReadService.PaginateOntologyTerms(start, length, search);
-            var filteredCount = await _biobankReadService.CountOntologyTerms(filter: search);
+            // Select Search By Value
+            var searchValue = search.TryGetValue("value", out var s) ? s : "";
+
+            // Get Disease Statuses
+            var ontologyTerms = await _biobankReadService.PaginateOntologyTerms(start, length, searchValue);
+            var filteredCount = await _biobankReadService.CountOntologyTerms(filter: searchValue);
             var totalCount = await _biobankReadService.CountOntologyTerms();
 
             var data = ontologyTerms.Select(x =>
