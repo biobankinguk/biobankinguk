@@ -1141,8 +1141,9 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    DisplayOnDirectory = x.DisplayOnDirectory,
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id)
                 })
                 .Result
             );

@@ -7,7 +7,6 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Biobanks.Web.ApiControllers
 {

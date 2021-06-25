@@ -109,6 +109,10 @@ function AdacDiseaseStatusViewModel() {
     }
 }
 
+function capitalize(string) {
+    
+}
+
 // DataTables
 $(function () {
     dataTable = $("#disease-statuses").DataTable({
@@ -127,9 +131,15 @@ $(function () {
             { data: "OntologyTermId" },
             { data: "OtherTerms" },
             { data: "CollectionCapabilityCount" },
-            { data: "DisplayOnDirectory" },
             {
-                // Generate Action Links
+                data: "DisplayOnDirectory",
+                render: function (data, type, row) {
+                    var bool = data.toString();
+                    return bool.charAt(0).toUpperCase() + bool.slice(1);
+                }
+            },
+            {
+                // Action Links
                 data: function (row, type, val, meta) {
 
                     // Edit Link - Binds To Knockout Modal
