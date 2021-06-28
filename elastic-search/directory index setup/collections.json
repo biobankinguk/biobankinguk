@@ -121,6 +121,9 @@
           },
           "preservationType": {
             "type": "keyword"
+          },
+          "extractionProcedure": {
+            "type": "keyword"
           }
         }
       },
