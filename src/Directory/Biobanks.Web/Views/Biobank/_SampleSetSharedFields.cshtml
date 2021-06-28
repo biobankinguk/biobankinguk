@@ -87,8 +87,9 @@
             <thead>
                 <tr>
                     <th>Material type</th>
-                    <th>Preservation type</th>
+                    <th>Extraction Procedure</th>
                     <th>@App.Config[ConfigKey.StorageTemperatureName]</th>
+                    <th>Preservation type</th>
 
                     @if (Model.ShowMacroscopicAssessment)
                     {
@@ -111,8 +112,9 @@
                   }">
                 <tr>
                     <td data-bind="text: materialTypeDescription"></td>
-                    <td data-bind="text: preservationTypeDescription"></td>
+                    <td data-bind="text: extractionProcedureDescription"></td>
                     <td data-bind="text: storageTemperatureDescription"></td>
+                    <td data-bind="text: preservationTypeDescription"></td>
                     @if (Model.ShowMacroscopicAssessment)
                     {
                         <td data-bind="text: macroscopicAssessmentDescription"></td>
@@ -168,6 +170,7 @@
                 <div class="col-sm-12">
                     <ul class="list-unstyled alert alert-danger">
                         <li data-bind="validationMessage: modal.materialPreservationDetail().materialType"></li>
+                        <li data-bind="validationMessage: modal.materialPreservationDetail().extractionProcedure"></li>
                         <li data-bind="validationMessage: modal.materialPreservationDetail().preservationType"></li>
                         <li data-bind="validationMessage: modal.materialPreservationDetail().storageTemperature"></li>
                         <li data-bind="validationMessage: modal.materialPreservationDetail().macroscopicAssessment"></li>
@@ -191,10 +194,26 @@
                             <div class="col-sm-12" data-bind="foreach: lookup.materialTypes">
                                 <div class="col-sm-6 radio">
                                     <label data-bind="validationOptions: {insertMessages: false}">
-                                        <input type="radio" name="radMaterial" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().materialType">
+                                        <input type="radio" name="radMaterial" onclick="extractionValidation()" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().materialType">
                                         <span data-bind="text: $data.label"></span>
                                     </label>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Extraction Procedure -->
+                        <div class="col-sm-12">
+                            <label class="control-label">Extraction Procedure</label>
+                            <p class="help-block col-sm-12">
+                                <span class="fa fa-info-circle"></span>
+                                Please select the extraction procedure for the material type;
+                                if is not there please get in touch.
+                            </p>
+                            <div class="col-sm-12">
+                                <label data-bind="validationOptions: {insertMessages: false}">
+                                    <select name="ddExtraction" class="form-control" style="width:300px"
+                                            data-bind="options: lookup.materialExtractionProcedures, optionsText: 'label', optionsValue: 'value', optionsCaption: 'Choose...', valueAllowUnset: true, value:$root.modal.materialPreservationDetail().extractionProcedure"></select>
+                                </label>
                             </div>
                         </div>
 

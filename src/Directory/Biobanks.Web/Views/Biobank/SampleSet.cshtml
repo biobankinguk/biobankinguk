@@ -62,8 +62,9 @@
                 </tr>
                 <tr>
                     <th>Material type</th>
-                    <th>Preservation type</th>
+                    <th>Extraction Procedure</th>
                     <th>@App.Config[ConfigKey.StorageTemperatureName]</th>
+                    <th>Preservation type</th>
 
                     @if (Model.ShowMacroscopicAssessment)
                     {
@@ -80,8 +81,9 @@
                 {
                 <tr>
                     <td>@data.MaterialType</td>
-                    <td>@data.PreservationType</td>
+                    <td>@data.ExtractionProcedure</td>
                     <td>@data.StorageTemperature</td>
+                    <td>@data.PreservationType</td>
 
                     @if (Model.ShowMacroscopicAssessment)
                     {

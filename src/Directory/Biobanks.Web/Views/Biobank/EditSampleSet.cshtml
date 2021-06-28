@@ -26,6 +26,13 @@
                 return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
 
+            // Extraction Procedures
+            lookup.extractionProcedures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.ExtractionProcedures)), function (x) {
+                return new DropDownBinding(x.OntologyTermId, x.Description);
+            }));
+            lookup.materialExtractionProcedures(lookup.extractionProcedures());
+
+            // Preservation Types
             lookup.preservationTypes(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.PreservationTypes)), function (x) {
                 return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
@@ -63,7 +70,8 @@
                 @:      x.preservationType,
                 @:      x.storageTemperature,
                 @:      x.percentage,
-                @:      x.macroscopicAssessment);
+                @:      x.macroscopicAssessment,
+                @:      x.extractionProcedure)
                 @:}));
             }
         });

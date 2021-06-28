@@ -1072,7 +1072,8 @@ namespace Biobanks.Web.Controllers
                     Age = sampleSet.AgeRange.Value,
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
                     PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
-                    StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct())
+                    StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct()),
+                    ExtractionProcedures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.ExtractionProcedure?.Value).Distinct())
                 })
             };
 
@@ -1115,7 +1116,8 @@ namespace Biobanks.Web.Controllers
                             PreservationTypeId = x.preservationType,
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
-                            MacroscopicAssessmentId = x.macroscopicAssessment
+                            MacroscopicAssessmentId = x.macroscopicAssessment,
+                            ExtractionProcedureId = x.extractionProcedure
                         }
                     )
                     .ToList()
@@ -1155,7 +1157,8 @@ namespace Biobanks.Web.Controllers
                     preservationType = x.PreservationTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
-                    macroscopicAssessment = x.MacroscopicAssessmentId
+                    macroscopicAssessment = x.MacroscopicAssessmentId,
+                    extractionProcedure = x.ExtractionProcedureId
                 }))
             };
 
@@ -1199,7 +1202,8 @@ namespace Biobanks.Web.Controllers
                     preservationType = x.PreservationTypeId,
                     storageTemperature = x.StorageTemperatureId,
                     percentage = x.CollectionPercentageId,
-                    macroscopicAssessment = x.MacroscopicAssessmentId
+                    macroscopicAssessment = x.MacroscopicAssessmentId,
+                    extractionProcedure = x.ExtractionProcedureId
                 }))
             };
 
@@ -1231,6 +1235,7 @@ namespace Biobanks.Web.Controllers
                             StorageTemperatureId = x.storageTemperature,
                             CollectionPercentageId = x.percentage,
                             MacroscopicAssessmentId = x.macroscopicAssessment,
+                            ExtractionProcedureId = x.extractionProcedure
                         }
                     )
                     .ToList()
@@ -1286,7 +1291,9 @@ namespace Biobanks.Web.Controllers
                     MacroscopicAssessment = x.MacroscopicAssessment.Value,
                     MaterialType = x.MaterialType.Value,
                     PreservationType = x.PreservationType?.Value,
-                    StorageTemperature = x.StorageTemperature.Value
+                    StorageTemperature = x.StorageTemperature.Value,
+                    ExtractionProcedure = x.ExtractionProcedure?.Value
+                    
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
             };
@@ -1432,6 +1439,16 @@ namespace Biobanks.Web.Controllers
                             SortOrder = x.SortOrder
                         })
                 .OrderBy(x => x.SortOrder);
+
+            model.ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+                .Select(
+                    x =>
+                        new OntologyTermModel
+                        {
+                            OntologyTermId = x.Id,
+                            Description = x.Value,
+                        })
+                .OrderBy(x => x.Description);
 
             model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
                 .Select(
