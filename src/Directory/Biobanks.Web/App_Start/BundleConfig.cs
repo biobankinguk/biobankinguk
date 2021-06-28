@@ -163,6 +163,10 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-material-types.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/material-type-groups").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-material-type-groups.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sexes").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sexes.js",
@@ -280,6 +284,10 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/block-allow-list").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-blockallow-list.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/extraction-procedure").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-extraction-procedure.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
 
             // Registration Domain Rules

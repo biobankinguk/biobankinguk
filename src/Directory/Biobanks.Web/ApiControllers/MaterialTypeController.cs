@@ -162,5 +162,11 @@ namespace Biobanks.Web.ApiControllers
             });
 
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("{materialType}/extractionprocedure")]
+        public async Task<IList> GetValidExtractionProcedures(int materialType)
+        => (await _biobankReadService.GetMaterialTypeExtractionProcedures(materialType)).Select(x => new { x.Id, x.Value }).ToList();
     }
 }

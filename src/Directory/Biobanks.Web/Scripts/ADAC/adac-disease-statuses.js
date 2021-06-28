@@ -68,9 +68,9 @@ function AdacDiseaseStatusViewModel() {
             )
         );
 
+    $("#OntologyTermId").prop('readonly', true);
         _this.setPartialEdit(diseaseStatus.CollectionCapabilityCount > 0);
         _this.showModal();
-    };
 
     this.modalSubmit = function (e) {
         e.preventDefault();
@@ -96,14 +96,10 @@ function AdacDiseaseStatusViewModel() {
     };
 
     this.setPartialEdit = function (flag) {
-        if (flag == true) {
-            $("#OntologyTermId").prop('readonly', true);
+        if (flag == true)
             $("#Description").prop('readonly', true);
-        }
-        else {
-            $("#OntologyTermId").prop('readonly', false);
+        else
             $("#Description").prop('readonly', false);
-        }
     }
 
     this.addOtherTerms = function () {

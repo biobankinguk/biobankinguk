@@ -65,7 +65,7 @@ namespace Biobanks.Web.Controllers
                 ontologyTerm,
                 BuildSearchFacets(model.SelectedFacets),
                 0);
-
+            
             // Build up the rest of the model from the search results.
             _mapper.Map(searchResults, model);
 
@@ -275,7 +275,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListDisplayableOntologyTerms(wildcard);
+            var ontologyTerms = await _biobankReadService.ListDiseaseOntologyTermsAsync(wildcard);
 
             var model = ontologyTerms.Select(x =>
                new OntologyTermModel

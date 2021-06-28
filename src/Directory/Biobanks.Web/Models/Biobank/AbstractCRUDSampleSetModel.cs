@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using Biobanks.Web.Models.Shared;
 using Newtonsoft.Json;
 
 namespace Biobanks.Web.Models.Biobank
@@ -18,6 +19,7 @@ namespace Biobanks.Web.Models.Biobank
         public IEnumerable<ReferenceDataModel> StorageTemperatures { get; set; }
         public IEnumerable<ReferenceDataModel> Percentages { get; set; }
         public IEnumerable<ReferenceDataModel> MacroscopicAssessments { get; set; }
+        public IEnumerable<OntologyTermModel> ExtractionProcedures { get; set; }
         #endregion
 
         #region Properties
@@ -86,5 +88,6 @@ namespace Biobanks.Web.Models.Biobank
         public int storageTemperature { get; set; }
         public int? percentage { get; set; }
         public int macroscopicAssessment { get; set; }
+        public string extractionProcedure { get; set; }
     }
 }
