@@ -9,15 +9,6 @@ namespace Biobanks.Directory.Data.Configs
         public static readonly List<Config> DefaultConfigs = new List<Config>
         {
             #region Display
-            // Show About Page
-            new Config
-            {
-                Key = "site.display.aboutpage",
-                Value = "true",
-                Name = "Display About Page",
-                Description = "Enable/Disable About page",
-                ReadOnly = false
-            },
             // Show Analytics View
             new Config
             {
@@ -269,11 +260,6 @@ namespace Biobanks.Directory.Data.Configs
                 Value = @"This page is designed to help you find sample resources using SNOMED CT terms. We are committed to using established standards. SNOMED CT is currently being rolled out across the NHS and therefore we have adopted these [terms for disease classifications](https://biobankinguk.org/snomed-ct-using/).
 
 We do appreciate that not everyone will be aware of the terms used on the FIND Virtual Biobank Directory(VBD). The table below captures all the terms that sample resources have used in the Directory so far. Simply use the search to filter the list and then click on 'Find Biobanks'.",
-            },
-            // About Page Body Text
-            new Config {
-                Key = "site.aboutpage.bodytext",
-                Value = @"##About Us"
             }
         };
     }
