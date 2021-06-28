@@ -284,6 +284,20 @@ namespace Biobanks.Search.Dto.Facets
                 },
                 SortOrderWithinGroup = 4
             },
+            new FacetDetail(FacetGroupId.SampleDetails)
+            {
+                Label = "Extraction Procedure",
+                Name = "extractionProcedure",
+                Slug = "extprod",
+                NestedAggregation = true,
+                NestedAggregationPath = "materialPreservationDetails",
+                NestedAggregationFieldName = "extractionProcedure",
+                SearchTypes = new List<SearchType>
+                {
+                    SearchType.Collection
+                },
+                SortOrderWithinGroup = 5
+            },
             new FacetDetail
             {
                 Label = "Protocols",

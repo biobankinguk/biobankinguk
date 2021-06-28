@@ -51,8 +51,14 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsAssociatedDataTypeGroupInUse(int associatedDataTypeGroupId);
         Task<bool> ValidAssociatedDataTypeGroupNameAsync(int associatedDataTypeGroupId, string associatedDataTypeGroupName);
         Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName);
-        Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
         
+        Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
+
+        Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync();
+        Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
+        Task<bool> IsMaterialTypeGroupInUse(int id);
+
+
         Task<IEnumerable<AgeRange>> ListAgeRangesAsync();
         Task<bool> ValidAgeRangeAsync(string ageRangeDescription);
         Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription);
@@ -130,10 +136,12 @@ namespace Biobanks.Services.Contracts
         Task<int> GetOntologyTermCollectionCapabilityCount(string id);
         Task<bool> IsOntologyTermInUse(string id);
 
+        Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "");
+        Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription);
+
         Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
         Task<OntologyTerm> GetExtractionProcedureById(string id);
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
-        Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id);
         Task<bool> IsExtractionProcedureInUse(string id);
 
         Task<IEnumerable<SnomedTag>> ListSnomedTags();

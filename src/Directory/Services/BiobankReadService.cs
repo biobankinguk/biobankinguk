@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Nest;
 
 namespace Biobanks.Services
 {
@@ -58,6 +59,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
+        private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
         private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
@@ -122,6 +124,7 @@ namespace Biobanks.Services
             IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<DonorCount> donorCountRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
+            IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
@@ -184,6 +187,7 @@ namespace Biobanks.Services
             _ageRangeRepository = ageRangeRepository;
             _donorCountRepository = donorCountRepository;
             _materialTypeRepository = materialTypeRepository;
+            _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
             _organisationRegistrationReasonRepository = organisationRegistrationReasonRepository;
@@ -928,8 +932,22 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames()
             => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+        
         public async Task<IEnumerable<MaterialType>> ListMaterialTypesAsync()
-            => await _materialTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+            => await _materialTypeRepository.ListAsync(
+                orderBy: x => x.OrderBy(y => y.SortOrder), 
+                includeProperties: x => x.MaterialTypeGroups);
+
+        #region RefData: MaterialTypeGroup
+        public async Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync()
+            => await _materialTypeGroupRepository.ListAsync(includeProperties: x => x.MaterialTypes);
+
+        public async Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeGroupDescription)
+            => await _materialTypeGroupRepository.AnyAsync(x => x.Value == materialTypeGroupDescription);
+
+        public async Task<bool> IsMaterialTypeGroupInUse(int id)
+            => await _materialTypeGroupRepository.AnyAsync(x => x.Id == id && x.MaterialTypes.Count > 0);
+        #endregion
 
         #region RefData: Collection Percentages
         public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()
@@ -1178,6 +1196,22 @@ namespace Biobanks.Services
                + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
         #endregion
 
+        #region RefData: Disease Statuses
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "")
+            => await _ontologyTermRepository.ListAsync(filter: x => 
+                x.SnomedTag.Value == "Disease" && 
+                x.Value.Contains(wildcard) && 
+                x.DisplayOnDirectory);
+        public async Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x =>
+                    x.SnomedTag.Value == "Disease" &&
+                    x.Value == ontologyTermDescription &&
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        #endregion
         #region RefData: Extraction Procedure
 
         public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
@@ -1193,11 +1227,6 @@ namespace Biobanks.Services
                      && x.DisplayOnDirectory)).FirstOrDefault();
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
             => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
-
-        public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id)
-            => (await _materialTypeRepository.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures))
-            .FirstOrDefault()?.ExtractionProcedures
-            .ToList();
 
         public async Task<bool> IsExtractionProcedureInUse(string id)
             => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);

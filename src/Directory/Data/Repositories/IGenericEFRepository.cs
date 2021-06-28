@@ -14,6 +14,7 @@ namespace Biobanks.Directory.Data.Repositories
             params Expression<Func<TEntity, object>>[] includeProperties);
 
         Task<int> CountAsync(Expression<Func<TEntity, bool>> filter = null);
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> filter = null);
 
         IEnumerable<TEntity> List(bool tracking = false,
             Expression<Func<TEntity, bool>> filter = null,

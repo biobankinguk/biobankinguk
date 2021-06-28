@@ -70,83 +70,29 @@ function AdacMaterialTypeViewModel() {
     };
 }
 
-$(function () {
-  //jquery plugin to serialise checkboxes as bools
-  (function ($) {
-    $.fn.serialize = function () {
-      return $.param(this.serializeArray());
-    };
+function getUrlParameter(param) {
 
-    $.fn.serializeArray = function () {
-      var o = $.extend(
-        {
-          checkboxesAsBools: true,
-        },
-        {}
-      );
+    var pageUrl = window.location.search.substring(1);
+    var urlVars = pageUrl.split('&');
 
-      var rselectTextarea = /select|textarea/i;
-      var rinput = /text|hidden|password|search/i;
+    for (var i = 0; i < urlVars.length; i++) {
+        var urlParam = urlVars[i].split('=');
+        var paramName = urlParam[0];
+        var paramValue = urlParam[1];
 
-      return this.map(function () {
-        return this.elements ? $.makeArray(this.elements) : this;
-      })
-        .filter(function () {
-          return (
-            this.name &&
-            !this.disabled &&
-            (this.checked ||
-              (o.checkboxesAsBools && this.type === "checkbox") ||
-              rselectTextarea.test(this.nodeName) ||
-              rinput.test(this.type))
-          );
-        })
-        .map(function (i, elem) {
-          const val = $(this).val();
-          return val == null
-            ? null
-            : $.isArray(val)
-            ? $.map(val, (innerVal) => ({ name: elem.name, value: innerVal }))
-            : {
-                name: elem.name,
-                value:
-                  o.checkboxesAsBools && this.type === "checkbox" //moar ternaries!
-                    ? this.checked
-                      ? "true"
-                      : "false"
-                    : val,
-              };
-        })
-        .get();
-    };
-  })(jQuery);
+        if (paramName === param && paramValue) {
+            return decodeURIComponent(paramValue);
+        }
+    }
 
-  $("#modal-material-type-form").submit(function (e) {
-      adacMaterialTypeVM.modalSubmit(e);
-  });
-
-  $(".delete-confirm").click(function (e) {
-      e.preventDefault();
-
-      var $link = $(this);
-      var linkData = $link.data("refdata-model")
-      var url = $link.data("resource-url") + "/" + linkData.Id;
-
-      bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
-          function (confirmation) {
-              if (confirmation) {
-                  deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
-              }
-          }
-      );
-  });
-
-  adacMaterialTypeVM = new AdacMaterialTypeViewModel();
-  ko.applyBindings(adacMaterialTypeVM);
-});
+    return "";
+};
 
 // DataTables
 $(function () {
+
+    var searchTerm = getUrlParameter("filter");
+
     var table = $("#material-types")["DataTable"]({
         paging: false,
         info: false,
@@ -159,6 +105,7 @@ $(function () {
         language: {
             search: "Filter: ",
         },
+        oSearch: { sSearch: searchTerm } // Inital Search Term
     });
 
     // Re-Order Event
@@ -180,4 +127,79 @@ $(function () {
             }
         });
     });
+});
+
+$(function () {
+    //jquery plugin to serialise checkboxes as bools
+    (function ($) {
+        $.fn.serialize = function () {
+            return $.param(this.serializeArray());
+        };
+
+        $.fn.serializeArray = function () {
+            var o = $.extend(
+                {
+                    checkboxesAsBools: true,
+                },
+                {}
+            );
+
+            var rselectTextarea = /select|textarea/i;
+            var rinput = /text|hidden|password|search/i;
+
+            return this.map(function () {
+                return this.elements ? $.makeArray(this.elements) : this;
+            })
+                .filter(function () {
+                    return (
+                        this.name &&
+                        !this.disabled &&
+                        (this.checked ||
+                            (o.checkboxesAsBools && this.type === "checkbox") ||
+                            rselectTextarea.test(this.nodeName) ||
+                            rinput.test(this.type))
+                    );
+                })
+                .map(function (i, elem) {
+                    const val = $(this).val();
+                    return val == null
+                        ? null
+                        : $.isArray(val)
+                            ? $.map(val, (innerVal) => ({ name: elem.name, value: innerVal }))
+                            : {
+                                name: elem.name,
+                                value:
+                                    o.checkboxesAsBools && this.type === "checkbox" //moar ternaries!
+                                        ? this.checked
+                                            ? "true"
+                                            : "false"
+                                        : val,
+                            };
+                })
+                .get();
+        };
+    })(jQuery);
+
+    $("#modal-material-type-form").submit(function (e) {
+        adacMaterialTypeVM.modalSubmit(e);
+    });
+
+    $(".delete-confirm").click(function (e) {
+        e.preventDefault();
+
+        var $link = $(this);
+        var linkData = $link.data("refdata-model")
+        var url = $link.data("resource-url") + "/" + linkData.Id;
+
+        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
+            function (confirmation) {
+                if (confirmation) {
+                    deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
+                }
+            }
+        );
+    });
+
+    adacMaterialTypeVM = new AdacMaterialTypeViewModel();
+    ko.applyBindings(adacMaterialTypeVM);
 });

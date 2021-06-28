@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Web.Models.Shared
+namespace Biobanks.Web.Models.ADAC
 {
-    public class MaterialTypeModel
+    public class MaterialTypeGroupModel
     {
         [Required]
         public int Id { get; set; }
@@ -11,9 +11,8 @@ namespace Biobanks.Web.Models.Shared
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public int SortOrder { get; set; }
+        public int MaterialTypeCount { get; set; }
 
-        public IEnumerable<string> MaterialTypeGroups { get; set; }
+        public IEnumerable<string> MaterialTypes { get; set; }
     }
 }
