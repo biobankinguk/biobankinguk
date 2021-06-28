@@ -927,8 +927,11 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames()
             => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+        
         public async Task<IEnumerable<MaterialType>> ListMaterialTypesAsync()
-            => await _materialTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+            => await _materialTypeRepository.ListAsync(
+                orderBy: x => x.OrderBy(y => y.SortOrder), 
+                includeProperties: x => x.MaterialTypeGroups);
 
         #region RefData: Collection Percentages
         public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()
