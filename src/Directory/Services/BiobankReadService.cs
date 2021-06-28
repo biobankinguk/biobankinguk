@@ -36,6 +36,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
+        private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
@@ -55,9 +56,8 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
-        private readonly IGenericEFRepository<MaterialDetail> _materialDetailsRepository;
-        private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
+        private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
         private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
@@ -103,6 +103,7 @@ namespace Biobanks.Services
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
+            IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Config> siteConfigRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
@@ -120,7 +121,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<DonorCount> donorCountRepository,
-            IGenericEFRepository<MaterialDetail> materialDetailsRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
@@ -166,6 +166,7 @@ namespace Biobanks.Services
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
             _ontologyTermRepository = ontologyTermRepository;
+            _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
             _siteConfigRepository = siteConfigRepository;
             _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
@@ -182,7 +183,6 @@ namespace Biobanks.Services
             _sexRepository = sexRepository;
             _ageRangeRepository = ageRangeRepository;
             _donorCountRepository = donorCountRepository;
-            _materialDetailsRepository = materialDetailsRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
@@ -944,7 +944,7 @@ namespace Biobanks.Services
             => (await GetCollectionPercentageUsageCount(id)) > 0;
 
         public async Task<int> GetCollectionPercentageUsageCount(int id)
-            => (await _materialDetailsRepository.ListAsync(false, x => x.CollectionPercentageId == id)).Count();
+            => (await _materialDetailRepository.ListAsync(false, x => x.CollectionPercentageId == id)).Count();
         #endregion
 
         #region RefData: Collection Type
@@ -973,7 +973,7 @@ namespace Biobanks.Services
             => (await GetMacroscopicAssessmentUsageCount(id)) > 0;
 
         public async Task<int> GetMacroscopicAssessmentUsageCount(int id)
-            => (await _materialDetailsRepository.ListAsync(false, x => x.MacroscopicAssessmentId == id)).Count();
+            => (await _materialDetailRepository.ListAsync(false, x => x.MacroscopicAssessmentId == id)).Count();
         #endregion
 
         #region RefData: Annual Statistics
@@ -1082,7 +1082,7 @@ namespace Biobanks.Services
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<int> GetPreservationTypeUsageCount(int id)
-        => await _materialDetailsRepository.CountAsync(x => x.PreservationTypeId == id);
+        => await _materialDetailRepository.CountAsync(x => x.PreservationTypeId == id);
 
         public async Task<bool> IsPreservationTypeInUse(int id)
             => (await GetPreservationTypeUsageCount(id)) > 0;
@@ -1127,7 +1127,7 @@ namespace Biobanks.Services
             => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<int> GetStorageTemperatureUsageCount(int id)
-            => (await _materialDetailsRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
+            => (await _materialDetailRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
 
         public async Task<bool> IsStorageTemperatureInUse(int id)
             => (await GetStorageTemperatureUsageCount(id)) > 0;
@@ -1178,6 +1178,52 @@ namespace Biobanks.Services
         public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
             => await _collectionRepository.CountAsync(x => x.OntologyTermId == id) 
                + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
+        #endregion
+
+        #region RefData: Disease Statuses
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "")
+            => await _ontologyTermRepository.ListAsync(filter: x => 
+                x.SnomedTag.Value == "Disease" && 
+                x.Value.Contains(wildcard) && 
+                x.DisplayOnDirectory);
+        public async Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x =>
+                    x.SnomedTag.Value == "Disease" &&
+                    x.Value == ontologyTermDescription &&
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        #endregion
+        #region RefData: Extraction Procedure
+
+        public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
+            => await _ontologyTermRepository.ListAsync(filter: 
+                x => x.SnomedTag.Value == "Extraction Procedure" 
+                     && x.Value.Contains(wildcard) 
+                     && x.DisplayOnDirectory);
+
+        public async Task<OntologyTerm> GetExtractionProcedureById(string id)
+            => (await _ontologyTermRepository.ListAsync(filter:
+                x => x.SnomedTag.Value == "Extraction Procedure"
+                     && x.Id == id
+                     && x.DisplayOnDirectory)).FirstOrDefault();
+        public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
+            => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
+
+        public async Task<bool> IsExtractionProcedureInUse(string id)
+            => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);
+
+        #endregion
+
+        #region RefData: Snomed Tags
+        public async Task<IEnumerable<SnomedTag>> ListSnomedTags()
+        => await _snomedTagRepository.ListAsync();
+
+        public async Task<SnomedTag> GetSnomedTagByDescription(string description)
+            => (await _snomedTagRepository.ListAsync(filter: x => x.Value == description)).SingleOrDefault();
+
         #endregion
 
         #region Site Config

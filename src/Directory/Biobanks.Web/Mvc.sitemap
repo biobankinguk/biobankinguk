@@ -68,7 +68,6 @@
     <mvcSiteMapNode title="Biobanks" controller="ADAC" action="Biobanks"/>
     <mvcSiteMapNode title="Biobank Activity" controller="ADAC" action="BiobankActivity"/>
     <mvcSiteMapNode title="Networks" controller="ADAC" action="Networks"/>
-    <mvcSiteMapNode title="Disease statuses" controller="ADAC" action="DiseaseStatuses"/>
     <mvcSiteMapNode title="Funders" controller="ADAC" action="Funders"/>
 
     
@@ -83,6 +82,8 @@
     <mvcSiteMapNode title="Countries" controller="ADAC" action="Country"/>
     <mvcSiteMapNode title="Collection Percentages" controller="ADAC" action="CollectionPercentages"/>
     <mvcSiteMapNode title="Donor Counts" controller="ADAC" action="DonorCounts"/>
+    <mvcSiteMapNode title="Disease statuses" controller="ADAC" action="DiseaseStatuses"/>
+    <mvcSiteMapNode title="Extraction Procedures" controller="ADAC" action="ExtractionProcedure"/>
     <mvcSiteMapNode title="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
     <mvcSiteMapNode title="Material Types" controller="ADAC" action="MaterialTypes"/>
     <mvcSiteMapNode title="Preservation Types" controller="ADAC" action="PreservationTypes"/>
