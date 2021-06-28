@@ -122,6 +122,11 @@
                     </li>
 
                     <li role="presentation"
+                        class="@(Model == "Extraction Procedures" ? "active" : "true")">
+                        @Html.ActionLink("Extraction Procedures", "ExtractionProcedure")
+                    </li>
+
+                    <li role="presentation"
                         class="@(Model == $"{@App.Config[ConfigKey.MacroscopicAssessmentName]}" ? "active" : "true")">
                         @Html.ActionLink($"{@App.Config[ConfigKey.MacroscopicAssessmentName]}", "MacroscopicAssessments", "ADAC")
                     </li>
@@ -192,14 +197,6 @@
                         class="@(Model == "Term Page Config" ? "active" : "true")">
                         @Html.ActionLink("Term Page Config", "TermpageConfig", "ADAC")
                     </li>
-
-                    @if (App.Config[ConfigKey.DisplayAboutPage] != "false")
-                    {
-                        <li role="presentation"
-                            class="@(Model == "Aboutpage Config" ? "active" : "true")">
-                            @Html.ActionLink("About Page Config", "AboutpageConfig", "ADAC")
-                        </li>
-                    }
 
                     <li role="presentation"
                         class="@(Model == "Register Pages Config" ? "active" : "true")">

@@ -448,6 +448,7 @@
     <Compile Include="ApiControllers\ConsentRestrictionController.cs" />
     <Compile Include="ApiControllers\CountryController.cs" />
     <Compile Include="ApiControllers\CountyController.cs" />
+    <Compile Include="ApiControllers\ExtractionProcedureController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusController.cs" />
     <Compile Include="ApiControllers\DonorCountController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
@@ -469,6 +470,7 @@
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
     <Compile Include="HtmlHelpers\DisabledHelper.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
+    <Compile Include="Models\ADAC\ReadExtractionProcedureModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
     <Compile Include="Models\ADAC\ContentPageModel.cs" />
@@ -481,10 +483,10 @@
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
     <Compile Include="Models\Header\HeaderModel.cs" />
     <Compile Include="Models\Header\HeaderItemModel.cs" />
-    <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
     <Content Include="Scripts\ADAC\adac-pages-admin.js" />
     <Content Include="Scripts\ADAC\adac-blockallow-list.js" />
+    <Content Include="Scripts\ADAC\adac-extraction-procedure.js" />
     <Content Include="Scripts\ADAC\adac-email-config.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
@@ -852,10 +854,6 @@
     <Content Include="Views\SuperUser\_SuperUserTabs.cshtml" />
     <Content Include="Views\Shared\_SuspendedWarning.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\AddFunderModel.cshtml" />
-    <Content Include="Views\Home\Privacy.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
-    <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <Content Include="Views\ADAC\BiobankAdmin.cshtml" />
     <Content Include="Views\ADAC\PreservationTypes.cshtml" />
     <Content Include="Views\SuperUser\Tools.cshtml" />
@@ -868,6 +866,7 @@
     <Content Include="Views\ADAC\EmailConfig.cshtml" />
     <Content Include="Views\ADAC\BlockAllowList.cshtml" />
     <Content Include="Views\Header\_NavItemSuperUser.cshtml" />
+    <Content Include="Views\ADAC\ExtractionProcedure.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
