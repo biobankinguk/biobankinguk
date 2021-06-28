@@ -17,11 +17,13 @@ namespace Biobanks.Web.Controllers
     public class ProfileController : ApplicationBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
+        private readonly IConfigService _configService;
 
         public ProfileController(
-            IBiobankReadService biobankReadService)
+            IBiobankReadService biobankReadService, IConfigService configService)
         {
             _biobankReadService = biobankReadService;
+            _configService = configService;
         }
 
         public ActionResult Biobanks()
@@ -148,7 +150,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Publications(string id)
         {
             //If turned off in site config
-            if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
+            if (!(await _configService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
                 return HttpNotFound();
 
             // Get the Organisation

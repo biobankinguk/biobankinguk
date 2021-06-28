@@ -32,6 +32,7 @@ namespace Biobanks.Web.Controllers
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IConfigService _configService;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IEmailService _emailService;
@@ -46,6 +47,7 @@ namespace Biobanks.Web.Controllers
         public NetworkController(
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
+            IConfigService configService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
             CustomClaimsManager claimsManager,
@@ -644,7 +646,7 @@ namespace Biobanks.Web.Controllers
             biobankEmails.Add(biobank.ContactEmail);
 
 
-            Config trustedBiobanks = await _biobankReadService.GetSiteConfig(ConfigKey.TrustBiobanks);
+            Config trustedBiobanks = await _configService.GetSiteConfig(ConfigKey.TrustBiobanks);
 
             if (biobank == null)
             {

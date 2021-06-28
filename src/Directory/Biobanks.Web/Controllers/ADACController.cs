@@ -37,6 +37,7 @@ namespace Biobanks.Web.Controllers
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IEmailService _emailService;
         private readonly IRegistrationDomainService _registrationDomainService;
+        private readonly IConfigService _configService;
 
         private readonly IBiobankIndexService _indexService;
 
@@ -52,6 +53,7 @@ namespace Biobanks.Web.Controllers
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
             IRegistrationDomainService registrationDomainService,
+            IConfigService configService,
             IBiobankIndexService indexService,
             ISearchProvider searchProvider,
             IMapper mapper,
@@ -63,6 +65,7 @@ namespace Biobanks.Web.Controllers
             _userManager = userManager;
             _emailService = emailService;
             _registrationDomainService = registrationDomainService;
+            _configService = configService;
             _indexService = indexService;
             _searchProvider = searchProvider;
             _mapper = mapper;
@@ -924,7 +927,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Analytics(int year = 0, int endQuarter = 0, int reportPeriod = 0)
         {
             //If turned off in site config
-            if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAnalytics)))
+            if (!(await _configService.GetSiteConfigStatus(ConfigKey.DisplayAnalytics)))
                 return RedirectToAction("LockedRef");
 
             //set default options
@@ -1175,7 +1178,7 @@ namespace Biobanks.Web.Controllers
                     .Result
                 )
                 .ToList();
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent"))
+            if (await _configService.GetSiteConfigStatus("site.display.preservation.percent"))
             {
                 return View(new CollectionPercentagesModel()
                 {
@@ -1492,7 +1495,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: County
         public async Task<ActionResult> County()
         {
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties"))
+            if (await _configService.GetSiteConfigStatus("site.display.counties"))
             {
                 var countries = await _biobankReadService.ListCountriesAsync();
 
@@ -1823,7 +1826,7 @@ namespace Biobanks.Web.Controllers
         #region Site Config
         public async Task<ActionResult> SiteConfig()
         {
-            return View((await _biobankReadService.ListSiteConfigsAsync("site.display"))
+            return View((await _configService.ListSiteConfigsAsync("site.display"))
                 .Select(x => new SiteConfigModel
                 {
                     Key = x.Key,
@@ -1868,7 +1871,7 @@ namespace Biobanks.Web.Controllers
         #region Sample Resource Config
         public async Task<ActionResult> SampleResourceConfig()
         {
-            return View((await _biobankReadService.ListSiteConfigsAsync("site.sampleresource"))
+            return View((await _configService.ListSiteConfigsAsync("site.sampleresource"))
                 .Select(x => new SiteConfigModel
                 {
                     Key = x.Key,
