@@ -163,6 +163,10 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-material-types.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/material-type-groups").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-material-type-groups.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sexes").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sexes.js",

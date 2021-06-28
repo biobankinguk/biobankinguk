@@ -86,6 +86,7 @@
     <mvcSiteMapNode title="Extraction Procedures" controller="ADAC" action="ExtractionProcedure"/>
     <mvcSiteMapNode title="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
     <mvcSiteMapNode title="Material Types" controller="ADAC" action="MaterialTypes"/>
+    <mvcSiteMapNode title="Material Type Groups" controller="ADAC" action="MaterialTypeGroups"/>
     <mvcSiteMapNode title="Preservation Types" controller="ADAC" action="PreservationTypes"/>
     <mvcSiteMapNode title="Storage Temperatures" controller="ADAC" action="StorageTemperatures"/>
     <mvcSiteMapNode title="Sample Collection Modes" controller="ADAC" action="SampleCollectionModes"/>

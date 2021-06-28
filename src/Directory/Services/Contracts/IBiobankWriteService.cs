@@ -68,6 +68,10 @@ namespace Biobanks.Services.Contracts
         Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);
         Task DeleteMaterialTypeAsync(MaterialType materialType);
 
+        Task<MaterialTypeGroup> AddMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
+        Task<MaterialTypeGroup> UpdateMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
+        Task DeleteMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
+
         Task<Sex> AddSexAsync(Sex sex);
         Task<Sex> UpdateSexAsync(Sex sex, bool sortOnly = false);
         Task DeleteSexAsync(Sex sex);
