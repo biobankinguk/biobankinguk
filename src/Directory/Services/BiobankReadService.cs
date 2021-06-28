@@ -1214,6 +1214,11 @@ namespace Biobanks.Services
         #endregion
         #region RefData: Extraction Procedure
 
+        public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id)
+        => (await _materialTypeRepository.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures))
+        .FirstOrDefault()?.ExtractionProcedures
+        .ToList();
+
         public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
             => await _ontologyTermRepository.ListAsync(filter: 
                 x => x.SnomedTag.Value == "Extraction Procedure" 

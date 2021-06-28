@@ -12,6 +12,7 @@ namespace Biobanks.Services.Contracts
 {
     public interface IBiobankReadService
     {
+        Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id);
         Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByUserEmailAsync(string email);
 
         Task<NetworkRegisterRequest> GetNetworkRegisterRequestByUserEmailAsync(string email);
