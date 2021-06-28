@@ -1144,7 +1144,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View((await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
+            return View((await _biobankReadService.ListDiseaseOntologyTermsAsync()).Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
@@ -1155,49 +1155,6 @@ namespace Biobanks.Web.Controllers
                 })
                 .Result
             ));
-        }
-
-        public async Task<ActionResult> DeleteDiseaseStatus(OntologyTermModel model)
-        {
-            if (await _biobankReadService.IsOntologyTermInUse(model.OntologyTermId))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("DiseaseStatuses");
-            }
-
-            await _biobankWriteService.DeleteOntologyTermAsync(new OntologyTerm()
-            {
-                Id = model.OntologyTermId,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
-        }
-
-        public ActionResult EditDiseaseStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The disease status \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
-        }
-
-        public ActionResult AddDiseaseStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The disease status \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
         }
         #endregion
 
@@ -1659,6 +1616,23 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
+        #region RefData: Extraction Procedure
+        public async Task<ActionResult> ExtractionProcedure()
+        {
+            return View((await _biobankReadService.ListExtractionProceduresAsync()).Select(x =>
+
+                Task.Run(async () => new ReadExtractionProcedureModel
+                {
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            ));
+        }
+        #endregion
+
         #endregion
 
         #region Site Configuration
@@ -1912,52 +1886,7 @@ namespace Biobanks.Web.Controllers
         }
 
         #endregion
-        #region About Page Config
-        public async Task<ActionResult> AboutpageConfig()
-        {
-            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
-            {
-                return View(new AboutModel
-                {
-                    BodyText = Config.Get(ConfigKey.AboutBodyText, "")
-                });
-            }
-            else
-            {
-                return RedirectToAction("LockedRef");
-            }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> AboutpageConfig(AboutModel aboutpage)
-        {
-            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
-            {
-                return View(aboutpage);
-            }
-            else
-            {
-                return RedirectToAction("LockedRef");
-            }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> SaveAboutpageConfig(AboutModel aboutpage)
-        {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
-                new List<Config>
-                {
-                    new Config { Key = ConfigKey.AboutBodyText, Value = aboutpage.BodyText },
-                }
-            );
-
-            // Invalidate current config (Refreshed in SiteConfigAttribute filter)
-            HttpContext.Application["Config"] = null;
-            SetTemporaryFeedbackMessage("About page body text saved successfully.", FeedbackMessageType.Success);
-            return Redirect("AboutpageConfig");
-        }
-        #endregion
-
+        
         //Method for updating specific Reference Terms Names via Config
         public async Task<JsonResult> UpdateReferenceTermName(string newReferenceTermKey, string newReferenceTermName)
         {

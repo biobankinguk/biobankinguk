@@ -21,5 +21,8 @@ namespace Biobanks.Search.Dto.Documents
 
         [Keyword(Name = "preservationType")]
         public string PreservationType { get; set; }
+
+        [Keyword(Name = "extractionProcedure")]
+        public string ExtractionProcedure { get; set; }
     }
 }

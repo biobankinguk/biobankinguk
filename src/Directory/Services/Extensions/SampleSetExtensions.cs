@@ -79,7 +79,8 @@ namespace Biobanks.Services.Extensions
                         }),
                         MacroscopicAssessment = x.MacroscopicAssessment.Value,
                         PercentageOfSampleSet = x.CollectionPercentage?.Value,
-                        PreservationType = x.PreservationType?.Value
+                        PreservationType = x.PreservationType?.Value,
+                        ExtractionProcedure = x.ExtractionProcedure?.Value
                     }),
 
                 BiobankServices = sampleSet.Collection.Organisation.OrganisationServiceOfferings
