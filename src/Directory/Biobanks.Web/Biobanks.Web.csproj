@@ -486,6 +486,7 @@
     <Compile Include="Models\Home\HompageContentModel.cs" />
     <Content Include="Scripts\ADAC\adac-pages-admin.js" />
     <Content Include="Scripts\ADAC\adac-blockallow-list.js" />
+    <Content Include="Scripts\ADAC\adac-extraction-procedure.js" />
     <Content Include="Scripts\ADAC\adac-email-config.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
@@ -865,6 +866,7 @@
     <Content Include="Views\ADAC\EmailConfig.cshtml" />
     <Content Include="Views\ADAC\BlockAllowList.cshtml" />
     <Content Include="Views\Header\_NavItemSuperUser.cshtml" />
+    <Content Include="Views\ADAC\ExtractionProcedure.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1106,22 +1106,23 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Types
         public async Task<ActionResult> MaterialTypes()
         {
+            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
+
             return View(new MaterialTypesModel
             {
-                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
-                    .Select(x =>
-
-                    Task.Run(async () => new ReadMaterialTypeModel
+                MaterialTypes = materialTypes.Select(x => Task.Run(
+                    async () => new ReadMaterialTypeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
-                        SortOrder = x.SortOrder
-                    }).Result)
+                        SortOrder = x.SortOrder,
+                        MaterialTypeGroups = x.MaterialTypeGroups.Select(x => x.Value),
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id)
 
-                    .ToList()
+                    }))
+                .Select(x => x.Result)
+                .ToList()
             });
-
         }
 
         #endregion
@@ -1129,7 +1130,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View((await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
+            return View((await _biobankReadService.ListDiseaseOntologyTermsAsync()).Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
@@ -1140,49 +1141,6 @@ namespace Biobanks.Web.Controllers
                 })
                 .Result
             ));
-        }
-
-        public async Task<ActionResult> DeleteDiseaseStatus(OntologyTermModel model)
-        {
-            if (await _biobankReadService.IsOntologyTermInUse(model.OntologyTermId))
-            {
-                SetTemporaryFeedbackMessage(
-                    $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("DiseaseStatuses");
-            }
-
-            await _biobankWriteService.DeleteOntologyTermAsync(new OntologyTerm()
-            {
-                Id = model.OntologyTermId,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
-        }
-
-        public ActionResult EditDiseaseStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The disease status \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
-        }
-
-        public ActionResult AddDiseaseStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The disease status \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
         }
         #endregion
 
@@ -1642,6 +1600,23 @@ namespace Biobanks.Web.Controllers
             });
         }
 
+        #endregion
+
+        #region RefData: Extraction Procedure
+        public async Task<ActionResult> ExtractionProcedure()
+        {
+            return View((await _biobankReadService.ListExtractionProceduresAsync()).Select(x =>
+
+                Task.Run(async () => new ReadExtractionProcedureModel
+                {
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
+                    OtherTerms = x.OtherTerms
+                })
+                .Result
+            ));
+        }
         #endregion
 
         #endregion

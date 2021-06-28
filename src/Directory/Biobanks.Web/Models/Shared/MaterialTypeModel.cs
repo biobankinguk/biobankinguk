@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Biobanks.Web.Models.Shared
 {
@@ -13,5 +14,6 @@ namespace Biobanks.Web.Models.Shared
         [Required]
         public int SortOrder { get; set; }
 
+        public IEnumerable<string> MaterialTypeGroups { get; set; }
     }
 }

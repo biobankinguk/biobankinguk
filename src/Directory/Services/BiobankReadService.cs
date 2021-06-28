@@ -927,8 +927,11 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames()
             => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+        
         public async Task<IEnumerable<MaterialType>> ListMaterialTypesAsync()
-            => await _materialTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
+            => await _materialTypeRepository.ListAsync(
+                orderBy: x => x.OrderBy(y => y.SortOrder), 
+                includeProperties: x => x.MaterialTypeGroups);
 
         #region RefData: Collection Percentages
         public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()
@@ -1177,6 +1180,22 @@ namespace Biobanks.Services
                + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
         #endregion
 
+        #region RefData: Disease Statuses
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "")
+            => await _ontologyTermRepository.ListAsync(filter: x => 
+                x.SnomedTag.Value == "Disease" && 
+                x.Value.Contains(wildcard) && 
+                x.DisplayOnDirectory);
+        public async Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x =>
+                    x.SnomedTag.Value == "Disease" &&
+                    x.Value == ontologyTermDescription &&
+                    x.DisplayOnDirectory
+                ))
+                .Any();
+
+        #endregion
         #region RefData: Extraction Procedure
 
         public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
