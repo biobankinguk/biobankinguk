@@ -21,6 +21,7 @@ namespace Biobanks.Services
         }
 
         // ReadService methods
+        #region ReadService Methods
         public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
             => _db.Configs.Where(x => x.Key.Contains(wildcard)).ToList();
 
@@ -37,5 +38,8 @@ namespace Biobanks.Services
         {
             return await _db.Configs.Where(x => x.Key == siteConfigValue && x.Value == "true").AnyAsync();
         }
+        #endregion
+
+
     }
 }
