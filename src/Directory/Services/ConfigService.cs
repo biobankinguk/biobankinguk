@@ -53,6 +53,23 @@ namespace Biobanks.Services
             await _db.SaveChangesAsync();
         }
 
+        //Boolean Read Method
+
+
+        //Boolean Write Method
+
+        private bool? ConvertStringToBool(string boolStr)
+        {
+            bool convertedBool;
+            if (Boolean.TryParse(boolStr, out var converted))
+            {
+                convertedBool = converted;
+                return convertedBool;
+            }
+
+            return null;
+        }
+
 
     }
 }
