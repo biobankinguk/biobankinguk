@@ -1719,18 +1719,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        public async Task UpdateSiteConfigsAsync(IEnumerable<Config> configs)
-        {
-            foreach (var config in configs) {
-                var oldConfig = await _configService.GetSiteConfig(config.Key);
-                oldConfig.Value = config.Value;
-
-                _siteConfigRepository.Update(oldConfig);
-            }
-
-            await _siteConfigRepository.SaveChangesAsync();
-        }
-
         //delete adt
         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
         {

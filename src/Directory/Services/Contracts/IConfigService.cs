@@ -19,5 +19,7 @@ namespace Biobanks.Services.Contracts
 
         Task<bool> GetSiteConfigStatus(string siteConfigValue);
 
+        Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
+
     }
 }

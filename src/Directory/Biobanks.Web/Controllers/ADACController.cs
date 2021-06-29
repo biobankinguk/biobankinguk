@@ -1662,7 +1662,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveHomepageConfig(HomepageContentModel homepage)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
@@ -1733,7 +1733,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveTermpageConfig(TermpageContentModel termpage)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.TermpageInfo, Value = termpage.PageInfo ?? "" }
@@ -1802,7 +1802,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveRegisterPagesConfig(RegisterConfigModel registerConfigModel)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.RegisterBiobankTitle, Value = registerConfigModel.BiobankTitle ?? ""},
@@ -1841,7 +1841,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> UpdateSiteConfig(IEnumerable<SiteConfigModel> values)
         {
             // Update Database Config
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 values
                     .OrderBy(x => x.Key)
                     .Select(x => new Config
@@ -1904,7 +1904,7 @@ namespace Biobanks.Web.Controllers
 
 
             // Update Database Config
-            await _biobankWriteService.UpdateSiteConfigsAsync(values);
+            await _configService.UpdateSiteConfigsAsync(values);
 
             // Invalidate current config (Refreshed in SiteConfigAttribute filter)
             HttpContext.Application["Config"] = null;

@@ -4,6 +4,7 @@ using Biobanks.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -20,8 +21,7 @@ namespace Biobanks.Services
             _db = db;
         }
 
-        // ReadService methods
-        #region ReadService Methods
+        // ReadService Methods
         public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
             => _db.Configs.Where(x => x.Key.Contains(wildcard)).ToList();
 
@@ -38,7 +38,20 @@ namespace Biobanks.Services
         {
             return await _db.Configs.Where(x => x.Key == siteConfigValue && x.Value == "true").AnyAsync();
         }
-        #endregion
+
+        //WriteService Methods
+        public async Task UpdateSiteConfigsAsync(IEnumerable<Config> configs)
+        {
+            foreach (var config in configs)
+            {
+                var oldConfig = await GetSiteConfig(config.Key);
+                oldConfig.Value = config.Value;
+
+                _db.Configs.AddOrUpdate(oldConfig);
+
+            }
+            await _db.SaveChangesAsync();
+        }
 
 
     }
