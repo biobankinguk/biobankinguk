@@ -871,6 +871,7 @@
     <Content Include="Views\Header\_NavItemSuperUser.cshtml" />
     <Content Include="Views\ADAC\ExtractionProcedure.cshtml" />
     <Content Include="Views\ADAC\MaterialTypeGroups.cshtml" />
+    <Content Include="Views\SuperUser\Flags.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

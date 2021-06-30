@@ -9,6 +9,11 @@
             </li>
 
             <li role="presentation"
+                class="@(Model == "Config Flags" ? "active" : "true")">
+                @Html.ActionLink("Config Flags", "Flags")
+            </li>
+
+            <li role="presentation"
                 class="@(Model == "Search index" ? "active" : "true")">
                 @Html.ActionLink("Search index", "SearchIndex")
             </li>
