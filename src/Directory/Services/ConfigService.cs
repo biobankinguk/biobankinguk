@@ -57,6 +57,9 @@ namespace Biobanks.Services
         public async Task<bool?> GetFlagConfigValue(string key)
             => (ConvertStringToBool((await GetSiteConfig(key)).Value));
 
+        public async Task<IEnumerable<Config>> ListFeatureFlags(string wildcard = "")
+            => await _db.Configs.Where(x => x.Key.Contains(wildcard)).Where(x => x.IsFeatureFlag == true).ToListAsync();
+
 
         // Setter - Updates given flag with passed boolean value
         public async Task UpdateFlag(string key, bool value)
