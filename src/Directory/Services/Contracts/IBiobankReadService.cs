@@ -130,15 +130,16 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
-        Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "");
         Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);
         Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription);
         Task<OntologyTerm> GetOntologyTermByDescription(string description);
         Task<int> GetOntologyTermCollectionCapabilityCount(string id);
         Task<bool> IsOntologyTermInUse(string id);
 
-        Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "");
+        Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false);
         Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription);
+        Task<IEnumerable<OntologyTerm>> PaginateDiseaseOntologyTerms(int start, int length, string filter = "");
+        Task<int> CountDiseaseOntologyTerms(string filter = "");
 
         Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
         Task<OntologyTerm> GetExtractionProcedureById(string id);

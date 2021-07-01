@@ -35,7 +35,8 @@ namespace Biobanks.Web.ApiControllers
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    DisplayOnDirectory = x.DisplayOnDirectory
                 })
                 .Result
             )
@@ -101,7 +102,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = model.DisplayOnDirectory
             });
 
             //Everything went A-OK!
@@ -117,7 +118,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
             //if ontology term id is in use by another ontology term
-            if ((await _biobankReadService.ListOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
+            if ((await _biobankReadService.ListDiseaseOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             //If this description is valid, it already exists
@@ -137,7 +138,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = model.DisplayOnDirectory
             });
 
             //Everything went A-OK!

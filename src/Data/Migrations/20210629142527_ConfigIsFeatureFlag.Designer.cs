@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210629142527_ConfigIsFeatureFlag")]
+    partial class ConfigIsFeatureFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2509,7 +2511,7 @@ namespace Biobanks.Data.Migrations
                         .WithMany()
                         .HasForeignKey("PreservationTypeId");
 
-                    b.HasOne("Biobanks.Entities.Data.SampleSet", "SampleSet")
+                    b.HasOne("Biobanks.Entities.Data.SampleSet", null)
                         .WithMany("MaterialDetails")
                         .HasForeignKey("SampleSetId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2530,8 +2532,6 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("MaterialType");
 
                     b.Navigation("PreservationType");
-
-                    b.Navigation("SampleSet");
 
                     b.Navigation("StorageTemperature");
                 });
