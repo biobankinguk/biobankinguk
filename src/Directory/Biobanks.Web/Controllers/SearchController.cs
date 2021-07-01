@@ -14,8 +14,6 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
@@ -247,7 +245,7 @@ namespace Biobanks.Web.Controllers
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            var directoryOntologyTerms = await _biobankReadService.ListOntologyTermsAsync();
+            var directoryOntologyTerms = await _biobankReadService.ListDiseaseOntologyTermsAsync("", onlyDisplayable: true);
 
             // Join Ontology Terms In Search and Directory Based On Ontology Term Value
             var model = directoryOntologyTerms.Join(searchOntologyTerms, 
@@ -266,6 +264,7 @@ namespace Biobanks.Web.Controllers
                         OntologyTermId = directoryTerm.Id,
                         Description = directoryTerm.Value,
                         OtherTerms = directoryTerm.OtherTerms ?? "",
+                        DisplayOnDirectory = directoryTerm.DisplayOnDirectory,
                         MatchingOtherTerms = searchTerm.MatchingOtherTerms,
                         NonMatchingOtherTerms = nonMatchingTerms ?? new List<string>()
                     };
@@ -283,7 +282,8 @@ namespace Biobanks.Web.Controllers
                {
                    OntologyTermId = x.Id,
                    Description = x.Value,
-                   OtherTerms = x.OtherTerms
+                   OtherTerms = x.OtherTerms,
+                   DisplayOnDirectory = x.DisplayOnDirectory
                }
             )
             .ToList();
