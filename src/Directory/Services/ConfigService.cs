@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Biobanks.Services
@@ -53,20 +51,37 @@ namespace Biobanks.Services
             await _db.SaveChangesAsync();
         }
 
-        //Boolean Read Method
+        // Boolean typesafe methods
+
+        // Getter - Returns boolean value of flag, null if not flag
+        public async Task<bool?> GetFlagConfigValue(string key)
+            => (ConvertStringToBool((await GetSiteConfig(key)).Value));
 
 
-        //Boolean Write Method
+        // Setter - Updates given flag with passed boolean value
+        public async Task UpdateFlag(string key, bool value)
+        {
+            var oldConfig = await GetSiteConfig(key);
+            oldConfig.Value = value.ToString();
+            _db.Configs.AddOrUpdate(oldConfig);
 
+            await _db.SaveChangesAsync();
+
+        }
+
+        /// <summary>
+        /// Returns value of boolean flag
+        /// If not a bool will return null
+        /// </summary>
+        /// <param name="boolStr"></param>
+        /// <returns></returns>
         private bool? ConvertStringToBool(string boolStr)
         {
-            bool convertedBool;
             if (Boolean.TryParse(boolStr, out var converted))
             {
-                convertedBool = converted;
-                return convertedBool;
+                return converted;
             }
-
+            // Return null if not a flag/bool
             return null;
         }
 

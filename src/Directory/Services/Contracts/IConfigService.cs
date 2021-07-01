@@ -21,5 +21,9 @@ namespace Biobanks.Services.Contracts
 
         Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
 
+        Task<bool?> GetFlagConfigValue(string key);
+
+        Task UpdateFlag(string key, bool value);
+
     }
 }
