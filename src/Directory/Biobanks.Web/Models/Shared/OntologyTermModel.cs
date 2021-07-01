@@ -14,6 +14,8 @@ namespace Biobanks.Web.Models.Shared
 
         public string OtherTerms { get; set; }
 
+        public bool DisplayOnDirectory { get; set; }
+
         public List<string> MatchingOtherTerms { get; set; }
         public List<string> NonMatchingOtherTerms { get; set; }
     }
