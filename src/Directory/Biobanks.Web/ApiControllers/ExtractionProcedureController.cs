@@ -124,7 +124,7 @@ namespace Biobanks.Web.ApiControllers
             }
 
             //if ontology term id is in use by another ontology term
-            if ((await _biobankReadService.ListDiseaseOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
+            if ((await _biobankReadService.ListExtractionProceduresAsync()).Any(x => x.Id == model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             if (!ModelState.IsValid)
