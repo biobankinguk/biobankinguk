@@ -1163,7 +1163,7 @@ namespace Biobanks.Web.Controllers
             var searchValue = search.TryGetValue("value", out var s) ? s : "";
 
             // Get Disease Statuses
-            var ontologyTerms = await _biobankReadService.PaginateOntologyTerms(start, length, searchValue);
+            var ontologyTerms = await _biobankReadService.PaginateDiseaseOntologyTerms(start, length, searchValue);
             var filteredCount = await _biobankReadService.CountOntologyTerms(filter: searchValue);
             var totalCount = await _biobankReadService.CountOntologyTerms();
 
