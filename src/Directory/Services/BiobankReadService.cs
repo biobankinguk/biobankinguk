@@ -15,12 +15,14 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Nest;
+using Biobanks.Directory.Data;
 
 namespace Biobanks.Services
 {
     public class BiobankReadService : IBiobankReadService
     {
+        private const string DiseaseTag = "Disease";
+
         #region Properties and ctor
 
         private readonly ILogoStorageProvider _logoStorageProvider;
@@ -90,6 +92,8 @@ namespace Biobanks.Services
 
         private readonly ISearchProvider _searchProvider;
 
+        private readonly BiobanksDbContext _context;
+
         public BiobankReadService(
             ILogoStorageProvider logoStorageProvider,
 
@@ -152,7 +156,9 @@ namespace Biobanks.Services
             IGenericEFRepository<Publication> publicationRespository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
-            IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository)
+            IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
+            
+            BiobanksDbContext context)
         {
             _logoStorageProvider = logoStorageProvider;
 
@@ -217,6 +223,8 @@ namespace Biobanks.Services
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
+
+            _context = context;
         }
 
         #endregion
@@ -1157,16 +1165,6 @@ namespace Biobanks.Services
         #endregion
 
         #region RefData: OntologyTerm
-        public async Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(filter: x => x.Value.Contains(wildcard) && x.DisplayOnDirectory);
-
-        public async Task<IEnumerable<OntologyTerm>> GetUsedOntologyTermsAsync()
-        {
-            var collections = await _collectionRepository.ListAsync(false);
-            var ontologyTerms = await ListOntologyTermsAsync();
-
-            return ontologyTerms.Where(x => collections.Any(y => y.OntologyTermId == x.Id));
-        }
 
         public async Task<OntologyTerm> GetOntologyTermByDescription(string description)
             => (await _ontologyTermRepository.ListAsync(filter: x => x.Value == description && x.DisplayOnDirectory)).SingleOrDefault();
@@ -1191,18 +1189,32 @@ namespace Biobanks.Services
         public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
             => await _collectionRepository.CountAsync(x => x.OntologyTermId == id) 
                + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
+
         #endregion
 
         #region RefData: Disease Statuses
-        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(filter: x => 
-                x.SnomedTag.Value == "Disease" && 
-                x.Value.Contains(wildcard) && 
-                x.DisplayOnDirectory);
+
+        public async Task<int> CountDiseaseOntologyTerms(string filter = "")
+            => await _ontologyTermRepository.CountAsync(x => x.Value.Contains(filter) && x.SnomedTag.Value == DiseaseTag);
+
+        public async Task<IEnumerable<OntologyTerm>> PaginateDiseaseOntologyTerms(int start, int length, string filter = "")
+            => await _context.OntologyTerms
+                    .Where(x => x.Value.Contains(filter) && x.SnomedTag.Value == DiseaseTag)
+                    .OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Value)
+                    .Skip(start)
+                    .Take(length)
+                    .ToListAsync();
+
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false)
+            => await _ontologyTermRepository.ListAsync(filter: x =>
+                x.SnomedTag.Value == DiseaseTag &&
+                x.Value.Contains(wildcard) &&
+                (x.DisplayOnDirectory || !onlyDisplayable));
+
         public async Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription)
             => (await _ontologyTermRepository.ListAsync(
                 filter: x =>
-                    x.SnomedTag.Value == "Disease" &&
+                    x.SnomedTag.Value == DiseaseTag &&
                     x.Value == ontologyTermDescription &&
                     x.DisplayOnDirectory
                 ))

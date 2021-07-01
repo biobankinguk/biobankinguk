@@ -1159,6 +1159,38 @@ namespace Biobanks.Web.Controllers
                 .Result
             ));
         }
+
+        public async Task<ActionResult> PagingatedDiseaseStatuses(int draw, int start, int length, IDictionary<string, string> search)
+        {
+            // Select Search By Value
+            var searchValue = search.TryGetValue("value", out var s) ? s : "";
+
+            // Get Disease Statuses
+            var ontologyTerms = await _biobankReadService.PaginateDiseaseOntologyTerms(start, length, searchValue);
+            var filteredCount = await _biobankReadService.CountDiseaseOntologyTerms(filter: searchValue);
+            var totalCount = await _biobankReadService.CountDiseaseOntologyTerms();
+
+            var data = ontologyTerms.Select(x =>
+                Task.Run(async () => new ReadOntologyTermModel
+                {
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    OtherTerms = x.OtherTerms,
+                    DisplayOnDirectory = x.DisplayOnDirectory,
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id)
+                })
+                .Result
+            );
+
+            return Json(new
+            {
+                draw,
+                data,
+                recordsTotal = totalCount,
+                recordsFiltered = filteredCount
+            },
+            JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region RefData: Collection Percentages
