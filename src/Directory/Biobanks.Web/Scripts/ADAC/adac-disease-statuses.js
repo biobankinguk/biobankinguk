@@ -56,8 +56,8 @@ function AdacDiseaseStatusViewModel() {
         var diseaseStatus = dataTable.row(rowIndex).data();
 
         let otherTerms = (diseaseStatus.OtherTerms
-          ? diseaseStatus.OtherTerms.split(",").map(item => item.trim())
-          : diseaseStatus.OtherTerms)
+            ? diseaseStatus.OtherTerms.split(",").map(item => item.trim())
+            : diseaseStatus.OtherTerms)
 
         _this.modal.diseaseStatus(
             new DiseaseStatus(
@@ -68,9 +68,10 @@ function AdacDiseaseStatusViewModel() {
             )
         );
 
-    $("#OntologyTermId").prop('readonly', true);
+        $("#OntologyTermId").prop('readonly', true);
         _this.setPartialEdit(diseaseStatus.CollectionCapabilityCount > 0);
         _this.showModal();
+    }
 
     this.modalSubmit = function (e) {
         e.preventDefault();
@@ -106,12 +107,8 @@ function AdacDiseaseStatusViewModel() {
         _this.modal.diseaseStatus().otherTerms.push("");
     }
     this.removeOtherTerms = function (idx) {
-        _this.modal.diseaseStatus().otherTerms.splice(idx,1)
+        _this.modal.diseaseStatus().otherTerms.splice(idx, 1)
     }
-}
-
-function capitalize(string) {
-    
 }
 
 // DataTables
@@ -154,24 +151,24 @@ $(function () {
                             $('<span/>', {
                                 class: "fa fa-edit labelled-icon",
                             })
-                            .add($('<span/>', {
-                                text: "Edit"
-                            }))
+                                .add($('<span/>', {
+                                    text: "Edit"
+                                }))
                     });
 
                     if (row.CollectionCapabilityCount == 0) {
                         // Delete Link - Triggered By jQuery
                         var deleteLink = $('<a/>', {
                             "data-row": meta.row,
-                            "class": "action-icon click-delete", 
+                            "class": "action-icon click-delete",
                             "href": "#",
                             "html":
                                 $('<span/>', {
                                     class: "fa fa-trash labelled-icon",
                                 })
-                                .add($('<span/>', {
-                                    text: "Delete"
-                                }))
+                                    .add($('<span/>', {
+                                        text: "Delete"
+                                    }))
 
                         });
 
