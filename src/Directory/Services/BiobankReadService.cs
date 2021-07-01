@@ -1169,9 +1169,6 @@ namespace Biobanks.Services
 
         #region RefData: OntologyTerm
 
-        public async Task<int> CountOntologyTerms(string filter = "")
-            => await _ontologyTermRepository.CountAsync(x => x.Value.Contains(filter));
-
         public async Task<OntologyTerm> GetOntologyTermByDescription(string description)
             => (await _ontologyTermRepository.ListAsync(filter: x => x.Value == description && x.DisplayOnDirectory)).SingleOrDefault();
 
@@ -1199,6 +1196,9 @@ namespace Biobanks.Services
         #endregion
 
         #region RefData: Disease Statuses
+
+        public async Task<int> CountDiseaseOntologyTerms(string filter = "")
+            => await _ontologyTermRepository.CountAsync(x => x.Value.Contains(filter) && x.SnomedTag.Value == DiseaseTag);
 
         public async Task<IEnumerable<OntologyTerm>> PaginateDiseaseOntologyTerms(int start, int length, string filter = "")
             => await _context.OntologyTerms

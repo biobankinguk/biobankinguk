@@ -1164,8 +1164,8 @@ namespace Biobanks.Web.Controllers
 
             // Get Disease Statuses
             var ontologyTerms = await _biobankReadService.PaginateDiseaseOntologyTerms(start, length, searchValue);
-            var filteredCount = await _biobankReadService.CountOntologyTerms(filter: searchValue);
-            var totalCount = await _biobankReadService.CountOntologyTerms();
+            var filteredCount = await _biobankReadService.CountDiseaseOntologyTerms(filter: searchValue);
+            var totalCount = await _biobankReadService.CountDiseaseOntologyTerms();
 
             var data = ontologyTerms.Select(x =>
                 Task.Run(async () => new ReadOntologyTermModel
