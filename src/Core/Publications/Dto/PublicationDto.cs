@@ -22,8 +22,10 @@ namespace Biobanks.Publications.Dto
 
     public class PublicationDto
     {
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
         [JsonPropertyName("authorString")]
@@ -35,8 +37,10 @@ namespace Biobanks.Publications.Dto
         [JsonPropertyName("pubYear")]
         public string Year { get; set; }
 
+        [JsonPropertyName("doi")]
         public string Doi { get; set; }
-        
+
+        [JsonPropertyName("source")]
         public string Source { get; set; }
 
     }
