@@ -68,7 +68,7 @@ namespace Biobanks.Analytics.Services
             var dateRanges = new[] { DateRangeFromBounds(startDate, endDate) };
 
             var metrics = GetBiobankMetrics();
-            var dimensions = GetBiobankDimensions();
+            var dimensions = GetBiobankDimensions();    
             var segments = GetNottLoughSegment();
 
             var biobanks = await _organisations.ListExternalIds();
@@ -81,23 +81,28 @@ namespace Biobanks.Analytics.Services
                 var reportResponse = GetReports(reportRequest);
                 var biobankData = reportResponse.Reports[0].Data.Rows;
 
-                foreach (ReportRow bbd in biobankData)
+                if (biobankData != null)
                 {
-                    _db.OrganisationAnalytics.Add(new OrganisationAnalytic
+                    foreach (ReportRow bbd in biobankData)
                     {
-                        Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
-                        PagePath = bbd.Dimensions[1],
-                        PreviousPagePath = bbd.Dimensions[2],
-                        Segment = bbd.Dimensions[3],
-                        Source = bbd.Dimensions[4],
-                        Hostname = bbd.Dimensions[5],
-                        City = bbd.Dimensions[6],
-                        Counts = int.Parse(bbd.Metrics[0].Values[0]),
-                        OrganisationExternalId = biobankId
-                    });
+                        _db.OrganisationAnalytics.Add(new OrganisationAnalytic
+                        {
+                            Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
+                            PagePath = bbd.Dimensions[1],
+                            PreviousPagePath = bbd.Dimensions[2],
+                            Segment = bbd.Dimensions[3],
+                            Source = bbd.Dimensions[4],
+                            Hostname = bbd.Dimensions[5],
+                            City = bbd.Dimensions[6],
+                            Counts = int.Parse(bbd.Metrics[0].Values[0]),
+                            OrganisationExternalId = biobankId
+                        });
+                    }
+                    await _db.SaveChangesAsync();
+                    _logger.LogInformation($"Fetched analytics for data for {biobankId}");
                 }
-                await _db.SaveChangesAsync();
-                _logger.LogInformation("Fetched analytics for data for {biobankId}");
+                else
+                    _logger.LogInformation($"biobankdata null for {biobankId}. Data not saved.");
             }
         }
 
@@ -138,6 +143,8 @@ namespace Biobanks.Analytics.Services
                 }
                 await _db.SaveChangesAsync();
             }
+            else
+                _logger.LogInformation("eventData null. AnalyticEventData not added.");
 
             foreach (ReportRow metric in metricData)
             {
