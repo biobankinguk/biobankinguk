@@ -470,6 +470,7 @@
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
     <Compile Include="HtmlHelpers\DisabledHelper.cs" />
+    <Compile Include="Models\ADAC\ExtractionProceduresModel.cs" />
     <Compile Include="Models\ADAC\MaterialTypeGroupModel.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\ReadExtractionProcedureModel.cs" />
