@@ -31,11 +31,6 @@ namespace Biobanks.Services
         public async Task<string> GetSiteConfigValue(string key, string defaultValue = "")
             => (await GetSiteConfig(key))?.Value ?? defaultValue;
 
-        public async Task<bool> GetSiteConfigStatus(string siteConfigValue)
-        {
-            return await _db.Configs.Where(x => x.Key == siteConfigValue && x.Value == "true").AnyAsync();
-        }
-
         //WriteService Methods
         public async Task UpdateSiteConfigsAsync(IEnumerable<Config> configs)
         {

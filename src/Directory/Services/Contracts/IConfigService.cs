@@ -17,8 +17,6 @@ namespace Biobanks.Services.Contracts
 
         Task<string> GetSiteConfigValue(string key, string defaultValue = "");
 
-        Task<bool> GetSiteConfigStatus(string siteConfigValue);
-
         Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
 
         Task<bool?> GetFlagConfigValue(string key);

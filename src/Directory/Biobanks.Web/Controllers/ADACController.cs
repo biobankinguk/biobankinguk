@@ -927,7 +927,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Analytics(int year = 0, int endQuarter = 0, int reportPeriod = 0)
         {
             //If turned off in site config
-            if (!(await _configService.GetSiteConfigStatus(ConfigKey.DisplayAnalytics)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)
                 return RedirectToAction("LockedRef");
 
             //set default options
@@ -1210,7 +1210,7 @@ namespace Biobanks.Web.Controllers
                     .Result
                 )
                 .ToList();
-            if (await _configService.GetSiteConfigStatus("site.display.preservation.percent"))
+            if (await _configService.GetFlagConfigValue("site.display.preservation.percent") == true)
             {
                 return View(new CollectionPercentagesModel()
                 {
@@ -1527,7 +1527,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: County
         public async Task<ActionResult> County()
         {
-            if (await _configService.GetSiteConfigStatus("site.display.counties"))
+            if (await _configService.GetFlagConfigValue("site.display.counties") == true)
             {
                 var countries = await _biobankReadService.ListCountriesAsync();
 

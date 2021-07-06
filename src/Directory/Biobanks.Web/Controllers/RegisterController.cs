@@ -173,7 +173,7 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                if (await _configService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                if (await _configService.GetFlagConfigValue(ConfigKey.RegistrationEmails) == true)
                 {
                     // Non ADAC Invited requests should notify ADAC users
                     await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
@@ -271,7 +271,7 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                if (await _configService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                if (await _configService.GetFlagConfigValue(ConfigKey.RegistrationEmails) == true)
                 {
                     // Non ADAC Invited requests should notify ADAC users
                     await _emailService.SendDirectoryAdminNewRegisterRequestNotification(

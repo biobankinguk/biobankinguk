@@ -1753,7 +1753,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Publications()
         {
             //If turned off in site config
-            if (!(await _configService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
                 return HttpNotFound();
 
             return View(SessionHelper.GetBiobankId(Session));
@@ -1765,7 +1765,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> GetPublicationsAjax()
         {
             //If turned off in site config
-            if (!(await _configService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
 
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -1995,7 +1995,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Analytics(int year = 0, int endQuarter = 0, int reportPeriod = 0)
         {
             //If turned off in site config
-            if (!(await _configService.GetSiteConfigStatus(ConfigKey.DisplayAnalytics)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)
                 return HttpNotFound();
 
             var biobankId = SessionHelper.GetBiobankId(Session);

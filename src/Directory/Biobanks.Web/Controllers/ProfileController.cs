@@ -150,7 +150,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Publications(string id)
         {
             //If turned off in site config
-            if (!(await _configService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
                 return HttpNotFound();
 
             // Get the Organisation
