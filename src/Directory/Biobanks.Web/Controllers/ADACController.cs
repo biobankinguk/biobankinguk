@@ -1651,7 +1651,11 @@ namespace Biobanks.Web.Controllers
         #region RefData: Extraction Procedure
         public async Task<ActionResult> ExtractionProcedure()
         {
-            return View((await _biobankReadService.ListExtractionProceduresAsync()).Select(x =>
+            return View(new ExtractionProceduresModel
+            {
+                ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+                //.Where(x=>x.MaterialTypes.Count > 0)
+                .Select(x =>
 
                 Task.Run(async () => new ReadExtractionProcedureModel
                 {
@@ -1661,7 +1665,9 @@ namespace Biobanks.Web.Controllers
                     OtherTerms = x.OtherTerms
                 })
                 .Result
-            ));
+            ).ToList(),
+                MaterialTypes = await _biobankReadService.ListMaterialTypesAsync()
+            });
         }
         #endregion
 
