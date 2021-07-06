@@ -1,18 +1,20 @@
-function ExtractionProcedure(ontologyTermId, description, otherTerms) {
+function ExtractionProcedure(ontologyTermId, description, otherTerms, materialTypeId) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.otherTerms = ko.observableArray(otherTerms);
+    this.materialTypeId = ko.observable(materialTypeId);
 }
 
-function ExtractionProcedureModal(ontologyTermId, description, otherTerms) {
+function ExtractionProcedureModal(ontologyTermId, description, otherTerms, materialTypeId, materialTypes) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.extractionProcedure = ko.observable(
-        new ExtractionProcedure(ontologyTermId, description, otherTerms)
+        new ExtractionProcedure(ontologyTermId, description, otherTerms, materialTypeId)
     );
+    this.materialTypes = ko.observable(materialTypes);
 }
 
 function AdacExtractionProcedureViewModel() {
@@ -20,7 +22,9 @@ function AdacExtractionProcedureViewModel() {
     var _this = this;
 
     this.modalId = "#extraction-procedure-modal";
-    this.modal = new ExtractionProcedureModal("", "", []);
+    this.materialTypes = $(this.modalId).data("material-types");
+    
+    this.modal = new ExtractionProcedureModal("", "", [], 0, this.materialTypes);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -36,7 +40,7 @@ function AdacExtractionProcedureViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.extractionProcedure(new ExtractionProcedure("", "",[]));
+        _this.modal.extractionProcedure(new ExtractionProcedure("", "",[],0));
         _this.setPartialEdit(false);
         _this.showModal();
     };
@@ -53,7 +57,8 @@ function AdacExtractionProcedureViewModel() {
       new ExtractionProcedure(
           extractionProcedure.OntologyTermId,
           extractionProcedure.Description,
-          otherTerms
+          otherTerms,
+          extractionProcedure.MaterialTypeId
 
       )
     );
