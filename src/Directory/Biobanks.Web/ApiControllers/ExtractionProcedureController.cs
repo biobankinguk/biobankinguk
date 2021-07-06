@@ -75,7 +75,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
+        public async Task<IHttpActionResult> Put(string id, ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(id, model.Description))
@@ -115,7 +115,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(OntologyTermModel model)
+        public async Task<IHttpActionResult> Post(ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
@@ -138,7 +138,8 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = true,
+                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x=>x.Id == model.MaterialTypeId).ToList()
             });
 
             //Everything went A-OK!
