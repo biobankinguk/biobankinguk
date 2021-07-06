@@ -23,7 +23,7 @@ namespace Biobanks.Services.Contracts
 
         Task<bool?> GetFlagConfigValue(string key);
 
-        Task<IEnumerable<Config>> ListFeatureFlags(string wildcard = "");
+        Task<List<Config>> ListBooleanFlags(bool includeFeatures, string wildcard = "");
 
         Task UpdateFlag(string key, bool value);
 

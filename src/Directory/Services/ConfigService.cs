@@ -13,7 +13,6 @@ namespace Biobanks.Services
     public class ConfigService : IConfigService
     {
         private readonly BiobanksDbContext _db;
-
         public ConfigService(BiobanksDbContext db)
         {
             _db = db;
@@ -51,15 +50,25 @@ namespace Biobanks.Services
             await _db.SaveChangesAsync();
         }
 
-        // Boolean typesafe methods
-
         // Getter - Returns boolean value of flag, null if not flag
         public async Task<bool?> GetFlagConfigValue(string key)
             => (ConvertStringToBool((await GetSiteConfig(key)).Value));
 
-        public async Task<IEnumerable<Config>> ListFeatureFlags(string wildcard = "")
-            => await _db.Configs.Where(x => x.Key.Contains(wildcard)).Where(x => x.IsFeatureFlag == true).ToListAsync();
+        public async Task<List<Config>> ListBooleanFlags(bool includeFeatures, string wildcard = "")
+        {   
+            var configs = await _db.Configs.Where(x => x.Key.Contains(wildcard)).ToListAsync();
+            configs.Where(x => ConvertStringToBool(x.Value) != null).ToList();
 
+            if (includeFeatures == false)
+            {
+                return configs.Where(x => x.IsFeatureFlag == false || x.IsFeatureFlag == null).ToList();
+            }
+            else
+            {
+                return configs.Where(x => x.IsFeatureFlag == true).ToList();
+            }
+
+        }
 
         // Setter - Updates given flag with passed boolean value
         public async Task UpdateFlag(string key, bool value)
@@ -71,13 +80,6 @@ namespace Biobanks.Services
             await _db.SaveChangesAsync();
 
         }
-
-        /// <summary>
-        /// Returns value of boolean flag
-        /// If not a bool will return null
-        /// </summary>
-        /// <param name="boolStr"></param>
-        /// <returns></returns>
         private bool? ConvertStringToBool(string boolStr)
         {
             if (Boolean.TryParse(boolStr, out var converted))
@@ -87,7 +89,6 @@ namespace Biobanks.Services
             // Return null if not a flag/bool
             return null;
         }
-
 
     }
 }
