@@ -25,7 +25,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Extraction Procedure ID</th>
-                    <th>Other Terms</th>
+                    <th>Material Types</th>
                     <th>Material Details Count</th>
                     <th>@* Actions *@</th>
                 </tr>
@@ -41,7 +41,7 @@
                         <td>
                             @Html.DisplayFor(x => ontologyTerm.OntologyTermId)
                         </td>
-                        <td><div class="wrappable-td">@Html.DisplayFor(x => ontologyTerm.OtherTerms)</div></td>
+                        <td><div class="wrappable-td">@string.Join(" / ", Model.MaterialTypes.Where(x=>ontologyTerm.MaterialTypeIds.Contains(x.Id)).Select(x=>x.Value))</div></td>
                         <td>@ontologyTerm.MaterialDetailsCount</td>
 
                         <td class="text-right">
@@ -89,20 +89,21 @@
 </div>
 
 <!-- Modal -->
-@{
-    var materialTypes = Model.MaterialTypes.Select(x => new
-    {
-        id = x.Id,
-        value = x.Value
-    });
-}
-
-<div class="modal fade" id="extraction-procedure-modal" tabindex="-1" role="dialog" aria-labelledby="extraction-procedure-modal-label" data-material-types="@Json.Encode(materialTypes)">
+<div class="modal fade" id="extraction-procedure-modal" tabindex="-1" role="dialog" 
+     aria-labelledby="extraction-procedure-modal-label" 
+     data-material-types="@Json.Encode(Model.MaterialTypes.Select(x => new {id = x.Id, value = x.Value}))">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="extraction-procedure-modal-label"><span data-bind="text: modal.mode"></span> extraction procedure</h4>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-info">
+                        <span> Add at least one material type to display extraction procedure on directory</span>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
@@ -130,7 +131,7 @@
                         <div class="col-sm-12">
 
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.extractionProcedure().ontologyTermId()">
-                            <input type="hidden" id="OtherTerms" name="OtherTerms">
+                            <input type="hidden" id="MaterialTypeIds" name="MaterialTypeIds">
                             <!-- SNOMED ID -->
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Extraction Procedure ID</label>
@@ -149,27 +150,19 @@
                                 </div>
                             </div>
 
-                            <!-- Material Type -->
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Material Type</label>
-                                <div class="col-sm-9">
-                                    <select id="MaterialTypeId" name="MaterialTypeId" class="form-control"
-                                            data-bind="options: modal.materialTypes, optionsText: 'value', optionsValue: 'id', value: modal.extractionProcedure().materialTypeId()">
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Other Terms -->
-                            <div data-bind="foreach: modal.extractionProcedure().otherTerms()">
+                            <!-- Material Types -->
+                            <div data-bind="foreach: modal.extractionProcedure().materialTypeIds()">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Other Terms</label>
+                                    <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Material Type</label>
                                     <div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
-                                        <input type="text" class="form-control"
-                                               data-bind="textInput: $parent.modal.extractionProcedure().otherTerms()[$index()]">
+                                        <select class="form-control"
+                                            data-bind="options: $parent.modal.materialTypes, optionsText: 'value', optionsValue: 'id', value: $parent.modal.extractionProcedure().materialTypeIds()[$index()]">
+                                        </select>
+
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right"
-                                                data-bind="click: function() { $parent.removeOtherTerms($index())}" />
+                                                data-bind="click: function() { $parent.removeMaterialType($index())}" />
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +170,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bind="click: addOtherTerms">Add Other Term</button>
+                    <button type="button" class="btn btn-success" data-bind="click: addMaterialType">Add Material Type</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
                 </div>
