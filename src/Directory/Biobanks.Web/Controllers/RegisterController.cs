@@ -21,6 +21,7 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IEmailService _emailService;
         private readonly IRegistrationDomainService _registrationDomainService;
+        private readonly IConfigService _configService;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
@@ -29,13 +30,15 @@ namespace Biobanks.Web.Controllers
             IBiobankWriteService biobankWriteService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService, 
-            IRegistrationDomainService registrationDomainService)
+            IRegistrationDomainService registrationDomainService,
+            IConfigService configService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _userManager = userManager;
             _emailService = emailService;
             _registrationDomainService = registrationDomainService;
+            _configService = configService;
         }
 
         // GET: Register
@@ -170,7 +173,7 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                if (await _configService.GetFlagConfigValue(ConfigKey.RegistrationEmails) == true)
                 {
                     // Non ADAC Invited requests should notify ADAC users
                     await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
@@ -268,7 +271,7 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                if (await _configService.GetFlagConfigValue(ConfigKey.RegistrationEmails) == true)
                 {
                     // Non ADAC Invited requests should notify ADAC users
                     await _emailService.SendDirectoryAdminNewRegisterRequestNotification(

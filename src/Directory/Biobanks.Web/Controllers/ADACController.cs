@@ -25,6 +25,7 @@ using System.Data.Entity;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.ApplicationInsights;
+using static Biobanks.Services.ConfigService;
 
 namespace Biobanks.Web.Controllers
 {
@@ -37,6 +38,7 @@ namespace Biobanks.Web.Controllers
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IEmailService _emailService;
         private readonly IRegistrationDomainService _registrationDomainService;
+        private readonly IConfigService _configService;
 
         private readonly IBiobankIndexService _indexService;
 
@@ -52,6 +54,7 @@ namespace Biobanks.Web.Controllers
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
             IRegistrationDomainService registrationDomainService,
+            IConfigService configService,
             IBiobankIndexService indexService,
             ISearchProvider searchProvider,
             IMapper mapper,
@@ -63,6 +66,7 @@ namespace Biobanks.Web.Controllers
             _userManager = userManager;
             _emailService = emailService;
             _registrationDomainService = registrationDomainService;
+            _configService = configService;
             _indexService = indexService;
             _searchProvider = searchProvider;
             _mapper = mapper;
@@ -924,7 +928,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Analytics(int year = 0, int endQuarter = 0, int reportPeriod = 0)
         {
             //If turned off in site config
-            if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAnalytics)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)
                 return RedirectToAction("LockedRef");
 
             //set default options
@@ -1207,7 +1211,7 @@ namespace Biobanks.Web.Controllers
                     .Result
                 )
                 .ToList();
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent"))
+            if (await _configService.GetFlagConfigValue("site.display.preservation.percent") == true)
             {
                 return View(new CollectionPercentagesModel()
                 {
@@ -1524,7 +1528,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: County
         public async Task<ActionResult> County()
         {
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties"))
+            if (await _configService.GetFlagConfigValue("site.display.counties") == true)
             {
                 var countries = await _biobankReadService.ListCountriesAsync();
 
@@ -1691,7 +1695,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveHomepageConfig(HomepageContentModel homepage)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
@@ -1762,7 +1766,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveTermpageConfig(TermpageContentModel termpage)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.TermpageInfo, Value = termpage.PageInfo ?? "" }
@@ -1831,7 +1835,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveRegisterPagesConfig(RegisterConfigModel registerConfigModel)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.RegisterBiobankTitle, Value = registerConfigModel.BiobankTitle ?? ""},
@@ -1855,7 +1859,7 @@ namespace Biobanks.Web.Controllers
         #region Site Config
         public async Task<ActionResult> SiteConfig()
         {
-            return View((await _biobankReadService.ListSiteConfigsAsync("site.display"))
+            return View((await _configService.ListSiteConfigsAsync("site.display"))
                 .Select(x => new SiteConfigModel
                 {
                     Key = x.Key,
@@ -1870,7 +1874,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> UpdateSiteConfig(IEnumerable<SiteConfigModel> values)
         {
             // Update Database Config
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 values
                     .OrderBy(x => x.Key)
                     .Select(x => new Config
@@ -1900,7 +1904,7 @@ namespace Biobanks.Web.Controllers
         #region Sample Resource Config
         public async Task<ActionResult> SampleResourceConfig()
         {
-            return View((await _biobankReadService.ListSiteConfigsAsync("site.sampleresource"))
+            return View((await _configService.ListSiteConfigsAsync("site.sampleresource"))
                 .Select(x => new SiteConfigModel
                 {
                     Key = x.Key,
@@ -1933,7 +1937,7 @@ namespace Biobanks.Web.Controllers
 
 
             // Update Database Config
-            await _biobankWriteService.UpdateSiteConfigsAsync(values);
+            await _configService.UpdateSiteConfigsAsync(values);
 
             // Invalidate current config (Refreshed in SiteConfigAttribute filter)
             HttpContext.Application["Config"] = null;
