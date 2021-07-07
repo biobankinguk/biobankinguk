@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Services
 {
+    /// <inheritdoc cref="IConfigService" />
     public class ConfigService : IConfigService
     {
         private readonly BiobanksDbContext _db;
@@ -17,21 +18,30 @@ namespace Biobanks.Services
         {
             _db = db;
         }
+        public enum BooleanConfigSelection
+        {
+            FeatureFlagsOnly,
+            ExcludeFeatureFlags,
+            AllBooleanConfigs
+        }
 
-        // ReadService Methods
+        /// <inheritdoc />
         public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
             => _db.Configs.Where(x => x.Key.Contains(wildcard)).ToList();
 
+        /// <inheritdoc />
         public async Task<IEnumerable<Config>> ListSiteConfigsAsync(string wildcard = "")
             => await _db.Configs.Where(x => x.Key.Contains(wildcard)).ToListAsync();
 
+        /// <inheritdoc />
         public async Task<Config> GetSiteConfig(string key)
              => (await ListSiteConfigsAsync(key)).FirstOrDefault();
 
+        /// <inheritdoc />
         public async Task<string> GetSiteConfigValue(string key, string defaultValue = "")
             => (await GetSiteConfig(key))?.Value ?? defaultValue;
 
-        //WriteService Methods
+        /// <inheritdoc />
         public async Task UpdateSiteConfigsAsync(IEnumerable<Config> configs)
         {
             foreach (var config in configs)
@@ -45,27 +55,32 @@ namespace Biobanks.Services
             await _db.SaveChangesAsync();
         }
 
-        // Getter - Returns boolean value of flag, null if not flag
+        /// <inheritdoc />
         public async Task<bool?> GetFlagConfigValue(string key)
             => (ConvertStringToBool((await GetSiteConfig(key)).Value));
 
-        public async Task<List<Config>> ListBooleanFlags(bool includeFeatures, string wildcard = "")
-        {   
+        /// <inheritdoc />
+        public async Task<List<Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "")
+        {
             var configs = await _db.Configs.Where(x => x.Key.Contains(wildcard)).ToListAsync();
             configs.Where(x => ConvertStringToBool(x.Value) != null).ToList();
 
-            if (includeFeatures == false)
+            if (selection == BooleanConfigSelection.AllBooleanConfigs)
             {
-                return configs.Where(x => x.IsFeatureFlag == false || x.IsFeatureFlag == null).ToList();
+                return configs;
+            }
+            else if (selection == BooleanConfigSelection.FeatureFlagsOnly)
+            {
+                return configs.Where(x => x.IsFeatureFlag == true).ToList();
             }
             else
             {
-                return configs.Where(x => x.IsFeatureFlag == true).ToList();
+                return configs.Where(x => x.IsFeatureFlag == false || x.IsFeatureFlag == null).ToList();
             }
 
         }
 
-        // Setter - Updates given flag with passed boolean value
+        /// <inheritdoc />
         public async Task UpdateFlag(string key, bool value)
         {
             var oldConfig = await GetSiteConfig(key);
@@ -73,7 +88,6 @@ namespace Biobanks.Services
             _db.Configs.AddOrUpdate(oldConfig);
 
             await _db.SaveChangesAsync();
-
         }
         private bool? ConvertStringToBool(string boolStr)
         {
