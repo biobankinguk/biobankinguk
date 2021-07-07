@@ -139,8 +139,9 @@ namespace Biobanks.Web.ApiControllers
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
                 DisplayOnDirectory = true,
-                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x=>x.Id == model.MaterialTypeId).ToList()
+                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x=>model.MaterialTypeIds.Contains(x.Id)).ToList()
             });
+
 
             //Everything went A-OK!
             return Json(new
