@@ -36,7 +36,8 @@ namespace Biobanks.Web.ApiControllers
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList()
                 })
                 .Result
             )
@@ -132,16 +133,23 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddOntologyTermAsync(new OntologyTerm
+            //await _biobankWriteService.AddOntologyTermAsync(new OntologyTerm
+            //{
+            //    Id = model.OntologyTermId,
+            //    Value = model.Description,
+            //    OtherTerms = model.OtherTerms,
+            //    SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
+            //    DisplayOnDirectory = true,
+            //});
+
+            await _biobankWriteService.AddOntologyTermToMaterialTypesAsync(new OntologyTerm
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
                 DisplayOnDirectory = true,
-                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x=>model.MaterialTypeIds.Contains(x.Id)).ToList()
-            });
-
+            }, model.MaterialTypeIds);
 
             //Everything went A-OK!
             return Json(new
