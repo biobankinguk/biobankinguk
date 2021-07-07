@@ -1663,7 +1663,7 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
                     OtherTerms = x.OtherTerms,
-                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id)
+                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id).ToList()
                 })
                 .Result
             ).ToList(),
