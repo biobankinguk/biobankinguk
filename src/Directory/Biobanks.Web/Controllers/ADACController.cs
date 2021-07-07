@@ -1662,7 +1662,8 @@ namespace Biobanks.Web.Controllers
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id)
                 })
                 .Result
             ).ToList(),
