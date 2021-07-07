@@ -131,7 +131,7 @@
                         <div class="col-sm-12">
 
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.extractionProcedure().ontologyTermId()">
-                            <input type="hidden" id="MaterialTypeIds" name="MaterialTypeIds">
+                            @*<input type="hidden" id="MaterialTypeIds" name="MaterialTypeIds">*@
                             <!-- SNOMED ID -->
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Extraction Procedure ID</label>
@@ -155,7 +155,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Material Type</label>
                                     <div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
-                                        <select class="form-control"
+                                        <select name ="MaterialTypeIds" class="form-control"
                                             data-bind="options: $parent.modal.materialTypes, optionsText: 'value', optionsValue: 'id', value: $parent.modal.extractionProcedure().materialTypeIds()[$index()]">
                                         </select>
 
