@@ -11,6 +11,7 @@ namespace Biobanks.Entities.Data
         public int Id { get; set; }
 
         public int SampleSetId { get; set; } //"Sample Code" in the model
+        public virtual SampleSet SampleSet { get; set; }
 
         public int MaterialTypeId { get; set; }
         public virtual MaterialType MaterialType { get; set; }
