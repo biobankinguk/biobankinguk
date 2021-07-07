@@ -74,9 +74,6 @@ function AdacExtractionProcedureViewModel() {
         e.preventDefault();
         var form = $(e.target); // get form as a jquery object
 
-        //submit material types
-        $("#MaterialTypeIds").val(_this.modal.extractionProcedure().materialTypeIds());
-
         // Get Action Type
         var action = _this.modal.mode();
         if (action == 'Add') {
