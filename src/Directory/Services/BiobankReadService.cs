@@ -1232,10 +1232,12 @@ namespace Biobanks.Services
         .ToList();
 
         public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(filter: 
+            => await _ontologyTermRepository.ListAsync(false, 
                 x => x.SnomedTag.Value == "Extraction Procedure" 
                      && x.Value.Contains(wildcard) 
-                     && x.DisplayOnDirectory);
+                     && x.DisplayOnDirectory,
+                null,
+                x=>x.MaterialTypes);
 
         public async Task<OntologyTerm> GetExtractionProcedureById(string id)
             => (await _ontologyTermRepository.ListAsync(filter:
