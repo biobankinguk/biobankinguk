@@ -24,6 +24,7 @@ namespace Biobanks.Services
         #region Properties and ctor
 
         private readonly IBiobankReadService _biobankReadService;
+        private readonly IConfigService _configService;
 
         private readonly ILogoStorageProvider _logoStorageProvider;
 
@@ -85,6 +86,7 @@ namespace Biobanks.Services
 
         public BiobankWriteService(
             IBiobankReadService biobankReadService,
+            IConfigService configService,
             ILogoStorageProvider logoStorageProvider,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
@@ -139,7 +141,7 @@ namespace Biobanks.Services
             IGenericEFRepository<Funder> funderRepository)
         {
             _biobankReadService = biobankReadService;
-
+            _configService = configService;
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
@@ -1716,18 +1718,6 @@ namespace Biobanks.Services
             await _sexRepository.SaveChangesAsync();
         }
         #endregion
-
-        public async Task UpdateSiteConfigsAsync(IEnumerable<Config> configs)
-        {
-            foreach (var config in configs) {
-                var oldConfig = await _biobankReadService.GetSiteConfig(config.Key);
-                oldConfig.Value = config.Value;
-
-                _siteConfigRepository.Update(oldConfig);
-            }
-
-            await _siteConfigRepository.SaveChangesAsync();
-        }
 
         //delete adt
         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
