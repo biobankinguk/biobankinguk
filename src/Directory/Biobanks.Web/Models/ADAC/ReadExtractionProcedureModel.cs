@@ -8,6 +8,6 @@ namespace Biobanks.Web.Models.ADAC
     {
         //Sum of all Material details (belonging to sample sets) with extraction procedure
         public int MaterialDetailsCount { get; set; }
-        public IEnumerable<int> MaterialTypeIds { get; set; }
+        public List<int> MaterialTypeIds { get; set; }
     }
 }
