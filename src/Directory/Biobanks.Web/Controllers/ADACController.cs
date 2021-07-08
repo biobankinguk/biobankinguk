@@ -1655,7 +1655,6 @@ namespace Biobanks.Web.Controllers
             return View(new ExtractionProceduresModel
             {
                 ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
-                //.Where(x=>x.MaterialTypes.Count > 0)
                 .Select(x =>
 
                 Task.Run(async () => new ReadExtractionProcedureModel

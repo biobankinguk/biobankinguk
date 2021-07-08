@@ -147,7 +147,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
-                DisplayOnDirectory = true,
+                DisplayOnDirectory = true
             }, model.MaterialTypeIds);
 
             //Everything went A-OK!
