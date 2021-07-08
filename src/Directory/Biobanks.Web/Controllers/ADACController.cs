@@ -1117,7 +1117,8 @@ namespace Biobanks.Web.Controllers
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                         MaterialTypeGroups = x.MaterialTypeGroups.Select(x => x.Value),
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id)
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
+                        UsedByExtractionProcedures = await _biobankReadService.IsMaterialTypeAssigned(x.Id)
 
                     }))
                 .Select(x => x.Result)
