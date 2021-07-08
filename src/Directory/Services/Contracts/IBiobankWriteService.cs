@@ -63,8 +63,8 @@ namespace Biobanks.Services.Contracts
         Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
         Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
         Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis);
-        Task AddOntologyTermToMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
-
+        Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
+        Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
 
         Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType);
         Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);
