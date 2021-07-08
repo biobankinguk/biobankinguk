@@ -2,14 +2,6 @@ function ExtractionProcedure(ontologyTermId, description, materialTypeIds) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.materialTypeIds = ko.observableArray(materialTypeIds);
-
-    this.getBindingLabel = function (lookupArray, matchingId) {
-        var matches = lookupArray.filter(function (binding) {
-            return binding.value == matchingId;
-        });
-
-        return matches.length > 0 ? matches[0].label : "";
-    };
 }
 
 function ExtractionProcedureModal(ontologyTermId, description, materialTypeIds, materialTypes) {
