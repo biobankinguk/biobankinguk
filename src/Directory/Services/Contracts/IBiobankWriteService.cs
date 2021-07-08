@@ -22,7 +22,6 @@ namespace Biobanks.Services.Contracts
 
         Task AddCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
         Task UpdateCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
-        Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
         Task DeleteCapabilityAsync(int id);
 
         Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference);

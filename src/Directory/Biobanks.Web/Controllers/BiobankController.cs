@@ -43,6 +43,7 @@ namespace Biobanks.Web.Controllers
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IConfigService _configService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
@@ -57,6 +58,7 @@ namespace Biobanks.Web.Controllers
 
         public BiobankController(IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
+            IConfigService configService,
             IAnalyticsReportGenerator analyticsReportGenerator,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
@@ -66,6 +68,7 @@ namespace Biobanks.Web.Controllers
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
+            _configService = configService;
             _analyticsReportGenerator = analyticsReportGenerator;
             _userManager = userManager;
             _emailService = emailService;
@@ -190,7 +193,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> Edit(bool detailsIncomplete = false)
         {
-            var sampleResource = await _biobankReadService.GetSiteConfigValue(ConfigKey.SampleResourceName);
+            var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
 
             if (detailsIncomplete)
                 SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
@@ -318,7 +321,7 @@ namespace Biobanks.Web.Controllers
                     _biobankWriteService.DeleteBiobankRegistrationReasonAsync(biobank.OrganisationId,
                         inactiveRegistrationReason.RegistrationReasonId);
             }
-            var sampleResource = await _biobankReadService.GetSiteConfigValue(ConfigKey.SampleResourceName);
+            var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
             SetTemporaryFeedbackMessage(sampleResource + " details updated!", FeedbackMessageType.Success);
 
             //Back to the profile to view your saved changes
@@ -1750,7 +1753,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Publications()
         {
             //If turned off in site config
-            if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
                 return HttpNotFound();
 
             return View(SessionHelper.GetBiobankId(Session));
@@ -1762,7 +1765,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> GetPublicationsAjax()
         {
             //If turned off in site config
-            if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayPublications)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
 
             var biobankId = SessionHelper.GetBiobankId(Session);
@@ -1992,7 +1995,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Analytics(int year = 0, int endQuarter = 0, int reportPeriod = 0)
         {
             //If turned off in site config
-            if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAnalytics)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)
                 return HttpNotFound();
 
             var biobankId = SessionHelper.GetBiobankId(Session);
