@@ -1348,6 +1348,11 @@ namespace Biobanks.Services
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
             => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
 
+        public async Task<bool> IsMaterialTypeAssigned(int id)
+        {
+            return (await ListExtractionProceduresAsync()).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
+        }
+
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
 
