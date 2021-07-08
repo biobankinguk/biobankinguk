@@ -33,7 +33,7 @@
 			<tbody>
 				@foreach (var materialType in Model.MaterialTypes)
 				{
-					<tr class="@(materialType.MaterialDetailCount > 0 ? "info" : "")"
+					<tr class="@(materialType.MaterialDetailCount > 0 || materialType.UsedByExtractionProcedures ? "info" : "")"
 						data-resource-url="/api/MaterialType"
 						data-material-type-id="@materialType.Id"
 						data-material-type-desc="@materialType.Description">
@@ -44,7 +44,7 @@
 						<td>@materialType.MaterialDetailCount</td>
 
 						<td class="text-right">
-							@if (materialType.MaterialDetailCount > 0)
+							@if (materialType.MaterialDetailCount > 0 || materialType.UsedByExtractionProcedures)
 							{
 								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Material type in use")
 							}
