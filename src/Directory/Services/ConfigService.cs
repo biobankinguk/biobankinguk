@@ -63,19 +63,19 @@ namespace Biobanks.Services
         public async Task<List<Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "")
         {
             var configs = await _db.Configs.Where(x => x.Key.Contains(wildcard)).ToListAsync();
-            configs.Where(x => ConvertStringToBool(x.Value) != null).ToList();
+            var boolConfigs = configs.Where(x => ConvertStringToBool(x.Value) != null).ToList();
 
             if (selection == BooleanConfigSelection.AllBooleanConfigs)
             {
-                return configs;
+                return boolConfigs;
             }
             else if (selection == BooleanConfigSelection.FeatureFlagsOnly)
             {
-                return configs.Where(x => x.IsFeatureFlag == true).ToList();
+                return boolConfigs.Where(x => x.IsFeatureFlag == true).ToList();
             }
             else
             {
-                return configs.Where(x => x.IsFeatureFlag == false || x.IsFeatureFlag == null).ToList();
+                return boolConfigs.Where(x => x.IsFeatureFlag == false || x.IsFeatureFlag == null).ToList();
             }
 
         }

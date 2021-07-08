@@ -14,7 +14,6 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
 using Biobanks.Directory.Data;
 using Biobanks.Directory.Data.Transforms.Url;
-using Biobanks.Web.Models.Shared;
 
 namespace Biobanks.Web.Controllers
 {
@@ -142,22 +141,6 @@ namespace Biobanks.Web.Controllers
             await ReindexAllData();
             SetTemporaryFeedbackMessage("The building of the index has begun. Pending jobs can be viewed in the Hangfire dashboard.", FeedbackMessageType.Info);
             return RedirectToAction("SearchIndex");
-        }
-
-        #endregion
-
-        #region SiteConfig
-        public async Task<ActionResult> Flags()
-        {
-            return View((await _biobankReadService.ListSiteConfigsAsync("site.display"))
-                .Select(x => new SiteConfigModel
-                {
-                    Key = x.Key,
-                    Value = x.Value,
-                    Name = x.Name,
-                    Description = x.Description,
-                    ReadOnly = x.ReadOnly
-                }));
         }
 
         #endregion
