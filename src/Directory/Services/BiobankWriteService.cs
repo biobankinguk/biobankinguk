@@ -753,7 +753,7 @@ namespace Biobanks.Services
             await UpdateOntologyTermAsync(ontologyTerm);
 
             var Term = (await _ontologyTermRepository.ListAsync(true,x=>x.Id == ontologyTerm.Id,null, x=>x.MaterialTypes)).FirstOrDefault();
-            var materialTypes = (await _materialTypeRepository.ListAsync(filter: x => materialTypeIds.Contains(x.Id))).ToList();
+            var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
             Term.MaterialTypes = materialTypes;
 
             await _ontologyTermRepository.SaveChangesAsync();
