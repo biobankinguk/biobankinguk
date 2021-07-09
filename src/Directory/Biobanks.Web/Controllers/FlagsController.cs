@@ -48,6 +48,7 @@ namespace Biobanks.Web.Controllers
                     })
                 );
 
+
             // Invalidate current config (Refreshed in SiteConfigAttribute filter)
             HttpContext.Application["Config"] = null;
 

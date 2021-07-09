@@ -57,10 +57,21 @@
                             <td>@config.Name</td>
                             <td>@config.Description</td>
                             <td>
-                                 <input type="checkbox" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "")
-                    
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model="@Json.Encode(config)"
+                                   data-resource-url="/api/ConsentRestriction"
+                                   data-success-redirect="@Url.Action("Config")"
+                                   data-refdata-type="Consent Restriction"
+                                   href="#">
+                                    <span>
+                                         <input type="checkbox" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "") />
+                                    </span>
+
+                                </a>
                             </td>
                         </tr>
+
                     }
                 </tbody>
             </table>
