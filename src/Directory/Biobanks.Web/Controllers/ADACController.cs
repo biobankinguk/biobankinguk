@@ -1121,7 +1121,8 @@ namespace Biobanks.Web.Controllers
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                         MaterialTypeGroups = x.MaterialTypeGroups.Select(x => x.Value),
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id)
+                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
+                        UsedByExtractionProcedures = await _biobankReadService.IsMaterialTypeAssigned(x.Id)
 
                     }))
                 .Select(x => x.Result)
@@ -1655,17 +1656,23 @@ namespace Biobanks.Web.Controllers
         #region RefData: Extraction Procedure
         public async Task<ActionResult> ExtractionProcedure()
         {
-            return View((await _biobankReadService.ListExtractionProceduresAsync()).Select(x =>
+            return View(new ExtractionProceduresModel
+            {
+                ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+                .Select(x =>
 
                 Task.Run(async () => new ReadExtractionProcedureModel
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id).ToList()
                 })
                 .Result
-            ));
+            ).ToList(),
+                MaterialTypes = await _biobankReadService.ListMaterialTypesAsync()
+            });
         }
         #endregion
 

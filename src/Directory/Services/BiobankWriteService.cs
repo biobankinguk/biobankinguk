@@ -739,6 +739,28 @@ namespace Biobanks.Services
             return ontologyTerm;
         }
 
+        public async Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        {
+            foreach (var mId in materialTypeIds)
+            {
+                (await _materialTypeRepository.ListAsync(true, x => x.Id == mId, null, x => x.ExtractionProcedures))
+                    .FirstOrDefault().ExtractionProcedures
+                    .Add(ontologyTerm);
+                await _ontologyTermRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        {
+            await UpdateOntologyTermAsync(ontologyTerm);
+
+            var Term = (await _ontologyTermRepository.ListAsync(true,x=>x.Id == ontologyTerm.Id,null, x=>x.MaterialTypes)).FirstOrDefault();
+            var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
+            Term.MaterialTypes = materialTypes;
+
+            await _ontologyTermRepository.SaveChangesAsync();
+        }
+
         #region RefData: Sample Collection Mode
         public async Task<SampleCollectionMode> AddSampleCollectionModeAsync(SampleCollectionMode sampleCollectionMode)
         {

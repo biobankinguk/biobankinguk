@@ -1229,10 +1229,12 @@ namespace Biobanks.Services
         .ToList();
 
         public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(filter: 
+            => await _ontologyTermRepository.ListAsync(false, 
                 x => x.SnomedTag.Value == "Extraction Procedure" 
                      && x.Value.Contains(wildcard) 
-                     && x.DisplayOnDirectory);
+                     && x.DisplayOnDirectory,
+                null,
+                x=>x.MaterialTypes);
 
         public async Task<OntologyTerm> GetExtractionProcedureById(string id)
             => (await _ontologyTermRepository.ListAsync(filter:
@@ -1322,6 +1324,9 @@ namespace Biobanks.Services
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
             => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
+
+        public async Task<bool> IsMaterialTypeAssigned(int id)
+            => (await ListExtractionProceduresAsync()).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
