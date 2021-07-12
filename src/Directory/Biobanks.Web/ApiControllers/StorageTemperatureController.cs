@@ -18,12 +18,14 @@ namespace Biobanks.Web.ApiControllers
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IConfigService _configService;
 
         public StorageTemperatureController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+                                          IBiobankWriteService biobankWriteService, IConfigService configService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
+            _configService = configService;
         }
 
         [HttpGet]
@@ -57,7 +59,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
             if (await _biobankReadService.ValidStorageTemperatureAsync(model.Value))
@@ -93,7 +95,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
             if (await _biobankReadService.ValidStorageTemperatureAsync(model.Value))
@@ -134,7 +136,7 @@ namespace Biobanks.Web.ApiControllers
             var model = (await _biobankReadService.ListStorageTemperaturesAsync()).Where(x => x.Id == id).First();
 
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // If in use, prevent update
             if (await _biobankReadService.IsStorageTemperatureInUse(id) || await _biobankReadService.IsStorageTemperatureAssigned(id))

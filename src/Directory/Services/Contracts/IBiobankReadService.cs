@@ -54,6 +54,7 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName);
         
         Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
+        Task<bool> IsMaterialTypeAssigned(int id);
 
         Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync();
         Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
@@ -177,14 +178,6 @@ namespace Biobanks.Services.Contracts
         Task<int> GetSexCount(int id);
         Task<bool> ValidSexDescriptionAsync(string sexDescription);
         Task<bool> ValidSexDescriptionAsync(int sexId, string sexDescription);
-
-        IEnumerable<Config> ListSiteConfigs(string wildcard = "");
-        Task<IEnumerable<Config>> ListSiteConfigsAsync(string wildcard = "");
-        Task<Config> GetSiteConfig(string key);
-        Task<string> GetSiteConfigValue(string key, string defaultValue = "");
-        Task<bool> GetSiteConfigStatus(string siteConfigValue);
-        
-        
 
         Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
         Task<IEnumerable<ServiceOffering>> ListServiceOfferingsAsync();

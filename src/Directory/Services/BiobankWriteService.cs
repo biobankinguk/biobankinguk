@@ -24,6 +24,7 @@ namespace Biobanks.Services
         #region Properties and ctor
 
         private readonly IBiobankReadService _biobankReadService;
+        private readonly IConfigService _configService;
 
         private readonly ILogoStorageProvider _logoStorageProvider;
 
@@ -85,6 +86,7 @@ namespace Biobanks.Services
 
         public BiobankWriteService(
             IBiobankReadService biobankReadService,
+            IConfigService configService,
             ILogoStorageProvider logoStorageProvider,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
@@ -139,7 +141,7 @@ namespace Biobanks.Services
             IGenericEFRepository<Funder> funderRepository)
         {
             _biobankReadService = biobankReadService;
-
+            _configService = configService;
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
@@ -735,6 +737,28 @@ namespace Biobanks.Services
             await _ontologyTermRepository.SaveChangesAsync();
 
             return ontologyTerm;
+        }
+
+        public async Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        {
+            foreach (var mId in materialTypeIds)
+            {
+                (await _materialTypeRepository.ListAsync(true, x => x.Id == mId, null, x => x.ExtractionProcedures))
+                    .FirstOrDefault().ExtractionProcedures
+                    .Add(ontologyTerm);
+                await _ontologyTermRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        {
+            await UpdateOntologyTermAsync(ontologyTerm);
+
+            var Term = (await _ontologyTermRepository.ListAsync(true,x=>x.Id == ontologyTerm.Id,null, x=>x.MaterialTypes)).FirstOrDefault();
+            var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
+            Term.MaterialTypes = materialTypes;
+
+            await _ontologyTermRepository.SaveChangesAsync();
         }
 
         #region RefData: Sample Collection Mode
@@ -1716,18 +1740,6 @@ namespace Biobanks.Services
             await _sexRepository.SaveChangesAsync();
         }
         #endregion
-
-        public async Task UpdateSiteConfigsAsync(IEnumerable<Config> configs)
-        {
-            foreach (var config in configs) {
-                var oldConfig = await _biobankReadService.GetSiteConfig(config.Key);
-                oldConfig.Value = config.Value;
-
-                _siteConfigRepository.Update(oldConfig);
-            }
-
-            await _siteConfigRepository.SaveChangesAsync();
-        }
 
         //delete adt
         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)

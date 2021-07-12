@@ -41,7 +41,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
-        private readonly IGenericEFRepository<Config> _siteConfigRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
         
         private readonly IGenericEFRepository<Network> _networkRepository;
@@ -111,7 +110,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
-            IGenericEFRepository<Config> siteConfigRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
 
@@ -177,7 +175,6 @@ namespace Biobanks.Services
             _ontologyTermRepository = ontologyTermRepository;
             _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
-            _siteConfigRepository = siteConfigRepository;
             _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
 
@@ -1232,10 +1229,12 @@ namespace Biobanks.Services
         .ToList();
 
         public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
-            => await _ontologyTermRepository.ListAsync(filter: 
+            => await _ontologyTermRepository.ListAsync(false, 
                 x => x.SnomedTag.Value == "Extraction Procedure" 
                      && x.Value.Contains(wildcard) 
-                     && x.DisplayOnDirectory);
+                     && x.DisplayOnDirectory,
+                null,
+                x=>x.MaterialTypes);
 
         public async Task<OntologyTerm> GetExtractionProcedureById(string id)
             => (await _ontologyTermRepository.ListAsync(filter:
@@ -1258,26 +1257,6 @@ namespace Biobanks.Services
             => (await _snomedTagRepository.ListAsync(filter: x => x.Value == description)).SingleOrDefault();
 
         #endregion
-
-        #region Site Config
-        public IEnumerable<Config> ListSiteConfigs(string wildcard = "")
-            => _siteConfigRepository.List(false, x => x.Key.Contains(wildcard));
-
-        public async Task<IEnumerable<Config>> ListSiteConfigsAsync(string wildcard = "")
-            => await _siteConfigRepository.ListAsync(false, x => x.Key.Contains(wildcard));
-
-        public async Task<Config> GetSiteConfig(string key)
-            => (await ListSiteConfigsAsync(key)).FirstOrDefault();
-
-        public async Task<string> GetSiteConfigValue(string key, string defaultValue = "")
-            => (await GetSiteConfig(key))?.Value ?? defaultValue;
-
-        public async Task<bool> GetSiteConfigStatus(string siteConfigValue)
-        {
-            return (await _siteConfigRepository.ListAsync(false, x => x.Key == siteConfigValue && x.Value == "true")).Any();
-        }
-        #endregion
-
 
         public async Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription)
             => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Value == consentDescription)).Any();
@@ -1345,6 +1324,9 @@ namespace Biobanks.Services
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
             => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
+
+        public async Task<bool> IsMaterialTypeAssigned(int id)
+            => (await ListExtractionProceduresAsync()).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();

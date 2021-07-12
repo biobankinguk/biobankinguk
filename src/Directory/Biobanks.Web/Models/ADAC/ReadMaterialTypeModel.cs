@@ -8,5 +8,7 @@ namespace Biobanks.Web.Models.ADAC
         //Sum of all Collections and Capabilities
         public int MaterialDetailCount { get; set; }
 
+        public bool UsedByExtractionProcedures { get; set; }
+
     }
 }

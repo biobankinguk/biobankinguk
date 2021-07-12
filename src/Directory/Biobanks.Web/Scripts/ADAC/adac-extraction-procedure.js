@@ -1,26 +1,30 @@
-function ExtractionProcedure(ontologyTermId, description, otherTerms) {
+function ExtractionProcedure(ontologyTermId, description, materialTypeIds) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
-    this.otherTerms = ko.observableArray(otherTerms);
+    this.materialTypeIds = ko.observableArray(materialTypeIds);
 }
 
-function ExtractionProcedureModal(ontologyTermId, description, otherTerms) {
+function ExtractionProcedureModal(ontologyTermId, description, materialTypeIds, materialTypes) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.extractionProcedure = ko.observable(
-        new ExtractionProcedure(ontologyTermId, description, otherTerms)
+        new ExtractionProcedure(ontologyTermId, description, materialTypeIds)
     );
+    this.materialTypes = materialTypes;
 }
+
 
 function AdacExtractionProcedureViewModel() {
 
     var _this = this;
 
     this.modalId = "#extraction-procedure-modal";
-    this.modal = new ExtractionProcedureModal("", "", []);
+    this.materialTypes = $(this.modalId).data("material-types");
+    
+    this.modal = new ExtractionProcedureModal("", "", 0, this.materialTypes);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -36,7 +40,7 @@ function AdacExtractionProcedureViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.extractionProcedure(new ExtractionProcedure("", "",[]));
+        _this.modal.extractionProcedure(new ExtractionProcedure("", "", 0, this.materialTypes));
         _this.setPartialEdit(false);
         _this.showModal();
     };
@@ -45,16 +49,12 @@ function AdacExtractionProcedureViewModel() {
     _this.modal.mode(_this.modal.modalModeEdit);
 
       var extractionProcedure = $(event.currentTarget).data("extraction-procedure");
-      let otherTerms = (extractionProcedure.OtherTerms
-          ? extractionProcedure.OtherTerms.split(",").map(item => item.trim())
-          : extractionProcedure.OtherTerms)
 
     _this.modal.extractionProcedure(
       new ExtractionProcedure(
           extractionProcedure.OntologyTermId,
           extractionProcedure.Description,
-          otherTerms
-
+          extractionProcedure.MaterialTypeIds
       )
     );
     $("#OntologyTermId").prop('readonly', true);
@@ -65,9 +65,6 @@ function AdacExtractionProcedureViewModel() {
     this.modalSubmit = function (e) {
         e.preventDefault();
         var form = $(e.target); // get form as a jquery object
-
-        //Concatenate other terms (exclude null/empty/whitespace strings)
-        $("#OtherTerms").val(_this.modal.extractionProcedure().otherTerms().filter(x => x && x.trim()).join(','));
 
         // Get Action Type
         var action = _this.modal.mode();
@@ -88,11 +85,11 @@ function AdacExtractionProcedureViewModel() {
             $("#Description").prop('readonly', false);
     }
 
-    this.addOtherTerms = function () {
-        _this.modal.extractionProcedure().otherTerms.push("");
+    this.addMaterialType = function () {
+        _this.modal.extractionProcedure().materialTypeIds.push(0);
     }
-    this.removeOtherTerms = function (idx) {
-        _this.modal.extractionProcedure().otherTerms.splice(idx,1)
+    this.removeMaterialType = function (idx) {
+        _this.modal.extractionProcedure().materialTypeIds.splice(idx,1)
     }
 }
 
