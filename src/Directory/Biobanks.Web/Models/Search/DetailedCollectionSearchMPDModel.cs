@@ -7,6 +7,6 @@
         public string MacroscopicAssessment { get; set; }
         public string PercentageOfSampleSet { get; set; }
         public string PreservationType { get; set; }
-        public string ExtractionType { get; set; }
+        public string ExtractionProcedure { get; set; }
     }
 }
