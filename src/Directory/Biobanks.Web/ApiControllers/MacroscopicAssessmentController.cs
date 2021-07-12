@@ -17,12 +17,14 @@ namespace Biobanks.Web.ApiControllers
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IConfigService _configService;
 
         public MacroscopicAssessmentController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+                                          IBiobankWriteService biobankWriteService, IConfigService configService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
+            _configService = configService;
         }
 
         [HttpGet]
@@ -51,7 +53,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             // Validate model
             if (await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
@@ -88,7 +90,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             // Validate model
             if (await _biobankReadService.ValidMacroscopicAssessmentAsync(model.Description))
@@ -129,7 +131,7 @@ namespace Biobanks.Web.ApiControllers
             var model = (await _biobankReadService.ListMacroscopicAssessmentsAsync()).Where(x => x.Id == id).First();
             
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             if (await _biobankReadService.IsMacroscopicAssessmentInUse(id))
             {

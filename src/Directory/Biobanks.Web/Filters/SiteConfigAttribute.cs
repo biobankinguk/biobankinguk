@@ -13,8 +13,7 @@ namespace Biobanks.Web.Filters
 {
     public class SiteConfigAttribute : FilterAttribute, IActionFilter
     {
-
-        public IBiobankReadService BiobankReadService { get; set; }
+        public IConfigService ConfigService { get; set; }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -24,7 +23,7 @@ namespace Biobanks.Web.Filters
 
                 if (app["Config"] == null)
                 {
-                    app["Config"] = BiobankReadService.ListSiteConfigs().ToDictionary(x => x.Key, x => x.Value);
+                    app["Config"] = ConfigService.ListSiteConfigs().ToDictionary(x => x.Key, x => x.Value);
                 }
             }
         }

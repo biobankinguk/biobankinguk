@@ -22,7 +22,6 @@ namespace Biobanks.Services.Contracts
 
         Task AddCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
         Task UpdateCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
-        Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
         Task DeleteCapabilityAsync(int id);
 
         Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference);
@@ -63,7 +62,9 @@ namespace Biobanks.Services.Contracts
         Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
         Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
         Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis);
-        
+        Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
+        Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
+
         Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType);
         Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);
         Task DeleteMaterialTypeAsync(MaterialType materialType);

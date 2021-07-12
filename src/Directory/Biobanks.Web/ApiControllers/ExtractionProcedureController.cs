@@ -36,7 +36,8 @@ namespace Biobanks.Web.ApiControllers
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList()
                 })
                 .Result
             )
@@ -75,13 +76,17 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
+        public async Task<IHttpActionResult> Put(string id, ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(id, model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
+
+            //Extraction procedure should belong to at least one material type 
+            if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)
+                ModelState.AddModelError("MaterialTypeIds", "Add at least one material type to the extraction procedure.");
 
             var ontologyTerm = await _biobankReadService.GetExtractionProcedureById(id);
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
@@ -96,14 +101,14 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateOntologyTermAsync(new OntologyTerm
+            await _biobankWriteService.UpdateOntologyTermWithMaterialTypesAsync(new OntologyTerm
             {
                 Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
                 DisplayOnDirectory = true
-            });
+            },model.MaterialTypeIds);
 
             //Everything went A-OK!
             return Json(new
@@ -115,7 +120,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(OntologyTermModel model)
+        public async Task<IHttpActionResult> Post(ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
             if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
@@ -127,19 +132,23 @@ namespace Biobanks.Web.ApiControllers
             if ((await _biobankReadService.ListExtractionProceduresAsync()).Any(x => x.Id == model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
+            //Extraction procedure should belong to at least one material type 
+            if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)
+                ModelState.AddModelError("MaterialTypeIds", "Add at least one material type to the extraction procedure.");
+
             if (!ModelState.IsValid)
             {
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddOntologyTermAsync(new OntologyTerm
+            await _biobankWriteService.AddOntologyTermWithMaterialTypesAsync(new OntologyTerm
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
                 DisplayOnDirectory = true
-            });
+            }, model.MaterialTypeIds);
 
             //Everything went A-OK!
             return Json(new
