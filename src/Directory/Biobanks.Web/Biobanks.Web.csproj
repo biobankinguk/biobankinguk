@@ -963,7 +963,6 @@
     <Compile Include="HtmlHelpers\MarkdownHelper.cs" />
     <Compile Include="HtmlHelpers\VersionHelper.cs" />
     <Compile Include="Results\HttpForbiddenResult.cs" />
-    <Compile Include="HangfireJobActivator\HangfireWindsorJobActivator.cs" />
     <Compile Include="Models\ADAC\BiobankActivityModel.cs" />
     <Compile Include="Models\ADAC\ReadOntologyTermModel.cs" />
     <Compile Include="Models\ADAC\ReadAssociatedDataProcurementTimeFrameModel.cs" />
