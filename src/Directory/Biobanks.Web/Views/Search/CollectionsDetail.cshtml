@@ -90,34 +90,36 @@
                 <div class="col-sm-8">
                     <table class="table table-condensed">
                         <thead>
-							<tr>
-								<th>Material Type</th>
+                            <tr>
+                                <th>Material Type</th>
+                                <th>Extraction Procedure</th>
+                                <th>@App.Config[ConfigKey.StorageTemperatureName]</th>
                                 <th>Preservation Type</th>
-								<th>@App.Config[ConfigKey.StorageTemperatureName]</th>
                                 <th> @App.Config[ConfigKey.MacroscopicAssessmentName] </th>
-                                
+
                                 @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
-								{
-									<th>% of Sample Set</th>
-								}
-							</tr>
+                                {
+                                    <th>% of Sample Set</th>
+                                }
+                            </tr>
                         </thead>
                         <tbody>
                             @if (sampleSet.MaterialPreservationDetails.Any())
                             {
                                 foreach (var mpd in sampleSet.MaterialPreservationDetails)
                                 {
-							        <tr>
-								        <td>@mpd.MaterialType</td>
-                                        <td>@mpd.PreservationType</td>
-								        <td>@mpd.StorageTemperature</td>
-								        <td>@mpd.MacroscopicAssessment</td>
+                            <tr>
+                                <td>@mpd.MaterialType</td>
+                                <td>@mpd.ExtractionProcedure</td>
+                                <td>@mpd.StorageTemperature</td>
+                                <td>@mpd.PreservationType</td>
+                                <td>@mpd.MacroscopicAssessment</td>
 
-								        @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
-										{
-									        <td>@mpd.PercentageOfSampleSet</td>
-										}
-								    </tr>
+                                @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
+                                {
+                                    <td>@mpd.PercentageOfSampleSet</td>
+                                }
+                            </tr>
                                 }
                             }
                             else
