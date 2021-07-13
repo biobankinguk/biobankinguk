@@ -62,7 +62,7 @@ namespace Biobanks.Services
         /// <inheritdoc />
         public async Task<List<Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "")
         {
-            var configs = await _db.Configs.Where(x => x.Key.Contains(wildcard)).ToListAsync();
+            var configs = await _db.Configs.Where(x => x.Key.Contains(wildcard)).Where(x => x.Name !=null).ToListAsync();
             var boolConfigs = configs.Where(x => ConvertStringToBool(x.Value) != null).ToList();
 
             if (selection == BooleanConfigSelection.AllBooleanConfigs)

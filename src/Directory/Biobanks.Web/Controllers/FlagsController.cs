@@ -1,5 +1,6 @@
 ﻿using Biobanks.Entities.Data;
 using Biobanks.Services.Contracts;
+using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
 using System;
@@ -12,6 +13,7 @@ using static Biobanks.Services.ConfigService;
 
 namespace Biobanks.Web.Controllers
 {
+    [UserAuthorize(Roles = "SuperUser")]
     public class FlagsController : ApplicationBaseController
     {
         private readonly IConfigService _configService;
@@ -21,7 +23,7 @@ namespace Biobanks.Web.Controllers
         }
         public async Task<ActionResult> FlagsConfig()
         {
-            var testing = await _configService.ListBooleanFlags(BooleanConfigSelection.AllBooleanConfigs);
+
             return View((await _configService.ListBooleanFlags(BooleanConfigSelection.AllBooleanConfigs))
                 .Select(x => new SiteConfigModel
                 {
