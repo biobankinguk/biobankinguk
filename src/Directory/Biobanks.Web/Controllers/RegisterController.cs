@@ -11,7 +11,6 @@ using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
-using System.Linq;
 
 namespace Biobanks.Web.Controllers
 {
@@ -127,6 +126,12 @@ namespace Biobanks.Web.Controllers
             {
                 SetTemporaryFeedbackMessage($"{model.Entity} already exists. Please contact {existingOrg.ContactEmail} and ask them to add you as an admin.", FeedbackMessageType.Danger);
 
+                return View(model);
+            }
+
+            if (Uri.IsWellFormedUriString(model.Name, UriKind.Absolute) || Uri.IsWellFormedUriString(model.Entity, UriKind.Absolute))
+            {
+                SetTemporaryFeedbackMessage("The admin name or organisation name fields cannot be URIs. Please enter a non URI value.", FeedbackMessageType.Danger);
                 return View(model);
             }
 
