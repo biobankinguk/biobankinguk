@@ -57,13 +57,7 @@
                             <td>@config.Name</td>
                             <td>@config.Description</td>
                             <td>
-   
-
-                                        <input type="checkbox" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "") />
-                                 
-
-                              
-                        
+                               <input type="checkbox" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "") />                  
                             </td>
                         </tr>
 
