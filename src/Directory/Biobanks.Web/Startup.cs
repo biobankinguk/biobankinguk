@@ -1,13 +1,19 @@
 using System;
+using System.Configuration;
 using System.Web.Http.Dispatcher;
 using System.Web.Mvc;
+
 using Biobanks.Web.Filters;
 using Biobanks.Web.Windsor;
 using Biobanks.Web.Windsors;
+
 using Castle.Windsor;
+
 using Hangfire;
 using Hangfire.Windsor;
+
 using Microsoft.Owin.Security.DataProtection;
+
 using Owin;
 
 namespace Biobanks.Web
@@ -37,17 +43,26 @@ namespace Biobanks.Web
 
             ConfigureAuth(app);
 
-            GlobalConfiguration.Configuration.UseSqlServerStorage("Biobanks");
+            #region Hangfire
+
+            GlobalConfiguration.Configuration.UseSqlServerStorage(
+                ConfigurationManager.ConnectionStrings["Hangfire"].ConnectionString,
+                new Hangfire.SqlServer.SqlServerStorageOptions
+                {
+                    SchemaName = ConfigurationManager.AppSettings["Hangfire__SchemaName"]
+                });
             GlobalConfiguration.Configuration.UseWindsorActivator(windsorContainer.Kernel);
 
             // Make sure only SuperUsers can access the Hangfire dashboard.
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions {
-                Authorization = new[] { new HangFireAuthorizationFilter() } });
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangFireAuthorizationFilter() }
+            });
 
             // Start the Hangfire services.
             app.UseHangfireDashboard();
             app.UseHangfireServer();
-
+            #endregion
         }
     }
 }

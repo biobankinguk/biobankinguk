@@ -75,6 +75,7 @@ namespace Biobanks.Submissions.Api
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
+            var hangfireConfig = Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
@@ -108,6 +109,7 @@ namespace Biobanks.Submissions.Api
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
                 .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
+                .Configure<HangfireOptions>(Configuration.GetSection("Hangfire"))
 
                 .Configure<MaterialTypesLegacyModel>(Configuration.GetSection("MaterialTypesLegacyModel"))
                 .Configure<StorageTemperatureLegacyModel>(Configuration.GetSection("StorageTemperatureLegacyModel"))
@@ -221,10 +223,10 @@ namespace Biobanks.Submissions.Api
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
             {
                 services.AddHangfire(x => x.UseSqlServerStorage(
-                    Configuration.GetConnectionString("Default"),
+                    Configuration.GetConnectionString("Hangfire"),
                     new Hangfire.SqlServer.SqlServerStorageOptions
                     {
-                        SchemaName = "apiHangfire"
+                        SchemaName = hangfireConfig.SchemaName
                     }));
             }
 
@@ -249,7 +251,8 @@ namespace Biobanks.Submissions.Api
         /// <param name="app"></param>
         /// <param name="env"></param>
         /// <param name="workersOptions"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<WorkersOptions> workersOptions)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            IOptions<WorkersOptions> workersOptions)
         {
             // Early pipeline config
             app
