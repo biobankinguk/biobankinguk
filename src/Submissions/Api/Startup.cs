@@ -46,6 +46,7 @@ using Microsoft.Extensions.Options;
 using Hangfire.Dashboard;
 using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
+using Hangfire.SqlServer;
 
 namespace Biobanks.Submissions.Api
 {
@@ -113,7 +114,7 @@ namespace Biobanks.Submissions.Api
 
                 .Configure<MaterialTypesLegacyModel>(Configuration.GetSection("MaterialTypesLegacyModel"))
                 .Configure<StorageTemperatureLegacyModel>(Configuration.GetSection("StorageTemperatureLegacyModel"))
-                
+
                 .AddApplicationInsightsTelemetry()
 
                 .AddDbContext<Data.BiobanksDbContext>(opts =>
@@ -222,12 +223,13 @@ namespace Biobanks.Submissions.Api
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
             {
+                var connectionString = Configuration.GetConnectionString("Hangfire");
+
                 services.AddHangfire(x => x.UseSqlServerStorage(
-                    Configuration.GetConnectionString("Hangfire"),
-                    new Hangfire.SqlServer.SqlServerStorageOptions
-                    {
-                        SchemaName = hangfireConfig.SchemaName
-                    }));
+                    !string.IsNullOrWhiteSpace(connectionString)
+                        ? connectionString
+                        : Configuration.GetConnectionString("Default"),
+                    new() { SchemaName = hangfireConfig.SchemaName }));
             }
 
             switch (workersConfig.QueueService)
