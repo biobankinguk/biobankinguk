@@ -471,6 +471,7 @@
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
     <Compile Include="HtmlHelpers\DisabledHelper.cs" />
+    <Compile Include="Models\ADAC\ExtractionProceduresModel.cs" />
     <Compile Include="Models\ADAC\MaterialTypeGroupModel.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
     <Compile Include="Models\ADAC\ReadExtractionProcedureModel.cs" />
@@ -966,7 +967,6 @@
     <Compile Include="HtmlHelpers\MarkdownHelper.cs" />
     <Compile Include="HtmlHelpers\VersionHelper.cs" />
     <Compile Include="Results\HttpForbiddenResult.cs" />
-    <Compile Include="HangfireJobActivator\HangfireWindsorJobActivator.cs" />
     <Compile Include="Models\ADAC\BiobankActivityModel.cs" />
     <Compile Include="Models\ADAC\ReadOntologyTermModel.cs" />
     <Compile Include="Models\ADAC\ReadAssociatedDataProcurementTimeFrameModel.cs" />

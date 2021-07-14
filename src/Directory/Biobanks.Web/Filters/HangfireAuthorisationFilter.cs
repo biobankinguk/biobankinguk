@@ -5,10 +5,9 @@ using Hangfire.Dashboard;
 
 namespace Biobanks.Web.Filters
 {
-    [Obsolete]
-    public class HangFireAuthorizationFilter : IAuthorizationFilter
+    public class HangFireAuthorizationFilter : IDashboardAuthorizationFilter
     {
-        public bool Authorize(IDictionary<string, object> owinEnvironment)
+        public bool Authorize(DashboardContext context)
         {
             return HttpContext.Current.User.Identity.IsAuthenticated && HttpContext.Current.User.IsInRole("SuperUser");
         }

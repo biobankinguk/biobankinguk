@@ -2,11 +2,11 @@ using System;
 using System.Web.Http.Dispatcher;
 using System.Web.Mvc;
 using Biobanks.Web.Filters;
-using Biobanks.Web.HangfireJobActivator;
 using Biobanks.Web.Windsor;
 using Biobanks.Web.Windsors;
 using Castle.Windsor;
 using Hangfire;
+using Hangfire.Windsor;
 using Microsoft.Owin.Security.DataProtection;
 using Owin;
 
@@ -38,16 +38,16 @@ namespace Biobanks.Web
             ConfigureAuth(app);
 
             GlobalConfiguration.Configuration.UseSqlServerStorage("Biobanks");
-
-            JobActivator.Current = new HangfireWindsorJobActivator(windsorContainer.Kernel);
+            GlobalConfiguration.Configuration.UseWindsorActivator(windsorContainer.Kernel);
 
             // Make sure only SuperUsers can access the Hangfire dashboard.
             app.UseHangfireDashboard("/hangfire", new DashboardOptions {
-                AuthorizationFilters = new[] { new HangFireAuthorizationFilter() } });
+                Authorization = new[] { new HangFireAuthorizationFilter() } });
 
             // Start the Hangfire services.
             app.UseHangfireDashboard();
             app.UseHangfireServer();
+
         }
     }
 }
