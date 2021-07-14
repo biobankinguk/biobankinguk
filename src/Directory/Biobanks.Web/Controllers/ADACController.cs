@@ -25,7 +25,6 @@ using System.Data.Entity;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.ApplicationInsights;
-using static Biobanks.Services.ConfigService;
 
 namespace Biobanks.Web.Controllers
 {
