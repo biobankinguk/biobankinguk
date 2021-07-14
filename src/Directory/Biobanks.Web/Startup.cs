@@ -45,12 +45,16 @@ namespace Biobanks.Web
 
             #region Hangfire
 
+            var hangfireConnectionString = ConfigurationManager.ConnectionStrings["Hangfire"].ConnectionString;
             GlobalConfiguration.Configuration.UseSqlServerStorage(
-                ConfigurationManager.ConnectionStrings["Hangfire"].ConnectionString,
+                !string.IsNullOrWhiteSpace(hangfireConnectionString)
+                    ? hangfireConnectionString
+                    : ConfigurationManager.ConnectionStrings["Biobanks"].ConnectionString,
                 new Hangfire.SqlServer.SqlServerStorageOptions
                 {
                     SchemaName = ConfigurationManager.AppSettings["Hangfire__SchemaName"]
                 });
+
             GlobalConfiguration.Configuration.UseWindsorActivator(windsorContainer.Kernel);
 
             // Make sure only SuperUsers can access the Hangfire dashboard.
