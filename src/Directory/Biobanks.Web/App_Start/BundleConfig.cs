@@ -302,6 +302,11 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-site-config.js"));
 
+            // Flags Config 
+            bundles.Add(new ScriptBundle("~/bundles/flags/flags-config").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/Flags/flags-config.js"));
+
             // Sample Resource Config
             bundles.Add(new ScriptBundle("~/bundles/adac/sample-resource-config").Include(
                 "~/Scripts/bootbox*",
