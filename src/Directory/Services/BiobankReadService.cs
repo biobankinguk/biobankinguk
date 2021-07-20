@@ -1192,6 +1192,16 @@ namespace Biobanks.Services
 
         #endregion
 
+        #region RefFata: Findings
+        public async Task<IEnumerable<OntologyTerm>> ListFindings(string wildcard = "", bool onlyDisplayable = false)
+            => await _ontologyTermRepository.ListAsync(
+                filter: x =>
+                    x.Value.Contains("finding") && // TODO: Replace With Filtering By Finding SnomedTag
+                    x.Value.Contains(wildcard) &&
+                    (x.DisplayOnDirectory || !onlyDisplayable)
+                );
+        #endregion
+
         #region RefData: Disease Statuses
 
         public async Task<int> CountDiseaseOntologyTerms(string filter = "")
