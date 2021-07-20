@@ -18,5 +18,9 @@
     {
         "id": 5,
         "value": "Extraction Procedure"
+    },  
+    {
+        "id": 6,
+        "value": "Findings"
     }
 ]
