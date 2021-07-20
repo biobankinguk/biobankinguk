@@ -275,7 +275,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListDiseaseOntologyTermsAsync(wildcard);
+            var ontologyTerms = await _biobankReadService.ListDiseaseFindingOntologyTermsAsync(wildcard, true);
 
             var model = ontologyTerms.Select(x =>
                new OntologyTermModel
