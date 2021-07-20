@@ -163,6 +163,16 @@ namespace Biobanks.Directory.Data
                     gt.ToTable("MaterialTypeMaterialTypeGroup");
                 });
 
+            modelBuilder.Entity<MaterialType>()
+                .HasMany(t => t.ExtractionProcedures)
+                .WithMany(g => g.MaterialTypes)
+                .Map(gt =>
+                {
+                    gt.MapLeftKey("MaterialTypesId");
+                    gt.MapRightKey("ExtractionProceduresId");
+                    gt.ToTable("MaterialTypeOntologyTerm");
+                });
+
             modelBuilder.Entity<Collection>()
                 .HasMany(t => t.ConsentRestrictions)
                 .WithMany(g => g.Collections)

@@ -68,7 +68,7 @@ namespace Biobanks.Analytics.Services
             var dateRanges = new[] { DateRangeFromBounds(startDate, endDate) };
 
             var metrics = GetBiobankMetrics();
-            var dimensions = GetBiobankDimensions();
+            var dimensions = GetBiobankDimensions();    
             var segments = GetNottLoughSegment();
 
             var biobanks = await _organisations.ListExternalIds();
@@ -81,23 +81,28 @@ namespace Biobanks.Analytics.Services
                 var reportResponse = GetReports(reportRequest);
                 var biobankData = reportResponse.Reports[0].Data.Rows;
 
-                foreach (ReportRow bbd in biobankData)
+                if (biobankData != null)
                 {
-                    _db.OrganisationAnalytics.Add(new OrganisationAnalytic
+                    foreach (ReportRow bbd in biobankData)
                     {
-                        Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
-                        PagePath = bbd.Dimensions[1],
-                        PreviousPagePath = bbd.Dimensions[2],
-                        Segment = bbd.Dimensions[3],
-                        Source = bbd.Dimensions[4],
-                        Hostname = bbd.Dimensions[5],
-                        City = bbd.Dimensions[6],
-                        Counts = int.Parse(bbd.Metrics[0].Values[0]),
-                        OrganisationExternalId = biobankId
-                    });
+                        _db.OrganisationAnalytics.Add(new OrganisationAnalytic
+                        {
+                            Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
+                            PagePath = bbd.Dimensions[1],
+                            PreviousPagePath = bbd.Dimensions[2],
+                            Segment = bbd.Dimensions[3],
+                            Source = bbd.Dimensions[4],
+                            Hostname = bbd.Dimensions[5],
+                            City = bbd.Dimensions[6],
+                            Counts = int.Parse(bbd.Metrics[0].Values[0]),
+                            OrganisationExternalId = biobankId
+                        });
+                    }
+                    await _db.SaveChangesAsync();
+                    _logger.LogInformation($"Fetched analytics for data for {biobankId}");
                 }
-                await _db.SaveChangesAsync();
-                _logger.LogInformation("Fetched analytics for data for {biobankId}");
+                else
+                    _logger.LogInformation($"biobankdata null for {biobankId}. Data not saved.");
             }
         }
 
@@ -119,22 +124,27 @@ namespace Biobanks.Analytics.Services
             var eventData = reportResponse.Reports[0].Data.Rows;
             var metricData = reportResponse.Reports[1].Data.Rows;
 
-            foreach (ReportRow events in eventData)
+            if (eventData != null)
             {
-                _db.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
+                foreach (ReportRow events in eventData)
                 {
-                    Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
-                    EventCategory = events.Dimensions[1],
-                    EventAction = events.Dimensions[2],
-                    Biobank = events.Dimensions[3],
-                    Segment = events.Dimensions[4],
-                    Source = events.Dimensions[5],
-                    Hostname = events.Dimensions[6],
-                    City = events.Dimensions[7],
-                    Counts = int.Parse(events.Metrics[0].Values[0]),
-                });
+                    _db.DirectoryAnalyticEvents.Add(new DirectoryAnalyticEvent
+                    {
+                        Date = ConvertToDateTime(events.Dimensions[0], "yyyyMMdd"),
+                        EventCategory = events.Dimensions[1],
+                        EventAction = events.Dimensions[2],
+                        Biobank = events.Dimensions[3],
+                        Segment = events.Dimensions[4],
+                        Source = events.Dimensions[5],
+                        Hostname = events.Dimensions[6],
+                        City = events.Dimensions[7],
+                        Counts = int.Parse(events.Metrics[0].Values[0]),
+                    });
+                }
+                await _db.SaveChangesAsync();
             }
-            await _db.SaveChangesAsync();
+            else
+                _logger.LogInformation("eventData null. AnalyticEventData not added.");
 
             foreach (ReportRow metric in metricData)
             {

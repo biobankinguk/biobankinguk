@@ -57,6 +57,12 @@ namespace Biobanks.Search.Dto.Facets
             },
             new FacetDetailSummary
             {
+                Label = "Extraction Procedure",
+                Name = "extractionProcedure",
+                Slug = "extprod"
+            },
+            new FacetDetailSummary
+            {
                 Label = "Storage Temperature",
                 Name = "storageTemperature",
                 Slug = "stmp"

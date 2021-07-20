@@ -17,12 +17,14 @@ namespace Biobanks.Web.ApiControllers
     {
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IConfigService _configService;
 
         public DonorCountController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+                                          IBiobankWriteService biobankWriteService, IConfigService configService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
+            _configService = configService;
         }
 
         [HttpGet]
@@ -53,7 +55,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // Validate model
             if (await _biobankReadService.ValidDonorCountAsync(model.Description))
@@ -92,7 +94,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // Validate model
             if (await _biobankReadService.ValidDonorCountAsync(model.Description))
@@ -135,7 +137,7 @@ namespace Biobanks.Web.ApiControllers
             var model = (await _biobankReadService.ListDonorCountsAsync(true)).Where(x => x.Id == id).First();
 
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _biobankReadService.GetSiteConfig(ConfigKey.DonorCountName);
+            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // If in use, prevent update
             if (await _biobankReadService.IsDonorCountInUse(id))

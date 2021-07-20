@@ -12,6 +12,7 @@ namespace Biobanks.Services.Contracts
 {
     public interface IBiobankReadService
     {
+        Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id);
         Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByUserEmailAsync(string email);
 
         Task<NetworkRegisterRequest> GetNetworkRegisterRequestByUserEmailAsync(string email);
@@ -51,8 +52,15 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsAssociatedDataTypeGroupInUse(int associatedDataTypeGroupId);
         Task<bool> ValidAssociatedDataTypeGroupNameAsync(int associatedDataTypeGroupId, string associatedDataTypeGroupName);
         Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName);
-        Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
         
+        Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
+        Task<bool> IsMaterialTypeAssigned(int id);
+
+        Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync();
+        Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
+        Task<bool> IsMaterialTypeGroupInUse(int id);
+
+
         Task<IEnumerable<AgeRange>> ListAgeRangesAsync();
         Task<bool> ValidAgeRangeAsync(string ageRangeDescription);
         Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription);
@@ -123,12 +131,24 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
-        Task<IEnumerable<OntologyTerm>> ListOntologyTermsAsync(string wildcard = "");
         Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);
         Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription);
         Task<OntologyTerm> GetOntologyTermByDescription(string description);
         Task<int> GetOntologyTermCollectionCapabilityCount(string id);
         Task<bool> IsOntologyTermInUse(string id);
+
+        Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false);
+        Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription);
+        Task<IEnumerable<OntologyTerm>> PaginateDiseaseOntologyTerms(int start, int length, string filter = "");
+        Task<int> CountDiseaseOntologyTerms(string filter = "");
+
+        Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
+        Task<OntologyTerm> GetExtractionProcedureById(string id);
+        Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
+        Task<bool> IsExtractionProcedureInUse(string id);
+
+        Task<IEnumerable<SnomedTag>> ListSnomedTags();
+        Task<SnomedTag> GetSnomedTagByDescription(string description);
 
         Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
@@ -158,14 +178,6 @@ namespace Biobanks.Services.Contracts
         Task<int> GetSexCount(int id);
         Task<bool> ValidSexDescriptionAsync(string sexDescription);
         Task<bool> ValidSexDescriptionAsync(int sexId, string sexDescription);
-
-        IEnumerable<Config> ListSiteConfigs(string wildcard = "");
-        Task<IEnumerable<Config>> ListSiteConfigsAsync(string wildcard = "");
-        Task<Config> GetSiteConfig(string key);
-        Task<string> GetSiteConfigValue(string key, string defaultValue = "");
-        Task<bool> GetSiteConfigStatus(string siteConfigValue);
-        
-        
 
         Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
         Task<IEnumerable<ServiceOffering>> ListServiceOfferingsAsync();

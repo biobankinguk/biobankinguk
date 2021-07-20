@@ -24,6 +24,7 @@ namespace Biobanks.Services
         #region Properties and ctor
 
         private readonly IBiobankReadService _biobankReadService;
+        private readonly IConfigService _configService;
 
         private readonly ILogoStorageProvider _logoStorageProvider;
 
@@ -35,6 +36,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
+        private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
         private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
@@ -84,9 +86,11 @@ namespace Biobanks.Services
 
         public BiobankWriteService(
             IBiobankReadService biobankReadService,
+            IConfigService configService,
             ILogoStorageProvider logoStorageProvider,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
+            IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
@@ -137,7 +141,7 @@ namespace Biobanks.Services
             IGenericEFRepository<Funder> funderRepository)
         {
             _biobankReadService = biobankReadService;
-
+            _configService = configService;
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
@@ -154,6 +158,7 @@ namespace Biobanks.Services
             _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _accessConditionRepository = accessConditionRepository;
             _materialTypeRepository = materialTypeRepository;
+            _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
             _consentRestrictionRepository = consentRestrictionRepository;
             _countryRepository = countryRepository;
@@ -270,33 +275,6 @@ namespace Biobanks.Services
             return true;
         }
 
-        //Specific functionality for Collections added via the API
-        public async Task<bool> DeleteAPICollectionAsync(int id)
-        {
-            var collection = (await _collectionRepository
-                .ListAsync(true, x => x.CollectionId == id, null, x => x.SampleSets))
-                .First();
-           
-            if (collection.SampleSets.Any())
-            {
-                IList<int> sampleSetIDs = new List<int>();
-                foreach (SampleSet sampleSet in collection.SampleSets)
-                {
-                    sampleSetIDs.Add(sampleSet.Id);
-                }
-
-                foreach (int sampleSetID in sampleSetIDs)
-                {
-                    await DeleteSampleSetAsync(sampleSetID);
-                }
-                
-            }
-
-            await _collectionRepository.DeleteWhereAsync(x => x.CollectionId == id);
-            await _collectionRepository.SaveChangesAsync();
-
-            return true;
-        }
 
         public async Task AddSampleSetAsync(SampleSet sampleSet)
         {
@@ -342,7 +320,7 @@ namespace Biobanks.Services
                     existingMaterialDetail.MaterialTypeId = materialDetail.MaterialTypeId;
                     existingMaterialDetail.StorageTemperatureId = materialDetail.StorageTemperatureId;
                     existingMaterialDetail.MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId;
-                    //existingMaterialDetail.ExtractionProcedureId = materialDetail.ExtractionProcedureId;
+                    existingMaterialDetail.ExtractionProcedureId = materialDetail.ExtractionProcedureId;
                     existingMaterialDetail.PreservationTypeId = materialDetail.PreservationTypeId;
                     existingMaterialDetail.CollectionPercentageId = materialDetail.CollectionPercentageId;
                 }
@@ -363,7 +341,7 @@ namespace Biobanks.Services
                         MaterialTypeId = materialDetail.MaterialTypeId,
                         StorageTemperatureId = materialDetail.StorageTemperatureId,
                         MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId,
-                        //ExtractionProcedureId = materialDetail.ExtractionProcedureId,
+                        ExtractionProcedureId = materialDetail.ExtractionProcedureId,
                         PreservationTypeId = materialDetail.PreservationTypeId,
                         CollectionPercentageId = materialDetail.CollectionPercentageId
                     }
@@ -759,6 +737,28 @@ namespace Biobanks.Services
             await _ontologyTermRepository.SaveChangesAsync();
 
             return ontologyTerm;
+        }
+
+        public async Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        {
+            foreach (var mId in materialTypeIds)
+            {
+                (await _materialTypeRepository.ListAsync(true, x => x.Id == mId, null, x => x.ExtractionProcedures))
+                    .FirstOrDefault().ExtractionProcedures
+                    .Add(ontologyTerm);
+                await _ontologyTermRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        {
+            await UpdateOntologyTermAsync(ontologyTerm);
+
+            var Term = (await _ontologyTermRepository.ListAsync(true,x=>x.Id == ontologyTerm.Id,null, x=>x.MaterialTypes)).FirstOrDefault();
+            var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
+            Term.MaterialTypes = materialTypes;
+
+            await _ontologyTermRepository.SaveChangesAsync();
         }
 
         #region RefData: Sample Collection Mode
@@ -1549,6 +1549,30 @@ namespace Biobanks.Services
         }
         #endregion
 
+        #region RefData: Material Type Group
+        public async Task DeleteMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
+        {
+            await _materialTypeGroupRepository.DeleteAsync(materialTypeGroup.Id);
+            await _materialTypeGroupRepository.SaveChangesAsync();
+        }
+
+        public async Task<MaterialTypeGroup> UpdateMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
+        {
+            _materialTypeGroupRepository.Update(materialTypeGroup);
+            await _materialTypeRepository.SaveChangesAsync();
+
+            return materialTypeGroup;
+        }
+
+        public async Task<MaterialTypeGroup> AddMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
+        {
+            _materialTypeGroupRepository.Insert(materialTypeGroup);
+            await _materialTypeGroupRepository.SaveChangesAsync();
+
+            return materialTypeGroup;
+        }
+        #endregion
+
         #region RefData: Collection Type
         public async Task DeleteCollectionTypeAsync(CollectionType collectionType)
         {
@@ -1716,18 +1740,6 @@ namespace Biobanks.Services
             await _sexRepository.SaveChangesAsync();
         }
         #endregion
-
-        public async Task UpdateSiteConfigsAsync(IEnumerable<Config> configs)
-        {
-            foreach (var config in configs) {
-                var oldConfig = await _biobankReadService.GetSiteConfig(config.Key);
-                oldConfig.Value = config.Value;
-
-                _siteConfigRepository.Update(oldConfig);
-            }
-
-            await _siteConfigRepository.SaveChangesAsync();
-        }
 
         //delete adt
         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
@@ -2002,6 +2014,13 @@ namespace Biobanks.Services
             _publicationRespository.Insert(publication);
             await _publicationRespository.SaveChangesAsync();
 
+            return publication;
+        }
+
+        public async Task<Publication> UpdateOrganisationPublicationAsync(Publication publication)
+        {
+            _publicationRespository.Update(publication);
+            await _publicationRespository.SaveChangesAsync();
 
             return publication;
         }

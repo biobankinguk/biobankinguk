@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -448,9 +448,11 @@
     <Compile Include="ApiControllers\ConsentRestrictionController.cs" />
     <Compile Include="ApiControllers\CountryController.cs" />
     <Compile Include="ApiControllers\CountyController.cs" />
+    <Compile Include="ApiControllers\ExtractionProcedureController.cs" />
     <Compile Include="ApiControllers\DiseaseStatusController.cs" />
     <Compile Include="ApiControllers\DonorCountController.cs" />
     <Compile Include="ApiControllers\MacroscopicAssessmentController.cs" />
+    <Compile Include="ApiControllers\MaterialTypeGroupController.cs" />
     <Compile Include="ApiControllers\MaterialTypeController.cs" />
     <Compile Include="ApiControllers\PreservationTypeController.cs" />
     <Compile Include="ApiControllers\RegistrationDomainRuleController.cs" />
@@ -461,25 +463,35 @@
     <Compile Include="ApiControllers\SexController.cs" />
     <Compile Include="ApiControllers\SopStatusController.cs" />
     <Compile Include="App_Start\ProfilerConfig.cs" />
+    <Compile Include="Controllers\FlagsController.cs" />
     <Compile Include="Controllers\FooterController.cs" />
     <Compile Include="Controllers\HeaderController.cs" />
+    <Compile Include="Controllers\PagesAdminController.cs" />
     <Compile Include="Controllers\VersionController.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Filters\UserApiAuthorizeAttribute.cs" />
+    <Compile Include="HtmlHelpers\DisabledHelper.cs" />
+    <Compile Include="Models\ADAC\ExtractionProceduresModel.cs" />
+    <Compile Include="Models\ADAC\MaterialTypeGroupModel.cs" />
     <Compile Include="Models\ADAC\PreservationTypeModel.cs" />
+    <Compile Include="Models\ADAC\ReadExtractionProcedureModel.cs" />
     <Compile Include="Models\ADAC\RegisterConfigModel.cs" />
     <Compile Include="Models\ADAC\ResetPasswordEntityModel.cs" />
+    <Compile Include="Models\ADAC\ContentPageModel.cs" />
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
     <Compile Include="Models\ADAC\BlockAllowListModel.cs" />
+    <Compile Include="Models\Shared\PublicationSearchModel.cs" />
     <Compile Include="Models\Biobank\SubmissionsModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
     <Compile Include="Models\Biobank\NetworkAcceptanceModel.cs" />
     <Compile Include="Models\Header\HeaderModel.cs" />
     <Compile Include="Models\Header\HeaderItemModel.cs" />
-    <Compile Include="Models\Home\AboutModel.cs" />
     <Compile Include="Models\Home\HompageContentModel.cs" />
+    <Content Include="Scripts\ADAC\adac-material-type-groups.js" />
+    <Content Include="Scripts\ADAC\adac-pages-admin.js" />
     <Content Include="Scripts\ADAC\adac-blockallow-list.js" />
+    <Content Include="Scripts\ADAC\adac-extraction-procedure.js" />
     <Content Include="Scripts\ADAC\adac-email-config.js" />
     <Content Include="Scripts\ADAC\adac-preservation-types.js" />
     <Content Include="Scripts\ADAC\adac-register-pages-config.js" />
@@ -569,6 +581,7 @@
     <Content Include="Scripts\DataTables\responsive.foundation.min.js" />
     <Content Include="Scripts\DataTables\responsive.jqueryui.js" />
     <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
+    <Content Include="Scripts\Flags\flags-config.js" />
     <Content Include="Scripts\jquery-2.2.2.js" />
     <Content Include="Scripts\jquery-2.2.2.min.js" />
     <Content Include="Scripts\jquery.cookie-1.4.1.min.js" />
@@ -847,18 +860,21 @@
     <Content Include="Views\SuperUser\_SuperUserTabs.cshtml" />
     <Content Include="Views\Shared\_SuspendedWarning.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\AddFunderModel.cshtml" />
-    <Content Include="Views\Home\Privacy.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\ADAC\AboutpageConfig.cshtml" />
-    <Content Include="Views\Header\_NavItemAbout.cshtml" />
     <Content Include="Views\ADAC\BiobankAdmin.cshtml" />
     <Content Include="Views\ADAC\PreservationTypes.cshtml" />
     <Content Include="Views\SuperUser\Tools.cshtml" />
     <Content Include="Views\ADAC\_ModalResetPassword.cshtml" />
     <Content Include="Views\Biobank\Submissions.cshtml" />
+    <Content Include="Views\PagesAdmin\Index.cshtml" />
+    <Content Include="Views\PagesAdmin\ContentPage.cshtml" />
+    <Content Include="Views\PagesAdmin\CreateEdit.cshtml" />
+    <Content Include="Views\PagesAdmin\CreateEditPreview.cshtml" />
     <Content Include="Views\ADAC\EmailConfig.cshtml" />
     <Content Include="Views\ADAC\BlockAllowList.cshtml" />
     <Content Include="Views\Header\_NavItemSuperUser.cshtml" />
+    <Content Include="Views\ADAC\ExtractionProcedure.cshtml" />
+    <Content Include="Views\ADAC\MaterialTypeGroups.cshtml" />
+    <Content Include="Views\Flags\FlagsConfig.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -951,7 +967,6 @@
     <Compile Include="HtmlHelpers\MarkdownHelper.cs" />
     <Compile Include="HtmlHelpers\VersionHelper.cs" />
     <Compile Include="Results\HttpForbiddenResult.cs" />
-    <Compile Include="HangfireJobActivator\HangfireWindsorJobActivator.cs" />
     <Compile Include="Models\ADAC\BiobankActivityModel.cs" />
     <Compile Include="Models\ADAC\ReadOntologyTermModel.cs" />
     <Compile Include="Models\ADAC\ReadAssociatedDataProcurementTimeFrameModel.cs" />
@@ -1154,16 +1169,16 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.Web.2.14.0\build\Microsoft.ApplicationInsights.Web.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.Web.2.14.0\build\Microsoft.ApplicationInsights.Web.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <Import Project="..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.14.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" />
   <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.14.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
   <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.14.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" />
@@ -1181,15 +1196,15 @@
     <ItemGroup>
       <Compile Include="$(IntermediateOutputPath)Version.cs" />
     </ItemGroup>
-    
     <!-- Elastic Search Index Descriptions -->
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
     <Copy SourceFiles="..\..\..\elastic-search\directory index setup\collections.json" DestinationFolder="..\..\..\src\Directory\Biobanks.Web\App_Config" />
-
     <ItemGroup>
       <Content Include="./App_Config/*.json">
-        <CopyToOutputDirectory></CopyToOutputDirectory>
+        <CopyToOutputDirectory>
+        </CopyToOutputDirectory>
       </Content>
     </ItemGroup>
   </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
 </Project>

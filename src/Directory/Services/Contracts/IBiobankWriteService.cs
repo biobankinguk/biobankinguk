@@ -15,14 +15,13 @@ namespace Biobanks.Services.Contracts
         Task UpdateCollectionAsync(Collection collection, string ontologyTermDescription,
             IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
         Task<bool> DeleteCollectionAsync(int id);
-        Task<bool> DeleteAPICollectionAsync(int id);
+
         Task AddSampleSetAsync(SampleSet sampleSet);
         Task UpdateSampleSetAsync(SampleSet sampleSet);
         Task DeleteSampleSetAsync(int id);
 
         Task AddCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
         Task UpdateCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
-        Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
         Task DeleteCapabilityAsync(int id);
 
         Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference);
@@ -63,10 +62,16 @@ namespace Biobanks.Services.Contracts
         Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
         Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
         Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis);
-        
+        Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
+        Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
+
         Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType);
         Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);
         Task DeleteMaterialTypeAsync(MaterialType materialType);
+
+        Task<MaterialTypeGroup> AddMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
+        Task<MaterialTypeGroup> UpdateMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
+        Task DeleteMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
 
         Task<Sex> AddSexAsync(Sex sex);
         Task<Sex> UpdateSexAsync(Sex sex, bool sortOnly = false);
@@ -160,6 +165,7 @@ namespace Biobanks.Services.Contracts
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);
 
         Task<Publication> AddOrganisationPublicationAsync(Publication publication);
+        Task<Publication> UpdateOrganisationPublicationAsync(Publication publication);
         Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);

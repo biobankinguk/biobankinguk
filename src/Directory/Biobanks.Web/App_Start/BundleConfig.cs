@@ -163,6 +163,10 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-material-types.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/material-type-groups").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-material-type-groups.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/sexes").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sexes.js",
@@ -281,6 +285,10 @@ namespace Biobanks.Web
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-blockallow-list.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
+            bundles.Add(new ScriptBundle("~/bundles/adac/extraction-procedure").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-extraction-procedure.js",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
 
             // Registration Domain Rules
             bundles.Add(new ScriptBundle("~/bundles/adac/email-config").Include(
@@ -293,6 +301,11 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/adac/site-config").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-site-config.js"));
+
+            // Flags Config 
+            bundles.Add(new ScriptBundle("~/bundles/flags/flags-config").Include(
+                "~/Scripts/bootbox*",
+                "~/Scripts/Flags/flags-config.js"));
 
             // Sample Resource Config
             bundles.Add(new ScriptBundle("~/bundles/adac/sample-resource-config").Include(
@@ -326,6 +339,11 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/analytics/directoryreport").Include(
                 "~/Scripts/ADAC/adac-analytics-directoryreport.js",
                 "~/Scripts/plotly-latest.min.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/pagesadmin").Include(
+                "~/Scripts/ADAC/adac-pages-admin.js",
+                "~/Scripts/bootbox*",
+                "~/Scripts/ADAC/adac-refdata-utility.js"));
             #endregion
         }
     }

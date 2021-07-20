@@ -267,16 +267,16 @@ $(".help-label-adac-macroscopicassessment-override").click(function () {
 
 $(".help-label-submissions-publickey").click(function () {
     bootbox.dialog({
-        message: "The public key used to encrypt data when using the submission API. Your public key is generated only once when you generate your first private key.",
-        title: "Public Key",
+        message: "The Client ID is used to identify the Organisation when making an authentication request to the Submissions API.",
+        title: "Client ID",
         buttons: helpIconBootboxButtons
     });
 });
 
 $(".help-label-submissions-privatekey").click(function () {
     bootbox.dialog({
-        message: "The private key used to encrypt and decrypt data when using the submission API. Should not be shared with unauthorised users",
-        title: "Private Key",
+        message: "As the Client Secret, it should NOT be shared. The Client Secret is used to identify the Organisation when making an authentication request to the Submissions API.",
+        title: "Client Secret",
         buttons: helpIconBootboxButtons
     });
 });

@@ -46,6 +46,7 @@ using Microsoft.Extensions.Options;
 using Hangfire.Dashboard;
 using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
+using Hangfire.SqlServer;
 
 namespace Biobanks.Submissions.Api
 {
@@ -75,6 +76,7 @@ namespace Biobanks.Submissions.Api
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
+            var hangfireConfig = Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
@@ -108,10 +110,11 @@ namespace Biobanks.Submissions.Api
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
                 .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
+                .Configure<HangfireOptions>(Configuration.GetSection("Hangfire"))
 
                 .Configure<MaterialTypesLegacyModel>(Configuration.GetSection("MaterialTypesLegacyModel"))
                 .Configure<StorageTemperatureLegacyModel>(Configuration.GetSection("StorageTemperatureLegacyModel"))
-                
+
                 .AddApplicationInsightsTelemetry()
 
                 .AddDbContext<Data.BiobanksDbContext>(opts =>
@@ -226,12 +229,13 @@ namespace Biobanks.Submissions.Api
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
             {
+                var connectionString = Configuration.GetConnectionString("Hangfire");
+
                 services.AddHangfire(x => x.UseSqlServerStorage(
-                    Configuration.GetConnectionString("Default"),
-                    new Hangfire.SqlServer.SqlServerStorageOptions
-                    {
-                        SchemaName = "apiHangfire"
-                    }));
+                    !string.IsNullOrWhiteSpace(connectionString)
+                        ? connectionString
+                        : Configuration.GetConnectionString("Default"),
+                    new() { SchemaName = hangfireConfig.SchemaName }));
             }
 
             switch (workersConfig.QueueService)
@@ -255,7 +259,8 @@ namespace Biobanks.Submissions.Api
         /// <param name="app"></param>
         /// <param name="env"></param>
         /// <param name="workersOptions"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<WorkersOptions> workersOptions)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            IOptions<WorkersOptions> workersOptions)
         {
             // Early pipeline config
             app

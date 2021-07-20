@@ -37,6 +37,7 @@ namespace Biobanks.Web.Controllers
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IEmailService _emailService;
         private readonly IRegistrationDomainService _registrationDomainService;
+        private readonly IConfigService _configService;
 
         private readonly IBiobankIndexService _indexService;
 
@@ -52,6 +53,7 @@ namespace Biobanks.Web.Controllers
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
             IRegistrationDomainService registrationDomainService,
+            IConfigService configService,
             IBiobankIndexService indexService,
             ISearchProvider searchProvider,
             IMapper mapper,
@@ -63,6 +65,7 @@ namespace Biobanks.Web.Controllers
             _userManager = userManager;
             _emailService = emailService;
             _registrationDomainService = registrationDomainService;
+            _configService = configService;
             _indexService = indexService;
             _searchProvider = searchProvider;
             _mapper = mapper;
@@ -924,7 +927,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Analytics(int year = 0, int endQuarter = 0, int reportPeriod = 0)
         {
             //If turned off in site config
-            if (!(await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAnalytics)))
+            if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)
                 return RedirectToAction("LockedRef");
 
             //set default options
@@ -1106,30 +1109,46 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Types
         public async Task<ActionResult> MaterialTypes()
         {
+            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
+
             return View(new MaterialTypesModel
             {
-                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
-                    .Select(x =>
-
-                    Task.Run(async () => new ReadMaterialTypeModel
+                MaterialTypes = materialTypes.Select(x => Task.Run(
+                    async () => new ReadMaterialTypeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
+                        SortOrder = x.SortOrder,
+                        MaterialTypeGroups = x.MaterialTypeGroups.Select(x => x.Value),
                         MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
-                        SortOrder = x.SortOrder
-                    }).Result)
+                        UsedByExtractionProcedures = await _biobankReadService.IsMaterialTypeAssigned(x.Id)
 
-                    .ToList()
+                    }))
+                .Select(x => x.Result)
+                .ToList()
             });
-
         }
+        #endregion
 
+        #region RefData: Material Type Groups
+        public async Task<ActionResult> MaterialTypeGroups()
+        {
+            var materialTypes = await _biobankReadService.ListMaterialTypeGroupsAsync();
+
+            return View(materialTypes.Select(x => new MaterialTypeGroupModel
+            {
+                Id = x.Id,
+                Description = x.Value,
+                MaterialTypes = x.MaterialTypes.Select(x => x.Value),
+                MaterialTypeCount = x.MaterialTypes.Count()
+            }));
+        }
         #endregion
 
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View((await _biobankReadService.ListOntologyTermsAsync()).Select(x =>
+            return View((await _biobankReadService.ListDiseaseOntologyTermsAsync()).Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
@@ -1142,47 +1161,36 @@ namespace Biobanks.Web.Controllers
             ));
         }
 
-        public async Task<ActionResult> DeleteDiseaseStatus(OntologyTermModel model)
+        public async Task<ActionResult> PagingatedDiseaseStatuses(int draw, int start, int length, IDictionary<string, string> search)
         {
-            if (await _biobankReadService.IsOntologyTermInUse(model.OntologyTermId))
+            // Select Search By Value
+            var searchValue = search.TryGetValue("value", out var s) ? s : "";
+
+            // Get Disease Statuses
+            var ontologyTerms = await _biobankReadService.PaginateDiseaseOntologyTerms(start, length, searchValue);
+            var filteredCount = await _biobankReadService.CountDiseaseOntologyTerms(filter: searchValue);
+            var totalCount = await _biobankReadService.CountDiseaseOntologyTerms();
+
+            var data = ontologyTerms.Select(x =>
+                Task.Run(async () => new ReadOntologyTermModel
+                {
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    OtherTerms = x.OtherTerms,
+                    DisplayOnDirectory = x.DisplayOnDirectory,
+                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id)
+                })
+                .Result
+            );
+
+            return Json(new
             {
-                SetTemporaryFeedbackMessage(
-                    $"The disease status \"{model.Description}\" is currently in use, and cannot be deleted.",
-                    FeedbackMessageType.Danger);
-                return RedirectToAction("DiseaseStatuses");
-            }
-
-            await _biobankWriteService.DeleteOntologyTermAsync(new OntologyTerm()
-            {
-                Id = model.OntologyTermId,
-                Value = model.Description
-            });
-
-            //Everything went A-OK!
-            SetTemporaryFeedbackMessage($"The disease status \"{model.Description}\" was deleted successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
-        }
-
-        public ActionResult EditDiseaseStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The disease status \"{name}\" has been edited successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
-        }
-
-        public ActionResult AddDiseaseStatusSuccess(string name)
-        {
-            //This action solely exists so we can set a feedback message
-
-            SetTemporaryFeedbackMessage($"The disease status \"{name}\" has been added successfully.",
-                FeedbackMessageType.Success);
-
-            return RedirectToAction("DiseaseStatuses");
+                draw,
+                data,
+                recordsTotal = totalCount,
+                recordsFiltered = filteredCount
+            },
+            JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -1203,7 +1211,7 @@ namespace Biobanks.Web.Controllers
                     .Result
                 )
                 .ToList();
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.preservation.percent"))
+            if (await _configService.GetFlagConfigValue("site.display.preservation.percent") == true)
             {
                 return View(new CollectionPercentagesModel()
                 {
@@ -1520,7 +1528,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: County
         public async Task<ActionResult> County()
         {
-            if (await _biobankReadService.GetSiteConfigStatus("site.display.counties"))
+            if (await _configService.GetFlagConfigValue("site.display.counties") == true)
             {
                 var countries = await _biobankReadService.ListCountriesAsync();
 
@@ -1644,6 +1652,29 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
+        #region RefData: Extraction Procedure
+        public async Task<ActionResult> ExtractionProcedure()
+        {
+            return View(new ExtractionProceduresModel
+            {
+                ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+                .Select(x =>
+
+                Task.Run(async () => new ReadExtractionProcedureModel
+                {
+                    OntologyTermId = x.Id,
+                    Description = x.Value,
+                    MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
+                    OtherTerms = x.OtherTerms,
+                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id).ToList()
+                })
+                .Result
+            ).ToList(),
+                MaterialTypes = await _biobankReadService.ListMaterialTypesAsync()
+            });
+        }
+        #endregion
+
         #endregion
 
         #region Site Configuration
@@ -1670,7 +1701,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveHomepageConfig(HomepageContentModel homepage)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
@@ -1741,7 +1772,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveTermpageConfig(TermpageContentModel termpage)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.TermpageInfo, Value = termpage.PageInfo ?? "" }
@@ -1810,7 +1841,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveRegisterPagesConfig(RegisterConfigModel registerConfigModel)
         {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 new List<Config>
                 {
                     new Config { Key = ConfigKey.RegisterBiobankTitle, Value = registerConfigModel.BiobankTitle ?? ""},
@@ -1834,7 +1865,7 @@ namespace Biobanks.Web.Controllers
         #region Site Config
         public async Task<ActionResult> SiteConfig()
         {
-            return View((await _biobankReadService.ListSiteConfigsAsync("site.display"))
+            return View((await _configService.ListSiteConfigsAsync("site.display"))
                 .Select(x => new SiteConfigModel
                 {
                     Key = x.Key,
@@ -1849,7 +1880,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> UpdateSiteConfig(IEnumerable<SiteConfigModel> values)
         {
             // Update Database Config
-            await _biobankWriteService.UpdateSiteConfigsAsync(
+            await _configService.UpdateSiteConfigsAsync(
                 values
                     .OrderBy(x => x.Key)
                     .Select(x => new Config
@@ -1879,7 +1910,7 @@ namespace Biobanks.Web.Controllers
         #region Sample Resource Config
         public async Task<ActionResult> SampleResourceConfig()
         {
-            return View((await _biobankReadService.ListSiteConfigsAsync("site.sampleresource"))
+            return View((await _configService.ListSiteConfigsAsync("site.sampleresource"))
                 .Select(x => new SiteConfigModel
                 {
                     Key = x.Key,
@@ -1897,52 +1928,7 @@ namespace Biobanks.Web.Controllers
         }
 
         #endregion
-        #region About Page Config
-        public async Task<ActionResult> AboutpageConfig()
-        {
-            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
-            {
-                return View(new AboutModel
-                {
-                    BodyText = Config.Get(ConfigKey.AboutBodyText, "")
-                });
-            }
-            else
-            {
-                return RedirectToAction("LockedRef");
-            }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> AboutpageConfig(AboutModel aboutpage)
-        {
-            if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.DisplayAboutPage) == true)
-            {
-                return View(aboutpage);
-            }
-            else
-            {
-                return RedirectToAction("LockedRef");
-            }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> SaveAboutpageConfig(AboutModel aboutpage)
-        {
-            await _biobankWriteService.UpdateSiteConfigsAsync(
-                new List<Config>
-                {
-                    new Config { Key = ConfigKey.AboutBodyText, Value = aboutpage.BodyText },
-                }
-            );
-
-            // Invalidate current config (Refreshed in SiteConfigAttribute filter)
-            HttpContext.Application["Config"] = null;
-            SetTemporaryFeedbackMessage("About page body text saved successfully.", FeedbackMessageType.Success);
-            return Redirect("AboutpageConfig");
-        }
-        #endregion
-
+        
         //Method for updating specific Reference Terms Names via Config
         public async Task<JsonResult> UpdateReferenceTermName(string newReferenceTermKey, string newReferenceTermName)
         {
@@ -1957,7 +1943,7 @@ namespace Biobanks.Web.Controllers
 
 
             // Update Database Config
-            await _biobankWriteService.UpdateSiteConfigsAsync(values);
+            await _configService.UpdateSiteConfigsAsync(values);
 
             // Invalidate current config (Refreshed in SiteConfigAttribute filter)
             HttpContext.Application["Config"] = null;

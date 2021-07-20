@@ -29,9 +29,9 @@ function rejectPublication(publicationId) { claimPublication(publicationId, fals
 var table;
 
 function colorRow(row, data) {
-    $(row).toggleClass("success", data.Approved == true);
-    $(row).toggleClass("danger", data.Approved == false);
-    $(row).find(".status").toggleClass("flex-around", data.Approved == null);
+    $(row).toggleClass("success", data.Accepted == true);
+    $(row).toggleClass("danger", data.Accepted == false);
+    $(row).find(".status").toggleClass("flex-around", data.Accepted == null);
 }
 
 function formatTitle(data, type, row) {
@@ -43,10 +43,10 @@ function formatTitle(data, type, row) {
 }
 
 function formatStatus(data, type, row) {
-    if (row.Approved == true) {
+    if (row.Accepted == true) {
         return link("Accepted", "btn btn-success btn-full");
     }
-    else if (row.Approved == false) {
+    else if (row.Accepted == false) {
         return link("Rejected", "btn btn-danger btn-full");
     }
     else {
@@ -111,7 +111,7 @@ $(function () {
             { title: "Authors", width: "160px", data: "Authors", render: formatAuthor},
             { title: "Year",    width: "35px",  data: "Year" },
             { title: "Journal", width: "140px", data: "Journal" },
-            { title: "Status",  width: "120px", data: "Approved", render: formatStatus, className: "status" }
+            { title: "Status",  width: "120px", data: "Accepted", render: formatStatus, className: "status" }
         ],
         "rowId": 'PublicationId',
         "rowCallback": colorRow
@@ -122,8 +122,13 @@ $(function () {
         .css("margin-bottom", "10px")
         .prependTo("#biobank-publications_wrapper")
         .children();
+
+    var rightCtrls = $("<div class='row pull-right'><div class='col-md-12'>")
+        .prependTo("#biobank-publications_wrapper")
+        .children();
+
     $('#biobank-publications_wrapper').hide();
-    new $.fn.dataTable.Buttons(table, {
+    var filterBtns = new $.fn.dataTable.Buttons(table, {
         buttons: [
             "colvis",
             {
@@ -131,7 +136,7 @@ $(function () {
                 action: function (e, dt, node, conf) {
                     toggleButton(node);
                     filter(function (row) {
-                        return row.data().Approved == true;
+                        return row.data().Accepted == true;
                     });
                 }
             },
@@ -140,7 +145,7 @@ $(function () {
                 action: function (e, dt, node, conf) {
                     toggleButton(node);
                     filter(function (row) {
-                        return row.data().Approved == false;
+                        return row.data().Accepted == false;
                     });
                 }
             },
@@ -149,7 +154,7 @@ $(function () {
                 action: function (e, dt, node, conf) {
                     toggleButton(node);
                     filter(function (row) {
-                        return row.data().Approved == null;
+                        return row.data().Accepted == null;
                     });
                 }
             },
@@ -165,7 +170,25 @@ $(function () {
         ]
     });
 
-    table.buttons().container().prependTo(controls);
+    var addBtn = new $.fn.dataTable.Buttons(table, {
+        buttons: [
+            {
+                text: 'Add Publication',
+                action: function (e, dt, node, conf) {
+                    publicationsVM.openModal();
+                }
+            },
+        ],
+        dom: {
+            button: {
+                className: 'btn btn-success'
+            }
+        }
+    });
+
+    filterBtns.container().prependTo(controls);
+    addBtn.container().prependTo(rightCtrls);
+
     $.getJSON('/api/Biobank/IncludePublications/' + biobankId, function (data) {
         if (data) {
             $('#IncludePublications').prop('checked', true);
@@ -175,6 +198,13 @@ $(function () {
             $('#IncludePublications').prop('checked', false);
             $('#biobank-publications_wrapper').hide();
         }
+    });
+
+    publicationsVM = new PublicationsViewModel();
+    ko.applyBindings(publicationsVM);
+
+    $("#publications-modal").submit(function (e) {
+        publicationsVM.modalSubmit(e);
     });
 });
 
@@ -194,3 +224,76 @@ $('#IncludePublications').change(function () {
 
 //Biobank Id
 var biobankId = $('#BiobankId').data("biobank-id");
+
+// Publication ViewModel
+var publicationsVM;
+
+function PublicationsModal(id) {
+    this.modalModeSearch = "Search";
+    this.modalModeApprove = "Approve";
+
+    this.mode = ko.observable(this.modalModeSearch);
+
+    this.publicationId = ko.observable(id);
+}
+
+function PublicationsViewModel() {
+    var _this = this;
+
+    this.modalId = "#publications-modal";
+    this.modal = new PublicationsModal("");
+    this.dialogErrors = ko.observableArray([]);
+    this.searchResult = ko.observable("");
+
+    this.showModal = function () {
+        _this.dialogErrors.removeAll(); //clear errors on a new show
+        _this.searchResult(""); //clear search result
+        $(_this.modalId).modal("show");
+    };
+
+    this.hideModal = function () {
+        $(_this.modalId).modal("hide");
+    };
+
+    this.openModal = function () {
+        $("#publicationId").attr("readonly", false);
+        _this.modal.mode(_this.modal.modalModeSearch);
+        _this.modal.publicationId("");
+        _this.showModal();
+    };
+
+
+    this.modalSubmit = function (e) {
+        e.preventDefault();
+
+        // Get Action Type
+        var action = _this.modal.mode();
+        if (action == _this.modal.modalModeSearch) {
+            $.getJSON("RetrievePublicationsAjax?publicationId=" + _this.modal.publicationId(), function (data) {
+                if (data && !jQuery.isEmptyObject(data)) {
+                    // If successfull search
+                    _this.searchResult("<b>If this is the correct publication, then press the approve button to add this publication to your Biobanks approved publications list</b> <br/>"
+                        + "<br/>" + data.Authors + " \"" + data.Title + "\", " + data.Year + ". "
+                        + link("View on PubMed", "", null, ("https://pubmed.ncbi.nlm.nih.gov/" + data.PublicationId)));
+                    $("#publicationId").attr("readonly", true);
+                    _this.modal.mode(_this.modal.modalModeApprove);
+                }
+                else {
+                    // no results
+                    _this.searchResult("No publication found for the given PubMed Id.");
+                }
+            });
+        } else if (action == _this.modal.modalModeApprove) {
+            var publicationId = _this.modal.publicationId();
+            $.post("AddPublicationAjax", { publicationId }, function (data) {
+                //if successfull
+                if (data && !jQuery.isEmptyObject(data)) {
+                    window.location.href = $(e.target).data("success-redirect")
+                        + "?publicationId=" + data.PublicationId;
+                }
+                else
+                    _this.dialogErrors.push("Something went wrong! Please try again later.")
+            });
+        }
+    };
+}

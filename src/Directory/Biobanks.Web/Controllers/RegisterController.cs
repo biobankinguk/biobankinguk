@@ -11,7 +11,6 @@ using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
-using System.Linq;
 
 namespace Biobanks.Web.Controllers
 {
@@ -21,6 +20,7 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IEmailService _emailService;
         private readonly IRegistrationDomainService _registrationDomainService;
+        private readonly IConfigService _configService;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
@@ -29,13 +29,15 @@ namespace Biobanks.Web.Controllers
             IBiobankWriteService biobankWriteService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService, 
-            IRegistrationDomainService registrationDomainService)
+            IRegistrationDomainService registrationDomainService,
+            IConfigService configService)
         {
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _userManager = userManager;
             _emailService = emailService;
             _registrationDomainService = registrationDomainService;
+            _configService = configService;
         }
 
         // GET: Register
@@ -127,6 +129,12 @@ namespace Biobanks.Web.Controllers
                 return View(model);
             }
 
+            if (Uri.IsWellFormedUriString(model.Name, UriKind.Absolute) || Uri.IsWellFormedUriString(model.Entity, UriKind.Absolute))
+            {
+                SetTemporaryFeedbackMessage("The admin name or organisation name fields cannot be URIs. Please enter a non URI value.", FeedbackMessageType.Danger);
+                return View(model);
+            }
+
             //check for duplicate name against non-declined requests too
             if (await _biobankReadService.BiobankRegisterRequestExists(model.Entity))
             {
@@ -170,7 +178,7 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                if (await _configService.GetFlagConfigValue(ConfigKey.RegistrationEmails) == true)
                 {
                     // Non ADAC Invited requests should notify ADAC users
                     await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
@@ -268,7 +276,7 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                if (await _biobankReadService.GetSiteConfigStatus(ConfigKey.RegistrationEmails))
+                if (await _configService.GetFlagConfigValue(ConfigKey.RegistrationEmails) == true)
                 {
                     // Non ADAC Invited requests should notify ADAC users
                     await _emailService.SendDirectoryAdminNewRegisterRequestNotification(

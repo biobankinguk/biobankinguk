@@ -828,6 +828,9 @@ namespace Biobanks.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("IsFeatureFlag")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -2506,7 +2509,7 @@ namespace Biobanks.Data.Migrations
                         .WithMany()
                         .HasForeignKey("PreservationTypeId");
 
-                    b.HasOne("Biobanks.Entities.Data.SampleSet", null)
+                    b.HasOne("Biobanks.Entities.Data.SampleSet", "SampleSet")
                         .WithMany("MaterialDetails")
                         .HasForeignKey("SampleSetId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2527,6 +2530,8 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("MaterialType");
 
                     b.Navigation("PreservationType");
+
+                    b.Navigation("SampleSet");
 
                     b.Navigation("StorageTemperature");
                 });

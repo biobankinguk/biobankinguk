@@ -21,5 +21,7 @@ namespace Biobanks.Web.Models.Shared
 
         public bool ReadOnly { get; set; }
 
+        public bool? IsFeatureFlag { get; set; }
+
     }
 }
