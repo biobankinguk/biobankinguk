@@ -1227,6 +1227,14 @@ namespace Biobanks.Services
                 ))
                 .Any();
 
+        public async Task<bool> ValidDiseaseFindingOntologyTermDescriptionAsync(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x =>
+                    (x.SnomedTag.Value == DiseaseTag || x.SnomedTag.Value == FindingTag) &&
+                    x.Value == ontologyTermDescription &&
+                    x.DisplayOnDirectory
+                ))
+                .Any();
         #endregion
         #region RefData: Extraction Procedure
 
