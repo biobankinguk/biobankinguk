@@ -22,6 +22,7 @@ namespace Biobanks.Services
     public class BiobankReadService : IBiobankReadService
     {
         private const string DiseaseTag = "Disease";
+        private const string FindingTag = "Finding";
 
         #region Properties and ctor
 
@@ -1208,6 +1209,12 @@ namespace Biobanks.Services
         public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false)
             => await _ontologyTermRepository.ListAsync(filter: x =>
                 x.SnomedTag.Value == DiseaseTag &&
+                x.Value.Contains(wildcard) &&
+                (x.DisplayOnDirectory || !onlyDisplayable));
+
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseFindingOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false)
+            => await _ontologyTermRepository.ListAsync(filter: x =>
+                (x.SnomedTag.Value == DiseaseTag || x.SnomedTag.Value == FindingTag) &&
                 x.Value.Contains(wildcard) &&
                 (x.DisplayOnDirectory || !onlyDisplayable));
 

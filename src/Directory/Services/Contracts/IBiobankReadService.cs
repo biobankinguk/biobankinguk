@@ -138,6 +138,7 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsOntologyTermInUse(string id);
 
         Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false);
+        Task<IEnumerable<OntologyTerm>> ListDiseaseFindingOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false);
         Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription);
         Task<IEnumerable<OntologyTerm>> PaginateDiseaseOntologyTerms(int start, int length, string filter = "");
         Task<int> CountDiseaseOntologyTerms(string filter = "");
