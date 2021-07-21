@@ -1,17 +1,18 @@
-function ExtractionProcedure(ontologyTermId, description, materialTypeIds) {
+function ExtractionProcedure(ontologyTermId, description, materialTypeIds, displayOnDirectory) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.materialTypeIds = ko.observableArray(materialTypeIds);
+    this.displayOnDirectory = ko.observable(displayOnDirectory);
 }
 
-function ExtractionProcedureModal(ontologyTermId, description, materialTypeIds, materialTypes) {
+function ExtractionProcedureModal(ontologyTermId, description, materialTypeIds, materialTypes, displayOnDirectory) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.extractionProcedure = ko.observable(
-        new ExtractionProcedure(ontologyTermId, description, materialTypeIds)
+        new ExtractionProcedure(ontologyTermId, description, materialTypeIds, displayOnDirectory)
     );
     this.materialTypes = materialTypes;
 }
