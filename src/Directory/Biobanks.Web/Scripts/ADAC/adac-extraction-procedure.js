@@ -98,8 +98,8 @@ var adacExtractionProcedureVM;
 $(function () {
     $("#extraction-procedures")["DataTable"]({
         columnDefs: [
-            { orderable: false, targets: 4 },
-            { width: "180px", targets: 4 },
+            { orderable: false, targets: 5 },
+            { width: "180px", targets: 5 },
         ],
         paging: false,
         info: false,
