@@ -27,6 +27,7 @@
                     <th>Extraction Procedure ID</th>
                     <th>Material Types</th>
                     <th>Material Details Count</th>
+                    <th>Displayed On Directory</th>
                     <th>@* Actions *@</th>
                 </tr>
             </thead>
@@ -43,6 +44,7 @@
                         </td>
                         <td><div class="wrappable-td">@string.Join(" / ", Model.MaterialTypes.Where(x=>ontologyTerm.MaterialTypeIds.Contains(x.Id)).Select(x=>x.Value))</div></td>
                         <td>@ontologyTerm.MaterialDetailsCount</td>
+                        <td>@ontologyTerm.DisplayOnDirectory.ToString()</td>
 
                         <td class="text-right">
                             @if (ontologyTerm.MaterialDetailsCount > 0)
