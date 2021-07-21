@@ -1206,19 +1206,19 @@ namespace Biobanks.Services
                     .Take(length)
                     .ToListAsync();
 
-        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false)
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTerms(string wildcard = "", bool onlyDisplayable = false)
             => await _ontologyTermRepository.ListAsync(filter: x =>
                 x.SnomedTag.Value == DiseaseTag &&
                 x.Value.Contains(wildcard) &&
                 (x.DisplayOnDirectory || !onlyDisplayable));
 
-        public async Task<IEnumerable<OntologyTerm>> ListDiseaseFindingOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false)
+        public async Task<IEnumerable<OntologyTerm>> ListFindingOntologyTerms(string wildcard = "", bool onlyDisplayable = false)
             => await _ontologyTermRepository.ListAsync(filter: x =>
-                (x.SnomedTag.Value == DiseaseTag || x.SnomedTag.Value == FindingTag) &&
+                x.SnomedTag.Value == FindingTag &&
                 x.Value.Contains(wildcard) &&
                 (x.DisplayOnDirectory || !onlyDisplayable));
 
-        public async Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription)
+        public async Task<bool> ValidDiseaseOntologyTermDescription(string ontologyTermDescription)
             => (await _ontologyTermRepository.ListAsync(
                 filter: x =>
                     x.SnomedTag.Value == DiseaseTag &&
@@ -1227,10 +1227,10 @@ namespace Biobanks.Services
                 ))
                 .Any();
 
-        public async Task<bool> ValidDiseaseFindingOntologyTermDescriptionAsync(string ontologyTermDescription)
+        public async Task<bool> ValidFindingOntologyTermDescriptionAsync(string ontologyTermDescription)
             => (await _ontologyTermRepository.ListAsync(
                 filter: x =>
-                    (x.SnomedTag.Value == DiseaseTag || x.SnomedTag.Value == FindingTag) &&
+                    x.SnomedTag.Value == FindingTag &&
                     x.Value == ontologyTermDescription &&
                     x.DisplayOnDirectory
                 ))

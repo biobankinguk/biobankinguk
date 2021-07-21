@@ -245,7 +245,7 @@ namespace Biobanks.Web.Controllers
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            var directoryOntologyTerms = await _biobankReadService.ListDiseaseOntologyTermsAsync("", onlyDisplayable: true);
+            var directoryOntologyTerms = await _biobankReadService.ListDiseaseOntologyTerms("", onlyDisplayable: true);
 
             // Join Ontology Terms In Search and Directory Based On Ontology Term Value
             var model = directoryOntologyTerms.Join(searchOntologyTerms, 
@@ -275,7 +275,9 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListDiseaseFindingOntologyTermsAsync(wildcard, true);
+            var diseaseOntologyTerms = await _biobankReadService.ListDiseaseOntologyTerms(wildcard, true);
+            var findingOntologyTerms = await _biobankReadService.ListFindingOntologyTerms(wildcard, true);
+            var ontologyTerms = diseaseOntologyTerms.Concat(findingOntologyTerms);
 
             var model = ontologyTerms.Select(x =>
                new OntologyTermModel

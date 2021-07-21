@@ -61,7 +61,7 @@ namespace Biobanks.Web.Models.Biobank
         {
             if (modelState != null && modelState.IsValid)
             {
-                if (!await biobankReadService.ValidDiseaseFindingOntologyTermDescriptionAsync(Diagnosis))
+                if (!await biobankReadService.ValidDiseaseOntologyTermDescription(Diagnosis) || !await biobankReadService.ValidFindingOntologyTermDescriptionAsync(Diagnosis))
                 {
                     modelState.AddModelError("Diagnosis",
                         "Please enter a valid Diagnosis or select one from the type ahead results.");
