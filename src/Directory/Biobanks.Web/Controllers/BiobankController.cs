@@ -1443,7 +1443,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+            model.ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync(onlyDisplayable: true))
                 .Select(
                     x =>
                         new OntologyTermModel
