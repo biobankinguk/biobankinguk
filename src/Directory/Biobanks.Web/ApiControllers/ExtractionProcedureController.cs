@@ -37,7 +37,8 @@ namespace Biobanks.Web.ApiControllers
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
                     OtherTerms = x.OtherTerms,
-                    MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList()
+                    MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList(),
+                    DisplayOnDirectory = x.DisplayOnDirectory
                 })
                 .Result
             )
@@ -107,7 +108,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = model.DisplayOnDirectory
             },model.MaterialTypeIds);
 
             //Everything went A-OK!
@@ -147,7 +148,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = model.DisplayOnDirectory
             }, model.MaterialTypeIds);
 
             //Everything went A-OK!
