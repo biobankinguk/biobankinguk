@@ -144,8 +144,8 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<OntologyTerm>> PaginateDiseaseOntologyTerms(int start, int length, string filter = "");
         Task<int> CountDiseaseOntologyTerms(string filter = "");
 
-        Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
-        Task<OntologyTerm> GetExtractionProcedureById(string id);
+        Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "", bool onlyDisplayable = false);
+        Task<OntologyTerm> GetExtractionProcedureById(string id, bool onlyDisplayable = false);
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
         Task<bool> IsExtractionProcedureInUse(string id);
 

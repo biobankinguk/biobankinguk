@@ -1243,19 +1243,19 @@ namespace Biobanks.Services
         .FirstOrDefault()?.ExtractionProcedures
         .ToList();
 
-        public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "")
+        public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "", bool onlyDisplayable = false)
             => await _ontologyTermRepository.ListAsync(false, 
                 x => x.SnomedTag.Value == "Extraction Procedure" 
                      && x.Value.Contains(wildcard) 
-                     && x.DisplayOnDirectory,
+                     && (x.DisplayOnDirectory || !onlyDisplayable),
                 null,
                 x=>x.MaterialTypes);
 
-        public async Task<OntologyTerm> GetExtractionProcedureById(string id)
+        public async Task<OntologyTerm> GetExtractionProcedureById(string id, bool onlyDisplayable = false)
             => (await _ontologyTermRepository.ListAsync(filter:
                 x => x.SnomedTag.Value == "Extraction Procedure"
                      && x.Id == id
-                     && x.DisplayOnDirectory)).FirstOrDefault();
+                     && (x.DisplayOnDirectory || !onlyDisplayable))).FirstOrDefault();
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
             => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
 
