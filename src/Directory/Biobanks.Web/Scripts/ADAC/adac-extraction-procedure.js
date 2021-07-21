@@ -25,7 +25,7 @@ function AdacExtractionProcedureViewModel() {
     this.modalId = "#extraction-procedure-modal";
     this.materialTypes = $(this.modalId).data("material-types");
     
-    this.modal = new ExtractionProcedureModal("", "", 0, this.materialTypes);
+    this.modal = new ExtractionProcedureModal("", "", 0, this.materialTypes, false);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -41,7 +41,7 @@ function AdacExtractionProcedureViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.extractionProcedure(new ExtractionProcedure("", "", 0, this.materialTypes));
+        _this.modal.extractionProcedure(new ExtractionProcedure("", "", 0, this.materialTypes, false));
         _this.setPartialEdit(false);
         _this.showModal();
     };
@@ -55,7 +55,8 @@ function AdacExtractionProcedureViewModel() {
       new ExtractionProcedure(
           extractionProcedure.OntologyTermId,
           extractionProcedure.Description,
-          extractionProcedure.MaterialTypeIds
+          extractionProcedure.MaterialTypeIds,
+          diseaseStatus.DisplayOnDirectory
       )
     );
     $("#OntologyTermId").prop('readonly', true);
