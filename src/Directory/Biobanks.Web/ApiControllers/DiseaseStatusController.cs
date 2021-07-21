@@ -28,7 +28,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            return (await _biobankReadService.ListDiseaseOntologyTermsAsync()).Select(x =>
+            return (await _biobankReadService.ListDiseaseOntologyTerms()).Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
@@ -47,7 +47,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListDiseaseOntologyTermsAsync()).Where(x => x.Id == id).First();
+            var model = (await _biobankReadService.ListDiseaseOntologyTerms()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {
@@ -86,7 +86,7 @@ namespace Biobanks.Web.ApiControllers
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {
                 //Allow editing of only Other terms field if diagnosis in use
-                var diagnosis = (await _biobankReadService.ListDiseaseOntologyTermsAsync()).Where(x => x.Id == id).First();
+                var diagnosis = (await _biobankReadService.ListDiseaseOntologyTerms()).Where(x => x.Id == id).First();
                 if (diagnosis.Value != model.Description)
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
@@ -118,7 +118,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
             //if ontology term id is in use by another ontology term
-            if ((await _biobankReadService.ListDiseaseOntologyTermsAsync()).Any(x => x.Id == model.OntologyTermId))
+            if ((await _biobankReadService.ListDiseaseOntologyTerms()).Any(x => x.Id == model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             //If this description is valid, it already exists

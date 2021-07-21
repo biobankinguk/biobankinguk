@@ -280,7 +280,7 @@ function PublicationsViewModel() {
                 }
                 else {
                     // no results
-                    _this.searchResult("No publication found for the given PubMed Id.");
+                    _this.searchResult("<b>No publication found for the given PubMed Id.</b><br/>Please supply a PubMed ID for the publication you want to add. We use the EuroPMC database to extract the details, therefore if your publication is not found, please check it is available on EuroPMC.");
                 }
             });
         } else if (action == _this.modal.modalModeApprove) {
