@@ -246,7 +246,7 @@ namespace Biobanks.Web.Controllers
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
             var directoryDiseaseTerms = await _biobankReadService.ListDiseaseOntologyTerms(onlyDisplayable: true);
-            var directoryFindingTerms = await _biobankReadService.ListFindings(onlyDisplayable: true);
+            var directoryFindingTerms = await _biobankReadService.ListFindingOntologyTerms(onlyDisplayable: true);
 
             // Join Ontology Terms In Search and Directory Based On Ontology Term Value
             var model = directoryDiseaseTerms
