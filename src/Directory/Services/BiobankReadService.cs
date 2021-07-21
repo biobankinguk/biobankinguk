@@ -22,6 +22,7 @@ namespace Biobanks.Services
     public class BiobankReadService : IBiobankReadService
     {
         private const string DiseaseTag = "Disease";
+        private const string FindingTag = "Finding";
 
         #region Properties and ctor
 
@@ -1205,13 +1206,19 @@ namespace Biobanks.Services
                     .Take(length)
                     .ToListAsync();
 
-        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false)
+        public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTerms(string wildcard = "", bool onlyDisplayable = false)
             => await _ontologyTermRepository.ListAsync(filter: x =>
                 x.SnomedTag.Value == DiseaseTag &&
                 x.Value.Contains(wildcard) &&
                 (x.DisplayOnDirectory || !onlyDisplayable));
 
-        public async Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription)
+        public async Task<IEnumerable<OntologyTerm>> ListFindingOntologyTerms(string wildcard = "", bool onlyDisplayable = false)
+            => await _ontologyTermRepository.ListAsync(filter: x =>
+                x.SnomedTag.Value == FindingTag &&
+                x.Value.Contains(wildcard) &&
+                (x.DisplayOnDirectory || !onlyDisplayable));
+
+        public async Task<bool> ValidDiseaseOntologyTermDescription(string ontologyTermDescription)
             => (await _ontologyTermRepository.ListAsync(
                 filter: x =>
                     x.SnomedTag.Value == DiseaseTag &&
@@ -1220,6 +1227,14 @@ namespace Biobanks.Services
                 ))
                 .Any();
 
+        public async Task<bool> ValidFindingOntologyTermDescription(string ontologyTermDescription)
+            => (await _ontologyTermRepository.ListAsync(
+                filter: x =>
+                    x.SnomedTag.Value == FindingTag &&
+                    x.Value == ontologyTermDescription &&
+                    x.DisplayOnDirectory
+                ))
+                .Any();
         #endregion
         #region RefData: Extraction Procedure
 
