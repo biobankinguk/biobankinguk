@@ -1227,7 +1227,7 @@ namespace Biobanks.Services
                 ))
                 .Any();
 
-        public async Task<bool> ValidFindingOntologyTermDescriptionAsync(string ontologyTermDescription)
+        public async Task<bool> ValidFindingOntologyTermDescription(string ontologyTermDescription)
             => (await _ontologyTermRepository.ListAsync(
                 filter: x =>
                     x.SnomedTag.Value == FindingTag &&
