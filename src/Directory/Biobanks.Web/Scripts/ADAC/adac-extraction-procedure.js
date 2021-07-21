@@ -41,7 +41,7 @@ function AdacExtractionProcedureViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.extractionProcedure(new ExtractionProcedure("", "", 0, this.materialTypes, false));
+        _this.modal.extractionProcedure(new ExtractionProcedure("", "", 0, false));
         _this.setPartialEdit(false);
         _this.showModal();
     };
@@ -56,7 +56,7 @@ function AdacExtractionProcedureViewModel() {
           extractionProcedure.OntologyTermId,
           extractionProcedure.Description,
           extractionProcedure.MaterialTypeIds,
-          diseaseStatus.DisplayOnDirectory
+          extractionProcedure.DisplayOnDirectory
       )
     );
     $("#OntologyTermId").prop('readonly', true);
