@@ -31,9 +31,9 @@ namespace Biobanks.Aggregator.Services
                 .Include(x => x.SampleContentMethod)
                 .Where(x => x.OrganisationId == sample.OrganisationId)
                 .Where(x =>
-                    !string.IsNullOrEmpty(sample.SampleContentId)
-                        ? x.CollectionName == sample.CollectionName && x.SampleContentId == sample.SampleContentId
-                        : x.DateCreated >= earliest && x.DateCreated <= latest
+                    x.SampleContent == null
+                        ? x.DateCreated >= earliest && x.DateCreated <= latest // Non-Extracted
+                        : x.CollectionName == sample.CollectionName && x.SampleContentId == sample.SampleContentId // Extracted
                 )
                 .ToListAsync();
         }
