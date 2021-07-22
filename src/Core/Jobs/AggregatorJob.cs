@@ -30,13 +30,13 @@ namespace Core.Jobs
 
         public async Task Run()
         {
-            // All Samples Flagged For Update/Deletion
+            // All Extracted Samples Flagged For Update/Deletion
             var dirtyExtractedSamples = await _sampleService.ListDirtyExtractedSamples();
 
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamples();
 
-            // Group Samples Into Collections
+            // Group Extracted Samples Into Collections
             foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyExtractedSamples))
             {
                 var sample = collectionSamples.First();
@@ -100,6 +100,11 @@ namespace Core.Jobs
                 // Flag These Samples As Clean
                 await _sampleService.CleanSamples(samples);
             }
+
+            // Collate Remaining Non-Extracted Samples
+            var dirtyNonExtractedSamples = await _sampleService.ListDirtyNonExtractedSamples();
+        
+            
         }
     }
 }
