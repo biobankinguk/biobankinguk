@@ -10,6 +10,8 @@ namespace Biobanks.Aggregator.Services.Contracts
 
         Task<IEnumerable<LiveSample>> ListDirtyExtractedSamples();
 
+        Task<IEnumerable<LiveSample>> ListDirtyNonExtractedSamples();
+
         Task CleanSamples(IEnumerable<LiveSample> samples);
 
         Task DeleteFlaggedSamples();
