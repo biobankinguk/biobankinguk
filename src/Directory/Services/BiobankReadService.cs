@@ -1206,6 +1206,27 @@ namespace Biobanks.Services
                     .Take(length)
                     .ToListAsync();
 
+        public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string wildcard = "", List<string> tags = null, bool onlyDisplayable = false)
+        {
+            var result = _context.OntologyTerms
+                .Include(x => x.SnomedTag)
+                .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
+
+            // Filter By Wildcard
+            if (!string.IsNullOrEmpty(wildcard))
+                result = result.Where(x => x.Value.Contains(wildcard));
+
+            // Filter By SnomedTag
+            if (tags != null)
+                result = result.Where(x =>
+                    tags.Any()
+                        ? x.SnomedTag != null && tags.Contains(x.SnomedTag.Value) // Term With Included Tag
+                        : x.SnomedTag == null); // Terms Without Tags
+
+            return await result.ToListAsync();
+        }
+         
+
         public async Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTerms(string wildcard = "", bool onlyDisplayable = false)
             => await _ontologyTermRepository.ListAsync(
                 filter: x =>
