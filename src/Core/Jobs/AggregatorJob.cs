@@ -80,7 +80,7 @@ namespace Core.Jobs
             var collectionName = _aggregationService.GenerateCollectionName(baseSample);
             var collection = 
                 await _collectionService.GetCollection(organisation.OrganisationId, collectionName) 
-                ?? _aggregationService.GenerateCollection(samples);
+                ?? _aggregationService.GenerateCollection(samples, collectionName);
 
             if (samples.Any())
             {

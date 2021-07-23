@@ -67,7 +67,7 @@ namespace Biobanks.Aggregator.Services
                 .Select(x => x.AsEnumerable());
         }
 
-        public Collection GenerateCollection(IEnumerable<LiveSample> samples)
+        public Collection GenerateCollection(IEnumerable<LiveSample> samples, string collectionName)
         {
             var orderedSamples = samples.OrderBy(y => y.DateCreated);
             var oldestSample = orderedSamples.First();
@@ -75,9 +75,6 @@ namespace Biobanks.Aggregator.Services
 
             // Collection Complete If Newest Sample Older Than ~6 Months
             var complete = (DateTime.Now - newestSample.DateCreated) > TimeSpan.FromDays(180);
-
-            // Generate Collection Name
-            var collectionName = GenerateCollectionName(orderedSamples.First(x => x.SampleContentId != default)); 
 
             return new Collection
             {
