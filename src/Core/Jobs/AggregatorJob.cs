@@ -61,8 +61,8 @@ namespace Core.Jobs
                 {
                     SampleContent = new OntologyTerm
                     {
-                        Id = "",
-                        Value = ""
+                        Id = "102499006",
+                        Value = "Fit and well (finding)"
                     },
                     OrganisationId = collectionSamples.First().OrganisationId
                 };
