@@ -2,6 +2,7 @@
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Extensions;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,6 @@ namespace Biobanks.Aggregator.Services
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoCollections(IEnumerable<LiveSample> samples)
         {
             return samples
-                .Where(x => !string.IsNullOrEmpty(x.SampleContentId))
                 .GroupBy(x => new
                 {
                     x.OrganisationId,
@@ -138,6 +138,6 @@ namespace Biobanks.Aggregator.Services
             => string.IsNullOrEmpty(sample.CollectionName)
                 ? $"{sample.SampleContent.Value}"
                 : $"{sample.CollectionName} ({sample.SampleContent.Value})";
-                
+
     }
 }

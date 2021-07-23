@@ -1,6 +1,9 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
+using Biobanks.Entities.Api;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Shared.Services.Contracts;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,75 +39,100 @@ namespace Core.Jobs
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamples();
 
-            // Group Extracted Samples Into Collections
+            // Aggregate Extracted Samples
             foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyExtractedSamples))
             {
-                var sample = collectionSamples.First();
+                // Include Relevant Non-Extracted Samples
                 var samples = await _sampleService.ListSimilarSamples(collectionSamples);
-                var organisation = await _organisationService.GetById(sample.OrganisationId);
 
-                // Find Exisiting Or Generate New Collection
-                var collectionName = _aggregationService.GenerateCollectionName(sample);
-                var collection =
-                    await _collectionService.GetCollection(sample.OrganisationId, collectionName) ??
-                    _aggregationService.GenerateCollection(samples.Any() ? samples : collectionSamples);
+                await AggregateCollectionSamples(
+                    baseSample: collectionSamples.First(),
+                    samples: samples.Any() 
+                        ? samples 
+                        : collectionSamples);
+            }
 
-                if (samples.Any())
+            // Aggregate Remaining Non-Extracted Samples
+            var dirtyNonExtractedSamples = await _sampleService.ListDirtyNonExtractedSamples();
+
+            foreach (var collectionSamples in dirtyNonExtractedSamples.GroupBy(x => x.OrganisationId).Select(x => x.AsEnumerable()))
+            {
+                var baseSample = new LiveSample
                 {
-                    // Update Collection Contextual Fields
-                    collection.LastUpdated = DateTime.Now;
-                    collection.CollectionTypeId = organisation.CollectionTypeId;
-                    collection.AccessConditionId = organisation.AccessConditionId ?? 0;
-
-                    // Clear Current SampleSets - Rebuilt Below
-                    collection.SampleSets.Clear(); 
-
-                    // Group Samples Into SampleSets
-                    foreach (var sampleSetSamples in _aggregationService.GroupIntoSampleSets(samples))
+                    SampleContent = new OntologyTerm
                     {
-                        var sampleSet = _aggregationService.GenerateSampleSet(sampleSetSamples);
+                        Id = "",
+                        Value = ""
+                    },
+                    OrganisationId = collectionSamples.First().OrganisationId
+                };
 
-                        // Group Samples Into MaterialDetails
-                        foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
-                        {
-                            var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
+                // Aggregate Under 'Fit and Well'
+                await AggregateCollectionSamples(baseSample, collectionSamples);
+            }
+        }
 
-                            // Set Collection Percentage For Material Detail
-                            materialDetail.CollectionPercentage =
-                                _refDataService.GetCollectionPercentage(
-                                    100m * materialDetailSamples.Count() / sampleSetSamples.Count());
+        private async Task AggregateCollectionSamples(LiveSample baseSample, IEnumerable<LiveSample> samples)
+        {
+            var organisation = await _organisationService.GetById(baseSample.OrganisationId);
 
-                            sampleSet.MaterialDetails.Add(materialDetail);
-                        }
+            // Find Exisiting Or Generate New Collection
+            var collectionName = _aggregationService.GenerateCollectionName(baseSample);
+            var collection = 
+                await _collectionService.GetCollection(organisation.OrganisationId, collectionName) 
+                ?? _aggregationService.GenerateCollection(samples);
 
-                        collection.SampleSets.Add(sampleSet);
+            if (samples.Any())
+            {
+                // Update Collection Contextual Fields
+                collection.LastUpdated = DateTime.Now;
+                collection.CollectionTypeId = organisation.CollectionTypeId;
+                collection.AccessConditionId = organisation.AccessConditionId ?? 0;
+
+                // Clear Current SampleSets - Rebuilt Below
+                collection.SampleSets.Clear();
+
+                // Group Samples Into SampleSets
+                foreach (var sampleSetSamples in _aggregationService.GroupIntoSampleSets(samples))
+                {
+                    var sampleSet = _aggregationService.GenerateSampleSet(sampleSetSamples);
+
+                    // Group Samples Into MaterialDetails
+                    foreach (var materialDetailSamples in _aggregationService.GroupIntoMaterialDetails(sampleSetSamples))
+                    {
+                        var materialDetail = _aggregationService.GenerateMaterialDetail(materialDetailSamples);
+
+                        // Set Collection Percentage For Material Detail
+                        materialDetail.CollectionPercentage =
+                            _refDataService.GetCollectionPercentage(
+                                100m * materialDetailSamples.Count() / sampleSetSamples.Count());
+
+                        sampleSet.MaterialDetails.Add(materialDetail);
                     }
 
-                    // Write Collection To DB
-                    if (collection.CollectionId == default)
-                    {
-                        await _collectionService.AddCollection(collection);
-                    }
-                    else
-                    {
-                        await _collectionService.UpdateCollection(collection);
-                    }
+                    collection.SampleSets.Add(sampleSet);
+                }
+
+                // Write Collection To DB
+                if (collection.CollectionId == default)
+                {
+                    await _collectionService.AddCollection(collection);
                 }
                 else
                 {
-                    await _collectionService.DeleteMaterialDetailsBySampleSetIds(collection.SampleSets.Select(x => x.Id));
-                    await _collectionService.DeleteSampleSetByIds(collection.SampleSets.Select(x => x.Id));
-                    await _collectionService.DeleteCollection(collection.CollectionId);
+                    await _collectionService.UpdateCollection(collection);
                 }
-
-                // Flag These Samples As Clean
-                await _sampleService.CleanSamples(samples);
+            }
+            else
+            {
+                // TODO: Use Proper Cascade Deletion
+                await _collectionService.DeleteMaterialDetailsBySampleSetIds(collection.SampleSets.Select(x => x.Id));
+                await _collectionService.DeleteSampleSetByIds(collection.SampleSets.Select(x => x.Id));
+                await _collectionService.DeleteCollection(collection.CollectionId);
             }
 
-            // Collate Remaining Non-Extracted Samples
-            var dirtyNonExtractedSamples = await _sampleService.ListDirtyNonExtractedSamples();
-        
-            
+            // Flag These Samples As Clean
+            await _sampleService.CleanSamples(samples);
         }
     }
 }
