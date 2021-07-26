@@ -56,15 +56,13 @@ namespace Core.Jobs
             // Aggregate Remaining Non-Extracted Samples
             var remainingSamples = await _sampleService.ListDirtyNonExtractedSamples();
 
-            // All Reminaing Non-Extracted Samples Aggregated Under 'Fit and Well'
-            var fitAndWell = _refDataService.GetOntologyTerm(FitAndWell);
-
             foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyNonExtractedSamples))
             {
                 var baseSample = new LiveSample
                 {
-                    SampleContent = fitAndWell,
-                    OrganisationId = collectionSamples.First().OrganisationId
+                    OrganisationId = collectionSamples.First().OrganisationId,
+                    SampleContentId = FitAndWell,
+                    SampleContent = _refDataService.GetOntologyTerm(FitAndWell)
                 };
 
                 // Remaining Maybe Empty If All Dirty Non-Extracted Samples Were Deleted
@@ -81,10 +79,19 @@ namespace Core.Jobs
 
             // Find Exisiting Or Generate New Collection
             var collectionName = _aggregationService.GenerateCollectionName(baseSample);
-            var collection = 
-                await _collectionService.GetCollection(organisation.OrganisationId, collectionName) 
-                ?? _aggregationService.GenerateCollection(samples, collectionName);
+            var collection = await _collectionService.GetCollection(organisation.OrganisationId, collectionName);
 
+            // Generate Collection If None Existing
+            if (collection is null)
+            {
+                collection = _aggregationService.GenerateCollection(samples, collectionName);
+
+                if (string.IsNullOrEmpty(collection.OntologyTermId))
+                {
+                    collection.OntologyTermId = baseSample.SampleContentId;
+                }
+            }
+                
             if (samples.Any())
             {
                 // Update Collection Contextual Fields

@@ -2,12 +2,10 @@
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Services
