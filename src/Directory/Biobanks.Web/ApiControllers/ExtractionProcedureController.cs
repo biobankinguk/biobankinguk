@@ -79,7 +79,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidOntologyTermDescriptionAsync(id, model.Description))
+            if (await _biobankReadService.ValidOntologyTerm(id, description: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
@@ -123,7 +123,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidOntologyTerm(description: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }

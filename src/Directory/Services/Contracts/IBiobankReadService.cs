@@ -131,16 +131,13 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
-        Task<bool> ValidOntologyTermDescriptionAsync(string OntologyTermDescription);
-        Task<bool> ValidOntologyTermDescriptionAsync(string ontologyTermId, string ontologyDescription);
-        Task<OntologyTerm> GetOntologyTermByDescription(string description);
-        Task<int> GetOntologyTermCollectionCapabilityCount(string id);
+        Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string description = null, List<string> tags = null, bool onlyDisplayable = false);
+        Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string description = null, List<string> tags = null);
+        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null);
+        Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null);
         Task<bool> IsOntologyTermInUse(string id);
-
-        Task<IEnumerable<OntologyTerm>> ListDiseaseOntologyTermsAsync(string wildcard = "", bool onlyDisplayable = false);
-        Task<bool> ValidDiseaseOntologyTermDescriptionAsync(string ontologyTermDescription);
-        Task<IEnumerable<OntologyTerm>> PaginateDiseaseOntologyTerms(int start, int length, string filter = "");
-        Task<int> CountDiseaseOntologyTerms(string filter = "");
+        Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
+        Task<int> GetOntologyTermCollectionCapabilityCount(string id);
 
         Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
         Task<OntologyTerm> GetExtractionProcedureById(string id);
