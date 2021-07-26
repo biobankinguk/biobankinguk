@@ -54,10 +54,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = await _biobankReadService.GetOntologyTerm(id, null, new List<string>
+            var model = await _biobankReadService.GetOntologyTerm(id, tags: new List<string>
             {
                 SnomedTags.ExtractionProcedure
-            }, false);
+            });
 
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
@@ -97,10 +97,10 @@ namespace Biobanks.Web.ApiControllers
             if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)
                 ModelState.AddModelError("MaterialTypeIds", "Add at least one material type to the extraction procedure.");
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(id, null, new List<string>
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(id, tags: new List<string>
             {
                 SnomedTags.ExtractionProcedure
-            },false);
+            });
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
                 //Allow editing of only Other terms field if ontologyterm in use

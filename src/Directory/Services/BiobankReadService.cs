@@ -1205,7 +1205,7 @@ namespace Biobanks.Services
                     .ToListAsync();
         }
 
-        public async Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = true)
+        public async Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false)
             => await QueryOntologyTerms(id, description, tags, onlyDisplayable).SingleOrDefaultAsync();
 
         public async Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null)
