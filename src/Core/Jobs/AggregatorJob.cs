@@ -1,6 +1,6 @@
-﻿using Biobanks.Aggregator.Services.Contracts;
+﻿using Biobanks.Aggregator.Constants;
+using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Entities.Api;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Shared.Services.Contracts;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,6 @@ namespace Core.Jobs
 {
     public class AggregatorJob
     {
-        private const string FitAndWell = "102499006";
-
         private readonly IAggregationService _aggregationService;
         private readonly IReferenceDataService _refDataService;
         private readonly IOrganisationService _organisationService;
@@ -58,8 +56,8 @@ namespace Core.Jobs
                 var baseSample = new LiveSample
                 {
                     OrganisationId = collectionSamples.First().OrganisationId,
-                    SampleContentId = FitAndWell,
-                    SampleContent = _refDataService.GetOntologyTerm(FitAndWell)
+                    SampleContentId = OntologyTerms.FitAndWell,
+                    SampleContent = _refDataService.GetOntologyTerm(OntologyTerms.FitAndWell)
                 };
 
                 // Remaining Maybe Empty If All Dirty Non-Extracted Samples Were Deleted

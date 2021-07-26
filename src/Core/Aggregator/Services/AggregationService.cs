@@ -1,4 +1,5 @@
-﻿using Biobanks.Aggregator.Services.Contracts;
+﻿using Biobanks.Aggregator.Constants;
+using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
@@ -115,20 +116,17 @@ namespace Biobanks.Aggregator.Services
         public MaterialDetail GenerateMaterialDetail(IEnumerable<LiveSample> samples)
         {
             var sample = samples.First();
+            var contentId = sample.SampleContentId;
+            var contentMethod = sample.SampleContentMethod?.Value ?? "";
 
-            // TODO: Is there a better way rather than using hardcoded values?
             // Map Macroscopic Assessment
-            //var macro = 
-            //    sample.SampleContentMethod.Value.StartsWith("Microscopic") || 
-            //    sample.SampleContentMethod.Value.StartsWith("Macroscopic")
-            //        ? sample.SampleContent.Id == "102499006" || // Fit and Healthy
-            //          sample.SampleContent.Id == "23875004"     // No pathelogical diagnosis
-            //            ? _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Affected"))
-            //            : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Affected"))
-            //        : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Applicable"));
-
-            // TODO: Sort Out Non-Extracted Samples
-            var macro = _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Applicable"));
+            var macro =
+                contentMethod.StartsWith("Microscopic") || contentMethod.StartsWith("Macroscopic")
+                    ? contentId == OntologyTerms.FitAndWell || 
+                      contentId == OntologyTerms.NoPathelogicalDisease
+                        ? _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.NonAffected)
+                        : _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.Affected)
+                    : _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.NotApplicable);
 
             return new MaterialDetail
             {
