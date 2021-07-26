@@ -137,9 +137,6 @@ namespace Core.Jobs
             }
             else
             {
-                // TODO: Use Proper Cascade Deletion
-                await _collectionService.DeleteMaterialDetailsBySampleSetIds(collection.SampleSets.Select(x => x.Id));
-                await _collectionService.DeleteSampleSetByIds(collection.SampleSets.Select(x => x.Id));
                 await _collectionService.DeleteCollection(collection.CollectionId);
             }
 

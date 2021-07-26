@@ -61,25 +61,5 @@ namespace Biobanks.Aggregator.Services
 
         public async Task DeleteCollection(int id)
             => await _db.Collections.Where(x => x.CollectionId == id).DeleteAsync();
-
-        public async Task DeleteSampleSetByIds(IEnumerable<int> ids)
-        {
-            foreach (var sampleSet in _db.SampleSets.Where(x => ids.Contains(x.Id)))
-            {
-                _db.Remove(sampleSet);
-            }
-
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteMaterialDetailsBySampleSetIds(IEnumerable<int> ids)
-        {
-            foreach (var materialDetail in _db.MaterialDetails.Where(x => ids.Contains(x.SampleSetId)))
-            {
-                _db.Remove(materialDetail);
-            }
-
-            await _db.SaveChangesAsync();
-        }
     }
 }
