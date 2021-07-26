@@ -39,9 +39,6 @@ namespace Core.Jobs
             var dirtyExtractedSamples = await _sampleService.ListDirtyExtractedSamples();
             var dirtyNonExtractedSamples = await _sampleService.ListDirtyNonExtractedSamples();
 
-            // Delete Samples With isDeleted Flag
-            await _sampleService.DeleteFlaggedSamples();
-
             // Aggregate Extracted Samples
             foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyExtractedSamples))
             {
@@ -66,11 +63,16 @@ namespace Core.Jobs
                 };
 
                 // Remaining Maybe Empty If All Dirty Non-Extracted Samples Were Deleted
-                var samples = remainingSamples.Where(x => x.OrganisationId == baseSample.OrganisationId);
+                var samples = remainingSamples
+                    .Where(x => x.OrganisationId == baseSample.OrganisationId)
+                    .Where(x => !x.IsDeleted);
 
                 // Aggregate Under 'Fit and Well'
                 await AggregateCollectionSamples(baseSample, samples);
             }
+
+            // Finally Delete Samples With isDeleted Flag
+            await _sampleService.DeleteFlaggedSamples();
         }
 
         private async Task AggregateCollectionSamples(LiveSample baseSample, IEnumerable<LiveSample> samples)

@@ -1,7 +1,6 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
-using Biobanks.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,6 +28,7 @@ namespace Biobanks.Aggregator.Services
             return await _db.Samples
                 .Include(x => x.SampleContent)
                 .Include(x => x.SampleContentMethod)
+                .Where(x => !x.IsDeleted)
                 .Where(x => x.OrganisationId == sample.OrganisationId)
                 .Where(x =>
                     x.SampleContent == null
@@ -39,18 +39,31 @@ namespace Biobanks.Aggregator.Services
         }
 
         public async Task<IEnumerable<LiveSample>> ListDirtyExtractedSamples()
-            => await _db.Samples.Where(x => x.IsDirty && !string.IsNullOrEmpty(x.SampleContentId)).ToListAsync();
+            => await _db.Samples
+                .Include(x => x.SampleContent)
+                .Include(x => x.SampleContentMethod)
+                .Where(x => x.IsDirty && !string.IsNullOrEmpty(x.SampleContentId))
+                .ToListAsync();
 
         public async Task<IEnumerable<LiveSample>> ListDirtyNonExtractedSamples()
-            => await _db.Samples.Where(x => x.IsDirty && string.IsNullOrEmpty(x.SampleContentId)).ToListAsync();
+            => await _db.Samples
+                .Include(x => x.SampleContent)
+                .Include(x => x.SampleContentMethod)
+                .Where(x => x.IsDirty && string.IsNullOrEmpty(x.SampleContentId))
+                .ToListAsync();
 
         public async Task CleanSamples(IEnumerable<LiveSample> samples)
             => await _db.Samples
-                    .Where(x => samples.Select(x => x.Id).Contains(x.Id))
-                    .UpdateFromQueryAsync(x => new LiveSample { IsDirty = false });
+                .Where(x => samples.Select(x => x.Id).Contains(x.Id))
+                .UpdateFromQueryAsync(x => new LiveSample 
+                { 
+                    IsDirty = false 
+                });
 
         public async Task DeleteFlaggedSamples()
-            => await _db.Samples.Where(x => x.IsDeleted).DeleteAsync();
+            => await _db.Samples
+                .Where(x => x.IsDeleted)
+                .DeleteAsync();
 
     }
 }
