@@ -2,6 +2,7 @@ using AutoMapper;
 
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
+using Biobanks.Directory.Services.Constants;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Identity.Constants;
@@ -1444,7 +1445,10 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync(onlyDisplayable: true))
+            model.ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(null, new List<string>
+                {
+                    SnomedTags.ExtractionProcedure
+                },true))
                 .Select(
                     x =>
                         new OntologyTermModel
