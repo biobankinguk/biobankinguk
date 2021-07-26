@@ -11,6 +11,8 @@ namespace Core.Jobs
 {
     public class AggregatorJob
     {
+        private const string FitAndWell = "102499006";
+
         private readonly IAggregationService _aggregationService;
         private readonly IReferenceDataService _refDataService;
         private readonly IOrganisationService _organisationService;
@@ -35,6 +37,7 @@ namespace Core.Jobs
         {
             // All Extracted Samples Flagged For Update/Deletion
             var dirtyExtractedSamples = await _sampleService.ListDirtyExtractedSamples();
+            var dirtyNonExtractedSamples = await _sampleService.ListDirtyNonExtractedSamples();
 
             // Delete Samples With isDeleted Flag
             await _sampleService.DeleteFlaggedSamples();
@@ -46,29 +49,29 @@ namespace Core.Jobs
                 var samples = await _sampleService.ListSimilarSamples(collectionSamples);
 
                 await AggregateCollectionSamples(
-                    baseSample: collectionSamples.First(),
-                    samples: samples.Any() 
-                        ? samples 
-                        : collectionSamples);
+                    baseSample: collectionSamples.First(), 
+                    samples);
             }
 
             // Aggregate Remaining Non-Extracted Samples
-            var dirtyNonExtractedSamples = await _sampleService.ListDirtyNonExtractedSamples();
+            var remainingSamples = await _sampleService.ListDirtyNonExtractedSamples();
+
+            // All Reminaing Non-Extracted Samples Aggregated Under 'Fit and Well'
+            var fitAndWell = _refDataService.GetOntologyTerm(FitAndWell);
 
             foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyNonExtractedSamples))
             {
                 var baseSample = new LiveSample
                 {
-                    SampleContent = new OntologyTerm
-                    {
-                        Id = "102499006",
-                        Value = "Fit and well (finding)"
-                    },
+                    SampleContent = fitAndWell,
                     OrganisationId = collectionSamples.First().OrganisationId
                 };
 
+                // Remaining Maybe Empty If All Dirty Non-Extracted Samples Were Deleted
+                var samples = remainingSamples.Where(x => x.OrganisationId == baseSample.OrganisationId);
+
                 // Aggregate Under 'Fit and Well'
-                await AggregateCollectionSamples(baseSample, collectionSamples);
+                await AggregateCollectionSamples(baseSample, samples);
             }
         }
 
