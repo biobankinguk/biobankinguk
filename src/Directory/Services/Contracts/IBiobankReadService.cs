@@ -133,14 +133,12 @@ namespace Biobanks.Services.Contracts
 
         Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string description = null, List<string> tags = null, bool onlyDisplayable = false);
         Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string description = null, List<string> tags = null);
-        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null);
+        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = true);
         Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null);
         Task<bool> IsOntologyTermInUse(string id);
         Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
         Task<int> GetOntologyTermCollectionCapabilityCount(string id);
 
-        Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "", bool onlyDisplayable = false);
-        Task<OntologyTerm> GetExtractionProcedureById(string id, bool onlyDisplayable = false);
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
         Task<bool> IsExtractionProcedureInUse(string id);
 

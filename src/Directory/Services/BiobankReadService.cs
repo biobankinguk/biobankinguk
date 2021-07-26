@@ -1168,7 +1168,9 @@ namespace Biobanks.Services
             string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false)
         {
             var query = _context.OntologyTerms
+                .AsNoTracking()
                 .Include(x => x.SnomedTag)
+                .Include(x=> x.MaterialTypes)
                 .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
            
             // Filter By ID
@@ -1203,8 +1205,8 @@ namespace Biobanks.Services
                     .ToListAsync();
         }
 
-        public async Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null)
-            => await QueryOntologyTerms(id, description, tags, onlyDisplayable: true).SingleOrDefaultAsync();
+        public async Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = true)
+            => await QueryOntologyTerms(id, description, tags, onlyDisplayable).SingleOrDefaultAsync();
 
         public async Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null)
             => await QueryOntologyTerms(id, description, tags).AnyAsync();
@@ -1226,19 +1228,6 @@ namespace Biobanks.Services
         .Where(x=> x.DisplayOnDirectory || !onlyDisplayable)
         .ToList();
 
-        public async Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "", bool onlyDisplayable = false)
-            => await _ontologyTermRepository.ListAsync(false, 
-                x => x.SnomedTag.Value == "Extraction Procedure" 
-                     && x.Value.Contains(wildcard) 
-                     && (x.DisplayOnDirectory || !onlyDisplayable),
-                null,
-                x=>x.MaterialTypes);
-
-        public async Task<OntologyTerm> GetExtractionProcedureById(string id, bool onlyDisplayable = false)
-            => (await _ontologyTermRepository.ListAsync(filter:
-                x => x.SnomedTag.Value == "Extraction Procedure"
-                     && x.Id == id
-                     && (x.DisplayOnDirectory || !onlyDisplayable))).FirstOrDefault();
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
             => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
 
@@ -1324,7 +1313,10 @@ namespace Biobanks.Services
             => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
 
         public async Task<bool> IsMaterialTypeAssigned(int id)
-            => (await ListExtractionProceduresAsync()).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
+            => (await ListOntologyTerms(tags: new List<string>
+            {
+                SnomedTags.ExtractionProcedure
+            })).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
