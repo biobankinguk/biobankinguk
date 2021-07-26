@@ -14,6 +14,8 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Directory.Services.Constants;
 
 namespace Biobanks.Web.Controllers
 {
@@ -40,7 +42,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrWhiteSpace(ontologyTerm))
             {
-                var term = await _biobankReadService.GetOntologyTermByDescription(ontologyTerm);
+                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm);
 
                 if (term is null)
                 {
@@ -147,7 +149,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrEmpty(ontologyTerm))
             {
-                var term = await _biobankReadService.GetOntologyTermByDescription(ontologyTerm);
+                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm);
 
                 if (term is null)
                 {
@@ -245,7 +247,11 @@ namespace Biobanks.Web.Controllers
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            var directoryOntologyTerms = await _biobankReadService.ListDiseaseOntologyTerms("", onlyDisplayable: true);
+            var directoryOntologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            {
+                SnomedTags.Disease,
+                SnomedTags.Finding
+            });
 
             // Join Ontology Terms In Search and Directory Based On Ontology Term Value
             var model = directoryOntologyTerms.Join(searchOntologyTerms, 
@@ -275,9 +281,11 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var diseaseOntologyTerms = await _biobankReadService.ListDiseaseOntologyTerms(wildcard, true);
-            var findingOntologyTerms = await _biobankReadService.ListFindingOntologyTerms(wildcard, true);
-            var ontologyTerms = diseaseOntologyTerms.Concat(findingOntologyTerms);
+            var ontologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            {
+                SnomedTags.Disease,
+                SnomedTags.Finding
+            });
 
             var model = ontologyTerms.Select(x =>
                new OntologyTermModel

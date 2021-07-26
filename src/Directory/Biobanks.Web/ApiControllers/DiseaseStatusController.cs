@@ -7,6 +7,9 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
+using Biobanks.Directory.Services.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -28,7 +31,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            return (await _biobankReadService.ListDiseaseOntologyTerms()).Select(x =>
+            var diseaseTerms = await _biobankReadService.ListOntologyTerms(tags: new List<string>
+            {
+                SnomedTags.Disease
+            });
+
+            return diseaseTerms.Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
@@ -47,7 +55,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = (await _biobankReadService.ListDiseaseOntologyTerms()).Where(x => x.Id == id).First();
+            var model = await _biobankReadService.GetOntologyTerm(id, tags: new List<string> { SnomedTags.Disease });
 
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {
@@ -78,7 +86,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidOntologyTermDescriptionAsync(id, model.Description))
+            if (await _biobankReadService.ValidOntologyTerm(id, description: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
@@ -86,7 +94,8 @@ namespace Biobanks.Web.ApiControllers
             if (await _biobankReadService.IsOntologyTermInUse(id))
             {
                 //Allow editing of only Other terms field if diagnosis in use
-                var diagnosis = (await _biobankReadService.ListDiseaseOntologyTerms()).Where(x => x.Id == id).First();
+                var diagnosis = await _biobankReadService.GetOntologyTerm(id, tags: new List<string> { SnomedTags.Disease });
+                
                 if (diagnosis.Value != model.Description)
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
@@ -118,11 +127,11 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
             //if ontology term id is in use by another ontology term
-            if ((await _biobankReadService.ListDiseaseOntologyTerms()).Any(x => x.Id == model.OntologyTermId))
+            if (await _biobankReadService.ValidOntologyTerm(id: model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidOntologyTermDescriptionAsync(model.Description))
+            if (await _biobankReadService.ValidOntologyTerm(description: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }

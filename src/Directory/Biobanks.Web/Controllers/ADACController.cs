@@ -25,6 +25,7 @@ using System.Data.Entity;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.ApplicationInsights;
+using Biobanks.Directory.Services.Constants;
 
 namespace Biobanks.Web.Controllers
 {
@@ -1148,7 +1149,12 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            return View((await _biobankReadService.ListDiseaseOntologyTerms()).Select(x =>
+            var diseaseTerms = await _biobankReadService.ListOntologyTerms(tags: new List<string>
+            {
+                SnomedTags.Disease
+            });
+
+            return View(diseaseTerms.Select(x =>
 
                 Task.Run(async () => new ReadOntologyTermModel
                 {
@@ -1165,13 +1171,14 @@ namespace Biobanks.Web.Controllers
         {
             // Select Search By Value
             var searchValue = search.TryGetValue("value", out var s) ? s : "";
+            var tags = new List<string> { SnomedTags.Disease };
 
             // Get Disease Statuses
-            var ontologyTerms = await _biobankReadService.PaginateDiseaseOntologyTerms(start, length, searchValue);
-            var filteredCount = await _biobankReadService.CountDiseaseOntologyTerms(filter: searchValue);
-            var totalCount = await _biobankReadService.CountDiseaseOntologyTerms();
+            var diseaseTerms = await _biobankReadService.PaginateOntologyTerms(start, length, searchValue, tags);
+            var filteredCount = await _biobankReadService.CountOntologyTerms(description: searchValue, tags: tags);
+            var totalCount = await _biobankReadService.CountOntologyTerms(tags: tags);
 
-            var data = ontologyTerms.Select(x =>
+            var data = diseaseTerms.Select(x =>
                 Task.Run(async () => new ReadOntologyTermModel
                 {
                     OntologyTermId = x.Id,
