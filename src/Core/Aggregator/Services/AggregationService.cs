@@ -25,14 +25,25 @@ namespace Biobanks.Aggregator.Services
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoCollections(IEnumerable<LiveSample> samples)
         {
-            return samples
-                .GroupBy(x => new
-                {
-                    x.OrganisationId,
-                    x.CollectionName,
-                    x.SampleContentId
-                })
-                .Select(x => x.AsEnumerable());
+            var nonExtracted = samples.All(x => string.IsNullOrEmpty(x.SampleContentId));
+
+            if (nonExtracted)
+            {
+                return samples
+                    .GroupBy(x => x.OrganisationId)
+                    .Select(x => x.AsEnumerable());
+            }
+            else
+            {
+                return samples
+                    .GroupBy(x => new
+                    {
+                        x.OrganisationId,
+                        x.CollectionName,
+                        x.SampleContentId
+                    })
+                    .Select(x => x.AsEnumerable());
+            }
         }
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoSampleSets(IEnumerable<LiveSample> samples)

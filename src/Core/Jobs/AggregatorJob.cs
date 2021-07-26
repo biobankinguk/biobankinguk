@@ -55,7 +55,7 @@ namespace Core.Jobs
             // Aggregate Remaining Non-Extracted Samples
             var dirtyNonExtractedSamples = await _sampleService.ListDirtyNonExtractedSamples();
 
-            foreach (var collectionSamples in dirtyNonExtractedSamples.GroupBy(x => x.OrganisationId).Select(x => x.AsEnumerable()))
+            foreach (var collectionSamples in _aggregationService.GroupIntoCollections(dirtyNonExtractedSamples))
             {
                 var baseSample = new LiveSample
                 {
