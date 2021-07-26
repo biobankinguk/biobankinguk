@@ -1445,10 +1445,10 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(null, new List<string>
+            model.ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
                 {
                     SnomedTags.ExtractionProcedure
-                },true))
+                }, onlyDisplayable: true))
                 .Select(
                     x =>
                         new OntologyTermModel
