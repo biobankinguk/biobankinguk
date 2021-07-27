@@ -1,17 +1,18 @@
-function ExtractionProcedure(ontologyTermId, description, materialTypeIds) {
+function ExtractionProcedure(ontologyTermId, description, materialTypeIds, displayOnDirectory) {
     this.ontologyTermId = ko.observable(ontologyTermId);
     this.description = ko.observable(description);
     this.materialTypeIds = ko.observableArray(materialTypeIds);
+    this.displayOnDirectory = ko.observable(displayOnDirectory);
 }
 
-function ExtractionProcedureModal(ontologyTermId, description, materialTypeIds, materialTypes) {
+function ExtractionProcedureModal(ontologyTermId, description, materialTypeIds, materialTypes, displayOnDirectory) {
     this.modalModeAdd = "Add";
     this.modalModeEdit = "Update";
 
     this.mode = ko.observable(this.modalModeAdd);
 
     this.extractionProcedure = ko.observable(
-        new ExtractionProcedure(ontologyTermId, description, materialTypeIds)
+        new ExtractionProcedure(ontologyTermId, description, materialTypeIds, displayOnDirectory)
     );
     this.materialTypes = materialTypes;
 }
@@ -24,7 +25,7 @@ function AdacExtractionProcedureViewModel() {
     this.modalId = "#extraction-procedure-modal";
     this.materialTypes = $(this.modalId).data("material-types");
     
-    this.modal = new ExtractionProcedureModal("", "", 0, this.materialTypes);
+    this.modal = new ExtractionProcedureModal("", "", 0, this.materialTypes, false);
     this.dialogErrors = ko.observableArray([]);
 
     this.showModal = function () {
@@ -40,7 +41,7 @@ function AdacExtractionProcedureViewModel() {
         $("#OntologyTermId").prop("readonly", false);
 
         _this.modal.mode(_this.modal.modalModeAdd);
-        _this.modal.extractionProcedure(new ExtractionProcedure("", "", 0, this.materialTypes));
+        _this.modal.extractionProcedure(new ExtractionProcedure("", "", 0, false));
         _this.setPartialEdit(false);
         _this.showModal();
     };
@@ -54,7 +55,8 @@ function AdacExtractionProcedureViewModel() {
       new ExtractionProcedure(
           extractionProcedure.OntologyTermId,
           extractionProcedure.Description,
-          extractionProcedure.MaterialTypeIds
+          extractionProcedure.MaterialTypeIds,
+          extractionProcedure.DisplayOnDirectory
       )
     );
     $("#OntologyTermId").prop('readonly', true);
@@ -98,8 +100,8 @@ var adacExtractionProcedureVM;
 $(function () {
     $("#extraction-procedures")["DataTable"]({
         columnDefs: [
-            { orderable: false, targets: 4 },
-            { width: "180px", targets: 4 },
+            { orderable: false, targets: 5 },
+            { width: "180px", targets: 5 },
         ],
         paging: false,
         info: false,
