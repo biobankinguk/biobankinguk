@@ -1662,9 +1662,16 @@ namespace Biobanks.Web.Controllers
         #region RefData: Extraction Procedure
         public async Task<ActionResult> ExtractionProcedure()
         {
+            var ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+                {
+                    SnomedTags.ExtractionProcedure
+                }));
             return View(new ExtractionProceduresModel
             {
-                ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+                ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+                {
+                    SnomedTags.ExtractionProcedure
+                }))
                 .Select(x =>
 
                 Task.Run(async () => new ReadExtractionProcedureModel
@@ -1673,7 +1680,8 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
                     OtherTerms = x.OtherTerms,
-                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id).ToList()
+                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id).ToList(),
+                    DisplayOnDirectory = x.DisplayOnDirectory
                 })
                 .Result
             ).ToList(),

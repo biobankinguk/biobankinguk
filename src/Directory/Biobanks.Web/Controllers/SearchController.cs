@@ -42,7 +42,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrWhiteSpace(ontologyTerm))
             {
-                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm);
+                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm, onlyDisplayable: true);
 
                 if (term is null)
                 {
@@ -149,7 +149,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrEmpty(ontologyTerm))
             {
-                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm);
+                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm, onlyDisplayable: true);
 
                 if (term is null)
                 {

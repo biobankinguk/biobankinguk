@@ -12,7 +12,7 @@ namespace Biobanks.Services.Contracts
 {
     public interface IBiobankReadService
     {
-        Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id);
+        Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false);
         Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByUserEmailAsync(string email);
 
         Task<NetworkRegisterRequest> GetNetworkRegisterRequestByUserEmailAsync(string email);
@@ -133,14 +133,12 @@ namespace Biobanks.Services.Contracts
 
         Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string description = null, List<string> tags = null, bool onlyDisplayable = false);
         Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string description = null, List<string> tags = null);
-        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null);
+        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false);
         Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null);
         Task<bool> IsOntologyTermInUse(string id);
         Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
         Task<int> GetOntologyTermCollectionCapabilityCount(string id);
 
-        Task<IEnumerable<OntologyTerm>> ListExtractionProceduresAsync(string wildcard = "");
-        Task<OntologyTerm> GetExtractionProcedureById(string id);
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
         Task<bool> IsExtractionProcedureInUse(string id);
 

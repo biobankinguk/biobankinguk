@@ -27,6 +27,7 @@
                     <th>Extraction Procedure ID</th>
                     <th>Material Types</th>
                     <th>Material Details Count</th>
+                    <th>Displayed On Directory</th>
                     <th>@* Actions *@</th>
                 </tr>
             </thead>
@@ -43,6 +44,7 @@
                         </td>
                         <td><div class="wrappable-td">@string.Join(" / ", Model.MaterialTypes.Where(x=>ontologyTerm.MaterialTypeIds.Contains(x.Id)).Select(x=>x.Value))</div></td>
                         <td>@ontologyTerm.MaterialDetailsCount</td>
+                        <td>@ontologyTerm.DisplayOnDirectory.ToString()</td>
 
                         <td class="text-right">
                             @if (ontologyTerm.MaterialDetailsCount > 0)
@@ -147,14 +149,25 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Material Type</label>
                                     <div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
-                                        <select name ="MaterialTypeIds" class="form-control"
-                                            data-bind="options: $parent.modal.materialTypes, optionsText: 'value', optionsValue: 'id', value: $parent.modal.extractionProcedure().materialTypeIds()[$index()]">
+                                        <select name="MaterialTypeIds" class="form-control"
+                                                data-bind="options: $parent.modal.materialTypes, optionsText: 'value', optionsValue: 'id', value: $parent.modal.extractionProcedure().materialTypeIds()[$index()]">
                                         </select>
 
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right"
                                                 data-bind="click: function() { $parent.removeMaterialType($index())}" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Displayed On Directory Checkbox -->
+                            <div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Displayed On Directory</label>
+                                    <div class="col-sm-1">
+                                        <input type="checkbox" id="DisplayOnDirectory" name="DisplayOnDirectory" class="form-control"
+                                               data-bind="checked: modal.extractionProcedure().displayOnDirectory()" />
                                     </div>
                                 </div>
                             </div>
