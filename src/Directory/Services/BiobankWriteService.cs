@@ -207,7 +207,7 @@ namespace Biobanks.Services
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(ontologyTermDescription);
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -238,7 +238,7 @@ namespace Biobanks.Services
             existingCollection.AssociatedData.Clear();
             existingCollection.ConsentRestrictions.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(ontologyTermDescription);
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -377,7 +377,7 @@ namespace Biobanks.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(capabilityDTO.OntologyTerm);
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm);
 
             var capability = new DiagnosisCapability
             {
@@ -406,7 +406,7 @@ namespace Biobanks.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTermByDescription(capabilityDTO.OntologyTerm);
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm);
 
             existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;

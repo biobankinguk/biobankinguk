@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Biobanks.Directory.Services.Constants;
 using Biobanks.Services.Contracts;
 using DataAnnotationsExtensions;
 
@@ -31,7 +33,7 @@ namespace Biobanks.Web.Models.Biobank
         {
             if (modelState != null && modelState.IsValid)
             {
-                if (!await biobankReadService.ValidDiseaseOntologyTermDescriptionAsync(Diagnosis))
+                if (!await biobankReadService.ValidOntologyTerm(description: Diagnosis, tags: new List<string> { SnomedTags.Disease }))
                 {
                     modelState.AddModelError("Diagnosis",
                         "Please enter a valid Diagnosis or select one from the type ahead results.");
