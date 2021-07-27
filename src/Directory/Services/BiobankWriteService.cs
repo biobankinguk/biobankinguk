@@ -201,9 +201,6 @@ namespace Biobanks.Services
 
         #endregion
 
-       
-
-
         public async Task AddSampleSetAsync(SampleSet sampleSet)
         {
             // Add new SampleSet

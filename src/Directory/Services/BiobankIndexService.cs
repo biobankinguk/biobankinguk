@@ -15,6 +15,7 @@ using Biobanks.Services.Extensions;
 using System.IO;
 using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
@@ -22,15 +23,19 @@ namespace Biobanks.Services
     {
         private const int BulkIndexChunkSize = 100;
 
+        private readonly ICollectionService _collectionService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
         private readonly ISearchProvider _searchProvider;
 
         public BiobankIndexService(
+            ICollectionService collectionService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider)
         {
+            _collectionService = collectionService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
@@ -240,7 +245,7 @@ namespace Biobanks.Services
         public async Task UpdateCollectionDetails(int collectionId)
         {
             // Get the collection out of the database.
-            var collection = await _biobankReadService.GetCollectionByIdForIndexingAsync(collectionId);
+            var collection = await _collectionService.GetIndexableCollection(collectionId);
 
             // Update all search documents that are relevant to this collection.
             foreach (var sampleSet in collection.SampleSets)
@@ -543,12 +548,12 @@ namespace Biobanks.Services
 
         public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
         {
-            // Get the collections with the ontologyTerm.
-            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
+            var collections = await _collectionService.ListCollectionsByOntologyTerm(ontologyTerm);
+
             // Update all search documents that are relevant to this collection.
-            foreach (var collectionId in collectionIds)
+            foreach (var collection in collections)
             {
-                await UpdateCollectionDetails(collectionId);
+                await UpdateCollectionDetails(collection.CollectionId);
             }
         }
 
