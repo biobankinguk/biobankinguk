@@ -1,6 +1,8 @@
 ﻿using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
+using Biobanks.Services.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -10,11 +12,89 @@ namespace Biobanks.Directory.Services
 {
     public class CollectionService : ICollectionService
     {
+        private readonly IBiobankReadService _readService;
+        private readonly IBiobankIndexService _indexService;
+
         private readonly BiobanksDbContext _db;
 
-        public CollectionService(BiobanksDbContext db)
+        public CollectionService(
+            BiobanksDbContext db,
+            IBiobankReadService readService,
+            IBiobankIndexService indexService)
         {
             _db = db;
+            _readService = readService;
+            _indexService = indexService;
+        }
+
+        /// <summary>
+        /// Delete the Collection with a given Id. Will only proceed if the Collection has no SampleSets.
+        /// </summary>
+        /// <param name="id">The Id of the Collection to delete</param>
+        public async Task<bool> DeleteCollection(int id)
+        {
+            if (await _db.SampleSets.AnyAsync(x => x.CollectionId == id))
+                return false;
+
+            var collection = new Collection { OrganisationId = id };
+            _db.Collections.Attach(collection);
+            _db.Collections.Remove(collection);
+
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Add a new Collection
+        /// </summary>
+        public async Task<Collection> AddCollection(Collection collection)
+        {
+            // Update Timestamp
+            collection.LastUpdated = DateTime.Now;
+
+            _db.Collections.Add(collection);
+
+            await _db.SaveChangesAsync();
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Update an exisiting Collection.
+        /// </summary>
+        /// <param name="collection">The updated Collection</param>
+        public async Task<Collection> UpdateCollection(Collection collection)
+        {
+            var currentCollection = await _db.Collections
+                .Include(x => x.AssociatedData)
+                .Include(x => x.ConsentRestrictions)
+                .FirstOrDefaultAsync(x => x.CollectionId == collection.CollectionId);
+
+            if (currentCollection != null)
+            {
+                currentCollection.AssociatedData.Clear();
+                currentCollection.ConsentRestrictions.Clear();
+
+                currentCollection.AssociatedData = collection.AssociatedData;
+                currentCollection.ConsentRestrictions = collection.ConsentRestrictions;
+
+                currentCollection.OntologyTermId = collection.OntologyTermId;
+                currentCollection.Title = collection.Title;
+                currentCollection.Description = collection.Description;
+                currentCollection.StartDate = collection.StartDate;
+                currentCollection.AccessConditionId = collection.AccessConditionId;
+                currentCollection.CollectionTypeId = collection.CollectionTypeId;
+                currentCollection.CollectionStatusId = collection.CollectionStatusId;
+                currentCollection.LastUpdated = DateTime.Now;
+
+                await _db.SaveChangesAsync();
+
+                if (!await _readService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
+                    await _indexService.UpdateCollectionDetails(collection.CollectionId);
+            }
+
+            return collection;
         }
 
         /// <summary>
@@ -82,6 +162,5 @@ namespace Biobanks.Directory.Services
         /// <param name="id">The Id of the Collecton</param>
         public async Task<bool> IsCollectionFromApi(int id)
             => await _db.Collections.AnyAsync(x => x.CollectionId == id && x.FromApi);
-
     }
 }
