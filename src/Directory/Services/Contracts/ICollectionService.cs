@@ -17,8 +17,8 @@ namespace Biobanks.Directory.Services.Contracts
         Task<IEnumerable<Collection>> ListCollections(int organisationId = default);
         Task<IEnumerable<Collection>> ListCollectionsByOntologyTerm(string ontologyTerm);
 
-        Task<bool> IsCollectionFromApi(int id);
-
+        Task<bool> IsFromApi(int id);
+        Task<bool> HasSampleSets(int id);
 
         //Task<Collection> GetCollectionWithSampleSetsById(int id);
     }

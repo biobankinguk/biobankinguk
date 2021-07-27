@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
@@ -24,9 +25,12 @@ namespace Biobanks.Services
         private readonly HttpClient _client;
         private readonly IBiobankReadService _biobankReadService;
 
-        public AnalyticsReportGenerator(IBiobankReadService biobankReadService)
+        private readonly ICollectionService _collectionService;
+
+        public AnalyticsReportGenerator(IBiobankReadService biobankReadService, ICollectionService collectionService)
         {
             _biobankReadService = biobankReadService;
+            _collectionService = collectionService;
             _client = new HttpClient();
 
             if (!string.IsNullOrEmpty(_apiUrl))
@@ -53,9 +57,9 @@ namespace Biobanks.Services
 
             foreach (var col in bb.Collections)
             {
-                var ss = await _biobankReadService.GetCollectionWithSampleSetsByIdAsync(col.CollectionId);
-                if (ss.SampleSets.Count == 0)
-                { // Check if any collection exists without a sample set
+                // Check if any collection exists without a sample set
+                if (!await _collectionService.HasSampleSets(col.CollectionId))
+                { 
                     missingSampleSet = true;
                     break;
                 }

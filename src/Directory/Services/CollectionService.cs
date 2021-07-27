@@ -33,7 +33,7 @@ namespace Biobanks.Directory.Services
         /// <param name="id">The Id of the Collection to delete</param>
         public async Task<bool> DeleteCollection(int id)
         {
-            if (await _db.SampleSets.AnyAsync(x => x.CollectionId == id))
+            if (await HasSampleSets(id))
                 return false;
 
             var collection = new Collection { OrganisationId = id };
@@ -160,7 +160,14 @@ namespace Biobanks.Directory.Services
         /// Whether the Collection has been created from aggreagted data submitted via the API.
         /// </summary>
         /// <param name="id">The Id of the Collecton</param>
-        public async Task<bool> IsCollectionFromApi(int id)
+        public async Task<bool> IsFromApi(int id)
             => await _db.Collections.AnyAsync(x => x.CollectionId == id && x.FromApi);
+
+        /// <summary>
+        /// Check if the Collection has associated SampleSets
+        /// </summary>
+        /// <param name="id">The Id of the Collection</param>
+        public async Task<bool> HasSampleSets(int id)
+            => await _db.SampleSets.AnyAsync(x => x.CollectionId == id);
     }
 }

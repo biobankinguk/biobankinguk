@@ -1037,7 +1037,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<RedirectToRouteResult> DeleteCollection(int id)
         {
-            if (!await _collectionService.IsCollectionFromApi(id) && await _collectionService.DeleteCollection(id))
+            if (!await _collectionService.IsFromApi(id) && await _collectionService.DeleteCollection(id))
             {
                 SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
                 return RedirectToAction("Collections");
@@ -1092,7 +1092,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ViewResult> AddSampleSet(int id)
         {
-            ViewData["CollectionApiStatus"] = await _collectionService.IsCollectionFromApi(id);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(id);
             var model = new AddSampleSetModel
             {
                 CollectionId = id
@@ -1105,7 +1105,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ActionResult> AddSampleSet(int id, AddSampleSetModel model)
         {
-            var apiCheck = await _collectionService.IsCollectionFromApi(id);
+            var apiCheck = await _collectionService.IsFromApi(id);
 
             ViewData["CollectionApiStatus"] = apiCheck;
 
@@ -1147,7 +1147,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> CopySampleSet(int id)
         {
             var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
-            ViewData["CollectionApiStatus"] = await _collectionService.IsCollectionFromApi(sampleSet.CollectionId);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
             //Build the model using all details of the existing sampleset, except id, which is stored in a separate property
@@ -1177,7 +1177,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerSampleSet]
         public async Task<ActionResult> CopySampleSet(int id, CopySampleSetModel model)
         {
-            if (await _collectionService.IsCollectionFromApi(model.CollectionId))
+            if (await _collectionService.IsFromApi(model.CollectionId))
             {
                 return RedirectToAction("SampleSet", new { id = model.OriginalId });
             }
@@ -1193,7 +1193,7 @@ namespace Biobanks.Web.Controllers
 
             SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
-            ViewData["CollectionApiStatus"] = await _collectionService.IsCollectionFromApi(sampleSet.CollectionId);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
             var model = new EditSampleSetModel
             {
@@ -1223,7 +1223,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerSampleSet]
         public async Task<ActionResult> EditSampleSet(int id, EditSampleSetModel model)
         {
-            var apiCheck = await _collectionService.IsCollectionFromApi(model.CollectionId);
+            var apiCheck = await _collectionService.IsFromApi(model.CollectionId);
             ViewData["CollectionApiStatus"] = apiCheck;
 
             if (model.IsValid(ModelState) && !apiCheck)
@@ -1267,7 +1267,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerSampleSet]
         public async Task<RedirectToRouteResult> DeleteSampleSet(int id, int collectionId)
         {
-            if (!await _collectionService.IsCollectionFromApi(collectionId))
+            if (!await _collectionService.IsFromApi(collectionId))
             {
                 await _biobankWriteService.DeleteSampleSetAsync(id);
                 SetTemporaryFeedbackMessage("Sample Set deleted!", FeedbackMessageType.Success);
@@ -1284,7 +1284,7 @@ namespace Biobanks.Web.Controllers
 
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
-            ViewData["CollectionApiStatus"] = await _collectionService.IsCollectionFromApi(sampleSet.CollectionId);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
             var model = new SampleSetModel
             {

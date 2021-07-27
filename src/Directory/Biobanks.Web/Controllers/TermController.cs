@@ -7,6 +7,7 @@ using Biobanks.Web.Models.Search;
 using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Biobanks.Directory.Data.Constants;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
@@ -14,10 +15,14 @@ namespace Biobanks.Web.Controllers
     public class TermController : ApplicationBaseController
     {
         private readonly IBiobankReadService _biobankReadService;
+        private readonly ICollectionService _collectionService;
 
-        public TermController(IBiobankReadService biobankReadService)
+        public TermController(
+            IBiobankReadService biobankReadService,
+            ICollectionService collectionService)
         {
             _biobankReadService = biobankReadService;
+            _collectionService = collectionService;
         }
 
         // GET: Term
@@ -30,7 +35,7 @@ namespace Biobanks.Web.Controllers
             };
 
             // List of Unique Diagnoses With Sample Sets
-            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
+            var ontologyTerms = (await _collectionService.ListCollections())
                 .Where(x => x.SampleSets.Any() && x.OntologyTerm.DisplayOnDirectory && !x.Organisation.IsSuspended)
                 .GroupBy(x => x.OntologyTermId)
                 .Select(x => x.First().OntologyTerm);

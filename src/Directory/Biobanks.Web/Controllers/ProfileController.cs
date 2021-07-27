@@ -10,6 +10,7 @@ using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
 using System;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
@@ -19,10 +20,15 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
 
+        private readonly ICollectionService _collectionService;
+
         public ProfileController(
-            IBiobankReadService biobankReadService, IConfigService configService)
+            IBiobankReadService biobankReadService, 
+            ICollectionService collectionService,
+            IConfigService configService)
         {
             _biobankReadService = biobankReadService;
+            _collectionService = collectionService;
             _configService = configService;
         }
 
@@ -94,7 +100,7 @@ namespace Biobanks.Web.Controllers
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                CollectionOntologyTerms = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
+                CollectionOntologyTerms = (await _collectionService.ListCollections(bb.OrganisationId)).Select(
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,
