@@ -19,15 +19,12 @@ using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Home;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Web.Models.Search;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
-using System.Data.Entity;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Biobanks.Web.Controllers
 {
