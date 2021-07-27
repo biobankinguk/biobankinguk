@@ -882,24 +882,35 @@ namespace Biobanks.Web.Controllers
                     .Select(y => new CollectionAssociatedData
                     {
                         AssociatedDataTypeId = y.DataTypeId,
-                        //GroupID
-                        AssociatedDataProcurementTimeframeId = y.ProvisionTimeId
-                    }).ToList();
+                        AssociatedDataProcurementTimeframeId = y.ProvisionTimeId // GroupID
+                    })
+                    .ToList();
 
-                var collection = await _biobankWriteService.AddCollectionAsync(new Collection
+                var consentRestrictions = model.ConsentRestrictions
+                    .Where(x => x.Active)
+                    .Select(x => new ConsentRestriction
+                    {
+                        Id = x.ConsentRestrictionId
+                    })
+                    .ToList();
+
+                var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
+
+                // Create and Add New Collection
+                var collection = await _collectionService.AddCollection(new Collection
                 {
                     OrganisationId = biobankId,
                     Title = model.Title,
                     Description = model.Description,
-                    StartDate = new DateTime(model.StartDate.Value, 1, 1), //DateTime.Parse(model.StartDate),
+                    StartDate = new DateTime(year: model.StartDate.Value, month: 1, day: 1),
+                    AssociatedData = associatedData,
                     AccessConditionId = model.AccessCondition,
                     CollectionTypeId = model.CollectionType,
                     CollectionStatusId = model.CollectionStatus,
+                    ConsentRestrictions = consentRestrictions,
+                    OntologyTermId = ontologyTerm.Id,
                     FromApi = model.FromApi
-                },
-                model.Diagnosis,
-                associatedData,
-                model.ConsentRestrictions.Where(x => x.Active).Select(y => y.ConsentRestrictionId));
+                });
 
                 SetTemporaryFeedbackMessage("Collection added!", FeedbackMessageType.Success);
 
@@ -973,18 +984,10 @@ namespace Biobanks.Web.Controllers
 
             if (collection.FromApi)
             {
-                var associatedData = collection.AssociatedData
-                    .Select(y => new CollectionAssociatedData
-                    {
-                        CollectionId = y.CollectionId,
-                        AssociatedDataTypeId = y.AssociatedDataTypeId,
-                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId
-                    }).ToList();
-
                 // Update description
                 collection.Description = model.Description;
-                await _biobankWriteService.UpdateCollectionAsync(collection, collection.OntologyTerm.Value,
-                    associatedData, collection.ConsentRestrictions.Select(x=>x.Id));
+
+                await _collectionService.UpdateCollection(collection);
 
                 SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
@@ -1002,21 +1005,32 @@ namespace Biobanks.Web.Controllers
                         AssociatedDataProcurementTimeframeId = y.ProvisionTimeId
                     }).ToList();
 
-                await _biobankWriteService.UpdateCollectionAsync(new Collection
-                {
-                    CollectionId = model.Id,
-                    OrganisationId = biobankId,
-                    Title = model.Title,
-                    Description = model.Description,
-                    StartDate = new DateTime(model.StartDate.Value, 1, 1),
+                var consentRestrictions = model.ConsentRestrictions
+                    .Where(x => x.Active)
+                    .Select(x => new ConsentRestriction
+                    {
+                        Id = x.ConsentRestrictionId
+                    })
+                    .ToList();
+
+                var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
+
+                await _collectionService.UpdateCollection(new Collection
+                { 
                     AccessConditionId = model.AccessCondition,
-                    FromApi = model.FromApi,
+                    AssociatedData = associatedData,
+                    CollectionId = model.Id,
+                    CollectionStatusId = model.CollectionStatus,
                     CollectionTypeId = model.CollectionType,
-                    CollectionStatusId = model.CollectionStatus
-                },
-                model.Diagnosis,
-                associatedData,
-                model.ConsentRestrictions.Where(x => x.Active).Select(x => x.ConsentRestrictionId));
+                    ConsentRestrictions = consentRestrictions,
+                    Description = model.Description,
+                    FromApi = model.FromApi,
+                    OntologyTermId = ontologyTerm.Id,
+                    OrganisationId = biobankId,
+                    StartDate = new DateTime(year: model.StartDate.Value, month: 1, day: 1),
+                    Title = model.Title
+
+                });
 
                 SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
@@ -1055,7 +1069,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ViewResult> Collection(int id)
         {
-            var collection = await _biobankReadService.GetCollectionWithSampleSetsByIdAsync(id);
+            var collection = await _collectionService.GetEntireCollection(id);
 
             var model = new CollectionModel
             {

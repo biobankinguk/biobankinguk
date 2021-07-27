@@ -12,6 +12,7 @@ namespace Biobanks.Directory.Services.Contracts
         Task<Collection> UpdateCollection(Collection collection);
 
         Task<Collection> GetCollection(int id);
+        Task<Collection> GetEntireCollection(int id);
         Task<Collection> GetIndexableCollection(int id);
 
         Task<IEnumerable<Collection>> ListCollections(int organisationId = default);

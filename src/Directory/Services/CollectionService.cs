@@ -114,6 +114,29 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <summary>
+        /// Get the untracked Collection with associated Collection Id, including all SampleSets and MaterialDetails
+        /// </summary>
+        /// <param name="id">The Id of the Collecton</param>
+        /// <returns>The collection with the given Id, or null if no collection exists with that Id</returns>
+        public async Task<Collection> GetEntireCollection(int id)
+            => await _db.Collections
+                .AsNoTracking()
+                .Include(x => x.AccessCondition)
+                .Include(x => x.AssociatedData)
+                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
+                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                .Include(x => x.CollectionType)
+                .Include(x => x.CollectionStatus)
+                .Include(x => x.ConsentRestrictions)
+                .Include(x => x.OntologyTerm)
+                .Include(x => x.SampleSets)
+                .Include(x => x.SampleSets.Select(y => y.AgeRange))
+                .Include(x => x.SampleSets.Select(y => y.Sex))
+                .Include(x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.MaterialType)))
+                .Include(x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.StorageTemperature)))
+                .FirstOrDefaultAsync(x => x.CollectionId == id);
+
+        /// <summary>
         /// Get the untracked Collection with associated Collection Id, with all relevant properites for indexing.
         /// </summary>
         /// <param name="id">The Id of the Collecton</param>
