@@ -3,6 +3,7 @@ using AutoMapper;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Identity.Constants;
@@ -42,6 +43,8 @@ namespace Biobanks.Web.Controllers
     [SuspendedWarning]
     public class BiobankController : ApplicationBaseController
     {
+        private readonly IOntologyTermService _ontologyTermService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -57,7 +60,9 @@ namespace Biobanks.Web.Controllers
         private const string TempBiobankLogoSessionId = "TempBiobankLogo";
         private const string TempBiobankLogoContentTypeSessionId = "TempBiobankLogoContentType";
 
-        public BiobankController(IBiobankReadService biobankReadService,
+        public BiobankController(
+            IOntologyTermService ontologyTermService,
+            IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -67,6 +72,7 @@ namespace Biobanks.Web.Controllers
             CustomClaimsManager claimsManager,
             ITokenLoggingService tokenLog)
         {
+            _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -871,7 +877,7 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            if (await model.IsValid(ModelState, _biobankReadService))
+            if (await model.IsValid(ModelState, _ontologyTermService))
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
@@ -987,7 +993,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Collection", new { id = model.Id });
             }
 
-            if (await model.IsValid(ModelState, _biobankReadService) && model.FromApi == false)
+            if (await model.IsValid(ModelState, _ontologyTermService) && model.FromApi == false)
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
@@ -1445,7 +1451,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+            model.ExtractionProcedures = (await _ontologyTermService.ListOntologyTerms(tags: new List<string>
                 {
                     SnomedTags.ExtractionProcedure
                 }, onlyDisplayable: true))
@@ -1558,7 +1564,7 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            if (await model.IsValid(ModelState, _biobankReadService))
+            if (await model.IsValid(ModelState, _ontologyTermService))
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
@@ -1640,7 +1646,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCapability]
         public async Task<ActionResult> EditCapability(EditCapabilityModel model)
         {
-            if (await model.IsValid(ModelState, _biobankReadService))
+            if (await model.IsValid(ModelState, _ontologyTermService))
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)

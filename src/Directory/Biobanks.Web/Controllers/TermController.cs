@@ -7,16 +7,22 @@ using Biobanks.Web.Models.Search;
 using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Biobanks.Directory.Data.Constants;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class TermController : ApplicationBaseController
     {
+        private readonly IOntologyTermService _ontologyTermService;
+
         private readonly IBiobankReadService _biobankReadService;
 
-        public TermController(IBiobankReadService biobankReadService)
+        public TermController(
+            IOntologyTermService ontologyTermService,
+            IBiobankReadService biobankReadService)
         {
+            _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
         }
 
@@ -41,7 +47,7 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result

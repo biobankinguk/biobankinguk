@@ -26,12 +26,15 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [UserAuthorize(Roles = "ADAC")]
     public class ADACController : ApplicationBaseController
     {
+        private readonly IOntologyTermService _ontologyTermService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -48,6 +51,7 @@ namespace Biobanks.Web.Controllers
         private readonly ITokenLoggingService _tokenLog;
 
         public ADACController(
+            IOntologyTermService ontologyTermService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -1149,7 +1153,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            var diseaseTerms = await _biobankReadService.ListOntologyTerms(tags: new List<string>
+            var diseaseTerms = await _ontologyTermService.ListOntologyTerms(tags: new List<string>
             {
                 SnomedTags.Disease
             });
@@ -1160,7 +1164,7 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
@@ -1174,9 +1178,9 @@ namespace Biobanks.Web.Controllers
             var tags = new List<string> { SnomedTags.Disease };
 
             // Get Disease Statuses
-            var diseaseTerms = await _biobankReadService.PaginateOntologyTerms(start, length, searchValue, tags);
-            var filteredCount = await _biobankReadService.CountOntologyTerms(description: searchValue, tags: tags);
-            var totalCount = await _biobankReadService.CountOntologyTerms(tags: tags);
+            var diseaseTerms = await _ontologyTermService.PaginateOntologyTerms(start, length, searchValue, tags);
+            var filteredCount = await _ontologyTermService.CountOntologyTerms(description: searchValue, tags: tags);
+            var totalCount = await _ontologyTermService.CountOntologyTerms(tags: tags);
 
             var data = diseaseTerms.Select(x =>
                 Task.Run(async () => new ReadOntologyTermModel
@@ -1185,7 +1189,7 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id)
+                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id)
                 })
                 .Result
             );
@@ -1662,13 +1666,13 @@ namespace Biobanks.Web.Controllers
         #region RefData: Extraction Procedure
         public async Task<ActionResult> ExtractionProcedure()
         {
-            var ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+            var ExtractionProcedures = (await _ontologyTermService.ListOntologyTerms(tags: new List<string>
                 {
                     SnomedTags.ExtractionProcedure
                 }));
             return View(new ExtractionProceduresModel
             {
-                ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+                ExtractionProcedures = (await _ontologyTermService.ListOntologyTerms(tags: new List<string>
                 {
                     SnomedTags.ExtractionProcedure
                 }))
@@ -1821,7 +1825,7 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result

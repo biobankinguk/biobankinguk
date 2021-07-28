@@ -16,12 +16,14 @@ using Biobanks.Services.Dto;
 using Biobanks.Entities.Shared;
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Extensions;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
     public class BiobankWriteService : IBiobankWriteService
     {
         #region Properties and ctor
+        private readonly IOntologyTermService _ontologyTermService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
@@ -85,6 +87,7 @@ namespace Biobanks.Services
         private readonly IMapper _mapper;
 
         public BiobankWriteService(
+            IOntologyTermService ontologyTermService,
             IBiobankReadService biobankReadService,
             IConfigService configService,
             ILogoStorageProvider logoStorageProvider,
@@ -140,6 +143,8 @@ namespace Biobanks.Services
 
             IGenericEFRepository<Funder> funderRepository)
         {
+            _ontologyTermService = ontologyTermService;
+
             _biobankReadService = biobankReadService;
             _configService = configService;
             _logoStorageProvider = logoStorageProvider;
@@ -207,7 +212,7 @@ namespace Biobanks.Services
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -238,7 +243,7 @@ namespace Biobanks.Services
             existingCollection.AssociatedData.Clear();
             existingCollection.ConsentRestrictions.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -377,7 +382,7 @@ namespace Biobanks.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             var capability = new DiagnosisCapability
             {
@@ -406,7 +411,7 @@ namespace Biobanks.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;

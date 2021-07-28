@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Services.Contracts;
 using DataAnnotationsExtensions;
 
@@ -29,11 +30,11 @@ namespace Biobanks.Web.Models.Biobank
         #endregion
 
         #region Validation
-        public async Task<bool> IsValid(ModelStateDictionary modelState, IBiobankReadService biobankReadService)
+        public async Task<bool> IsValid(ModelStateDictionary modelState, IOntologyTermService ontologyTermService)
         {
             if (modelState != null && modelState.IsValid)
             {
-                if (!await biobankReadService.ValidOntologyTerm(description: Diagnosis, tags: new List<string> { SnomedTags.Disease }))
+                if (!await ontologyTermService.ValidOntologyTerm(description: Diagnosis, tags: new List<string> { SnomedTags.Disease }))
                 {
                     modelState.AddModelError("Diagnosis",
                         "Please enter a valid Diagnosis or select one from the type ahead results.");
