@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Biobanks.Entities.Shared.ReferenceData;
+using System;
 using System.Collections.Generic;
 
 namespace Biobanks.Aggregator
@@ -18,6 +19,8 @@ namespace Biobanks.Aggregator
 
             { new Tuple<string, string>(null, null), "Not Applicable" },
         };
+
+        public string NonExtractedOntologyTerm = "102499006"; // Fit and Well
 
         public string MapToMicroscopicAssessment(string contentMethod, string contentId)
         {

@@ -1,4 +1,5 @@
-﻿using Biobanks.Aggregator.Services.Contracts;
+﻿using Biobanks.Aggregator;
+using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Entities.Api;
 using Biobanks.Shared.Services.Contracts;
 using System;
@@ -16,18 +17,22 @@ namespace Core.Jobs
         private readonly ICollectionService _collectionService;
         private readonly ISampleService _sampleService;
 
+        private readonly AggregatorOptions _options;
+
         public AggregatorJob(
             IAggregationService aggregationService,
             IReferenceDataService refDataService,
             IOrganisationService organisationService,
             ICollectionService collectionService,
-            ISampleService sampleService)
+            ISampleService sampleService,
+            AggregatorOptions options)
         {
             _aggregationService = aggregationService;
             _refDataService = refDataService;
             _organisationService = organisationService;
             _collectionService = collectionService;
             _sampleService = sampleService;
+            _options = options;
         }
 
         public async Task Run()
@@ -55,8 +60,8 @@ namespace Core.Jobs
                 var baseSample = new LiveSample
                 {
                     OrganisationId = collectionSamples.First().OrganisationId,
-                    SampleContentId = OntologyTerms.FitAndWell,
-                    SampleContent = _refDataService.GetOntologyTerm(OntologyTerms.FitAndWell)
+                    SampleContentId = _options.NonExtractedOntologyTerm,
+                    SampleContent = _refDataService.GetOntologyTerm(_options.NonExtractedOntologyTerm)
                 };
 
                 // Remaining Maybe Empty If All Dirty Non-Extracted Samples Were Deleted
