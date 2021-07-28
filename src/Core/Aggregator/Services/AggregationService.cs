@@ -125,7 +125,7 @@ namespace Biobanks.Aggregator.Services
             var contentMethod = sample.SampleContentMethod?.Value ?? "";
 
             // Map Macroscopic Assessment
-            var macro = _options.MapToMicroscopicAssessment(contentMethod, contentId);
+            var macro = _options.MapToMacroscopicAssessment(contentMethod, contentId);
             var macroAssessment = _db.MacroscopicAssessments.First(x => x.Value == macro);
 
             return new MaterialDetail
