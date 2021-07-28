@@ -16,12 +16,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
     public class BiobankReadService : IBiobankReadService
     {
         #region Properties and ctor
+
+        private readonly IOntologyTermService _ontologyTermService;
 
         private readonly ILogoStorageProvider _logoStorageProvider;
 
@@ -93,6 +96,8 @@ namespace Biobanks.Services
         private readonly BiobanksDbContext _context;
 
         public BiobankReadService(
+            IOntologyTermService ontologyTermService,
+
             ILogoStorageProvider logoStorageProvider,
 
             IGenericEFRepository<Collection> collectionRepository,
@@ -158,6 +163,8 @@ namespace Biobanks.Services
             
             BiobanksDbContext context)
         {
+            _ontologyTermService = ontologyTermService;
+
             _logoStorageProvider = logoStorageProvider;
 
             _collectionRepository = collectionRepository;
@@ -485,9 +492,6 @@ namespace Biobanks.Services
                 false,
                 x => biobankNetworkIds.Contains(x.NetworkId));
         }
-
-        public async Task<bool> IsOntologyTermInUse(string id)
-            => (await GetOntologyTermCollectionCapabilityCount(id) > 0);
 
         public async Task<bool> IsMaterialTypeInUse(int id)
             => (await GetMaterialTypeMaterialDetailCount(id) > 0);
@@ -1162,64 +1166,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: OntologyTerm
-
-        protected IQueryable<OntologyTerm> QueryOntologyTerms(
-            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false)
-        {
-            var query = _context.OntologyTerms
-                .AsNoTracking()
-                .Include(x => x.SnomedTag)
-                .Include(x=> x.MaterialTypes)
-                .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
-           
-            // Filter By ID
-            if (!string.IsNullOrEmpty(id))
-                query = query.Where(x => x.Id == id);
-
-            // Filter By Description
-            if (!string.IsNullOrEmpty(description))
-                query = query.Where(x => x.Value.Contains(description));
-
-            // Filter By SnomedTag
-            if (tags != null)
-                query = query.Where(x =>
-                    tags.Any()
-                        ? x.SnomedTag != null && tags.Contains(x.SnomedTag.Value) // Term With Included Tag
-                        : x.SnomedTag == null); // Terms Without Tags
-
-            return query;
-        }
-
-        public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(
-            string description = null, List<string> tags = null, bool onlyDisplayable = false)
-            => await QueryOntologyTerms(id: null, description, tags, onlyDisplayable).ToListAsync();
-
-        public async Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(
-            int start, int length, string description = null, List<string> tags = null)
-        {
-            return await QueryOntologyTerms(id: null, description, tags)
-                    .OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Value)
-                    .Skip(start)
-                    .Take(length)
-                    .ToListAsync();
-        }
-
-        public async Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false)
-            => await QueryOntologyTerms(id, description, tags, onlyDisplayable).SingleOrDefaultAsync();
-
-        public async Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null)
-            => await QueryOntologyTerms(id, description, tags).AnyAsync();
-
-        public async Task<int> CountOntologyTerms(string description = null, List<string> tags = null)
-            => await QueryOntologyTerms(id: null, description, tags).CountAsync();
-
-        public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
-            => await _collectionRepository.CountAsync(x => x.OntologyTermId == id) 
-            + await _capabilityRepository.CountAsync(x => x.OntologyTermId == id);
-
-        #endregion
-
         #region RefData: Extraction Procedure
 
         public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false)
@@ -1313,7 +1259,7 @@ namespace Biobanks.Services
             => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
 
         public async Task<bool> IsMaterialTypeAssigned(int id)
-            => (await ListOntologyTerms(tags: new List<string>
+            => (await _ontologyTermService.ListOntologyTerms(tags: new List<string>
             {
                 SnomedTags.ExtractionProcedure
             })).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
