@@ -1,5 +1,4 @@
-﻿using Biobanks.Aggregator.Constants;
-using Biobanks.Aggregator.Services.Contracts;
+﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
@@ -14,11 +13,17 @@ namespace Biobanks.Aggregator.Services
     public class AggregationService : IAggregationService
     {
         private readonly IReferenceDataService _refDataService;
+
+        private readonly AggregatorOptions _options;
         private readonly BiobanksDbContext _db;
         
-        public AggregationService(IReferenceDataService refDataService, BiobanksDbContext db)
+        public AggregationService(
+            IReferenceDataService refDataService,
+            AggregatorOptions options,
+            BiobanksDbContext db)
         {
             _refDataService = refDataService;
+            _options = options;
             _db = db;
         }
 
@@ -120,19 +125,14 @@ namespace Biobanks.Aggregator.Services
             var contentMethod = sample.SampleContentMethod?.Value ?? "";
 
             // Map Macroscopic Assessment
-            var macro =
-                contentMethod.StartsWith("Microscopic") || contentMethod.StartsWith("Macroscopic")
-                    ? contentId == OntologyTerms.FitAndWell || 
-                      contentId == OntologyTerms.NoPathologicalDisease
-                        ? _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.NonAffected)
-                        : _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.Affected)
-                    : _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.NotApplicable);
+            var macro = _options.MapToMicroscopicAssessment(contentMethod, contentId);
+            var macroAssessment = _db.MacroscopicAssessments.First(x => x.Value == macro);
 
             return new MaterialDetail
             {
                 MaterialTypeId = sample.MaterialTypeId,
                 StorageTemperatureId = sample.StorageTemperatureId ?? 0,
-                MacroscopicAssessmentId = macro.Id,
+                MacroscopicAssessmentId = macroAssessment.Id,
                 ExtractionProcedureId = sample.ExtractionProcedureId,
                 PreservationTypeId = sample.PreservationTypeId,
             };

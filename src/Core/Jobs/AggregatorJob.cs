@@ -1,5 +1,4 @@
-﻿using Biobanks.Aggregator.Constants;
-using Biobanks.Aggregator.Services.Contracts;
+﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Entities.Api;
 using Biobanks.Shared.Services.Contracts;
 using System;
