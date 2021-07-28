@@ -17,11 +17,8 @@ namespace Biobanks.Directory.Services.Contracts
         Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
         Task<int> GetOntologyTermCollectionCapabilityCount(string id);
 
-
-        Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
-        Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
-        Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis);
-        Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
-        Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
+        Task DeleteOntologyTermAsync(string id);
+        Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm);
+        Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm);
     }
 }

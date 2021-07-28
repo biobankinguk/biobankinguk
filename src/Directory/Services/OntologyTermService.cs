@@ -1,6 +1,7 @@
 ﻿using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Services.Contracts;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -11,11 +12,14 @@ namespace Biobanks.Directory.Services
     public class OntologyTermService : IOntologyTermService
     {
 
+        private readonly IBiobankIndexService _indexService;
+
         private readonly BiobanksDbContext _db;
 
-        public OntologyTermService(BiobanksDbContext db)
+        public OntologyTermService(IBiobankIndexService indexService, BiobanksDbContext db)
         {
             _db = db;
+            _indexService = indexService;
         }
 
         protected IQueryable<OntologyTerm> QueryOntologyTerms(
@@ -75,32 +79,58 @@ namespace Biobanks.Directory.Services
         public async Task<bool> IsOntologyTermInUse(string id)
             => (await GetOntologyTermCollectionCapabilityCount(id) > 0);
 
-
-
-        public Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis)
+        public async Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            throw new System.NotImplementedException();
+            // Add New OntologyTerm
+            ontologyTerm = _db.OntologyTerms.Add(ontologyTerm);
+
+            // Link To Material Types
+            if (ontologyTerm.MaterialTypes != null)
+            {
+                var ids = ontologyTerm.MaterialTypes.Select(x => x.Id);
+
+                await _db.MaterialTypes
+                    .Where(x => ids.Contains(x.Id))
+                    .ForEachAsync(x => x.ExtractionProcedures.Add(ontologyTerm));
+            }
+
+            await _db.SaveChangesAsync();
+
+            // Return OntologyTerm With Idenity ID
+            return ontologyTerm;
         }
 
-        public Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        public async Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm)
         {
-            throw new System.NotImplementedException();
+            var currentTerm = await _db.OntologyTerms.FirstAsync(x => x.Id == ontologyTerm.Id);
+
+            currentTerm.Value = ontologyTerm.Value;
+            currentTerm.OtherTerms = ontologyTerm.OtherTerms;
+            currentTerm.DisplayOnDirectory = ontologyTerm.DisplayOnDirectory;
+            currentTerm.MaterialTypes = ontologyTerm.MaterialTypes;
+            currentTerm.SnomedTag = ontologyTerm.SnomedTag;
+
+            await _db.SaveChangesAsync();
+
+            await _indexService.UpdateCollectionsOntologyOtherTerms(ontologyTerm.Value);
+            await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
+
+            // TODO: Check If Manual Update Of Material Types Is Required
+            //var Term = (await _ontologyTermRepository.ListAsync(true, x => x.Id == ontologyTerm.Id, null, x => x.MaterialTypes)).FirstOrDefault();
+            //var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
+            //Term.MaterialTypes = materialTypes;
+
+            return currentTerm;
         }
 
-        public Task DeleteOntologyTermAsync(OntologyTerm diagnosis)
+        public async Task DeleteOntologyTermAsync(string id)
         {
-            throw new System.NotImplementedException();
-        }
+            var ontologyTerm = new OntologyTerm { Id = id };
 
-        public Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis)
-        {
-            throw new System.NotImplementedException();
-        }
+            _db.OntologyTerms.Attach(ontologyTerm);
+            _db.OntologyTerms.Remove(ontologyTerm);
 
-        public Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
-        {
-            throw new System.NotImplementedException();
+            await _db.SaveChangesAsync();
         }
-
     }
 }

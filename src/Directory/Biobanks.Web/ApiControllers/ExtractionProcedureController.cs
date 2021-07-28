@@ -10,6 +10,7 @@ using Biobanks.Web.Filters;
 using System.Collections.Generic;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
+using DataAnnotationsExtensions;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -76,11 +77,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.DeleteOntologyTermAsync(new OntologyTerm
-            {
-                Id = model.Id,
-                Value = model.Value
-            });
+            await _ontologyTermService.DeleteOntologyTermAsync(model.Id);
 
             //Everything went A-OK!
             return Json(new
@@ -120,14 +117,15 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.UpdateOntologyTermWithMaterialTypesAsync(new OntologyTerm
+            await _ontologyTermService.UpdateOntologyTermAsync(new OntologyTerm
             {
                 Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
-                DisplayOnDirectory = model.DisplayOnDirectory
-            },model.MaterialTypeIds);
+                DisplayOnDirectory = model.DisplayOnDirectory,
+                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
+            });
 
             //Everything went A-OK!
             return Json(new
@@ -163,14 +161,19 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.AddOntologyTermWithMaterialTypesAsync(new OntologyTerm
+            var materialTypes = _biobankReadService.ListMaterialTypesAsync();
+
+
+
+            await _ontologyTermService.AddOntologyTermAsync(new OntologyTerm
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription(SnomedTags.ExtractionProcedure)).Id,
-                DisplayOnDirectory = model.DisplayOnDirectory
-            }, model.MaterialTypeIds);
+                DisplayOnDirectory = model.DisplayOnDirectory,
+                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
+            });
 
             //Everything went A-OK!
             return Json(new

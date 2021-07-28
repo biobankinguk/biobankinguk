@@ -74,11 +74,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.DeleteOntologyTermAsync(new OntologyTerm
-            {
-                Id = model.Id,
-                Value = model.Value
-            });
+            await _ontologyTermService.DeleteOntologyTermAsync(model.Id);
 
             //Everything went A-OK!
             return Json(new
