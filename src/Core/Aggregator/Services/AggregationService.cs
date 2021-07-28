@@ -123,7 +123,7 @@ namespace Biobanks.Aggregator.Services
             var macro =
                 contentMethod.StartsWith("Microscopic") || contentMethod.StartsWith("Macroscopic")
                     ? contentId == OntologyTerms.FitAndWell || 
-                      contentId == OntologyTerms.NoPathelogicalDisease
+                      contentId == OntologyTerms.NoPathologicalDisease
                         ? _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.NonAffected)
                         : _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.Affected)
                     : _db.MacroscopicAssessments.First(x => x.Value == MacroscopicAssessments.NotApplicable);
