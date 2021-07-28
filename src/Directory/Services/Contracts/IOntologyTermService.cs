@@ -15,10 +15,10 @@ namespace Biobanks.Directory.Services.Contracts
         Task<bool> IsOntologyTermInUse(string id);
         
         Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
-        Task<int> GetOntologyTermCollectionCapabilityCount(string id);
+        Task<int> GetCollectionCapabilityCount(string id);
 
-        Task DeleteOntologyTermAsync(string id);
-        Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm);
-        Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm);
+        Task DeleteOntologyTerm(string id);
+        Task<OntologyTerm> UpdateOntologyTerm(OntologyTerm ontologyTerm);
+        Task<OntologyTerm> AddOntologyTerm(OntologyTerm ontologyTerm);
     }
 }

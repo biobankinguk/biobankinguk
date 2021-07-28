@@ -1164,7 +1164,7 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.GetCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result
@@ -1189,7 +1189,7 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory,
-                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id)
+                    CollectionCapabilityCount = await _ontologyTermService.GetCollectionCapabilityCount(x.Id)
                 })
                 .Result
             );
@@ -1825,7 +1825,7 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.GetCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result

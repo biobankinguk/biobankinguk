@@ -69,7 +69,7 @@ namespace Biobanks.Directory.Services
         public async Task<int> CountOntologyTerms(string description = null, List<string> tags = null)
             => await QueryOntologyTerms(id: null, description, tags).CountAsync();
 
-        public async Task<int> GetOntologyTermCollectionCapabilityCount(string id)
+        public async Task<int> GetCollectionCapabilityCount(string id)
             => await _db.Collections.CountAsync(x => x.OntologyTermId == id) 
              + await _db.DiagnosisCapabilities.CountAsync(x => x.OntologyTermId == id);
 
@@ -77,9 +77,9 @@ namespace Biobanks.Directory.Services
             => await QueryOntologyTerms(id, description, tags).AnyAsync();
 
         public async Task<bool> IsOntologyTermInUse(string id)
-            => (await GetOntologyTermCollectionCapabilityCount(id) > 0);
+            => (await GetCollectionCapabilityCount(id) > 0);
 
-        public async Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm)
+        public async Task<OntologyTerm> AddOntologyTerm(OntologyTerm ontologyTerm)
         {
             // Add New OntologyTerm
             ontologyTerm = _db.OntologyTerms.Add(ontologyTerm);
@@ -100,7 +100,7 @@ namespace Biobanks.Directory.Services
             return ontologyTerm;
         }
 
-        public async Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm)
+        public async Task<OntologyTerm> UpdateOntologyTerm(OntologyTerm ontologyTerm)
         {
             var currentTerm = await _db.OntologyTerms.FirstAsync(x => x.Id == ontologyTerm.Id);
 
@@ -123,7 +123,7 @@ namespace Biobanks.Directory.Services
             return currentTerm;
         }
 
-        public async Task DeleteOntologyTermAsync(string id)
+        public async Task DeleteOntologyTerm(string id)
         {
             var ontologyTerm = new OntologyTerm { Id = id };
 

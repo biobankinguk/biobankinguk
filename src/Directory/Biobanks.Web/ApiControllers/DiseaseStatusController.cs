@@ -49,7 +49,7 @@ namespace Biobanks.Web.ApiControllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _ontologyTermService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.GetCollectionCapabilityCount(x.Id),
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory
                 })
@@ -74,7 +74,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.DeleteOntologyTermAsync(model.Id);
+            await _ontologyTermService.DeleteOntologyTerm(model.Id);
 
             //Everything went A-OK!
             return Json(new
@@ -108,7 +108,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.UpdateOntologyTermAsync(new OntologyTerm
+            await _ontologyTermService.UpdateOntologyTerm(new OntologyTerm
             {
                 Id = id,
                 Value = model.Description,
@@ -144,7 +144,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.AddOntologyTermAsync(new OntologyTerm
+            await _ontologyTermService.AddOntologyTerm(new OntologyTerm
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,
