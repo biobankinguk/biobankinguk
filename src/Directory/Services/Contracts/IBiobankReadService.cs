@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Identity.Data.Entities;
-using Biobanks.Search.Constants;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -130,14 +129,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
         Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
-
-        Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string description = null, List<string> tags = null, bool onlyDisplayable = false);
-        Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string description = null, List<string> tags = null);
-        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false);
-        Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null);
-        Task<bool> IsOntologyTermInUse(string id);
-        Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
-        Task<int> GetOntologyTermCollectionCapabilityCount(string id);
 
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
         Task<bool> IsExtractionProcedureInUse(string id);
