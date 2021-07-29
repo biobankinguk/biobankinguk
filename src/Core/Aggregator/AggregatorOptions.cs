@@ -29,7 +29,7 @@ namespace Biobanks.Aggregator
             var map = 
                 MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && x.ContentId == contentId) ??       
                 MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && string.IsNullOrEmpty(x.ContentId)) ??   
-                MacroscopicAssessmentMappings.First(x => string.IsNullOrEmpty(x.ContentMethod) && string.IsNullOrEmpty(x.ContentId));
+                MacroscopicAssessmentMappings.FirstOrDefault(x => string.IsNullOrEmpty(x.ContentMethod) && string.IsNullOrEmpty(x.ContentId));
 
             return map?.MacroscopicAssessment;
         }
