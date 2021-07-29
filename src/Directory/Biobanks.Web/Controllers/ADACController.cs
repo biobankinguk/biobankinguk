@@ -64,6 +64,7 @@ namespace Biobanks.Web.Controllers
             IMapper mapper,
             ITokenLoggingService tokenLog)
         {
+            _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
