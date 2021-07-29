@@ -163,8 +163,6 @@ namespace Biobanks.Web.ApiControllers
 
             var materialTypes = _biobankReadService.ListMaterialTypesAsync();
 
-
-
             await _ontologyTermService.AddOntologyTerm(new OntologyTerm
             {
                 Id = model.OntologyTermId,
