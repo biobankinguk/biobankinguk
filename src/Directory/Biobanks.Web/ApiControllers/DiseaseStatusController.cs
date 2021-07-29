@@ -89,7 +89,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
         {
             //If this description is valid, it already exists
-            if (await _ontologyTermService.IsValid(id, description: model.Description))
+            if (await _ontologyTermService.Exists(id, value: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
@@ -130,11 +130,11 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
             //if ontology term id is in use by another ontology term
-            if (await _ontologyTermService.IsValid(id: model.OntologyTermId))
+            if (await _ontologyTermService.Exists(id: model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             //If this description is valid, it already exists
-            if (await _ontologyTermService.IsValid(description: model.Description))
+            if (await _ontologyTermService.Exists(value: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }

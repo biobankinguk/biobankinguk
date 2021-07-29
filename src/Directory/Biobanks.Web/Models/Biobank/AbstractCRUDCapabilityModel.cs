@@ -34,7 +34,7 @@ namespace Biobanks.Web.Models.Biobank
         {
             if (modelState != null && modelState.IsValid)
             {
-                if (!await ontologyTermService.IsValid(description: Diagnosis, tags: new List<string> { SnomedTags.Disease }))
+                if (!await ontologyTermService.Exists(value: Diagnosis, tags: new List<string> { SnomedTags.Disease }))
                 {
                     modelState.AddModelError("Diagnosis",
                         "Please enter a valid Diagnosis or select one from the type ahead results.");

@@ -1180,7 +1180,7 @@ namespace Biobanks.Web.Controllers
 
             // Get Disease Statuses
             var diseaseTerms = await _ontologyTermService.ListPaginated(start, length, searchValue, tags);
-            var filteredCount = await _ontologyTermService.Count(description: searchValue, tags: tags);
+            var filteredCount = await _ontologyTermService.Count(value: searchValue, tags: tags);
             var totalCount = await _ontologyTermService.Count(tags: tags);
 
             var data = diseaseTerms.Select(x =>
