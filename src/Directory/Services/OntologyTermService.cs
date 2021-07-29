@@ -22,7 +22,7 @@ namespace Biobanks.Directory.Services
             _indexService = indexService;
         }
 
-        protected IQueryable<OntologyTerm> QueryOntologyTerms(
+        protected IQueryable<OntologyTerm> ReadOnlyQuery(
             string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false)
         {
             var query = _db.OntologyTerms
@@ -49,37 +49,37 @@ namespace Biobanks.Directory.Services
             return query;
         }
 
-        public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(
+        public async Task<IEnumerable<OntologyTerm>> List(
             string description = null, List<string> tags = null, bool onlyDisplayable = false)
-            => await QueryOntologyTerms(id: null, description, tags, onlyDisplayable).ToListAsync();
+            => await ReadOnlyQuery(id: null, description, tags, onlyDisplayable).ToListAsync();
 
-        public async Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(
+        public async Task<IEnumerable<OntologyTerm>> ListPaginated(
             int start, int length, string description = null, List<string> tags = null)
         {
-            return await QueryOntologyTerms(id: null, description, tags)
+            return await ReadOnlyQuery(id: null, description, tags)
                     .OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Value)
                     .Skip(start)
                     .Take(length)
                     .ToListAsync();
         }
 
-        public async Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false)
-            => await QueryOntologyTerms(id, description, tags, onlyDisplayable).SingleOrDefaultAsync();
+        public async Task<OntologyTerm> Get(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false)
+            => await ReadOnlyQuery(id, description, tags, onlyDisplayable).SingleOrDefaultAsync();
 
-        public async Task<int> CountOntologyTerms(string description = null, List<string> tags = null)
-            => await QueryOntologyTerms(id: null, description, tags).CountAsync();
+        public async Task<int> Count(string description = null, List<string> tags = null)
+            => await ReadOnlyQuery(id: null, description, tags).CountAsync();
 
-        public async Task<int> GetCollectionCapabilityCount(string id)
-            => await _db.Collections.CountAsync(x => x.OntologyTermId == id) 
-             + await _db.DiagnosisCapabilities.CountAsync(x => x.OntologyTermId == id);
+        public async Task<int> CountCollectionCapabilityUsage(string ontologyTermId)
+            => await _db.Collections.CountAsync(x => x.OntologyTermId == ontologyTermId) 
+             + await _db.DiagnosisCapabilities.CountAsync(x => x.OntologyTermId == ontologyTermId);
 
-        public async Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null)
-            => await QueryOntologyTerms(id, description, tags).AnyAsync();
+        public async Task<bool> IsValid(string id = null, string description = null, List<string> tags = null)
+            => await ReadOnlyQuery(id, description, tags).AnyAsync();
 
-        public async Task<bool> IsOntologyTermInUse(string id)
-            => (await GetCollectionCapabilityCount(id) > 0);
+        public async Task<bool> IsInUse(string id)
+            => (await CountCollectionCapabilityUsage(id) > 0);
 
-        public async Task<OntologyTerm> AddOntologyTerm(OntologyTerm ontologyTerm)
+        public async Task<OntologyTerm> Create(OntologyTerm ontologyTerm)
         {
             // Add New OntologyTerm
             ontologyTerm = _db.OntologyTerms.Add(ontologyTerm);
@@ -100,7 +100,7 @@ namespace Biobanks.Directory.Services
             return ontologyTerm;
         }
 
-        public async Task<OntologyTerm> UpdateOntologyTerm(OntologyTerm ontologyTerm)
+        public async Task<OntologyTerm> Update(OntologyTerm ontologyTerm)
         {
             var currentTerm = await _db.OntologyTerms.FirstAsync(x => x.Id == ontologyTerm.Id);
 
@@ -123,7 +123,7 @@ namespace Biobanks.Directory.Services
             return currentTerm;
         }
 
-        public async Task DeleteOntologyTerm(string id)
+        public async Task Delete(string id)
         {
             var ontologyTerm = new OntologyTerm { Id = id };
 

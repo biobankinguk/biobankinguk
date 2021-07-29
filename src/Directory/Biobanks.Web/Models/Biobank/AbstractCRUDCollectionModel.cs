@@ -63,7 +63,7 @@ namespace Biobanks.Web.Models.Biobank
         {
             if (modelState != null && modelState.IsValid)
             {
-                var valid = await ontologyTermService.ValidOntologyTerm(description: Diagnosis, tags: new List<string>
+                var valid = await ontologyTermService.IsValid(description: Diagnosis, tags: new List<string>
                 {
                     SnomedTags.Disease, SnomedTags.Finding
                 });

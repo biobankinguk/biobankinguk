@@ -38,7 +38,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var diseaseTerms = await _ontologyTermService.ListOntologyTerms(tags: new List<string>
+            var diseaseTerms = await _ontologyTermService.List(tags: new List<string>
             {
                 SnomedTags.Disease
             });
@@ -49,7 +49,7 @@ namespace Biobanks.Web.ApiControllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _ontologyTermService.GetCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory
                 })
@@ -62,9 +62,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = await _ontologyTermService.GetOntologyTerm(id, tags: new List<string> { SnomedTags.Disease });
+            var model = await _ontologyTermService.Get(id, tags: new List<string> { SnomedTags.Disease });
 
-            if (await _ontologyTermService.IsOntologyTermInUse(id))
+            if (await _ontologyTermService.IsInUse(id))
             {
                 ModelState.AddModelError("Description", $"The disease status \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -74,7 +74,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.DeleteOntologyTerm(model.Id);
+            await _ontologyTermService.Delete(model.Id);
 
             //Everything went A-OK!
             return Json(new
@@ -89,15 +89,15 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
         {
             //If this description is valid, it already exists
-            if (await _ontologyTermService.ValidOntologyTerm(id, description: model.Description))
+            if (await _ontologyTermService.IsValid(id, description: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
 
-            if (await _ontologyTermService.IsOntologyTermInUse(id))
+            if (await _ontologyTermService.IsInUse(id))
             {
                 //Allow editing of only Other terms field if diagnosis in use
-                var diagnosis = await _ontologyTermService.GetOntologyTerm(id, tags: new List<string> { SnomedTags.Disease });
+                var diagnosis = await _ontologyTermService.Get(id, tags: new List<string> { SnomedTags.Disease });
                 
                 if (diagnosis.Value != model.Description)
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
@@ -108,7 +108,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.UpdateOntologyTerm(new OntologyTerm
+            await _ontologyTermService.Update(new OntologyTerm
             {
                 Id = id,
                 Value = model.Description,
@@ -130,11 +130,11 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
             //if ontology term id is in use by another ontology term
-            if (await _ontologyTermService.ValidOntologyTerm(id: model.OntologyTermId))
+            if (await _ontologyTermService.IsValid(id: model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             //If this description is valid, it already exists
-            if (await _ontologyTermService.ValidOntologyTerm(description: model.Description))
+            if (await _ontologyTermService.IsValid(description: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
@@ -144,7 +144,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.AddOntologyTerm(new OntologyTerm
+            await _ontologyTermService.Create(new OntologyTerm
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,

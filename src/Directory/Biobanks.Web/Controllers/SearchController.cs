@@ -46,7 +46,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrWhiteSpace(ontologyTerm))
             {
-                var term = await _ontologyTermService.GetOntologyTerm(description: ontologyTerm, onlyDisplayable: true);
+                var term = await _ontologyTermService.Get(description: ontologyTerm, onlyDisplayable: true);
 
                 if (term is null)
                 {
@@ -153,7 +153,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrEmpty(ontologyTerm))
             {
-                var term = await _ontologyTermService.GetOntologyTerm(description: ontologyTerm, onlyDisplayable: true);
+                var term = await _ontologyTermService.Get(description: ontologyTerm, onlyDisplayable: true);
 
                 if (term is null)
                 {
@@ -251,7 +251,7 @@ namespace Biobanks.Web.Controllers
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            var directoryOntologyTerms = await _ontologyTermService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var directoryOntologyTerms = await _ontologyTermService.List(wildcard, onlyDisplayable: true, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding
@@ -285,7 +285,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var ontologyTerms = await _ontologyTermService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var ontologyTerms = await _ontologyTermService.List(wildcard, onlyDisplayable: true, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding

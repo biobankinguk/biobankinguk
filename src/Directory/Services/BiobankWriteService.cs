@@ -212,7 +212,7 @@ namespace Biobanks.Services
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
-            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(description: ontologyTermDescription, onlyDisplayable: true);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -243,7 +243,7 @@ namespace Biobanks.Services
             existingCollection.AssociatedData.Clear();
             existingCollection.ConsentRestrictions.Clear();
 
-            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(description: ontologyTermDescription, onlyDisplayable: true);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -382,7 +382,7 @@ namespace Biobanks.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             var capability = new DiagnosisCapability
             {
@@ -411,7 +411,7 @@ namespace Biobanks.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;

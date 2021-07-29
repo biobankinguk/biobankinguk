@@ -38,7 +38,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            return (await _ontologyTermService.ListOntologyTerms(tags: new List<string>
+            return (await _ontologyTermService.List(tags: new List<string>
                 {
                     SnomedTags.ExtractionProcedure
                 }))
@@ -62,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = await _ontologyTermService.GetOntologyTerm(id, tags: new List<string>
+            var model = await _ontologyTermService.Get(id, tags: new List<string>
             {
                 SnomedTags.ExtractionProcedure
             });
@@ -77,7 +77,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.DeleteOntologyTerm(model.Id);
+            await _ontologyTermService.Delete(model.Id);
 
             //Everything went A-OK!
             return Json(new
@@ -92,7 +92,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
-            if ((await _ontologyTermService.ListOntologyTerms()).Any(x=>x.Value == model.Description && x.Id != id))
+            if ((await _ontologyTermService.List()).Any(x=>x.Value == model.Description && x.Id != id))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
@@ -101,7 +101,7 @@ namespace Biobanks.Web.ApiControllers
             if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)
                 ModelState.AddModelError("MaterialTypeIds", "Add at least one material type to the extraction procedure.");
 
-            var ontologyTerm = await _ontologyTermService.GetOntologyTerm(id, tags: new List<string>
+            var ontologyTerm = await _ontologyTermService.Get(id, tags: new List<string>
             {
                 SnomedTags.ExtractionProcedure
             });
@@ -117,7 +117,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _ontologyTermService.UpdateOntologyTerm(new OntologyTerm
+            await _ontologyTermService.Update(new OntologyTerm
             {
                 Id = id,
                 Value = model.Description,
@@ -140,13 +140,13 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
-            if (await _ontologyTermService.ValidOntologyTerm(description: model.Description))
+            if (await _ontologyTermService.IsValid(description: model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
 
             //if ontology term id is in use by another ontology term
-            if ((await _ontologyTermService.ListOntologyTerms(tags: new List<string>
+            if ((await _ontologyTermService.List(tags: new List<string>
             {
                 SnomedTags.ExtractionProcedure
             })).Any(x => x.Id == model.OntologyTermId))
@@ -163,7 +163,7 @@ namespace Biobanks.Web.ApiControllers
 
             var materialTypes = _biobankReadService.ListMaterialTypesAsync();
 
-            await _ontologyTermService.AddOntologyTerm(new OntologyTerm
+            await _ontologyTermService.Create(new OntologyTerm
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,

@@ -6,19 +6,24 @@ namespace Biobanks.Directory.Services.Contracts
 {
     public interface IOntologyTermService
     {
-        Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string description = null, List<string> tags = null, bool onlyDisplayable = false);
-        Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string description = null, List<string> tags = null);
-        
-        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false);
-        
-        Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null);
-        Task<bool> IsOntologyTermInUse(string id);
-        
-        Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
-        Task<int> GetCollectionCapabilityCount(string id);
 
-        Task DeleteOntologyTerm(string id);
-        Task<OntologyTerm> UpdateOntologyTerm(OntologyTerm ontologyTerm);
-        Task<OntologyTerm> AddOntologyTerm(OntologyTerm ontologyTerm);
+        Task<IEnumerable<OntologyTerm>> List(string description = null, List<string> tags = null, bool onlyDisplayable = false);
+        
+        Task<IEnumerable<OntologyTerm>> ListPaginated(int start, int length, string description = null, List<string> tags = null);
+
+        Task Delete(string id);
+
+        Task<OntologyTerm> Get(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false);
+
+        Task<OntologyTerm> Update(OntologyTerm ontologyTerm);
+
+        Task<OntologyTerm> Create(OntologyTerm ontologyTerm);
+
+        Task<bool> IsValid(string id = null, string description = null, List<string> tags = null);
+        Task<bool> IsInUse(string id);
+        
+        Task<int> Count(string description = null, List<string> tags = null);
+        
+        Task<int> CountCollectionCapabilityUsage(string ontologyTermId);
     }
 }
