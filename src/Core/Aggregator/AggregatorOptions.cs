@@ -11,6 +11,7 @@ namespace Biobanks.Aggregator
         public string NonExtractedOntologyTerm { get; set; }
 
         /// <summary>
+        /// All configured mappings between (ContentMethod, ContentId) of a Sample => MacroscopicAssessment
         /// </summary>
         public IList<MacroscopicAssessmentMapping> MacroscopicAssessmentMappings { get; set; }
 
