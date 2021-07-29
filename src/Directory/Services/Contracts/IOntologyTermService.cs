@@ -8,8 +8,8 @@ namespace Biobanks.Directory.Services.Contracts
     {
 
         Task<IEnumerable<OntologyTerm>> List(string description = null, List<string> tags = null, bool onlyDisplayable = false);
-        
-        Task<IEnumerable<OntologyTerm>> ListPaginated(int start, int length, string description = null, List<string> tags = null);
+
+        Task<IEnumerable<OntologyTerm>> ListPaginated(int skip, int take, string description = null, List<string> tags = null, bool onlyDisplayable = false);
 
         Task Delete(string id);
 
