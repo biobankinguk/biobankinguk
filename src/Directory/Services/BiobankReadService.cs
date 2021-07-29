@@ -23,9 +23,6 @@ namespace Biobanks.Services
     public class BiobankReadService : IBiobankReadService
     {
         #region Properties and ctor
-
-        private readonly IOntologyTermService _ontologyTermService;
-
         private readonly ILogoStorageProvider _logoStorageProvider;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
@@ -39,7 +36,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
-        private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
@@ -96,8 +92,6 @@ namespace Biobanks.Services
         private readonly BiobanksDbContext _context;
 
         public BiobankReadService(
-            IOntologyTermService ontologyTermService,
-
             ILogoStorageProvider logoStorageProvider,
 
             IGenericEFRepository<Collection> collectionRepository,
@@ -110,7 +104,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
-            IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
@@ -163,8 +156,6 @@ namespace Biobanks.Services
             
             BiobanksDbContext context)
         {
-            _ontologyTermService = ontologyTermService;
-
             _logoStorageProvider = logoStorageProvider;
 
             _collectionRepository = collectionRepository;
@@ -177,7 +168,6 @@ namespace Biobanks.Services
             _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
-            _ontologyTermRepository = ontologyTermRepository;
             _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
             _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
@@ -1259,10 +1249,10 @@ namespace Biobanks.Services
             => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
 
         public async Task<bool> IsMaterialTypeAssigned(int id)
-            => (await _ontologyTermService.ListOntologyTerms(tags: new List<string>
-            {
-                SnomedTags.ExtractionProcedure
-            })).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
+            => await _context.OntologyTerms
+                .Include(x => x.MaterialTypes)
+                .Where(x => x.SnomedTag != null && x.SnomedTag.Value == SnomedTags.ExtractionProcedure)
+                .AnyAsync(x => x.MaterialTypes.Any(y => y.Id == id));
 
         public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
             => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();

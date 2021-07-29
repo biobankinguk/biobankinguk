@@ -25,6 +25,7 @@ using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using System.Web.Http;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services;
 
 namespace Biobanks.Web.Windsor
 {
@@ -102,7 +103,7 @@ namespace Biobanks.Web.Windsor
                     .LifeStyle.Transient,
 
                 Component.For(typeof(IOntologyTermService))
-                    .ImplementedBy(typeof(IOntologyTermService))
+                    .ImplementedBy(typeof(OntologyTermService))
                     .LifeStyle.Transient,
 
                 Component.For(typeof(IBiobankReadService))
