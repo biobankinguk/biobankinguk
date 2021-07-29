@@ -78,8 +78,6 @@ namespace Biobanks.Submissions.Api
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
             var hangfireConfig = Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 
-            var aggregatorConfig = Configuration.GetSection("Aggregator").Get<AggregatorOptions>();
-
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
                 .AddJsonOptions(o =>
