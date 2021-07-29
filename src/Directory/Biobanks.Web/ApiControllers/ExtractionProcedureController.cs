@@ -7,6 +7,8 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
+using System.Collections.Generic;
+using Biobanks.Directory.Services.Constants;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -28,7 +30,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            return (await _biobankReadService.ListExtractionProceduresAsync())
+            return (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+                {
+                    SnomedTags.ExtractionProcedure
+                }))
                 .Select(x =>
 
                 Task.Run(async () => new ReadExtractionProcedureModel
@@ -37,7 +42,8 @@ namespace Biobanks.Web.ApiControllers
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
                     OtherTerms = x.OtherTerms,
-                    MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList()
+                    MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList(),
+                    DisplayOnDirectory = x.DisplayOnDirectory
                 })
                 .Result
             )
@@ -48,7 +54,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(string id)
         {
-            var model = await _biobankReadService.GetExtractionProcedureById(id);
+            var model = await _biobankReadService.GetOntologyTerm(id, tags: new List<string>
+            {
+                SnomedTags.ExtractionProcedure
+            });
 
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
@@ -79,7 +88,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidOntologyTerm(id, description: model.Description))
+            if ((await _biobankReadService.ListOntologyTerms()).Any(x=>x.Value == model.Description && x.Id != id))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
@@ -88,7 +97,10 @@ namespace Biobanks.Web.ApiControllers
             if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)
                 ModelState.AddModelError("MaterialTypeIds", "Add at least one material type to the extraction procedure.");
 
-            var ontologyTerm = await _biobankReadService.GetExtractionProcedureById(id);
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(id, tags: new List<string>
+            {
+                SnomedTags.ExtractionProcedure
+            });
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
                 //Allow editing of only Other terms field if ontologyterm in use
@@ -107,7 +119,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
-                DisplayOnDirectory = true
+                DisplayOnDirectory = model.DisplayOnDirectory
             },model.MaterialTypeIds);
 
             //Everything went A-OK!
@@ -129,7 +141,10 @@ namespace Biobanks.Web.ApiControllers
             }
 
             //if ontology term id is in use by another ontology term
-            if ((await _biobankReadService.ListExtractionProceduresAsync()).Any(x => x.Id == model.OntologyTermId))
+            if ((await _biobankReadService.ListOntologyTerms(tags: new List<string>
+            {
+                SnomedTags.ExtractionProcedure
+            })).Any(x => x.Id == model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             //Extraction procedure should belong to at least one material type 
@@ -146,8 +161,8 @@ namespace Biobanks.Web.ApiControllers
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Extraction Procedure")).Id,
-                DisplayOnDirectory = true
+                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription(SnomedTags.ExtractionProcedure)).Id,
+                DisplayOnDirectory = model.DisplayOnDirectory
             }, model.MaterialTypeIds);
 
             //Everything went A-OK!

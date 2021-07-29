@@ -287,6 +287,7 @@ namespace Biobanks.Web
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/extraction-procedure").Include(
                 "~/Scripts/bootbox*",
+                "~/Scripts/Shared/serialize-checkbox-as-bool.js",
                 "~/Scripts/ADAC/adac-extraction-procedure.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
 

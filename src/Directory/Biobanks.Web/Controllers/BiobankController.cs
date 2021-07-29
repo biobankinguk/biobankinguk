@@ -2,6 +2,7 @@ using AutoMapper;
 
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
+using Biobanks.Directory.Services.Constants;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Identity.Constants;
@@ -1076,7 +1077,8 @@ namespace Biobanks.Web.Controllers
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
                     PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
                     StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct()),
-                    ExtractionProcedures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.ExtractionProcedure?.Value).Distinct())
+                    ExtractionProcedures = Join(" / ", sampleSet.MaterialDetails.Where(x=>x.ExtractionProcedure?.DisplayOnDirectory == true)
+                                           .Select(x=>x.ExtractionProcedure?.Value).Distinct())
                 })
             };
 
@@ -1295,7 +1297,7 @@ namespace Biobanks.Web.Controllers
                     MaterialType = x.MaterialType.Value,
                     PreservationType = x.PreservationType?.Value,
                     StorageTemperature = x.StorageTemperature.Value,
-                    ExtractionProcedure = x.ExtractionProcedure?.Value
+                    ExtractionProcedure = x.ExtractionProcedure?.DisplayOnDirectory == true ? x.ExtractionProcedure.Value : null
                     
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
@@ -1443,7 +1445,10 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.ExtractionProcedures = (await _biobankReadService.ListExtractionProceduresAsync())
+            model.ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+                {
+                    SnomedTags.ExtractionProcedure
+                }, onlyDisplayable: true))
                 .Select(
                     x =>
                         new OntologyTermModel
