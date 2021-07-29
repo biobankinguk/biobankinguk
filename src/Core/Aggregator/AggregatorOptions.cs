@@ -27,8 +27,8 @@ namespace Biobanks.Aggregator
             // Find Mapping - Using Fallback Values If No Direct Mapping Exists
             var map = 
                 MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && x.ContentId == contentId) ??       
-                MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && string.IsNullOrEmpty(contentId)) ??   
-                MacroscopicAssessmentMappings.First(x => string.IsNullOrEmpty(contentMethod) && string.IsNullOrEmpty(contentId));
+                MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && string.IsNullOrEmpty(x.ContentId)) ??   
+                MacroscopicAssessmentMappings.First(x => string.IsNullOrEmpty(x.ContentMethod) && string.IsNullOrEmpty(x.ContentId));
 
             return map?.MacroscopicAssessment;
         }
