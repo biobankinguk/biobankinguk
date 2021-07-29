@@ -46,7 +46,7 @@ using Microsoft.Extensions.Options;
 using Hangfire.Dashboard;
 using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
-using Hangfire.SqlServer;
+using Biobanks.Aggregator;
 
 namespace Biobanks.Submissions.Api
 {
@@ -78,6 +78,8 @@ namespace Biobanks.Submissions.Api
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
             var hangfireConfig = Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 
+            var aggregatorConfig = Configuration.GetSection("Aggregator").Get<AggregatorOptions>();
+
             // MVC
             services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
                 .AddJsonOptions(o =>
@@ -108,6 +110,7 @@ namespace Biobanks.Submissions.Api
 
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
+                .Configure<AggregatorOptions>(Configuration.GetSection("Aggregator"))
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
                 .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
                 .Configure<HangfireOptions>(Configuration.GetSection("Hangfire"))
