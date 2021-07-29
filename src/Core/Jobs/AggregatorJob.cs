@@ -2,6 +2,7 @@
 using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Entities.Api;
 using Biobanks.Shared.Services.Contracts;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +26,14 @@ namespace Core.Jobs
             IOrganisationService organisationService,
             ICollectionService collectionService,
             ISampleService sampleService,
-            AggregatorOptions options)
+            IOptions<AggregatorOptions> options)
         {
             _aggregationService = aggregationService;
             _refDataService = refDataService;
             _organisationService = organisationService;
             _collectionService = collectionService;
             _sampleService = sampleService;
-            _options = options;
+            _options = options.Value;
         }
 
         public async Task Run()
