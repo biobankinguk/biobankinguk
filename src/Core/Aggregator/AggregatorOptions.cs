@@ -24,9 +24,11 @@ namespace Biobanks.Aggregator
         /// <returns>The mapped MacroscopicAssessment value</returns>
         public string MapToMacroscopicAssessment(string contentMethod, string contentId)
         {
-            var map = MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && x.ContentId == contentId)       // Specific Mapping
-                ?? MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && string.IsNullOrEmpty(contentId))   // General Mapping (No Id)
-                ?? MacroscopicAssessmentMappings.First(x => string.IsNullOrEmpty(contentMethod) && string.IsNullOrEmpty(contentId));        // Default Mapping (No Method Or Id)
+            // Find Mapping - Using Fallback Values If No Direct Mapping Exists
+            var map = 
+                MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && x.ContentId == contentId) ??       
+                MacroscopicAssessmentMappings.FirstOrDefault(x => x.ContentMethod == contentMethod && string.IsNullOrEmpty(contentId)) ??   
+                MacroscopicAssessmentMappings.First(x => string.IsNullOrEmpty(contentMethod) && string.IsNullOrEmpty(contentId));
 
             return map?.MacroscopicAssessment;
         }
