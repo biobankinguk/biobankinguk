@@ -3,6 +3,7 @@ using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
 using Biobanks.Submissions.Extensions;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,11 @@ namespace Biobanks.Aggregator.Services
         
         public AggregationService(
             IReferenceDataService refDataService,
-            AggregatorOptions options,
+            IOptions<AggregatorOptions> options,
             BiobanksDbContext db)
         {
             _refDataService = refDataService;
-            _options = options;
+            _options = options.Value;
             _db = db;
         }
 
