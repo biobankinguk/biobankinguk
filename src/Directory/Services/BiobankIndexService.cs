@@ -16,6 +16,7 @@ using System.IO;
 using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data;
 
 namespace Biobanks.Services
 {
@@ -23,19 +24,15 @@ namespace Biobanks.Services
     {
         private const int BulkIndexChunkSize = 100;
 
-        private readonly ICollectionService _collectionService;
-
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
         private readonly ISearchProvider _searchProvider;
 
         public BiobankIndexService(
-            ICollectionService collectionService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider)
         {
-            _collectionService = collectionService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
@@ -242,11 +239,8 @@ namespace Biobanks.Services
             BackgroundJob.Enqueue(() => _indexProvider.DeleteCapabilitySearchDocument(capabilityId));
         }
 
-        public async Task UpdateCollectionDetails(int collectionId)
+        public void UpdateCollectionDetails(Collection collection)
         {
-            // Get the collection out of the database.
-            var collection = await _collectionService.GetIndexableCollection(collectionId);
-
             // Update all search documents that are relevant to this collection.
             foreach (var sampleSet in collection.SampleSets)
             {
@@ -545,17 +539,6 @@ namespace Biobanks.Services
 
         private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
             => (int) Math.Floor((double) (intList.Count() / chunkSize));
-
-        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
-        {
-            var collections = await _collectionService.ListByOntologyTerm(ontologyTerm);
-
-            // Update all search documents that are relevant to this collection.
-            foreach (var collection in collections)
-            {
-                await UpdateCollectionDetails(collection.CollectionId);
-            }
-        }
 
         public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
         {

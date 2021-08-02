@@ -83,8 +83,12 @@ namespace Biobanks.Directory.Services
 
                 await _db.SaveChangesAsync();
 
+                // Index Updated Collection
                 if (!await _readService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
-                    await _indexService.UpdateCollectionDetails(collection.CollectionId);
+                {
+                    _indexService.UpdateCollectionDetails(
+                        await GetIndexableCollection(currentCollection.CollectionId));
+                }
             }
 
             return collection;
