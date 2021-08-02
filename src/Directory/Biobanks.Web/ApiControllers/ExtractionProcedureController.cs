@@ -92,7 +92,13 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, ReadExtractionProcedureModel model)
         {
             //If this description is valid, it already exists
-            if ((await _ontologyTermService.List()).Any(x=>x.Value == model.Description && x.Id != id))
+            //if ((await _ontologyTermService.List()).Any(x=>x.Value == model.Description && x.Id != id))
+            var ontologyTerm = await _ontologyTermService.Get(value: model.Description, tags: new List<string>
+            {
+                SnomedTags.ExtractionProcedure
+            });
+
+            if (ontologyTerm != null && ontologyTerm.Id != id)
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
@@ -101,10 +107,6 @@ namespace Biobanks.Web.ApiControllers
             if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)
                 ModelState.AddModelError("MaterialTypeIds", "Add at least one material type to the extraction procedure.");
 
-            var ontologyTerm = await _ontologyTermService.Get(id, tags: new List<string>
-            {
-                SnomedTags.ExtractionProcedure
-            });
             if (await _biobankReadService.IsExtractionProcedureInUse(id))
             {
                 //Allow editing of only Other terms field if ontologyterm in use

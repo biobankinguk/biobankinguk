@@ -90,18 +90,22 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OntologyTerm> Create(OntologyTerm ontologyTerm)
         {
+            
+            ontologyTerm.MaterialTypes.Clear();
+
             // Add New OntologyTerm
             ontologyTerm = _db.OntologyTerms.Add(ontologyTerm);
 
             // Link To Material Types
-            if (ontologyTerm.MaterialTypes != null)
-            {
-                var ids = ontologyTerm.MaterialTypes.Select(x => x.Id);
+            //if (ontologyTerm.MaterialTypes != null)
+            //{
+            //    var ids = ontologyTerm.MaterialTypes.Select(x => x.Id);
 
-                await _db.MaterialTypes
-                    .Where(x => ids.Contains(x.Id))
-                    .ForEachAsync(x => x.ExtractionProcedures.Add(ontologyTerm));
-            }
+            //    await _db.MaterialTypes
+            //        .Include(x => x.ExtractionProcedures)
+            //        .Where(x => ids.Contains(x.Id))
+            //        .ForEachAsync(x => x.ExtractionProcedures.Add(ontologyTerm));
+            //}
 
             await _db.SaveChangesAsync();
 
@@ -112,23 +116,26 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OntologyTerm> Update(OntologyTerm ontologyTerm)
         {
-            var currentTerm = await _db.OntologyTerms.FirstAsync(x => x.Id == ontologyTerm.Id);
+            // Reference Updated MaterialTypes By Id
+            var materialIds = ontologyTerm.MaterialTypes?.Select(x => x.Id) ?? Enumerable.Empty<int>();
 
+            // Update Current Term
+            var currentTerm = await _db.OntologyTerms
+                .Include(x => x.MaterialTypes)
+                .FirstAsync(x => x.Id == ontologyTerm.Id);
+            
             currentTerm.Value = ontologyTerm.Value;
             currentTerm.OtherTerms = ontologyTerm.OtherTerms;
             currentTerm.DisplayOnDirectory = ontologyTerm.DisplayOnDirectory;
-            currentTerm.MaterialTypes = ontologyTerm.MaterialTypes;
             currentTerm.SnomedTag = ontologyTerm.SnomedTag;
+
+            // Link To Existing Material Types
+            currentTerm.MaterialTypes = await _db.MaterialTypes.Where(x => materialIds.Contains(x.Id)).ToListAsync();
 
             await _db.SaveChangesAsync();
 
             await _indexService.UpdateCollectionsOntologyOtherTerms(ontologyTerm.Value);
             await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
-
-            // TODO: Check If Manual Update Of Material Types Is Required
-            //var Term = (await _ontologyTermRepository.ListAsync(true, x => x.Id == ontologyTerm.Id, null, x => x.MaterialTypes)).FirstOrDefault();
-            //var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
-            //Term.MaterialTypes = materialTypes;
 
             return currentTerm;
         }

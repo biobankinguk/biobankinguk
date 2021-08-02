@@ -50,7 +50,8 @@ namespace Biobanks.Directory.Services.Contracts
         Task<OntologyTerm> Get(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false);
 
         /// <summary>
-        /// Update an exisiting OntologyTerm with the provided updated entity
+        /// Update an exisiting OntologyTerm with the provided updated entity. The method call should update both database and elastic
+        /// search reference.
         /// </summary>
         /// <param name="ontologyTerm">The version of the OntologyTerm to update with</param>
         /// <returns>The updated OntologyTerm</returns>
