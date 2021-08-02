@@ -148,10 +148,7 @@ namespace Biobanks.Web.ApiControllers
             }
 
             //if ontology term id is in use by another ontology term
-            if ((await _ontologyTermService.List(tags: new List<string>
-            {
-                SnomedTags.ExtractionProcedure
-            })).Any(x => x.Id == model.OntologyTermId))
+            if (await _ontologyTermService.Exists(id: model.OntologyTermId))
                 ModelState.AddModelError("OntologyTermId", "That ID is already in use. IDs must be unique across all ontology terms.");
 
             //Extraction procedure should belong to at least one material type 
@@ -163,7 +160,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            var materialTypes = _biobankReadService.ListMaterialTypesAsync();
+            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
 
             await _ontologyTermService.Create(new OntologyTerm
             {
@@ -172,7 +169,7 @@ namespace Biobanks.Web.ApiControllers
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription(SnomedTags.ExtractionProcedure)).Id,
                 DisplayOnDirectory = model.DisplayOnDirectory,
-                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
+                MaterialTypes = materialTypes.Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
             });
 
             //Everything went A-OK!
