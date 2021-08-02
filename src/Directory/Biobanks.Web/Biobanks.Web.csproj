@@ -641,6 +641,7 @@
     <Content Include="Scripts\Home\home-contactlist.js" />
     <Content Include="Scripts\plotly-latest.min.js" />
     <Content Include="Scripts\Profile\publications.js" />
+    <Content Include="Scripts\Shared\serialize-checkbox-as-bool.js" />
     <Content Include="Scripts\Term\diseasetable.js" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="App_Config\navigation.json" />

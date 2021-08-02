@@ -302,7 +302,7 @@ namespace Biobanks.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm);
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             var capability = new DiagnosisCapability
             {
@@ -331,7 +331,7 @@ namespace Biobanks.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm);
+            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;
