@@ -10,20 +10,20 @@ namespace Biobanks.Directory.Services.Contracts
         /// Deletes an empty Collection. If the Collection has any SampleSets it will fail to be deleted
         /// </summary>
         /// <param name="id">The Id of the Collection to delete</param>
-        Task<bool> DeleteCollection(int id);
+        Task<bool> Delete(int id);
 
         /// <summary>
         /// Create a new Collection. At the point of creation, the Collection's timestamp will be updated to reflect
         /// the latest change
         /// </summary>
         /// <returns>The newly created Collection with assigned idenitity Id</returns>
-        Task<Collection> AddCollection(Collection collection);
+        Task<Collection> Add(Collection collection);
 
         /// <summary>
         /// Update an exisiting Collection on both database and search index
         /// </summary>
         /// <returns>The updated Collection with updated fields and timestamp</returns>
-        Task<Collection> UpdateCollection(Collection collection);
+        Task<Collection> Update(Collection collection);
 
         /// <summary>
         /// Get the untracked Collection with associated Collection Id
@@ -58,14 +58,14 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <param name="organisationId">Optional filter by Organistation Id</param>
         /// <returns>Enumerable of untracked Collections</returns>
-        Task<IEnumerable<Collection>> ListCollections(int organisationId = default);
+        Task<IEnumerable<Collection>> List(int organisationId = default);
 
         /// <summary>
         /// List untracked Collections, with given OntologyTerm value.
         /// </summary>
         /// <param name="ontologyTerm">Value of the OntologyTerm to filter by</param>
         /// <returns>Enumerable of untracked Collections</returns>
-        Task<IEnumerable<Collection>> ListCollectionsByOntologyTerm(string ontologyTerm);
+        Task<IEnumerable<Collection>> ListByOntologyTerm(string ontologyTerm);
 
         /// <summary>
         /// Whether the Collection has been created from aggreagted data submitted via the API.

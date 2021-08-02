@@ -100,7 +100,7 @@ namespace Biobanks.Web.Controllers
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                CollectionOntologyTerms = (await _collectionService.ListCollections(bb.OrganisationId)).Select(
+                CollectionOntologyTerms = (await _collectionService.List(bb.OrganisationId)).Select(
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,

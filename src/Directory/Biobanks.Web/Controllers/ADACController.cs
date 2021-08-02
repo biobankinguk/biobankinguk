@@ -1804,7 +1804,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> TermpageConfigPreview(TermpageContentModel termpage)
         {
             // Populate Snomed Terms for Preview View
-            var collections = await _collectionService.ListCollections();
+            var collections = await _collectionService.List();
 
             var ontologyTerms = collections
                 .Where(x => x.SampleSets.Any())

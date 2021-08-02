@@ -841,7 +841,7 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            var collections = await _collectionService.ListCollections(biobankId);
+            var collections = await _collectionService.List(biobankId);
 
             // Build ViewModel.
             var model = new BiobankCollectionsModel
@@ -897,7 +897,7 @@ namespace Biobanks.Web.Controllers
                 var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
 
                 // Create and Add New Collection
-                var collection = await _collectionService.AddCollection(new Collection
+                var collection = await _collectionService.Add(new Collection
                 {
                     OrganisationId = biobankId,
                     Title = model.Title,
@@ -987,7 +987,7 @@ namespace Biobanks.Web.Controllers
                 // Update description
                 collection.Description = model.Description;
 
-                await _collectionService.UpdateCollection(collection);
+                await _collectionService.Update(collection);
 
                 SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
@@ -1015,7 +1015,7 @@ namespace Biobanks.Web.Controllers
 
                 var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
 
-                await _collectionService.UpdateCollection(new Collection
+                await _collectionService.Update(new Collection
                 { 
                     AccessConditionId = model.AccessCondition,
                     AssociatedData = associatedData,
@@ -1051,7 +1051,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<RedirectToRouteResult> DeleteCollection(int id)
         {
-            if (!await _collectionService.IsFromApi(id) && await _collectionService.DeleteCollection(id))
+            if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
             {
                 SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
                 return RedirectToAction("Collections");

@@ -548,7 +548,7 @@ namespace Biobanks.Services
 
         public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
         {
-            var collections = await _collectionService.ListCollectionsByOntologyTerm(ontologyTerm);
+            var collections = await _collectionService.ListByOntologyTerm(ontologyTerm);
 
             // Update all search documents that are relevant to this collection.
             foreach (var collection in collections)

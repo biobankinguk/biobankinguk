@@ -29,7 +29,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<bool> DeleteCollection(int id)
+        public async Task<bool> Delete(int id)
         {
             if (await HasSampleSets(id))
                 return false;
@@ -44,7 +44,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<Collection> AddCollection(Collection collection)
+        public async Task<Collection> Add(Collection collection)
         {
             // Update Timestamp
             collection.LastUpdated = DateTime.Now;
@@ -57,7 +57,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<Collection> UpdateCollection(Collection collection)
+        public async Task<Collection> Update(Collection collection)
         {
             var currentCollection = await _db.Collections
                 .Include(x => x.AssociatedData)
@@ -137,7 +137,7 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Collection>> ListCollections(int organisationId = default)
+        public async Task<IEnumerable<Collection>> List(int organisationId = default)
             => await _db.Collections
                 .AsNoTracking()
                 .Include(x => x.OntologyTerm)
@@ -146,7 +146,7 @@ namespace Biobanks.Directory.Services
                 .ToListAsync();
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Collection>> ListCollectionsByOntologyTerm(string ontologyTerm)
+        public async Task<IEnumerable<Collection>> ListByOntologyTerm(string ontologyTerm)
             => await _db.Collections
                 .AsNoTracking()
                 .Where(x => x.OntologyTerm.Value == ontologyTerm)
