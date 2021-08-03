@@ -75,7 +75,7 @@ namespace Biobanks.Directory.Services
                 currentCollection.CollectionStatusId = collection.CollectionStatusId;
                 currentCollection.LastUpdated = DateTime.Now;
 
-                // Clear Old Assocaited Data In Favour Of New Data
+                // Clear Old Associated Data In Favour Of New Data
                 currentCollection.AssociatedData?.Clear();
                 currentCollection.AssociatedData = collection.AssociatedData;
 
