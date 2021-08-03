@@ -4,6 +4,7 @@ using AutoMapper;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -11,14 +12,19 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/Biobank")]
     public class BiobankController : ApiBaseController
     {
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IMapper _mapper;
 
-        public BiobankController(IBiobankReadService biobankReadService,
-                                 IBiobankWriteService biobankWriteService,
-                                 IMapper mapper)
+        public BiobankController(
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService,
+            IBiobankWriteService biobankWriteService,
+            IMapper mapper)
         {
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _mapper = mapper;
@@ -35,9 +41,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("IncludePublications/{id}/{value}")]
         public async Task IncludePublications(int id, bool value)
         {
-            var biobank = _mapper.Map<OrganisationDTO>(await _biobankReadService.GetBiobankByIdAsync(id));
+            var biobank = _mapper.Map<OrganisationDTO>(await _organisationService.GetBiobankByIdAsync(id));
             biobank.ExcludePublications = !(value);
-            await _biobankWriteService.UpdateBiobankAsync(biobank);
+            await _organisationService.UpdateBiobankAsync(biobank);
         }
     }
 }

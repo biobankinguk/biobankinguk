@@ -17,6 +17,7 @@ using Biobanks.Web.Utilities;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
@@ -26,11 +27,16 @@ namespace Biobanks.Web.Controllers
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly CustomClaimsManager _claimsManager;
 
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
 
         public AccountController(
+            INetworkService networkService,
+            IOrganisationService organisationService,
             ApplicationSignInManager signInManager,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
@@ -38,6 +44,9 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog,
             IBiobankReadService biobankReadService)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
+
             _signinManager = signInManager;
             _userManager = userManager;
             _claimsManager = claimsManager;
@@ -151,7 +160,7 @@ namespace Biobanks.Web.Controllers
             //Biobank
 
             //get all accepted biobanks
-            var biobankRequests = await _biobankReadService.ListAcceptedBiobankRegisterRequestsAsync();
+            var biobankRequests = await _organisationService.ListAcceptedBiobankRegisterRequestsAsync();
             var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == CurrentUser.Name && x.UserEmail == CurrentUser.Email);
             
             // if there is an unregistered biobank to finish registering, go there
@@ -165,7 +174,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //get all accepted networks
-            var networkRequests = await _biobankReadService.ListAcceptedNetworkRegisterRequestAsync();
+            var networkRequests = await _networkService.ListAcceptedNetworkRegisterRequestAsync();
             var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == CurrentUser.Identity.GetUserName() && x.UserEmail == CurrentUser.Email);
 
             // if there is an unregistered network to finish registering, go there
@@ -572,9 +581,9 @@ namespace Biobanks.Web.Controllers
 
             // Get Biobank
             if (newBiobank)
-                biobanks = _biobankReadService.GetAcceptedBiobankRequestIdsAndNamesByUserId(userId); 
+                biobanks = _organisationService.GetAcceptedBiobankRequestIdsAndNamesByUserId(userId); 
             else 
-                biobanks = _biobankReadService.GetBiobankIdsAndNamesByUserId(userId);
+                biobanks = _organisationService.GetBiobankIdsAndNamesByUserId(userId);
 
             // if they don't have access to any biobanks, 403
             if (biobanks == null || biobanks.Count <= 0) return RedirectToAction("Forbidden");
@@ -610,9 +619,9 @@ namespace Biobanks.Web.Controllers
             await _claimsManager.SetUserClaimsAsync(user.Email);
 
             if (newNetwork)
-                networks = _biobankReadService.GetAcceptedNetworkRequestIdsAndNamesByUserId(userId); 
+                networks = _networkService.GetAcceptedNetworkRequestIdsAndNamesByUserId(userId); 
             else 
-                networks = _biobankReadService.GetNetworkIdsAndNamesByUserId(userId);
+                networks = _networkService.GetNetworkIdsAndNamesByUserId(userId);
 
             // if they don't have access to any biobanks, 403
             if (networks == null || networks.Count <= 0) return RedirectToAction("Forbidden");

@@ -21,11 +21,17 @@ namespace Biobanks.Services
         private readonly string _apiClientId = ConfigurationManager.AppSettings["DirectoryApiClientId"] ?? "";
         private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
 
+        private readonly IOrganisationService _organisationService;
+
         private readonly HttpClient _client;
         private readonly IBiobankReadService _biobankReadService;
 
-        public AnalyticsReportGenerator(IBiobankReadService biobankReadService)
+        public AnalyticsReportGenerator(
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService)
         {
+            _organisationService = organisationService;
+
             _biobankReadService = biobankReadService;
             _client = new HttpClient();
 
@@ -44,7 +50,7 @@ namespace Biobanks.Services
         public async Task<ProfileStatusDTO> GetProfileStatus(string biobankId)
         {
             //can split into two functions that returns status code and status message
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(biobankId);
+            var bb = await _organisationService.GetBiobankByExternalIdAsync(biobankId);
             int collectionCount = bb.Collections.Count;
             int capabilitiesCount = bb.DiagnosisCapabilities.Count;
 
@@ -95,7 +101,7 @@ namespace Biobanks.Services
 
         public async Task<BiobankAnalyticReportDTO> GetBiobankReport(int Id, int year, int quarter, int period)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(Id);
+            var bb = await _organisationService.GetBiobankByIdAsync(Id);
             var biobankId = bb.OrganisationExternalId;
 
             if (bb is null) throw new KeyNotFoundException();

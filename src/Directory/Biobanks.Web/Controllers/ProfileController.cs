@@ -10,12 +10,16 @@ using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
 using System;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class ProfileController : ApplicationBaseController
     {
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
 
@@ -28,14 +32,14 @@ namespace Biobanks.Web.Controllers
 
         public ActionResult Biobanks()
         {
-            var model = _biobankReadService.GetOrganisations();
+            var model = _organisationService.GetOrganisations();
             return View(model);
         }
 
         public async Task<ActionResult> Biobank(string id)
         {
             //get the biobank
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(id);
+            var bb = await _organisationService.GetBiobankByExternalIdAsync(id);
 
             if(bb == null) return new HttpNotFoundResult();
 
@@ -75,7 +79,7 @@ namespace Biobanks.Web.Controllers
                 CountryName = bb.Country.Value,
                 ContactNumber = bb.ContactNumber,
                 LastUpdated = bb.LastUpdated,
-                NetworkMembers = (await _biobankReadService.GetNetworksByBiobankIdAsync(bb.OrganisationId)).Select(
+                NetworkMembers = (await _networkService.GetNetworksByBiobankIdAsync(bb.OrganisationId)).Select(
                     x => new NetworkMemberModel
                     {
                         Id = x.NetworkId,
@@ -121,7 +125,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> Network(int id)
         {
-            var nw = await _biobankReadService.GetNetworkByIdAsync(id);
+            var nw = await _networkService.GetNetworkByIdAsync(id);
 
             var model = new NetworkModel
             {
@@ -132,7 +136,7 @@ namespace Biobanks.Web.Controllers
                 Logo = nw.Logo,
                 ContactEmail = nw.Email,
                 SopStatus = nw.SopStatus.Value,
-                BiobankMembers = (await _biobankReadService.GetBiobanksByNetworkIdAsync(id)).Select(
+                BiobankMembers = (await _networkService.GetBiobanksByNetworkIdAsync(id)).Select(
                     x => new BiobankMemberModel
                     {
                         Id = x.OrganisationId,
@@ -154,7 +158,7 @@ namespace Biobanks.Web.Controllers
                 return HttpNotFound();
 
             // Get the Organisation
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(id);
+            var bb = await _organisationService.GetBiobankByExternalIdAsync(id);
 
             if (bb == null)
             {

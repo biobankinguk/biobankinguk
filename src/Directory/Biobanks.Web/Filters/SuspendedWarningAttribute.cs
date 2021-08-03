@@ -8,7 +8,7 @@ namespace Biobanks.Web.Filters
 {
     public class SuspendedWarningAttribute : FilterAttribute, IActionFilter
     {
-        public IBiobankReadService BiobankReadService { get; set; }
+        public IOrganisationService OrganisationService { get; set; }
 
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -26,13 +26,10 @@ namespace Biobanks.Web.Filters
             controller.ViewBag.ShowSuspendedWarning =
                 Task.Run(
                     async () =>
-                        await BiobankReadService.IsBiobankSuspendedAsync(biobankId))
+                        await OrganisationService.IsBiobankSuspendedAsync(biobankId))
                     .Result;
         }
 
-        public void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            
-        }
+        public void OnActionExecuted(ActionExecutedContext filterContext) {   }
     }
 }

@@ -22,15 +22,19 @@ namespace Biobanks.Web.Controllers
     [AllowAnonymous]
     public class SearchController : Controller
     {
+        private readonly IOrganisationService _organisationService;
+
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
         private readonly IBiobankReadService _biobankReadService;
 
         public SearchController(
+            IOrganisationService organisationService,
             ISearchProvider searchProvider,
             IMapper mapper,
             IBiobankReadService biobankReadService)
         {
+            _organisationService = organisationService;
             _searchProvider = searchProvider;
             _mapper = mapper;
             _biobankReadService = biobankReadService;
@@ -128,7 +132,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _biobankReadService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
 
             //Get Collection Descriptions in bulk
             var descriptions =
@@ -207,7 +211,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _biobankReadService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
 
             return View(model);
         }

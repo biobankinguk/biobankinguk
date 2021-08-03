@@ -3,6 +3,7 @@ using AutoMapper;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Identity.Constants;
@@ -42,6 +43,9 @@ namespace Biobanks.Web.Controllers
     [SuspendedWarning]
     public class BiobankController : ApplicationBaseController
     {
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -57,7 +61,10 @@ namespace Biobanks.Web.Controllers
         private const string TempBiobankLogoSessionId = "TempBiobankLogo";
         private const string TempBiobankLogoContentTypeSessionId = "TempBiobankLogoContentType";
 
-        public BiobankController(IBiobankReadService biobankReadService,
+        public BiobankController(
+            INetworkService networkService,
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -67,6 +74,8 @@ namespace Biobanks.Web.Controllers
             CustomClaimsManager claimsManager,
             ITokenLoggingService tokenLog)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -91,7 +100,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //for viewing details only, we include networks
-            var networks = await _biobankReadService.GetNetworksByBiobankIdAsync(biobankId);
+            var networks = await _networkService.GetNetworksByBiobankIdAsync(biobankId);
 
             model.AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync();
 
@@ -141,21 +150,21 @@ namespace Biobanks.Web.Controllers
             //Update bits Automapper doesn't do
             biobank.Logo = logoName;
 
-            return await _biobankWriteService.UpdateBiobankAsync(biobank);
+            return await _organisationService.UpdateBiobankAsync(biobank);
         }
 
         private async Task<Organisation> CreateBiobank(BiobankDetailsModel model)
         {
             var biobankDto = _mapper.Map<OrganisationDTO>(model);
 
-            var biobank = await _biobankWriteService.CreateBiobankAsync(biobankDto);
-            await _biobankWriteService.AddUserToBiobankAsync(User.Identity.GetUserId(), biobank.OrganisationId);
+            var biobank = await _organisationService.CreateBiobankAsync(biobankDto);
+            await _organisationService.AddUserToBiobankAsync(User.Identity.GetUserId(), biobank.OrganisationId);
 
             //update the request to show org created
-            var request = await _biobankReadService.GetBiobankRegisterRequestByUserEmailAsync(User.Identity.Name);
+            var request = await _organisationService.GetBiobankRegisterRequestByUserEmailAsync(User.Identity.Name);
             request.OrganisationCreatedDate = DateTime.Now;
             request.OrganisationExternalId = biobank.OrganisationExternalId;
-            await _biobankWriteService.UpdateOrganisationRegisterRequestAsync(request);
+            await _organisationService.UpdateOrganisationRegisterRequestAsync(request);
 
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
@@ -182,7 +191,7 @@ namespace Biobanks.Web.Controllers
                                     model.Logo.ContentType,
                                     biobank.OrganisationExternalId);
 
-                    biobank = await _biobankWriteService.UpdateBiobankAsync(biobankDto);
+                    biobank = await _organisationService.UpdateBiobankAsync(biobankDto);
                 }
                 catch (ArgumentNullException) //no problem, just means no logo uploaded in this form submission
                 {
@@ -346,7 +355,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationRegistrationReasonModel>> GetAllRegistrationReasonsAsync()
         {
-            var allRegistrationReasons = await _biobankReadService.ListRegistrationReasonsAsync();
+            var allRegistrationReasons = await _organisationService.ListRegistrationReasonsAsync();
 
             return allRegistrationReasons.Select(regReason => new OrganisationRegistrationReasonModel
             {
@@ -382,7 +391,7 @@ namespace Biobanks.Web.Controllers
         private async Task<BiobankDetailsModel> GetBiobankDetailsModelAsync()
         {
             //having a biobankId claim means we can definitely get a biobank for that claim and return a model for that
-            var bb = await _biobankReadService.GetBiobankByIdAsync(SessionHelper.GetBiobankId(Session));
+            var bb = await _organisationService.GetBiobankByIdAsync(SessionHelper.GetBiobankId(Session));
 
             //Try and get any service offerings for this biobank
             var bbServices =
@@ -397,7 +406,7 @@ namespace Biobanks.Web.Controllers
 
             //Try and get any registration reasons for this biobank
             var bbRegistrationReasons =
-                    await _biobankReadService.ListBiobankRegistrationReasonsAsync(bb.OrganisationId);
+                    await _organisationService.ListBiobankRegistrationReasonsAsync(bb.OrganisationId);
 
             //mark services as active in the full list
             var registrationReasons = (await GetAllRegistrationReasonsAsync()).Select(regReason =>
@@ -564,7 +573,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> InviteAdminAjax(int biobankId)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var bb = await _organisationService.GetBiobankByIdAsync(biobankId);
 
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
@@ -590,7 +599,7 @@ namespace Biobanks.Web.Controllers
                 });
             }
 
-            var biobankId = (await _biobankReadService.GetBiobankByNameAsync(model.Entity)).OrganisationId;
+            var biobankId = (await _organisationService.GetBiobankByNameAsync(model.Entity)).OrganisationId;
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
@@ -647,7 +656,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/biobank relationship
-            await _biobankWriteService.AddUserToBiobankAsync(user.Id, biobankId);
+            await _organisationService.AddUserToBiobankAsync(user.Id, biobankId);
 
             //add user to BiobankAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
@@ -672,7 +681,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //remove them from the network
-            await _biobankWriteService.RemoveUserFromBiobankAsync(biobankUserId, biobankId);
+            await _organisationService.RemoveUserFromBiobankAsync(biobankUserId, biobankId);
 
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
@@ -725,7 +734,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AddFunderAjax(int biobankId)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var bb = await _organisationService.GetBiobankByIdAsync(biobankId);
 
             return PartialView("_ModalAddFunder", new AddFunderModel
             {
@@ -757,7 +766,7 @@ namespace Biobanks.Web.Controllers
                 if (useFreeText)
                 {
                     // Add Funder to Database
-                    await _biobankWriteService.AddFunderAsync(new Funder
+                    await _organisationService.AddFunderAsync(new Funder
                     {
                         Value = model.FunderName
                     });
@@ -781,7 +790,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the funder/biobank relationship
-            await _biobankWriteService.AddFunderToBiobankAsync(
+            await _organisationService.AddFunderToBiobankAsync(
                 funder.Id, SessionHelper.GetBiobankId(Session));
 
             //return success, and enough details for adding to the viewmodel's list
@@ -802,7 +811,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //remove them from the network
-            await _biobankWriteService.RemoveFunderFromBiobankAsync(funderId, biobankId);
+            await _organisationService.RemoveFunderFromBiobankAsync(funderId, biobankId);
 
             SetTemporaryFeedbackMessage($"{funderName} has been removed from your list of funders!", FeedbackMessageType.Success);
 
@@ -1712,11 +1721,11 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> NetworkAcceptance()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
-            var organisationNetworks = await _biobankReadService.GetOrganisationNetworksAsync(biobankId);
+            var organisationNetworks = await _networkService.GetOrganisationNetworksAsync(biobankId);
             var networkList = new List<NetworkAcceptanceModel>();
             foreach (var orgNetwork in organisationNetworks)
             {
-                var network = await _biobankReadService.GetNetworkByIdAsync(orgNetwork.NetworkId);
+                var network = await _networkService.GetNetworkByIdAsync(orgNetwork.NetworkId);
                 var organisation = new NetworkAcceptanceModel
                 {
                     BiobankId = biobankId,
@@ -1740,11 +1749,11 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
         {
-            var organisationNetworks = await _biobankReadService.GetOrganisationNetworkAsync(biobankId, networkId);
+            var organisationNetworks = await _networkService.GetOrganisationNetworkAsync(biobankId, networkId);
             var organisationNetwork = organisationNetworks.First();
 
             organisationNetwork.ApprovedDate = DateTime.Now;
-            await _biobankWriteService.UpdateOrganisationNetworkAsync(organisationNetwork);
+            await _networkService.UpdateOrganisationNetworkAsync(organisationNetwork);
 
             SetTemporaryFeedbackMessage("Biobank added to the network successfully", FeedbackMessageType.Success);
 
@@ -1778,7 +1787,7 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId != 0)
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+                var biobank = await _organisationService.GetBiobankByIdAsync(biobankId);
                 var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
 
                 biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
@@ -1799,7 +1808,7 @@ namespace Biobanks.Web.Controllers
         public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
         {
             //TODO: Merge with core for when we rewrite the directory in core.
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var biobank = await _organisationService.GetBiobankByIdAsync(biobankId);
 
             // Find Given Publication
             var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
@@ -1852,7 +1861,7 @@ namespace Biobanks.Web.Controllers
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+                var biobank = await _organisationService.GetBiobankByIdAsync(biobankId);
 
                 // Find Publication locally
                 var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
@@ -1878,7 +1887,7 @@ namespace Biobanks.Web.Controllers
                 return Json(new EmptyResult());
             else
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+                var biobank = await _organisationService.GetBiobankByIdAsync(biobankId);
 
                 // Find Publication locally
                 var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
@@ -1924,7 +1933,7 @@ namespace Biobanks.Web.Controllers
             }
             else
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+                var biobank = await _organisationService.GetBiobankByIdAsync(biobankId);
 
                 // Find Given Publication
                 var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
@@ -1954,7 +1963,7 @@ namespace Biobanks.Web.Controllers
         => View(new BiobankAnnualStatsModel
         {
             AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync(),
-            BiobankAnnualStatistics = (await _biobankReadService.GetBiobankByIdAsync(SessionHelper.GetBiobankId(Session))).OrganisationAnnualStatistics
+            BiobankAnnualStatistics = (await _organisationService.GetBiobankByIdAsync(SessionHelper.GetBiobankId(Session))).OrganisationAnnualStatistics
         });
 
         [HttpPost]
@@ -2069,7 +2078,7 @@ namespace Biobanks.Web.Controllers
 
             //get currently selected values from org (if applicable)
             var biobankId = SessionHelper.GetBiobankId(Session);
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var biobank = await _organisationService.GetBiobankByIdAsync(biobankId);
 
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
@@ -2086,12 +2095,12 @@ namespace Biobanks.Web.Controllers
         {
             //update Organisations table
             var biobankId = model.BiobankId;
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var biobank = await _organisationService.GetBiobankByIdAsync(biobankId);
 
             biobank.CollectionTypeId = model.CollectionType;
             biobank.AccessConditionId = model.AccessCondition;
 
-            await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
+            await _organisationService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
 
             //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
@@ -2104,9 +2113,9 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
             var credentials = 
-                await _biobankReadService.IsBiobankAnApiClient(biobankId)
-                    ? await _biobankWriteService.GenerateNewSecretForBiobank(biobankId)
-                    : await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+                await _organisationService.IsBiobankAnApiClient(biobankId)
+                    ? await _organisationService.GenerateNewSecretForBiobank(biobankId)
+                    : await _organisationService.GenerateNewApiClientForBiobank(biobankId);
 
             return Json(new
             {

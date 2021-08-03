@@ -31,33 +31,10 @@ namespace Biobanks.Services.Contracts
         Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe, bool sortOnly = false);
         Task<AssociatedDataProcurementTimeframe> AddAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe);
 
-        Task<OrganisationNetwork> UpdateOrganisationNetworkAsync(OrganisationNetwork organisationNetwork);
-
-        Task<Organisation> CreateBiobankAsync(OrganisationDTO biobank);
-        Task<Organisation> UpdateBiobankAsync(OrganisationDTO biobank);
-        Task<OrganisationUser> AddUserToBiobankAsync(string userId, int biobankId);
-        Task RemoveUserFromBiobankAsync(string userId, int biobankId);
-
-        Task<OrganisationRegisterRequest> AddRegisterRequestAsync(OrganisationRegisterRequest request);
-        Task DeleteRegisterRequestAsync(OrganisationRegisterRequest request);
-
         Task AddBiobankServicesAsync(IEnumerable<OrganisationServiceOffering> services);
         Task DeleteBiobankServiceAsync(int biobankId, int serviceId);
         Task<ServiceOffering> UpdateServiceOfferingAsync(ServiceOffering serviceOffering, bool sortOnly = false);
         Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering);
-
-        Task<Network> CreateNetworkAsync(Network network);
-        Task<Network> UpdateNetworkAsync(NetworkDTO networkDto);
-        Task<NetworkUser> AddUserToNetworkAsync(string userId, int networkId);
-        Task RemoveUserFromNetworkAsync(string userId, int networkId);
-
-        Task<NetworkRegisterRequest> AddNetworkRegisterRequestAsync(NetworkRegisterRequest request);
-        Task DeleteNetworkRegisterRequestAsync(NetworkRegisterRequest request);
-        Task<bool> AddBiobankToNetworkAsync(int biobankId, int networkId, string biobankExternalID, bool approve);
-        Task RemoveBiobankFromNetworkAsync(int biobankId, int networkId);
-
-        Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request);
-        Task<NetworkRegisterRequest> UpdateNetworkRegisterRequestAsync(NetworkRegisterRequest request);
 
         Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
         Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
@@ -151,15 +128,6 @@ namespace Biobanks.Services.Contracts
         Task<County> UpdateCountyAsync(County county);
         Task DeleteCountyAsync(County county);
 
-        Task<Organisation> SuspendBiobankAsync(int id);
-        Task<Organisation> UnsuspendBiobankAsync(int id);
-        Task UpdateOrganisationURLAsync(int id);
-        Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId);
-        Task RemoveFunderFromBiobankAsync(int funderId, int biobankId);
-        Task DeleteBiobankAsync(int id);
-        Task DeleteFunderByIdAsync(int id);
-        Task<Funder> AddFunderAsync(Funder funder);
-        Task<Funder> UpdateFunderAsync(Funder funder);
         Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year);
         Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);
@@ -169,8 +137,5 @@ namespace Biobanks.Services.Contracts
         Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
         Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
-
-        Task<KeyValuePair<string, string>> GenerateNewApiClientForBiobank(int biobankId, string clientName = null);
-        Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId);
     }
 }

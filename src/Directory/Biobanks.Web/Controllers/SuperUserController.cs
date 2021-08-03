@@ -20,17 +20,21 @@ namespace Biobanks.Web.Controllers
     [UserAuthorize(Roles = "SuperUser")]
     public class SuperUserController : ApplicationBaseController
     {
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IBiobankIndexService _indexService;
         private readonly ISearchProvider _searchProvider;
 
         public SuperUserController(
+            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IBiobankIndexService indexService,
             ISearchProvider searchProvider)
         {
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _indexService = indexService;
@@ -54,10 +58,10 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                var organisations =  _biobankReadService.GetOrganisations();
+                var organisations = _organisationService.GetOrganisations();
                 foreach (var organisation in organisations)
                 {
-                    await _biobankWriteService.UpdateOrganisationURLAsync(organisation.OrganisationId);
+                    await _organisationService.UpdateOrganisationURLAsync(organisation.OrganisationId);
                 }
                 
             }

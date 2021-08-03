@@ -15,12 +15,17 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/RegistrationReason")]
     public class RegistrationReasonController : ApiBaseController
     {
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public RegistrationReasonController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public RegistrationReasonController(
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService,
+            IBiobankWriteService biobankWriteService)
         {
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
         }
@@ -31,7 +36,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-                var model = (await _biobankReadService.ListRegistrationReasonsAsync())
+                var model = (await _organisationService.ListRegistrationReasonsAsync())
                     .Select(x =>
 
                 Task.Run(async () => new ReadRegistrationReasonModel
@@ -50,7 +55,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListRegistrationReasonsAsync()).Where(x => x.Id == id).First();
+            var model = (await _organisationService.ListRegistrationReasonsAsync()).Where(x => x.Id == id).First();
 
             if (await _biobankReadService.IsRegistrationReasonInUse(id))
             {

@@ -12,6 +12,8 @@ namespace Biobanks
 {
     public class AuthorizeAttribute : System.Web.Mvc.AuthorizeAttribute
     {
+        public IOrganisationService OrganisationService { get; set; }
+
         public IBiobankReadService BiobankReadService { get; set; }
 
         private string _claimType;
@@ -73,7 +75,7 @@ namespace Biobanks
 
                     var bb =
                         Task.Run(async () =>
-                                await BiobankReadService.GetBiobankByIdAsync(activeOrganisationId))
+                                await OrganisationService.GetBiobankByIdAsync(activeOrganisationId))
                             .Result;
 
                     //only fail if suspended
@@ -125,7 +127,7 @@ namespace Biobanks
                     {
                         var bb =
                             Task.Run(async () =>
-                                    await BiobankReadService.GetBiobankByIdAsync(activeOrganisationId))
+                                    await OrganisationService.GetBiobankByIdAsync(activeOrganisationId))
                                 .Result;
                         filterContext.Result = new BiobankSuspendedResult(bb.Name);
                     }

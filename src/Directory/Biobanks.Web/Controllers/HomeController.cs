@@ -11,20 +11,29 @@ using Biobanks.Web.Extensions;
 using Newtonsoft.Json;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class HomeController : ApplicationBaseController
     {
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
 
-        public HomeController(IBiobankReadService biobankReadService,
+        public HomeController(
+            INetworkService networkService,
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService,
             IMapper mapper,
             IEmailService emailService)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _mapper = mapper;
             _emailService = emailService;
@@ -55,7 +64,7 @@ namespace Biobanks.Web.Controllers
             try
             {
                 // Convert IDs to list of Email Addresses
-                var biobanks = await _biobankReadService.GetBiobanksByExternalIdsAsync(ids);
+                var biobanks = await _organisationService.GetBiobanksByExternalIdsAsync(ids);
                 var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
                 var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
@@ -72,14 +81,14 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> BiobankContactDetailsAjax(string id)
         {
             var biobankExternalIds = (List<string>)JsonConvert.DeserializeObject(id, typeof(List<string>));
-            var biobanks = (await _biobankReadService.GetBiobanksByExternalIdsAsync(biobankExternalIds)).ToList();
+            var biobanks = (await _organisationService.GetBiobanksByExternalIdsAsync(biobankExternalIds)).ToList();
             
             var displayNetworks = Config.Get(ConfigKey.ContactThirdParty, "false") == "true";
             var networkHandoverModels = new List<NetworkHandoverModel>();
 
             if (displayNetworks)
             {
-                var networks = (await _biobankReadService.ListNetworksAsync()).Where(n => n.ContactHandoverEnabled);
+                var networks = (await _networkService.ListNetworksAsync()).Where(n => n.ContactHandoverEnabled);
 
                 foreach (var network in networks)
                 {
@@ -123,8 +132,8 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> NotifyNetworkNonMembersOfHandoverAjax(NetworkNonMemberContactModel model)
         {
-            var network = await _biobankReadService.GetNetworkByIdAsync(model.NetworkId);
-            var biobanks = (await _biobankReadService.GetBiobanksByAnonymousIdentifiersAsync(model.BiobankAnonymousIdentifiers)).ToList();
+            var network = await _networkService.GetNetworkByIdAsync(model.NetworkId);
+            var biobanks = (await _organisationService.GetBiobanksByAnonymousIdentifiersAsync(model.BiobankAnonymousIdentifiers)).ToList();
 
 
             foreach (var biobank in biobanks)

@@ -16,12 +16,15 @@ using Biobanks.Services.Dto;
 using Biobanks.Entities.Shared;
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Extensions;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
     public class BiobankWriteService : IBiobankWriteService
     {
         #region Properties and ctor
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
@@ -85,6 +88,8 @@ namespace Biobanks.Services
         private readonly IMapper _mapper;
 
         public BiobankWriteService(
+            INetworkService networkService,
+            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IConfigService configService,
             ILogoStorageProvider logoStorageProvider,
@@ -140,6 +145,9 @@ namespace Biobanks.Services
 
             IGenericEFRepository<Funder> funderRepository)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
+
             _biobankReadService = biobankReadService;
             _configService = configService;
             _logoStorageProvider = logoStorageProvider;
@@ -256,7 +264,7 @@ namespace Biobanks.Services
 
             await _collectionRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
+            if (!await _organisationService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
                 await _indexService.UpdateCollectionDetails(collection.CollectionId);
         }
 
@@ -288,7 +296,7 @@ namespace Biobanks.Services
             await _collectionRepository.SaveChangesAsync();
 
             // Index New SampleSet
-            if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(sampleSet.CollectionId))
+            if (!await _organisationService.IsCollectionBiobankSuspendedAsync(sampleSet.CollectionId))
                 await _indexService.IndexSampleSet(sampleSet.Id);
         }
 
@@ -352,7 +360,7 @@ namespace Biobanks.Services
             await _materialDetailRepository.SaveChangesAsync();
 
             // Update Search Index
-            if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
+            if (!await _organisationService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
             {
                 await _indexService.UpdateSampleSetDetails(sampleSet.Id);
             }
@@ -361,7 +369,7 @@ namespace Biobanks.Services
         public async Task DeleteSampleSetAsync(int id)
         {
             //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
-            var suspended = await _biobankReadService.IsSampleSetBiobankSuspendedAsync(id);
+            var suspended = await _organisationService.IsSampleSetBiobankSuspendedAsync(id);
 
             //delete materialdetails to avoid orphaned data or integrity errors
             await _materialDetailRepository.DeleteWhereAsync(x => x.SampleSetId == id);
@@ -393,7 +401,7 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsCapabilityBiobankSuspendedAsync(capability.DiagnosisCapabilityId))
+            if (!await _organisationService.IsCapabilityBiobankSuspendedAsync(capability.DiagnosisCapabilityId))
                 await _indexService.IndexCapability(capability.DiagnosisCapabilityId);
         }
 
@@ -417,7 +425,7 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsCapabilityBiobankSuspendedAsync(existingCapability.DiagnosisCapabilityId))
+            if (!await _organisationService.IsCapabilityBiobankSuspendedAsync(existingCapability.DiagnosisCapabilityId))
                 await _indexService.UpdateCapabilityDetails(existingCapability.DiagnosisCapabilityId);
         }
 
@@ -427,7 +435,7 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsCapabilityBiobankSuspendedAsync(id))
+            if (!await _organisationService.IsCapabilityBiobankSuspendedAsync(id))
                 _indexService.DeleteCapability(id);
         }
 
@@ -480,7 +488,7 @@ namespace Biobanks.Services
 
             await _organisationRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsBiobankSuspendedAsync(biobankDto.OrganisationId))
+            if (!await _organisationService.IsBiobankSuspendedAsync(biobankDto.OrganisationId))
                 await _indexService.UpdateBiobankDetails(biobank.OrganisationId);
 
             return biobank;
@@ -660,7 +668,7 @@ namespace Biobanks.Services
                 _networkOrganisationRepository.Insert(no);
                 await _networkOrganisationRepository.SaveChangesAsync();
 
-                if (!await _biobankReadService.IsBiobankSuspendedAsync(biobankId))
+                if (!await _organisationService.IsBiobankSuspendedAsync(biobankId))
                     await _indexService.JoinOrLeaveNetwork(biobankId);
 
                 return true;
@@ -682,7 +690,7 @@ namespace Biobanks.Services
 
             await _networkOrganisationRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsBiobankSuspendedAsync(biobankId))
+            if (!await _organisationService.IsBiobankSuspendedAsync(biobankId))
                 await _indexService.JoinOrLeaveNetwork(biobankId);
         }
 

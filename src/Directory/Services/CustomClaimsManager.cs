@@ -10,20 +10,28 @@ using Biobanks.Services.Contracts;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Newtonsoft.Json;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
     public class CustomClaimsManager
     {
+        private INetworkService _networkService;
+        private IOrganisationService _organisationService;
+        
         private readonly ApplicationSignInManager _signinManager;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly IBiobankReadService _biobankReadService;
 
         public CustomClaimsManager(
+            INetworkService networkService,
+            IOrganisationService organisationService,
             ApplicationSignInManager signinManager,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IBiobankReadService biobankReadService)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
             _signinManager = signinManager;
             _userManager = userManager;
             _biobankReadService = biobankReadService;
@@ -44,10 +52,10 @@ namespace Biobanks.Services
             // Additionally, add claims for accepted biobank requests
             if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.BiobankAdmin.ToString()))
             {
-                var biobanks = _biobankReadService.GetBiobankIdsAndNamesByUserId(user.Id);
+                var biobanks = _organisationService.GetBiobankIdsAndNamesByUserId(user.Id);
                 claims.AddRange(biobanks.Select(biobank => new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(biobank))));
                 
-                var biobankRequests = _biobankReadService.GetAcceptedBiobankRequestIdsAndNamesByUserId(user.Id);
+                var biobankRequests = _organisationService.GetAcceptedBiobankRequestIdsAndNamesByUserId(user.Id);
                 claims.AddRange(biobankRequests.Select(biobankRequest => new Claim(CustomClaimType.BiobankRequest, JsonConvert.SerializeObject(biobankRequest))));
             }
 
@@ -55,10 +63,10 @@ namespace Biobanks.Services
             // Additionally, add claims for accepted network requests
             if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.NetworkAdmin.ToString()))
             {
-                var networks = _biobankReadService.GetNetworkIdsAndNamesByUserId(user.Id);
+                var networks = _networkService.GetNetworkIdsAndNamesByUserId(user.Id);
                 claims.AddRange(networks.Select(network => new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(network))));
 
-                var networkRequests = _biobankReadService.GetAcceptedNetworkRequestIdsAndNamesByUserId(user.Id);
+                var networkRequests = _networkService.GetAcceptedNetworkRequestIdsAndNamesByUserId(user.Id);
                 claims.AddRange(networkRequests.Select(networkRequest => new Claim(CustomClaimType.NetworkRequest, JsonConvert.SerializeObject(networkRequest))));
             }
 
