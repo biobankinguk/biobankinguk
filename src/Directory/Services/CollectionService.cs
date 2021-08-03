@@ -66,12 +66,6 @@ namespace Biobanks.Directory.Services
 
             if (currentCollection != null)
             {
-                currentCollection.AssociatedData.Clear();
-                currentCollection.ConsentRestrictions.Clear();
-
-                currentCollection.AssociatedData = collection.AssociatedData;
-                currentCollection.ConsentRestrictions = collection.ConsentRestrictions;
-
                 currentCollection.OntologyTermId = collection.OntologyTermId;
                 currentCollection.Title = collection.Title;
                 currentCollection.Description = collection.Description;
@@ -80,6 +74,18 @@ namespace Biobanks.Directory.Services
                 currentCollection.CollectionTypeId = collection.CollectionTypeId;
                 currentCollection.CollectionStatusId = collection.CollectionStatusId;
                 currentCollection.LastUpdated = DateTime.Now;
+
+                // Clear Old Assocaited Data In Favour Of New Data
+                currentCollection.AssociatedData?.Clear();
+                currentCollection.AssociatedData = collection.AssociatedData;
+
+                // Reference Exisiting Consent Restrictions
+                var consentRestrictionIds = collection.ConsentRestrictions?.Select(x => x.Id) ?? Enumerable.Empty<int>();
+
+                currentCollection.ConsentRestrictions?.Clear();
+                currentCollection.ConsentRestrictions = await _db.ConsentRestrictions
+                    .Where(x => consentRestrictionIds.Contains(x.Id))
+                    .ToListAsync();
 
                 await _db.SaveChangesAsync();
 
