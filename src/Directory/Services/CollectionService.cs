@@ -93,7 +93,7 @@ namespace Biobanks.Directory.Services
                 if (!await _readService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
                 {
                     _indexService.UpdateCollectionDetails(
-                        await GetIndexableCollection(currentCollection.CollectionId));
+                        await GetForIndexing(currentCollection.CollectionId));
                 }
             }
 
@@ -101,7 +101,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<Collection> GetCollection(int id)
+        public async Task<Collection> Get(int id)
             => await _db.Collections
                 .AsNoTracking()
                 .Include(x => x.AccessCondition)
@@ -113,7 +113,7 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <inheritdoc/>
-        public async Task<Collection> GetEntireCollection(int id)
+        public async Task<Collection> GetWithSampleSets(int id)
             => await _db.Collections
                 .AsNoTracking()
                 .Include(x => x.AccessCondition)
@@ -132,7 +132,7 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <inheritdoc/>
-        public async Task<Collection> GetIndexableCollection(int id)
+        public async Task<Collection> GetForIndexing(int id)
             => await _db.Collections
                 .AsNoTracking()
                 .Include(x => x.AccessCondition)

@@ -33,7 +33,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// <para>AccessCondition, AssociatedData, CollectionType, CollectionStatus, ConsentRestrictions and OntologyTerm</para>
         /// <para>Note: AssociatedData does NOT include it's child entities</para>
         /// </returns>
-        Task<Collection> GetCollection(int id);
+        Task<Collection> Get(int id);
 
         /// <summary>
         /// Get the untracked Collection with associated Collection Id, including all SampleSets and MaterialDetails
@@ -41,7 +41,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// <returns>
         /// <para>The Collection including all fields</para>
         /// </returns>
-        Task<Collection> GetEntireCollection(int id);
+        Task<Collection> GetWithSampleSets(int id);
 
         /// <summary>
         /// Get the untracked Collection with associated Collection Id for use in search indexing
@@ -51,7 +51,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// <para>AccessCondition, AssociatedData, CollectionType, CollectionStatus, ConsentRestrictions, OntologyTerm and SampleSets</para>
         /// <para>Note: AssociatedData does include it's child entities</para>
         /// </returns>
-        Task<Collection> GetIndexableCollection(int id);
+        Task<Collection> GetForIndexing(int id);
 
         /// <summary>
         /// List untracked Collections

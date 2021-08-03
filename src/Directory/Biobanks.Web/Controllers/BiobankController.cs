@@ -934,7 +934,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ViewResult> EditCollection(int id)
         {
-            var collection = await _collectionService.GetCollection(id);
+            var collection = await _collectionService.Get(id);
             var consentRestrictions = await _biobankReadService.ListConsentRestrictionsAsync();
 
             var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
@@ -981,7 +981,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //Retrieve collection
-            var collection = await _collectionService.GetCollection(model.Id);
+            var collection = await _collectionService.Get(model.Id);
 
             if (collection.FromApi)
             {
@@ -1070,7 +1070,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ViewResult> Collection(int id)
         {
-            var collection = await _collectionService.GetEntireCollection(id);
+            var collection = await _collectionService.GetWithSampleSets(id);
 
             var model = new CollectionModel
             {
