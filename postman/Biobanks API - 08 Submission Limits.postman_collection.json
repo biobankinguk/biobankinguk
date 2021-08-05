@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "3a0bcb13-930d-4ccb-a427-83786ef010c3",
+		"name": "Biobanks API - 08 Submission Limits",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "10,000 Samples",
+			"item": [
+				{
+					"name": "Reject",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{api-url}}/{{user-biobank-id}}/reject",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"{{user-biobank-id}}",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Latest submission has been rejected\", () => {",
+									"    pm.expect(response.submissions[0].status).to.equal(\"Rejected\");",
+									"});",
+									"",
+									"pm.test(\"Submissions status DOES NOT include any Open submissions\", () => {",
+									"    pm.expect(pm.response.text()).to.not.include(\"Open\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 5000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit 10,000 Samples",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id\", response.id);",
+									"pm.environment.set(\"records\",response.totalRecords);",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 202\", () => {",
+									"    pm.expect(pm.response.code).to.be.eq(202);",
+									"});",
+									"",
+									"pm.test(\"Status code is 202\", () => {",
+									"    pm.expect(response.totalRecords).to.be.eq(9999);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						},
+						"description": "#10471 Limit of 10,000 records to be sent per submission"
+					},
+					"response": []
+				},
+				{
+					"name": "Check 10,000 Submission Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// Re-Run Test Until All Samples Processed",
+									"if (response.recordsProcessed != response.totalRecords) {",
+									"    postman.setNextRequest(\"Check 9,999 Submission Status\");",
+									"}",
+									"else {",
+									"    // Tests",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    pm.test(environment.records + \" records have been processed\", () => {",
+									"        pm.expect(response.recordsProcessed).to.equal(environment.records);",
+									"    });",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pause 15 Seconds\r",
+									"setTimeout(function () {}, 15000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-MD5",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"function IsSuccessCode(statusCode) {",
+					"    return statusCode == 200 || statusCode == 201;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
