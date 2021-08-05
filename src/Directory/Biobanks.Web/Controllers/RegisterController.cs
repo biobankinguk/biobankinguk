@@ -129,7 +129,7 @@ namespace Biobanks.Web.Controllers
                 return View("RegisterConfirmation");
 
             //check for duplicate Biobank name
-            var existingOrg = await _organisationService.GetBiobankByNameAsync(model.Entity);
+            var existingOrg = await _organisationService.GetByName(model.Entity);
 
             if (existingOrg != null)
             {
@@ -145,7 +145,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //check for duplicate name against non-declined requests too
-            if (await _organisationService.BiobankRegisterRequestExists(model.Entity))
+            if (await _organisationService.RegistrationRequestExists(model.Entity))
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(
@@ -167,10 +167,10 @@ namespace Biobanks.Web.Controllers
             }
 
             //get the org type id for biobanks
-            var type = await _biobankReadService.GetBiobankOrganisationTypeAsync();
+            var type = await _organisationService.GetBiobankOrganisationTypeAsync();
 
             //Create a register request for this user and Biobank
-            var request = await _organisationService.AddRegisterRequestAsync(
+            var request = await _organisationService.AddRegistrationRequest(
                 new OrganisationRegisterRequest
                 {
                     UserName = model.Name,

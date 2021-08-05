@@ -24,6 +24,10 @@ namespace Biobanks.Services.Contracts
         Task UpdateCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
         Task DeleteCapabilityAsync(int id);
 
+        Task DeleteFunderByIdAsync(int id);
+        Task<Funder> AddFunderAsync(Funder funder);
+        Task<Funder> UpdateFunderAsync(Funder funder);
+
         Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference);
         Task RemoveLogoAsync(int organisationId);
 
@@ -127,6 +131,8 @@ namespace Biobanks.Services.Contracts
         Task<County> AddCountyAsync(County county);
         Task<County> UpdateCountyAsync(County county);
         Task DeleteCountyAsync(County county);
+
+        Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync();
 
         Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year);
         Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);

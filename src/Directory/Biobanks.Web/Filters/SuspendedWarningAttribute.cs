@@ -26,7 +26,7 @@ namespace Biobanks.Web.Filters
             controller.ViewBag.ShowSuspendedWarning =
                 Task.Run(
                     async () =>
-                        await OrganisationService.IsBiobankSuspendedAsync(biobankId))
+                        await OrganisationService.IsSuspended(biobankId))
                     .Result;
         }
 

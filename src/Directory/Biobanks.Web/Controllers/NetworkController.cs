@@ -616,7 +616,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model)
         {
             //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
-            var biobank = await _organisationService.GetBiobankByNameAsync(model.BiobankName);
+            var biobank = await _organisationService.GetByName(model.BiobankName);
 
             var networkId = SessionHelper.GetNetworkId(Session);
             var network = await _networkService.GetNetworkByIdAsync(networkId);
@@ -721,7 +721,7 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<JsonResult> SearchBiobanks(string wildcard)
         {
-            var biobanks = await _organisationService.ListBiobanksAsync(wildcard, false);
+            var biobanks = await _organisationService.List(wildcard, false);
 
             var biobankResults = biobanks
                 .Select(x => new

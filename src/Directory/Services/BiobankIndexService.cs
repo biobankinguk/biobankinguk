@@ -284,7 +284,7 @@ namespace Biobanks.Services
         public async Task UpdateBiobankDetails(int biobankId)
         {
             // Get the biobank from the database.
-            var biobank = await _organisationService.GetBiobankByIdForIndexingAsync(biobankId);
+            var biobank = await _organisationService.GetForIndexing(biobankId);
 
             var partialBiobank = new PartialBiobank
             {
@@ -360,7 +360,7 @@ namespace Biobanks.Services
         public async Task JoinOrLeaveNetwork(int biobankId)
         {
             // Get the biobank from the database.
-            var biobank = await _organisationService.GetBiobankByIdForIndexingAsync(biobankId);
+            var biobank = await _organisationService.GetForIndexing(biobankId);
 
             // Update all search documents that are relevant to this biobank.
             foreach (var sampleSet in biobank.Collections.SelectMany(c => c.SampleSets))
@@ -387,7 +387,7 @@ namespace Biobanks.Services
         public async Task BulkIndexBiobank(int biobankId)
         {
             //Get the biobank, complete with collections, samplesets, capabilities
-            var biobank = await _organisationService.GetBiobankByIdForIndexingAsync(biobankId);
+            var biobank = await _organisationService.GetForIndexing(biobankId);
 
             //Index samplesets
             await
@@ -471,7 +471,7 @@ namespace Biobanks.Services
         public async Task BulkDeleteBiobank(int biobankId)
         {
             //Get the biobank, complete with collections, samplesets, capabilities
-            var biobank = await _organisationService.GetBiobankByIdForIndexingAsync(biobankId);
+            var biobank = await _organisationService.GetForIndexing(biobankId);
 
             //Remove samplesets from the index
             BulkDeleteSampleSets(

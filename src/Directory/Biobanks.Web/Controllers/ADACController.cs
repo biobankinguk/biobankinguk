@@ -431,7 +431,7 @@ namespace Biobanks.Web.Controllers
         #region Biobanks
         public async Task<ActionResult> BiobankAdmin(int id = 0)
         {
-            var biobank = await _organisationService.GetBiobankByIdAsync(id);
+            var biobank = await _organisationService.Get(id);
 
             if (biobank != null)
             {
@@ -468,7 +468,7 @@ namespace Biobanks.Web.Controllers
                 }).SingleOrDefault(x => x.UserId == biobankUserId).UserFullName;
 
             //remove them from the network
-            await _organisationService.RemoveUserFromBiobankAsync(biobankUserId, biobankId);
+            await _organisationService.RemoveUser(biobankUserId, biobankId);
 
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
@@ -481,7 +481,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Biobanks()
         {
             var allBiobanks =
-                (await _organisationService.ListBiobanksAsync()).ToList();
+                (await _organisationService.List()).ToList();
 
             var biobanks = allBiobanks.Select(x => new BiobankModel
             {
@@ -515,7 +515,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> InviteAdminAjax(int biobankId)
         {
-            var bb = await _organisationService.GetBiobankByIdAsync(biobankId);
+            var bb = await _organisationService.Get(biobankId);
 
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
@@ -541,7 +541,7 @@ namespace Biobanks.Web.Controllers
                 });
             }
 
-            var biobankId = (await _organisationService.GetBiobankByNameAsync(model.Entity)).OrganisationId;
+            var biobankId = (await _organisationService.GetByName(model.Entity)).OrganisationId;
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
@@ -598,7 +598,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/biobank relationship
-            await _organisationService.AddUserToBiobankAsync(user.Id, biobankId);
+            await _organisationService.AddUser(user.Id, biobankId);
 
             //add user to BiobankAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
@@ -617,7 +617,7 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> DeleteBiobank(int id)
         {
-            var biobank = await _organisationService.GetBiobankByIdAsync(id);
+            var biobank = await _organisationService.Get(id);
 
             if (biobank != null) return View(_mapper.Map<BiobankModel>(biobank));
 
@@ -631,9 +631,9 @@ namespace Biobanks.Web.Controllers
             try
             {
                 // remove the biobank itself
-                var biobank = await _organisationService.GetBiobankByIdAsync(model.BiobankId);
+                var biobank = await _organisationService.Get(model.BiobankId);
                 var usersInBiobank = await _biobankReadService.ListSoleBiobankAdminIdsAsync(model.BiobankId);
-                await _organisationService.DeleteBiobankAsync(model.BiobankId);
+                await _organisationService.Delete(model.BiobankId);
 
                 // remove admin role from users who had admin role only for this biobank
                 foreach (var user in usersInBiobank)
@@ -643,7 +643,7 @@ namespace Biobanks.Web.Controllers
 
                 //remove biobank registration request to allow re-registration 
                 var biobankRequest = await _biobankReadService.GetBiobankRegisterRequestByOrganisationNameAsync(biobank.Name);
-                await _organisationService.DeleteRegisterRequestAsync(biobankRequest);
+                await _organisationService.RemoveRegistrationRequest(biobankRequest);
                 SetTemporaryFeedbackMessage($"{biobank.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
             catch
@@ -659,7 +659,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                var biobank = await _organisationService.SuspendBiobankAsync(id);
+                var biobank = await _organisationService.Suspend(id);
                 if (biobank.IsSuspended)
                     SetTemporaryFeedbackMessage($"{biobank.Name} has been suspended.", FeedbackMessageType.Success);
             }
@@ -675,7 +675,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                var biobank = await _organisationService.UnsuspendBiobankAsync(id);
+                var biobank = await _organisationService.Unsuspend(id);
                 if (!biobank.IsSuspended)
                     SetTemporaryFeedbackMessage($"{biobank.Name} has been unsuspended.", FeedbackMessageType.Success);
             }

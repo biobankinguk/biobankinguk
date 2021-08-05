@@ -75,7 +75,7 @@ namespace Biobanks
 
                     var bb =
                         Task.Run(async () =>
-                                await OrganisationService.GetBiobankByIdAsync(activeOrganisationId))
+                                await OrganisationService.Get(activeOrganisationId))
                             .Result;
 
                     //only fail if suspended
@@ -127,7 +127,7 @@ namespace Biobanks
                     {
                         var bb =
                             Task.Run(async () =>
-                                    await OrganisationService.GetBiobankByIdAsync(activeOrganisationId))
+                                    await OrganisationService.Get(activeOrganisationId))
                                 .Result;
                         filterContext.Result = new BiobankSuspendedResult(bb.Name);
                     }

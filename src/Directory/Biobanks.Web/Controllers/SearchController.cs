@@ -132,7 +132,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _organisationService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
 
             //Get Collection Descriptions in bulk
             var descriptions =
@@ -211,7 +211,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _organisationService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
 
             return View(model);
         }

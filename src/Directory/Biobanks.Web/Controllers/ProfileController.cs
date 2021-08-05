@@ -24,22 +24,24 @@ namespace Biobanks.Web.Controllers
         private readonly IConfigService _configService;
 
         public ProfileController(
-            IBiobankReadService biobankReadService, IConfigService configService)
+            INetworkService networkService,
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService, 
+            IConfigService configService)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _configService = configService;
         }
 
-        public ActionResult Biobanks()
-        {
-            var model = _organisationService.GetOrganisations();
-            return View(model);
-        }
+        public async Task<ActionResult> Biobanks()
+            => View(await _organisationService.List());
 
         public async Task<ActionResult> Biobank(string id)
         {
             //get the biobank
-            var bb = await _organisationService.GetBiobankByExternalIdAsync(id);
+            var bb = await _organisationService.GetByExternalId(id);
 
             if(bb == null) return new HttpNotFoundResult();
 
@@ -158,7 +160,7 @@ namespace Biobanks.Web.Controllers
                 return HttpNotFound();
 
             // Get the Organisation
-            var bb = await _organisationService.GetBiobankByExternalIdAsync(id);
+            var bb = await _organisationService.GetByExternalId(id);
 
             if (bb == null)
             {

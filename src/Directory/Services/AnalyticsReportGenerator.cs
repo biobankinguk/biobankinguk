@@ -50,7 +50,7 @@ namespace Biobanks.Services
         public async Task<ProfileStatusDTO> GetProfileStatus(string biobankId)
         {
             //can split into two functions that returns status code and status message
-            var bb = await _organisationService.GetBiobankByExternalIdAsync(biobankId);
+            var bb = await _organisationService.GetByExternalId(biobankId);
             int collectionCount = bb.Collections.Count;
             int capabilitiesCount = bb.DiagnosisCapabilities.Count;
 
@@ -101,7 +101,7 @@ namespace Biobanks.Services
 
         public async Task<BiobankAnalyticReportDTO> GetBiobankReport(int Id, int year, int quarter, int period)
         {
-            var bb = await _organisationService.GetBiobankByIdAsync(Id);
+            var bb = await _organisationService.Get(Id);
             var biobankId = bb.OrganisationExternalId;
 
             if (bb is null) throw new KeyNotFoundException();

@@ -439,61 +439,6 @@ namespace Biobanks.Services
                 _indexService.DeleteCapability(id);
         }
 
-        public async Task<Organisation> CreateBiobankAsync(OrganisationDTO biobankDto)
-        {
-            //Partially create External ID if necessary
-            //we can't add this biobank's OrganisationId until it's created, so we'll defer that bit for now
-            //but we have to write something as external id is not nullable
-            var biobank = _mapper.Map<Organisation>(biobankDto);
-
-            var type = (await _organisationTypeRepository.ListAsync(
-                false,
-                x => x.Description == "Biobank")).FirstOrDefault();
-
-            //Only UK at this time, but this allows for ISO3 country codes in future
-            biobank.OrganisationExternalId = "GBR-" + type.OrganisationTypeId + "-";
-            biobank.OrganisationTypeId = type.OrganisationTypeId;
-
-            // create new anonymous id
-            biobank.AnonymousIdentifier = Guid.NewGuid();
-
-            biobank.LastUpdated = DateTime.Now;
-
-            _organisationRepository.Insert(biobank);
-            var result = await _organisationRepository.SaveChangesAsync();
-
-            if (result != 1) throw new DataException(); //shouldn't be doing anything other than inserting one organisation!
-
-            //Now the organisation exists, update its external id, to include its internal id
-            biobank.OrganisationExternalId = biobank.OrganisationExternalId + biobank.OrganisationId;
-            _organisationRepository.Update(biobank);
-            result = await _organisationRepository.SaveChangesAsync();
-            if (result != 1) throw new DataException(); //shouldn't be doing anything other than updating one organisation!
-
-            return biobank;
-        }
-
-        public async Task<Organisation> UpdateBiobankAsync(OrganisationDTO biobankDto)
-        {
-            //Get the bb entity and update it
-            var biobank = await _organisationRepository.GetByIdAsync(biobankDto.OrganisationId);
-
-            _mapper.Map(biobankDto, biobank);
-
-            biobank.LastUpdated = DateTime.Now;
-
-            // if it doesn't already have an anonymous id, make one
-            if (!biobank.AnonymousIdentifier.HasValue)
-                biobank.AnonymousIdentifier = Guid.NewGuid();
-
-            await _organisationRepository.SaveChangesAsync();
-
-            if (!await _organisationService.IsBiobankSuspendedAsync(biobankDto.OrganisationId))
-                await _indexService.UpdateBiobankDetails(biobank.OrganisationId);
-
-            return biobank;
-        }
-
         public async Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference)
         {
             var resizedLogoStream = ImageService.ResizeImageStream(logoFileStream, maxX: 300, maxY: 300);
@@ -504,46 +449,6 @@ namespace Biobanks.Services
         public async Task RemoveLogoAsync(int organisationId)
         {
             await _logoStorageProvider.RemoveLogoAsync(organisationId);
-        }
-
-        public async Task<OrganisationUser> AddUserToBiobankAsync(string userId, int biobankId)
-        {
-            //Validate the id's? user is more annoying as needs userManager
-
-            var ou = new OrganisationUser
-            {
-                OrganisationId = biobankId,
-                OrganisationUserId = userId
-            };
-
-            _organisationUserRepository.Insert(ou);
-            var result = await _organisationUserRepository.SaveChangesAsync();
-            if (result != 1) throw new DataException(); //should only be inserting the oud entity, definitely not adding a new org!
-
-            return ou;
-        }
-
-        public async Task RemoveUserFromBiobankAsync(string userId, int biobankId)
-        {
-            await
-                _organisationUserRepository.DeleteWhereAsync(
-                    x => x.OrganisationUserId == userId && x.OrganisationId == biobankId);
-
-            await _organisationUserRepository.SaveChangesAsync();
-        }
-
-        public async Task<OrganisationRegisterRequest> AddRegisterRequestAsync(OrganisationRegisterRequest request)
-        {
-            _organisationRegisterRequestRepository.Insert(request);
-            await _organisationRegisterRequestRepository.SaveChangesAsync();
-
-            return request;
-        }
-
-        public async Task DeleteRegisterRequestAsync(OrganisationRegisterRequest request)
-        {
-            await _organisationRegisterRequestRepository.DeleteAsync(request.OrganisationRegisterRequestId);
-            await _organisationRegisterRequestRepository.SaveChangesAsync();
         }
 
         public async Task AddBiobankServicesAsync(IEnumerable<OrganisationServiceOffering> services)
@@ -668,7 +573,7 @@ namespace Biobanks.Services
                 _networkOrganisationRepository.Insert(no);
                 await _networkOrganisationRepository.SaveChangesAsync();
 
-                if (!await _organisationService.IsBiobankSuspendedAsync(biobankId))
+                if (!await _organisationService.IsSuspended(biobankId))
                     await _indexService.JoinOrLeaveNetwork(biobankId);
 
                 return true;
@@ -690,7 +595,7 @@ namespace Biobanks.Services
 
             await _networkOrganisationRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsBiobankSuspendedAsync(biobankId))
+            if (!await _organisationService.IsSuspended(biobankId))
                 await _indexService.JoinOrLeaveNetwork(biobankId);
         }
 
@@ -1836,26 +1741,6 @@ namespace Biobanks.Services
 
             return registrationReason;
         }
-        public async Task<Organisation> SuspendBiobankAsync(int id)
-        {
-            var biobank = await _organisationRepository.GetByIdAsync(id);
-
-            if (biobank == null) throw new KeyNotFoundException();
-
-            //Mark it as suspended
-            biobank.IsSuspended = true;
-
-            //Update
-            _organisationRepository.Update(biobank);
-            await _organisationRepository.SaveChangesAsync();
-
-            //Arrange removal from the search index
-            await _indexService.BulkDeleteBiobank(id);
-
-
-
-            return biobank;
-        }
 
         public async Task<Organisation> UnsuspendBiobankAsync(int id)
         {
@@ -1874,64 +1759,6 @@ namespace Biobanks.Services
             await _indexService.BulkIndexBiobank(id);
 
             return biobank;
-        }
-
-        public async Task UpdateOrganisationURLAsync(int id)
-        {
-            var biobank = await _organisationRepository.GetByIdAsync(id);
-      
-            //Transform the URL
-            biobank.Url = UrlTransformer.Transform(biobank.Url);
-
-            //Update
-            _organisationRepository.Update(biobank);
-            
-            await _organisationRepository.SaveChangesAsync();
-         
-        }
-
-        public async Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId)
-        {
-            var funder = await _funderRepository.GetByIdAsync(funderId);
-            var bb = await _organisationRepository.GetByIdAsync(biobankId);
-
-            if (bb == null || funder == null) throw new ApplicationException();
-
-            try
-            {
-                funder.Organisations.Add(bb);
-
-                _funderRepository.Update(funder);
-                await _funderRepository.SaveChangesAsync();
-
-                return true;
-            }
-            catch (DbUpdateException)
-            {
-                return false;
-            }
-        }
-
-        public async Task RemoveFunderFromBiobankAsync(int funderId, int biobankId)
-        {
-            var funder = await _funderRepository.GetByIdAsync(funderId);
-
-            if (funder == null) throw new ApplicationException();
-
-            funder.Organisations.Remove(
-                funder.Organisations
-                    .FirstOrDefault(x => x.OrganisationId == biobankId));
-
-            _funderRepository.Update(funder);
-            await _funderRepository.SaveChangesAsync();
-        }
-
-        public async Task DeleteBiobankAsync(int id)
-        {
-            // remove biobank
-            await _indexService.BulkDeleteBiobank(id);
-            await _organisationRepository.DeleteAsync(id);
-            await _organisationRepository.SaveChangesAsync();
         }
 
         public async Task DeleteFunderByIdAsync(int id)
@@ -2073,35 +1900,6 @@ namespace Biobanks.Services
             await _annualStatisticGroupRepository.SaveChangesAsync();
 
             return annualStatisticGroup;
-        }
-
-        public async Task<KeyValuePair<string,string>> GenerateNewApiClientForBiobank(int biobankId, string clientName=null)
-        {
-            var clientId = Crypto.GenerateId();
-            var clientSecret = Crypto.GenerateId();
-            (await _organisationRepository.GetByIdAsync(biobankId)).ApiClients.Add(new ApiClient
-            {
-                Name = clientName ?? clientId,
-                ClientId = clientId,
-                ClientSecretHash = clientSecret.Sha256()
-            });
-
-            await _organisationRepository.SaveChangesAsync();
-            return new KeyValuePair<string, string> (clientId,clientSecret);
-        }
-
-        public async Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId)
-        {
-            //Generates and update biobank api client with new client secret.
-            var biobank = await _organisationRepository.GetByIdAsync(biobankId);
-
-            var newSecret = Crypto.GenerateId();
-            var credentials = biobank.ApiClients.First();
-            credentials.ClientSecretHash = newSecret.Sha256();
-
-            await _organisationRepository.SaveChangesAsync();
-            return new KeyValuePair<string, string>(credentials.ClientId, newSecret);
-
         }
     }
 }

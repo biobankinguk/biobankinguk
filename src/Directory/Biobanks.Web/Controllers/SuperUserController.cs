@@ -58,7 +58,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                var organisations = _organisationService.GetOrganisations();
+                var organisations = await _organisationService.List();
                 foreach (var organisation in organisations)
                 {
                     await _organisationService.UpdateOrganisationURLAsync(organisation.OrganisationId);

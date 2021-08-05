@@ -172,7 +172,6 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<ServiceOffering>> ListServiceOfferingsAsync();
 
         Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
-        Task<OrganisationType> GetBiobankOrganisationTypeAsync();
 
         Task<OrganisationRegisterRequest> GetBiobankRegisterRequestAsync(int requestId);
         Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByOrganisationNameAsync(string name);
