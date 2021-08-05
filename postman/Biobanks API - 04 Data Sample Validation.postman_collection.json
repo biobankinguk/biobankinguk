@@ -1,0 +1,2555 @@
+{
+	"info": {
+		"_postman_id": "7fbf44f2-399c-46cc-a3db-eb109afbb5ca",
+		"name": "Biobanks API - 04 Data Sample Validation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "[Pre-Test] Reject Queue",
+			"item": [
+				{
+					"name": "[Pre-Test] Reject Queue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{api-url}}/{{user-biobank-id}}/reject",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"{{user-biobank-id}}",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post Data",
+			"item": [
+				{
+					"name": "Post samples (materialType)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse Response Body",
+									"let response = pm.response.json();",
+									"",
+									"// Set environment variables",
+									"pm.environment.set(\"id1\", response.id);",
+									"pm.environment.set(\"records1\", response.totalRecords);",
+									"",
+									"// Tests",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.eq(202);",
+									"});",
+									"",
+									"pm.test(response.totalRecords + \" records were processed\", function() {",
+									"    pm.expect(response.totalRecords).to.eql(67);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"samples\": [\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"cDNA/mRNA\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID0\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"DNA\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Faeces\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"microRNA\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID3\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Isolated Pathogens\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID4\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Peripheral blood mononuclear cells (PBMC)\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID5\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Plasma\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID6\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"PM tissue\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID7\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID8\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Saliva\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID9\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Serum\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID10\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID11\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Urine\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID12\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Whole blood\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID13\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Embryo\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID14\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Whole bone marrow\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID15\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Primary cells\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID16\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Swab\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID17\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Sputum\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID18\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Dried whole blood (e.g. Guthrie cards) DWB\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID19\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Cancer cell lines\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID20\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Immortalized cell lines\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID21\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Synovial fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID22\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tears\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID23\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"(Breast) Milk\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID24\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Amniotic Fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID25\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Ascites Fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID26\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID27\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Body Cavity Fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID28\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bone\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID29\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bone marrow aspirate\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID30\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bone Marrow Plasma\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID31\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bronchoalveolar lavage\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID32\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Buffy coat\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID33\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Cord blood\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID34\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Dental pulp PLP\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID35\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Entire body organ\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID36\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Fetal tissue\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID37\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Fibroblasts\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID38\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Gas, exhaled (=breath)\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID39\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Gastric Fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID40\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Hair\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID41\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Menstrual blood\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID42\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Nail\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID43\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Nasal washing\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID44\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Pericardial Fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID45\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Placenta\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID46\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Pleural fluid PFL\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID47\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Cerebrospinal fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID48\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Proteins\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID49\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Red blood cells\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID50\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Semen\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID51\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Stem cells and iPS cells\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID52\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Sweat\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID53\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Teeth\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID54\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Umbilical cord\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID55\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Urine sediment\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID56\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Vitreous Fluid\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"VALID57\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Core biopsy\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID0\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue sample\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bone marrow\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Swabs\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID3\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Mucus\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID4\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Blood spots\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID5\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Pathogen\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID6\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Peripheral blood cells\",\r\n                \"individualReferenceId\": \"valid_materialType\",\r\n                \"barcode\": \"OLDVALID7\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"InvalidMaterialType\",\r\n                \"individualReferenceId\": \"invalid_materialType\",\r\n                \"barcode\": \"INVAL1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						},
+						"description": "**Valid Sample**\n\nSample materialType == \"RNA\"\n\nSmaple materialTypeGroup == [] (empty)"
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (sampleContentMethod)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse Response Body",
+									"let response = pm.response.json();",
+									"",
+									"// Set environment variables",
+									"pm.environment.set(\"id2\", response.id);",
+									"pm.environment.set(\"records2\", response.totalRecords);",
+									"",
+									"// Tests",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.eq(202);",
+									"});",
+									"",
+									"pm.test(response.totalRecords + \" records were processed\", function() {",
+									"    pm.expect(response.totalRecords).to.eql(15);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"samples\": [\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Macro_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Macroscopic Assessment\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Micro_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID3\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Microscopic Assessment\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Centri_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID4\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Centrifuge\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_Omit_matTypeGr_null\",\r\n                \"barcode\": \"VALID5\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_Invalid_matTypeGr_Null\",\r\n                \"barcode\": \"VALID6\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Abcd\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_empty_matTypeGr_Null\",\r\n                \"barcode\": \"VALID7\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Null\",\r\n                \"barcode\": \"VALID8\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_Omit_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID9\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_Invalid_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID10\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Abcd\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_empty_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID11\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID12\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"INVAL1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"INVAL2\",\r\n                \"sampleContent\": \"86273004\",\r\n                \"sampleContentMethod\": \"\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"INVAL3\",\r\n                \"sampleContent\": \"86273004\",\r\n                \"sampleContentMethod\": \"Abcd\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (extractionProcedure)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Capture environment variables",
+									"//access response body",
+									"let response = pm.response.json();",
+									"//extract the ID and total records",
+									"let id = response.id;",
+									"let records = response.totalRecords;",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id5\",id);",
+									"pm.environment.set(\"records5\",records);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});",
+									"",
+									"//Check number of sumbission is 3",
+									"tests[ \"number of samples submitted is \" + response.totalRecords + \" (5 valid field variables and 8 invalid)\"]= response.totalRecords === 13;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"samples\": [\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"(Breast) Milk\",\r\n                \"individualReferenceId\": \"MTG=Fluid_ExtrProc=omit\",\r\n                \"barcode\": \"VALID1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"(Breast) Milk\",\r\n                \"individualReferenceId\": \"MTG=Fluid_ExtrProc=disease\",\r\n                \"barcode\": \"VALID2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"10001005\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"DNA\",\r\n                \"individualReferenceId\": \"MTG=Null_ExtrProc=Omit\",\r\n                \"barcode\": \"VALID3\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"DNA\",\r\n                \"individualReferenceId\": \"MTG=Null_ExtrProc=disease\",\r\n                \"barcode\": \"VALID4\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"10001005\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"DNA\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=ExtrProc\",\r\n                \"barcode\": \"VALID5\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=Omit\",\r\n                \"barcode\": \"INVAL1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=Empty\",\r\n                \"barcode\": \"INVAL2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=Null\",\r\n                \"barcode\": \"INVAL3\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": null,\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=string\",\r\n                \"barcode\": \"INVAL4\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"Abcd\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=Disease\",\r\n                \"barcode\": \"INVAL5\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"10001005\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=Treatment\",\r\n                \"barcode\": \"INVAL6\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"10002003\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=BloodProduct\",\r\n                \"barcode\": \"INVAL7\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"119294007\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"MTG=Extr_ExtrProc=BodyOrgan\",\r\n                \"barcode\": \"INVAL8\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"1005009\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						},
+						"description": "**Valid Sample**\n\nSample materialType == \"Bone BON\"\n\nSmaple materialTypeGroup == \"Tissue Sample\", \"Extracted Sample\""
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (extractionSiteOntology)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Capture environment variables",
+									"//access response body",
+									"let response = pm.response.json();",
+									"//extract the ID and total records",
+									"let id = response.id;",
+									"let records = response.totalRecords;",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id4\",id);",
+									"pm.environment.set(\"records4\",records);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});",
+									"",
+									"//Check number of sumbission is 3",
+									"tests[ \"number of samples submitted is \" + response.totalRecords + \" (2 valid field variables and 5 invalid)\"]= response.totalRecords === 7;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"samples\": [\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=null\",\r\n                \"barcode\": \"INVAL1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": null,\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=Omit\",\r\n                \"barcode\": \"INVAL2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=Empty\",\r\n                \"barcode\": \"INVAL3\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=string\",\r\n                \"barcode\": \"INVAL4\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"Abcd\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"matType=extrSample_extrSite=bodyOrg\",\r\n                \"barcode\": \"INVAL5\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"\",\r\n                \"extractionSiteOntologyVersion\": \"\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=Valid\",\r\n                \"barcode\": \"VALID1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"361317000\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"DNA\",\r\n                \"individualReferenceId\": \"matTypeGR=Null_extrSite=Empty\",\r\n                \"barcode\": \"VALID2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionSite\": \"\",\r\n                \"extractionSiteOntology\": \"\",\r\n                \"extractionSiteOntologyVersion\": \"\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						},
+						"description": "**Valid Sample**\n\nSample materialType == \"Saliva\"\n\nSmaple materialTypeGroup == \"Fluid Sample\""
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (YOB)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id8\",response.id);",
+									"pm.environment.set(\"records8\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 5",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 4;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"samples\": [\n    {\n      \"sample\": {\n        \"materialType\": \"RNA\",\n        \"individualReferenceId\": \"Valid data AgeAtDonation = 21\",\n        \"barcode\": \"VALID1\",\n        \"ageAtDonation\": \"21\",\n        \"dateCreated\": \"2012-06-23T02:29:24-01:00\",\n        \"sex\": \"Female\",\n        \"storageTemperature\": \"Other\"\n      },\n       \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"RNA\",\n        \"individualReferenceId\": \"Valid data YearOfBirth = 21\",\n        \"barcode\": \"VALID2\",\n        \"YearOfBirth\": 1997,\n        \"dateCreated\": \"2012-06-23T02:29:24-01:00\",\n        \"sex\": \"Undifferentiated\",\n        \"storageTemperature\": \"Other\"\n      },\n       \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Valid data Both YearOfBirth and AgeAtDonation defined\",\n        \"barcode\": \"VALID3\",\n        \"YearOfBirth\": 2002,\n        \"ageAtDonation\": 2,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"sex\": \"Male\",\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Invalid data YOB/AAD not valid\",\n        \"barcode\": \"INVAL1\",\n        \"YearOfBirth\": 1986,\n        \"ageAtDonation\": 42,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"sex\": \"Male\",\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    }\n  ]\n} "
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (extrationSite)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id9\",response.id);",
+									"pm.environment.set(\"records9\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 27",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 27;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"samples\": [\r\n \t{\r\n      \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite_bodyOrgan\",\r\n        \"barcode\": \"VALID1\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite_empty\",\r\n        \"barcode\": \"VALID2\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite_disease\",\r\n        \"barcode\": \"VALID3\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"36155008\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite_treatment\",\r\n        \"barcode\": \"VALID4\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"36147001\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite_extrProcedure\",\r\n        \"barcode\": \"VALID5\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"17636008\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite_bloodProduct\",\r\n        \"barcode\": \"VALID6\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"119294007\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite__null\",\r\n        \"barcode\": \"VALID7\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": null,\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"valid:matType_extrSample_extrSite_bodyOrgan\",\r\n        \"barcode\": \"VALID8\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_bodyOrgan\",\r\n        \"barcode\": \"VALID9\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n     \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_empty\",\r\n        \"barcode\": \"VALID10\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_disease\",\r\n        \"barcode\": \"VALID11\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"36155008\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"availability\": [\r\n          \"Outside EU access\"\r\n        ],\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_treatment\",\r\n        \"barcode\": \"VALID12\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"36147001\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite__invalid\",\r\n        \"barcode\": \"VALID13\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"Abcd\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"RNA\",\r\n        \"individualReferenceId\": \"valid:matType_empty_extrSite__Omit\",\r\n        \"barcode\": \"VALID14\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n     {\r\n        \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_extrProcedure\",\r\n        \"barcode\": \"VALID15\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"17636008\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_bloodProduct\",\r\n        \"barcode\": \"VALID16\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"119294007\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_null\",\r\n        \"barcode\": \"VALID17\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": null,\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_Omit\",\r\n        \"barcode\": \"VALID18\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Bile\",\r\n        \"individualReferenceId\": \"matType_fluidSample_extrSite_invalid\",\r\n        \"barcode\": \"VALID19\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"Abcd\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_empty\",\r\n        \"barcode\": \"INVAL1\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_disease\",\r\n        \"barcode\": \"INVAL2\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"36155008\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_treatment\",\r\n        \"barcode\": \"INVAL3\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"36147001\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_extrProcedure\",\r\n        \"barcode\": \"INVAL4\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"17636008\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_bloodProduct\",\r\n        \"barcode\": \"INVAL5\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"119294007\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_null\",\r\n        \"barcode\": \"INVAL6\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": null,\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_omit\",\r\n        \"barcode\": \"INVAL7\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n     \"sample\": {\r\n        \"materialType\": \"Nail\",\r\n        \"individualReferenceId\": \"Invalid:matType_extrSample_extrSite_invalid\",\r\n        \"barcode\": \"INVAL8\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n\t\t\"extractionSite\": \"Abcd\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (extractionOntologyVersion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id10\",response.id);",
+									"pm.environment.set(\"records10\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 8",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 8;",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=null\",\r\n        \"barcode\": \"INVAL1\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": null,\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=Omit\",\r\n        \"barcode\": \"INVAL2\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n\t\t\"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=Empty\",\r\n        \"barcode\": \"INVAL3\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"\",\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=string\",\r\n        \"barcode\": \"INVAL4\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"Abcd\",\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"matType=extrSample_extrSite=bodyOrg\",\r\n        \"barcode\": \"INVAL5\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"\",\r\n        \"extractionSiteOntologyVersion\": \"\",\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"extrSite=valid_extrSiteOnt=Valid\",\r\n        \"barcode\": \"VALID1\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"matTypeGR=Null_extrSite=Empty\",\r\n        \"barcode\": \"VALID2\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"sample\": {\r\n        \"materialType\": \"Tissue specimen\",\r\n        \"individualReferenceId\": \"matType=extrSample_extrSite=bodyOrg\",\r\n        \"barcode\": \"VALID3\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"387713003\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (sex)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id11\",response.id);",
+									"pm.environment.set(\"records11\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 8",
+									"tests[ \"number of samples submitted is \" + response.totalRecords + \" (6 valid field variables and 2 invalid)\"]= response.totalRecords === 8;",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"samples\": [\n    {\n      \"sample\": {\n        \"materialType\": \"RNA\",\n        \"individualReferenceId\": \"Sex = Male\",\n        \"barcode\": \"VALID1\",\n        \"YearOfBirth\": 1997,\n        \"dateCreated\": \"2012-06-23T02:29:24-01:00\",\n        \"sex\": \"Male\",\n        \"storageTemperature\": \"Other\"\n      },\n       \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"RNA\",\n        \"individualReferenceId\": \"Sex = Female\",\n        \"barcode\": \"VALID2\",\n        \"YearOfBirth\": 1997,\n        \"dateCreated\": \"2012-06-23T02:29:24-01:00\",\n        \"sex\": \"Female\",\n        \"storageTemperature\": \"Other\"\n      },\n       \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Sex = Unknown\",\n        \"barcode\": \"VALID3\",\n        \"YearOfBirth\": 1948,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"sex\": \"Unknown\",\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Sex = Undifferentiated\",\n        \"barcode\": \"VALID4\",\n        \"YearOfBirth\": 1948,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"sex\": \"Undifferentiated\",\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Sex = Null\",\n        \"barcode\": \"VALID5\",\n        \"YearOfBirth\": 1948,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"sex\": null,\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    }  ,\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Sex = Omit\",\n        \"barcode\": \"VALID6\",\n        \"YearOfBirth\": 1948,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Sex = empty\",\n        \"barcode\": \"VALID7\",\n        \"YearOfBirth\": 1948,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"sex\": \"\",\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    },\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"Sex = string\",\n        \"barcode\": \"INVAL1\",\n        \"YearOfBirth\": 1948,\n        \"dateCreated\": \"2004-02-06T10:19:17-00:00\",\n        \"sex\": \"Abcd\",\n        \"storageTemperature\": \"Other\"\n     },\n      \"op\": \"Submit\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (sampleContent)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id12\",response.id);",
+									"pm.environment.set(\"records12\",response.totalRecords);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Response is 202 Accepted\", () => {",
+									"    pm.expect(pm.response.code).to.be.eq(202);",
+									"});",
+									"",
+									"pm.test(\"All samples submitted\", () => {",
+									"    pm.expect(response.totalRecords).to.be.eq(15);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"samples\": [\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Macro_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID2\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Macroscopic Assessment\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Micro_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID3\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Microscopic Assessment\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Centri_matTypeGr_Extr\",\r\n                \"barcode\": \"VALID4\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Centrifuge\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_Omit_matTypeGr_null\",\r\n                \"barcode\": \"VALID5\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_Invalid_matTypeGr_Null\",\r\n                \"barcode\": \"VALID6\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Abcd\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_empty_matTypeGr_Null\",\r\n                \"barcode\": \"VALID7\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"RNA\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Null\",\r\n                \"barcode\": \"VALID8\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_Omit_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID9\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_Invalid_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID10\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Abcd\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_empty_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID11\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Bile\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Fluid\",\r\n                \"barcode\": \"VALID12\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"sampleContentMethod\": \"Other\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"INVAL1\",\r\n                \"sampleContent\": \"10058006\",\r\n                \"extractionProcedure\": \"86273004\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"INVAL2\",\r\n                \"sampleContent\": \"86273004\",\r\n                \"sampleContentMethod\": \"\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        },\r\n        {\r\n            \"sample\": {\r\n                \"materialType\": \"Tissue specimen\",\r\n                \"individualReferenceId\": \"SCM_Other_matTypeGr_Extr\",\r\n                \"barcode\": \"INVAL3\",\r\n                \"sampleContent\": \"86273004\",\r\n                \"sampleContentMethod\": \"Abcd\",\r\n                \"extractionProcedure\": \"25179006\",\r\n                \"extractionSite\": \"1005009\",\r\n                \"extractionSiteOntology\": \"SNOMED-CT\",\r\n                \"extractionSiteOntologyVersion\": \"25\",\r\n                \"YearOfBirth\": 1996,\r\n                \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n                \"storageTemperature\": \"Other\"\r\n            },\r\n            \"op\": \"submit\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (storageTemperature)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id13\",response.id);",
+									"pm.environment.set(\"records13\",response.totalRecords);",
+									"",
+									"// Tests",
+									"pm.test(\"Status is 202 Accepted\", () => {",
+									"    pm.expect(pm.response.code).to.be.eq(202)",
+									"});",
+									"",
+									"pm.test(\"11 Samples Submitted\", () => {",
+									"    pm.expect(response.totalRecords).to.be.eq(11)",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"20a2aab2-1be3-40da-b664-5958daf61a06\",\r\n        \"barcode\": \"VALID0\",\r\n        \"YearOfBirth\": 1997,\r\n        \"dateCreated\": \"2018-09-27T03:23:25-01:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"materialType\": \"DNA\",\r\n        \"storageTemperature\": \"RT\",\r\n        \"sex\": \"Male\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"7e178b82-1c9f-4c86-b56b-177082ba7475\",\r\n        \"barcode\": \"VALID2\",\r\n        \"YearOfBirth\": 1920,\r\n        \"dateCreated\": \"2017-06-01T07:17:07-01:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"materialType\": \"DNA\",\r\n        \"storageTemperature\": \"2°C to 10°C\",\r\n        \"sex\": \"\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"b5de9ebf-3dfa-492f-a294-37c045b0d35b\",\r\n        \"barcode\": \"VALID3\",\r\n        \"YearOfBirth\": 1927,\r\n        \"dateCreated\": \"2001-07-06T06:49:33-01:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"materialType\": \"DNA\",\r\n        \"storageTemperature\": \"-18°C to -35°C\",\r\n        \"sex\": \"\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"5c239ebd-9471-4d93-8225-ff5a0862765f\",\r\n        \"barcode\": \"VALID4\",\r\n        \"YearOfBirth\": 1992,\r\n        \"dateCreated\": \"2011-03-05T02:45:45-00:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"materialType\": \"DNA\",\r\n        \"storageTemperature\": \"-60°C to -85°C\",\r\n        \"sex\": \"Undifferentiated\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"14d2d2df-c722-4105-b40c-ae93bf2427b3\",\r\n        \"barcode\": \"VALID5\",\r\n        \"YearOfBirth\": 1994,\r\n        \"dateCreated\": \"2010-04-23T12:39:53-01:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"materialType\": \"DNA\",\r\n        \"storageTemperature\": \"Liquid nitrogen liquid phase\",\r\n        \"sex\": \"Undifferentiated\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n        \"sample\": {\r\n          \"individualReferenceId\": \"65d2d3de-c722-1550-b85e-df93bf8527b3\",\r\n          \"barcode\": \"VALID5\",\r\n          \"YearOfBirth\": 1994,\r\n          \"dateCreated\": \"2010-04-23T12:39:53-01:00\",\r\n          \"extractionCodeOntology\": \"SNOMED-CT\",\r\n          \"extractionCodeOntologyVersion\": 25,\r\n          \"materialType\": \"DNA\",\r\n          \"storageTemperature\": \"Liquid nitrogen vapor phase\",\r\n          \"sex\": \"Undifferentiated\"\r\n        },\r\n        \"op\": \"submit\"\r\n      },\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"8641cd0a-a7c0-4f86-bcb4-8c74c9e41616\",\r\n        \"barcode\": \"VALID6\",\r\n        \"YearOfBirth\": 1922,\r\n        \"dateCreated\": \"2012-11-26T12:28:52-00:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"materialType\": \"DNA\",\r\n        \"storageTemperature\": \"Other\",\r\n        \"sex\": \"Male\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n        \"sample\": {\r\n          \"individualReferenceId\": \"8641cd0a-a7c0-4f86-bcb4-asdasdeqweq\",\r\n          \"barcode\": \"OLDVALID0\",\r\n          \"YearOfBirth\": 1922,\r\n          \"dateCreated\": \"2012-11-26T12:28:52-00:00\",\r\n          \"extractionCodeOntology\": \"SNOMED-CT\",\r\n          \"extractionCodeOntologyVersion\": 25,\r\n          \"materialType\": \"DNA\",\r\n          \"storageTemperature\": \"Paraffin\",\r\n          \"sex\": \"Male\"\r\n        },\r\n        \"op\": \"submit\"\r\n    },\r\n    {\r\n        \"sample\": {\r\n          \"individualReferenceId\": \"8641cd0a-a7c0-4f86-bcb4-143werdaw\",\r\n          \"barcode\": \"OLDVALID1\",\r\n          \"YearOfBirth\": 1922,\r\n          \"dateCreated\": \"2012-11-26T12:28:52-00:00\",\r\n          \"extractionCodeOntology\": \"SNOMED-CT\",\r\n          \"extractionCodeOntologyVersion\": 25,\r\n          \"materialType\": \"DNA\",\r\n          \"storageTemperature\": \"Resin (LM)\",\r\n          \"sex\": \"Male\"\r\n        },\r\n        \"op\": \"submit\"\r\n    },\r\n    {\r\n        \"sample\": {\r\n          \"individualReferenceId\": \"8641cd0a-a7c0-4f86-bcb4-81726342\",\r\n          \"barcode\": \"OLDVALID2\",\r\n          \"YearOfBirth\": 1922,\r\n          \"dateCreated\": \"2012-11-26T12:28:52-00:00\",\r\n          \"extractionCodeOntology\": \"SNOMED-CT\",\r\n          \"extractionCodeOntologyVersion\": 25,\r\n          \"materialType\": \"DNA\",\r\n          \"storageTemperature\": \"Resin (EM)\",\r\n          \"sex\": \"Male\"\r\n        },\r\n        \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"Invalid storage Temperature\",\r\n        \"barcode\": \"INVAL1\",\r\n        \"YearOfBirth\": 1974,\r\n        \"ageAtDonation\": \"\",\r\n        \"extractionSite\": \"\",\r\n        \"extractionProcedure\": \"\",\r\n        \"sampleContent\": \"\",\r\n        \"sampleContentMethod\": \"\",\r\n        \"dateCreated\": \"2006-05-17T11:46:28-01:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"materialType\": \"Cancer cell lines\",\r\n        \"storageTemperature\": \"abcd\",\r\n        \"sex\": \"Unknown\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post samples (collectionName)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Capture environment variables",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//extract the ID and total records",
+									"let id = response.id;",
+									"let records = response.totalRecords;",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id14\",id);",
+									"pm.environment.set(\"records14\", records);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});",
+									"",
+									"pm.test(\"Number of records is \"+response.totalRecords, function () {",
+									"    pm.expect(response.totalRecords).to.eql(6);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"samples\": [\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"collectionName_omitted\",\n        \"barcode\": \"VALID1\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Other\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n      \"sample\": {\n      \t\"collectionName\": \"\",\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"collectionName_empty\",\n        \"barcode\": \"VALID2\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Other\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n      \"sample\": {\n      \t\"collectionName\": null,\n      \t\"materialType\": \"DNA\",\n        \"individualReferenceId\": \"collectionName_Null\",\n        \"barcode\": \"VALID3\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Other\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n      \"sample\": {\n      \t\"collectionName\": \"Test Collection\",\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"collectionName_valid\",\n        \"barcode\": \"VALID4\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Other\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n      \"sample\": {\n      \t\"collectionName\": \"1111111111aaaaaaaaaa!!!!!!!!!!BBBBBBBBBB2222222222££££££££££cccccccccc3333333333$$$$$$$$$$44444444441111111111aaaaaaaaaa!!!!!!!!!!BBBBBBBBBB2222222222££££££££££cccccccccc3333333333$$$$$$$$$$44444444441111111111aaaaaaaaaa!!!!!!!!!!BBBBBBBBBB222222222\",\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"collectionName_249\",\n        \"barcode\": \"VALID5\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Other\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n      \"sample\": {\n      \t\"collectionName\": \"1111111111aaaaaaaaaa!!!!!!!!!!BBBBBBBBBB2222222222££££££££££cccccccccc3333333333$$$$$$$$$$44444444441111111111aaaaaaaaaa!!!!!!!!!!BBBBBBBBBB2222222222££££££££££cccccccccc3333333333$$$$$$$$$$44444444441111111111aaaaaaaaaa!!!!!!!!!!BBBBBBBBBB2222222222\",\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"collectionName_250\",\n        \"barcode\": \"VALID6\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Other\"\n      },\n      \"op\": \"submit\"\n    }\n  ]\n} "
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "\n",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Get Submission Status",
+			"item": [
+				{
+					"name": "Check for successsful processing of data validation submissions",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {}, 10000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\",  () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All open submissions have processed\", () => {",
+									"",
+									"    let complete = !response",
+									"        .submissions",
+									"        .some(x => x.status == \"Open\" && x.recordsProcessed != x.totalRecords);",
+									"",
+									"    // Re-Run Test If Not Yet Complete",
+									"    if (!complete)",
+									"    {",
+									"        postman.setNextRequest(\"Check for successsful processing of data validation submissions\");",
+									"    }",
+									"    ",
+									"    pm.expect(complete).to.eq(true);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}?limit=100",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Submission status (materialType)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Record ID: \" + environment.id1 + \" - Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"number of samples submitted: \" + response.totalRecords, function() {",
+									"    pm.expect(response.recordsProcessed).to.eql(environment.records1);",
+									"});",
+									"",
+									"pm.test(response.recordsFailed + \" record failed to process\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(1);",
+									"});",
+									"",
+									"pm.test(response.recordsPassed + \" records were successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(66);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Submission status (sampleContentMethod)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Record ID: \" + environment.id1 + \" - Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"number of samples submitted: \" + response.totalRecords, function() {",
+									"    pm.expect(response.totalRecords).to.eql(environment.records2);",
+									"});",
+									"",
+									"pm.test(response.recordsFailed + \" record failed to process\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(3);",
+									"});",
+									"",
+									"pm.test(response.recordsPassed + \" records were successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(12);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Submission status (extractionSiteOntology)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until expected records are processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('GET Submission status (extractionSiteOntology)');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"//check service returns 200",
+									"pm.test(\"Record ID: \" + environment.id4 + \" - Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check number of sumbissions",
+									"pm.test(\"number of samples submitted: \" + response.totalRecords, function() {",
+									"    pm.expect(response.totalRecords).to.eql(environment.records4);",
+									"});",
+									"",
+									"//Check number of errors",
+									"pm.test(\"number of sample errors: \" + response.recordsFailed, function() {",
+									"    pm.expect(response.recordsFailed).to.eql(5);",
+									"});",
+									"",
+									"//Check number of passes",
+									"pm.test(\"number of sample passes: \" + response.recordsPassed, function() {",
+									"    pm.expect(response.recordsPassed).to.eql(2);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id4}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id4}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Submission status (extractionProcedure)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until expected records are processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('GET Submission status (extractionProcedure)');",
+									"// }",
+									"// else",
+									"// {",
+									"//check service returns 200",
+									"pm.test(\"Record ID: \" + environment.id5 + \" - Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check number of sumbissions",
+									"pm.test(\"number of samples submitted: \" + response.totalRecords, function() {",
+									"    pm.expect(response.totalRecords).to.eql(environment.records5);",
+									"});",
+									"",
+									"//Check number of errors",
+									"pm.test(\"number of sample failures = \" + response.recordsFailed, function() {",
+									"    pm.expect(response.recordsFailed).to.eql(8);",
+									"});",
+									"",
+									"//Check number of passes",
+									"pm.test(\"number of samples processed = \" + response.recordsPassed, function() {",
+									"    pm.expect(response.recordsPassed).to.eql(5);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id5}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id5}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (extractionOntologyVersion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Number of samples submitted is \" + response.totalRecords, function () {",
+									"    pm.expect(response.totalRecords).to.eql(8);",
+									"});",
+									"",
+									"pm.test(response.recordsPassed + \" samples passed\", () => {",
+									"    pm.expect(response.recordsPassed).to.eql(3);",
+									"});",
+									"",
+									"pm.test(response.recordsFailed + \" samples failed\", () => {",
+									"    pm.expect(response.recordsFailed).to.eql(5);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id10}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id10}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (YOB)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"number of samples submitted: \" + response.totalRecords, function() {",
+									"    pm.expect(response.recordsProcessed).to.eql(environment.records8);",
+									"});",
+									"",
+									"pm.test(\"Number of samples processed: \" + response.totalRecords, function() {",
+									"    pm.expect(response.totalRecords).to.eql(environment.records8);",
+									"});",
+									"",
+									"pm.test(response.recordsPassed + \" records were successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(3);",
+									"});",
+									"",
+									"pm.test(response.recordsFailed + \" record failed to process\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(1);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id8}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id8}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status  (extrationSite)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until expected records are processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get Status (extractionSite)');",
+									"// }",
+									"// else",
+									"// {",
+									"//Check number of sumbission is",
+									"tests[ \"number of samples submitted is \" + response.totalRecords ]= response.totalRecords === 27;",
+									"",
+									"//Check number of passes/failures",
+									"pm.test(response.recordsFailed + \" failed to process\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(8);",
+									"});",
+									"",
+									"//Test if records passed is 19",
+									"pm.test(response.recordsPassed + \" out of the \" + response.totalRecords + \" samples processed\", function () {pm.expect(response.recordsPassed).to.eql(19);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id9}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id9}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (sex)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"number of samples submitted: \" + response.totalRecords, function() {",
+									"    pm.expect(response.recordsProcessed).to.eql(8);",
+									"});",
+									"",
+									"pm.test(\"Number of samples processed: \" + response.totalRecords, function() {",
+									"    pm.expect(response.totalRecords).to.eql(8);",
+									"});",
+									"",
+									"pm.test(response.recordsPassed + \" records were successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(7);",
+									"});",
+									"",
+									"pm.test(response.recordsFailed + \" record failed to process\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id11}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id11}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (sampleContent)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All samples submitted\", () => {",
+									"    pm.expect(response.totalRecords).to.eq(15);",
+									"})",
+									"",
+									"pm.test(response.recordsFailed + \" failed to process\", () => {",
+									"    pm.expect(response.recordsFailed).to.eql(3);",
+									"});",
+									"",
+									"pm.test(response.recordsPassed + \" records were successfully processed\", () => {",
+									"    pm.expect(response.recordsPassed).to.eql(12);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id12}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id12}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (storageTemperature)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Number of samples submitted: \" + response.totalRecords, function() {",
+									"    pm.expect(response.totalRecords).to.eql(environment.records13);",
+									"});",
+									"",
+									"pm.test(\"Number of samples processed: \" + response.totalRecords, function() {",
+									"    pm.expect(response.recordsProcessed).to.eql(environment.records13);",
+									"});",
+									"",
+									"pm.test(response.recordsPassed + \" records were successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(10);",
+									"});",
+									"",
+									"pm.test(response.recordsFailed + \" record failed to process\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id13}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id13}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Submission status (collectionName)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Record ID: \" + environment.id14 + \" - Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"number of samples submitted ( \" + response.totalRecords + \") equals the total records submitted\", function() {",
+									"    pm.expect(response.totalRecords).to.eql(environment.records14);",
+									"});",
+									"",
+									"pm.test(response.recordsFailed + \" records failed to process\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(0);",
+									"});",
+									"",
+									"pm.test(response.recordsProcessed + \" records successfully processed\", function() {",
+									"    pm.expect(response.recordsProcessed).to.eql(6);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id14}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id14}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Get Submission Error Codes",
+			"item": [
+				{
+					"name": "GET Error code (materialType)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"//check service returns 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test (\"Error count is \"+ response.count, function(){",
+									"    pm.expect(response.count) == 1;",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"});",
+									"    ",
+									"pm.test(\"No Error Message for all valid barcodes: VALIDx\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}/error/",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}",
+								"error",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Error code (sampleContentMethod)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//check service returns 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL1\");",
+									"    });",
+									"",
+									"//Check for error message for invalid data 2  ",
+									"    pm.test(\"Error Message for barcode INVAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL2\");",
+									"    });",
+									"    ",
+									"//Check for error message for invalid data 3  ",
+									"    pm.test(\"Error Message for barcode INVAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL3\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 1",
+									"    pm.test(\"No errors for barcode VALID1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID1\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 2",
+									"    pm.test(\"No errors for barcode VALID2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID2\");",
+									"    });",
+									"",
+									"//Check for NO error message for valid data 3",
+									"    pm.test(\"No errors for barcode VALID3\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID3\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 4",
+									"    pm.test(\"No errors for barcode VALID4\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID4\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 5",
+									"    pm.test(\"No errors for barcode VALID5\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID5\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 6",
+									"    pm.test(\"No errors for barcode VALID6\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID6\");",
+									"    });",
+									"    ",
+									"    //Check for NO error message for valid data 7",
+									"    pm.test(\"No errors for barcode VALID7\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID7\");",
+									"    });",
+									"    ",
+									"    //Check for NO error message for valid data 8",
+									"    pm.test(\"No errors for barcode VALID8\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID8\");",
+									"    });",
+									"    ",
+									"    //Check for NO error message for valid data 9",
+									"    pm.test(\"No errors for barcode VALID9\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID9\");",
+									"    });",
+									"    ",
+									"    //Check for NO error message for valid data 10",
+									"    pm.test(\"No errors for barcode VALID10\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID10\");",
+									"    });",
+									"    ",
+									"    //Check for NO error message for valid data 11",
+									"    pm.test(\"No errors for barcode VALID11\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID11\");",
+									"    });",
+									"    ",
+									"    //Check for NO error message for valid data 12",
+									"    pm.test(\"No errors for barcode VALID12\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID12\");",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}/error/",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}",
+								"error",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Error code (extractionSiteOntology)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//check service returns 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL1\");",
+									"});",
+									"",
+									"pm.test(\"Error message for barcode INVAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL2\");",
+									"});",
+									"",
+									"pm.test(\"Error message for barcode INVAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL3\");",
+									"});",
+									"",
+									"pm.test(\"Error message for barcode INVAL4\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL4\");",
+									"});",
+									"",
+									"pm.test(\"Error message for barcode INVAL5\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL5\");",
+									"});",
+									"",
+									"pm.test(\"NO Error message for barcode VAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID1\");",
+									"});",
+									"",
+									"pm.test(\"NO Error message for barcode VAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID2\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id4}}/error/",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id4}}",
+								"error",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code  (extractionOntologyVersion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//check service returns 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									" pm.test(\"Error message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL1\");",
+									"    });",
+									"",
+									"    pm.test(\"Error message for barcode INVAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL2\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error message for barcode INVAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL3\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error message for barcode INVAL4\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL4\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error message for barcode INVAL5\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL5\");",
+									"    });",
+									"    ",
+									"    pm.test(\"No Error message for barcode VAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID1\");",
+									"    });",
+									"    ",
+									"    pm.test(\"No Error message for barcode VAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID2\");",
+									"    });",
+									"    ",
+									"    pm.test(\"no Error message for barcode VAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID3\");",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id10}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id10}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Error code  (extractionProcedure)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//check service returns 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL1\");",
+									"    });",
+									"",
+									"//Check for error message for invalid data 2  ",
+									"    pm.test(\"Error Message for barcode INVAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL2\");",
+									"    });",
+									"    ",
+									"//Check for error message for invalid data 3  ",
+									"    pm.test(\"Error Message for barcode INVAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL3\");",
+									"    });",
+									"    ",
+									"//Check for error message for invalid data 4 ",
+									"    pm.test(\"Error Message for barcode INVAL4\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL4\");",
+									"    });",
+									"",
+									"//Check for error message for invalid data 5  ",
+									"    pm.test(\"Error Message for barcode INVAL5\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL5\");",
+									"    });",
+									"",
+									"//Check for error message for invalid data 6 ",
+									"    pm.test(\"Error Message for barcode INVAL6\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL6\");",
+									"    });",
+									"    ",
+									"//Check for error message for invalid data 7 ",
+									"    pm.test(\"Error Message for barcode INVAL7\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL7\");",
+									"    });",
+									"",
+									"//Check for error message for invalid data 8 ",
+									"    pm.test(\"Error Message for barcode INVAL8\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL8\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 1",
+									"    pm.test(\"No errors for barcode VAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID1\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 2",
+									"    pm.test(\"No errors for barcode VAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID2\");",
+									"    });",
+									"",
+									"//Check for NO error message for valid data 3",
+									"    pm.test(\"No errors for barcode VAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID3\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 4",
+									"    pm.test(\"No errors for barcode VAL4\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID4\");",
+									"    });",
+									"    ",
+									"//Check for NO error message for valid data 5",
+									"    pm.test(\"No errors for barcode VAL5\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID5\");",
+									"    });",
+									"    "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id5}}/error/",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id5}}",
+								"error",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code (YOB)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test (\"Error count is \"+ response.count, function(){",
+									"    pm.expect(response.count) == 1;",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"});",
+									"    ",
+									"pm.test(\"No Error Message for barcode VALID1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"});",
+									"    ",
+									"pm.test(\"No Error Message for barcode VALID2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID2\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID3\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID3\");",
+									"});",
+									"",
+									"//Test if status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id8}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id8}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code (extrationSite)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json ();",
+									"console.log(response);",
+									"",
+									"//Test if Error count is 8",
+									"pm.test(\"error count is \" + response.count,function (){",
+									"    pm.expect (response.count) == 8;",
+									"});",
+									"",
+									"//Test if status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"});",
+									"",
+									"pm.test(\"Error message for barcode INVAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL2\");",
+									"});",
+									"    ",
+									"pm.test(\"Error message for barcode INVAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL3\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error message for barcode INVAL4\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL4\");",
+									"    });",
+									"",
+									"    pm.test(\"Error message for barcode INVAL5\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL5\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error message for barcode INVAL6\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL6\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error message for barcode INVAL7\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL7\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Erorr message for barcode: INVAL8\", function () {",
+									"        pm.expect(pm.response.text()).to.include(\"INVAL8\");",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id9}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id9}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code (sex)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//check service returns 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									" pm.test(\"Error message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"barcode: INVAL1\");",
+									"    });",
+									"    ",
+									" pm.test(\"NO error message for barcode VAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"barcode: VALID1\");",
+									"    });",
+									"    ",
+									"pm.test(\"Error count is 1\", function () {",
+									"    pm.expect(response.count).to.equal(1);",
+									"});",
+									"    ",
+									"    ",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id11}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id11}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code  (sampleContent)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"var response = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"7 Errors\", () => {",
+									"    pm.expect(response.count).to.be.eq(7);",
+									"})",
+									"",
+									"pm.test(\"Error received for barcode INVAL1\",function (){",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"});",
+									"",
+									"pm.test(\"Error received for barcode INVAL2\",function (){",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL2\");",
+									"});",
+									"",
+									"pm.test(\"Error received for barcode INVAL3\",function (){",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL3\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID1\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID2\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID2\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID3\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID3\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID4\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID4\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID5\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID5\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID6\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID6\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID7\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID7\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID8\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID8\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID9\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID9\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID10\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID10\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID11\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID11\");",
+									"});",
+									"",
+									"pm.test(\"No error received for barcode VALID12\",function (){",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID12\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id12}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id12}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code  (storageTemperature)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test (\"Error count is \"+ response.count, function(){",
+									"    pm.expect(response.count) == 1;",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"});",
+									"    ",
+									"pm.test(\"No Error Message for barcode VALID1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID2\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID3\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID3\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID4\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID4\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID5\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID5\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID6\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID6\");",
+									"});",
+									"",
+									"//Test if status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id13}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id13}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Error code (collectionName)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"No Error Message for barcode VALID1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID2\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID3\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID3\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID4\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID4\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID5\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID5\");",
+									"});",
+									"",
+									"pm.test(\"No Error Message for barcode VALID6\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID6\");",
+									"});    ",
+									"",
+									"//check service returns 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id14}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id14}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"function IsSuccessCode(statusCode) {",
+					"    return statusCode == 200 || statusCode == 201;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

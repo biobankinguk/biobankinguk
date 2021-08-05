@@ -1,0 +1,1020 @@
+{
+	"info": {
+		"_postman_id": "2248b24a-3404-4390-a747-facd91ebcc65",
+		"name": "Biobanks API - 06 Data Treatment Validation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "[Pre-Test] Reject Queue",
+			"item": [
+				{
+					"name": "[Pre-Test] Reject Queue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{api-url}}/{{user-biobank-id}}/reject",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"{{user-biobank-id}}",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post Data",
+			"item": [
+				{
+					"name": "Post treatment (treatmentCode)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id17\",response.id);",
+									"pm.environment.set(\"records17\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 5",
+									"tests[ \"number of samples submitted is \" + response.totalRecords + \" (1 valid field variables and 6 invalid)\"]= response.totalRecords === 7;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"treatments\": [\r\n    {\r\n      \"treatment\": {\r\n\t\t\"individualReferenceId\": \"VALID1\",\r\n        \"treatmentLocation\": \"Oral Medication\",\r\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"treatmentCode\": \"10002003\",\r\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\r\n        \"treatmentCodeOntologyVersion\": \"25\"\r\n      },\r\n     \"op\": \"Submit\"\r\n    },\r\n    {\r\n      \"treatment\": {\r\n        \"individualReferenceId\": \"INVAL1\",\r\n        \"treatmentLocation\": \"Oral Medication\",\r\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"treatmentCode\": \"10001005\",\r\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\r\n        \"treatmentCodeOntologyVersion\": \"25\" \r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n     {\r\n      \"treatment\": {\r\n        \"individualReferenceId\": \"INVAL2\",\r\n        \"treatmentLocation\": \"Oral Medication\",\r\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"treatmentCode\": \"1005009\", \r\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\r\n        \"treatmentCodeOntologyVersion\": \"25\" \r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"treatment\": {\r\n        \"individualReferenceId\": \"INVAL3\",\r\n        \"treatmentLocation\": \"Oral Medication\",\r\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"treatmentCode\": \"119294007\", \r\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\r\n        \"treatmentCodeOntologyVersion\": \"25\" \r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"treatment\": {\r\n        \"individualReferenceId\": \"INVAL4\",\r\n        \"treatmentLocation\": \"Oral Medication\",\r\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"treatmentCode\": \"25179006\", \r\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\r\n        \"treatmentCodeOntologyVersion\": \"25\" \r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"treatment\": {\r\n        \"individualReferenceId\": \"INVAL5\",\r\n        \"treatmentLocation\": \"Oral Medication\",\r\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"treatmentCode\": \"Abcd\", \r\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\r\n        \"treatmentCodeOntologyVersion\": \"25\" \r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n\t{\r\n      \"treatment\": {\r\n        \"individualReferenceId\": \"INVAL6\",\r\n        \"treatmentLocation\": \"Oral Medication\",\r\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"treatmentCode\": \"12345\", \r\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\r\n        \"treatmentCodeOntologyVersion\": \"25\" \r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post treatment (treatmentLocation)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id18\",response.id);",
+									"pm.environment.set(\"records18\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 5",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 4;",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"treatments\": [\n    {\n      \"treatment\": {\n\t\t\"individualReferenceId\": \"VALID1\",\n        \"treatmentLocation\": \"Oral Medication\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\n        \"treatmentCodeOntologyVersion\": \"25\"\n      },\n     \"op\": \"Submit\"\n    },\n    {\n      \"treatment\": {\n\t\t\"individualReferenceId\": \"VALID2\",\n        \"treatmentLocation\": \"Targeted Radiotherapy\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\n        \"treatmentCodeOntologyVersion\": \"25\"\n      },\n     \"op\": \"Submit\"\n    },\n    {\n      \"treatment\": {\n\t\t\"individualReferenceId\": \"VALID3\",\n        \"treatmentLocation\": \"Other\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\n        \"treatmentCodeOntologyVersion\": \"25\"\n      },\n     \"op\": \"Submit\"\n    },\n     {\n      \"treatment\": {\n        \"individualReferenceId\": \"INVAL1\",\n        \"treatmentLocation\": \"Abcd\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\n        \"treatmentCodeOntologyVersion\": \"25\" \n      },\n      \"op\": \"submit\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post treatment (treatmentCodeOntology)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id6\",response.id);",
+									"pm.environment.set(\"records6\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 5",
+									"tests[ \"number of samples submitted is \" + response.totalRecords + \" (1 valid field variables and 1 invalid)\"]= response.totalRecords === 2;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"treatments\": [\n    {\n      \"treatment\": {\n\t\t\"individualReferenceId\": \"VALID1\",\n        \"treatmentLocation\": \"Oral Medication\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\n        \"treatmentCodeOntologyVersion\": \"25\"\n      },\n     \"op\": \"Submit\"\n    },\n    {\n      \"treatment\": {\n        \"individualReferenceId\": \"INVAL1\",\n        \"treatmentLocation\": \"Oral Medication\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"Abcd\",\n        \"treatmentCodeOntologyVersion\": \"25\" \n      },\n      \"op\": \"submit\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post treatment (treatmentCodeOntologyVersion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id7\",response.id);",
+									"pm.environment.set(\"records7\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 5",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 2;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"treatments\": [\n    {\n      \"treatment\": {\n\t\t\"individualReferenceId\": \"VALID1\",\n        \"treatmentLocation\": \"Oral Medication\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"SNOMED-CT\",\n        \"treatmentCodeOntologyVersion\": \"25\"\n      },\n     \"op\": \"Submit\"\n    },\n    {\n      \"treatment\": {\n        \"individualReferenceId\": \"INVAL1\",\n        \"treatmentLocation\": \"Oral Medication\",\n        \"dateTreated\": \"2016-09-12T08:37:06-01:00\",\n        \"treatmentCode\": \"10090001\",\n        \"treatmentCodeOntology\": \"SNOMED-CT\", \n        \"treatmentCodeOntologyVersion\": \"15\"\n      },\n      \"op\": \"submit\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "\n",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Get Submission Status",
+			"item": [
+				{
+					"name": "Check for successsful processing of data validation submissions Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {}, 10000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\",  () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All open submissions have processed\", () => {",
+									"",
+									"    let complete = !response",
+									"        .submissions",
+									"        .some(x => x.status == \"Open\" && x.recordsProcessed != x.totalRecords);",
+									"",
+									"    // Re-Run Test If Not Yet Complete",
+									"    if (!complete)",
+									"    {",
+									"        postman.setNextRequest(\"Check for successsful processing of data validation submissions\");",
+									"    }",
+									"    ",
+									"    pm.expect(complete).to.eq(true);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}?limit=100",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (treatmentCode)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until expected records are processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get Status (treatmentCode)');",
+									"// }",
+									"// else",
+									"// {",
+									"//Check number of sumbissions",
+									"tests[ \"number of samples submitted is \" + response.totalRecords ]= response.totalRecords === 7;",
+									"",
+									"//Test if Error count is 1",
+									"tests[ response.recordsFailed + \" out of the \" + response.totalRecords + \" samples failed to process\"] = 6 == response.recordsFailed;",
+									"",
+									"//Check number of records passed",
+									"pm.test(response.recordsPassed + \" of the \" + response.totalrecords +\" records successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(1);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id17}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id17}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (treatmentLocation)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until expected records are processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get Status (treatmentLocation)');",
+									"// }",
+									"// else",
+									"// {",
+									"//Check number of sumbissions",
+									"tests[ \"number of samples submitted is \" + response.totalRecords ]= response.totalRecords === 4;",
+									"",
+									"//Test if Error count is 2",
+									"pm.test(response.recordsFailed + \" of the \" + response.totalrecords +\" records failed processing\", function() {",
+									"    pm.expect(response.recordsFailed).to.eql(1);",
+									"});",
+									"",
+									"//Check number of records passed",
+									"pm.test(response.recordsPassed + \" of the \" + response.totalrecords +\" records successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(3);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id18}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id18}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (treatmentCodeOntology)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"// // keep re-requesting until expected records are processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get Status (treatmentCodeOntology)');",
+									"// }",
+									"// else",
+									"// {",
+									"//Check number of sumbissions",
+									"tests[ \"number of samples submitted is \" + response.totalRecords ]= response.totalRecords === 2;",
+									"",
+									"//Test if Error count is 1",
+									"tests[ response.recordsFailed + \" out of the \" + response.totalRecords + \" samples failed to process\"] = 1 == response.recordsFailed;",
+									"",
+									"//Check number of records passed",
+									"pm.test(response.recordsPassed + \" of the \" + response.totalrecords +\" records successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(1);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id6}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id6}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status (treatmentCodeOntologyVersion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until expected records are processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get Status (treatmentCodeOntologyVersion)');",
+									"// }",
+									"// else",
+									"// {",
+									"//Check number of sumbission is 5",
+									"tests[ \"number of samples submitted is \" + response.totalRecords ]= response.totalRecords === 2;",
+									"",
+									"//Test if Error count is 1",
+									"tests[ response.recordsFailed + \" out of the \" + response.totalRecords + \" samples failed to process\"] = 1 == response.recordsFailed;",
+									"",
+									"//Check number of records passed",
+									"pm.test(response.recordsPassed + \" of the \" + response.totalrecords +\" records successfully processed\", function() {",
+									"    pm.expect(response.recordsPassed).to.eql(1);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id7}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id7}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Submission Error Codes",
+			"item": [
+				{
+					"name": "Get Error Code (treatmentCode)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"error count is \" + response.count, function () {",
+									"    pm.expect(response.count) == 6;",
+									"});",
+									"",
+									"//Test if status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check for error message for invalid data    ",
+									"    pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error Message for barcode INVAL2\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL2\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error Message for barcode INVAL3\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL3\");",
+									"    });",
+									"",
+									"    pm.test(\"Error Message for barcode INVAL4\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL4\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error Message for barcode INVAL5\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL5\");",
+									"    });",
+									"    ",
+									"    pm.test(\"Error Message for barcode INVAL6\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL6\");",
+									"    });",
+									"    ",
+									"    pm.test(\"No Error Message for barcode VALID1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id17}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id17}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code (treatmentLocation)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"error count is \" + response.count, function () {",
+									"    pm.expect(response.count) == 1;",
+									"});",
+									"",
+									"//Test if status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"    });",
+									"    ",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"No Error Message for barcode VALID1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"    });",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"No Error Message for barcode VALID2\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID2\");",
+									"    });",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"No Error Message for barcode VALID3\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID3\");",
+									"    });",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id18}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id18}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error Code (treatmentCodeOntology)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"error count is \" + response.count, function () {",
+									"    pm.expect(response.count) == 1;",
+									"});",
+									"",
+									"//Test if status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"    });",
+									"    ",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"No Error Message for barcode VAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"    });",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id6}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id6}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Error code (treatmentCodeOntologyVersion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"error count is \" + response.count, function () {",
+									"    pm.expect(response.count) == 1;",
+									"});",
+									"",
+									"//Test if status code is 200",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"Error Message for barcode INVAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"INVAL1\");",
+									"    });",
+									"    ",
+									"//Check for error message for invalid data 1    ",
+									"    pm.test(\"No Error Message for barcode VAL1\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"VALID1\");",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id7}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id7}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"function IsSuccessCode(statusCode) {",
+					"    return statusCode == 200 || statusCode == 201;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

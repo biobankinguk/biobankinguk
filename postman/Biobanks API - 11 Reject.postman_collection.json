@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "3ecc0bea-5f84-49cc-b584-b91a7c360697",
-		"name": "Biobanks API - 09 Post Test Cleaning",
+		"_postman_id": "6806db33-fbe1-4efd-8ef0-ae4e0709e4c9",
+		"name": "Biobanks API - 11 Reject",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -39,6 +39,56 @@
 					"path": [
 						"{{user-biobank-id}}",
 						"reject"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check for reject status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response= pm.response.json()",
+							"",
+							"// Tests",
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Submission \" + response.submissions[0].id + \" is successfully rejected\", () => {",
+							"    pm.expect(response.submissions[0].status).to.eql(\"Rejected\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Wait 10 Seconds Before Request\r",
+							"setTimeout(function () {}, 10000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"status",
+						"biobank",
+						"{{user-biobank-id}}"
 					]
 				}
 			},
