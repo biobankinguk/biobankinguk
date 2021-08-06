@@ -1179,7 +1179,7 @@ namespace Biobanks.Services
 
             // Filter By Description
             if (!string.IsNullOrEmpty(description))
-                query = query.Where(x => x.Value == description);
+                query = query.Where(x => x.Value == description && x.Id !=id);
 
             // Filter By SnomedTag
             if (tags != null)
