@@ -76,3 +76,7 @@ $ newman run "<collection.json>" -e "<environment.json>"
 ```
 
 For testing on a local environment, where a security certificate may not be configured, the `--insecure` flag must be used to avoid additional errors.
+
+## Running In Postman
+
+These tests can also be imported, and ran via Postman. In Postman use the importer under `File > Import > Folder`. This will import all tests and the template environment to be used in Postman.
