@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bfcd805e-bc8d-48a2-821f-712cc4ca34e8",
+		"_postman_id": "a0858b16-10c7-45af-b3f3-fdb425b29483",
 		"name": "Biobanks API - 05 Data Diagnosis Validation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -252,22 +252,17 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"All open submissions have processed\", () => {",
+									"// Re-Try Logic",
+									"let retry = response",
+									"    .submissions",
+									"    .some(x => x.status == \"Open\" && x.recordsProcessed != x.totalRecords);",
 									"",
-									"    let complete = !response",
-									"        .submissions",
-									"        .some(x => x.status == \"Open\" && x.recordsProcessed != x.totalRecords);",
-									"",
-									"    // Re-Run Test If Not Yet Complete",
-									"    if (!complete)",
-									"    {",
-									"        postman.setNextRequest(\"Check for successsful processing of data validation submissions\");",
-									"    }",
-									"    ",
-									"    pm.expect(complete).to.eq(true);",
-									"});",
-									"",
-									""
+									"if (retry) {",
+									"    postman.setNextRequest(request.name);",
+									"}",
+									"else {",
+									"    pm.test(\"All samples have processed\");",
+									"}"
 								],
 								"type": "text/javascript"
 							}

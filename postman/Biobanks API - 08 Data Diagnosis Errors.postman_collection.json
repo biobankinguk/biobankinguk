@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "84e21794-bf46-4943-b50f-a1a77eebe37a",
+		"_postman_id": "8c393841-6f40-49e3-a886-5aad62d2bf7d",
 		"name": "Biobanks API - 08 Data Diagnosis Errors",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2231,7 +2231,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"setTimeout(() => {}, 0 * 1000); // Wait 30 Seconds Between Calls"
+									"setTimeout(() => {}, 30 * 1000); // Wait 30 Seconds Between Calls"
 								],
 								"type": "text/javascript"
 							}

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "36d86a31-4b0f-44aa-ad6c-744c88c1753a",
+		"_postman_id": "f0cf1e11-6188-422e-a186-8536ba1e9203",
 		"name": "Biobanks API - 09 Data Treatment Errors",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2568,7 +2568,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"setTimeout(() => {}, 0 * 1000); // Wait 30 Seconds Between Calls"
+									"setTimeout(() => {}, 30 * 1000); // Wait 30 Seconds Between Calls"
 								],
 								"type": "text/javascript"
 							}

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "943b9b49-3c14-4865-b024-a8eabc589e78",
+		"_postman_id": "cac84c98-d45d-4942-a217-301a5d3c3112",
 		"name": "Biobanks API - 07 Data Sample Errors",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -4269,7 +4269,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"setTimeout(() => {}, 0 * 1000); // Wait 30 Seconds Between Calls"
+									"setTimeout(() => {}, 30 * 1000); // Wait 30 Seconds Between Calls"
 								],
 								"type": "text/javascript"
 							}

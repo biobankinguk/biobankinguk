@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2248b24a-3404-4390-a747-facd91ebcc65",
+		"_postman_id": "8ff3c040-704e-4225-9b7e-bdcc870c65bc",
 		"name": "Biobanks API - 06 Data Treatment Validation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -322,7 +322,7 @@
 			"name": "Get Submission Status",
 			"item": [
 				{
-					"name": "Check for successsful processing of data validation submissions Copy",
+					"name": "Check for successsful processing of data validation submissions",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -343,22 +343,17 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"All open submissions have processed\", () => {",
+									"// Re-Try Logic",
+									"let retry = response",
+									"    .submissions",
+									"    .some(x => x.status == \"Open\" && x.recordsProcessed != x.totalRecords);",
 									"",
-									"    let complete = !response",
-									"        .submissions",
-									"        .some(x => x.status == \"Open\" && x.recordsProcessed != x.totalRecords);",
-									"",
-									"    // Re-Run Test If Not Yet Complete",
-									"    if (!complete)",
-									"    {",
-									"        postman.setNextRequest(\"Check for successsful processing of data validation submissions\");",
-									"    }",
-									"    ",
-									"    pm.expect(complete).to.eq(true);",
-									"});",
-									"",
-									""
+									"if (retry) {",
+									"    postman.setNextRequest(request.name);",
+									"}",
+									"else {",
+									"    pm.test(\"All samples have processed\");",
+									"}"
 								],
 								"type": "text/javascript"
 							}
