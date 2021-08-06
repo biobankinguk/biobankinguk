@@ -1061,8 +1061,8 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task<bool> ValidDonorCountAsync(string donorCountDescription)
-            => (await _donorCountRepository.ListAsync(false, x => x.Value == donorCountDescription)).Any();
+        public async Task<bool> ValidDonorCountAsync(int id, string donorCountDescription)
+            => (await _donorCountRepository.ListAsync(false, x => x.Value == donorCountDescription && x.Id != id)).Any();
 
         public async Task<bool> IsDonorCountInUse(int id)
             => (await GetDonorCountUsageCount(id)) > 0;
