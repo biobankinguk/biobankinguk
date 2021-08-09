@@ -10,12 +10,6 @@ namespace Biobanks.Services.Contracts
 {
     public interface IBiobankWriteService
     {
-        Task<Collection> AddCollectionAsync(Collection collection, string ontologyTermDescription, 
-            IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
-        Task UpdateCollectionAsync(Collection collection, string ontologyTermDescription,
-            IEnumerable<CollectionAssociatedData> associatedData, IEnumerable<int> consentRestrictionIds);
-        Task<bool> DeleteCollectionAsync(int id);
-
         Task AddSampleSetAsync(SampleSet sampleSet);
         Task UpdateSampleSetAsync(SampleSet sampleSet);
         Task DeleteSampleSetAsync(int id);

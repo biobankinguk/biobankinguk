@@ -1,3 +1,4 @@
+using Biobanks.Entities.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,8 +17,9 @@ namespace Biobanks.Services.Contracts
         Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm);
         void DeleteSampleSet(int sampleSetId);
         void DeleteCapability(int capabilityId);
-        Task UpdateCollectionDetails(int collectionId);
-        Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm);
+        
+        void UpdateCollectionDetails(Collection collection);
+        
         Task UpdateBiobankDetails(int biobankId);
         Task UpdateNetwork(int networkId);
         Task JoinOrLeaveNetwork(int biobankId);
