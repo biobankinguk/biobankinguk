@@ -15,6 +15,8 @@ using Biobanks.Services.Extensions;
 using System.IO;
 using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data;
 
 namespace Biobanks.Services
 {
@@ -237,11 +239,8 @@ namespace Biobanks.Services
             BackgroundJob.Enqueue(() => _indexProvider.DeleteCapabilitySearchDocument(capabilityId));
         }
 
-        public async Task UpdateCollectionDetails(int collectionId)
+        public void UpdateCollectionDetails(Collection collection)
         {
-            // Get the collection out of the database.
-            var collection = await _biobankReadService.GetCollectionByIdForIndexingAsync(collectionId);
-
             // Update all search documents that are relevant to this collection.
             foreach (var sampleSet in collection.SampleSets)
             {
@@ -540,17 +539,6 @@ namespace Biobanks.Services
 
         private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
             => (int) Math.Floor((double) (intList.Count() / chunkSize));
-
-        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
-        {
-            // Get the collections with the ontologyTerm.
-            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
-            // Update all search documents that are relevant to this collection.
-            foreach (var collectionId in collectionIds)
-            {
-                await UpdateCollectionDetails(collectionId);
-            }
-        }
 
         public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
         {

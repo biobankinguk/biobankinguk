@@ -16,12 +16,15 @@ using Biobanks.Services.Dto;
 using Biobanks.Entities.Shared;
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Extensions;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
     public class BiobankWriteService : IBiobankWriteService
     {
         #region Properties and ctor
+
+        private readonly ICollectionService _collectionService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
@@ -85,6 +88,7 @@ namespace Biobanks.Services
         private readonly IMapper _mapper;
 
         public BiobankWriteService(
+            ICollectionService collectionService,
             IBiobankReadService biobankReadService,
             IConfigService configService,
             ILogoStorageProvider logoStorageProvider,
@@ -140,6 +144,8 @@ namespace Biobanks.Services
 
             IGenericEFRepository<Funder> funderRepository)
         {
+            _collectionService = collectionService;
+
             _biobankReadService = biobankReadService;
             _configService = configService;
             _logoStorageProvider = logoStorageProvider;
@@ -200,81 +206,6 @@ namespace Biobanks.Services
         }
 
         #endregion
-
-        public async Task<Collection> AddCollectionAsync(
-            Collection collection,
-            string ontologyTermDescription,
-            IEnumerable<CollectionAssociatedData> associatedData,
-            IEnumerable<int> consentRestrictionIds)
-        {
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
-            var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
-                        x => consentRestrictionIds.Contains(x.Id))).ToList();
-
-            collection.OntologyTermId = ontologyTerm.Id;
-            collection.LastUpdated = DateTime.Now;
-            collection.AssociatedData = associatedData.ToList();
-            collection.ConsentRestrictions = consentRestrictions;
-
-            _collectionRepository.Insert(collection);
-
-            await _collectionRepository.SaveChangesAsync();
-
-            return collection;
-        }
-
-        public async Task UpdateCollectionAsync(
-            Collection collection,
-            string ontologyTermDescription,
-            IEnumerable<CollectionAssociatedData> associatedData,
-            IEnumerable<int> consentRestrictionIds)
-        {
-            var existingCollection = (await _collectionRepository.ListAsync(true,
-                x => x.CollectionId == collection.CollectionId,
-                null,
-                x => x.AssociatedData,
-                x => x.ConsentRestrictions)).First();
-
-            existingCollection.AssociatedData.Clear();
-            existingCollection.ConsentRestrictions.Clear();
-
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
-            var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
-                        x => consentRestrictionIds.Contains(x.Id))).ToList();
-
-            existingCollection.OntologyTermId = ontologyTerm.Id;
-            existingCollection.Title = collection.Title;
-            existingCollection.Description = collection.Description;
-            existingCollection.StartDate = collection.StartDate;
-            existingCollection.AccessConditionId = collection.AccessConditionId;
-            existingCollection.CollectionTypeId = collection.CollectionTypeId;
-            existingCollection.CollectionStatusId = collection.CollectionStatusId;
-            existingCollection.LastUpdated = DateTime.Now;
-
-            existingCollection.AssociatedData = associatedData.ToList();
-            existingCollection.ConsentRestrictions = consentRestrictions;
-
-            await _collectionRepository.SaveChangesAsync();
-
-            if (!await _biobankReadService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
-                await _indexService.UpdateCollectionDetails(collection.CollectionId);
-        }
-
-        public async Task<bool> DeleteCollectionAsync(int id)
-        {
-            var collection = (await _collectionRepository
-                .ListAsync(true, x => x.CollectionId == id, null, x => x.SampleSets))
-                .First();
-
-            if (collection.SampleSets.Any()) return false;
-
-            await _collectionRepository.DeleteWhereAsync(x => x.CollectionId == id);
-
-            await _collectionRepository.SaveChangesAsync();
-
-            return true;
-        }
-
 
         public async Task AddSampleSetAsync(SampleSet sampleSet)
         {
@@ -725,8 +656,18 @@ namespace Biobanks.Services
         {
             _ontologyTermRepository.Update(ontologyTerm);
             await _ontologyTermRepository.SaveChangesAsync();
-            await _indexService.UpdateCollectionsOntologyOtherTerms(ontologyTerm.Value);
+
+            // Update Indexed Capabilities
             await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
+
+            // Update Indexed Collections
+            var collections = await _collectionService.ListByOntologyTerm(ontologyTerm.Value);
+
+            foreach (var collection in collections)
+            {
+                _indexService.UpdateCollectionDetails(
+                    await _collectionService.GetForIndexing(collection.CollectionId));
+            }
 
             return ontologyTerm;
         }
