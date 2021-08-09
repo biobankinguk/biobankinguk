@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3a0bcb13-930d-4ccb-a427-83786ef010c3",
+		"_postman_id": "56c1749e-78b1-4e1f-9337-627e5f7a9fa9",
 		"name": "Biobanks API - 13 Submission Limits",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -120,6 +120,9 @@
 								"exec": [
 									"let response = pm.response.json();",
 									"",
+									"// Clear Large RequestBody Variable",
+									"pm.environment.set(\"requestBody\", \"\");",
+									"",
 									"//Set ID as environment variable",
 									"pm.environment.set(\"id\", response.id);",
 									"pm.environment.set(\"records\",response.totalRecords);",
@@ -135,6 +138,78 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pick Random Array Value\r",
+									"Array.prototype.sample = function(){\r",
+									"  return this[Math.floor(Math.random() * this.length)];\r",
+									"}\r",
+									"\r",
+									"function randomDate(from, to = new Date()) {\r",
+									"    return new Date(from.getTime() + Math.random() * (to.getTime() - from.getTime()));\r",
+									"}\r",
+									"\r",
+									"function randomSample() {\r",
+									"\r",
+									"    // Selection Of Valid Reference Data\r",
+									"    var materialTypes = [\r",
+									"        \"cDNA/mRNA\",\r",
+									"        \"DNA\",\r",
+									"        \"Faeces\",\r",
+									"        \"microRNA\",\r",
+									"        \"Isolated Pathogens\",\r",
+									"        \"Peripheral blood mononuclear cells (PBMC)\",\r",
+									"        \"Plasma\",\r",
+									"        \"PM tissue\",\r",
+									"        \"RNA\",\r",
+									"        \"Saliva\",\r",
+									"        \"Serum\",\r",
+									"        \"Urine\",\r",
+									"        \"Whole blood\",\r",
+									"        \"Embryo\",\r",
+									"        \"Whole bone marrow\",\r",
+									"        \"Primary cells\"];\r",
+									"    \r",
+									"    var storageTemperatures = [\r",
+									"        \"RT\",\r",
+									"        \"2°C to 10°C\",\r",
+									"        \"-18°C to -35°C\",\r",
+									"        \"-60°C to -85°C\",\r",
+									"        \"Liquid nitrogen liquid phase\",\r",
+									"        \"Liquid nitrogen vapor phase\",\r",
+									"        \"Other\"];\r",
+									"\r",
+									"    // Generate Random Dates\r",
+									"    var dateOfBirth = randomDate(from = new Date(1940, 0));\r",
+									"    var dateCreated = randomDate(from = dateOfBirth);\r",
+									"\r",
+									"    return {\r",
+									"        \"sample\" : {\r",
+									"            \"individualReferenceId\": pm.variables.replaceIn('{{$randomUUID}}'),\r",
+									"            \"barcode\": pm.variables.replaceIn('{{$randomUUID}}'),\r",
+									"            \"dateCreated\": dateCreated.toISOString(),\r",
+									"            \"yearOfBirth\": dateOfBirth.getFullYear(),\r",
+									"            \"materialType\": materialTypes.sample(),\r",
+									"            \"storageTemperature\": storageTemperatures.sample(),\r",
+									"            \"extractionSiteOntology\": \"SNOMED-CT\",\r",
+									"            \"extractionSiteOntologyVersion\": \"25\"\r",
+									"        },\r",
+									"        \"op\": \"submit\" \r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"// Generate Request Body\r",
+									"var requestBody = {\r",
+									"    samples: Array.from(new Array(10_001), x => randomSample())\r",
+									"};\r",
+									"\r",
+									"pm.environment.set('requestBody', JSON.stringify(requestBody));"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -147,7 +222,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{{requestBody}}"
 						},
 						"url": {
 							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
@@ -165,6 +240,298 @@
 				},
 				{
 					"name": "Check 10,000 Submission Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// Re-Run Test Until All Samples Processed",
+									"if (response.recordsProcessed != response.totalRecords) {",
+									"    postman.setNextRequest(\"Check 9,999 Submission Status\");",
+									"}",
+									"else {",
+									"    // Tests",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"",
+									"    pm.test(environment.records + \" records have been processed\", () => {",
+									"        pm.expect(response.recordsProcessed).to.equal(environment.records);",
+									"    });",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pause 15 Seconds\r",
+									"setTimeout(function () {}, 15000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-MD5",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10,001 Samples",
+			"item": [
+				{
+					"name": "Reject",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{api-url}}/{{user-biobank-id}}/reject",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"{{user-biobank-id}}",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Latest submission has been rejected\", () => {",
+									"    pm.expect(response.submissions[0].status).to.equal(\"Rejected\");",
+									"});",
+									"",
+									"pm.test(\"Submissions status DOES NOT include any Open submissions\", () => {",
+									"    pm.expect(pm.response.text()).to.not.include(\"Open\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 5000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit 10,001 Samples",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Clear Large RequestBody Variable",
+									"pm.environment.set(\"requestBody\", \"\");",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.be.eq(400);",
+									"});",
+									"",
+									"pm.test(\"Correct error message\", () => {",
+									"    pm.expect(pm.response.text()).contains(\"This submission contains more than the maximum of 10000 records allowed\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pick Random Array Value\r",
+									"Array.prototype.sample = function(){\r",
+									"  return this[Math.floor(Math.random() * this.length)];\r",
+									"}\r",
+									"\r",
+									"function randomDate(from, to = new Date()) {\r",
+									"    return new Date(from.getTime() + Math.random() * (to.getTime() - from.getTime()));\r",
+									"}\r",
+									"\r",
+									"function randomSample() {\r",
+									"\r",
+									"    // Selection Of Valid Reference Data\r",
+									"    var materialTypes = [\r",
+									"        \"cDNA/mRNA\",\r",
+									"        \"DNA\",\r",
+									"        \"Faeces\",\r",
+									"        \"microRNA\",\r",
+									"        \"Isolated Pathogens\",\r",
+									"        \"Peripheral blood mononuclear cells (PBMC)\",\r",
+									"        \"Plasma\",\r",
+									"        \"PM tissue\",\r",
+									"        \"RNA\",\r",
+									"        \"Saliva\",\r",
+									"        \"Serum\",\r",
+									"        \"Urine\",\r",
+									"        \"Whole blood\",\r",
+									"        \"Embryo\",\r",
+									"        \"Whole bone marrow\",\r",
+									"        \"Primary cells\"];\r",
+									"    \r",
+									"    var storageTemperatures = [\r",
+									"        \"RT\",\r",
+									"        \"2°C to 10°C\",\r",
+									"        \"-18°C to -35°C\",\r",
+									"        \"-60°C to -85°C\",\r",
+									"        \"Liquid nitrogen liquid phase\",\r",
+									"        \"Liquid nitrogen vapor phase\",\r",
+									"        \"Other\"];\r",
+									"\r",
+									"    // Generate Random Dates\r",
+									"    var dateOfBirth = randomDate(from = new Date(1940, 0));\r",
+									"    var dateCreated = randomDate(from = dateOfBirth);\r",
+									"\r",
+									"    return {\r",
+									"        \"sample\" : {\r",
+									"            \"individualReferenceId\": pm.variables.replaceIn('{{$randomUUID}}'),\r",
+									"            \"barcode\": pm.variables.replaceIn('{{$randomUUID}}'),\r",
+									"            \"dateCreated\": dateCreated.toISOString(),\r",
+									"            \"yearOfBirth\": dateOfBirth.getFullYear(),\r",
+									"            \"materialType\": materialTypes.sample(),\r",
+									"            \"storageTemperature\": storageTemperatures.sample(),\r",
+									"            \"extractionSiteOntology\": \"SNOMED-CT\",\r",
+									"            \"extractionSiteOntologyVersion\": \"25\"\r",
+									"        },\r",
+									"        \"op\": \"submit\" \r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"// Generate Request Body\r",
+									"var requestBody = {\r",
+									"    samples: Array.from(new Array(10_001), x => randomSample())\r",
+									"};\r",
+									"\r",
+									"pm.environment.set('requestBody', JSON.stringify(requestBody));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{requestBody}}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						},
+						"description": "#10471 Limit of 10,000 records to be sent per submission"
+					},
+					"response": []
+				},
+				{
+					"name": "Check 10,001 Submission Status",
 					"event": [
 						{
 							"listen": "test",
