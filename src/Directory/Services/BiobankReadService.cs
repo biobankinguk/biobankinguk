@@ -255,21 +255,6 @@ namespace Biobanks.Services
                 false,
                 x => x.Name == networkName)).FirstOrDefault();
 
-        public async Task<bool> IsCapabilityBiobankSuspendedAsync(int capabilityId)
-            => await IsBiobankSuspendedAsync(
-                (await _capabilityRepository.GetByIdAsync(capabilityId))
-                    .OrganisationId);
-
-        public async Task<bool> IsCollectionBiobankSuspendedAsync(int collectonId)
-            => await IsBiobankSuspendedAsync(
-                (await _collectionRepository.GetByIdAsync(collectonId))
-                    .OrganisationId);
-
-        public async Task<bool> IsSampleSetBiobankSuspendedAsync(int sampleSetId)
-            => await IsCollectionBiobankSuspendedAsync(
-                (await _sampleSetRepository.GetByIdAsync(sampleSetId))
-                    .CollectionId);
-
         public async Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId)
             => (await _organisationRepository.ListAsync(
                     false,
@@ -305,37 +290,6 @@ namespace Biobanks.Services
         public async Task<ICollection<Country>> ListCountriesAsync() =>
             (await _countryRepository.ListAsync(false, null, x => x.OrderBy(c => c.Value))).ToList();
 
-        public async Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync()
-        {
-                var organisations = await _organisationRepository.ListAsync(
-                    false,
-                    b => !b.IsSuspended,
-                    null,
-                    b => b.Collections,
-                    b => b.DiagnosisCapabilities,
-                    b => b.OrganisationUsers
-                );
-
-                var organisationUsers = await _organisationUserRepository.ListAsync(false);
-                var identityUsers = await _userManager.Users.ToListAsync();
-
-                return (from organisation in organisations
-                        let organisationUserIds = organisationUsers.Where(ou => ou.OrganisationId == organisation.OrganisationId).Select(ou => ou.OrganisationUserId)
-                        let organisationIdentityUsers = identityUsers.Where(iu => organisationUserIds.Contains(iu.Id) && iu.LastLogin.HasValue)
-                        let lastLoginUser = organisationIdentityUsers.OrderByDescending(iu => iu.LastLogin).FirstOrDefault()
-                        select new BiobankActivityDTO
-                        {
-                            OrganisationId = organisation.OrganisationId,
-                            Name = organisation.Name,
-                            ContactEmail = organisation.ContactEmail,
-                            LastUpdated = organisation.LastUpdated,
-                            LastCapabilityUpdated = organisation.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
-                            LastCollectionUpdated = organisation.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
-                            LastAdminLoginEmail = lastLoginUser?.Email,
-                            LastAdminLoginTime = lastLoginUser?.LastLogin
-                        }).ToList();
-        }
-
         public async Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdAsync(int networkId)
         {
             var networkBiobankIds = await GetBiobankIdsByNetworkIdAsync(networkId);
@@ -366,32 +320,12 @@ namespace Biobanks.Services
         public async Task<IEnumerable<Network>> ListNetworksAsync()
             => await _networkRepository.ListAsync(false, null, null, n => n.OrganisationNetworks);
 
-        public async Task<IEnumerable<OrganisationRegisterRequest>> ListOpenBiobankRegisterRequestsAsync()
-        {
-            var type = await _organisationService.GetBiobankOrganisationTypeAsync();
-
-            //Show all that are "open"
-            //(i.e. no action taken (accept, decline, create...))
-            return await _organisationRegisterRequestRepository.ListAsync(
-                false,
-                x =>
-                    x.AcceptedDate == null && x.OrganisationCreatedDate == null && x.DeclinedDate == null &&
-                    x.OrganisationTypeId == type.OrganisationTypeId);
-        }
-
         public async Task<IEnumerable<NetworkRegisterRequest>> ListOpenNetworkRegisterRequestsAsync()
             //Show all that are "open"
             //(i.e. no action taken (accept, decline, create...))
             => await _networkRegisterRequestRepository.ListAsync(
                 false,
                 x => x.AcceptedDate == null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
-
-        public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync()
-            //Show all that are accepted but not yet created
-            //filter by no created date, but an existing accepted date
-            => await _organisationRegisterRequestRepository.ListAsync(
-                false,
-                x => x.AcceptedDate != null && x.DeclinedDate == null && x.OrganisationCreatedDate == null);
 
         public async Task<IEnumerable<NetworkRegisterRequest>> ListAcceptedNetworkRegisterRequestAsync()
             //Show all that are accepted but not yet created
@@ -400,14 +334,6 @@ namespace Biobanks.Services
                 false,
                 x => x.AcceptedDate != null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
 
-
-        public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync()
-            //Show all that are "closed"
-            //(i.e. declined or accepted)
-            => await _organisationRegisterRequestRepository.ListAsync(
-                false,
-                x => x.DeclinedDate != null || x.AcceptedDate != null);
-
         public async Task<IEnumerable<NetworkRegisterRequest>> ListHistoricalNetworkRegisterRequestsAsync()
             //Show all that are "closed"
             //(i.e. declined or accepted)
@@ -415,11 +341,6 @@ namespace Biobanks.Services
                 false,
                 x => x.DeclinedDate != null || x.AcceptedDate != null);
 
-        public async Task<OrganisationRegisterRequest> GetBiobankRegisterRequestAsync(int requestId)
-            => (await _organisationRegisterRequestRepository.ListAsync(
-                    false,
-                    x => x.OrganisationRegisterRequestId == requestId))
-                .FirstOrDefault();
 
         public async Task<NetworkRegisterRequest> GetNetworkRegisterRequestAsync(int requestId)
             => (await _networkRegisterRequestRepository.ListAsync(
@@ -591,16 +512,6 @@ namespace Biobanks.Services
                     })
                 .ToDictionary(x => x.id, x => x.description);
 
-        public async Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByOrganisationNameAsync(string name)
-        {
-            var type = await _organisationService.GetBiobankOrganisationTypeAsync();
-
-            return (await _organisationRegisterRequestRepository.ListAsync(
-                false,
-                x => x.OrganisationName == name &&
-                     x.OrganisationTypeId == type.OrganisationTypeId)).FirstOrDefault();
-        }
-
         public async Task<bool> NetworkRegisterRequestExists(string name)
             //We consider declined requests to not exist
             => (await _networkRegisterRequestRepository.ListAsync(
@@ -621,20 +532,6 @@ namespace Biobanks.Services
             => (await _networkRegisterRequestRepository.ListAsync(
                 false,
                 x => x.UserEmail == email && x.DeclinedDate == null && x.NetworkCreatedDate == null)).FirstOrDefault();
-
-        public async Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByUserEmailAsync(string email)
-        {
-            var type = await _organisationService.GetBiobankOrganisationTypeAsync();
-
-            //an email should only have one active Biobank register request at any one time
-            //declined or created requests are no longer active!
-            return (await _organisationRegisterRequestRepository.ListAsync(
-                false,
-                x =>
-                    x.UserEmail == email && x.DeclinedDate == null && x.OrganisationCreatedDate == null &&
-                    x.OrganisationTypeId == type.OrganisationTypeId))
-                .FirstOrDefault();
-        }
 
         public async Task<Collection> GetCollectionByIdAsync(int id)
             => (await _collectionRepository.ListAsync(false,
@@ -1343,35 +1240,6 @@ namespace Biobanks.Services
         public async Task<Funder> GetFunderByIdAsync(int id)
             => await _funderRepository.GetByIdAsync(id);
 
-        public List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId)
-        {
-            var userOrgIds =  _organisationUserRepository.List(
-                    false,
-                    x => x.OrganisationUserId == userId)
-                .Select(x => x.OrganisationId)
-                .ToList();
-
-            var userOrganisations = _organisationRepository.List(
-                    false,
-                    x => userOrgIds.Contains(x.OrganisationId))
-                .ToList();
-
-            return userOrganisations.Select(o => new KeyValuePair<int, string>(o.OrganisationId, o.Name)).ToList();
-        }
-
-        public List<KeyValuePair<int, string>> GetAcceptedBiobankRequestIdsAndNamesByUserId(string userId)
-        {
-            var userEmail = _userManager.Users.FirstOrDefault(u => u.Id == userId)?.Email;
-
-            return _organisationRegisterRequestRepository.List(
-                    false,
-                    x => x.UserEmail == userEmail
-                         && x.AcceptedDate != null
-                         && x.OrganisationCreatedDate == null)
-                .Select(r => new KeyValuePair<int, string>(r.OrganisationRegisterRequestId, r.OrganisationName))
-                .ToList();
-        }
-
         public List<KeyValuePair<int, string>> GetNetworkIdsAndNamesByUserId(string userId)
         {
             var userNetworkIds = _networkUserRepository.List(
@@ -1412,13 +1280,6 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync()
             => await _registrationReasonRepository.ListAsync();
-
-        public async Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId)
-            => await _organisationRegistrationReasonRepository.ListAsync(
-                false,
-                x => x.OrganisationId == organisationId,
-                null,
-                x => x.RegistrationReason);
 
         public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
             => await _publicationRepository.ListAsync(true, x => x.OrganisationId == biobankId);

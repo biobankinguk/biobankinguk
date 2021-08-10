@@ -1,6 +1,5 @@
 ﻿using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Services.Dto;
+using Biobanks.Identity.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,6 +9,10 @@ namespace Biobanks.Services.Contracts
     public interface IOrganisationService
     {
         Task<IEnumerable<Organisation>> List(string wildcard = "", bool includeSuspended = true);
+        Task<IEnumerable<Organisation>> ListForActivity(string name = "", bool includeSuspended = true);
+        Task<IEnumerable<Organisation>> ListByUserId(string userId);
+        Task<IEnumerable<Organisation>> ListByExternalIds(IList<string> biobankExternalIds);
+        Task<IEnumerable<Organisation>> ListByAnonymousIdentifiers(IEnumerable<Guid> biobankAnonymousIdentifiers);
 
         Task<OrganisationType> GetBiobankOrganisationTypeAsync();
 
@@ -20,14 +23,6 @@ namespace Biobanks.Services.Contracts
 
         Task<Organisation> GetByExternalId(string externalId);
         Task<Organisation> GetByExternalIdForSearch(string externalId);
-        Task<IEnumerable<Organisation>> ListByExternalIds(IList<string> biobankExternalIds);
-
-        Task<IEnumerable<Organisation>> ListByAnonymousIdentifiers(IEnumerable<Guid> biobankAnonymousIdentifiers);
-
-
-        List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId);
-        List<KeyValuePair<int, string>> GetAcceptedBiobankRequestIdsAndNamesByUserId(string userId);
-
 
         
         Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId);
@@ -37,31 +32,34 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsApiClient(int biobankId);
 
         Task<bool> IsSuspended(int biobankId);
-        Task<bool> IsCapabilityBiobankSuspendedAsync(int capabilityId);
-        Task<bool> IsCollectionBiobankSuspendedAsync(int collectonId);
-        Task<bool> IsSampleSetBiobankSuspendedAsync(int sampleSetId);
+        Task<bool> IsSuspendedByCapability(int capabilityId);
+        Task<bool> IsSuspendedByCollection(int collectonId);
+        Task<bool> IsSuspendedBySampleSet(int sampleSetId);
 
-        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync();
-        Task<IEnumerable<OrganisationRegisterRequest>> ListOpenBiobankRegisterRequestsAsync();
+        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequests();
+        Task<IEnumerable<OrganisationRegisterRequest>> ListOpenRegistrationRequests();
 
-        Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync();
+        Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalRegistrationRequests();
 
-        Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByUserEmailAsync(string email);
-
-        Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync();
+        Task<OrganisationRegisterRequest> GetRegistrationRequestByEmail(string email);
 
 
         // Write
         Task<Organisation> Create(Organisation biobank);
         Task<Organisation> Update(Organisation biobank);
-        Task<OrganisationUser> AddUser(string userId, int biobankId);
-        Task RemoveUser(string userId, int biobankId);
+
+        Task<OrganisationUser> AddUser(string userId, int organisationId);
+        Task RemoveUser(string userId, int organisationId);
 
         Task<OrganisationRegisterRequest> AddRegistrationRequest(OrganisationRegisterRequest request);
         Task RemoveRegistrationRequest(OrganisationRegisterRequest request);
 
-        Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request);
-        
+        Task<OrganisationRegisterRequest> UpdateRegistrationRequest(OrganisationRegisterRequest request);
+
+        Task<OrganisationRegisterRequest> GetRegistrationRequest(int requestId);
+        Task<OrganisationRegisterRequest> GetRegistrationRequestByName(string name);
+
+
         Task<Organisation> Suspend(int id);
         Task<Organisation> Unsuspend(int id);
         Task<bool> AddFunder(int funderId, int biobankId);
@@ -71,5 +69,7 @@ namespace Biobanks.Services.Contracts
 
         Task<KeyValuePair<string, string>> GenerateNewApiClient(int biobankId, string clientName = null);
         Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId);
+
+        Task<ApplicationUser> GetLastActiveUser(int organisationId);
     }
 }

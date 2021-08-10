@@ -19,14 +19,13 @@ using Biobanks.Web.Filters;
 using Biobanks.Web.Models.Home;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Web.Models.Search;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Entities.Data.ReferenceData;
-using System.Data.Entity;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
@@ -97,7 +96,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Requests()
         {
             var bbRequests =
-                (await _organisationService.ListOpenBiobankRegisterRequestsAsync())
+                (await _organisationService.ListOpenRegistrationRequests())
                 .Select(x => new BiobankRequestModel
                 {
                     RequestId = x.OrganisationRegisterRequestId,
@@ -128,7 +127,8 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AcceptBiobankRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _biobankReadService.GetBiobankRegisterRequestAsync(requestId);
+            var request = await _organisationService.GetRegistrationRequest(requestId);
+            
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -213,7 +213,7 @@ namespace Biobanks.Web.Controllers
 
             //finally, update the request
             request.AcceptedDate = DateTime.Now;
-            await _organisationService.UpdateOrganisationRegisterRequestAsync(request);
+            await _organisationService.UpdateRegistrationRequest(request);
 
             //send back, with feedback
             SetTemporaryFeedbackMessage(
@@ -225,14 +225,36 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> BiobankActivity()
         {
-            var biobanks = _mapper.Map<List<BiobankActivityModel>>(await _organisationService.GetBiobanksActivityAsync());
-            return View(biobanks);
+            var organisations = await _organisationService.ListForActivity(includeSuspended: false);
+
+            var activity = organisations.Select(async x =>
+                {
+                    var lastActiveUser = await _organisationService.GetLastActiveUser(x.OrganisationId);
+
+                    return new BiobankActivityDTO
+                    {
+                        OrganisationId = x.OrganisationId,
+                        Name = x.Name,
+                        ContactEmail = x.ContactEmail,
+                        LastUpdated = x.LastUpdated,
+                        LastCapabilityUpdated = x.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                        LastCollectionUpdated = x.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                        LastAdminLoginEmail = lastActiveUser?.Email,
+                        LastAdminLoginTime = lastActiveUser?.LastLogin
+                    };
+                })
+                .Select(x => x.Result);
+
+            var model = _mapper.Map<List<BiobankActivityModel>>(activity);
+
+            return View(model);
         }
 
         public async Task<ActionResult> DeclineBiobankRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _biobankReadService.GetBiobankRegisterRequestAsync(requestId);
+            var request = await _organisationService.GetRegistrationRequest(requestId);
+
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -252,7 +274,7 @@ namespace Biobanks.Web.Controllers
 
             //update the request
             request.DeclinedDate = DateTime.Now;
-            await _organisationService.UpdateOrganisationRegisterRequestAsync(request);
+            await _organisationService.UpdateRegistrationRequest(request);
 
             //send the requester an email
             await _emailService.SendRegisterEntityDeclined(
@@ -642,7 +664,7 @@ namespace Biobanks.Web.Controllers
                 }
 
                 //remove biobank registration request to allow re-registration 
-                var biobankRequest = await _biobankReadService.GetBiobankRegisterRequestByOrganisationNameAsync(biobank.Name);
+                var biobankRequest = await _organisationService.GetRegistrationRequestByName(biobank.Name);
                 await _organisationService.RemoveRegistrationRequest(biobankRequest);
                 SetTemporaryFeedbackMessage($"{biobank.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
@@ -734,7 +756,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                await _organisationService.DeleteFunderByIdAsync(model.FunderId);
+                await _biobankWriteService.DeleteFunderByIdAsync(model.FunderId);
 
                 SetTemporaryFeedbackMessage($"{model.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
@@ -761,7 +783,7 @@ namespace Biobanks.Web.Controllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _organisationService.UpdateFunderAsync(new Funder
+            await _biobankWriteService.UpdateFunderAsync(new Funder
             {
                 Id = model.FunderId,
                 Value = model.Name
@@ -799,7 +821,7 @@ namespace Biobanks.Web.Controllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _organisationService.AddFunderAsync(new Funder
+            await _biobankWriteService.AddFunderAsync(new Funder
             {
                 Value = model.Name,
             });
@@ -866,7 +888,7 @@ namespace Biobanks.Web.Controllers
         {
             //get both network and biobank historical requests
             //and convert them to the viewmodel format
-            var bbRequests = (await _organisationService.ListHistoricalBiobankRegisterRequestsAsync())
+            var bbRequests = (await _organisationService.ListHistoricalRegistrationRequests())
                 .Select(x =>
 
                     Task.Run(async () =>
@@ -1605,7 +1627,7 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.RegistrationReasonModel
             {
-                RegistrationReasons = (await _organisationService.ListRegistrationReasonsAsync())
+                RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
                     .Select(x =>
 
                         Task.Run(async () => new ReadRegistrationReasonModel

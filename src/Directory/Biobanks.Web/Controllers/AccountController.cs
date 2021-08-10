@@ -160,7 +160,7 @@ namespace Biobanks.Web.Controllers
             //Biobank
 
             //get all accepted biobanks
-            var biobankRequests = await _organisationService.ListAcceptedBiobankRegisterRequestsAsync();
+            var biobankRequests = await _organisationService.ListAcceptedRegistrationRequests();
             var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == CurrentUser.Name && x.UserEmail == CurrentUser.Email);
             
             // if there is an unregistered biobank to finish registering, go there
@@ -581,12 +581,26 @@ namespace Biobanks.Web.Controllers
 
             // Get Biobank
             if (newBiobank)
-                biobanks = _organisationService.GetAcceptedBiobankRequestIdsAndNamesByUserId(userId); 
-            else 
-                biobanks = _organisationService.GetBiobankIdsAndNamesByUserId(userId);
+            {
+                var acceptedRequest = await _organisationService.ListAcceptedRegistrationRequests();
+
+                biobanks = acceptedRequest
+                    .Where(x => x.UserEmail == user.Email)
+                    .Select(x => new KeyValuePair<int, string>(x.OrganisationRegisterRequestId, x.OrganisationName))
+                    .ToList();
+            }
+            else
+            {
+                var organisations = await _organisationService.ListByUserId(userId);
+                
+                biobanks = organisations
+                    .Select(x => new KeyValuePair<int, string>(x.OrganisationId, x.Name))
+                    .ToList();
+            }
 
             // if they don't have access to any biobanks, 403
-            if (biobanks == null || biobanks.Count <= 0) return RedirectToAction("Forbidden");
+            if (biobanks == null || biobanks.Count <= 0) 
+                return RedirectToAction("Forbidden");
 
             var biobank = biobanks.FirstOrDefault(o => o.Key == id);
 

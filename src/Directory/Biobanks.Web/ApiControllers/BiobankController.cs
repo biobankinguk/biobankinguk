@@ -4,7 +4,6 @@ using AutoMapper;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
 using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -41,9 +40,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("IncludePublications/{id}/{value}")]
         public async Task IncludePublications(int id, bool value)
         {
-            var biobank = _mapper.Map<OrganisationDTO>(await _organisationService.Get(id));
-            biobank.ExcludePublications = !(value);
-            await _organisationService.Update(biobank);
+            var organisation = await _organisationService.Get(id);
+
+            organisation.ExcludePublications = !value;
+
+            await _organisationService.Update(organisation);
         }
     }
 }

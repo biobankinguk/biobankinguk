@@ -158,13 +158,13 @@ namespace Biobanks.Web.Controllers
             var biobankDto = _mapper.Map<OrganisationDTO>(model);
 
             var biobank = await _organisationService.Create(biobankDto);
-            await _organisationService.AddUserToBiobankAsync(User.Identity.GetUserId(), biobank.OrganisationId);
+            await _organisationService.AddUser(User.Identity.GetUserId(), biobank.OrganisationId);
 
             //update the request to show org created
-            var request = await _organisationService.GetBiobankRegisterRequestByUserEmailAsync(User.Identity.Name);
+            var request = await _organisationService.GetRegistrationRequestByEmail(User.Identity.Name);
             request.OrganisationCreatedDate = DateTime.Now;
             request.OrganisationExternalId = biobank.OrganisationExternalId;
-            await _organisationService.UpdateOrganisationRegisterRequestAsync(request);
+            await _organisationService.UpdateRegistrationRequest(request);
 
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
@@ -355,7 +355,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationRegistrationReasonModel>> GetAllRegistrationReasonsAsync()
         {
-            var allRegistrationReasons = await _organisationService.ListRegistrationReasonsAsync();
+            var allRegistrationReasons = await _biobankReadService.ListRegistrationReasonsAsync();
 
             return allRegistrationReasons.Select(regReason => new OrganisationRegistrationReasonModel
             {
@@ -369,7 +369,7 @@ namespace Biobanks.Web.Controllers
         private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync()
         {
             //the biobank doesn't exist yet, but a request should, so we can get the name
-            var request = await _biobankReadService.GetBiobankRegisterRequestAsync(SessionHelper.GetBiobankId(Session));
+            var request = await _organisationService.GetRegistrationRequest(SessionHelper.GetBiobankId(Session));
 
             //validate that the request is accepted
             if (request.AcceptedDate == null) return null;
@@ -766,7 +766,7 @@ namespace Biobanks.Web.Controllers
                 if (useFreeText)
                 {
                     // Add Funder to Database
-                    await _organisationService.AddFunderAsync(new Funder
+                    await _biobankWriteService.AddFunderAsync(new Funder
                     {
                         Value = model.FunderName
                     });

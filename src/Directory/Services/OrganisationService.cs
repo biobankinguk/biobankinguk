@@ -1,7 +1,6 @@
 ﻿using Biobanks.Directory.Data;
 using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared;
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Extensions;
@@ -11,19 +10,24 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Migrations.Model;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Identity.Contracts;
+using Microsoft.AspNet.Identity;
 
 namespace Biobanks.Directory.Services
 {
     public class OrganisationService : IOrganisationService
     {
+        private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly BiobanksDbContext _db;
 
-        public OrganisationService(BiobanksDbContext db)
+        public OrganisationService(
+            IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
+            BiobanksDbContext db)
         {
+            _userManager = userManager;
             _db = db;
         }
 
@@ -35,6 +39,25 @@ namespace Biobanks.Directory.Services
         public async Task<IEnumerable<Organisation>> List(string name = "", bool includeSuspended = true)
             => await _db.Organisations
                 .Where(x => x.Name.Contains(name) && (includeSuspended || x.IsSuspended == false))
+                .ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<Organisation>> ListForActivity(string name = "", bool includeSuspended = true)
+            => await _db.Organisations
+                .AsNoTracking()
+                .Include(x => x.Collections)
+                .Include(x => x.DiagnosisCapabilities)
+                .Include(x => x.OrganisationUsers)
+                .Where(x => x.Name.Contains(name) && (includeSuspended || x.IsSuspended == false))
+                .ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<Organisation>> ListByUserId(string userId)
+            => await _db.OrganisationUsers
+                .AsNoTracking()
+                .Include(x => x.Organisation)
+                .Where(x => x.OrganisationUserId == userId)
+                .Select(x => x.Organisation)
                 .ToListAsync();
 
         /// <inheritdoc/>
@@ -259,21 +282,93 @@ namespace Biobanks.Directory.Services
         public async Task<bool> IsSuspended(int organisationId)
             => await _db.Organisations.AnyAsync(x => x.OrganisationId == organisationId && x.IsSuspended);
 
+        /// <inheritdoc/>
+        public async Task<bool> IsSuspendedByCapability(int capabilityId)
+            => await _db.DiagnosisCapabilities
+                .Include(x => x.Organisation)
+                .AnyAsync(x => x.DiagnosisCapabilityId == capabilityId && x.Organisation.IsSuspended);
+
+        /// <inheritdoc/>
+        public async Task<bool> IsSuspendedByCollection(int collectonId)
+            => await _db.Collections
+                .Include(x => x.Organisation)
+                .AnyAsync(x => x.CollectionId == collectonId && x.Organisation.IsSuspended);
+
+        /// <inheritdoc/>
+        public async Task<bool> IsSuspendedBySampleSet(int sampleSetId)
+            => await _db.SampleSets
+                .Include(x => x.Collection)
+                .Include(x => x.Collection.Organisation)
+                .AnyAsync(x => x.Id == sampleSetId && x.Collection.Organisation.IsSuspended);
+
         // TODO: Figure out a better name
         /// <inheritdoc/>
         public async Task<bool> IsApiClient(int organisationId)
             => await _db.ApiClients.AnyAsync(x => x.Organisations.Any(y => y.OrganisationId == organisationId));
 
         /// <inheritdoc/>
-        public async Task<bool> RegistrationRequestExists(string name)
+        public async Task<IEnumerable<OrganisationRegisterRequest>> ListOpenRegistrationRequests()
         {
             var type = await GetBiobankOrganisationTypeAsync();
 
             return await _db.OrganisationRegisterRequests
-                .AnyAsync(x =>
+                .Where(x =>
                     x.OrganisationTypeId == type.OrganisationTypeId &&
-                    x.OrganisationName == name && 
-                    x.DeclinedDate == null);
+                    x.AcceptedDate == null &&
+                    x.DeclinedDate == null && 
+                    x.OrganisationCreatedDate == null)
+                .ToListAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequests()
+        {
+            var type = await GetBiobankOrganisationTypeAsync();
+
+            return await _db.OrganisationRegisterRequests
+                .AsNoTracking()
+                .Where(x =>
+                    x.OrganisationTypeId == type.OrganisationTypeId &&
+                    x.AcceptedDate != null &&
+                    x.DeclinedDate == null &&
+                    x.OrganisationCreatedDate == null)
+                .ToListAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalRegistrationRequests()
+        {
+            var type = await GetBiobankOrganisationTypeAsync();
+
+            return await _db.OrganisationRegisterRequests
+                .Where(x =>
+                    x.OrganisationTypeId == type.OrganisationTypeId &&
+                    x.AcceptedDate != null &&
+                    x.DeclinedDate != null)
+                .ToListAsync();
+        }
+       
+        /// <inheritdoc/>
+        public async Task<OrganisationRegisterRequest> GetRegistrationRequest(int requestId)
+            => await _db.OrganisationRegisterRequests.FirstOrDefaultAsync(x => x.OrganisationRegisterRequestId == requestId);
+
+        /// <inheritdoc/>
+        public async Task<OrganisationRegisterRequest> GetRegistrationRequestByName(string name)
+        {
+            var type = await GetBiobankOrganisationTypeAsync();
+
+            return await _db.OrganisationRegisterRequests
+                .FirstOrDefaultAsync(x => x.OrganisationName == name && x.OrganisationTypeId == type.OrganisationTypeId);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OrganisationRegisterRequest> GetRegistrationRequestByEmail(string email)
+        {
+            var type = await GetBiobankOrganisationTypeAsync();
+
+            return await _db.OrganisationRegisterRequests
+                .Where(x => x.OrganisationTypeId == type.OrganisationTypeId)
+                .FirstOrDefaultAsync(x => x.UserEmail == email && x.DeclinedDate == null && x.OrganisationCreatedDate == null);
         }
 
         /// <inheritdoc/>
@@ -287,6 +382,18 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
+        public async Task<OrganisationRegisterRequest> UpdateRegistrationRequest(OrganisationRegisterRequest request)
+        {
+            var currentRequest = await _db.OrganisationRegisterRequests.FindAsync(request.OrganisationRegisterRequestId);
+
+            //TODO: Figure Out What Needs Mapping Over
+
+            await _db.SaveChangesAsync();
+
+            return currentRequest;
+        }
+
+        /// <inheritdoc/>
         public async Task RemoveRegistrationRequest(OrganisationRegisterRequest request)
         {
             _db.OrganisationRegisterRequests.Attach(request);
@@ -294,6 +401,25 @@ namespace Biobanks.Directory.Services
 
             await _db.SaveChangesAsync();
         }
+
+        /// <inheritdoc/>
+        public async Task<bool> RegistrationRequestExists(string name)
+        {
+            var type = await GetBiobankOrganisationTypeAsync();
+
+            return await _db.OrganisationRegisterRequests
+                .AnyAsync(x =>
+                    x.OrganisationTypeId == type.OrganisationTypeId &&
+                    x.OrganisationName == name &&
+                    x.DeclinedDate == null);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId)
+            => await _db.OrganisationRegistrationReasons
+                .Include(x => x.RegistrationReason)
+                .Where(x => x.OrganisationId == organisationId)
+                .ToListAsync();
 
         /// <inheritdoc/>
         public async Task<KeyValuePair<string, string>> GenerateNewApiClient(int organisationId, string clientName = null)
@@ -330,67 +456,16 @@ namespace Biobanks.Directory.Services
             return new KeyValuePair<string, string>(credentials.ClientId, newSecret);
         }
 
-
-
-        public List<KeyValuePair<int, string>> GetAcceptedBiobankRequestIdsAndNamesByUserId(string userId)
+        /// <inheritdoc/>
+        public async Task<ApplicationUser> GetLastActiveUser(int organisationId)
         {
-            throw new NotImplementedException();
-        }
+            var identityUsers = _userManager.Users.Where(x => x.LastLogin.HasValue);
+            var organisationUsers = _db.OrganisationUsers.Where(x => x.OrganisationId == organisationId);
 
-        public List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByUserEmailAsync(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public Task<bool> IsCapabilityBiobankSuspendedAsync(int capabilityId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> IsCollectionBiobankSuspendedAsync(int collectonId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> IsSampleSetBiobankSuspendedAsync(int sampleSetId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<OrganisationRegisterRequest>> ListOpenBiobankRegisterRequestsAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request)
-        {
-            throw new NotImplementedException();
+            return await identityUsers
+                .Join(organisationUsers, iu => iu.Id, ou => ou.OrganisationUserId, (iu, ou) => iu)
+                .OrderByDescending(x => x.LastLogin)
+                .FirstOrDefaultAsync();
         }
     }
 }

@@ -132,8 +132,6 @@ namespace Biobanks.Services.Contracts
         Task<County> UpdateCountyAsync(County county);
         Task DeleteCountyAsync(County county);
 
-        Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync();
-
         Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year);
         Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);

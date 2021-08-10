@@ -41,6 +41,7 @@ namespace Biobanks.Services
         public async Task SetUserClaimsAsync(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
+            var userRoles = await _userManager.GetRolesAsync(user.Id);
 
             var claims = new List<Claim>
             {
@@ -50,18 +51,26 @@ namespace Biobanks.Services
 
             // If they're a Biobank Admin then populate the claim for the ID of their Biobank.
             // Additionally, add claims for accepted biobank requests
-            if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.BiobankAdmin.ToString()))
+            if (userRoles.Any(x => x == Role.BiobankAdmin.ToString()))
             {
-                var biobanks = _organisationService.GetBiobankIdsAndNamesByUserId(user.Id);
-                claims.AddRange(biobanks.Select(biobank => new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(biobank))));
+                var organisations = await _organisationService.ListByUserId(user.Id);
+                var organisationsRequests = await _organisationService.ListAcceptedRegistrationRequests();
                 
-                var biobankRequests = _organisationService.GetAcceptedBiobankRequestIdsAndNamesByUserId(user.Id);
-                claims.AddRange(biobankRequests.Select(biobankRequest => new Claim(CustomClaimType.BiobankRequest, JsonConvert.SerializeObject(biobankRequest))));
+                claims.AddRange(
+                    organisations
+                        .Select(x => new KeyValuePair<int, string>(x.OrganisationId, x.Name))
+                        .Select(x => new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(x))));
+                
+                claims.AddRange(
+                    organisationsRequests
+                        .Where(x => x.UserEmail == user.Email)
+                        .Select(x => new KeyValuePair<int, string>(x.OrganisationRegisterRequestId, x.OrganisationName))
+                        .Select(x => new Claim(CustomClaimType.BiobankRequest, JsonConvert.SerializeObject(x))));
             }
 
             // If they're a Network Admin then populate the claim for the ID of their Network.
             // Additionally, add claims for accepted network requests
-            if ((await _userManager.GetRolesAsync(user.Id)).Any(x => x == Role.NetworkAdmin.ToString()))
+            if (userRoles.Any(x => x == Role.NetworkAdmin.ToString()))
             {
                 var networks = _networkService.GetNetworkIdsAndNamesByUserId(user.Id);
                 claims.AddRange(networks.Select(network => new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(network))));

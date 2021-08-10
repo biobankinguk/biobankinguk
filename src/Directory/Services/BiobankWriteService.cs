@@ -5,7 +5,6 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data.Repositories;
-using Biobanks.Directory.Data.Transforms.Url;
 using System.IO;
 using AutoMapper;
 using Biobanks.Entities.Data;
@@ -13,9 +12,6 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
-using Biobanks.Entities.Shared;
-using Biobanks.IdentityModel.Helpers;
-using Biobanks.IdentityModel.Extensions;
 using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
@@ -264,7 +260,7 @@ namespace Biobanks.Services
 
             await _collectionRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
+            if (!await _organisationService.IsSuspendedByCollection(collection.CollectionId))
                 await _indexService.UpdateCollectionDetails(collection.CollectionId);
         }
 
@@ -296,7 +292,7 @@ namespace Biobanks.Services
             await _collectionRepository.SaveChangesAsync();
 
             // Index New SampleSet
-            if (!await _organisationService.IsCollectionBiobankSuspendedAsync(sampleSet.CollectionId))
+            if (!await _organisationService.IsSuspendedByCollection(sampleSet.CollectionId))
                 await _indexService.IndexSampleSet(sampleSet.Id);
         }
 
@@ -360,7 +356,7 @@ namespace Biobanks.Services
             await _materialDetailRepository.SaveChangesAsync();
 
             // Update Search Index
-            if (!await _organisationService.IsCollectionBiobankSuspendedAsync(existingSampleSet.CollectionId))
+            if (!await _organisationService.IsSuspendedByCollection(existingSampleSet.CollectionId))
             {
                 await _indexService.UpdateSampleSetDetails(sampleSet.Id);
             }
@@ -369,7 +365,7 @@ namespace Biobanks.Services
         public async Task DeleteSampleSetAsync(int id)
         {
             //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
-            var suspended = await _organisationService.IsSampleSetBiobankSuspendedAsync(id);
+            var suspended = await _organisationService.IsSuspendedBySampleSet(id);
 
             //delete materialdetails to avoid orphaned data or integrity errors
             await _materialDetailRepository.DeleteWhereAsync(x => x.SampleSetId == id);
@@ -401,7 +397,7 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsCapabilityBiobankSuspendedAsync(capability.DiagnosisCapabilityId))
+            if (!await _organisationService.IsSuspendedByCapability(capability.DiagnosisCapabilityId))
                 await _indexService.IndexCapability(capability.DiagnosisCapabilityId);
         }
 
@@ -425,7 +421,7 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsCapabilityBiobankSuspendedAsync(existingCapability.DiagnosisCapabilityId))
+            if (!await _organisationService.IsSuspendedByCapability(existingCapability.DiagnosisCapabilityId))
                 await _indexService.UpdateCapabilityDetails(existingCapability.DiagnosisCapabilityId);
         }
 
@@ -435,7 +431,7 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsCapabilityBiobankSuspendedAsync(id))
+            if (!await _organisationService.IsSuspendedByCapability(id))
                 _indexService.DeleteCapability(id);
         }
 
@@ -597,17 +593,6 @@ namespace Biobanks.Services
 
             if (!await _organisationService.IsSuspended(biobankId))
                 await _indexService.JoinOrLeaveNetwork(biobankId);
-        }
-
-        public async Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request)
-        {
-            var trackedRequest = await _organisationRegisterRequestRepository
-                .GetByIdAsync(request.OrganisationRegisterRequestId);
-            _mapper.Map(request, trackedRequest);
-
-            await _organisationRegisterRequestRepository.SaveChangesAsync();
-
-            return request;
         }
 
         public async Task<NetworkRegisterRequest> UpdateNetworkRegisterRequestAsync(NetworkRegisterRequest request)

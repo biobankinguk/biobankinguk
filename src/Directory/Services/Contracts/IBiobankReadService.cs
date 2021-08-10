@@ -172,9 +172,6 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<ServiceOffering>> ListServiceOfferingsAsync();
 
         Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
-
-        Task<OrganisationRegisterRequest> GetBiobankRegisterRequestAsync(int requestId);
-        Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByOrganisationNameAsync(string name);
         
         Task<bool> IsMaterialTypeInUse(int id);
         Task<bool> IsAssociatedDataTypeInUse(int id);
@@ -223,7 +220,9 @@ namespace Biobanks.Services.Contracts
         Task<Funder> GetFunderByIdAsync(int id);
 
         Task<IEnumerable<AnnualStatisticGroup>> GetAnnualStatisticGroupsAsync();
-        
+
+        Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync();
+
         Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId);
         Task<IEnumerable<Publication>> GetOrganisationPublicationsAsync(Organisation organisation);
         Task<IEnumerable<Publication>> GetAcceptedOrganisationPublicationsAsync(Organisation organisation);
