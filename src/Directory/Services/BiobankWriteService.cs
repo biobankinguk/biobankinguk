@@ -55,7 +55,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
-        private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
+        private readonly IGenericEFRepository<Capability> _capabilityRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
 
@@ -114,7 +114,7 @@ namespace Biobanks.Services
             IGenericEFRepository<Country> countryRepository,
             IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Collection> collectionRepository,
-            IGenericEFRepository<DiagnosisCapability> capabilityRepository,
+            IGenericEFRepository<Capability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<Network> networkRepository,
@@ -310,7 +310,7 @@ namespace Biobanks.Services
         {
             var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
-            var capability = new DiagnosisCapability
+            var capability = new Capability
             {
                 OrganisationId = capabilityDTO.OrganisationId,
                 OntologyTermId = ontologyTerm.Id,
@@ -324,14 +324,14 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsCapabilityBiobankSuspendedAsync(capability.DiagnosisCapabilityId))
-                await _indexService.IndexCapability(capability.DiagnosisCapabilityId);
+            if (!await _biobankReadService.IsCapabilityBiobankSuspendedAsync(capability.CapabilityId))
+                await _indexService.IndexCapability(capability.CapabilityId);
         }
 
         public async Task UpdateCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
             var existingCapability = (await _capabilityRepository.ListAsync(true,
-                x => x.DiagnosisCapabilityId == capabilityDTO.Id,
+                x => x.CapabilityId == capabilityDTO.Id,
                 null,
                 x => x.AssociatedData)).First();
 
@@ -348,13 +348,13 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _biobankReadService.IsCapabilityBiobankSuspendedAsync(existingCapability.DiagnosisCapabilityId))
-                await _indexService.UpdateCapabilityDetails(existingCapability.DiagnosisCapabilityId);
+            if (!await _biobankReadService.IsCapabilityBiobankSuspendedAsync(existingCapability.CapabilityId))
+                await _indexService.UpdateCapabilityDetails(existingCapability.CapabilityId);
         }
 
         public async Task DeleteCapabilityAsync(int id)
         {
-            await _capabilityRepository.DeleteWhereAsync(x => x.DiagnosisCapabilityId == id);
+            await _capabilityRepository.DeleteWhereAsync(x => x.CapabilityId == id);
 
             await _capabilityRepository.SaveChangesAsync();
 

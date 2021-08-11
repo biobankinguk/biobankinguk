@@ -4,14 +4,16 @@ using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biobanks.Data.Migrations
 {
     [DbContext(typeof(BiobanksDbContext))]
-    partial class BiobanksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210811110918_Capabilities")]
+    partial class Capabilities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -727,39 +729,6 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("Blobs");
                 });
 
-            modelBuilder.Entity("Biobanks.Entities.Data.Capability", b =>
-                {
-                    b.Property<int>("CapabilityId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("AnnualDonorExpectation")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OntologyTermId")
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SampleCollectionModeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CapabilityId");
-
-                    b.HasIndex("OntologyTermId");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.HasIndex("SampleCollectionModeId");
-
-                    b.ToTable("Capabilities");
-                });
-
             modelBuilder.Entity("Biobanks.Entities.Data.CapabilityAssociatedData", b =>
                 {
                     b.Property<int>("DiagnosisCapabilityId")
@@ -905,6 +874,40 @@ namespace Biobanks.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ContentPages");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.DiagnosisCapability", b =>
+                {
+                    b.Property<int>("DiagnosisCapabilityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("CapabilityId")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AnnualDonorExpectation")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OntologyTermId")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SampleCollectionModeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DiagnosisCapabilityId");
+
+                    b.HasIndex("OntologyTermId");
+
+                    b.HasIndex("OrganisationId");
+
+                    b.HasIndex("SampleCollectionModeId");
+
+                    b.ToTable("Capabilities");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.MaterialDetail", b =>
@@ -2369,31 +2372,6 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("Biobanks.Entities.Data.Capability", b =>
-                {
-                    b.HasOne("Biobanks.Entities.Shared.ReferenceData.OntologyTerm", "OntologyTerm")
-                        .WithMany()
-                        .HasForeignKey("OntologyTermId");
-
-                    b.HasOne("Biobanks.Entities.Data.Organisation", "Organisation")
-                        .WithMany("DiagnosisCapabilities")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Biobanks.Entities.Data.ReferenceData.SampleCollectionMode", "SampleCollectionMode")
-                        .WithMany()
-                        .HasForeignKey("SampleCollectionModeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OntologyTerm");
-
-                    b.Navigation("Organisation");
-
-                    b.Navigation("SampleCollectionMode");
-                });
-
             modelBuilder.Entity("Biobanks.Entities.Data.CapabilityAssociatedData", b =>
                 {
                     b.HasOne("Biobanks.Entities.Data.ReferenceData.AssociatedDataProcurementTimeframe", "AssociatedDataProcurementTimeframe")
@@ -2406,7 +2384,7 @@ namespace Biobanks.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biobanks.Entities.Data.Capability", "DiagnosisCapability")
+                    b.HasOne("Biobanks.Entities.Data.DiagnosisCapability", "DiagnosisCapability")
                         .WithMany("AssociatedData")
                         .HasForeignKey("DiagnosisCapabilityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2481,6 +2459,31 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("AssociatedDataType");
 
                     b.Navigation("Collection");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.DiagnosisCapability", b =>
+                {
+                    b.HasOne("Biobanks.Entities.Shared.ReferenceData.OntologyTerm", "OntologyTerm")
+                        .WithMany()
+                        .HasForeignKey("OntologyTermId");
+
+                    b.HasOne("Biobanks.Entities.Data.Organisation", "Organisation")
+                        .WithMany("DiagnosisCapabilities")
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Biobanks.Entities.Data.ReferenceData.SampleCollectionMode", "SampleCollectionMode")
+                        .WithMany()
+                        .HasForeignKey("SampleCollectionModeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OntologyTerm");
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("SampleCollectionMode");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.MaterialDetail", b =>
@@ -2856,16 +2859,16 @@ namespace Biobanks.Data.Migrations
                     b.Navigation("Errors");
                 });
 
-            modelBuilder.Entity("Biobanks.Entities.Data.Capability", b =>
-                {
-                    b.Navigation("AssociatedData");
-                });
-
             modelBuilder.Entity("Biobanks.Entities.Data.Collection", b =>
                 {
                     b.Navigation("AssociatedData");
 
                     b.Navigation("SampleSets");
+                });
+
+            modelBuilder.Entity("Biobanks.Entities.Data.DiagnosisCapability", b =>
+                {
+                    b.Navigation("AssociatedData");
                 });
 
             modelBuilder.Entity("Biobanks.Entities.Data.Network", b =>

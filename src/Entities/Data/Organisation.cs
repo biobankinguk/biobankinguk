@@ -62,7 +62,7 @@ namespace Biobanks.Entities.Data
 
         //1 -> M Navigation properties?
         public virtual ICollection<OrganisationNetwork> OrganisationNetworks { get; set; }
-        public virtual ICollection<DiagnosisCapability> DiagnosisCapabilities { get; set; }
+        public virtual ICollection<Capability> Capabilities { get; set; }
         public virtual ICollection<Collection> Collections { get; set; }
         public virtual ICollection<OrganisationServiceOffering> OrganisationServiceOfferings { get; set; }
         public virtual ICollection<OrganisationUser> OrganisationUsers { get; set; }

@@ -29,7 +29,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionAssociatedData> _collectionAssociatedDataRepository;
         private readonly IGenericEFRepository<CapabilityAssociatedData> _capabilityAssociatedDataRepository;
      
-        private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
+        private readonly IGenericEFRepository<Capability> _capabilityRepository;
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
@@ -96,7 +96,7 @@ namespace Biobanks.Services
             ILogoStorageProvider logoStorageProvider,
 
             IGenericEFRepository<Collection> collectionRepository,
-            IGenericEFRepository<DiagnosisCapability> capabilityRepository,
+            IGenericEFRepository<Capability> capabilityRepository,
             IGenericEFRepository<CapabilityAssociatedData> capabilityAssociatedDataRepository,
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
@@ -326,7 +326,7 @@ namespace Biobanks.Services
                     b => !b.IsSuspended,
                     null,
                     b => b.Collections,
-                    b => b.DiagnosisCapabilities,
+                    b => b.Capabilities,
                     b => b.OrganisationUsers
                 );
 
@@ -343,7 +343,7 @@ namespace Biobanks.Services
                             Name = organisation.Name,
                             ContactEmail = organisation.ContactEmail,
                             LastUpdated = organisation.LastUpdated,
-                            LastCapabilityUpdated = organisation.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                            LastCapabilityUpdated = organisation.Capabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
                             LastCollectionUpdated = organisation.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
                             LastAdminLoginEmail = lastLoginUser?.Email,
                             LastAdminLoginTime = lastLoginUser?.LastLogin
@@ -369,7 +369,7 @@ namespace Biobanks.Services
                 null,
                 b => b.Collections,
                 b => b.Collections.Select(c => c.SampleSets),
-                b => b.DiagnosisCapabilities);
+                b => b.Capabilities);
         }
 
         private async Task<IEnumerable<int>> GetBiobankIdsByNetworkIdAsync(int networkId)
@@ -458,11 +458,11 @@ namespace Biobanks.Services
                 false,
                 x => x.OrganisationExternalId == externalId && x.OrganisationTypeId == type.OrganisationTypeId,
                 null,
-                b => b.DiagnosisCapabilities,
-                b => b.DiagnosisCapabilities.Select(c => c.SampleCollectionMode),
-                b => b.DiagnosisCapabilities.Select(c => c.AssociatedData),
-                b => b.DiagnosisCapabilities.Select(c => c.AssociatedData.Select(ad => ad.AssociatedDataType)),
-                b => b.DiagnosisCapabilities.Select(c => c.AssociatedData.Select(ad => ad.AssociatedDataProcurementTimeframe)),
+                b => b.Capabilities,
+                b => b.Capabilities.Select(c => c.SampleCollectionMode),
+                b => b.Capabilities.Select(c => c.AssociatedData),
+                b => b.Capabilities.Select(c => c.AssociatedData.Select(ad => ad.AssociatedDataType)),
+                b => b.Capabilities.Select(c => c.AssociatedData.Select(ad => ad.AssociatedDataProcurementTimeframe)),
                 b => b.OrganisationServiceOfferings.Select(o => o.ServiceOffering)
                 )).FirstOrDefault();
         }
@@ -525,7 +525,7 @@ namespace Biobanks.Services
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
 
         public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
-            => (await _capabilityRepository.ListAsync()).Select(x => x.DiagnosisCapabilityId);
+            => (await _capabilityRepository.ListAsync()).Select(x => x.CapabilityId);
 
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
@@ -558,10 +558,10 @@ namespace Biobanks.Services
             return sampleSets;
         }
 
-        public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
+        public async Task<IEnumerable<Capability>> GetCapabilitiesByIdsForIndexingAsync(
                 IEnumerable<int> capabilityIds)
             => await _capabilityRepository.ListAsync(false,
-                x => capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended,
+                x => capabilityIds.Contains(x.CapabilityId) && !x.Organisation.IsSuspended,
                 null,
                 x => x.Organisation,
                 x => x.Organisation.OrganisationNetworks.Select(on => on.Network),
@@ -596,10 +596,10 @@ namespace Biobanks.Services
                 x => x.Collection.Organisation.County
             );
 
-        public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(
+        public async Task<IEnumerable<Capability>> GetCapabilitiesByIdsForIndexDeletionAsync(
                 IEnumerable<int> capabilityIds)
             => await _capabilityRepository.ListAsync(false,
-                x => capabilityIds.Contains(x.DiagnosisCapabilityId),
+                x => capabilityIds.Contains(x.CapabilityId),
                 null,
                 x => x.Organisation,
                 x => x.Organisation.OrganisationNetworks.Select(on => on.Network),
@@ -611,7 +611,7 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
             => (await _capabilityRepository.ListAsync(false,
-                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.DiagnosisCapabilityId);
+                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.CapabilityId);
 
         public async Task<int> GetIndexableSampleSetCountAsync()
             => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
@@ -694,7 +694,7 @@ namespace Biobanks.Services
                 null,
                 b => b.Collections,
                 b => b.Collections.Select(c => c.SampleSets),
-                b => b.DiagnosisCapabilities,
+                b => b.Capabilities,
                 b => b.OrganisationServiceOfferings.Select(o => o.ServiceOffering)
                 )).FirstOrDefault();
         }
@@ -789,18 +789,18 @@ namespace Biobanks.Services
                 x => x.Collection.OrganisationId == biobankId &&
                      x.Id == sampleSetId).Any();
 
-        public async Task<DiagnosisCapability> GetCapabilityByIdAsync(int id)
+        public async Task<Capability> GetCapabilityByIdAsync(int id)
             => (await _capabilityRepository.ListAsync(false,
-                x => x.DiagnosisCapabilityId == id,
+                x => x.CapabilityId == id,
                 null,
                 x => x.OntologyTerm,
                 x => x.AssociatedData,
                 x => x.SampleCollectionMode
             )).FirstOrDefault();
 
-        public async Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id)
+        public async Task<Capability> GetCapabilityByIdForIndexingAsync(int id)
             => (await _capabilityRepository.ListAsync(false,
-                x => x.DiagnosisCapabilityId == id,
+                x => x.CapabilityId == id,
                 null,
                 x => x.Organisation,
                 x => x.Organisation.OrganisationNetworks.Select(on => @on.Network),
@@ -812,7 +812,7 @@ namespace Biobanks.Services
                 x => x.SampleCollectionMode
             )).FirstOrDefault();
 
-        public async Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId)
+        public async Task<IEnumerable<Capability>> ListCapabilitiesAsync(int organisationId)
         {
             var capabilities = await _capabilityRepository.ListAsync(
                 false,
@@ -828,7 +828,7 @@ namespace Biobanks.Services
             => _capabilityRepository.List(
                 false,
                 x => x.OrganisationId == biobankId &&
-                     x.DiagnosisCapabilityId == capabilityId).Any();
+                     x.CapabilityId == capabilityId).Any();
 
         public IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection)
         {

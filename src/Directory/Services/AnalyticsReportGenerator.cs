@@ -50,7 +50,7 @@ namespace Biobanks.Services
             //can split into two functions that returns status code and status message
             var bb = await _biobankReadService.GetBiobankByExternalIdAsync(biobankId);
             int collectionCount = bb.Collections.Count;
-            int capabilitiesCount = bb.DiagnosisCapabilities.Count;
+            int capabilitiesCount = bb.Capabilities.Count;
 
             bool missingSampleSet = false;
             ProfileStatusDTO profileStatus = new ProfileStatusDTO();

@@ -9,7 +9,7 @@ namespace Biobanks.Services.Extensions
 {
     public static class DiagnosisCapabilityExtensions
     {
-        public static CapabilityDocument ToCapabilitySearchDocument(this DiagnosisCapability capability, IList<DonorCount> donorCounts)
+        public static CapabilityDocument ToCapabilitySearchDocument(this Capability capability, IList<DonorCount> donorCounts)
         {
             //We'll need these
             var donorExpectation = GetAnnualDonorExpectationRange(
@@ -18,7 +18,7 @@ namespace Biobanks.Services.Extensions
 
             return new CapabilityDocument
             {
-                Id = capability.DiagnosisCapabilityId,
+                Id = capability.CapabilityId,
                 OntologyTerm = capability.OntologyTerm.Value,
                 OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(capability.OntologyTerm.OtherTerms),
                 BiobankId = capability.OrganisationId,

@@ -31,10 +31,10 @@ namespace Biobanks.Services.Contracts
         bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId);
         bool CanThisBiobankAdministerThisSampleSet(int biobankId, int sampleSetId);
 
-        Task<DiagnosisCapability> GetCapabilityByIdAsync(int id);
-        Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id);
+        Task<Capability> GetCapabilityByIdAsync(int id);
+        Task<Capability> GetCapabilityByIdForIndexingAsync(int id);
         Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm);
-        Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId);
+        Task<IEnumerable<Capability>> ListCapabilitiesAsync(int organisationId);
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
@@ -214,7 +214,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();
 
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
-        Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(IEnumerable<int> capabilityIds);
+        Task<IEnumerable<Capability>> GetCapabilitiesByIdsForIndexingAsync(IEnumerable<int> capabilityIds);
         Task<bool> BiobankRegisterRequestExists(string name);
         Task<bool> NetworkRegisterRequestExists(string name);
 
@@ -230,7 +230,7 @@ namespace Biobanks.Services.Contracts
         Task<int> GetCapabilityCountAsync();
 
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(IEnumerable<int> sampleSetIds);
-        Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(IEnumerable<int> capabilityIds);
+        Task<IEnumerable<Capability>> GetCapabilitiesByIdsForIndexDeletionAsync(IEnumerable<int> capabilityIds);
         Task<int> GetIndexableSampleSetCountAsync();
         Task<int> GetIndexableCapabilityCountAsync();
         Task<int> GetSuspendedSampleSetCountAsync();

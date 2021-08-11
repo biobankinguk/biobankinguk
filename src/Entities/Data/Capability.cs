@@ -2,12 +2,13 @@ using Biobanks.Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
 using Biobanks.Entities.Data.ReferenceData;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Biobanks.Entities.Data
 {
-    public class DiagnosisCapability
+    public class Capability
     {
-        public int DiagnosisCapabilityId { get; set; }
+        public int CapabilityId { get; set; }
 
         public int OrganisationId { get; set; }
         public virtual Organisation Organisation { get; set; }

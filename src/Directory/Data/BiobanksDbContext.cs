@@ -29,7 +29,7 @@ namespace Biobanks.Directory.Data
         public DbSet<Blob> Blobs { get; set; }
 
         //Capability details
-        public DbSet<DiagnosisCapability> DiagnosisCapabilities { get; set; }
+        public DbSet<Capability> Capabilities { get; set; }
         public DbSet<SampleCollectionMode> SampleCollectionModes { get; set; }
 
         //Shared capability / collection details

@@ -92,7 +92,7 @@ namespace Biobanks.Web.Controllers
                 CapabilityOntologyTerms = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
                     x => new CapabilityModel
                     {
-                        Id = x.DiagnosisCapabilityId,
+                        Id = x.CapabilityId,
                         OntologyTerm = x.OntologyTerm.Value,
                         Protocols = x.SampleCollectionMode.Value
                     })

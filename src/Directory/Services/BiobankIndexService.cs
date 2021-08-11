@@ -139,7 +139,7 @@ namespace Biobanks.Services
 
             // Queue up a job to add the sample set to the search index.
             BackgroundJob.Enqueue(() => _indexProvider.IndexCapabilitySearchDocument(
-                createdCapability.DiagnosisCapabilityId,
+                createdCapability.CapabilityId,
                 capabilitySearchDocument));
         }
 
@@ -206,7 +206,7 @@ namespace Biobanks.Services
 
             // Queue up a job to update the capability in the search index.
             BackgroundJob.Enqueue(() => _indexProvider.UpdateCapabilitySearchDocument(
-                updatedCapability.DiagnosisCapabilityId,
+                updatedCapability.CapabilityId,
                 new PartialCapability
                 {
                     OntologyTerm = updatedCapability.OntologyTerm.Value,
@@ -297,12 +297,12 @@ namespace Biobanks.Services
             }
 
             // Update all capability search documents that are relevant to this biobank.
-            foreach (var capability in biobank.DiagnosisCapabilities)
+            foreach (var capability in biobank.Capabilities)
             {
                 // Queue up a job to update the search document.
                 BackgroundJob.Enqueue(() =>
                     _indexProvider.UpdateCapabilitySearchDocument(
-                        capability.DiagnosisCapabilityId,
+                        capability.CapabilityId,
                         partialBiobank));
             }
         }
@@ -334,12 +334,12 @@ namespace Biobanks.Services
                 }
 
                 // Update all search documents that are relevant to this biobank.
-                foreach (var capability in biobank.DiagnosisCapabilities)
+                foreach (var capability in biobank.Capabilities)
                 {
                     // Queue up a job to update the search document.
                     BackgroundJob.Enqueue(() =>
                         _indexProvider.UpdateCapabilitySearchDocument(
-                            capability.DiagnosisCapabilityId,
+                            capability.CapabilityId,
                             new PartialNetworks
                             {
                                 Networks = networkDocuments
@@ -391,8 +391,8 @@ namespace Biobanks.Services
             //Index capabilities
             await
                 BulkIndexCapabilities(
-                    biobank.DiagnosisCapabilities
-                        .Select(x => x.DiagnosisCapabilityId)
+                    biobank.Capabilities
+                        .Select(x => x.CapabilityId)
                         .ToList());
         }
 
@@ -473,8 +473,8 @@ namespace Biobanks.Services
 
             //Remove capabilities from the index
             BulkDeleteCapabilities(
-                    biobank.DiagnosisCapabilities
-                        .Select(x => x.DiagnosisCapabilityId)
+                    biobank.Capabilities
+                        .Select(x => x.CapabilityId)
                         .ToList());
         }
 

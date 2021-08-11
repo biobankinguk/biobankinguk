@@ -40,7 +40,7 @@ namespace Biobanks.Web
                     .ForMember(dest => dest.BiobankName, opts => opts.MapFrom(src => src.Name))
                     .ForMember(dest => dest.LogoName, opts => opts.MapFrom(src => src.Logo));
 
-                cfg.CreateMap<DiagnosisCapability, DetailedCapabilitySearchCapabilityModel>()
+                cfg.CreateMap<Capability, DetailedCapabilitySearchCapabilityModel>()
                     .ForMember(dest => dest.Protocols, opts => opts.MapFrom(src => src.SampleCollectionMode.Value))
                     .ForMember(dest => dest.Disease, opts => opts.MapFrom(src => src.OntologyTerm.Value))
                     .ForMember(dest => dest.AssociatedData,

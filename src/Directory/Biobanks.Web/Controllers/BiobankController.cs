@@ -1553,7 +1553,7 @@ namespace Biobanks.Web.Controllers
             {
                 BiobankCapabilityModels = capabilities.Select(x => new BiobankCapabilityModel
                 {
-                    Id = x.DiagnosisCapabilityId,
+                    Id = x.CapabilityId,
                     OntologyTerm = x.OntologyTerm.Value,
                     Protocol = x.SampleCollectionMode.Value
                 })
@@ -1665,7 +1665,7 @@ namespace Biobanks.Web.Controllers
                     .Where(x => x.Active)
                     .Select(y => new CapabilityAssociatedData
                     {
-                        DiagnosisCapabilityId = model.Id,
+                        CapabilityId = model.Id,
                         AssociatedDataTypeId = y.DataTypeId,
                         AssociatedDataProcurementTimeframeId = y.ProvisionTimeId
                     }).ToList();
@@ -1708,7 +1708,7 @@ namespace Biobanks.Web.Controllers
 
             var model = new CapabilityModel
             {
-                Id = capability.DiagnosisCapabilityId,
+                Id = capability.CapabilityId,
                 OntologyTerm = capability.OntologyTerm.Value,
                 Protocols = capability.SampleCollectionMode.Value,
                 AnnualDonorExpectation = capability.AnnualDonorExpectation,
