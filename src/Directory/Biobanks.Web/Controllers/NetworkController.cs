@@ -190,12 +190,12 @@ namespace Biobanks.Web.Controllers
             if (create)
             {
                 network = await _networkService.CreateNetworkAsync(network);
-                await _networkService.AddUserToNetworkAsync(User.Identity.GetUserId(), network.NetworkId);
+                await _networkService.AddUserToNetwork(User.Identity.GetUserId(), network.NetworkId);
 
                 //update the request to show network created
-                var request = await _networkService.GetNetworkRegisterRequestByUserEmailAsync(User.Identity.Name);
+                var request = await _networkService.GetRegistrationRequestByEmail(User.Identity.Name);
                 request.NetworkCreatedDate = DateTime.Now;
-                await _networkService.UpdateNetworkRegisterRequestAsync(request);
+                await _networkService.UpdateRegistrationRequest(request);
 
                 //add a claim now that they're associated with the network
                 _claimsManager.AddClaims(new List<Claim>
@@ -276,7 +276,7 @@ namespace Biobanks.Web.Controllers
             var sopStatuses = await GetSopStatusKeyValuePairsAsync();
 
             //Network doesn't exist yet, but the request does, so get the name
-            var request = await _networkService.GetNetworkRegisterRequestAsync(SessionHelper.GetNetworkId(Session));
+            var request = await _networkService.GetRegistrationRequest(SessionHelper.GetNetworkId(Session));
 
             //validate that the request is accepted
             if (request.AcceptedDate == null) return null;
@@ -294,7 +294,7 @@ namespace Biobanks.Web.Controllers
             var sopStatuses = await GetSopStatusKeyValuePairsAsync();
 
             //having a networkid claim means we can definitely get a network and return a model for it
-            var network = await _networkService.GetNetworkByIdAsync(SessionHelper.GetNetworkId(Session));
+            var network = await _networkService.Get(SessionHelper.GetNetworkId(Session));
 
             //get SOP status desc for current SOP status
             var statusDesc = sopStatuses.FirstOrDefault(x => x.Key == network.SopStatusId).Value;
@@ -434,7 +434,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> InviteAdminAjax(int networkId)
         {
-            var nw = await _networkService.GetNetworkByIdAsync(networkId);
+            var nw = await _networkService.Get(networkId);
 
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
@@ -461,7 +461,7 @@ namespace Biobanks.Web.Controllers
                 });
             }
 
-            var networkId = (await _networkService.GetNetworkByNameAsync(model.Entity)).NetworkId;
+            var networkId = (await _networkService.GetByName(model.Entity)).NetworkId;
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
@@ -518,7 +518,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/network relationship
-            await _networkService.AddUserToNetworkAsync(user.Id, networkId);
+            await _networkService.AddUserToNetwork(user.Id, networkId);
 
             //add user to NetworkAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.NetworkAdmin.ToString());
@@ -619,7 +619,7 @@ namespace Biobanks.Web.Controllers
             var biobank = await _organisationService.GetByName(model.BiobankName);
 
             var networkId = SessionHelper.GetNetworkId(Session);
-            var network = await _networkService.GetNetworkByIdAsync(networkId);
+            var network = await _networkService.Get(networkId);
 
             //Get all emails from admins and store in list
             var networkAdmins = await GetAdminsAsync(networkId, false);
@@ -676,7 +676,7 @@ namespace Biobanks.Web.Controllers
                 {
                     result =
                     await
-                        _networkService.AddBiobankToNetworkAsync(biobank.OrganisationId,
+                        _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
                             SessionHelper.GetNetworkId(Session), model.BiobankExternalID, true);
                     approved = true;
                 }
@@ -684,7 +684,7 @@ namespace Biobanks.Web.Controllers
                 {
                     result =
                     await
-                        _networkService.AddBiobankToNetworkAsync(biobank.OrganisationId,
+                        _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
                     SessionHelper.GetNetworkId(Session), model.BiobankExternalID, false);
                 }
 

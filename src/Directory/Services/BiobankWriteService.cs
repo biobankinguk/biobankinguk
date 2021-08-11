@@ -507,23 +507,6 @@ namespace Biobanks.Services
             return network;
         }
 
-        public async Task<NetworkUser> AddUserToNetworkAsync(string userId, int networkId)
-        {
-            //Validate the id's? user is more annoying as needs userManager
-
-            var nu = new NetworkUser
-            {
-                NetworkId = networkId,
-                NetworkUserId = userId
-            };
-
-            _networkUserRepository.Insert(nu);
-            var result = await _networkUserRepository.SaveChangesAsync();
-            if (result != 1) throw new DataException(); //should only be inserting the nu entity, definitely not adding a new network!
-
-            return nu;
-        }
-
         public async Task RemoveUserFromNetworkAsync(string userId, int networkId)
         {
             await
@@ -531,53 +514,6 @@ namespace Biobanks.Services
                     x => x.NetworkUserId == userId && x.NetworkId == networkId);
 
             await _networkUserRepository.SaveChangesAsync();
-        }
-
-        public async Task<NetworkRegisterRequest> AddNetworkRegisterRequestAsync(NetworkRegisterRequest request)
-        {
-            _networkRegisterRequestRepository.Insert(request);
-            await _networkRegisterRequestRepository.SaveChangesAsync();
-
-            return request;
-        }
-
-        public async Task DeleteNetworkRegisterRequestAsync(NetworkRegisterRequest request)
-        {
-            await _networkRegisterRequestRepository.DeleteAsync(request.NetworkRegisterRequestId);
-            await _networkRegisterRequestRepository.SaveChangesAsync();
-        }
-
-        public async Task<bool> AddBiobankToNetworkAsync(int biobankId, int networkId, string biobankExternalID, bool approve)
-        {
-            var bb = await _organisationRepository.GetByIdAsync(biobankId);
-
-            if (bb == null || bb.IsSuspended) throw new ApplicationException();
-
-            var no = new OrganisationNetwork
-            {
-                NetworkId = networkId,
-                OrganisationId = biobankId,
-                ExternalID = biobankExternalID
-            };
-            if (approve)
-            {
-                no.ApprovedDate = DateTime.Now;
-            }
-
-            try
-            {
-                _networkOrganisationRepository.Insert(no);
-                await _networkOrganisationRepository.SaveChangesAsync();
-
-                if (!await _organisationService.IsSuspended(biobankId))
-                    await _indexService.JoinOrLeaveNetwork(biobankId);
-
-                return true;
-            }
-            catch (DbUpdateException)
-            {
-                return false;
-            }
         }
 
         public async Task RemoveBiobankFromNetworkAsync(int biobankId, int networkId)
@@ -593,17 +529,6 @@ namespace Biobanks.Services
 
             if (!await _organisationService.IsSuspended(biobankId))
                 await _indexService.JoinOrLeaveNetwork(biobankId);
-        }
-
-        public async Task<NetworkRegisterRequest> UpdateNetworkRegisterRequestAsync(NetworkRegisterRequest request)
-        {
-            var trackedRequest = await _networkRegisterRequestRepository
-                .GetByIdAsync(request.NetworkRegisterRequestId);
-            _mapper.Map(request, trackedRequest);
-
-            await _networkRegisterRequestRepository.SaveChangesAsync();
-
-            return request;
         }
 
         public async Task<OrganisationNetwork> UpdateOrganisationNetworkAsync(OrganisationNetwork organisationNetwork)

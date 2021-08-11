@@ -88,7 +88,7 @@ namespace Biobanks.Web.Controllers
 
             if (displayNetworks)
             {
-                var networks = (await _networkService.ListNetworksAsync()).Where(n => n.ContactHandoverEnabled);
+                var networks = (await _networkService.List()).Where(n => n.ContactHandoverEnabled);
 
                 foreach (var network in networks)
                 {
@@ -132,7 +132,7 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> NotifyNetworkNonMembersOfHandoverAjax(NetworkNonMemberContactModel model)
         {
-            var network = await _networkService.GetNetworkByIdAsync(model.NetworkId);
+            var network = await _networkService.Get(model.NetworkId);
             var biobanks = (await _organisationService.ListByAnonymousIdentifiers(model.BiobankAnonymousIdentifiers)).ToList();
 
 

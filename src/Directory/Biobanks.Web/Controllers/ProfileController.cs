@@ -81,7 +81,7 @@ namespace Biobanks.Web.Controllers
                 CountryName = bb.Country.Value,
                 ContactNumber = bb.ContactNumber,
                 LastUpdated = bb.LastUpdated,
-                NetworkMembers = (await _networkService.GetNetworksByBiobankIdAsync(bb.OrganisationId)).Select(
+                NetworkMembers = (await _networkService.ListByOrganisationId(bb.OrganisationId)).Select(
                     x => new NetworkMemberModel
                     {
                         Id = x.NetworkId,
@@ -127,7 +127,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> Network(int id)
         {
-            var nw = await _networkService.GetNetworkByIdAsync(id);
+            var nw = await _networkService.Get(id);
 
             var model = new NetworkModel
             {

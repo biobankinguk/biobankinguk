@@ -233,13 +233,6 @@ namespace Biobanks.Services
 
         #endregion
 
-        public async Task<Network> GetNetworkByIdAsync(int networkId)
-            => (await _networkRepository.ListAsync(
-                false,
-                x => x.NetworkId == networkId,
-                null,
-                x => x.SopStatus)).FirstOrDefault();
-
         public async Task<IEnumerable<ApplicationUser>> ListNetworkAdminsAsync(int networkId)
         {
             var adminIds = (await _networkUserRepository.ListAsync(
@@ -249,11 +242,6 @@ namespace Biobanks.Services
 
             return _userManager.Users.AsNoTracking().Where(x => adminIds.Contains(x.Id));
         }
-
-        public async Task<Network> GetNetworkByNameAsync(string networkName)
-            => (await _networkRepository.ListAsync(
-                false,
-                x => x.Name == networkName)).FirstOrDefault();
 
         public async Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId)
             => (await _organisationRepository.ListAsync(
@@ -316,49 +304,6 @@ namespace Biobanks.Services
             => (await _networkOrganisationRepository.ListAsync(
                 false,
                 x => x.NetworkId == networkId)).Select(x => x.OrganisationId);
-
-        public async Task<IEnumerable<Network>> ListNetworksAsync()
-            => await _networkRepository.ListAsync(false, null, null, n => n.OrganisationNetworks);
-
-        public async Task<IEnumerable<NetworkRegisterRequest>> ListOpenNetworkRegisterRequestsAsync()
-            //Show all that are "open"
-            //(i.e. no action taken (accept, decline, create...))
-            => await _networkRegisterRequestRepository.ListAsync(
-                false,
-                x => x.AcceptedDate == null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
-
-        public async Task<IEnumerable<NetworkRegisterRequest>> ListAcceptedNetworkRegisterRequestAsync()
-            //Show all that are accepted but not yet created
-            //filter by no created date, but an existing accepted date
-            => await _networkRegisterRequestRepository.ListAsync(
-                false,
-                x => x.AcceptedDate != null && x.DeclinedDate == null && x.NetworkCreatedDate == null);
-
-        public async Task<IEnumerable<NetworkRegisterRequest>> ListHistoricalNetworkRegisterRequestsAsync()
-            //Show all that are "closed"
-            //(i.e. declined or accepted)
-            => await _networkRegisterRequestRepository.ListAsync(
-                false,
-                x => x.DeclinedDate != null || x.AcceptedDate != null);
-
-
-        public async Task<NetworkRegisterRequest> GetNetworkRegisterRequestAsync(int requestId)
-            => (await _networkRegisterRequestRepository.ListAsync(
-                    false,
-                    x => x.NetworkRegisterRequestId == requestId))
-                .FirstOrDefault();
-
-        public async Task<IEnumerable<Network>> GetNetworksByBiobankIdAsync(int organisationId)
-        {
-            var biobankNetworkIds =
-                (await _networkOrganisationRepository.ListAsync(
-                    false,
-                    x => x.OrganisationId == organisationId)).Select(x => x.NetworkId);
-
-            return await _networkRepository.ListAsync(
-                false,
-                x => biobankNetworkIds.Contains(x.NetworkId));
-        }
 
         public async Task<bool> IsOntologyTermInUse(string id)
             => (await GetOntologyTermCollectionCapabilityCount(id) > 0);
@@ -512,26 +457,11 @@ namespace Biobanks.Services
                     })
                 .ToDictionary(x => x.id, x => x.description);
 
-        public async Task<bool> NetworkRegisterRequestExists(string name)
-            //We consider declined requests to not exist
-            => (await _networkRegisterRequestRepository.ListAsync(
-                    false,
-                    x => x.NetworkName == name &&
-                         x.DeclinedDate == null))
-                .Any();
-
         public async Task<int> GetSampleSetCountAsync()
             => await _sampleSetRepository.CountAsync();
 
         public async Task<int> GetCapabilityCountAsync()
             => await _capabilityRepository.CountAsync();
-
-        public async Task<NetworkRegisterRequest> GetNetworkRegisterRequestByUserEmailAsync(string email)
-            //an email should only have one "active" Network register request at any one time
-            //declined or created requests are no longer active!
-            => (await _networkRegisterRequestRepository.ListAsync(
-                false,
-                x => x.UserEmail == email && x.DeclinedDate == null && x.NetworkCreatedDate == null)).FirstOrDefault();
 
         public async Task<Collection> GetCollectionByIdAsync(int id)
             => (await _collectionRepository.ListAsync(false,

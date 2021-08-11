@@ -106,7 +106,7 @@ namespace Biobanks.Web.Controllers
                 }).ToList();
 
             var nwRequests =
-                (await _networkService.ListOpenNetworkRegisterRequestsAsync())
+                (await _networkService.ListOpenRegistrationRequests())
                 .Select(x => new NetworkRequestModel
                 {
                     RequestId = x.NetworkRegisterRequestId,
@@ -293,7 +293,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AcceptNetworkRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _networkService.GetNetworkRegisterRequestAsync(requestId);
+            var request = await _networkService.GetRegistrationRequest(requestId);
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -374,7 +374,7 @@ namespace Biobanks.Web.Controllers
 
             //finally, update the request
             request.AcceptedDate = DateTime.Now;
-            await _networkService.UpdateNetworkRegisterRequestAsync(request);
+            await _networkService.UpdateRegistrationRequest(request);
 
             //send back, with feedback
             SetTemporaryFeedbackMessage(
@@ -387,7 +387,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> DeclineNetworkRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _networkService.GetNetworkRegisterRequestAsync(requestId);
+            var request = await _networkService.GetRegistrationRequest(requestId);
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -407,7 +407,7 @@ namespace Biobanks.Web.Controllers
 
             //update the request
             request.DeclinedDate = DateTime.Now;
-            await _networkService.UpdateNetworkRegisterRequestAsync(request);
+            await _networkService.UpdateRegistrationRequest(request);
 
             //send the requester an email
             await _emailService.SendRegisterEntityDeclined(
@@ -851,7 +851,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Networks()
         {
             var allNetworks =
-                (await _networkService.ListNetworksAsync()).ToList();
+                (await _networkService.List()).ToList();
 
             var networks = allNetworks.Select(x => new NetworkModel
             {
@@ -912,7 +912,7 @@ namespace Biobanks.Web.Controllers
 
                 ).ToList();
 
-            var nwRequests = (await _networkService.ListHistoricalNetworkRegisterRequestsAsync())
+            var nwRequests = (await _networkService.ListHistoricalRegistrationRequests())
                 .Select(x =>
 
                     Task.Run(async () =>

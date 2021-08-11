@@ -240,7 +240,7 @@ namespace Biobanks.Web.Controllers
                 return View("RegisterConfirmation");
 
             //check for duplicate Network name
-            var existingNetwork = await _networkService.GetNetworkByNameAsync(model.Entity);
+            var existingNetwork = await _networkService.GetByName(model.Entity);
 
             if (existingNetwork != null)
             {
@@ -249,7 +249,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //check for duplicate name against non-declined requests too
-            if (await _networkService.NetworkRegisterRequestExists(model.Entity))
+            if (await _networkService.HasActiveRegistrationRequest(model.Entity))
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
@@ -269,7 +269,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Create a register request for this user and Network
-            var request = await _networkService.AddNetworkRegisterRequestAsync(
+            var request = await _networkService.AddRegistrationRequest(
                 new NetworkRegisterRequest
                 {
                     UserName = model.Name,

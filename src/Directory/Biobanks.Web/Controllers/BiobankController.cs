@@ -100,7 +100,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //for viewing details only, we include networks
-            var networks = await _networkService.GetNetworksByBiobankIdAsync(biobankId);
+            var networks = await _networkService.ListByOrganisationId(biobankId);
 
             model.AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync();
 
@@ -1725,7 +1725,7 @@ namespace Biobanks.Web.Controllers
             var networkList = new List<NetworkAcceptanceModel>();
             foreach (var orgNetwork in organisationNetworks)
             {
-                var network = await _networkService.GetNetworkByIdAsync(orgNetwork.NetworkId);
+                var network = await _networkService.Get(orgNetwork.NetworkId);
                 var organisation = new NetworkAcceptanceModel
                 {
                     BiobankId = biobankId,

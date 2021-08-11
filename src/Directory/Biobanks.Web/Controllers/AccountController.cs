@@ -174,7 +174,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //get all accepted networks
-            var networkRequests = await _networkService.ListAcceptedNetworkRegisterRequestAsync();
+            var networkRequests = await _networkService.ListAcceptedRegistrationRequests();
             var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == CurrentUser.Identity.GetUserName() && x.UserEmail == CurrentUser.Email);
 
             // if there is an unregistered network to finish registering, go there
