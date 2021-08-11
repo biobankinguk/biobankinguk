@@ -3,6 +3,7 @@ using AutoMapper;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Identity.Constants;
@@ -42,6 +43,8 @@ namespace Biobanks.Web.Controllers
     [SuspendedWarning]
     public class BiobankController : ApplicationBaseController
     {
+        private readonly ICollectionService _collectionService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -57,7 +60,9 @@ namespace Biobanks.Web.Controllers
         private const string TempBiobankLogoSessionId = "TempBiobankLogo";
         private const string TempBiobankLogoContentTypeSessionId = "TempBiobankLogoContentType";
 
-        public BiobankController(IBiobankReadService biobankReadService,
+        public BiobankController(
+            ICollectionService collectionService,
+            IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -67,6 +72,7 @@ namespace Biobanks.Web.Controllers
             CustomClaimsManager claimsManager,
             ITokenLoggingService tokenLog)
         {
+            _collectionService = collectionService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -836,8 +842,7 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            // Call service to get collections for logged in BioBank.
-            var collections = (await _biobankReadService.ListCollectionsAsync(biobankId)).ToList();
+            var collections = await _collectionService.List(biobankId);
 
             // Build ViewModel.
             var model = new BiobankCollectionsModel
@@ -878,24 +883,35 @@ namespace Biobanks.Web.Controllers
                     .Select(y => new CollectionAssociatedData
                     {
                         AssociatedDataTypeId = y.DataTypeId,
-                        //GroupID
-                        AssociatedDataProcurementTimeframeId = y.ProvisionTimeId
-                    }).ToList();
+                        AssociatedDataProcurementTimeframeId = y.ProvisionTimeId // GroupID
+                    })
+                    .ToList();
 
-                var collection = await _biobankWriteService.AddCollectionAsync(new Collection
+                var consentRestrictions = model.ConsentRestrictions
+                    .Where(x => x.Active)
+                    .Select(x => new ConsentRestriction
+                    {
+                        Id = x.ConsentRestrictionId
+                    })
+                    .ToList();
+
+                var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
+
+                // Create and Add New Collection
+                var collection = await _collectionService.Add(new Collection
                 {
                     OrganisationId = biobankId,
                     Title = model.Title,
                     Description = model.Description,
-                    StartDate = new DateTime(model.StartDate.Value, 1, 1), //DateTime.Parse(model.StartDate),
+                    StartDate = new DateTime(year: model.StartDate.Value, month: 1, day: 1),
+                    AssociatedData = associatedData,
                     AccessConditionId = model.AccessCondition,
                     CollectionTypeId = model.CollectionType,
                     CollectionStatusId = model.CollectionStatus,
+                    ConsentRestrictions = consentRestrictions,
+                    OntologyTermId = ontologyTerm.Id,
                     FromApi = model.FromApi
-                },
-                model.Diagnosis,
-                associatedData,
-                model.ConsentRestrictions.Where(x => x.Active).Select(y => y.ConsentRestrictionId));
+                });
 
                 SetTemporaryFeedbackMessage("Collection added!", FeedbackMessageType.Success);
 
@@ -918,7 +934,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ViewResult> EditCollection(int id)
         {
-            var collection = await _biobankReadService.GetCollectionByIdAsync(id);
+            var collection = await _collectionService.Get(id);
             var consentRestrictions = await _biobankReadService.ListConsentRestrictionsAsync();
 
             var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
@@ -965,22 +981,14 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //Retrieve collection
-            var collection = await _biobankReadService.GetCollectionByIdAsync(model.Id);
+            var collection = await _collectionService.Get(model.Id);
 
             if (collection.FromApi)
             {
-                var associatedData = collection.AssociatedData
-                    .Select(y => new CollectionAssociatedData
-                    {
-                        CollectionId = y.CollectionId,
-                        AssociatedDataTypeId = y.AssociatedDataTypeId,
-                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId
-                    }).ToList();
-
                 // Update description
                 collection.Description = model.Description;
-                await _biobankWriteService.UpdateCollectionAsync(collection, collection.OntologyTerm.Value,
-                    associatedData, collection.ConsentRestrictions.Select(x=>x.Id));
+
+                await _collectionService.Update(collection);
 
                 SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
@@ -998,21 +1006,32 @@ namespace Biobanks.Web.Controllers
                         AssociatedDataProcurementTimeframeId = y.ProvisionTimeId
                     }).ToList();
 
-                await _biobankWriteService.UpdateCollectionAsync(new Collection
-                {
-                    CollectionId = model.Id,
-                    OrganisationId = biobankId,
-                    Title = model.Title,
-                    Description = model.Description,
-                    StartDate = new DateTime(model.StartDate.Value, 1, 1),
+                var consentRestrictions = model.ConsentRestrictions
+                    .Where(x => x.Active)
+                    .Select(x => new ConsentRestriction
+                    {
+                        Id = x.ConsentRestrictionId
+                    })
+                    .ToList();
+
+                var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
+
+                await _collectionService.Update(new Collection
+                { 
                     AccessConditionId = model.AccessCondition,
-                    FromApi = model.FromApi,
+                    AssociatedData = associatedData,
+                    CollectionId = model.Id,
+                    CollectionStatusId = model.CollectionStatus,
                     CollectionTypeId = model.CollectionType,
-                    CollectionStatusId = model.CollectionStatus
-                },
-                model.Diagnosis,
-                associatedData,
-                model.ConsentRestrictions.Where(x => x.Active).Select(x => x.ConsentRestrictionId));
+                    ConsentRestrictions = consentRestrictions,
+                    Description = model.Description,
+                    FromApi = model.FromApi,
+                    OntologyTermId = ontologyTerm.Id,
+                    OrganisationId = biobankId,
+                    StartDate = new DateTime(year: model.StartDate.Value, month: 1, day: 1),
+                    Title = model.Title
+
+                });
 
                 SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
@@ -1033,7 +1052,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<RedirectToRouteResult> DeleteCollection(int id)
         {
-            if (!await _biobankReadService.IsCollectionFromApi(id) && await _biobankWriteService.DeleteCollectionAsync(id))
+            if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
             {
                 SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
                 return RedirectToAction("Collections");
@@ -1051,7 +1070,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ViewResult> Collection(int id)
         {
-            var collection = await _biobankReadService.GetCollectionWithSampleSetsByIdAsync(id);
+            var collection = await _collectionService.GetWithSampleSets(id);
 
             var model = new CollectionModel
             {
@@ -1089,7 +1108,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ViewResult> AddSampleSet(int id)
         {
-            ViewData["CollectionApiStatus"] = await _biobankReadService.IsCollectionFromApi(id);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(id);
             var model = new AddSampleSetModel
             {
                 CollectionId = id
@@ -1102,7 +1121,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCollection]
         public async Task<ActionResult> AddSampleSet(int id, AddSampleSetModel model)
         {
-            var apiCheck = await _biobankReadService.IsCollectionFromApi(id);
+            var apiCheck = await _collectionService.IsFromApi(id);
 
             ViewData["CollectionApiStatus"] = apiCheck;
 
@@ -1144,7 +1163,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> CopySampleSet(int id)
         {
             var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
-            ViewData["CollectionApiStatus"] = await _biobankReadService.IsCollectionFromApi(sampleSet.CollectionId);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
             //Build the model using all details of the existing sampleset, except id, which is stored in a separate property
@@ -1174,7 +1193,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerSampleSet]
         public async Task<ActionResult> CopySampleSet(int id, CopySampleSetModel model)
         {
-            if (await _biobankReadService.IsCollectionFromApi(model.CollectionId) == true)
+            if (await _collectionService.IsFromApi(model.CollectionId))
             {
                 return RedirectToAction("SampleSet", new { id = model.OriginalId });
             }
@@ -1190,7 +1209,7 @@ namespace Biobanks.Web.Controllers
 
             SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
-            ViewData["CollectionApiStatus"] = await _biobankReadService.IsCollectionFromApi(sampleSet.CollectionId);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
             var model = new EditSampleSetModel
             {
@@ -1220,10 +1239,10 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerSampleSet]
         public async Task<ActionResult> EditSampleSet(int id, EditSampleSetModel model)
         {
-            var apiCheck = await _biobankReadService.IsCollectionFromApi(model.CollectionId);
+            var apiCheck = await _collectionService.IsFromApi(model.CollectionId);
             ViewData["CollectionApiStatus"] = apiCheck;
 
-            if (model.IsValid(ModelState) && apiCheck == false)
+            if (model.IsValid(ModelState) && !apiCheck)
             {
                 var sampleSet = new SampleSet
                 {
@@ -1264,7 +1283,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerSampleSet]
         public async Task<RedirectToRouteResult> DeleteSampleSet(int id, int collectionId)
         {
-            if (await _biobankReadService.IsCollectionFromApi(collectionId) == false)
+            if (!await _collectionService.IsFromApi(collectionId))
             {
                 await _biobankWriteService.DeleteSampleSetAsync(id);
                 SetTemporaryFeedbackMessage("Sample Set deleted!", FeedbackMessageType.Success);
@@ -1281,7 +1300,7 @@ namespace Biobanks.Web.Controllers
 
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
-            ViewData["CollectionApiStatus"] = await _biobankReadService.IsCollectionFromApi(sampleSet.CollectionId);
+            ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
             var model = new SampleSetModel
             {

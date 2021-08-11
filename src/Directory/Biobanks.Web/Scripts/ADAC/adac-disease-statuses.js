@@ -88,10 +88,7 @@ function AdacDiseaseStatusViewModel() {
         else if (action == 'Update') {
 
             // Parse Edit Url
-            var rowIndex = $(this).data("row")
-            var data = dataTable.row(rowIndex).data();
-            var url = apiUrl + "/" + data.OntologyTermId;
-
+            var url = apiUrl + "/" + $(e.target.Id).val();
             editRefData(_this, url, form.serialize(), redirectUrl, refdataType);
         }
     };
