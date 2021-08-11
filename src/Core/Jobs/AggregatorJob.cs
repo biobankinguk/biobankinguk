@@ -80,6 +80,9 @@ namespace Core.Jobs
 
         private async Task AggregateCollectionSamples(LiveSample baseSample, IEnumerable<LiveSample> samples)
         {
+            if (baseSample == null || baseSample.SampleContent == null)
+                throw new ArgumentException("Supplied baseSample is null, or is referencing a non-existent SampleContent");
+
             var organisation = await _organisationService.GetById(baseSample.OrganisationId);
 
             // Find Exisiting Or Generate New Collection
