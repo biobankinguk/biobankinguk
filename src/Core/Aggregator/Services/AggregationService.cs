@@ -3,10 +3,10 @@ using Biobanks.Data;
 using Biobanks.Entities.Api;
 using Biobanks.Entities.Data;
 using Biobanks.Submissions.Extensions;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Services
@@ -14,25 +14,41 @@ namespace Biobanks.Aggregator.Services
     public class AggregationService : IAggregationService
     {
         private readonly IReferenceDataService _refDataService;
+
+        private readonly AggregatorOptions _options;
         private readonly BiobanksDbContext _db;
         
-        public AggregationService(IReferenceDataService refDataService, BiobanksDbContext db)
+        public AggregationService(
+            IReferenceDataService refDataService,
+            IOptions<AggregatorOptions> options,
+            BiobanksDbContext db)
         {
             _refDataService = refDataService;
+            _options = options.Value;
             _db = db;
         }
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoCollections(IEnumerable<LiveSample> samples)
         {
-            return samples
-                .GroupBy(x => new
-                {
-                    x.OrganisationId,
-                    x.CollectionName,
-                    x.SampleContentId
-                })
-                .Select(x => x.AsEnumerable())
-                .ToList();
+            var nonExtracted = samples.All(x => string.IsNullOrEmpty(x.SampleContentId));
+
+            if (nonExtracted)
+            {
+                return samples
+                    .GroupBy(x => x.OrganisationId)
+                    .Select(x => x.AsEnumerable());
+            }
+            else
+            {
+                return samples
+                    .GroupBy(x => new
+                    {
+                        x.OrganisationId,
+                        x.CollectionName,
+                        x.SampleContentId
+                    })
+                    .Select(x => x.AsEnumerable());
+            }
         }
 
         public IEnumerable<IEnumerable<LiveSample>> GroupIntoSampleSets(IEnumerable<LiveSample> samples)
@@ -67,7 +83,7 @@ namespace Biobanks.Aggregator.Services
                 .Select(x => x.AsEnumerable());
         }
 
-        public Collection GenerateCollection(IEnumerable<LiveSample> samples)
+        public Collection GenerateCollection(IEnumerable<LiveSample> samples, string collectionName)
         {
             var orderedSamples = samples.OrderBy(y => y.DateCreated);
             var oldestSample = orderedSamples.First();
@@ -75,9 +91,6 @@ namespace Biobanks.Aggregator.Services
 
             // Collection Complete If Newest Sample Older Than ~6 Months
             var complete = (DateTime.Now - newestSample.DateCreated) > TimeSpan.FromDays(180);
-
-            // Generate Collection Name
-            var collectionName = GenerateCollectionName(newestSample); 
 
             return new Collection
             {
@@ -109,23 +122,18 @@ namespace Biobanks.Aggregator.Services
         public MaterialDetail GenerateMaterialDetail(IEnumerable<LiveSample> samples)
         {
             var sample = samples.First();
+            var contentId = sample.SampleContentId;
+            var contentMethod = sample.SampleContentMethod?.Value ?? "";
 
-            // TODO: Is there a better way rather than using hardcoded values?
             // Map Macroscopic Assessment
-            var macro = 
-                sample.SampleContentMethod.Value.StartsWith("Microscopic") || 
-                sample.SampleContentMethod.Value.StartsWith("Macroscopic")
-                    ? sample.SampleContent.Id == "102499006" || // Fit and Healthy
-                      sample.SampleContent.Id == "23875004"     // No pathelogical diagnosis
-                        ? _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Affected"))
-                        : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Affected"))
-                    : _db.MacroscopicAssessments.First(x => x.Value.StartsWith("Not Applicable"));
+            var macro = _options.MapToMacroscopicAssessment(contentMethod, contentId);
+            var macroAssessment = _db.MacroscopicAssessments.First(x => x.Value == macro);
 
             return new MaterialDetail
             {
                 MaterialTypeId = sample.MaterialTypeId,
                 StorageTemperatureId = sample.StorageTemperatureId ?? 0,
-                MacroscopicAssessmentId = macro.Id,
+                MacroscopicAssessmentId = macroAssessment.Id,
                 ExtractionProcedureId = sample.ExtractionProcedureId,
                 PreservationTypeId = sample.PreservationTypeId,
             };
@@ -135,7 +143,6 @@ namespace Biobanks.Aggregator.Services
             => string.IsNullOrEmpty(sample.CollectionName)
                 ? $"{sample.SampleContent.Value}"
                 : $"{sample.CollectionName} ({sample.SampleContent.Value})";
-
 
     }
 }

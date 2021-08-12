@@ -46,7 +46,7 @@ using Microsoft.Extensions.Options;
 using Hangfire.Dashboard;
 using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
-using Hangfire.SqlServer;
+using Biobanks.Aggregator;
 
 namespace Biobanks.Submissions.Api
 {
@@ -108,6 +108,7 @@ namespace Biobanks.Submissions.Api
 
                 .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
                 .Configure<JwtBearerConfig>(Configuration.GetSection("JWT"))
+                .Configure<AggregatorOptions>(Configuration.GetSection("Aggregator"))
                 .Configure<AnalyticsOptions>(Configuration.GetSection("Analytics"))
                 .Configure<WorkersOptions>(Configuration.GetSection("Workers"))
                 .Configure<HangfireOptions>(Configuration.GetSection("Hangfire"))
@@ -200,6 +201,12 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISampleValidationService, SampleValidationService>()
                 .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
                 .AddTransient<IErrorService, ErrorService>()
+                
+                .AddTransient<IReferenceDataService, ReferenceDataService>()
+                .AddTransient<ICollectionService, CollectionService>()
+                .AddTransient<ISampleService, SampleService>()
+                .AddTransient<IOrganisationService, OrganisationService>()
+                .AddTransient<IAggregationService, AggregationService>()
 
                 .AddTransient<IReferenceDataService, ReferenceDataService>()
                 .AddTransient<ICollectionService, CollectionService>()
