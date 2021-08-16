@@ -1,0 +1,792 @@
+{
+	"info": {
+		"_postman_id": "07cba0a0-e6c6-4a89-aed2-744be16589cf",
+		"name": "Biobanks API - 03 Identity Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Bad Credentials",
+			"item": [
+				{
+					"name": "Token - No Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/token",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token - Bad Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{$randomUserName}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{$randomPassword}}",
+									"type": "string"
+								},
+								{
+									"key": "saveHelperData",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "showPassword",
+									"value": false,
+									"type": "boolean"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/token",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Without Token",
+			"item": [
+				{
+					"name": "Biobank Status - No Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "With Token",
+			"item": [
+				{
+					"name": "Authenticate",
+					"item": [
+						{
+							"name": "Auth Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Token Generation\", () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response has data\", function () {    ",
+											"    responseBody.has(\"ey\"); // Start of JWT",
+											"});",
+											"",
+											"pm.test('JWT are new on request', function () {",
+											"    pm.expect(responseBody).to.not.eq(pm.environment.get(\"user-token\"));",
+											"});",
+											"",
+											"// Update user-token as new one has been issued",
+											"pm.environment.set(\"user-token\", responseBody);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{user-client-secret}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{user-client-id}}",
+											"type": "string"
+										},
+										{
+											"key": "saveHelperData",
+											"value": false,
+											"type": "boolean"
+										},
+										{
+											"key": "showPassword",
+											"value": false,
+											"type": "boolean"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/token",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Biobank Status",
+					"item": [
+						{
+							"name": "Biobank Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Expected server HTTP response",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//Negative test for server HTTP response",
+											"pm.test(\"Status code is NOT 403\", function () {",
+											"    pm.response.to.not.have.status(403);",
+											"});",
+											"",
+											"//Negative test for server HTTP response",
+											"pm.test(\"Status code is NOT 401\", function () {",
+											"    pm.response.to.not.have.status(401);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"status",
+										"biobank",
+										"{{user-biobank-id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Submission Status",
+					"item": [
+						{
+							"name": "Submit Sample",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 202\", function () {",
+											"    pm.response.to.have.status(202);",
+											"});",
+											"",
+											"// Store Submission ID From Response For Later Requests",
+											"pm.environment.set('submission-id', pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"individualReferenceId\": \"{{$randomNoun}}\",\r\n        \"barcode\": \"{{$randomNoun}}\",\r\n        \"materialType\":\"{{$randomNoun}}\",\r\n        \"storageTemperature\": \"{{$randomNoun}}\",\r\n        \"ageAtDonation\": \"0\",\r\n        \"dateCreated\": \"{{$isoTimestamp}}\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"submit",
+										"{{user-biobank-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Submit Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{token_bu1}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-url}}/status/{{submission-id}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"status",
+										"{{submission-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Submit Status Error",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{token_bu1}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-url}}/status/{{submission-id}}/error",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"status",
+										"{{submission-id}}",
+										"error"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Post Reject",
+					"item": [
+						{
+							"name": "Reject Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{api-url}}/{{user-biobank-id}}/reject",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"{{user-biobank-id}}",
+										"reject"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Reject Status",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{api-url}}/{{user-biobank-id}}/reject",
+											"host": [
+												"{{api-url}}"
+											],
+											"path": [
+												"{{user-biobank-id}}",
+												"reject"
+											]
+										}
+									},
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": null
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Post Commit Replace",
+					"item": [
+						{
+							"name": "Post Data",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Create a variable called 'jsondata' and set its value to the entire responseBody",
+											"let jsonData = JSON.parse(responseBody);",
+											"",
+											"// Create a variable called 'id' and set its value to the responseBody ID field value",
+											"let id = jsonData.id;",
+											"",
+											"//Assert that the HTTP response is either 200, 201, 202",
+											"pm.test(\"Status code is \" + pm.response.code, function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+											"});",
+											"",
+											"//Create an environment variable called 'id1' and set it to the value of the 'id' variable ",
+											"pm.environment.set(\"id1\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DNA\",\r\n        \"individualReferenceId\": \"REF14\",\r\n        \"barcode\": \"CODE14\",\r\n        \"YearOfBirth\": 1938,\r\n        \"dateCreated\": \"2010-02-16T09:58:30-00:00\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"submit",
+										"{{user-biobank-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Commit (replace)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Flag To Test If Re-Run Test",
+											"var rerun = true;",
+											"",
+											"pm.test(\"Status code is 202 Accepted\", () => {",
+											"    pm.response.to.have.status(202);",
+											"    rerun = false;",
+											"});",
+											"",
+											"// 202 Not Returned - Try Again",
+											"if (rerun) {",
+											"    postman.setNextRequest(pm.request.name);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Wait 15 Seconds Until Prevent Submission Is Processed",
+											"setTimeout(function () {}, 15 * 1000);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{api-url}}/{{user-biobank-id}}/commit?type=replace",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"{{user-biobank-id}}",
+										"commit"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "replace"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Post Commit Update",
+					"item": [
+						{
+							"name": "Post Data",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Create a variable called 'jsondata' and set its value to the entire responseBody",
+											"let jsonData = JSON.parse(responseBody);",
+											"",
+											"// Create a variable called 'id' and set its value to the responseBody ID field value",
+											"let id = jsonData.id;",
+											"",
+											"//Assert that the HTTP response is either 200, 201, 202",
+											"pm.test(\"Status code is \" + pm.response.code, function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+											"});",
+											"",
+											"//Create an environment variable called 'id1' and set it to the value of the 'id' variable ",
+											"pm.environment.set(\"id1\",id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DNA\",\r\n        \"individualReferenceId\": \"REF14\",\r\n        \"barcode\": \"CODE14\",\r\n        \"YearOfBirth\": 1938,\r\n        \"dateCreated\": \"2010-02-16T09:58:30-00:00\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+								},
+								"url": {
+									"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"submit",
+										"{{user-biobank-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Commit (update)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Flag To Test If Re-Run Test",
+											"var rerun = true;",
+											"",
+											"pm.test(\"Status code is 202 Accepted\", () => {",
+											"    pm.response.to.have.status(202);",
+											"    rerun = false;",
+											"});",
+											"",
+											"// 202 Not Returned - Try Again",
+											"if (rerun) {",
+											"    postman.setNextRequest(pm.request.name);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Wait 15 Seconds Until Prevent Submission Is Processed",
+											"setTimeout(function () {}, 15 * 1000);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{api-url}}/{{user-biobank-id}}/commit?type=update",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"{{user-biobank-id}}",
+										"commit"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "update"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{user-token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"function IsSuccessCode(statusCode) {",
+					"    return statusCode == 200 || statusCode == 201;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
