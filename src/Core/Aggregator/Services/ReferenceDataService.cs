@@ -1,6 +1,7 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Extensions;
 using System.Linq;
 
@@ -30,6 +31,9 @@ namespace Biobanks.Aggregator.Services
 
         public DonorCount GetDonorCount(int count)
             => _db.DonorCounts.First(x => x.LowerBound <= count && x.UpperBound >= count);
+
+        public OntologyTerm GetOntologyTerm(string id)
+            => _db.OntologyTerms.FirstOrDefault(x => x.Id == id);
 
         public AgeRange GetDefaultAgeRange()
             => _db.AgeRanges.First(x => x.LowerBound == null && x.UpperBound == null);
