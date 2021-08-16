@@ -84,9 +84,19 @@ namespace Core.Jobs
                 throw new ArgumentException("Supplied baseSample is null, or is referencing a non-existent SampleContent");
 
             var organisation = await _organisationService.GetById(baseSample.OrganisationId);
+            var collectionName = _aggregationService.GenerateCollectionName(baseSample);
+
+            // Check Organisation Has Properly Configured Default Values
+            if (organisation.AccessCondition is null || organisation.CollectionType is null)
+            {
+                // Log Warning
+                Console.WriteLine($"Could not aggregate {collectionName} for {organisation.Name} due to missing default aggregation values.");
+
+                // Return As We Can Not Aggregate These Samples
+                return;
+            }
 
             // Find Exisiting Or Generate New Collection
-            var collectionName = _aggregationService.GenerateCollectionName(baseSample);
             var collection = await _collectionService.GetCollection(organisation.OrganisationId, collectionName);
 
             // Generate Collection If None Existing
