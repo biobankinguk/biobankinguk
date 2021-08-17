@@ -146,27 +146,27 @@ namespace Biobanks.Services
         public async Task UpdateSampleSetDetails(int sampleSetId)
         {
             // Get the entire sample set object from the database.
-            var updatedSampleSet = await _biobankReadService.GetSampleSetByIdForIndexingAsync(sampleSetId);
+            var sampleSet = await _biobankReadService.GetSampleSetByIdForIndexingAsync(sampleSetId);
 
-            // Queue up a job to update the sample set in the search index.
-            BackgroundJob.Enqueue(() => _indexProvider.UpdateCollectionSearchDocument(
-                updatedSampleSet.Id,
-                new PartialSampleSet
+            // Partial Sample Set For Indexing
+            var partialSampleSet = new PartialSampleSet
+            {
+                Sex = sampleSet.Sex.Value,
+                AgeRange = sampleSet.AgeRange.Value,
+                AgeRangeMetadata = JsonConvert.SerializeObject(new
                 {
-                    Sex = updatedSampleSet.Sex.Value,
-                    AgeRange = updatedSampleSet.AgeRange.Value,
-                    AgeRangeMetadata = JsonConvert.SerializeObject(new
-                    {
-                        Name = updatedSampleSet.AgeRange.Value,
-                        updatedSampleSet.AgeRange.SortOrder
-                    }),
-                    DonorCount = updatedSampleSet.DonorCount.Value,
-                    DonorCountMetadata = JsonConvert.SerializeObject(new
-                    {
-                        Name = updatedSampleSet.DonorCount.Value,
-                        updatedSampleSet.DonorCount.SortOrder
-                    }),
-                    MaterialPreservationDetails = updatedSampleSet.MaterialDetails
+                    Name = sampleSet.AgeRange.Value,
+                    sampleSet.AgeRange.SortOrder
+                }),
+                DonorCount = sampleSet.DonorCount.Value,
+                DonorCountMetadata = JsonConvert.SerializeObject(new
+                {
+                    Name = sampleSet.DonorCount.Value,
+                    sampleSet.DonorCount.SortOrder
+                }),
+                MaterialPreservationDetails = 
+                    sampleSet
+                        .MaterialDetails
                         .Select(x => new MaterialPreservationDetailDocument
                         {
                             MaterialType = x.MaterialType.Value,
@@ -177,14 +177,19 @@ namespace Biobanks.Services
                                 x.StorageTemperature.SortOrder
                             }),
                             MacroscopicAssessment = x.MacroscopicAssessment.Value,
-                            PercentageOfSampleSet = x.CollectionPercentage.Value
-                        }),
-                    SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
-                        updatedSampleSet.DonorCount.Value, 
-                        updatedSampleSet.AgeRange.Value,
-                        updatedSampleSet.Sex.Value,
-                        updatedSampleSet.MaterialDetails)
-                }));
+                            PercentageOfSampleSet = x.CollectionPercentage?.Value
+                        })
+                        .ToList(),
+                SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
+                        sampleSet.DonorCount.Value,
+                        sampleSet.AgeRange.Value,
+                        sampleSet.Sex.Value,
+                        sampleSet.MaterialDetails)
+            };
+
+            // Queue up a job to update the sample set in the search index.
+            BackgroundJob.Enqueue(() => 
+                _indexProvider.UpdateCollectionSearchDocument(sampleSet.Id, partialSampleSet));
         }
 
         public async Task UpdateCapabilityDetails(int capabilityId)
