@@ -34,8 +34,7 @@ namespace Biobanks.Directory.Services
             if (await HasSampleSets(id))
                 return false;
 
-            var collection = new Collection { OrganisationId = id };
-            _db.Collections.Attach(collection);
+            var collection = await _db.Collections.FindAsync(id);
             _db.Collections.Remove(collection);
 
             await _db.SaveChangesAsync();
