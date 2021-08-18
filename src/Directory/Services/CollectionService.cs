@@ -45,6 +45,13 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Collection> Add(Collection collection)
         {
+            // Match Consent Restritions
+            var consentIds = collection.ConsentRestrictions?.Select(x => x.Id) ?? Enumerable.Empty<int>();
+
+            collection.ConsentRestrictions = await _db.ConsentRestrictions
+                .Where(x => consentIds.Contains(x.Id))
+                .ToListAsync();
+
             // Update Timestamp
             collection.LastUpdated = DateTime.Now;
 
