@@ -14,12 +14,14 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<Organisation>> ListByExternalIds(IList<string> biobankExternalIds);
         Task<IEnumerable<Organisation>> ListByAnonymousIdentifiers(IEnumerable<Guid> biobankAnonymousIdentifiers);
 
+        Task<IEnumerable<Organisation>> ListByNetworkId(int networkId);
+        Task<IEnumerable<Organisation>> ListByNetworkIdForIndexing(int networkId);
+
         Task<OrganisationType> GetBiobankOrganisationTypeAsync();
 
         Task<Organisation> Get(int biobankId);
         Task<Organisation> GetForIndexing(int biobankId);
         Task<Organisation> GetByName(string biobankName);
-
 
         Task<Organisation> GetByExternalId(string externalId);
         Task<Organisation> GetByExternalIdForSearch(string externalId);

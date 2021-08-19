@@ -482,62 +482,6 @@ namespace Biobanks.Services
             await _organisationServiceOfferingRepository.SaveChangesAsync();
         }
 
-        public async Task<Network> CreateNetworkAsync(Network network)
-        {
-            _networkRepository.Insert(network);
-            var result = await _networkRepository.SaveChangesAsync();
-            if (result != 1) throw new DataException(); //shouldn't be doing anything other than inserting one network!
-
-            return network;
-        }
-
-        public async Task<Network> UpdateNetworkAsync(NetworkDTO networkDto)
-        {
-            // get the network entity and update it, update elastic, return network
-            var network = await _networkRepository.GetByIdAsync(networkDto.NetworkId);
-
-            _mapper.Map(networkDto, network);
-
-            network.LastUpdated = DateTime.Now;
-
-            await _networkRepository.SaveChangesAsync();
-
-            await _indexService.UpdateNetwork(network.NetworkId);
-
-            return network;
-        }
-
-        public async Task RemoveUserFromNetworkAsync(string userId, int networkId)
-        {
-            await
-                _networkUserRepository.DeleteWhereAsync(
-                    x => x.NetworkUserId == userId && x.NetworkId == networkId);
-
-            await _networkUserRepository.SaveChangesAsync();
-        }
-
-        public async Task RemoveBiobankFromNetworkAsync(int biobankId, int networkId)
-        {
-            var bb = await _organisationRepository.GetByIdAsync(biobankId);
-
-            if (bb == null || bb.IsSuspended) throw new ApplicationException();
-
-            await _networkOrganisationRepository.DeleteWhereAsync(
-                    x => x.NetworkId == networkId && x.OrganisationId == biobankId);
-
-            await _networkOrganisationRepository.SaveChangesAsync();
-
-            if (!await _organisationService.IsSuspended(biobankId))
-                await _indexService.JoinOrLeaveNetwork(biobankId);
-        }
-
-        public async Task<OrganisationNetwork> UpdateOrganisationNetworkAsync(OrganisationNetwork organisationNetwork)
-        {
-            _organisationNetworkRepository.Update(organisationNetwork);
-            await _organisationNetworkRepository.SaveChangesAsync();
-            return organisationNetwork;
-        }
-
         public async Task DeleteOntologyTermAsync(OntologyTerm ontologyTerm)
         {
             await _ontologyTermRepository.DeleteAsync(ontologyTerm.Id);

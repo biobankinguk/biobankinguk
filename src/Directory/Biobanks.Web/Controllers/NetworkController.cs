@@ -189,8 +189,8 @@ namespace Biobanks.Web.Controllers
 
             if (create)
             {
-                network = await _networkService.CreateNetworkAsync(network);
-                await _networkService.AddUserToNetwork(User.Identity.GetUserId(), network.NetworkId);
+                network = await _networkService.Create(network);
+                await _networkService.AddNetworkUser(User.Identity.GetUserId(), network.NetworkId);
 
                 //update the request to show network created
                 var request = await _networkService.GetRegistrationRequestByEmail(User.Identity.Name);
@@ -398,7 +398,7 @@ namespace Biobanks.Web.Controllers
             //we exclude the current user when we are making the list for them
             //but we may want the full list in other circumstances
             var admins =
-                (await _networkService.ListNetworkAdminsAsync(networkId))
+                (await _networkService.ListAdmins(networkId))
                     .Select(nwAdmin => new RegisterEntityAdminModel
                     {
                         UserId = nwAdmin.Id,
@@ -518,7 +518,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/network relationship
-            await _networkService.AddUserToNetwork(user.Id, networkId);
+            await _networkService.AddNetworkUser(user.Id, networkId);
 
             //add user to NetworkAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.NetworkAdmin.ToString());
@@ -538,7 +538,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName)
         {
             //remove them from the network
-            await _networkService.RemoveUserFromNetworkAsync(networkUserId, SessionHelper.GetNetworkId(Session));
+            await _networkService.RemoveNetworkUser(networkUserId, SessionHelper.GetNetworkId(Session));
 
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(networkUserId, Role.NetworkAdmin.ToString());
@@ -591,7 +591,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                await _networkService.RemoveBiobankFromNetworkAsync(biobankId, SessionHelper.GetNetworkId(Session));
+                await _networkService.RemoveOrganisationFromNetwork(biobankId, SessionHelper.GetNetworkId(Session));
                 
                 //send back to the Biobanks list, with feedback (the list may be very long!
                 SetTemporaryFeedbackMessage(biobankName + " has been removed from your network!", FeedbackMessageType.Success);

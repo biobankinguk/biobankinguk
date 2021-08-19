@@ -863,7 +863,7 @@ namespace Biobanks.Web.Controllers
             {
                 //get the admins
                 network.Admins =
-                    (await _networkService.ListNetworkAdminsAsync(network.NetworkId)).Select(x => new RegisterEntityAdminModel
+                    (await _networkService.ListAdmins(network.NetworkId)).Select(x => new RegisterEntityAdminModel
                     {
                         UserId = x.Id,
                         UserFullName = x.Name,

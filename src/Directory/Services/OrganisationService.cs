@@ -52,6 +52,27 @@ namespace Biobanks.Directory.Services
                 .ToListAsync();
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<Organisation>> ListByNetworkId(int networkId)
+            => await _db.OrganisationNetworks
+                .AsNoTracking()
+                .Include(x => x.Organisation)
+                .Where(x => x.NetworkId == networkId && !x.Organisation.IsSuspended)
+                .Select(x => x.Organisation)
+                .ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<Organisation>> ListByNetworkIdForIndexing(int networkId)
+            => await _db.OrganisationNetworks
+                .AsNoTracking()
+                .Include(x => x.Organisation)
+                .Include(x => x.Organisation.Collections)
+                .Include(x => x.Organisation.Collections.Select(c => c.SampleSets))
+                .Include(x => x.Organisation.DiagnosisCapabilities)
+                .Where(x => x.NetworkId == networkId && !x.Organisation.IsSuspended)
+                .Select(x => x.Organisation)
+                .ToListAsync();
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<Organisation>> ListByUserId(string userId)
             => await _db.OrganisationUsers
                 .AsNoTracking()

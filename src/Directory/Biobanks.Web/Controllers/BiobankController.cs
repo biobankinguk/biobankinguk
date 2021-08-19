@@ -1721,7 +1721,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> NetworkAcceptance()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
-            var organisationNetworks = await _networkService.GetOrganisationNetworksAsync(biobankId);
+            var organisationNetworks = await _networkService.ListOrganisationNetworks(biobankId);
             var networkList = new List<NetworkAcceptanceModel>();
             foreach (var orgNetwork in organisationNetworks)
             {
@@ -1749,11 +1749,11 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
         {
-            var organisationNetworks = await _networkService.GetOrganisationNetworkAsync(biobankId, networkId);
+            var organisationNetworks = await _networkService.GetOrganisationNetwork(biobankId, networkId);
             var organisationNetwork = organisationNetworks.First();
 
             organisationNetwork.ApprovedDate = DateTime.Now;
-            await _networkService.UpdateOrganisationNetworkAsync(organisationNetwork);
+            await _networkService.UpdateOrganisationNetwork(organisationNetwork);
 
             SetTemporaryFeedbackMessage("Biobank added to the network successfully", FeedbackMessageType.Success);
 
