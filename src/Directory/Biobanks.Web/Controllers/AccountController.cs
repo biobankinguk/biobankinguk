@@ -18,6 +18,7 @@ using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Biobanks.Directory.Services.Contracts;
+using Hangfire.States;
 
 namespace Biobanks.Web.Controllers
 {
@@ -626,37 +627,33 @@ namespace Biobanks.Web.Controllers
         {
             var userId = CurrentUser.Identity.GetUserId();
             var user = _userManager.FindById(userId);
-            List<KeyValuePair<int, string>> networks;
-
+           
             // Refresh user cookies - ensures user has correct Roles
             await _signinManager.RefreshSignInAsync(user);
             await _claimsManager.SetUserClaimsAsync(user.Email);
 
-            if (newNetwork)
-                networks = _networkService.GetAcceptedNetworkRequestIdsAndNamesByUserId(userId); 
-            else 
-                networks = _networkService.GetNetworkIdsAndNamesByUserId(userId);
+            var networks = newNetwork
+                ? (await _networkService.ListAcceptedRegistrationRequestsByUserId(userId))
+                    .Select(x => (Id: x.NetworkRegisterRequestId, Name: x.NetworkName))
+                : (await _networkService.ListByUserId(userId))
+                    .Select(x => (Id: x.NetworkId, Name: x.Name));
+
+            var network = networks.FirstOrDefault(x => x.Id == id);
 
             // if they don't have access to any biobanks, 403
-            if (networks == null || networks.Count <= 0) return RedirectToAction("Forbidden");
-
-            var network = networks.FirstOrDefault(o => o.Key == id);
-
-            // if they don't have access to this biobank, 403
-            if(network.Equals(default(KeyValuePair<int, string>)))
+            if (network == default) 
                 return RedirectToAction("Forbidden");
 
             // else they do have access to this biobank - set session data and go to collections
-            Session[SessionKeys.ActiveOrganisationId] = network.Key;
-            Session[SessionKeys.ActiveOrganisationName] = network.Value;
+            Session[SessionKeys.ActiveOrganisationId] = network.Id;
+            Session[SessionKeys.ActiveOrganisationName] = network.Name;
 
-            if(newNetwork)
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewNetwork;
-            else
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
+            Session[SessionKeys.ActiveOrganisationType] = newNetwork 
+                ? ActiveOrganisationType.NewNetwork
+                : ActiveOrganisationType.Network;
 
-            return newNetwork ? 
-                RedirectToAction("Edit", "Network", new { detailsIncomplete = true } ) 
+            return newNetwork 
+                ? RedirectToAction("Edit", "Network", new { detailsIncomplete = true } ) 
                 : RedirectToAction("Biobanks", "Network");
         }
 

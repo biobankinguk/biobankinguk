@@ -214,8 +214,7 @@ namespace Biobanks.Web.Controllers
                     try
                     {
                         network.Logo = await UploadNetworkLogoAsync(model.Logo, network.NetworkId);
-                        var networkDto = _mapper.Map<NetworkDTO>(network);
-                        await _networkService.UpdateNetworkAsync(networkDto);
+                        await _networkService.Update(network);
                     }
                     catch (ArgumentNullException)
                     {
@@ -235,9 +234,7 @@ namespace Biobanks.Web.Controllers
                 network.HandoverNonMembers = model.HandoverNonMembers;
                 network.HandoverNonMembersUrlParamName = model.HandoverNonMembersUrlParamName;
 
-                var networkDto = _mapper.Map<NetworkDTO>(network);
-
-                await _networkService.UpdateNetworkAsync(networkDto);
+                await _networkService.Update(network);
             }
 
             SetTemporaryFeedbackMessage("Network details updated!", FeedbackMessageType.Success);
@@ -558,7 +555,7 @@ namespace Biobanks.Web.Controllers
         {
             var networkId = SessionHelper.GetNetworkId(Session);
             var networkBiobanks =
-                (await _networkService.GetBiobanksByNetworkIdAsync(SessionHelper.GetNetworkId(Session))).ToList();
+                (await _organisationService.ListByNetworkId(SessionHelper.GetNetworkId(Session))).ToList();
 
             var biobanks = networkBiobanks.Select(x => new NetworkBiobankModel
             {
@@ -572,8 +569,8 @@ namespace Biobanks.Web.Controllers
                 biobank.Admins =
                     (await _biobankReadService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => x.Email).ToList();
 
-                var organisationNetwork = await _networkService.GetOrganisationNetworkAsync(biobank.BiobankId, networkId);
-                biobank.ApprovedDate = organisationNetwork.First().ApprovedDate;
+                var organisationNetwork = await _networkService.GetOrganisationNetwork(biobank.BiobankId, networkId);
+                biobank.ApprovedDate = organisationNetwork.ApprovedDate;
             }
 
             //Get OrganisationNetwork with biobankId and networkId

@@ -319,7 +319,7 @@ namespace Biobanks.Services
         public async Task UpdateNetwork(int networkId)
         {
             // For all biobanks attached to this network.
-            foreach (var biobank in await _networkService.GetBiobanksByNetworkIdForIndexingAsync(networkId))
+            foreach (var biobank in await _organisationService.ListByNetworkIdForIndexing(networkId))
             {
                 // Build the list of network documents.
                 var networkDocuments = biobank.OrganisationNetworks

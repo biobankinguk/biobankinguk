@@ -72,11 +72,16 @@ namespace Biobanks.Services
             // Additionally, add claims for accepted network requests
             if (userRoles.Any(x => x == Role.NetworkAdmin.ToString()))
             {
-                var networks = _networkService.GetNetworkIdsAndNamesByUserId(user.Id);
-                claims.AddRange(networks.Select(network => new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(network))));
+                var networks = await _networkService.ListByUserId(user.Id);
+                var networkRequests = await _networkService.ListAcceptedRegistrationRequestsByUserId(user.Id);
+                
+                claims.AddRange(networks
+                    .Select(x => new KeyValuePair<int, string>(x.NetworkId, x.Name))
+                    .Select(x => new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(x))));
 
-                var networkRequests = _networkService.GetAcceptedNetworkRequestIdsAndNamesByUserId(user.Id);
-                claims.AddRange(networkRequests.Select(networkRequest => new Claim(CustomClaimType.NetworkRequest, JsonConvert.SerializeObject(networkRequest))));
+                claims.AddRange(networkRequests
+                    .Select(x => new KeyValuePair<int, string>(x.NetworkRegisterRequestId, x.NetworkName))
+                    .Select(x => new Claim(CustomClaimType.NetworkRequest, JsonConvert.SerializeObject(x))));
             }
 
             AddClaims(claims);

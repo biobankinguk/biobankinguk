@@ -145,7 +145,7 @@ namespace Biobanks.Web.Controllers
                 } //no problem, just means no logo uploaded in this form submission
             }
 
-            var biobank = _mapper.Map<OrganisationDTO>(model);
+            var biobank = _mapper.Map<Organisation>(model);
 
             //Update bits Automapper doesn't do
             biobank.Logo = logoName;
@@ -155,9 +155,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<Organisation> CreateBiobank(BiobankDetailsModel model)
         {
-            var biobankDto = _mapper.Map<OrganisationDTO>(model);
-
-            var biobank = await _organisationService.Create(biobankDto);
+            var biobank = await _organisationService.Create(_mapper.Map<Organisation>(model));
             await _organisationService.AddUser(User.Identity.GetUserId(), biobank.OrganisationId);
 
             //update the request to show org created
@@ -184,14 +182,13 @@ namespace Biobanks.Web.Controllers
                     var logoStream = model.Logo.ToProcessableStream();
 
                     //use the DTO again to update
-                    biobankDto = _mapper.Map<OrganisationDTO>(biobank); //Update it against the real bb, now it has been created
-                    biobankDto.Logo = await
+                    biobank.Logo = await
                                 _biobankWriteService.StoreLogoAsync(logoStream,
                                     model.Logo.FileName,
                                     model.Logo.ContentType,
                                     biobank.OrganisationExternalId);
 
-                    biobank = await _organisationService.Update(biobankDto);
+                    biobank = await _organisationService.Update(biobank);
                 }
                 catch (ArgumentNullException) //no problem, just means no logo uploaded in this form submission
                 {
@@ -1749,8 +1746,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
         {
-            var organisationNetworks = await _networkService.GetOrganisationNetwork(biobankId, networkId);
-            var organisationNetwork = organisationNetworks.First();
+            var organisationNetwork = await _networkService.GetOrganisationNetwork(biobankId, networkId);
 
             organisationNetwork.ApprovedDate = DateTime.Now;
             await _networkService.UpdateOrganisationNetwork(organisationNetwork);
@@ -2095,12 +2091,12 @@ namespace Biobanks.Web.Controllers
         {
             //update Organisations table
             var biobankId = model.BiobankId;
-            var biobank = await _organisationService.Get(biobankId);
+            var organisation = await _organisationService.Get(biobankId);
 
-            biobank.CollectionTypeId = model.CollectionType;
-            biobank.AccessConditionId = model.AccessCondition;
+            organisation.CollectionTypeId = model.CollectionType;
+            organisation.AccessConditionId = model.AccessCondition;
 
-            await _organisationService.Update(_mapper.Map<OrganisationDTO>(biobank));
+            await _organisationService.Update(organisation);
 
             //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);

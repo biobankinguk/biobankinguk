@@ -59,9 +59,11 @@ namespace Biobanks.Web.Controllers
             try
             {
                 var organisations = await _organisationService.List();
+                
                 foreach (var organisation in organisations)
                 {
-                    await _organisationService.UpdateOrganisationURLAsync(organisation.OrganisationId);
+                    // Update Method Automatically Fixes URL
+                    await _organisationService.Update(organisation);
                 }
                 
             }

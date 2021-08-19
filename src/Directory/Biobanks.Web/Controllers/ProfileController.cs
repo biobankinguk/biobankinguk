@@ -127,19 +127,19 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> Network(int id)
         {
-            var nw = await _networkService.Get(id);
+            var network = await _networkService.Get(id);
+            var organisations = await _organisationService.ListByNetworkId(id);
 
             var model = new NetworkModel
             {
-                Id = nw.NetworkId,
-                Name = nw.Name,
-                Description = nw.Description,
-                Url = nw.Url,
-                Logo = nw.Logo,
-                ContactEmail = nw.Email,
-                SopStatus = nw.SopStatus.Value,
-                BiobankMembers = (await _networkService.GetBiobanksByNetworkIdAsync(id)).Select(
-                    x => new BiobankMemberModel
+                Id = network.NetworkId,
+                Name = network.Name,
+                Description = network.Description,
+                Url = network.Url,
+                Logo = network.Logo,
+                ContactEmail = network.Email,
+                SopStatus = network.SopStatus.Value,
+                BiobankMembers = organisations.Select(x => new BiobankMemberModel
                     {
                         Id = x.OrganisationId,
                         ExternalId = x.OrganisationExternalId,
