@@ -32,7 +32,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<OrganisationType> GetBiobankOrganisationTypeAsync()
+        public async Task<OrganisationType> GetOrganisationType()
             => await _db.OrganisationTypes.FirstOrDefaultAsync(x => x.Description == "Biobank");
 
         /// <inheritdoc/>
@@ -97,7 +97,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> Get(int id)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.Organisations
                 .Include(x => x.ApiClients)
@@ -109,7 +109,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> GetForIndexing(int id)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.Organisations
                 .Include(x => x.Collections)
@@ -123,7 +123,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> GetByName(string name)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.Organisations
                 .Include(x => x.OrganisationAnnualStatistics)
@@ -133,7 +133,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> GetByExternalId(string externalId)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.Organisations
                 .Include(x => x.OrganisationAnnualStatistics)
@@ -143,7 +143,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> GetByExternalIdForSearch(string externalId)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
             return await _db.Organisations
                 .Include(x => x.DiagnosisCapabilities)
                 .Include(x => x.DiagnosisCapabilities.Select(c => c.SampleCollectionMode))
@@ -158,7 +158,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> Create(Organisation organisation)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             // TODO: Support ISO3 Country Codes
             organisation.OrganisationExternalId = "GBR-" + type.OrganisationTypeId + "-";
@@ -218,7 +218,7 @@ namespace Biobanks.Directory.Services
         }
         
         /// <inheritdoc/>
-        public async Task<OrganisationUser> AddUser(string userId, int organisationId)
+        public async Task<OrganisationUser> AddUserToOrganisation(string userId, int organisationId)
         {
             // TODO: Do we need any validation here?
             var user = new OrganisationUser
@@ -235,7 +235,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task RemoveUser(string userId, int organisationId)
+        public async Task RemoveUserFromOrganisation(string userId, int organisationId)
         {
             var user = new OrganisationUser
             {
@@ -250,7 +250,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<bool> AddFunder(int funderId, int organisationId)
+        public async Task<bool> AddFunderToOrganisation(int funderId, int organisationId)
         {
             var organisation = await Get(organisationId);
             
@@ -330,7 +330,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListOpenRegistrationRequests()
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.OrganisationRegisterRequests
                 .Where(x =>
@@ -344,7 +344,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequests()
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.OrganisationRegisterRequests
                 .AsNoTracking()
@@ -359,7 +359,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalRegistrationRequests()
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.OrganisationRegisterRequests
                 .Where(x =>
@@ -376,7 +376,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> GetRegistrationRequestByName(string name)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.OrganisationRegisterRequests
                 .FirstOrDefaultAsync(x => x.OrganisationName == name && x.OrganisationTypeId == type.OrganisationTypeId);
@@ -385,7 +385,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> GetRegistrationRequestByEmail(string email)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.OrganisationRegisterRequests
                 .Where(x => x.OrganisationTypeId == type.OrganisationTypeId)
@@ -426,7 +426,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<bool> RegistrationRequestExists(string name)
         {
-            var type = await GetBiobankOrganisationTypeAsync();
+            var type = await GetOrganisationType();
 
             return await _db.OrganisationRegisterRequests
                 .AnyAsync(x =>

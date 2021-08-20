@@ -167,7 +167,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //get the org type id for biobanks
-            var type = await _organisationService.GetBiobankOrganisationTypeAsync();
+            var type = await _organisationService.GetOrganisationType();
 
             //Create a register request for this user and Biobank
             var request = await _organisationService.AddRegistrationRequest(

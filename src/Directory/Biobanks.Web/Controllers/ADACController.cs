@@ -490,7 +490,7 @@ namespace Biobanks.Web.Controllers
                 }).SingleOrDefault(x => x.UserId == biobankUserId).UserFullName;
 
             //remove them from the network
-            await _organisationService.RemoveUser(biobankUserId, biobankId);
+            await _organisationService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
@@ -620,7 +620,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/biobank relationship
-            await _organisationService.AddUser(user.Id, biobankId);
+            await _organisationService.AddUserToOrganisation(user.Id, biobankId);
 
             //add user to BiobankAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
