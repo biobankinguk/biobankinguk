@@ -15,20 +15,29 @@ using System.Threading.Tasks;
 using Biobanks.Identity.Data.Entities;
 using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
+using AutoMapper;
 
 namespace Biobanks.Directory.Services
 {
     public class OrganisationService : IOrganisationService
     {
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
+        private readonly IBiobankIndexService _indexService;
         private readonly BiobanksDbContext _db;
+
+        private readonly IMapper _mapper;
 
         public OrganisationService(
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            BiobanksDbContext db)
+            IBiobankIndexService indexService,
+            BiobanksDbContext db,
+            IMapper mapper)
         {
             _userManager = userManager;
+            _indexService = indexService;
             _db = db;
+
+            _mapper = mapper;
         }
 
         /// <inheritdoc/>
@@ -177,7 +186,7 @@ namespace Biobanks.Directory.Services
             // Update External Id
             organisation.OrganisationExternalId += organisation.OrganisationId;
 
-            //await UpdateBiobankAsync(organisation);
+            await Update(organisation);
 
             return organisation;
         }
@@ -185,30 +194,38 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> Update(Organisation organisation)
         {
-            var biobank = await Get(organisation.OrganisationId);
+            var existingOrganisation = await Get(organisation.OrganisationId);
+
+            // Map Most Fields Automatically
+            _mapper.Map(organisation, existingOrganisation);
 
             // Update Timestamp
-            biobank.LastUpdated = DateTime.Now;
+            existingOrganisation.LastUpdated = DateTime.Now;
 
-            // TODO: Map Fields
-            biobank.Url = UrlTransformer.Transform(organisation.Url);
+            // Enforce Proper URL Syntax
+            existingOrganisation.Url = UrlTransformer.Transform(organisation.Url);
+
+            // FK Can Be Referenced By Entity Instance or Directly
+            existingOrganisation.AccessConditionId = organisation.AccessCondition?.Id ?? organisation.AccessConditionId;
+            existingOrganisation.CollectionTypeId = organisation.CollectionType?.Id ?? organisation.CollectionTypeId;
+            existingOrganisation.CountryId = organisation.Country?.Id ?? organisation.CountryId;
+            existingOrganisation.CountyId = organisation.County?.Id ?? organisation.CountyId;
+            existingOrganisation.OrganisationTypeId = organisation.OrganisationType?.OrganisationTypeId ?? organisation.OrganisationTypeId;
 
             // Ensure Organisation Has An Anonymous Identifier
-            if (!biobank.AnonymousIdentifier.HasValue)
-                biobank.AnonymousIdentifier = Guid.NewGuid();
+            if (!existingOrganisation.AnonymousIdentifier.HasValue)
+                existingOrganisation.AnonymousIdentifier = Guid.NewGuid();
 
-            // TODO: Solve circular dependency
-            //if (!await IsBiobankSuspendedAsync(biobank.OrganisationId))
-                //await _indexService.UpdateBiobankDetails(biobank.OrganisationId);
+            if (!await IsSuspended(organisation.OrganisationId))
+                await _indexService.UpdateBiobankDetails(organisation.OrganisationId);
 
-            return biobank;
+            return existingOrganisation;
         }
 
         /// <inheritdoc/>
         public async Task Delete(int id)
         {
-            // TODO: Solve this circular dependency
-            //await _indexService.BulkDeleteBiobank(id);
+            await _indexService.BulkDeleteBiobank(id);
 
             var organisation = new Organisation { OrganisationId = id };
             _db.Organisations.Attach(organisation);
@@ -253,8 +270,6 @@ namespace Biobanks.Directory.Services
         public async Task<bool> AddFunderToOrganisation(int funderId, int organisationId)
         {
             var organisation = await Get(organisationId);
-            
-            // TODO: User FunderService?
             var funder = await _db.Funders.FirstOrDefaultAsync(x => x.Id == funderId); 
 
             if (organisation is null || funder is null)
@@ -407,7 +422,15 @@ namespace Biobanks.Directory.Services
         {
             var currentRequest = await _db.OrganisationRegisterRequests.FindAsync(request.OrganisationRegisterRequestId);
 
-            //TODO: Figure Out What Needs Mapping Over
+            currentRequest.UserName = request.UserName;
+            currentRequest.UserEmail = request.UserEmail;
+            currentRequest.OrganisationName = request.OrganisationName;
+            currentRequest.OrganisationTypeId = request.OrganisationType?.OrganisationTypeId ?? request.OrganisationTypeId;
+            
+            currentRequest.RequestDate = request.RequestDate;
+            currentRequest.AcceptedDate = request.AcceptedDate;
+            currentRequest.OrganisationCreatedDate = request.OrganisationCreatedDate;
+            currentRequest.DeclinedDate = request.DeclinedDate;
 
             await _db.SaveChangesAsync();
 
