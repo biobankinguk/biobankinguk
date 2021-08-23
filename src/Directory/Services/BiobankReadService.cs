@@ -1165,7 +1165,7 @@ namespace Biobanks.Services
         #region RefData: OntologyTerm
 
         protected IQueryable<OntologyTerm> QueryOntologyTerms(
-            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false)
+            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false, bool filterId = true)
         {
             var query = _context.OntologyTerms
                 .AsNoTracking()
@@ -1174,7 +1174,7 @@ namespace Biobanks.Services
                 .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
            
             // Filter By ID
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id) && filterId)
                 query = query.Where(x => x.Id == id);
 
             // Filter By Description
@@ -1208,8 +1208,8 @@ namespace Biobanks.Services
         public async Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false)
             => await QueryOntologyTerms(id, description, tags, onlyDisplayable).SingleOrDefaultAsync();
 
-        public async Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null)
-            => await QueryOntologyTerms(id, description, tags).AnyAsync();
+        public async Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false, bool filterId = true)
+            => await QueryOntologyTerms(id, description, tags, onlyDisplayable, filterId).AnyAsync();
 
         public async Task<int> CountOntologyTerms(string description = null, List<string> tags = null)
             => await QueryOntologyTerms(id: null, description, tags).CountAsync();
