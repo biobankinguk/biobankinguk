@@ -1,3 +1,4 @@
+using Biobanks.Entities.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,14 +19,17 @@ namespace Biobanks.Services.Contracts
         void DeleteCapability(int capabilityId);
         Task UpdateCollectionDetails(int collectionId);
         Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm);
-        Task UpdateBiobankDetails(int biobankId);
-        Task UpdateNetwork(int networkId);
-        Task JoinOrLeaveNetwork(int biobankId);
+        
+        void UpdateOrganisationDetails(Organisation organisation);
+        void JoinOrLeaveNetwork(Organisation organisation);
 
-        Task BulkIndexBiobank(int biobankId);
+        Task UpdateNetwork(Network network);
+
+        Task BulkIndexBiobank(Organisation organisation);
+        void BulkDeleteBiobank(Organisation organisation);
+
         Task BulkIndexSampleSets(IList<int> sampleSetIds);
         Task BulkIndexCapabilities(IList<int> capabilityIds);
-        Task BulkDeleteBiobank(int biobankId);
         void BulkDeleteSampleSets(IList<int> sampleSetIds);
         void BulkDeleteCapabilities(IList<int> capabilityIds);
 

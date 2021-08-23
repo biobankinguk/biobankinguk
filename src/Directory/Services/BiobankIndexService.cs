@@ -15,7 +15,7 @@ using Biobanks.Services.Extensions;
 using System.IO;
 using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data;
 
 namespace Biobanks.Services
 {
@@ -23,22 +23,15 @@ namespace Biobanks.Services
     {
         private const int BulkIndexChunkSize = 100;
 
-        private readonly INetworkService _networkService;
-        private readonly IOrganisationService _organisationService;
-
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
         private readonly ISearchProvider _searchProvider;
 
         public BiobankIndexService(
-            INetworkService networkService,
-            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider)
         {
-            _networkService = networkService;
-            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
@@ -281,11 +274,8 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task UpdateBiobankDetails(int biobankId)
+        public void UpdateOrganisationDetails(Organisation biobank)
         {
-            // Get the biobank from the database.
-            var biobank = await _organisationService.GetForIndexing(biobankId);
-
             var partialBiobank = new PartialBiobank
             {
                 Biobank = biobank.Name,
@@ -316,10 +306,10 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task UpdateNetwork(int networkId)
+        public async Task UpdateNetwork(Network network)
         {
             // For all biobanks attached to this network.
-            foreach (var biobank in await _organisationService.ListByNetworkIdForIndexing(networkId))
+            foreach (var biobank in network.OrganisationNetworks.Select(x => x.Organisation))
             {
                 // Build the list of network documents.
                 var networkDocuments = biobank.OrganisationNetworks
@@ -357,16 +347,14 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task JoinOrLeaveNetwork(int biobankId)
+        //TODO: Current unused method
+        public void JoinOrLeaveNetwork(Organisation organisation)
         {
-            // Get the biobank from the database.
-            var biobank = await _organisationService.GetForIndexing(biobankId);
-
             // Update all search documents that are relevant to this biobank.
-            foreach (var sampleSet in biobank.Collections.SelectMany(c => c.SampleSets))
+            foreach (var sampleSet in organisation.Collections.SelectMany(c => c.SampleSets))
             {
                 // Build the list of network documents.
-                var networkDocuments = biobank.OrganisationNetworks
+                var networkDocuments = organisation.OrganisationNetworks
                     .Select(on => on.Network)
                     .Select(n => new NetworkDocument
                     {
@@ -384,15 +372,12 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task BulkIndexBiobank(int biobankId)
+        public async Task BulkIndexBiobank(Organisation organisation)
         {
-            //Get the biobank, complete with collections, samplesets, capabilities
-            var biobank = await _organisationService.GetForIndexing(biobankId);
-
             //Index samplesets
             await
                 BulkIndexSampleSets(
-                    biobank.Collections
+                    organisation.Collections
                         .SelectMany(x => x.SampleSets)
                         .Select(x => x.Id)
                         .ToList());
@@ -400,7 +385,7 @@ namespace Biobanks.Services
             //Index capabilities
             await
                 BulkIndexCapabilities(
-                    biobank.DiagnosisCapabilities
+                    organisation.DiagnosisCapabilities
                         .Select(x => x.DiagnosisCapabilityId)
                         .ToList());
         }
@@ -468,21 +453,18 @@ namespace Biobanks.Services
                     .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
         }
 
-        public async Task BulkDeleteBiobank(int biobankId)
+        public void BulkDeleteBiobank(Organisation organisation)
         {
-            //Get the biobank, complete with collections, samplesets, capabilities
-            var biobank = await _organisationService.GetForIndexing(biobankId);
-
             //Remove samplesets from the index
             BulkDeleteSampleSets(
-                    biobank.Collections
+                    organisation.Collections
                         .SelectMany(x => x.SampleSets)
                         .Select(x => x.Id)
                         .ToList());
 
             //Remove capabilities from the index
             BulkDeleteCapabilities(
-                    biobank.DiagnosisCapabilities
+                    organisation.DiagnosisCapabilities
                         .Select(x => x.DiagnosisCapabilityId)
                         .ToList());
         }

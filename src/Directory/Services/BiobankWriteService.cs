@@ -1596,25 +1596,6 @@ namespace Biobanks.Services
             return registrationReason;
         }
 
-        public async Task<Organisation> UnsuspendBiobankAsync(int id)
-        {
-            var biobank = await _organisationRepository.GetByIdAsync(id);
-
-            if (biobank == null) throw new KeyNotFoundException();
-
-            //Mark it as not suspended
-            biobank.IsSuspended = false;
-
-            //Update
-            _organisationRepository.Update(biobank);
-            await _organisationRepository.SaveChangesAsync();
-
-            //Re-index Biobank data (entity needs to be updated before we do this)
-            await _indexService.BulkIndexBiobank(id);
-
-            return biobank;
-        }
-
         public async Task DeleteFunderByIdAsync(int id)
         {
             await _funderRepository.DeleteAsync(id);

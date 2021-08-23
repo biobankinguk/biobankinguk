@@ -194,7 +194,8 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> Update(Organisation organisation)
         {
-            var existingOrganisation = await Get(organisation.OrganisationId);
+            // We Will Be Indexing The Updated Organisation
+            var existingOrganisation = await GetForIndexing(organisation.OrganisationId);
 
             // Map Most Fields Automatically
             _mapper.Map(organisation, existingOrganisation);
@@ -217,7 +218,7 @@ namespace Biobanks.Directory.Services
                 existingOrganisation.AnonymousIdentifier = Guid.NewGuid();
 
             if (!await IsSuspended(organisation.OrganisationId))
-                await _indexService.UpdateBiobankDetails(organisation.OrganisationId);
+                _indexService.UpdateOrganisationDetails(organisation);
 
             return existingOrganisation;
         }
@@ -225,7 +226,8 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task Delete(int id)
         {
-            await _indexService.BulkDeleteBiobank(id);
+            _indexService.BulkDeleteBiobank(
+                await GetForIndexing(id));
 
             var organisation = new Organisation { OrganisationId = id };
             _db.Organisations.Attach(organisation);
@@ -297,9 +299,11 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> Suspend(int organisationId)
         {
-            var organisation = await Get(organisationId);
+            var organisation = await GetForIndexing(organisationId);
 
             organisation.IsSuspended = true;
+
+            await _indexService.BulkIndexBiobank(organisation);
 
             return await Update(organisation);
         }
@@ -307,9 +311,11 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> Unsuspend(int organisationId)
         {
-            var organisation = await Get(organisationId);
+            var organisation = await GetForIndexing(organisationId);
 
             organisation.IsSuspended = false;
+
+            await _indexService.BulkIndexBiobank(organisation);
 
             return await Update(organisation);
         }
