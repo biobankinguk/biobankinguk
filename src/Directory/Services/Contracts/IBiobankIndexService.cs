@@ -23,7 +23,7 @@ namespace Biobanks.Services.Contracts
         void UpdateOrganisationDetails(Organisation organisation);
         void JoinOrLeaveNetwork(Organisation organisation);
 
-        Task UpdateNetwork(Network network);
+        void UpdateNetwork(Network network);
 
         Task BulkIndexBiobank(Organisation organisation);
         void BulkDeleteBiobank(Organisation organisation);

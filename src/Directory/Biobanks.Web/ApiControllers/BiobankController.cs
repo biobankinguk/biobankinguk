@@ -1,8 +1,6 @@
 ﻿using System.Web.Http;
 using System.Threading.Tasks;
-using AutoMapper;
 using Biobanks.Services.Contracts;
-using Biobanks.Services.Dto;
 using Biobanks.Web.Filters;
 
 namespace Biobanks.Web.ApiControllers
@@ -13,28 +11,15 @@ namespace Biobanks.Web.ApiControllers
     {
         private readonly IOrganisationService _organisationService;
 
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
-        private readonly IMapper _mapper;
-
-        public BiobankController(
-            IOrganisationService organisationService,
-            IBiobankReadService biobankReadService,
-            IBiobankWriteService biobankWriteService,
-            IMapper mapper)
+        public BiobankController(IOrganisationService organisationService)
         {
             _organisationService = organisationService;
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
-            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("IncludePublications/{id}")]
         public async Task<bool> IncludePublications(int id)
-        {
-            return await _biobankReadService.OrganisationIncludesPublications(id);
-        }
+            =>  await _organisationService.UsesPublications(id);
 
         [HttpPut]
         [Route("IncludePublications/{id}/{value}")]

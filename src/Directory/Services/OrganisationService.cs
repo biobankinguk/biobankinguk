@@ -349,6 +349,10 @@ namespace Biobanks.Directory.Services
             => await _db.ApiClients.AnyAsync(x => x.Organisations.Any(y => y.OrganisationId == organisationId));
 
         /// <inheritdoc/>
+        public async Task<bool> UsesPublications(int organisationId)
+            => await _db.Organisations.AnyAsync(x => x.OrganisationId == organisationId && !x.ExcludePublications);
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListOpenRegistrationRequests()
         {
             var type = await GetOrganisationType();

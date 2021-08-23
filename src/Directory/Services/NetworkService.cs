@@ -4,32 +4,31 @@ using Biobanks.Entities.Data;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
 using Biobanks.Services.Contracts;
-using Biobanks.Services.Dto;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Web.WebSockets;
 
 namespace Biobanks.Directory.Services
 {
     public class NetworkService : INetworkService
     {
+        private readonly IBiobankIndexService _indexService;
         private readonly IOrganisationService _organisationService;
         
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly BiobanksDbContext _db;
 
         public NetworkService(
+            IBiobankIndexService indexService,
             IOrganisationService organisationService,
-             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
+            IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             BiobanksDbContext db)
         {
             _organisationService = organisationService;
+            _indexService = indexService;
             _userManager = userManager;
             _db = db;
         }
@@ -46,7 +45,7 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Network> Update(Network network)
         {
-            var exisitingNetwork = await Get(network.NetworkId);
+            var exisitingNetwork = await GetForIndexing(network.NetworkId);
 
             exisitingNetwork.LastUpdated = DateTime.Now;
 
@@ -67,7 +66,8 @@ namespace Biobanks.Directory.Services
             exisitingNetwork.OrganisationNetworks = network.OrganisationNetworks;
 
             await _db.SaveChangesAsync();
-            // await _indexService.UpdateNetwork(network.NetworkId);
+            
+            _indexService.UpdateNetwork(network);
 
             return exisitingNetwork;
         }
@@ -101,6 +101,19 @@ namespace Biobanks.Directory.Services
             => await _db.Networks
                 .AsNoTracking()
                 .Include(x => x.SopStatus)
+                .FirstOrDefaultAsync(x => x.NetworkId == networkId);
+
+        /// <inheritdoc/>
+        public async Task<Network> GetForIndexing(int networkId)
+            => await _db.Networks
+                .AsNoTracking()
+                .Include(x => x.SopStatus)
+                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation))
+                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.Collections))
+                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.Collections.Select(c => c.SampleSets)))
+                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.DiagnosisCapabilities))
+                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.OrganisationServiceOfferings))
+                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.OrganisationServiceOfferings.Select(o => o.ServiceOffering)))
                 .FirstOrDefaultAsync(x => x.NetworkId == networkId);
 
         /// <inheritdoc/>

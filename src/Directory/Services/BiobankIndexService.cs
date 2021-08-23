@@ -306,7 +306,7 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task UpdateNetwork(Network network)
+        public void UpdateNetwork(Network network)
         {
             // For all biobanks attached to this network.
             foreach (var biobank in network.OrganisationNetworks.Select(x => x.Organisation))

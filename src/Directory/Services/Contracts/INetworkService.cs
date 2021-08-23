@@ -34,6 +34,12 @@ namespace Biobanks.Directory.Services.Contracts
         Task<Network> Get(int networkId);
 
         /// <summary>
+        /// Get the untracked Networks a given Id, used for indexing operations
+        /// </summary>
+        /// <returns>The Network of given Id. Otherwise null</returns>
+        Task<Network> GetForIndexing(int networkId);
+
+        /// <summary>
         /// Get the untracked Networks a given Name
         /// </summary>
         /// <returns>The Network of given Name. Otherwise null</returns>

@@ -22,9 +22,6 @@ namespace Biobanks.Services
     public class BiobankReadService : IBiobankReadService
     {
         #region Properties and ctor
-
-        private readonly IOrganisationService _organisationService;
-
         private readonly ILogoStorageProvider _logoStorageProvider;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
@@ -95,8 +92,6 @@ namespace Biobanks.Services
         private readonly BiobanksDbContext _context;
 
         public BiobankReadService(
-            IOrganisationService organisationService,
-
             ILogoStorageProvider logoStorageProvider,
 
             IGenericEFRepository<Collection> collectionRepository,
@@ -162,8 +157,6 @@ namespace Biobanks.Services
             
             BiobanksDbContext context)
         {
-            _organisationService = organisationService;
-
             _logoStorageProvider = logoStorageProvider;
 
             _collectionRepository = collectionRepository;
@@ -1172,9 +1165,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
             => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
-
-        public async Task<bool> OrganisationIncludesPublications(int biobankId)
-            => (!(await _organisationService.Get(biobankId)).ExcludePublications);
 
         public async Task<string> GetUnusedTokenByUser(string biobankUserId)
         {

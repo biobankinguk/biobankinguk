@@ -301,5 +301,10 @@ namespace Biobanks.Services.Contracts
         /// <returns>An untracked Enumerable of Organisation Registration Reasons</returns>
         Task<IEnumerable<OrganisationRegistrationReason>> ListRegistrationReasons(int organisationId);
 
+        /// <summary>
+        /// Whether this Organisation make use of the Publication feature. If so, the Directory will attempt to source
+        /// relevant publications associated with this Organisation
+        /// </summary>
+        Task<bool> UsesPublications(int organisationId);
     }
 }
