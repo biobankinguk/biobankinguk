@@ -403,7 +403,7 @@ namespace Biobanks.Web.Controllers
 
             //Try and get any registration reasons for this biobank
             var bbRegistrationReasons =
-                    await _organisationService.ListBiobankRegistrationReasonsAsync(bb.OrganisationId);
+                    await _organisationService.ListRegistrationReasons(bb.OrganisationId);
 
             //mark services as active in the full list
             var registrationReasons = (await GetAllRegistrationReasonsAsync()).Select(regReason =>

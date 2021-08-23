@@ -436,7 +436,7 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId)
+        public async Task<IEnumerable<OrganisationRegistrationReason>> ListRegistrationReasons(int organisationId)
             => await _db.OrganisationRegistrationReasons
                 .Include(x => x.RegistrationReason)
                 .Where(x => x.OrganisationId == organisationId)

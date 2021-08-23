@@ -295,8 +295,11 @@ namespace Biobanks.Services.Contracts
         /// </summary>
         Task<OrganisationType> GetOrganisationType();
         
-        
-        Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId);
+        /// <summary>
+        /// Lists the reasons for an Organisations registration
+        /// </summary>
+        /// <returns>An untracked Enumerable of Organisation Registration Reasons</returns>
+        Task<IEnumerable<OrganisationRegistrationReason>> ListRegistrationReasons(int organisationId);
 
     }
 }
