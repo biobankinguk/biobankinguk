@@ -217,8 +217,11 @@ namespace Biobanks.Directory.Services
             if (!existingOrganisation.AnonymousIdentifier.HasValue)
                 existingOrganisation.AnonymousIdentifier = Guid.NewGuid();
 
-            if (!await IsSuspended(organisation.OrganisationId))
-                _indexService.UpdateOrganisationDetails(organisation);
+            await _db.SaveChangesAsync();
+
+            // Update Serach Index
+            if (!existingOrganisation.IsSuspended)
+                _indexService.UpdateOrganisationDetails(existingOrganisation);
 
             return existingOrganisation;
         }
