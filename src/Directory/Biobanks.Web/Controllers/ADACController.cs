@@ -225,25 +225,24 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> BiobankActivity()
         {
-            var organisations = await _organisationService.ListForActivity(includeSuspended: false);
+            var activity = new List<BiobankActivityDTO>();
 
-            var activity = organisations.Select(async x =>
+            foreach (var organisation in await _organisationService.ListForActivity(includeSuspended: false))
+            {
+                var lastActiveUser = await _organisationService.GetLastActiveUser(organisation.OrganisationId);
+
+                activity.Add(new BiobankActivityDTO
                 {
-                    var lastActiveUser = await _organisationService.GetLastActiveUser(x.OrganisationId);
-
-                    return new BiobankActivityDTO
-                    {
-                        OrganisationId = x.OrganisationId,
-                        Name = x.Name,
-                        ContactEmail = x.ContactEmail,
-                        LastUpdated = x.LastUpdated,
-                        LastCapabilityUpdated = x.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
-                        LastCollectionUpdated = x.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
-                        LastAdminLoginEmail = lastActiveUser?.Email,
-                        LastAdminLoginTime = lastActiveUser?.LastLogin
-                    };
-                })
-                .Select(x => x.Result);
+                    OrganisationId = organisation.OrganisationId,
+                    Name = organisation.Name,
+                    ContactEmail = organisation.ContactEmail,
+                    LastUpdated = organisation.LastUpdated,
+                    LastCapabilityUpdated = organisation.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                    LastCollectionUpdated = organisation.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                    LastAdminLoginEmail = lastActiveUser?.Email,
+                    LastAdminLoginTime = lastActiveUser?.LastLogin
+                });
+            }
 
             var model = _mapper.Map<List<BiobankActivityModel>>(activity);
 

@@ -17,6 +17,7 @@ using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
 using System.Linq.Expressions;
+using Nest;
 
 namespace Biobanks.Directory.Services
 {
@@ -441,7 +442,7 @@ namespace Biobanks.Directory.Services
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalRegistrationRequests()
-        {
+         {
             var type = await GetOrganisationType();
 
             return await _db.OrganisationRegisterRequests
@@ -571,11 +572,13 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<ApplicationUser> GetLastActiveUser(int organisationId)
         {
-            var identityUsers = _userManager.Users.Where(x => x.LastLogin.HasValue);
-            var organisationUsers = _db.OrganisationUsers.Where(x => x.OrganisationId == organisationId);
+            var userIds = await _db.OrganisationUsers
+                .Where(x => x.OrganisationId == organisationId)
+                .Select(x => x.OrganisationUserId)
+                .ToListAsync();
 
-            return await identityUsers
-                .Join(organisationUsers, iu => iu.Id, ou => ou.OrganisationUserId, (iu, ou) => iu)
+            return await _userManager.Users
+                .Where(x => userIds.Contains(x.Id) && x.LastLogin.HasValue)
                 .OrderByDescending(x => x.LastLogin)
                 .FirstOrDefaultAsync();
         }
