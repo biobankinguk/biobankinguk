@@ -129,6 +129,14 @@ namespace Biobanks.Services.Contracts
         Task<Organisation> Update(Organisation organisation);
 
         /// <summary>
+        /// Applies an update action to an exisiting Organisation
+        /// </summary>
+        /// <param name="organisationId">The Id of the Organisation to apply updates to</param>
+        /// <param name="updates">The update action which acts on a scoped, tracked Organisation entity</param>
+        /// <returns>An untracked, updated Organisation entity. Otherwise null if Organisation does not exist</returns>
+        Task<Organisation> Update(int organisationId, Action<Organisation> updates);
+
+        /// <summary>
         /// Delete an exisiting Organisation
         /// </summary>
         Task Delete(int organisationId);

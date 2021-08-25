@@ -81,7 +81,6 @@ namespace Biobanks.Web
                         opts => opts.MapFrom(src => src.OrganisationTypeId.GetValueOrDefault()))
                     .ForMember(dest => dest.Logo, opts => opts.Ignore()); //Never map Logo from BiobankDetailsModel - we will alaways handle this manually
 
-
                 cfg.CreateMap<OrganisationDTO, Organisation>();
                 cfg.CreateMap<Organisation, OrganisationDTO>();
 

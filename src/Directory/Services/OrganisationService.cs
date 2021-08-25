@@ -16,6 +16,7 @@ using Biobanks.Identity.Data.Entities;
 using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
+using System.Linq.Expressions;
 
 namespace Biobanks.Directory.Services
 {
@@ -121,6 +122,9 @@ namespace Biobanks.Directory.Services
             var type = await GetOrganisationType();
 
             return await _db.Organisations
+                .Include(x => x.ApiClients)
+                .Include(x => x.Funders)
+                .Include(x => x.OrganisationAnnualStatistics)
                 .Include(x => x.Collections)
                 .Include(x => x.Collections.Select(c => c.SampleSets))
                 .Include(x => x.DiagnosisCapabilities)
@@ -184,21 +188,67 @@ namespace Biobanks.Directory.Services
 
             // TODO: Is there a better External ID Schema
             // Update External Id
-            organisation.OrganisationExternalId += organisation.OrganisationId;
+            //organisation.OrganisationExternalId += organisation.OrganisationId;
 
-            await Update(organisation);
+            //await Update(organisation);
+            
+            // Finally Update ExternalID 
+            organisation = await Update(organisation.OrganisationId, org =>
+            {
+                org.OrganisationExternalId += org.OrganisationId;
+            });
 
             return organisation;
         }
 
         /// <inheritdoc/>
+        public async Task<Organisation> Update(int id, Action<Organisation> updates)
+        {
+            var organisation = await GetForIndexing(id);
+
+            if (organisation is null)
+                return null;
+
+            // Apply Updates To Tracked Organisation
+            updates(organisation);
+
+            // Push Changes
+            await _db.SaveChangesAsync();
+
+            // Remove Tracking Of Object, Such That Updates Only Occur Within This Scope
+            _db.Entry(organisation).State = EntityState.Detached;
+
+            // Notify Search Index Of Changes
+            if (!organisation.IsSuspended)
+                _indexService.UpdateOrganisationDetails(organisation);
+
+            return organisation;
+        }
+
+        /// <inheritdoc/>
+        [Obsolete]
         public async Task<Organisation> Update(Organisation organisation)
         {
             // We Will Be Indexing The Updated Organisation
             var existingOrganisation = await GetForIndexing(organisation.OrganisationId);
 
-            // Map Most Fields Automatically
-            _mapper.Map(organisation, existingOrganisation);
+            // Map Fields Across
+            existingOrganisation.Name = organisation.Name;
+            existingOrganisation.Description = organisation.Description;
+            existingOrganisation.ContactEmail = organisation.ContactEmail;
+            existingOrganisation.ContactNumber = organisation.ContactNumber;
+            existingOrganisation.Logo = organisation.Logo;
+            existingOrganisation.AddressLine1 = organisation.AddressLine1;
+            existingOrganisation.AddressLine2 = organisation.AddressLine2;
+            existingOrganisation.AddressLine3 = organisation.AddressLine3;
+            existingOrganisation.AddressLine4 = organisation.AddressLine4;
+            existingOrganisation.PostCode = organisation.PostCode;
+            existingOrganisation.City = organisation.City;
+
+            existingOrganisation.ExcludePublications = organisation.ExcludePublications;
+            existingOrganisation.SharingOptOut = organisation.SharingOptOut;
+            existingOrganisation.EthicsRegistration = organisation.EthicsRegistration;
+            existingOrganisation.OtherRegistrationReason = organisation.OtherRegistrationReason;
 
             // Update Timestamp
             existingOrganisation.LastUpdated = DateTime.Now;
@@ -213,13 +263,18 @@ namespace Biobanks.Directory.Services
             existingOrganisation.CountyId = organisation.County?.Id ?? organisation.CountyId;
             existingOrganisation.OrganisationTypeId = organisation.OrganisationType?.OrganisationTypeId ?? organisation.OrganisationTypeId;
 
-            // Ensure Organisation Has An Anonymous Identifier
+            // TODO: Include These In Update
+            // 1->M Navigation Properties (Some are ommitted as they should be updated via specific service methods)
+            //existingOrganisation.OrganisationServiceOfferings = organisation.OrganisationServiceOfferings;
+            //existingOrganisation.OrganisationRegistrationReasons = organisation.OrganisationRegistrationReasons;
+
+            //// Ensure Organisation Has An Anonymous Identifier
             if (!existingOrganisation.AnonymousIdentifier.HasValue)
                 existingOrganisation.AnonymousIdentifier = Guid.NewGuid();
 
             await _db.SaveChangesAsync();
 
-            // Update Serach Index
+            // Update Search Index
             if (!existingOrganisation.IsSuspended)
                 _indexService.UpdateOrganisationDetails(existingOrganisation);
 

@@ -145,12 +145,23 @@ namespace Biobanks.Web.Controllers
                 } //no problem, just means no logo uploaded in this form submission
             }
 
-            var biobank = _mapper.Map<Organisation>(model);
+            //var biobank = _mapper.Map<Organisation>(model);
 
-            //Update bits Automapper doesn't do
-            biobank.Logo = logoName;
+            ////Update bits Automapper doesn't do
+            //biobank.Logo = logoName;
 
-            return await _organisationService.Update(biobank);
+            //return await _organisationService.Update(biobank);
+
+            var organisationId = (int) model.BiobankId;
+
+            return await _organisationService.Update(organisationId, organisation =>
+            {
+                // Map Model Values To Organisation
+                _mapper.Map(model, organisation);
+
+                // Logo Updated Manually
+                organisation.Logo = logoName;
+            });
         }
 
         private async Task<Organisation> CreateBiobank(BiobankDetailsModel model)
@@ -188,7 +199,8 @@ namespace Biobanks.Web.Controllers
                                     model.Logo.ContentType,
                                     biobank.OrganisationExternalId);
 
-                    biobank = await _organisationService.Update(biobank);
+                    //biobank = await _organisationService.Update(biobank);
+                    biobank = await _organisationService.Update(biobank.OrganisationId, organisation => organisation.Logo = biobank.Logo);
                 }
                 catch (ArgumentNullException) //no problem, just means no logo uploaded in this form submission
                 {
@@ -2090,13 +2102,19 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Submissions(SubmissionsModel model)
         {
             //update Organisations table
-            var biobankId = model.BiobankId;
-            var organisation = await _organisationService.Get(biobankId);
+            //var biobankId = model.BiobankId;
+            //var organisation = await _organisationService.Get(biobankId);
 
-            organisation.CollectionTypeId = model.CollectionType;
-            organisation.AccessConditionId = model.AccessCondition;
+            //organisation.CollectionTypeId = model.CollectionType;
+            //organisation.AccessConditionId = model.AccessCondition;
 
-            await _organisationService.Update(organisation);
+            //await _organisationService.Update(organisation);
+
+            await _organisationService.Update(organisationId: model.BiobankId, organisation =>
+            {
+                organisation.CollectionTypeId = model.CollectionType;
+                organisation.AccessConditionId = model.AccessCondition;
+            });
 
             //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);

@@ -63,7 +63,8 @@ namespace Biobanks.Web.Controllers
                 foreach (var organisation in organisations)
                 {
                     // Update Method Automatically Fixes URL
-                    await _organisationService.Update(organisation);
+                    //await _organisationService.Update(organisation);
+                    await _organisationService.Update(organisation.OrganisationId, org => org.Url = UrlTransformer.Transform(org.Url));
                 }
                 
             }
