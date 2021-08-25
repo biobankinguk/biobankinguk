@@ -539,16 +539,16 @@ namespace Biobanks.Directory.Services
         {
             var clientId = Crypto.GenerateId();
             var clientSecret = Crypto.GenerateId();
-            var organisation = await Get(organisationId);
 
-            organisation.ApiClients.Add(new ApiClient
+            await Update(organisationId, organisation =>
             {
-                Name = clientName ?? clientId,
-                ClientId = clientId,
-                ClientSecretHash = clientSecret.Sha256()
+                organisation.ApiClients.Add(new ApiClient
+                {
+                    Name = clientName ?? clientId,
+                    ClientId = clientId,
+                    ClientSecretHash = clientSecret.Sha256()
+                });
             });
-
-            await Update(organisation);
 
             return new KeyValuePair<string, string>(clientId, clientSecret);
         }
