@@ -260,7 +260,7 @@ namespace Biobanks.Services
 
             await _collectionRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsSuspendedByCollection(collection.CollectionId))
+            if (!await _organisationService.IsSuspended(collection.OrganisationId))
                 await _indexService.UpdateCollectionDetails(collection.CollectionId);
         }
 
@@ -292,7 +292,7 @@ namespace Biobanks.Services
             await _collectionRepository.SaveChangesAsync();
 
             // Index New SampleSet
-            if (!await _organisationService.IsSuspendedByCollection(sampleSet.CollectionId))
+            if (!await _organisationService.IsSuspended(collection.OrganisationId))
                 await _indexService.IndexSampleSet(sampleSet.Id);
         }
 
@@ -356,7 +356,7 @@ namespace Biobanks.Services
             await _materialDetailRepository.SaveChangesAsync();
 
             // Update Search Index
-            if (!await _organisationService.IsSuspendedByCollection(existingSampleSet.CollectionId))
+            if (!await _organisationService.IsSuspended(existingSampleSet.Collection.OrganisationId))
             {
                 await _indexService.UpdateSampleSetDetails(sampleSet.Id);
             }
@@ -365,14 +365,15 @@ namespace Biobanks.Services
         public async Task DeleteSampleSetAsync(int id)
         {
             //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
-            var suspended = await _organisationService.IsSuspendedBySampleSet(id);
+            var sampleSet = await _sampleSetRepository.GetByIdAsync(id);
+            var collection = await _collectionRepository.GetByIdAsync(sampleSet.CollectionId);
+            var suspended = await _organisationService.IsSuspended(collection.OrganisationId);
 
             //delete materialdetails to avoid orphaned data or integrity errors
             await _materialDetailRepository.DeleteWhereAsync(x => x.SampleSetId == id);
             await _materialDetailRepository.SaveChangesAsync();
 
             await _sampleSetRepository.DeleteWhereAsync(x => x.Id == id);
-
             await _sampleSetRepository.SaveChangesAsync();
 
             if (!suspended)
@@ -397,7 +398,7 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsSuspendedByCapability(capability.DiagnosisCapabilityId))
+            if (!await _organisationService.IsSuspended(capability.OrganisationId))
                 await _indexService.IndexCapability(capability.DiagnosisCapabilityId);
         }
 
@@ -421,17 +422,18 @@ namespace Biobanks.Services
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsSuspendedByCapability(existingCapability.DiagnosisCapabilityId))
+            if (!await _organisationService.IsSuspended(existingCapability.OrganisationId))
                 await _indexService.UpdateCapabilityDetails(existingCapability.DiagnosisCapabilityId);
         }
 
         public async Task DeleteCapabilityAsync(int id)
         {
+            var capability = await _capabilityRepository.GetByIdAsync(id);
             await _capabilityRepository.DeleteWhereAsync(x => x.DiagnosisCapabilityId == id);
 
             await _capabilityRepository.SaveChangesAsync();
 
-            if (!await _organisationService.IsSuspendedByCapability(id))
+            if (!await _organisationService.IsSuspended(capability.OrganisationId))
                 _indexService.DeleteCapability(id);
         }
 

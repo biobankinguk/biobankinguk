@@ -5,7 +5,6 @@ using Biobanks.Entities.Shared;
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Extensions;
 using Biobanks.Services.Contracts;
-using Biobanks.Services.Dto;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,8 +15,7 @@ using Biobanks.Identity.Data.Entities;
 using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
-using System.Linq.Expressions;
-using Nest;
+
 
 namespace Biobanks.Directory.Services
 {
@@ -382,25 +380,6 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<bool> IsSuspended(int organisationId)
             => await _db.Organisations.AnyAsync(x => x.OrganisationId == organisationId && x.IsSuspended);
-
-        /// <inheritdoc/>
-        public async Task<bool> IsSuspendedByCapability(int capabilityId)
-            => await _db.DiagnosisCapabilities
-                .Include(x => x.Organisation)
-                .AnyAsync(x => x.DiagnosisCapabilityId == capabilityId && x.Organisation.IsSuspended);
-
-        /// <inheritdoc/>
-        public async Task<bool> IsSuspendedByCollection(int collectonId)
-            => await _db.Collections
-                .Include(x => x.Organisation)
-                .AnyAsync(x => x.CollectionId == collectonId && x.Organisation.IsSuspended);
-
-        /// <inheritdoc/>
-        public async Task<bool> IsSuspendedBySampleSet(int sampleSetId)
-            => await _db.SampleSets
-                .Include(x => x.Collection)
-                .Include(x => x.Collection.Organisation)
-                .AnyAsync(x => x.Id == sampleSetId && x.Collection.Organisation.IsSuspended);
 
         // TODO: Figure out a better name
         /// <inheritdoc/>

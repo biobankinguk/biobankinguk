@@ -161,24 +161,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsSuspended(int organisationId);
 
         /// <summary>
-        /// Checks if the Organisation is suspended, by refencing an Organisation's Capability 
-        /// </summary>
-        /// <param name="capabilityId">The Id of the Capability</param>
-        Task<bool> IsSuspendedByCapability(int capabilityId);
-
-        /// <summary>
-        /// Checks if the Organisation is suspended, by refencing an Organisation's Collection 
-        /// </summary>
-        /// <param name="collectionId">The Id of the Collection</param>
-        Task<bool> IsSuspendedByCollection(int collectionId);
-
-        /// <summary>
-        /// Checks if the Organisation is suspended, by refencing an Organisation's SampleSet 
-        /// </summary>
-        /// <param name="sampleSetId">The Id of the SampleSet</param>
-        Task<bool> IsSuspendedBySampleSet(int sampleSetId);
-
-        /// <summary>
         /// Suspends an Organisation
         /// </summary>
         Task<Organisation> Suspend(int organisationId);
