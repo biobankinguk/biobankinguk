@@ -15,8 +15,6 @@ using Biobanks.Services.Extensions;
 using System.IO;
 using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
-using Biobanks.Directory.Services.Contracts;
-using Biobanks.Entities.Data;
 using Biobanks.Entities.Data;
 
 namespace Biobanks.Services
@@ -543,6 +541,53 @@ namespace Biobanks.Services
             foreach (var capabilityId in capabilityIds)
             {
                 await UpdateCapabilityDetails(capabilityId);
+            }
+        }
+
+        public async Task UpdateCollectionDetails(int collectionId)
+        {
+            // Get the collection out of the database.
+            var collection = await _biobankReadService.GetCollectionByIdForIndexingAsync(collectionId);
+
+            // Update all search documents that are relevant to this collection.
+            foreach (var sampleSet in collection.SampleSets)
+            {
+                // Queue up a job to update the search document.
+                BackgroundJob.Enqueue(() =>
+                    _indexProvider.UpdateCollectionSearchDocument(
+                        sampleSet.Id,
+                        new PartialCollection
+                        {
+                            OntologyTerm = collection.OntologyTerm.Value,
+                            CollectionTitle = collection.Title,
+                            StartYear = collection.StartDate.Year.ToString(),
+                            CollectionStatus = collection.CollectionStatus.Value,
+                            ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
+                            AccessCondition = collection.AccessCondition.Value,
+                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
+                            AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
+                            {
+                                Text = ad.AssociatedDataType.Value,
+                                Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
+                                TimeframeMetadata = JsonConvert.SerializeObject(new
+                                {
+                                    Name = ad.AssociatedDataProcurementTimeframe.Value,
+                                    ad.AssociatedDataProcurementTimeframe.SortOrder
+                                })
+                            }),
+                            OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
+                        }));
+            }
+        }
+
+        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
+        {
+            // Get the collections with the ontologyTerm.
+            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
+            // Update all search documents that are relevant to this collection.
+            foreach (var collectionId in collectionIds)
+            {
+                await UpdateCollectionDetails(collectionId);
             }
         }
     }

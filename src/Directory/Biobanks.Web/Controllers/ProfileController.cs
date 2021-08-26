@@ -17,18 +17,15 @@ namespace Biobanks.Web.Controllers
     [AllowAnonymous]
     public class ProfileController : ApplicationBaseController
     {
+        private readonly ICollectionService _collectionService;
         private readonly INetworkService _networkService;
         private readonly IOrganisationService _organisationService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
 
-        private readonly ICollectionService _collectionService;
-
         public ProfileController(
-            IBiobankReadService biobankReadService, 
             ICollectionService collectionService,
-            IConfigService configService)
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService, 

@@ -23,21 +23,22 @@ namespace Biobanks.Services
         private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
 
         private readonly IOrganisationService _organisationService;
+        private readonly ICollectionService _collectionService;
 
         private readonly HttpClient _client;
         private readonly IBiobankReadService _biobankReadService;
 
-        private readonly ICollectionService _collectionService;
 
-        public AnalyticsReportGenerator(IBiobankReadService biobankReadService, ICollectionService collectionService)
         public AnalyticsReportGenerator(
+            ICollectionService collectionService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService)
         {
+            _collectionService = collectionService;
             _organisationService = organisationService;
 
             _biobankReadService = biobankReadService;
-            _collectionService = collectionService;
+            
             _client = new HttpClient();
 
             if (!string.IsNullOrEmpty(_apiUrl))

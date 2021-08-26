@@ -512,8 +512,7 @@ namespace Biobanks.Services
 
             foreach (var collection in collections)
             {
-                _indexService.UpdateCollectionDetails(
-                    await _collectionService.GetForIndexing(collection.CollectionId));
+                await _indexService.UpdateCollectionDetails(collection.CollectionId);
             }
 
             return ontologyTerm;

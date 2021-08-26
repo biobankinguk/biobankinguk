@@ -65,8 +65,6 @@ namespace Biobanks.Web.Controllers
 
         public BiobankController(
             ICollectionService collectionService,
-            IBiobankReadService biobankReadService,
-        public BiobankController(
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
