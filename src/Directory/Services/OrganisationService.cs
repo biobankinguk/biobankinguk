@@ -16,7 +16,6 @@ using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
 
-
 namespace Biobanks.Directory.Services
 {
     public class OrganisationService : IOrganisationService
@@ -25,19 +24,14 @@ namespace Biobanks.Directory.Services
         private readonly IBiobankIndexService _indexService;
         private readonly BiobanksDbContext _db;
 
-        private readonly IMapper _mapper;
-
         public OrganisationService(
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IBiobankIndexService indexService,
-            BiobanksDbContext db,
-            IMapper mapper)
+            BiobanksDbContext db)
         {
             _userManager = userManager;
             _indexService = indexService;
             _db = db;
-
-            _mapper = mapper;
         }
 
         /// <inheritdoc/>

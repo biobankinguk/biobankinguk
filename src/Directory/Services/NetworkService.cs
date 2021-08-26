@@ -1,4 +1,5 @@
-﻿using Biobanks.Directory.Data;
+﻿using AutoMapper;
+using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Identity.Contracts;
@@ -21,16 +22,21 @@ namespace Biobanks.Directory.Services
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly BiobanksDbContext _db;
 
+        private readonly IMapper _mapper;
+
         public NetworkService(
             IBiobankIndexService indexService,
             IOrganisationService organisationService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            BiobanksDbContext db)
+            BiobanksDbContext db,
+            IMapper mapper)
         {
             _organisationService = organisationService;
             _indexService = indexService;
             _userManager = userManager;
             _db = db;
+
+            _mapper = mapper;
         }
 
         /// <inheritdoc/>
@@ -194,7 +200,7 @@ namespace Biobanks.Directory.Services
             var currentRequest = await _db.NetworkRegisterRequests
                 .FirstOrDefaultAsync(x => x.NetworkRegisterRequestId == request.NetworkRegisterRequestId);
 
-            // TODO: Figure Out Mapping
+            _mapper.Map(request, currentRequest);
 
             await _db.SaveChangesAsync();
 
