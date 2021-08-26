@@ -12,6 +12,10 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
+using Biobanks.Entities.Shared;
+using Biobanks.IdentityModel.Helpers;
+using Biobanks.IdentityModel.Extensions;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
@@ -21,6 +25,8 @@ namespace Biobanks.Services
         #region Properties and ctor
         private readonly INetworkService _networkService;
         private readonly IOrganisationService _organisationService;
+
+        private readonly ICollectionService _collectionService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
@@ -84,6 +90,7 @@ namespace Biobanks.Services
         private readonly IMapper _mapper;
 
         public BiobankWriteService(
+            ICollectionService collectionService,
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
@@ -141,6 +148,8 @@ namespace Biobanks.Services
 
             IGenericEFRepository<Funder> funderRepository)
         {
+            _collectionService = collectionService;
+
             _networkService = networkService;
             _organisationService = organisationService;
 
@@ -494,8 +503,18 @@ namespace Biobanks.Services
         {
             _ontologyTermRepository.Update(ontologyTerm);
             await _ontologyTermRepository.SaveChangesAsync();
-            await _indexService.UpdateCollectionsOntologyOtherTerms(ontologyTerm.Value);
+
+            // Update Indexed Capabilities
             await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
+
+            // Update Indexed Collections
+            var collections = await _collectionService.ListByOntologyTerm(ontologyTerm.Value);
+
+            foreach (var collection in collections)
+            {
+                _indexService.UpdateCollectionDetails(
+                    await _collectionService.GetForIndexing(collection.CollectionId));
+            }
 
             return ontologyTerm;
         }

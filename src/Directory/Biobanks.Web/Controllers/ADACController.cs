@@ -25,6 +25,7 @@ using System.Net.Http;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
@@ -34,6 +35,8 @@ namespace Biobanks.Web.Controllers
     {
         private INetworkService _networkService;
         private IOrganisationService _organisationService;
+
+        private readonly ICollectionService _collectionService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -51,6 +54,7 @@ namespace Biobanks.Web.Controllers
         private readonly ITokenLoggingService _tokenLog;
 
         public ADACController(
+            ICollectionService collectionService,
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
@@ -67,6 +71,7 @@ namespace Biobanks.Web.Controllers
         {
             _networkService = networkService;
             _organisationService = organisationService;
+            _collectionService = collectionService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1838,10 +1843,12 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> TermpageConfigPreview(TermpageContentModel termpage)
         {
             // Populate Snomed Terms for Preview View
-            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
+            var collections = await _collectionService.List();
+
+            var ontologyTerms = collections
                 .Where(x => x.SampleSets.Any())
-                .GroupBy(x => x.OntologyTermId)
-                .Select(x => x.First().OntologyTerm);
+                .Select(x => x.OntologyTerm)
+                .Distinct();
 
             // Find CollectionCapabilityCount For Each OntologyTerm
             var ontologyTermModels = ontologyTerms.Select(x =>

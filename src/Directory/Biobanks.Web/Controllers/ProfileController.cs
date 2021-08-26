@@ -23,7 +23,12 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
 
+        private readonly ICollectionService _collectionService;
+
         public ProfileController(
+            IBiobankReadService biobankReadService, 
+            ICollectionService collectionService,
+            IConfigService configService)
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService, 
@@ -32,6 +37,7 @@ namespace Biobanks.Web.Controllers
             _networkService = networkService;
             _organisationService = organisationService;
             _biobankReadService = biobankReadService;
+            _collectionService = collectionService;
             _configService = configService;
         }
 
@@ -100,7 +106,7 @@ namespace Biobanks.Web.Controllers
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                CollectionOntologyTerms = (await _biobankReadService.ListCollectionsAsync(bb.OrganisationId)).Select(
+                CollectionOntologyTerms = (await _collectionService.List(bb.OrganisationId)).Select(
                     x => new CollectionModel
                     {
                         Id = x.CollectionId,

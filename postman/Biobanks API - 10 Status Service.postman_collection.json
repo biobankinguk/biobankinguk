@@ -1,0 +1,1676 @@
+{
+	"info": {
+		"_postman_id": "7238aeb1-c566-414a-899a-ec1e33018225",
+		"name": "Biobanks API - 10 Status Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Status request",
+			"item": [
+				{
+					"name": "Submit Sample",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as a variable",
+									"pm.environment.set(\"id\",response.id);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Cell lines\",\r\n        \"individualReferenceId\": \"REF0\",\r\n        \"barcode\": \"CODE0\",\r\n        \"YearOfBirth\": 1997,\r\n        \"dateCreated\": \"2012-06-23T02:29:24-01:00\",\r\n        \"extractionSite\": \"SNOMED\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"SNOMED\",\r\n        \"sampleContent\": \"Pathogenic organism (navigational concept)\",\r\n        \"sampleContentMethod\": \"Macroscopic Assessment\",\r\n        \"sex\": \"Undifferentiated\",\r\n        \"storageTemperature\": \"RT\"\r\n     },\r\n      \"op\": \"Submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Schema Check: Status list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {",
+									"  \"definitions\": {},",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",",
+									"  \"$id\": \"http://example.com/root.json\",",
+									"  \"type\": \"object\",",
+									"  \"title\": \"The Root Schema\",",
+									"  \"required\": [",
+									"    \"submissions\",",
+									"    \"offset\",",
+									"    \"count\",",
+									"    \"total\",",
+									"    \"next\"",
+									"  ],",
+									"  \"properties\": {",
+									"    \"submissions\": {",
+									"      \"$id\": \"#/properties/submissions\",",
+									"      \"type\": \"array\",",
+									"      \"title\": \"The Submissions Schema\",",
+									"      \"items\": {",
+									"        \"$id\": \"#/properties/submissions/items\",",
+									"        \"type\": \"object\",",
+									"        \"title\": \"The Items Schema\",",
+									"        \"required\": [",
+									"          \"id\",",
+									"          \"biobankId\",",
+									"          \"submissionTimestamp\",",
+									"          \"totalRecords\",",
+									"          \"recordsProcessed\",",
+									"          \"recordsPassed\",",
+									"          \"recordsFailed\",",
+									"          \"status\",",
+									"          \"statusChangeTimestamp\",",
+									"          \"errorCount\",",
+									"          \"errorUri\"",
+									"        ],",
+									"        \"properties\": {",
+									"          \"id\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/id\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Id Schema\",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              2191",
+									"            ]",
+									"          },",
+									"          \"biobankId\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/biobankId\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Biobankid Schema\",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              1",
+									"            ]",
+									"          },",
+									"          \"submissionTimestamp\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/submissionTimestamp\",",
+									"            \"type\": \"string\",",
+									"            \"title\": \"The Submissiontimestamp Schema\",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"              \"2018-10-01T13:09:05.5288221\"",
+									"            ],",
+									"            \"pattern\": \"^(.*)$\"",
+									"          },",
+									"          \"totalRecords\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/totalRecords\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Totalrecords Schema\",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              1",
+									"            ]",
+									"          },",
+									"          \"recordsProcessed\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/recordsProcessed\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Recordsprocessed Schema\",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              0",
+									"            ]",
+									"          },",
+									"          \"recordsPassed\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/recordsPassed\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Recordspassed Schema\",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              0",
+									"            ]",
+									"          },",
+									"          \"recordsFailed\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/recordsFailed\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Recordsfailed Schema\",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              0",
+									"            ]",
+									"          },",
+									"          \"status\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/status\",",
+									"            \"type\": \"string\",",
+									"            \"title\": \"The Status Schema\",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"              \"Open\"",
+									"            ],",
+									"            \"pattern\": \"^(.*)$\"",
+									"          },",
+									"          \"statusChangeTimestamp\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/statusChangeTimestamp\",",
+									"            \"type\": \"string\",",
+									"            \"title\": \"The Statuschangetimestamp Schema\",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"              \"2018-10-01T13:09:05.5288221\"",
+									"            ],",
+									"            \"pattern\": \"^(.*)$\"",
+									"          },",
+									"          \"errorCount\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/errorCount\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Errorcount Schema\",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              0",
+									"            ]",
+									"          },",
+									"          \"errorUri\": {",
+									"            \"$id\": \"#/properties/submissions/items/properties/errorUri\",",
+									"            \"type\": \"string\",",
+									"            \"title\": \"The Erroruri Schema\",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"              \"/status/2191/error/\"",
+									"            ],",
+									"            \"pattern\": \"^(.*)$\"",
+									"          }",
+									"        }",
+									"      }",
+									"    },",
+									"    \"offset\": {",
+									"      \"$id\": \"#/properties/offset\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Offset Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        0",
+									"      ]",
+									"    },",
+									"    \"count\": {",
+									"      \"$id\": \"#/properties/count\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Count Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        10",
+									"      ]",
+									"    },",
+									"    \"total\": {",
+									"      \"$id\": \"#/properties/total\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Total Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        2137",
+									"      ]",
+									"    },",
+									"    \"next\": {",
+									"      \"$id\": \"#/properties/next\",",
+									"      \"type\": \"string\",",
+									"      \"title\": \"The Next Schema\",",
+									"      \"default\": \"\",",
+									"      \"examples\": [",
+									"        \"/status?biobankId=1&offset=10&limit=10\"",
+									"      ],",
+									"      \"pattern\": \"^(.*)$\"",
+									"    }",
+									"  }",
+									"};",
+									"",
+									"let response = pm.response.json();",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains 'Submission'\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"submissions\");",
+									"});",
+									"",
+									"pm.test(\"Response matches 'All submissions status' JSON schema\", () => {",
+									"",
+									"    var valid = tv4.validate(response, schema, false, true);",
+									"",
+									"    if (valid !== true) {",
+									"        console.log(tv4.error);",
+									"    }",
+									"",
+									"    pm.expect(valid).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Schema Check: Status by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Schema",
+									"const schema = {",
+									"  \"definitions\": {},",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",",
+									"  \"$id\": \"http://example.com/root.json\",",
+									"  \"type\": \"object\",",
+									"  \"title\": \"The Root Schema\",",
+									"  \"required\": [",
+									"    \"id\",",
+									"    \"biobankId\",",
+									"    \"submissionTimestamp\",",
+									"    \"totalRecords\",",
+									"    \"recordsProcessed\",",
+									"    \"recordsPassed\",",
+									"    \"recordsFailed\",",
+									"    \"status\",",
+									"    \"statusChangeTimestamp\",",
+									"    \"errorCount\",",
+									"    \"errorUri\"",
+									"  ],",
+									"  \"properties\": {",
+									"    \"id\": {",
+									"      \"$id\": \"#/properties/id\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Id Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        1957",
+									"      ]",
+									"    },",
+									"    \"biobankId\": {",
+									"      \"$id\": \"#/properties/biobankId\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Biobankid Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        1",
+									"      ]",
+									"    },",
+									"    \"submissionTimestamp\": {",
+									"      \"$id\": \"#/properties/submissionTimestamp\",",
+									"      \"type\": \"string\",",
+									"      \"title\": \"The Submissiontimestamp Schema\",",
+									"      \"default\": \"\",",
+									"      \"examples\": [",
+									"        \"2018-09-28T10:09:24.7397677\"",
+									"      ],",
+									"      \"pattern\": \"^(.*)$\"",
+									"    },",
+									"    \"totalRecords\": {",
+									"      \"$id\": \"#/properties/totalRecords\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Totalrecords Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        10000",
+									"      ]",
+									"    },",
+									"    \"recordsProcessed\": {",
+									"      \"$id\": \"#/properties/recordsProcessed\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Recordsprocessed Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        0",
+									"      ]",
+									"    },",
+									"    \"recordsPassed\": {",
+									"      \"$id\": \"#/properties/recordsPassed\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Recordspassed Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        0",
+									"      ]",
+									"    },",
+									"    \"recordsFailed\": {",
+									"      \"$id\": \"#/properties/recordsFailed\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Recordsfailed Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        0",
+									"      ]",
+									"    },",
+									"    \"status\": {",
+									"      \"$id\": \"#/properties/status\",",
+									"      \"type\": \"string\",",
+									"      \"title\": \"The Status Schema\",",
+									"      \"default\": \"\",",
+									"      \"examples\": [",
+									"        \"Rejected\"",
+									"      ],",
+									"      \"pattern\": \"^(.*)$\"",
+									"    },",
+									"    \"statusChangeTimestamp\": {",
+									"      \"$id\": \"#/properties/statusChangeTimestamp\",",
+									"      \"type\": \"string\",",
+									"      \"title\": \"The Statuschangetimestamp Schema\",",
+									"      \"default\": \"\",",
+									"      \"examples\": [",
+									"        \"2018-09-29T13:53:00.8463177\"",
+									"      ],",
+									"      \"pattern\": \"^(.*)$\"",
+									"    },",
+									"    \"errorCount\": {",
+									"      \"$id\": \"#/properties/errorCount\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Errorcount Schema\",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        0",
+									"      ]",
+									"    },",
+									"    \"errorUri\": {",
+									"      \"$id\": \"#/properties/errorUri\",",
+									"      \"type\": \"string\",",
+									"      \"title\": \"The Erroruri Schema\",",
+									"      \"default\": \"\",",
+									"      \"examples\": [",
+									"        \"/status/{{user-biobank-id}}957/error/\"",
+									"      ],",
+									"      \"pattern\": \"^(.*)$\"",
+									"    }",
+									"  }",
+									"};",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response matches 'status by ID' JSON schema\", function() {",
+									"  var data = JSON.parse(responseBody);",
+									"  var valid = tv4.validate(data, schema, false, true);",
+									"  if (valid !== true) {",
+									"      console.log(tv4.error);",
+									"  }",
+									"  pm.expect(valid).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Ran successfully on QA Environment on 22 Aug by Jurgen",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Status error request",
+			"item": [
+				{
+					"name": "Schema Check: Error by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {",
+									"  \"$id\": \"https://sv-biobanksapis-gateway-qa-app.azurewebsites.net/\",",
+									"  \"type\": \"object\",",
+									"  \"definitions\": {},",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",",
+									"  \"properties\": {",
+									"    \"errors\": {",
+									"      \"$id\": \"/properties/errors\",",
+									"      \"type\": \"array\",",
+									"      \"items\": {",
+									"        \"$id\": \"/properties/errors/items\",",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"          \"id\": {",
+									"            \"$id\": \"/properties/errors/items/properties/id\",",
+									"            \"type\": \"number\",",
+									"            \"title\": \"The Id Schema \",",
+									"            \"default\": 0,",
+									"            \"examples\": [",
+									"              23",
+									"            ]",
+									"          },",
+									"          \"message\": {",
+									"            \"$id\": \"/properties/errors/items/properties/message\",",
+									"            \"type\": \"string\",",
+									"            \"title\": \"The Message Schema \",",
+									"            \"default\": \"\",",
+									"            \"examples\": [",
+									"              \"Failed to Submit Sample: barcode: CODE0; individualReferenceId: REF0 -  'Cell Line' is not a valid Material Type value\"",
+									"            ]",
+									"          }",
+									"        },",
+									"        \"required\": [",
+									"          \"id\",",
+									"          \"message\"",
+									"        ]",
+									"      }",
+									"    },",
+									"    \"offset\": {",
+									"      \"$id\": \"/properties/offset\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Offset Schema \",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        0",
+									"      ]",
+									"    },",
+									"    \"count\": {",
+									"      \"$id\": \"/properties/count\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Count Schema \",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        1",
+									"      ]",
+									"    },",
+									"    \"total\": {",
+									"      \"$id\": \"/properties/total\",",
+									"      \"type\": \"number\",",
+									"      \"title\": \"The Total Schema \",",
+									"      \"default\": 0,",
+									"      \"examples\": [",
+									"        1",
+									"      ]",
+									"    }",
+									"  },",
+									"  \"required\": [",
+									"    \"errors\",",
+									"    \"offset\",",
+									"    \"count\",",
+									"    \"total\"",
+									"  ]",
+									"};",
+									"",
+									"// Tests",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// pm.test(\"Response matches 'status error' JSON schema\", function() {",
+									"//   var data = JSON.parse(responseBody);",
+									"//   var valid = tv4.validate(data, schema, false, true);",
+									"//   if (valid !== true) {",
+									"//       console.log(tv4.error);",
+									"//   }",
+									"//   pm.expect(valid).to.be.true;",
+									"// });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/{{id}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Ran successfully on QA Environment on 22 Aug by Jurgen",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Records Passed",
+			"item": [
+				{
+					"name": "Records passed - All passes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id1\",response.id);",
+									"//Set totalRecords as environment variable",
+									"pm.environment.set(\"records1\",response.totalRecords);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});",
+									"",
+									"pm.test(\"Response body contains - 'Records Passed'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"recordsPassed\");",
+									"});",
+									"",
+									"pm.test(\"Records passed = 0\", function () {",
+									"    pm.expect(response.recordsPassed).to.equal(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DNA\",\r\n        \"individualReferenceId\": \"REF0\",\r\n        \"barcode\": \"CODE0\",\r\n        \"YearOfBirth\": 1938,\r\n        \"ageAtDonation\":\"\",\r\n        \"extractionSite\":\"10028000\",\r\n        \"extractionProcedure\":\"\",\r\n        \"sampleContent\":\"\",\r\n        \"sampleContentMethod\":\"\",\r\n        \"sex\":\"\",\r\n        \"dateCreated\": \"2016-02-16T09:58:30-00:00\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DNA\",\r\n        \"individualReferenceId\": \"REF1\",\r\n        \"barcode\": \"CODE1\",\r\n        \"YearOfBirth\": 1938,\r\n        \"ageAtDonation\":\"\",\r\n        \"extractionSite\":\"10028000\",\r\n        \"extractionProcedure\":\"\",\r\n        \"sampleContent\":\"\",\r\n        \"sampleContentMethod\":\"\",\r\n        \"sex\":\"\",\r\n        \"dateCreated\": \"2016-02-16T09:58:30-00:00\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Records passed - Passes and failures",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id2\",response.id);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});",
+									"pm.test(\"Response body contains - 'Records Passed'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"recordsPassed\");",
+									"});",
+									"",
+									"pm.test(\"Records passed = 0\", function () {",
+									"    pm.expect(response.recordsPassed).to.equal(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DN\",\r\n        \"individualReferenceId\": \"REF0\",\r\n        \"barcode\": \"CODE0\",\r\n        \"YearOfBirth\": 1938,\r\n        \"ageAtDonation\":\"\",\r\n        \"extractionSite\":\"10028000\",\r\n        \"extractionProcedure\":\"\",\r\n        \"sampleContent\":\"\",\r\n        \"sampleContentMethod\":\"\",\r\n        \"sex\":\"\",\r\n        \"dateCreated\": \"2016-02-16T09:58:30-00:00\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DNA\",\r\n        \"individualReferenceId\": \"REF1\",\r\n        \"barcode\": \"CODE1\",\r\n        \"YearOfBirth\": 1938,\r\n        \"ageAtDonation\":\"\",\r\n        \"extractionSite\":\"10028000\",\r\n        \"extractionProcedure\":\"\",\r\n        \"sampleContent\":\"\",\r\n        \"sampleContentMethod\":\"\",\r\n        \"sex\":\"\",\r\n        \"dateCreated\": \"2016-02-16T09:58:30-00:00\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Records passed - All failures",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id3\",response.id);",
+									"",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});",
+									"",
+									"pm.test(\"Response body contains - 'Records Passed'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"recordsPassed\");",
+									"});",
+									"",
+									"pm.test(\"Records passed = 0\", function () {",
+									"    pm.expect(response.recordsPassed).to.equal(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DN\",\r\n        \"individualReferenceId\": \"REF0\",\r\n        \"barcode\": \"CODE0\",\r\n        \"YearOfBirth\": 1938,\r\n        \"ageAtDonation\":\"\",\r\n        \"extractionSite\":\"10028000\",\r\n        \"extractionProcedure\":\"\",\r\n        \"sampleContent\":\"\",\r\n        \"sampleContentMethod\":\"\",\r\n        \"sex\":\"\",\r\n        \"dateCreated\": \"2016-02-16T09:58:30-00:00\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"DN\",\r\n        \"individualReferenceId\": \"REF1\",\r\n        \"barcode\": \"CODE1\",\r\n        \"YearOfBirth\": 1938,\r\n        \"ageAtDonation\":\"\",\r\n        \"extractionSite\":\"10028000\",\r\n        \"extractionProcedure\":\"\",\r\n        \"sampleContent\":\"\",\r\n        \"sampleContentMethod\":\"\",\r\n        \"sex\":\"\",\r\n        \"dateCreated\": \"2016-02-16T09:58:30-00:00\",\r\n        \"extractionCodeOntology\": \"SNOMED-CT\",\r\n        \"extractionCodeOntologyVersion\": 25,\r\n        \"availability\": [\r\n          \"DNA restriction\"\r\n        ],\r\n        \"storageTemperature\": \"RT\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Records passed - Queue status 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response= pm.response.json()",
+									"",
+									"// // keep re-requesting until errors have been processed",
+									"// if((response.submissions[0].recordsProcessed) != environment[\"records1\"]){",
+									"//     postman.setNextRequest('Records passed - queue status 1');",
+									"// }",
+									"",
+									"// else {",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains - 'Records Passed'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"recordsPassed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 20000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Records passed - Submission status 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains - 'Records Passed'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"recordsPassed\");",
+									"});",
+									"",
+									"pm.test(\"Records passed = \" + (environment[\"records1\"]), function () {",
+									"    pm.expect(response.recordsPassed).to.equal(environment[\"records1\"]);",
+									"});",
+									"",
+									"pm.test(\"Records failed = 0\", function () {",
+									"    pm.expect(response.recordsFailed).to.equal(0);",
+									"});",
+									"",
+									"pm.test(\"Records processed = \" + (environment[\"records1\"]), function () {",
+									"    pm.expect(response.recordsProcessed).to.equal(environment[\"records1\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Records passed - Submission status 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains - 'Records Passed'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"recordsPassed\");",
+									"});",
+									"",
+									"pm.test(\"Records passed = 1\", function () {",
+									"    pm.expect(response.recordsPassed).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Records failed = 1\", function () {",
+									"    pm.expect(response.recordsFailed).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Records processed = 2\", function () {",
+									"    pm.expect(response.recordsProcessed).to.equal(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Records passed - Submission status 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body contains - 'Records Passed'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"recordsPassed\");",
+									"});",
+									"",
+									"pm.test(\"Records passed = 0\", function () {",
+									"    pm.expect(response.recordsPassed).to.equal(0);",
+									"});",
+									"",
+									"pm.test(\"Records failed = 2\", function () {",
+									"    pm.expect(response.recordsFailed).to.equal(2);",
+									"});",
+									"",
+									"pm.test(\"Records processed = 2\", function () {",
+									"    pm.expect(response.recordsProcessed).to.equal(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id3}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id3}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Handling Errors - 'Records Passed' calculated within Submission",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Records Failed",
+			"item": [
+				{
+					"name": "Samples with errors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID and records as environment variable",
+									"pm.environment.set(\"id2\",response.id);",
+									"pm.environment.set(\"records2\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 2",
+									"tests[ \"number of samples submitted is \" + response.totalRecords + \" (2 valid field variables)\"]= response.totalRecords === 2;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"samples\": [\n    {\n      \"sample\": {\n        \"materialType\": \"DNA\",\n        \"individualReferenceId\": \"valid sample\",\n        \"barcode\": \"VAL3\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n     \"sample\": {\n        \"materialType\": \"Tissue specimen\",\n        \"individualReferenceId\": \"Incorrect (not 25) extractionSiteOntologyVersion value\",\n        \"barcode\": \"VAL4\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\", \n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"15\",\n        \"extractionProcedure\": \"387713003\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    }\n  ]\n} "
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submission Status - Failed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All samples submitted\", () => {",
+									"    pm.expect(response.totalRecords).to.be.eq(2);",
+									"});",
+									"",
+									"pm.test(\"One failed record\", () => {",
+									"    pm.expect(response.errorCount).to.be.eq(1);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 15 * 1000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Records Processed",
+			"item": [
+				{
+					"name": "Samples with no errors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id1\",response.id);",
+									"pm.environment.set(\"records1\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 2",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 2;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"samples\": [\n    {\n      \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"valid sample\",\n        \"barcode\": \"VAL3\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n     \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"Incorrect (not 25) extractionSiteOntologyVersion value\",\n        \"barcode\": \"VAL4\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\", \n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    }\n  ]\n} "
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Samples with errors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID and records as environment variable",
+									"pm.environment.set(\"id2\",response.id);",
+									"pm.environment.set(\"records2\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 2",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 3;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"samples\": [\n    {\n      \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"valid sample\",\n        \"barcode\": \"VAL3\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n     \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"Incorrect (not 25) extractionSiteOntologyVersion value\",\n        \"barcode\": \"VAL4\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\", \n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"15\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n     \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"Multiple errors\",\n        \"barcode\": \"VAL4\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Abcd\",\n        \"extractionSite\": \"361317000\", \n        \"extractionSiteOntology\": \"SNOMED\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"25179006\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Abcd\"\n      },\n      \"op\": \"submit\"\n    }\n  ]\n} "
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get submission status 1 (Processed)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"// // keep re-requesting until errors have been processed",
+									"// if((response.recordsProcessed) < \"1\"){",
+									"//     postman.setNextRequest('Get submission status 1 (Processed)');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"",
+									"//Check if 2 records have processed",
+									"pm.test(\"Number of samples processed is \"+ response.recordsProcessed, function () {",
+									"    pm.expect(response.recordsProcessed).to.eql(environment.records1);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 5000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submission Status 2 (Processed)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"// // keep re-requesting until errors have been processed",
+									"// if((response.recordsProcessed) < \"1\"){",
+									"//     postman.setNextRequest('Get submission status 2 (Processed)');",
+									"// }",
+									"// else",
+									"// {",
+									"",
+									"//Check if 2 records have processed",
+									"pm.test(\"Number of samples processed is \"+ response.recordsProcessed, function () {",
+									"    pm.expect(response.recordsProcessed).to.eql(environment.records2);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}/",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Total Records",
+			"item": []
+		},
+		{
+			"name": "Error count",
+			"item": [
+				{
+					"name": "Samples with multiple errors per record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID and records as environment variable",
+									"pm.environment.set(\"id3\",response.id);",
+									"pm.environment.set(\"records3\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is 2",
+									"tests[ \"number of samples submitted is \" + response.totalRecords]= response.totalRecords === 3;",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"samples\": [\n    {\n      \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"1 errors sample\",\n        \"barcode\": \"VAL1\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\",\n        \"extractionSiteOntology\": \"SNOMED-CT\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"2517900\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n     \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"2 errors sample\",\n        \"barcode\": \"VAL2\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Other\",\n        \"extractionSite\": \"361317000\", \n        \"extractionSiteOntology\": \"SNOMED\",\n        \"extractionSiteOntologyVersion\": \"15\",\n        \"extractionProcedure\": \"2517900\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2030-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"-18°C to -35°C\"\n      },\n      \"op\": \"submit\"\n    },\n    {\n     \"sample\": {\n        \"materialType\": \"Bone BON\",\n        \"individualReferenceId\": \"3 errors sample\",\n        \"barcode\": \"VAL3\",\n        \"sampleContent\": \"10058006\",\n        \"sampleContentMethod\": \"Abcd\",\n        \"extractionSite\": \"361317000\", \n        \"extractionSiteOntology\": \"SNOMED\",\n        \"extractionSiteOntologyVersion\": \"25\",\n        \"extractionProcedure\": \"2517900\",\n        \"YearOfBirth\": 1996,\n        \"dateCreated\": \"2030-09-12T08:37:06-01:00\",\n        \"storageTemperature\": \"Abcd\"\n      },\n      \"op\": \"submit\"\n    }\n  ]\n} "
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submission Status (errorCount)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Number of sample errors is 6\", () => {",
+									"    pm.expect(response.errorCount).to.eql(6);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 30 * 1000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id3}}/",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id3}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submission Status errors (errorCount)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Check for correct number of error messages",
+									"pm.test(\"Number of error messages is 6\", () => {",
+									"    pm.expect(response.count).to.eql(6);",
+									"});",
+									"",
+									"//Test for 200 response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 2000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id3}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id3}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"function IsSuccessCode(statusCode) {",
+					"    return statusCode == 200 || statusCode == 201;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -26,6 +26,8 @@ using Biobanks.Search.Elastic;
 using System.Web.Http;
 using Biobanks.Directory.Services;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services;
 
 namespace Biobanks.Web.Windsor
 {
@@ -116,6 +118,10 @@ namespace Biobanks.Web.Windsor
 
                 Component.For(typeof(IBiobankWriteService))
                     .ImplementedBy(typeof(BiobankWriteService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(ICollectionService))
+                    .ImplementedBy(typeof(CollectionService))
                     .LifeStyle.Transient,
 
                 Component.For(typeof(IContentPageService))
