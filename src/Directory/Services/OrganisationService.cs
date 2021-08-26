@@ -70,18 +70,6 @@ namespace Biobanks.Directory.Services
                 .ToListAsync();
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Organisation>> ListByNetworkIdForIndexing(int networkId)
-            => await _db.OrganisationNetworks
-                .AsNoTracking()
-                .Include(x => x.Organisation)
-                .Include(x => x.Organisation.Collections)
-                .Include(x => x.Organisation.Collections.Select(c => c.SampleSets))
-                .Include(x => x.Organisation.DiagnosisCapabilities)
-                .Where(x => x.NetworkId == networkId && !x.Organisation.IsSuspended)
-                .Select(x => x.Organisation)
-                .ToListAsync();
-
-        /// <inheritdoc/>
         public async Task<IEnumerable<Organisation>> ListByUserId(string userId)
             => await _db.OrganisationUsers
                 .AsNoTracking()
@@ -149,21 +137,6 @@ namespace Biobanks.Directory.Services
 
             return await _db.Organisations
                 .Include(x => x.OrganisationAnnualStatistics)
-                .FirstOrDefaultAsync(x => x.OrganisationExternalId == externalId && x.OrganisationTypeId == type.OrganisationTypeId);
-        }
-
-        /// <inheritdoc/>
-        public async Task<Organisation> GetByExternalIdForSearch(string externalId)
-        {
-            var type = await GetOrganisationType();
-            return await _db.Organisations
-                .Include(x => x.DiagnosisCapabilities)
-                .Include(x => x.DiagnosisCapabilities.Select(c => c.SampleCollectionMode))
-                .Include(x => x.DiagnosisCapabilities.Select(c => c.AssociatedData))
-                .Include(x => x.DiagnosisCapabilities.Select(c => c.AssociatedData.Select(ad => ad.AssociatedDataType)))
-                .Include(x => x.DiagnosisCapabilities.Select(c => c.AssociatedData.Select(ad => ad.AssociatedDataProcurementTimeframe)))
-                .Include(x => x.OrganisationServiceOfferings)
-                .Include(x => x.OrganisationServiceOfferings.Select(o => o.ServiceOffering))
                 .FirstOrDefaultAsync(x => x.OrganisationExternalId == externalId && x.OrganisationTypeId == type.OrganisationTypeId);
         }
 
@@ -283,13 +256,13 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task Delete(int id)
         {
-            _indexService.BulkDeleteBiobank(
-                await GetForIndexing(id));
+            var organisation = await GetForIndexing(id);
 
-            var organisation = new Organisation { OrganisationId = id };
-            _db.Organisations.Attach(organisation);
+            // Remove From Search
+            _indexService.BulkDeleteBiobank(organisation);
+            
+            // Remove From Database
             _db.Organisations.Remove(organisation);
-
             await _db.SaveChangesAsync();
         }
         

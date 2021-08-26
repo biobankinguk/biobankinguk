@@ -52,20 +52,6 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<Organisation>> ListByNetworkId(int networkId);
 
         /// <summary>
-        /// Get all untracked Organisation which match are part of the given Netowrk
-        /// </summary>
-        /// <param name="networkId">The Id of the Network to match against</param>
-        /// <returns>
-        /// An Enumerable of all applicable untracked Organisations, including properties:
-        /// <list type="bullet">
-        /// <item>Collections</item>
-        /// <item>DiagnosisCapabilities</item>
-        /// <item>SampleSets</item>
-        /// </list>
-        /// </returns>
-        Task<IEnumerable<Organisation>> ListByNetworkIdForIndexing(int networkId);
-
-        /// <summary>
         /// Get all untracked Organisation which are under the control by the given User
         /// <param name="userId">The Id of the User to match against</param>
         /// <returns>An Enumerable of all applicable untracked Organisations</returns>
@@ -97,18 +83,6 @@ namespace Biobanks.Services.Contracts
         /// </summary>
         /// <returns>The Organisation of given External Id. Otherwise null</returns>
         Task<Organisation> GetByExternalId(string externalId);
-
-        /// <summary>
-        /// Get the untracked Organisation for a given External Id, for Search business logic
-        /// </summary>
-        /// <returns>
-        /// The Organisation of given External Id. Otherwise null
-        /// <list type="bullet">
-        /// <item>DiagnosisCapabilities</item>
-        /// <item>OrganisationServiceOfferings</item>
-        /// </list>
-        /// </returns>
-        Task<Organisation> GetByExternalIdForSearch(string externalId);
 
         /// <summary>
         /// Get the untracked Organisation for a given Organisation Name
