@@ -75,9 +75,9 @@ namespace Biobanks.Directory.Services
             exisitingNetwork.OrganisationNetworks = network.OrganisationNetworks;
 
             await _db.SaveChangesAsync();
-            
-            //_indexService.UpdateNetwork(
-            //    await GetForIndexing(network.NetworkId));
+
+            _indexService.UpdateNetwork(
+                    await GetForIndexing(network.NetworkId));
 
             return exisitingNetwork;
         }
@@ -116,8 +116,8 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Network> GetForIndexing(int networkId)
             => await _db.Networks
-                .AsNoTracking()
                 .Include(x => x.SopStatus)
+                .Include(x => x.OrganisationNetworks.Select(y => y.Network))
                 .Include(x => x.OrganisationNetworks.Select(y => y.Organisation))
                 .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.Collections))
                 .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.Collections.Select(c => c.SampleSets)))
