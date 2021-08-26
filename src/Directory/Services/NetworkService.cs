@@ -211,15 +211,6 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task DeleteRegistrationRequest(NetworkRegisterRequest request)
-        {
-            _db.NetworkRegisterRequests.Attach(request);
-            _db.NetworkRegisterRequests.Remove(request);
-
-            await _db.SaveChangesAsync();
-        }
-
-        /// <inheritdoc/>
         public async Task<bool> HasActiveRegistrationRequest(string name)
             => await _db.NetworkRegisterRequests.AnyAsync(x => x.NetworkName == name && x.DeclinedDate == null);
 
@@ -229,14 +220,6 @@ namespace Biobanks.Directory.Services
                 .AsNoTracking()
                 .Include(x => x.Network)
                 .Where(x => x.OrganisationId == organisationId)
-                .ToListAsync();
-
-        /// <inheritdoc/>
-        public async Task<IEnumerable<OrganisationNetwork>> ListOrganisationNetworks(IEnumerable<int> organisationIds)
-            => await _db.OrganisationNetworks
-                .AsNoTracking()
-                .Include(x => x.Network)
-                .Where(x => organisationIds.Contains(x.OrganisationId))
                 .ToListAsync();
 
         /// <inheritdoc/>

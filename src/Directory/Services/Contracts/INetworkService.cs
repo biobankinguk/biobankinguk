@@ -58,13 +58,6 @@ namespace Biobanks.Directory.Services.Contracts
         Task<Network> Update(Network network);
 
         /// <summary>
-        /// Get all untracked OrganisationNetwork relationships associated with a given set of Organisations
-        /// </summary>
-        /// <param name="organisationIds">The Ids of the applicable Organisations</param>
-        /// <returns>An Enumerable of all applicable untracked OrganisationNetwork relationships</returns>
-        Task<IEnumerable<OrganisationNetwork>> ListOrganisationNetworks(IEnumerable<int> organisationIds);
-
-        /// <summary>
         /// Get all untracked OrganisationNetwork relationships associated with a given Organisation
         /// </summary>
         /// <param name="organisationId">The Id of the applicable Organisations</param>
@@ -149,11 +142,6 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <returns>The updated NetworkRegisterRequest reference</returns>
         Task<NetworkRegisterRequest> UpdateRegistrationRequest(NetworkRegisterRequest request);
-
-        /// <summary>
-        /// Delete an exisiting Network Registration Request
-        /// </summary>
-        Task DeleteRegistrationRequest(NetworkRegisterRequest request);
 
         /// <summary>
         /// Add an Organisation to a Network
