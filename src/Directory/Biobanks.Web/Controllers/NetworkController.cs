@@ -69,6 +69,7 @@ namespace Biobanks.Web.Controllers
             _claimsManager = claimsManager;
             _tokenLog = tokenLog;
             _mapper = mapper;
+            _configService = configService;
         }
 
         #region Details
