@@ -51,7 +51,10 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Network> Update(Network network)
         {
-            var exisitingNetwork = await GetForIndexing(network.NetworkId);
+            var exisitingNetwork = await _db.Networks.FindAsync(network.NetworkId);
+
+            if (exisitingNetwork is null)
+                return null;
 
             exisitingNetwork.LastUpdated = DateTime.Now;
 
@@ -73,7 +76,8 @@ namespace Biobanks.Directory.Services
 
             await _db.SaveChangesAsync();
             
-            _indexService.UpdateNetwork(network);
+            //_indexService.UpdateNetwork(
+            //    await GetForIndexing(network.NetworkId));
 
             return exisitingNetwork;
         }
@@ -231,7 +235,9 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OrganisationNetwork> UpdateOrganisationNetwork(OrganisationNetwork organisationNetwork)
         {
-            var existingON = await GetOrganisationNetwork(organisationNetwork.OrganisationId, organisationNetwork.NetworkId);
+            var existingON = await _db.OrganisationNetworks
+                .Where(x => x.OrganisationId == organisationNetwork.OrganisationId && x.NetworkId == organisationNetwork.NetworkId)
+                .FirstOrDefaultAsync();
 
             existingON.ApprovedDate = organisationNetwork.ApprovedDate;
             existingON.ExternalID = organisationNetwork.ExternalID;
