@@ -132,11 +132,14 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<ApplicationUser>> ListAdmins(int networkId)
         {
-            var adminIds = _db.NetworkUsers.Where(x => x.NetworkId == networkId).Select(x => x.NetworkUserId);
+            var adminIds = await _db.NetworkUsers
+                .Where(x => x.NetworkId == networkId)
+                .Select(x => x.NetworkUserId)
+                .ToListAsync();
 
             return await _userManager.Users
                 .AsNoTracking()
-                .Join(adminIds, user => user.Id, adminId => adminId, (u, a) => u)
+                .Where(x => adminIds.Contains(x.Id))
                 .ToListAsync();
         }
 
