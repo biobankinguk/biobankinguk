@@ -90,27 +90,29 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OntologyTerm> Create(OntologyTerm ontologyTerm)
         {
+            // Get Attached References To MaterialType
+            var materialTypeIds = ontologyTerm?.MaterialTypes.Select(x => x.Id) ?? new List<int>();
             
-            ontologyTerm.MaterialTypes.Clear();
+            var materialTypes = await _db.MaterialTypes
+                .Where(x => materialTypeIds.Contains(x.Id))
+                .ToListAsync();
+                 
+            var newTerm = new OntologyTerm
+            {
+                Id = ontologyTerm.Id,
+                Value = ontologyTerm.Value,
+                OtherTerms = ontologyTerm.OtherTerms,
+                SnomedTagId = ontologyTerm.SnomedTagId,
+                DisplayOnDirectory = ontologyTerm.DisplayOnDirectory,
+                MaterialTypes = materialTypes
+            };
 
-            // Add New OntologyTerm
-            ontologyTerm = _db.OntologyTerms.Add(ontologyTerm);
-
-            // Link To Material Types
-            //if (ontologyTerm.MaterialTypes != null)
-            //{
-            //    var ids = ontologyTerm.MaterialTypes.Select(x => x.Id);
-
-            //    await _db.MaterialTypes
-            //        .Include(x => x.ExtractionProcedures)
-            //        .Where(x => ids.Contains(x.Id))
-            //        .ForEachAsync(x => x.ExtractionProcedures.Add(ontologyTerm));
-            //}
+            _db.OntologyTerms.Add(newTerm);
 
             await _db.SaveChangesAsync();
 
             // Return OntologyTerm With Idenity ID
-            return ontologyTerm;
+            return newTerm;
         }
 
         /// <inheritdoc/>
