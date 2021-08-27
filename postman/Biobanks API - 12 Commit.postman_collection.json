@@ -1,0 +1,1533 @@
+{
+	"info": {
+		"_postman_id": "0bb2d958-935c-47a1-9075-a9f1c611ac93",
+		"name": "Biobanks API - 12 Commit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Commit records with/without errors - Replace",
+			"item": [
+				{
+					"name": "Single validation error request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id1\",response.id);",
+									"pm.environment.set(\"records1\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is",
+									"pm.test(\"number of samples submitted is 2\", function () {",
+									"     pm.expect(response.totalRecords).to.eql(2);",
+									"});",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Milk\",\r\n        \"individualReferenceId\": \"Invalid_mat_type\",\r\n        \"barcode\": \"INVAL1_WES\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"(Breast) Milk\",\r\n        \"individualReferenceId\": \"valid_single_error\",\r\n        \"barcode\": \"VAL1_WES\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No validation error request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id2\",response.id);",
+									"pm.environment.set(\"records2\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is",
+									"pm.test(\"number of samples submitted is 1\", function () {",
+									"     pm.expect(response.totalRecords).to.eql(1);",
+									"});",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu1}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"(Breast) Milk\",\r\n        \"individualReferenceId\": \"valid_mat_Saliva\",\r\n        \"barcode\": \"VAL1_WES\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Multiple validation error request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id3\",response.id);",
+									"pm.environment.set(\"records3\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is",
+									"pm.test(\"number of samples submitted is 2\", function () {",
+									"     pm.expect(response.totalRecords).to.eql(2);",
+									"});",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu1}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Milk\",\r\n        \"individualReferenceId\": \"Invalid_mat_type_+_storage_temp\",\r\n        \"barcode\": \"INVAL2_WES\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Invalid\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"(Breast) Milk\",\r\n        \"individualReferenceId\": \"valid_multiple_error\",\r\n        \"barcode\": \"VAL2_WES\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check for successsful processing - replace",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 10000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", () => {",
+									"    pm.expect(response.submissions[0].recordsProcessed).to.eql(response.submissions[0].totalRecords);",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", () => {",
+									"    pm.expect(response.submissions[1].recordsProcessed).to.eql(response.submissions[1].totalRecords);",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", () => {",
+									"    pm.expect(response.submissions[2].recordsProcessed).to.eql(response.submissions[2].totalRecords);",
+									"});",
+									"",
+									"// Wait Until All Are Processed",
+									"if (response.submissions[0].recordsProcessed != response.submissions[0].totalRecords ||",
+									"    response.submissions[1].recordsProcessed != response.submissions[1].totalRecords ||",
+									"    response.submissions[2].recordsProcessed != response.submissions[2].totalRecords) ",
+									"    {",
+									"        postman.setNextRequest(pm.request.name);",
+									"    }",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu2}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}?limit=3",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status errors - Single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error count is 1\", function (){",
+									"    pm.expect(response.count).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status errors - No error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error count is \"+ response.count, function (){",
+									"    pm.expect(response.count).to.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status errors - Multiple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error count is \"+ response.count, function (){",
+									"    pm.expect(response.count).to.eql(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id3}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id3}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Commit (replace)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 202\", () => {",
+									"    pm.response.to.have.status(202);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-url}}/{{user-biobank-id}}/commit?type=replace",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"{{user-biobank-id}}",
+								"commit"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "replace"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status - Single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until records have been processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get status - Single');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status is committed\", function (){",
+									"    pm.expect(response.status).to.eql(\"Committed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function() {}, 5000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status - No error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// // keep re-requesting until records have been processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get status - No error');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status is Committed\", function (){",
+									"    pm.expect(response.status).to.eql(\"Committed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status - Multiple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until records have been processed",
+									"if(Number(response.recordsProcessed) < 1){",
+									"    postman.setNextRequest('Get status - Multiple');",
+									"}",
+									"",
+									"else",
+									"{",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status is committed\", function (){",
+									"    pm.expect(response.status).to.eql(\"Committed\");",
+									"});",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id3}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id3}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check for successsful commit - replace",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 10000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until records have been processed",
+									"// if(Number(response.submissions[0].recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Check for successsful commit - replace');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", function () {",
+									"    pm.expect(response.submissions[0].status).to.eql(\"Committed\");",
+									"});",
+									"pm.test(\"Submissions have processed\", function () {",
+									"    pm.expect(response.submissions[1].status).to.eql(\"Committed\");",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", function () {",
+									"    pm.expect(response.submissions[2].status).to.eql(\"Committed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu2}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}?limit=3",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Commit records with/without errors - Update",
+			"item": [
+				{
+					"name": "Single validation error request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id1\",response.id);",
+									"pm.environment.set(\"records1\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is",
+									"pm.test(\"number of samples submitted is 2\", function () {",
+									"     pm.expect(response.totalRecords).to.eql(2);",
+									"});",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Milk\",\r\n        \"individualReferenceId\": \"Invalid_mat_type\",\r\n        \"barcode\": \"INVAL1_Update\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"(Breast) Milk\",\r\n        \"individualReferenceId\": \"valid_record\",\r\n        \"barcode\": \"VALID1_Update\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No validation error request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id2\",response.id);",
+									"pm.environment.set(\"records2\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is",
+									"pm.test(\"number of samples submitted is 1\", function () {",
+									"     pm.expect(response.totalRecords).to.eql(1);",
+									"});",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu1}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"(Breast) Milk\",\r\n        \"individualReferenceId\": \"valid_mat_Saliva\",\r\n        \"barcode\": \"VALID1_Update\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Multiple validation error request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"//Set ID as environment variable",
+									"pm.environment.set(\"id3\",response.id);",
+									"pm.environment.set(\"records3\",response.totalRecords);",
+									"",
+									"//Check number of sumbission is",
+									"pm.test(\"number of samples submitted is 2\", function () {",
+									"     pm.expect(response.totalRecords).to.eql(2);",
+									"});",
+									"    ",
+									"//Test that status code is either 200, 201 or 202    ",
+									"pm.test(\"Record ID: \"+ response.id + \" - Status code is \" + pm.response.code, function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu1}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"samples\": [\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"Bone BON\",\r\n        \"individualReferenceId\": \"Invalid_storageTemperature_+_extr_proc\",\r\n        \"barcode\": \"INVAL1_Update\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"408235\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Invalid\"\r\n      },\r\n      \"op\": \"submit\"\r\n    },\r\n    {\r\n      \"sample\": {\r\n        \"materialType\": \"(Breast) Milk\",\r\n        \"individualReferenceId\": \"valid_record\",\r\n        \"barcode\": \"VALID1_Update\",\r\n        \"sampleContent\": \"10058006\",\r\n        \"sampleContentMethod\": \"Other\",\r\n        \"extractionSite\": \"361317000\",\r\n        \"extractionSiteOntology\": \"SNOMED-CT\",\r\n        \"extractionSiteOntologyVersion\": \"25\",\r\n        \"extractionProcedure\": \"25179006\",\r\n        \"YearOfBirth\": 1996,\r\n        \"dateCreated\": \"2016-09-12T08:37:06-01:00\",\r\n        \"storageTemperature\": \"Other\"\r\n      },\r\n      \"op\": \"submit\"\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{api-url}}/submit/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"submit",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check for successsful processing - update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 10000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", () => {",
+									"    pm.expect(response.submissions[0].recordsProcessed).to.eql(response.submissions[0].totalRecords);",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", () => {",
+									"    pm.expect(response.submissions[1].recordsProcessed).to.eql(response.submissions[1].totalRecords);",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", () => {",
+									"    pm.expect(response.submissions[2].recordsProcessed).to.eql(response.submissions[2].totalRecords);",
+									"});",
+									"",
+									"// Wait Until All Are Processed",
+									"if (response.submissions[0].recordsProcessed != response.submissions[0].totalRecords ||",
+									"    response.submissions[1].recordsProcessed != response.submissions[1].totalRecords ||",
+									"    response.submissions[2].recordsProcessed != response.submissions[2].totalRecords) ",
+									"    {",
+									"        postman.setNextRequest(pm.request.name);",
+									"    }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu2}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}?limit=3",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status errors - Single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error count is 1\", function (){",
+									"    pm.expect(response.count).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status errors - No error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error count is 0\", function (){",
+									"    pm.expect(response.count).to.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status errors - Multiple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Error count is \" +response.count, function (){",
+									"    pm.expect(response.count).to.eql(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id3}}/error",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id3}}",
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Commit (update)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 202\", function () {",
+									"    pm.response.to.have.status(202);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-url}}/{{user-biobank-id}}/commit?type=Update",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"{{user-biobank-id}}",
+								"commit"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Update"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status - Single",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until records have been processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get status - Single');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status is committed\", function (){",
+									"    pm.expect(response.status).to.eql(\"Committed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function() {}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id1}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status - No error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until records have been processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get status - No error');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status is Committed\", function (){",
+									"    pm.expect(response.status).to.eql(\"Committed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function() {}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id2}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get status - Multiple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until records have been processed",
+									"// if(Number(response.recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Get status - Multiple');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status is committed\", function (){",
+									"    pm.expect(response.status).to.eql(\"Committed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function() {}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bu1}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/{{id3}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"{{id3}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check for successsful commit - update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function () {}, 10000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//access response body",
+									"let response = pm.response.json();",
+									"",
+									"// keep re-requesting until records have been processed",
+									"// if(Number(response.submissions[0].recordsProcessed) < 1){",
+									"//     postman.setNextRequest('Check for successsful committ - update');",
+									"// }",
+									"",
+									"// else",
+									"// {",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});    ",
+									"pm.test(\"Submissions have processed\", function () {",
+									"    pm.expect(response.submissions[0].status).to.eql(\"Committed\");",
+									"});",
+									"pm.test(\"Submissions have processed\", function () {",
+									"    pm.expect(response.submissions[1].status).to.eql(\"Committed\");",
+									"});",
+									"",
+									"pm.test(\"Submissions have processed\", function () {",
+									"    pm.expect(response.submissions[2].status).to.eql(\"Committed\");",
+									"});",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "bearer {{token_bu2}}"
+							}
+						],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}?limit=3",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This set of tests requires the user to check the database for the committed records. The records with errors will not be visible on the committed database table",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"function IsSuccessCode(statusCode) {",
+					"    return statusCode == 200 || statusCode == 201;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

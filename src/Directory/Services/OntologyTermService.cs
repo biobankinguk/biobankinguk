@@ -136,7 +136,6 @@ namespace Biobanks.Directory.Services
 
             await _db.SaveChangesAsync();
 
-            await _indexService.UpdateCollectionsOntologyOtherTerms(ontologyTerm.Value);
             await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
 
             return currentTerm;

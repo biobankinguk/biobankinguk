@@ -20,14 +20,11 @@ namespace Biobanks.Services.Contracts
         Task<Organisation> GetBiobankByIdForIndexingAsync(int biobankId);
         Task<Organisation> GetBiobankByNameAsync(string biobankName);
         Task<Blob> GetLogoBlobAsync(string logoName);
-        Task<Collection> GetCollectionByIdAsync(int id);
-        Task<bool> IsCollectionFromApi(int id);
+        
+        
         Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync();
-        Task<Collection> GetCollectionByIdForIndexingAsync(int id);
-        Task<Collection> GetCollectionWithSampleSetsByIdAsync(int id);
-        Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
-        Task<IEnumerable<Collection>> ListCollectionsAsync();
-        Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
+
+
         Task<SampleSet> GetSampleSetByIdAsync(int id);
         Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id);
         bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId);

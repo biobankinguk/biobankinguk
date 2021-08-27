@@ -57,11 +57,13 @@ namespace Core.Submissions.Models
 
         #region Extracted Sample Properties
 
-        public string ExtractionProcedure { get; set; }
-
         public string SampleContent { get; set; }
 
         public string SampleContentMethod { get; set; }
+
+        public OntologyField SampleContentOntologyField { get; set; } = OntologyField.Code;
+
+        public string ExtractionProcedure { get; set; }
 
         public OntologyField ExtractionProcedureOntologyField { get; set; } = OntologyField.Code;
 

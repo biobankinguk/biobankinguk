@@ -114,6 +114,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(BiobankWriteService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(ICollectionService))
+                    .ImplementedBy(typeof(CollectionService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IContentPageService))
                     .ImplementedBy(typeof(ContentPageService))
                     .LifeStyle.Transient,

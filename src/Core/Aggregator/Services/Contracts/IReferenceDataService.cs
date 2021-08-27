@@ -1,4 +1,5 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Aggregator.Services.Contracts
 {
@@ -12,7 +13,8 @@ namespace Biobanks.Aggregator.Services.Contracts
 
         DonorCount GetDonorCount(int count);
 
-        AgeRange GetDefaultAgeRange();
+        OntologyTerm GetOntologyTerm(string id);
 
+        AgeRange GetDefaultAgeRange();
     }
 }

@@ -17,13 +17,16 @@ namespace Biobanks.Web.Controllers
         private readonly IOntologyTermService _ontologyTermService;
 
         private readonly IBiobankReadService _biobankReadService;
+        private readonly ICollectionService _collectionService;
 
         public TermController(
-            IOntologyTermService ontologyTermService,
-            IBiobankReadService biobankReadService)
+            IBiobankReadService biobankReadService,
+            ICollectionService collectionService,
+            IOntologyTermService ontologyTermService)
         {
             _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
+            _collectionService = collectionService;
         }
 
         // GET: Term
@@ -36,7 +39,7 @@ namespace Biobanks.Web.Controllers
             };
 
             // List of Unique Diagnoses With Sample Sets
-            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
+            var ontologyTerms = (await _collectionService.List())
                 .Where(x => x.SampleSets.Any() && x.OntologyTerm.DisplayOnDirectory && !x.Organisation.IsSuspended)
                 .GroupBy(x => x.OntologyTermId)
                 .Select(x => x.First().OntologyTerm);
