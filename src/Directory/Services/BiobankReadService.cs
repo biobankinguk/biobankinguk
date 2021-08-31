@@ -79,8 +79,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
         private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
 
-        private readonly IGenericEFRepository<Publication> _publicationRepository;
-
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
 
@@ -151,7 +149,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Country> countryRepository, 
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
-            IGenericEFRepository<Publication> publicationRespository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
@@ -216,8 +213,6 @@ namespace Biobanks.Services
             _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _annualStatisticRepository = annualStatisticRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
-
-            _publicationRepository = publicationRespository;
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;

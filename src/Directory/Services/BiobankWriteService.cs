@@ -76,9 +76,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
-
-        private readonly IGenericEFRepository<Publication> _publicationRespository;
-
         private readonly IGenericEFRepository<Funder> _funderRepository;
 
         private readonly IGenericEFRepository<Config> _siteConfigRepository;
@@ -134,8 +131,6 @@ namespace Biobanks.Services
             IGenericEFRepository<RegistrationReason> registrationReasonRepository,
             IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
-
-            IGenericEFRepository<Publication> publicationRepository,
 
             IGenericEFRepository<Config> siteConfigRepository,
 
@@ -194,8 +189,6 @@ namespace Biobanks.Services
             _serviceOfferingRepository = serviceOfferingRepository;
             _associatedDataProcurementTimeFrameRepository = associatedDataProcurementTimeFrameRepository;
             _preservationTypeRepository = preservationTypeRepository;
-
-            _publicationRespository = publicationRepository;
 
             _siteConfigRepository = siteConfigRepository;
 
