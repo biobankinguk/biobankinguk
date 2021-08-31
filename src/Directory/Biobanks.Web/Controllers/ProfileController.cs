@@ -21,15 +21,18 @@ namespace Biobanks.Web.Controllers
         private readonly IConfigService _configService;
 
         private readonly ICollectionService _collectionService;
+        private readonly IPublicationService _publicationService;
 
         public ProfileController(
             IBiobankReadService biobankReadService, 
             ICollectionService collectionService,
-            IConfigService configService)
+            IConfigService configService,
+            IPublicationService publicationService)
         {
             _biobankReadService = biobankReadService;
             _collectionService = collectionService;
             _configService = configService;
+            _publicationService = publicationService;
         }
 
         public ActionResult Biobanks()
@@ -169,7 +172,7 @@ namespace Biobanks.Web.Controllers
             else
             {
                 // Get accepted publications
-                var publications = await _biobankReadService.GetAcceptedOrganisationPublicationsAsync(bb);
+                var publications = await _publicationService.GetAcceptedOrganisationPublicationsAsync(bb);
 
                 // TODO: Migrate/Recreate Model?
                 var model = new BiobankPublicationsModel

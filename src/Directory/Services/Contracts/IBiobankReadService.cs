@@ -270,9 +270,7 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync();
         Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId);
 
-        Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId);
-        Task<IEnumerable<Publication>> GetOrganisationPublicationsAsync(Organisation organisation);
-        Task<IEnumerable<Publication>> GetAcceptedOrganisationPublicationsAsync(Organisation organisation);
+
         List<Organisation> GetOrganisations();
 
         Task<AnnualStatisticGroup> GetAnnualStatisticGroupByName(string name);

@@ -44,6 +44,7 @@ namespace Biobanks.Web.Controllers
     public class BiobankController : ApplicationBaseController
     {
         private readonly ICollectionService _collectionService;
+        private readonly IPublicationService _publicationService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -62,6 +63,7 @@ namespace Biobanks.Web.Controllers
 
         public BiobankController(
             ICollectionService collectionService,
+            IPublicationService publicationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -73,6 +75,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _publicationService = publicationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1798,7 +1801,7 @@ namespace Biobanks.Web.Controllers
             if (biobankId != 0)
             {
                 var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
 
                 biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
             }
@@ -1821,7 +1824,7 @@ namespace Biobanks.Web.Controllers
             var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
             // Find Given Publication
-            var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+            var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
             var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
             //retrieve from EPMC if not found
@@ -1874,7 +1877,7 @@ namespace Biobanks.Web.Controllers
                 var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
                 // Find Publication locally
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
                 var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
                 // search online
@@ -1900,14 +1903,14 @@ namespace Biobanks.Web.Controllers
                 var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
                 // Find Publication locally
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
                 var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
                 if (publication != null)
                 {
                     // Update Publication in DB
                     publication.Accepted = true;
-                    await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
+                    await _publicationService.UpdateOrganisationPublicationAsync(publication);
 
                     return Json(_mapper.Map<BiobankPublicationModel>(publication));
                 }
@@ -1922,7 +1925,7 @@ namespace Biobanks.Web.Controllers
                         publication.Accepted = true;
                         publication.OrganisationId = biobankId;
 
-                        await _biobankWriteService.AddOrganisationPublicationAsync(publication);
+                        await _publicationService.AddOrganisationPublicationAsync(publication);
                         return Json(_mapper.Map<BiobankPublicationModel>(publication));
                     }
                     else
@@ -1946,14 +1949,14 @@ namespace Biobanks.Web.Controllers
                 var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
                 // Find Given Publication
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
                 var publication = publications.Where(x => x.PublicationId == publicationId).First();
 
                 // Claim publication
                 publication.Accepted = accept;
 
                 // Add To Publication DB
-                await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
+                await _publicationService.UpdateOrganisationPublicationAsync(publication);
 
                 return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
             }
