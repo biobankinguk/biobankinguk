@@ -1800,8 +1800,7 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId != 0)
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.ListByOrganisation(biobankId);
 
                 biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
             }
@@ -1820,11 +1819,8 @@ namespace Biobanks.Web.Controllers
 
         public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
         {
-            //TODO: Merge with core for when we rewrite the directory in core.
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-
             // Find Given Publication
-            var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
+            var publications = await _publicationService.ListByOrganisation(biobankId);
             var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
             //retrieve from EPMC if not found
@@ -1874,10 +1870,8 @@ namespace Biobanks.Web.Controllers
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-
                 // Find Publication locally
-                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.ListByOrganisation(biobankId);
                 var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
                 // search online
@@ -1898,40 +1892,30 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0 || IsNullOrEmpty(publicationId))
                 return Json(new EmptyResult());
-            else
+
+            // Attempt To Update Local Publication
+            var publication = await _publicationService.Update(publicationId, biobankId, pub => 
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+                pub.Accepted = true;
+            });
+            
+            // No Local Publication - Fetch
+            if (publication == null)
+            {
+                publication = await PublicationSearch(publicationId, biobankId);
 
-                // Find Publication locally
-                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
-                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+                // No Publication Found
+                if (publication == null)
+                    return Json(new EmptyResult());
 
-                if (publication != null)
-                {
-                    // Update Publication in DB
-                    publication.Accepted = true;
-                    await _publicationService.UpdateOrganisationPublicationAsync(publication);
+                // Add Publication to DB
+                publication.Accepted = true;
+                publication.OrganisationId = biobankId;
 
-                    return Json(_mapper.Map<BiobankPublicationModel>(publication));
-                }
-                else
-                {
-                    // search online
-                    publication = await PublicationSearch(publicationId, biobankId);
-
-                    if (publication != null)
-                    {
-                        // Add Publication to DB
-                        publication.Accepted = true;
-                        publication.OrganisationId = biobankId;
-
-                        await _publicationService.AddOrganisationPublicationAsync(publication);
-                        return Json(_mapper.Map<BiobankPublicationModel>(publication));
-                    }
-                    else
-                        return Json(new EmptyResult());
-                }  
+                publication = await _publicationService.Create(publication);
             }
+
+            return Json(_mapper.Map<BiobankPublicationModel>(publication));
         }
 
         [HttpPost]
@@ -1940,26 +1924,16 @@ namespace Biobanks.Web.Controllers
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
 
-            if (biobankId == 0 || String.IsNullOrEmpty(publicationId))
+            if (biobankId == 0 || IsNullOrEmpty(publicationId))
+                return Json(new EmptyResult());
+        
+            // Update Publication
+            var publication = await _publicationService.Update(publicationId, biobankId, pub =>
             {
-                return Json("");
-            }
-            else
-            {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+                pub.Accepted = true;
+            });
 
-                // Find Given Publication
-                var publications = await _publicationService.GetOrganisationPublicationsAsync(biobank);
-                var publication = publications.Where(x => x.PublicationId == publicationId).First();
-
-                // Claim publication
-                publication.Accepted = accept;
-
-                // Add To Publication DB
-                await _publicationService.UpdateOrganisationPublicationAsync(publication);
-
-                return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
-            }
+            return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AddPublicationSuccessFeedback(string publicationId)

@@ -1,35 +1,59 @@
-﻿using Biobanks.Directory.Services.Contracts;
+﻿using Biobanks.Directory.Data;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services
 {
     public class PublicationService : IPublicationService
     {
-        public Task<Publication> AddOrganisationPublicationAsync(Publication publication)
+        private readonly BiobanksDbContext _db;
+
+        public PublicationService(BiobanksDbContext db)
         {
-            throw new System.NotImplementedException();
+            _db = db;
         }
 
-        public Task<IEnumerable<Publication>> GetAcceptedOrganisationPublicationsAsync(Organisation organisation)
+        ///<inheritdoc/>
+        public async Task<IEnumerable<Publication>> ListByOrganisation(int organisationId, bool acceptedOnly = false)
+            => await _db.Publications
+                .AsNoTracking()
+                .Where(x => x.OrganisationId == organisationId)
+                .Where(x => !acceptedOnly || (x.Accepted ?? false)) // Logical Implication
+                .ToListAsync();
+
+        ///<inheritdoc/>
+        public async Task<Publication> Create(Publication publication)
         {
-            throw new System.NotImplementedException();
+            _db.Publications.Add(publication);
+            await _db.SaveChangesAsync();
+
+            return publication;
         }
 
-        public Task<IEnumerable<Publication>> GetOrganisationPublicationsAsync(Organisation organisation)
+        ///<inheritdoc/>
+        public async Task<Publication> Update(string publicationId, int organisationId, Action<Publication> updates)
         {
-            throw new System.NotImplementedException();
-        }
+            var publication = await _db.Publications
+                .FirstOrDefaultAsync(x => x.PublicationId == publicationId && x.OrganisationId == organisationId);
 
-        public Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-        {
-            throw new System.NotImplementedException();
-        }
+            if (publication is null)
+                return null;
 
-        public Task<Publication> UpdateOrganisationPublicationAsync(Publication publication)
-        {
-            throw new System.NotImplementedException();
+            // Apply Updates To Tracked Organisation
+            updates(publication);
+
+            // Push Changes
+            await _db.SaveChangesAsync();
+
+            // Remove Tracking Of Object, Such That Updates Only Occur Within This Scope
+            _db.Entry(publication).State = EntityState.Detached;
+
+            return publication;
         }
     }
 }

@@ -1444,20 +1444,11 @@ namespace Biobanks.Services
                 null,
                 x => x.RegistrationReason);
 
-        public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _publicationRepository.ListAsync(true, x => x.OrganisationId == biobankId);
-
         public async Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(int biobankId)
             => await _organisationNetworkRepository.ListAsync(false, x => x.OrganisationId == biobankId);
 
         public async Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworkAsync(int biobankId, int networkId)
             => await _organisationNetworkRepository.ListAsync(false, x => x.OrganisationId == biobankId && x.NetworkId == networkId);
-
-        public async Task<IEnumerable<Publication>> GetOrganisationPublicationsAsync(Organisation organisation)
-            => await ListOrganisationPublications(organisation.OrganisationId);
-
-        public async Task<IEnumerable<Publication>> GetAcceptedOrganisationPublicationsAsync(Organisation organisation)
-            => (await GetOrganisationPublicationsAsync(organisation)).Where(x => x.Accepted == true);
 
         public List<Organisation> GetOrganisations() => _organisationRepository.List(false, x => x.IsSuspended == false, x => x.OrderBy(c => c.Name)).ToList();
 

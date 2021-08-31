@@ -1950,22 +1950,6 @@ namespace Biobanks.Services
             await _organisationRegistrationReasonRepository.SaveChangesAsync();
         }
     
-        public async Task<Publication> AddOrganisationPublicationAsync(Publication publication)
-        {
-            _publicationRespository.Insert(publication);
-            await _publicationRespository.SaveChangesAsync();
-
-            return publication;
-        }
-
-        public async Task<Publication> UpdateOrganisationPublicationAsync(Publication publication)
-        {
-            _publicationRespository.Update(publication);
-            await _publicationRespository.SaveChangesAsync();
-
-            return publication;
-        }
-
         public async Task DeleteAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup)
         {
             await _associatedDataTypeGroupRepository.DeleteAsync(associatedDataTypeGroup.Id);

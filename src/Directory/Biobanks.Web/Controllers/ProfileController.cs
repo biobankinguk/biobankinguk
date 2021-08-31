@@ -172,7 +172,7 @@ namespace Biobanks.Web.Controllers
             else
             {
                 // Get accepted publications
-                var publications = await _publicationService.GetAcceptedOrganisationPublicationsAsync(bb);
+                var publications = await _publicationService.ListByOrganisation(bb.OrganisationId, acceptedOnly: true);
 
                 // TODO: Migrate/Recreate Model?
                 var model = new BiobankPublicationsModel
