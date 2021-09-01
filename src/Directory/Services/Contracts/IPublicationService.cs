@@ -1,5 +1,4 @@
 ﻿using Biobanks.Entities.Data;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,12 +20,11 @@ namespace Biobanks.Directory.Services.Contracts
         Task<Publication> Create(Publication publication);
 
         /// <summary>
-        /// Applies an update action to an exisiting Publication
+        /// Claim a Publication for an Organisation
         /// </summary>
-        /// <param name="publicationId">The Id of the Publication to apply updates to</param>
-        /// <param name="organisationId">The Id of the Organisation to which the Publication is associated with, as duplicate Publications may exist</param>
-        /// <param name="updates">The update action which acts on a scoped, tracked Publication entity</param>
-        /// <returns>An untracked, updated Publication entity. Otherwise null if Publication does not exist</returns>
-        Task<Publication> Update(string publicationId, int organisationId, Action<Publication> updates);
+        /// <param name="publicationId">The EPMRC Identifier of the Publication</param>
+        /// <param name="organisationId">The Id of the Organisation</param>
+        /// <param name="accept">If the Publication is to be accepted or rejected by the Organisation</param>
+        Task<Publication> Claim(string publicationId, int organisationId, bool accept = true);
     }
 }

@@ -1893,12 +1893,9 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0 || IsNullOrEmpty(publicationId))
                 return Json(new EmptyResult());
 
-            // Attempt To Update Local Publication
-            var publication = await _publicationService.Update(publicationId, biobankId, pub => 
-            {
-                pub.Accepted = true;
-            });
-            
+            // Try Accept Local Publication
+            var publication = await _publicationService.Claim(publicationId, biobankId);
+
             // No Local Publication - Fetch
             if (publication == null)
             {
@@ -1926,12 +1923,9 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0 || IsNullOrEmpty(publicationId))
                 return Json(new EmptyResult());
-        
+
             // Update Publication
-            var publication = await _publicationService.Update(publicationId, biobankId, pub =>
-            {
-                pub.Accepted = true;
-            });
+            var publication = await _publicationService.Claim(publicationId, biobankId, accept);
 
             return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
         }

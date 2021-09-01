@@ -1,5 +1,6 @@
 ﻿using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services.Dto;
 using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace Biobanks.Directory.Services
         }
 
         ///<inheritdoc/>
-        public async Task<Publication> Update(string publicationId, int organisationId, Action<Publication> updates)
+        public async Task<Publication> Claim(string publicationId, int organisationId, bool accept = true)
         {
             var publication = await _db.Publications
                 .FirstOrDefaultAsync(x => x.PublicationId == publicationId && x.OrganisationId == organisationId);
@@ -44,14 +45,9 @@ namespace Biobanks.Directory.Services
             if (publication is null)
                 return null;
 
-            // Apply Updates To Tracked Organisation
-            updates(publication);
+            publication.Accepted = accept;
 
-            // Push Changes
             await _db.SaveChangesAsync();
-
-            // Remove Tracking Of Object, Such That Updates Only Occur Within This Scope
-            _db.Entry(publication).State = EntityState.Detached;
 
             return publication;
         }
