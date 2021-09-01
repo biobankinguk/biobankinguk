@@ -1,8 +1,6 @@
 ﻿using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Contracts;
-using Biobanks.Directory.Services.Dto;
 using Biobanks.Entities.Data;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
