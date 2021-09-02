@@ -149,28 +149,17 @@ namespace Biobanks.Web.Controllers
                 } //no problem, just means no logo uploaded in this form submission
             }
 
-            //var biobank = _mapper.Map<Organisation>(model);
+            var biobank = _mapper.Map<OrganisationDTO>(model);
 
-            ////Update bits Automapper doesn't do
-            //biobank.Logo = logoName;
+            //Update bits Automapper doesn't do
+            biobank.Logo = logoName;
 
-            //return await _organisationService.Update(biobank);
-
-            var organisationId = (int) model.BiobankId;
-
-            return await _organisationService.Update(organisationId, organisation =>
-            {
-                // Map Model Values To Organisation
-                _mapper.Map(model, organisation);
-
-                // Logo Updated Manually
-                organisation.Logo = logoName;
-            });
+            return await _organisationService.Update(biobank);
         }
 
         private async Task<Organisation> CreateBiobank(BiobankDetailsModel model)
         {
-            var biobank = await _organisationService.Create(_mapper.Map<Organisation>(model));
+            var biobank = await _organisationService.Create(_mapper.Map<OrganisationDTO>(model));
             await _organisationService.AddUserToOrganisation(User.Identity.GetUserId(), biobank.OrganisationId);
 
             //update the request to show org created
@@ -204,7 +193,7 @@ namespace Biobanks.Web.Controllers
                                     biobank.OrganisationExternalId);
 
                     //biobank = await _organisationService.Update(biobank);
-                    biobank = await _organisationService.Update(biobank.OrganisationId, organisation => organisation.Logo = biobank.Logo);
+                    biobank = await _organisationService.Update(_mapper.Map<OrganisationDTO>(biobank));
                 }
                 catch (ArgumentNullException) //no problem, just means no logo uploaded in this form submission
                 {
@@ -2119,18 +2108,13 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Submissions(SubmissionsModel model)
         {
             //update Organisations table
-            //var biobankId = model.BiobankId;
-            //var organisation = await _organisationService.Get(biobankId);
+            var biobankId = model.BiobankId;
 
-            //organisation.CollectionTypeId = model.CollectionType;
-            //organisation.AccessConditionId = model.AccessCondition;
-
-            //await _organisationService.Update(organisation);
-
-            await _organisationService.Update(organisationId: model.BiobankId, organisation =>
+            await _organisationService.Update(new OrganisationDTO
             {
-                organisation.CollectionTypeId = model.CollectionType;
-                organisation.AccessConditionId = model.AccessCondition;
+                OrganisationId = biobankId,
+                AccessConditionId = model.AccessCondition,
+                CollectionTypeId = model.CollectionType,
             });
 
             //Set feedback and redirect

@@ -15,6 +15,7 @@ using Biobanks.Identity.Data.Entities;
 using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Directory.Services
 {
@@ -24,29 +25,47 @@ namespace Biobanks.Directory.Services
         private readonly IBiobankIndexService _indexService;
         private readonly BiobanksDbContext _db;
 
+        private readonly IMapper _mapper;
+
         public OrganisationService(
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IBiobankIndexService indexService,
-            BiobanksDbContext db)
+            BiobanksDbContext db,
+            IMapper mapper)
         {
             _userManager = userManager;
             _indexService = indexService;
             _db = db;
+            _mapper = mapper;
         }
 
-        /// <inheritdoc/>
-        public async Task<OrganisationType> GetOrganisationType()
+
+        private IQueryable<Organisation> Query()
+            => _db.Organisations
+                .Include(x => x.ApiClients)
+                .Include(x => x.Funders)
+                .Include(x => x.OrganisationAnnualStatistics)
+                .Include(x => x.OrganisationType)
+                .Where(x => x.OrganisationType.Description == "Biobank");
+
+        private IQueryable<OrganisationRegisterRequest> QueryRegistrationRequests()
+            => _db.OrganisationRegisterRequests
+                .Include(x => x.OrganisationType)
+                .Where(x => x.OrganisationType.Description == "Biobank");
+
+        private async Task<OrganisationType> GetOrganisationType()
             => await _db.OrganisationTypes.FirstOrDefaultAsync(x => x.Description == "Biobank");
 
         /// <inheritdoc/>
         public async Task<IEnumerable<Organisation>> List(string name = "", bool includeSuspended = true)
-            => await _db.Organisations
+            => await Query()
+                .AsNoTracking()
                 .Where(x => x.Name.Contains(name) && (includeSuspended || x.IsSuspended == false))
                 .ToListAsync();
 
         /// <inheritdoc/>
         public async Task<IEnumerable<Organisation>> ListForActivity(string name = "", bool includeSuspended = true)
-            => await _db.Organisations
+            => await Query()
                 .AsNoTracking()
                 .Include(x => x.Collections)
                 .Include(x => x.DiagnosisCapabilities)
@@ -74,177 +93,90 @@ namespace Biobanks.Directory.Services
 
         /// <inheritdoc/>
         public async Task<IEnumerable<Organisation>> ListByExternalIds(IList<string> externalIds)
-            => await _db.Organisations
+            => await Query()
+                .AsNoTracking()
                 .Include(x => x.OrganisationNetworks)
                 .Where(x => externalIds.Contains(x.OrganisationExternalId))
                 .ToListAsync();
 
         /// <inheritdoc/>
         public async Task<IEnumerable<Organisation>> ListByAnonymousIdentifiers(IEnumerable<Guid> identifiers)
-            => await _db.Organisations
+            => await Query()
+                .AsNoTracking()
                 .Where(x => x.AnonymousIdentifier.HasValue && identifiers.Contains(x.AnonymousIdentifier.Value))
                 .ToListAsync();
 
         /// <inheritdoc/>
         public async Task<Organisation> Get(int id)
-        {
-            var type = await GetOrganisationType();
+            => await Query()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
-            return await _db.Organisations
-                .Include(x => x.ApiClients)
-                .Include(x => x.Funders)
-                .Include(x => x.OrganisationAnnualStatistics)
-                .FirstOrDefaultAsync(x => x.OrganisationId == id && x.OrganisationTypeId == type.OrganisationTypeId);
-        }
-        
         /// <inheritdoc/>
         public async Task<Organisation> GetForIndexing(int id)
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.Organisations
-                .Include(x => x.ApiClients)
-                .Include(x => x.Funders)
-                .Include(x => x.OrganisationAnnualStatistics)
+            => await Query()
+                .AsNoTracking()
                 .Include(x => x.Collections)
                 .Include(x => x.Collections.Select(c => c.SampleSets))
                 .Include(x => x.DiagnosisCapabilities)
                 .Include(x => x.OrganisationServiceOfferings)
                 .Include(x => x.OrganisationServiceOfferings.Select(o => o.ServiceOffering))
-                .FirstOrDefaultAsync(x => x.OrganisationId == id && x.OrganisationTypeId == type.OrganisationTypeId);
-        }
+                .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         /// <inheritdoc/>
         public async Task<Organisation> GetByName(string name)
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.Organisations
-                .Include(x => x.OrganisationAnnualStatistics)
-                .FirstOrDefaultAsync(x => x.Name == name && x.OrganisationTypeId == type.OrganisationTypeId);
-        }
+            => await Query()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Name == name);
 
         /// <inheritdoc/>
         public async Task<Organisation> GetByExternalId(string externalId)
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.Organisations
-                .Include(x => x.OrganisationAnnualStatistics)
-                .FirstOrDefaultAsync(x => x.OrganisationExternalId == externalId && x.OrganisationTypeId == type.OrganisationTypeId);
-        }
+            => await Query()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrganisationExternalId == externalId);
 
         /// <inheritdoc/>
-        public async Task<Organisation> Create(Organisation organisation)
+        public async Task<Organisation> Create(OrganisationDTO organisationDto)
         {
             var type = await GetOrganisationType();
+            var organisation = _mapper.Map<Organisation>(organisationDto);
 
-            // TODO: Support ISO3 Country Codes
             organisation.OrganisationExternalId = "GBR-" + type.OrganisationTypeId + "-";
             organisation.OrganisationTypeId = type.OrganisationTypeId;
-
             organisation.AnonymousIdentifier = Guid.NewGuid();
             organisation.LastUpdated = DateTime.Now;
 
             _db.Organisations.Add(organisation);
 
-            // TODO: Is this check relevant?
-            if (await _db.SaveChangesAsync() != 1)
-                throw new DataException();
+            await _db.SaveChangesAsync();
 
-            // TODO: Is there a better External ID Schema
-            // Update External Id
-            //organisation.OrganisationExternalId += organisation.OrganisationId;
-
-            //await Update(organisation);
-            
-            // Finally Update ExternalID 
-            organisation = await Update(organisation.OrganisationId, org =>
-            {
-                org.OrganisationExternalId += org.OrganisationId;
-            });
+            //// TODO: Is there a better External ID Schema
+            //// Update External Id
+            ////organisation.OrganisationExternalId += organisation.OrganisationId;
 
             return organisation;
         }
 
-        /// <inheritdoc/>
-        public async Task<Organisation> Update(int id, Action<Organisation> updates)
+        public async Task<Organisation> Update(OrganisationDTO organisationDto)
         {
-            var organisation = await GetForIndexing(id);
+            var organisation = await Query().FirstOrDefaultAsync(x => x.OrganisationId == organisationDto.OrganisationId);
 
             if (organisation is null)
-                return null;
+                throw new KeyNotFoundException($"No Organisation exists with Id={organisationDto.OrganisationId}");
 
-            // Apply Updates To Tracked Organisation
-            updates(organisation);
+            // Map Updates To Existing Organisation
+            _mapper.Map(organisationDto, organisation);
 
-            // Push Changes
+            // Set Timestamp
+            organisation.LastUpdated = DateTime.Now;
+
+            // Ensure AnonymousIdentifier Exists
+            if (!organisation.AnonymousIdentifier.HasValue)
+                organisation.AnonymousIdentifier = Guid.NewGuid();
+
             await _db.SaveChangesAsync();
-
-            // Remove Tracking Of Object, Such That Updates Only Occur Within This Scope
-            _db.Entry(organisation).State = EntityState.Detached;
-
-            // Notify Search Index Of Changes
-            if (!organisation.IsSuspended)
-                _indexService.UpdateOrganisationDetails(organisation);
 
             return organisation;
-        }
-
-        /// <inheritdoc/>
-        [Obsolete]
-        public async Task<Organisation> Update(Organisation organisation)
-        {
-            // We Will Be Indexing The Updated Organisation
-            var existingOrganisation = await GetForIndexing(organisation.OrganisationId);
-
-            // Map Fields Across
-            existingOrganisation.Name = organisation.Name;
-            existingOrganisation.Description = organisation.Description;
-            existingOrganisation.ContactEmail = organisation.ContactEmail;
-            existingOrganisation.ContactNumber = organisation.ContactNumber;
-            existingOrganisation.Logo = organisation.Logo;
-            existingOrganisation.AddressLine1 = organisation.AddressLine1;
-            existingOrganisation.AddressLine2 = organisation.AddressLine2;
-            existingOrganisation.AddressLine3 = organisation.AddressLine3;
-            existingOrganisation.AddressLine4 = organisation.AddressLine4;
-            existingOrganisation.PostCode = organisation.PostCode;
-            existingOrganisation.City = organisation.City;
-
-            existingOrganisation.ExcludePublications = organisation.ExcludePublications;
-            existingOrganisation.SharingOptOut = organisation.SharingOptOut;
-            existingOrganisation.EthicsRegistration = organisation.EthicsRegistration;
-            existingOrganisation.OtherRegistrationReason = organisation.OtherRegistrationReason;
-
-            // Update Timestamp
-            existingOrganisation.LastUpdated = DateTime.Now;
-
-            // Enforce Proper URL Syntax
-            existingOrganisation.Url = UrlTransformer.Transform(organisation.Url);
-
-            // FK Can Be Referenced By Entity Instance or Directly
-            existingOrganisation.AccessConditionId = organisation.AccessCondition?.Id ?? organisation.AccessConditionId;
-            existingOrganisation.CollectionTypeId = organisation.CollectionType?.Id ?? organisation.CollectionTypeId;
-            existingOrganisation.CountryId = organisation.Country?.Id ?? organisation.CountryId;
-            existingOrganisation.CountyId = organisation.County?.Id ?? organisation.CountyId;
-            existingOrganisation.OrganisationTypeId = organisation.OrganisationType?.OrganisationTypeId ?? organisation.OrganisationTypeId;
-
-            // TODO: Include These In Update
-            // 1->M Navigation Properties (Some are ommitted as they should be updated via specific service methods)
-            //existingOrganisation.OrganisationServiceOfferings = organisation.OrganisationServiceOfferings;
-            //existingOrganisation.OrganisationRegistrationReasons = organisation.OrganisationRegistrationReasons;
-
-            //// Ensure Organisation Has An Anonymous Identifier
-            if (!existingOrganisation.AnonymousIdentifier.HasValue)
-                existingOrganisation.AnonymousIdentifier = Guid.NewGuid();
-
-            await _db.SaveChangesAsync();
-
-            // Update Search Index
-            if (!existingOrganisation.IsSuspended)
-                _indexService.UpdateOrganisationDetails(existingOrganisation);
-
-            return existingOrganisation;
         }
 
         /// <inheritdoc/>
@@ -323,25 +255,29 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Organisation> Suspend(int organisationId)
         {
-            var organisation = await GetForIndexing(organisationId);
-
-            organisation.IsSuspended = true;
+            var organisation = await Update(new OrganisationDTO
+            {
+                OrganisationId = organisationId,
+                IsSuspended = true
+            });
 
             await _indexService.BulkIndexBiobank(organisation);
 
-            return await Update(organisation);
+            return organisation;
         }
 
         /// <inheritdoc/>
         public async Task<Organisation> Unsuspend(int organisationId)
         {
-            var organisation = await GetForIndexing(organisationId);
-
-            organisation.IsSuspended = false;
+            var organisation = await Update(new OrganisationDTO
+            {
+                OrganisationId = organisationId,
+                IsSuspended = false
+            });
 
             await _indexService.BulkIndexBiobank(organisation);
 
-            return await Update(organisation);
+            return organisation;
         }
 
         /// <inheritdoc/>
@@ -359,68 +295,50 @@ namespace Biobanks.Directory.Services
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListOpenRegistrationRequests()
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.OrganisationRegisterRequests
+            => await QueryRegistrationRequests()
+                .AsNoTracking()
                 .Where(x =>
-                    x.OrganisationTypeId == type.OrganisationTypeId &&
                     x.AcceptedDate == null &&
                     x.DeclinedDate == null && 
                     x.OrganisationCreatedDate == null)
                 .ToListAsync();
-        }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequests()
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.OrganisationRegisterRequests
+            => await QueryRegistrationRequests()
                 .AsNoTracking()
                 .Where(x =>
-                    x.OrganisationTypeId == type.OrganisationTypeId &&
                     x.AcceptedDate != null &&
                     x.DeclinedDate == null &&
                     x.OrganisationCreatedDate == null)
                 .ToListAsync();
-        }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalRegistrationRequests()
-         {
-            var type = await GetOrganisationType();
-
-            return await _db.OrganisationRegisterRequests
+            => await QueryRegistrationRequests()
+                .AsNoTracking()
                 .Where(x =>
-                    x.OrganisationTypeId == type.OrganisationTypeId &&
                     x.AcceptedDate != null &&
                     x.DeclinedDate != null)
                 .ToListAsync();
-        }
-       
+
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> GetRegistrationRequest(int requestId)
-            => await _db.OrganisationRegisterRequests.FirstOrDefaultAsync(x => x.OrganisationRegisterRequestId == requestId);
+            => await QueryRegistrationRequests()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrganisationRegisterRequestId == requestId);
 
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> GetRegistrationRequestByName(string name)
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.OrganisationRegisterRequests
-                .FirstOrDefaultAsync(x => x.OrganisationName == name && x.OrganisationTypeId == type.OrganisationTypeId);
-        }
+            => await QueryRegistrationRequests()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrganisationName == name);
 
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> GetRegistrationRequestByEmail(string email)
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.OrganisationRegisterRequests
-                .Where(x => x.OrganisationTypeId == type.OrganisationTypeId)
+            => await QueryRegistrationRequests()
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserEmail == email && x.DeclinedDate == null && x.OrganisationCreatedDate == null);
-        }
 
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> AddRegistrationRequest(OrganisationRegisterRequest request)
@@ -463,19 +381,12 @@ namespace Biobanks.Directory.Services
 
         /// <inheritdoc/>
         public async Task<bool> RegistrationRequestExists(string name)
-        {
-            var type = await GetOrganisationType();
-
-            return await _db.OrganisationRegisterRequests
-                .AnyAsync(x =>
-                    x.OrganisationTypeId == type.OrganisationTypeId &&
-                    x.OrganisationName == name &&
-                    x.DeclinedDate == null);
-        }
+            => await QueryRegistrationRequests().AnyAsync(x => x.OrganisationName == name && x.DeclinedDate == null);
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegistrationReason>> ListRegistrationReasons(int organisationId)
             => await _db.OrganisationRegistrationReasons
+                .AsNoTracking()
                 .Include(x => x.RegistrationReason)
                 .Where(x => x.OrganisationId == organisationId)
                 .ToListAsync();
@@ -483,18 +394,23 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<KeyValuePair<string, string>> GenerateNewApiClient(int organisationId, string clientName = null)
         {
+            var organisation = await Query().FirstOrDefaultAsync(x => x.OrganisationId == organisationId);
+
+            if (organisation is null)
+                throw new KeyNotFoundException();
+
             var clientId = Crypto.GenerateId();
             var clientSecret = Crypto.GenerateId();
 
-            await Update(organisationId, organisation =>
+            organisation.ApiClients.Add(new ApiClient
             {
-                organisation.ApiClients.Add(new ApiClient
-                {
-                    Name = clientName ?? clientId,
-                    ClientId = clientId,
-                    ClientSecretHash = clientSecret.Sha256()
-                });
+                Name = clientName ?? clientId,
+                ClientId = clientId,
+                ClientSecretHash = clientSecret.Sha256(),
+
             });
+
+            await _db.SaveChangesAsync();
 
             return new KeyValuePair<string, string>(clientId, clientSecret);
         }
@@ -502,7 +418,10 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int organisationId)
         {
-            var organisation = await Get(organisationId);
+            var organisation = await Query().FirstOrDefaultAsync(x => x.OrganisationId == organisationId);
+
+            if (organisation is null)
+                throw new KeyNotFoundException();
 
             var credentials = organisation.ApiClients.First();
             var newSecret = Crypto.GenerateId();
@@ -510,7 +429,7 @@ namespace Biobanks.Directory.Services
             // Update Credentials Secret
             organisation.ApiClients.First().ClientSecretHash = newSecret.Sha256();
 
-            await Update(organisation);
+            await _db.SaveChangesAsync();
 
             return new KeyValuePair<string, string>(credentials.ClientId, newSecret);
         }

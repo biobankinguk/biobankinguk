@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Biobanks.Services.Contracts;
 using Biobanks.Web.Filters;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -25,13 +26,11 @@ namespace Biobanks.Web.ApiControllers
         [Route("IncludePublications/{id}/{value}")]
         public async Task IncludePublications(int id, bool value)
         {
-            await _organisationService.Update(id, organisation => organisation.ExcludePublications = !value);
-
-            //var organisation = await _organisationService.Get(id);
-
-            //organisation.ExcludePublications = !value;
-
-            //await _organisationService.Update(organisation);
+            await _organisationService.Update(new OrganisationDTO
+            {
+                OrganisationId = id,
+                ExcludePublications = !value
+            });
         }
     }
 }

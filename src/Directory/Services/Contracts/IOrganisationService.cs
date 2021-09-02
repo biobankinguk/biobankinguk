@@ -1,5 +1,6 @@
 ﻿using Biobanks.Entities.Data;
 using Biobanks.Identity.Data.Entities;
+using Biobanks.Services.Dto;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -94,21 +95,13 @@ namespace Biobanks.Services.Contracts
         /// Create a new Organisation
         /// </summary>
         /// <returns>The newly created Organisation with assigned Id</returns>
-        Task<Organisation> Create(Organisation organisation);
+        Task<Organisation> Create(OrganisationDTO organisationDto);
 
         /// <summary>
         /// Update an exisiting Organisation
         /// </summary>
         /// <returns>The updated Organisation reference</returns>
-        Task<Organisation> Update(Organisation organisation);
-
-        /// <summary>
-        /// Applies an update action to an exisiting Organisation
-        /// </summary>
-        /// <param name="organisationId">The Id of the Organisation to apply updates to</param>
-        /// <param name="updates">The update action which acts on a scoped, tracked Organisation entity</param>
-        /// <returns>An untracked, updated Organisation entity. Otherwise null if Organisation does not exist</returns>
-        Task<Organisation> Update(int organisationId, Action<Organisation> updates);
+        Task<Organisation> Update(OrganisationDTO organisationDto);
 
         /// <summary>
         /// Delete an exisiting Organisation
@@ -254,11 +247,6 @@ namespace Biobanks.Services.Contracts
         /// <returns>KeyValuePair (ID, Secret) with newly regenerated Secret</returns>
         Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int organisationId);
 
-        /// <summary>
-        /// Returns the default Organisation Type
-        /// </summary>
-        Task<OrganisationType> GetOrganisationType();
-        
         /// <summary>
         /// Lists the reasons for an Organisations registration
         /// </summary>
