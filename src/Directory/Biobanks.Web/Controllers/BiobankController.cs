@@ -792,7 +792,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the funder/biobank relationship
-            await _organisationService.AddFunderToOrganisation(
+            await _organisationService.AddFunder(
                 funder.Id, SessionHelper.GetBiobankId(Session));
 
             //return success, and enough details for adding to the viewmodel's list

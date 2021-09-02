@@ -225,31 +225,38 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<bool> AddFunderToOrganisation(int funderId, int organisationId)
+        public async Task AddFunder(int funderId, int organisationId)
         {
-            var organisation = await Get(organisationId);
-            var funder = await _db.Funders.FirstOrDefaultAsync(x => x.Id == funderId); 
+            var organisation = await Query().FirstOrDefaultAsync(x => x.OrganisationId == organisationId);
+            var funder = await _db.Funders.FirstOrDefaultAsync(x => x.Id == funderId);
 
-            if (organisation is null || funder is null)
-                return false;
+            if (organisation is null)
+                throw new KeyNotFoundException($"Organisation of Id={organisationId} does not exist");
+
+            if (funder is null)
+                throw new KeyNotFoundException($"Funder of Id={funderId} does not exist");
 
             // Add Organisation To Funder
             organisation.Funders.Add(funder);
 
             await _db.SaveChangesAsync();
-
-            return true;
         }
 
         /// <inheritdoc/>
         public async Task RemoveFunder(int funderId, int organisationId)
         {
-            var organisation = await Get(organisationId);
+            var organisation = await Query()
+                .Include(x => x.Funders)
+                .FirstOrDefaultAsync(x => x.OrganisationId == organisationId);
 
+            if (organisation is null)
+                throw new KeyNotFoundException($"Organisation of Id={organisationId} does not exist");
+
+            // Remove Funder
             organisation.Funders.Remove(
                 organisation.Funders.FirstOrDefault(x => x.Id == funderId));
 
-            await Update(organisation);
+            await _db.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
@@ -343,6 +350,10 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> AddRegistrationRequest(OrganisationRegisterRequest request)
         {
+            // Set OrganisationType
+            request.OrganisationType = await GetOrganisationType();
+
+            // Add New Request
             _db.OrganisationRegisterRequests.Add(request);
 
             await _db.SaveChangesAsync();
@@ -353,7 +364,8 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> UpdateRegistrationRequest(OrganisationRegisterRequest request)
         {
-            var currentRequest = await _db.OrganisationRegisterRequests.FindAsync(request.OrganisationRegisterRequestId);
+            var currentRequest = await QueryRegistrationRequests()
+                .FirstOrDefaultAsync(x => x.OrganisationRegisterRequestId == request.OrganisationRegisterRequestId);
 
             currentRequest.UserName = request.UserName;
             currentRequest.UserEmail = request.UserEmail;

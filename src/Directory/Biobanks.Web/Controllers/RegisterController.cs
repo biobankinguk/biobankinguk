@@ -166,16 +166,12 @@ namespace Biobanks.Web.Controllers
                 return View(model);
             }
 
-            //get the org type id for biobanks
-            var type = await _organisationService.GetOrganisationType();
-
             //Create a register request for this user and Biobank
             var request = await _organisationService.AddRegistrationRequest(
                 new OrganisationRegisterRequest
                 {
                     UserName = model.Name,
                     UserEmail = model.Email,
-                    OrganisationTypeId = type.OrganisationTypeId,
                     OrganisationName = model.Entity,
                     RequestDate = DateTime.Now
                 });

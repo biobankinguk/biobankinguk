@@ -14,6 +14,8 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
 using Biobanks.Directory.Data;
 using Biobanks.Directory.Data.Transforms.Url;
+using AutoMapper;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
@@ -26,19 +28,22 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IBiobankIndexService _indexService;
         private readonly ISearchProvider _searchProvider;
+        private readonly IMapper _mapper;
 
         public SuperUserController(
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IBiobankIndexService indexService,
-            ISearchProvider searchProvider)
+            ISearchProvider searchProvider,
+            IMapper mapper)
         {
             _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _indexService = indexService;
             _searchProvider = searchProvider;
+            _mapper = mapper;
         }
 
         // GET: SuperUser
@@ -62,9 +67,12 @@ namespace Biobanks.Web.Controllers
                 
                 foreach (var organisation in organisations)
                 {
-                    // Update Method Automatically Fixes URL
-                    //await _organisationService.Update(organisation);
-                    await _organisationService.Update(organisation.OrganisationId, org => org.Url = UrlTransformer.Transform(org.Url));
+                    var dto = _mapper.Map<OrganisationDTO>(organisation);
+
+                    // Update URL
+                    dto.Url = UrlTransformer.Transform(dto.Url);
+
+                    await _organisationService.Update(dto);
                 }
                 
             }

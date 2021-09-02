@@ -213,7 +213,7 @@ namespace Biobanks.Services.Contracts
         /// <param name="funderId">The Id of the Funder being added</param>
         /// <param name="organisationId">The Id of the Organisation</param>
         /// <returns>true - If successful in adding Funder</returns>
-        Task<bool> AddFunderToOrganisation(int funderId, int organisationId);
+        Task AddFunder(int funderId, int organisationId);
 
         /// <summary>
         /// Removes an exisiting Funder to an exisiting Organisation
