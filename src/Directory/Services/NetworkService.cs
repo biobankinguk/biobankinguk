@@ -4,8 +4,12 @@ using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Search.Legacy;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
+using Hangfire;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -17,7 +21,7 @@ namespace Biobanks.Directory.Services
 {
     public class NetworkService : INetworkService
     {
-        private readonly IBiobankIndexService _indexService;
+        private readonly IIndexProvider _indexProvider;
         private readonly IOrganisationService _organisationService;
         
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
@@ -26,17 +30,16 @@ namespace Biobanks.Directory.Services
         private readonly IMapper _mapper;
 
         public NetworkService(
-            IBiobankIndexService indexService,
+            IIndexProvider indexProvider,
             IOrganisationService organisationService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             BiobanksDbContext db,
             IMapper mapper)
         {
+            _indexProvider = indexProvider;
             _organisationService = organisationService;
-            _indexService = indexService;
             _userManager = userManager;
             _db = db;
-
             _mapper = mapper;
         }
 
@@ -55,7 +58,9 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Network> Update(NetworkDTO networkDto)
         {
-            var network = await _db.Networks.FindAsync(networkDto.NetworkId);
+            var network = await _db.Networks
+                .Include(x => x.OrganisationNetworks)
+                .FirstOrDefaultAsync(x => x.NetworkId == networkDto.NetworkId);
 
             if (network is null)
                 throw new KeyNotFoundException($"No Network with Id={networkDto.NetworkId}");
@@ -68,8 +73,33 @@ namespace Biobanks.Directory.Services
 
             await _db.SaveChangesAsync();
 
-            _indexService.UpdateNetwork(
-                    await GetForIndexing(network.NetworkId));
+            // Update Indexing Of Network
+            network = await GetForIndexing(network.NetworkId);
+
+            foreach (var organisation in network.OrganisationNetworks.Select(x => x.Organisation))
+            {
+                var partialNetworks = new PartialNetworks
+                {
+                    Networks = organisation.OrganisationNetworks.Select(x => new NetworkDocument
+                    {
+                        Name = x.Network.Name
+                    })
+                };
+
+                // Index Collections
+                organisation.Collections
+                    .SelectMany(c => c.SampleSets)
+                    .ToList()
+                    .ForEach(s => BackgroundJob.Enqueue(() =>
+                        _indexProvider.UpdateCollectionSearchDocument(s.Id, partialNetworks)));
+
+                // Index Capabilities
+                organisation.DiagnosisCapabilities
+                    .ToList()
+                    .ForEach(c => BackgroundJob.Enqueue(() =>
+                        _indexProvider.UpdateCollectionSearchDocument(c.DiagnosisCapabilityId, partialNetworks)));
+
+            }
 
             return network;
         }
