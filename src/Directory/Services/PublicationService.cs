@@ -41,7 +41,7 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.PublicationId == publicationId && x.OrganisationId == organisationId);
 
             if (publication is null)
-                return null;
+                throw new KeyNotFoundException($"No Publication with Id=${publication} assigned to Organisation of Id=${organisationId}");
 
             publication.Accepted = accept;
 
