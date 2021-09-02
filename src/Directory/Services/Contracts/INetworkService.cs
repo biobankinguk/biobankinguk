@@ -1,5 +1,6 @@
 ﻿using Biobanks.Entities.Data;
 using Biobanks.Identity.Data.Entities;
+using Biobanks.Services.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -49,13 +50,13 @@ namespace Biobanks.Directory.Services.Contracts
         /// Create a new Network
         /// </summary>
         /// <returns>The newly created Network reference</returns>
-        Task<Network> Create(Network network);
+        Task<Network> Create(NetworkDTO networkDto);
 
         /// <summary>
         /// Update an existing Network
         /// </summary>
         /// <returns>The updated Network reference</returns>
-        Task<Network> Update(Network network);
+        Task<Network> Update(NetworkDTO networkDto);
 
         /// <summary>
         /// Get all untracked OrganisationNetwork relationships associated with a given Organisation

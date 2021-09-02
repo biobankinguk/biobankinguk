@@ -174,12 +174,9 @@ namespace Biobanks.Web.Controllers
                 } //no problem, just means no logo uploaded in this form submission
             }
 
-            //Build entities from the model
-            var network = new Network
+
+            var networkDto = new NetworkDTO
             {
-                //id is set only if we are editing, not creating
-                //same with external id
-                //and type
                 Name = model.NetworkName,
                 Description = model.Description,
                 Url = model.Url,
@@ -190,8 +187,8 @@ namespace Biobanks.Web.Controllers
 
             if (create)
             {
-                network = await _networkService.Create(network);
-                await _networkService.AddNetworkUser(User.Identity.GetUserId(), network.NetworkId);
+                var network = await _networkService.Create(networkDto);
+                await _networkService.AddNetworkUser(User.Identity.GetUserId(), networkDto.NetworkId);
 
                 //update the request to show network created
                 var request = await _networkService.GetRegistrationRequestByEmail(User.Identity.Name);
@@ -201,21 +198,21 @@ namespace Biobanks.Web.Controllers
                 //add a claim now that they're associated with the network
                 _claimsManager.AddClaims(new List<Claim>
                 {
-                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(network.NetworkId, network.Name)))
+                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(networkDto.NetworkId, networkDto.Name)))
                 });
 
                 //Logo upload (now we have the id, we can form the filename)
 
                 Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
-                Session[SessionKeys.ActiveOrganisationId] = network.NetworkId;
-                Session[SessionKeys.ActiveOrganisationName] = network.Name;
+                Session[SessionKeys.ActiveOrganisationId] = networkDto.NetworkId;
+                Session[SessionKeys.ActiveOrganisationName] = networkDto.Name;
 
                 if (model.Logo != null)
                 {
                     try
                     {
-                        network.Logo = await UploadNetworkLogoAsync(model.Logo, network.NetworkId);
-                        await _networkService.Update(network);
+                        networkDto.Logo = await UploadNetworkLogoAsync(model.Logo, network.NetworkId);
+                        await _networkService.Update(networkDto);
                     }
                     catch (ArgumentNullException)
                     {
@@ -225,17 +222,17 @@ namespace Biobanks.Web.Controllers
             else
             {
                 //add Update only bits of the Entity
-                network.NetworkId = model.NetworkId.Value;
+                networkDto.NetworkId = model.NetworkId.Value;
 
                 // update handover Url components
-                network.ContactHandoverEnabled = model.ContactHandoverEnabled;
-                network.HandoverBaseUrl = model.HandoverBaseUrl;
-                network.HandoverOrgIdsUrlParamName = model.HandoverOrgIdsUrlParamName;
-                network.MultipleHandoverOrdIdsParams = model.MultipleHandoverOrdIdsParams;
-                network.HandoverNonMembers = model.HandoverNonMembers;
-                network.HandoverNonMembersUrlParamName = model.HandoverNonMembersUrlParamName;
+                networkDto.ContactHandoverEnabled = model.ContactHandoverEnabled;
+                networkDto.HandoverBaseUrl = model.HandoverBaseUrl;
+                networkDto.HandoverOrgIdsUrlParamName = model.HandoverOrgIdsUrlParamName;
+                networkDto.MultipleHandoverOrdIdsParams = model.MultipleHandoverOrdIdsParams;
+                networkDto.HandoverNonMembers = model.HandoverNonMembers;
+                networkDto.HandoverNonMembersUrlParamName = model.HandoverNonMembersUrlParamName;
 
-                await _networkService.Update(network);
+                await _networkService.Update(networkDto);
             }
 
             SetTemporaryFeedbackMessage("Network details updated!", FeedbackMessageType.Success);

@@ -5,6 +5,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
 using Biobanks.Services.Contracts;
+using Biobanks.Services.Dto;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -40,46 +41,37 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<Network> Create(Network network)
+        public async Task<Network> Create(NetworkDTO networkDto)
         {
+            var network = _mapper.Map<Network>(networkDto);
+
             _db.Networks.Add(network);
+
             await _db.SaveChangesAsync();
 
             return network;
         }
 
         /// <inheritdoc/>
-        public async Task<Network> Update(Network network)
+        public async Task<Network> Update(NetworkDTO networkDto)
         {
-            var exisitingNetwork = await _db.Networks.FindAsync(network.NetworkId);
+            var network = await _db.Networks.FindAsync(networkDto.NetworkId);
 
-            if (exisitingNetwork is null)
-                return null;
+            if (network is null)
+                throw new KeyNotFoundException($"No Network with Id={networkDto.NetworkId}");
 
-            exisitingNetwork.LastUpdated = DateTime.Now;
+            // Map Updates To Existing Organisation
+            _mapper.Map(networkDto, network);
 
-            exisitingNetwork.Name = network.Name;
-            exisitingNetwork.Email = network.Email;
-            exisitingNetwork.Url = network.Url;
-            exisitingNetwork.Logo = network.Logo;
-            exisitingNetwork.Description = network.Description;
-            exisitingNetwork.SopStatusId = network.SopStatus?.Id ?? network.SopStatusId;
-
-            exisitingNetwork.ContactHandoverEnabled = network.ContactHandoverEnabled;
-            exisitingNetwork.HandoverBaseUrl = network.HandoverBaseUrl;
-            exisitingNetwork.HandoverOrgIdsUrlParamName = network.HandoverOrgIdsUrlParamName;
-            exisitingNetwork.MultipleHandoverOrdIdsParams = network.MultipleHandoverOrdIdsParams;
-            exisitingNetwork.HandoverNonMembers = network.HandoverNonMembers;
-            exisitingNetwork.HandoverNonMembersUrlParamName = network.HandoverNonMembersUrlParamName;
-
-            exisitingNetwork.OrganisationNetworks = network.OrganisationNetworks;
+            // Set Timestamp
+            network.LastUpdated = DateTime.Now;
 
             await _db.SaveChangesAsync();
 
             _indexService.UpdateNetwork(
                     await GetForIndexing(network.NetworkId));
 
-            return exisitingNetwork;
+            return network;
         }
 
         /// <inheritdoc/>
