@@ -65,21 +65,6 @@ namespace Biobanks.Services.Contracts
         Task<Organisation> Get(int biobankId);
 
         /// <summary>
-        /// Get the untracked Organisation for a given Id, used for Indexing business logic
-        /// </summary>
-        /// <returns>
-        /// The Organisation of given Id. Otherwise null. Includes the properties:
-        /// <list type="bullet">
-        /// <item>Collections</item>
-        /// <item>SampleSets</item>
-        /// <item>DiagnosisCapabilities</item>
-        /// <item>OrganisationServiceOfferings</item>
-        /// <item>ServiceOffering</item>
-        /// </list>
-        /// </returns>
-        Task<Organisation> GetForIndexing(int biobankId);
-
-        /// <summary>
         /// Get the untracked Organisation for a given External Id
         /// </summary>
         /// <returns>The Organisation of given External Id. Otherwise null</returns>

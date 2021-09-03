@@ -7,7 +7,6 @@ using Biobanks.IdentityModel.Extensions;
 using Biobanks.Services.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,29 +15,37 @@ using Biobanks.Identity.Contracts;
 using Microsoft.AspNet.Identity;
 using AutoMapper;
 using Biobanks.Services.Dto;
+using Hangfire;
+using Biobanks.Search.Contracts;
+using Biobanks.Directory.Services.Extensions;
+using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Search.Dto.Documents;
 
 namespace Biobanks.Directory.Services
 {
     public class OrganisationService : IOrganisationService
     {
+        private readonly ICapabilityIndexProvider _capabilitiesIndex;
+        private readonly ICollectionIndexProvider _collectionsIndex;
+        
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
-        private readonly IBiobankIndexService _indexService;
         private readonly BiobanksDbContext _db;
 
         private readonly IMapper _mapper;
 
         public OrganisationService(
+            ICapabilityIndexProvider capabilitiesIndex,
+            ICollectionIndexProvider collectionsIndex,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IBiobankIndexService indexService,
             BiobanksDbContext db,
             IMapper mapper)
         {
             _userManager = userManager;
-            _indexService = indexService;
+            _capabilitiesIndex = capabilitiesIndex;
+            _collectionsIndex = collectionsIndex;
             _db = db;
             _mapper = mapper;
         }
-
 
         private IQueryable<Organisation> Query()
             => _db.Organisations
@@ -47,6 +54,14 @@ namespace Biobanks.Directory.Services
                 .Include(x => x.OrganisationAnnualStatistics)
                 .Include(x => x.OrganisationType)
                 .Where(x => x.OrganisationType.Description == "Biobank");
+
+        private IQueryable<Organisation> QueryForIndexing()
+            => Query()
+                .Include(x => x.Collections)
+                .Include(x => x.Collections.Select(c => c.SampleSets))
+                .Include(x => x.DiagnosisCapabilities)
+                .Include(x => x.OrganisationServiceOfferings)
+                .Include(x => x.OrganisationServiceOfferings.Select(o => o.ServiceOffering));
 
         private IQueryable<OrganisationRegisterRequest> QueryRegistrationRequests()
             => _db.OrganisationRegisterRequests
@@ -113,17 +128,6 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         /// <inheritdoc/>
-        public async Task<Organisation> GetForIndexing(int id)
-            => await Query()
-                .AsNoTracking()
-                .Include(x => x.Collections)
-                .Include(x => x.Collections.Select(c => c.SampleSets))
-                .Include(x => x.DiagnosisCapabilities)
-                .Include(x => x.OrganisationServiceOfferings)
-                .Include(x => x.OrganisationServiceOfferings.Select(o => o.ServiceOffering))
-                .FirstOrDefaultAsync(x => x.OrganisationId == id);
-
-        /// <inheritdoc/>
         public async Task<Organisation> GetByName(string name)
             => await Query()
                 .AsNoTracking()
@@ -157,9 +161,11 @@ namespace Biobanks.Directory.Services
             return organisation;
         }
 
+        /// <inheritdoc/>
         public async Task<Organisation> Update(OrganisationDTO organisationDto)
         {
-            var organisation = await Query().FirstOrDefaultAsync(x => x.OrganisationId == organisationDto.OrganisationId);
+            var organisation = await QueryForIndexing()
+                .FirstOrDefaultAsync(x => x.OrganisationId == organisationDto.OrganisationId);
 
             if (organisation is null)
                 throw new KeyNotFoundException($"No Organisation exists with Id={organisationDto.OrganisationId}");
@@ -176,17 +182,62 @@ namespace Biobanks.Directory.Services
 
             await _db.SaveChangesAsync();
 
+            // Update Organisation Index
+            if (!await IsSuspended(organisation.OrganisationId))
+            {
+                var partial = new PartialBiobank
+                {
+                    Biobank = organisation.Name,
+                    BiobankServices = organisation.OrganisationServiceOfferings.Select(x => new BiobankServiceDocument
+                    {
+                        Name = x.ServiceOffering.Value
+                    })
+                };
+
+                // Update Collections
+                organisation.Collections
+                    .SelectMany(c => c.SampleSets)
+                    .ToList()
+                    .ForEach(s => BackgroundJob.Enqueue(() => _collectionsIndex.Update(s.Id, partial)));
+
+                // Update Capabilities
+                organisation.DiagnosisCapabilities
+                    .ToList()
+                    .ForEach(c => BackgroundJob.Enqueue(() => _capabilitiesIndex.Update(c.DiagnosisCapabilityId, partial)));
+            }
+                
             return organisation;
         }
 
         /// <inheritdoc/>
         public async Task Delete(int id)
         {
-            var organisation = await GetForIndexing(id);
+            var organisation = await QueryForIndexing()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrganisationId == id);
+
+            if (organisation is null)
+                throw new KeyNotFoundException($"No Organisation exists with Id={ organisation.OrganisationId }");
 
             // Remove From Search
-            _indexService.BulkDeleteBiobank(organisation);
-            
+            var batchSize = 100;
+
+            // Remove SampleSets In Batches
+            organisation.Collections
+                .SelectMany(c => c.SampleSets.Select(s => s.Id))
+                .Batch(batchSize)
+                .ToList()
+                .ForEach(batch => BackgroundJob.Enqueue(
+                    () => _collectionsIndex.Delete(batch)));
+
+            // Remove Capabilities In Batches
+            organisation.DiagnosisCapabilities
+                .Select(c => c.DiagnosisCapabilityId)
+                .Batch(batchSize)
+                .ToList()
+                .ForEach(batch => BackgroundJob.Enqueue(
+                    () => _capabilitiesIndex.Delete(batch))); ;
+
             // Remove From Database
             _db.Organisations.Remove(organisation);
             await _db.SaveChangesAsync();
@@ -259,33 +310,26 @@ namespace Biobanks.Directory.Services
             await _db.SaveChangesAsync();
         }
 
-        /// <inheritdoc/>
-        public async Task<Organisation> Suspend(int organisationId)
+        private async Task<Organisation> Suspend(int organisationId, bool suspend)
         {
             var organisation = await Update(new OrganisationDTO
             {
                 OrganisationId = organisationId,
-                IsSuspended = true
+                IsSuspended = suspend
             });
 
-            await _indexService.BulkIndexBiobank(organisation);
+            //await _indexService.BulkIndexBiobank(organisation);
 
             return organisation;
         }
+
+        /// <inheritdoc/>
+        public async Task<Organisation> Suspend(int organisationId)
+            => await Suspend(organisationId, suspend: true);
 
         /// <inheritdoc/>
         public async Task<Organisation> Unsuspend(int organisationId)
-        {
-            var organisation = await Update(new OrganisationDTO
-            {
-                OrganisationId = organisationId,
-                IsSuspended = false
-            });
-
-            await _indexService.BulkIndexBiobank(organisation);
-
-            return organisation;
-        }
+            => await Suspend(organisationId, suspend: false);
 
         /// <inheritdoc/>
         public async Task<bool> IsSuspended(int organisationId)
