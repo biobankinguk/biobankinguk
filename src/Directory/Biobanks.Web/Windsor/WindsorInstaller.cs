@@ -61,7 +61,7 @@ namespace Biobanks.Web.Windsor
 
 
             // Service registrations
-            _ = container.Register(
+            container.Register(
                 Component.For(typeof(IGenericEFRepository<>))
                     .ImplementedBy(typeof(GenericEFRepository<>))
                     .LifeStyle.Transient,
@@ -125,6 +125,10 @@ namespace Biobanks.Web.Windsor
 
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<>))
+                    .ImplementedBy(typeof(ReferenceDataService<>))
                     .LifeStyle.Transient,
 
                 Component.For(typeof(IReferenceDataService<AccessCondition>))
