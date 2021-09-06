@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services
 {
-    public class ReferenceDataService : IReferenceDataService
+    public class ReferenceDataService<T> : IReferenceDataService<T> where T : ReferenceDataBase
     {
         private readonly BiobanksDbContext _db;
 
@@ -17,25 +17,37 @@ namespace Biobanks.Directory.Services
             _db = db;
         }
 
-        /// <inheritdoc/>
-        public async Task<int> Count<T>() where T : ReferenceDataBase
-            => await _db.Set<T>().CountAsync();
+        protected virtual IQueryable<T> Query()
+            => _db.Set<T>().AsQueryable();
 
-        /// <inheritdoc/>
-        public async Task<bool> Exists<T>(string value) where T : ReferenceDataBase
-            => await _db.Set<T>().AnyAsync(x => x.Value == value);
+        public async Task Add(T entity)
+        {
+            _db.Set<T>().Add(entity);
+            await _db.SaveChangesAsync();
+        }
 
-        /// <inheritdoc/>
-        public async Task<T> Get<T>(int id) where T : ReferenceDataBase
-            => await _db.Set<T>()
+        public async Task<int> Count()
+            => await Query().CountAsync();
+
+        public async Task<bool> Exists(string value)
+            => await Query().AnyAsync(x => x.Value == value);
+
+        public async Task<T> Get(int id)
+            => await Query()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-        /// <inheritdoc/>
-        public async Task<ICollection<T>> List<T>() where T : ReferenceDataBase
-            => await _db.Set<T>()
+        public async Task<ICollection<T>> List()
+            => await Query()
                 .AsNoTracking()
-                .OrderBy(x => x.SortOrder)
                 .ToListAsync();
+    }
+
+    public class AccessConditionService : ReferenceDataService<AccessCondition>
+    {
+        public AccessConditionService(BiobanksDbContext db) : base(db) { }
+
+        protected override IQueryable<AccessCondition> Query()
+            => base.Query().Include(x => x.Organisations);
     }
 }

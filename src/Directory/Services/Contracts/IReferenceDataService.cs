@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services.Contracts
 {
-    public interface IReferenceDataService
+    public interface IReferenceDataService<T> where T : ReferenceDataBase
     {
-        Task<ICollection<T>> List<T>() where T : ReferenceDataBase;
+        Task<int> Count();
 
-        Task<T> Get<T>(int id) where T : ReferenceDataBase;
+        Task<bool> Exists(string value);
 
-        Task<bool> Exists<T>(string value) where T : ReferenceDataBase;
+        Task<T> Get(int id);
 
+        Task<ICollection<T>> List();
     }
 }
