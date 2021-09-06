@@ -40,6 +40,7 @@ namespace Biobanks.Directory.Services
         public async Task<ICollection<T>> List()
             => await Query()
                 .AsNoTracking()
+                .OrderBy(x => x.SortOrder)
                 .ToListAsync();
     }
 
