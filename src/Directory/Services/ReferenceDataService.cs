@@ -1,5 +1,4 @@
-﻿using AutoMapper.Configuration.Annotations;
-using Biobanks.Directory.Data;
+﻿using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data.ReferenceData;
 using System;
@@ -83,13 +82,5 @@ namespace Biobanks.Directory.Services
 
             return exisiting;
         }
-    }
-
-    public class AccessConditionService : ReferenceDataService<AccessCondition>
-    {
-        public AccessConditionService(BiobanksDbContext db) : base(db) { }
-
-        protected override IQueryable<AccessCondition> Query()
-            => base.Query().Include(x => x.Organisations);
     }
 }
