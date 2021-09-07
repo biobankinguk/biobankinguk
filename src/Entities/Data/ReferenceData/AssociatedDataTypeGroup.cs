@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class AssociatedDataTypeGroup
+    public class AssociatedDataTypeGroup : ReferenceDataBase
     {
-        public int Id { get; set; }
-        
-        [Required]
-        public string Value { get; set; }
-
         public virtual ICollection<AssociatedDataType> AssociatedDataTypes { get; set; }
     }
 }
