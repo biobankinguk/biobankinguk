@@ -131,10 +131,6 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(ReferenceDataService<>))
                     .LifeStyle.Transient,
 
-                Component.For(typeof(IReferenceDataService<AccessCondition>))
-                    .ImplementedBy(typeof(AccessConditionService))
-                    .LifeStyle.Transient,
-
                 // Doubled up For because Hangfire requires both concrete class and interface.
                 Component.For<ElasticCollectionSearchProvider, ICollectionSearchProvider>()
                     .ImplementedBy<ElasticCollectionSearchProvider>()
