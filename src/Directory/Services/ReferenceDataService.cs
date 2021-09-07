@@ -75,7 +75,21 @@ namespace Biobanks.Directory.Services
             exisiting.SortOrder = entity.SortOrder;
             exisiting.Value = entity.Value;
 
-            // Re-Order
+            // Re-Order If Necessary
+            if (exisiting.SortOrder != default)
+            {
+                var sortable = await Query()
+                    .Where(x => x.Id != exisiting.Id)
+                    .Where(x => x.SortOrder >= exisiting.SortOrder)
+                    .OrderBy(x => x.SortOrder)
+                    .ToListAsync();
+
+                // Update SortOrder Indicies
+                for (int i=0; i < sortable.Count; i++)
+                {
+                    sortable[i].SortOrder = exisiting.SortOrder + i + 1;
+                }
+            }
 
             // Save Changes
             await _db.SaveChangesAsync();
