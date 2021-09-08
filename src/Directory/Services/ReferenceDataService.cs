@@ -56,7 +56,7 @@ namespace Biobanks.Directory.Services
             => await Query().AnyAsync(x => x.Id == id);
 
         /// <inheritdoc/>
-        public async Task<bool> ExistsByValue(string value)
+        public async Task<bool> Exists(string value)
             => await Query().AnyAsync(x => x.Value == value);
 
         /// <inheritdoc/>
@@ -66,7 +66,7 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
 
         /// <inheritdoc/>
-        public async Task<T> GetByValue(string value)
+        public async Task<T> Get(string value)
             => await Query()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Value == value);

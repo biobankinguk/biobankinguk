@@ -36,7 +36,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <param name="value">The descriptive value of the Entity <typeparamref name="T"/></param>
         /// <returns>true - If at least one entity exists with given descriptive value</returns>
-        Task<bool> ExistsByValue(string value);
+        Task<bool> Exists(string value);
 
         /// <summary>
         /// Returns singular entity by its Id
@@ -48,8 +48,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// Returns singular entity by its Value
         /// </summary>
         /// <returns>The first entity <typeparamref name="T"/> with given Value. Otherwise null</returns>
-        Task<T> GetByValue(string value);
-
+        Task<T> Get(string value);
 
         /// <summary>
         /// Get all untracked entities
