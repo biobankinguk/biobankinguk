@@ -18,6 +18,11 @@ namespace Biobanks.Directory.Services
             _db = db;
         }
 
+        /// <summary>
+        /// Exposes an IQueryable to the underlying database table. Called upon by all service methods to access
+        /// the Entity store.
+        /// </summary>
+        /// <returns>An IQueryable for the given Entity type <typeparamref name="T"/></returns>
         protected virtual IQueryable<T> Query()
             => _db.Set<T>().AsQueryable();
 
@@ -47,7 +52,11 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<bool> Exists(string value)
+        public async Task<bool> Exists(int id)
+            => await Query().AnyAsync(x => x.Id == id);
+
+        /// <inheritdoc/>
+        public async Task<bool> ExistsByValue(string value)
             => await Query().AnyAsync(x => x.Value == value);
 
         /// <inheritdoc/>
