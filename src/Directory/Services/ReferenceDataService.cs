@@ -66,6 +66,12 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
 
         /// <inheritdoc/>
+        public async Task<T> GetByValue(string value)
+            => await Query()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Value == value);
+
+        /// <inheritdoc/>
         public async Task<ICollection<T>> List()
             => await Query()
                 .AsNoTracking()

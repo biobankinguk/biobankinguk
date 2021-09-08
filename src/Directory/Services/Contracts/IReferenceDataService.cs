@@ -39,10 +39,17 @@ namespace Biobanks.Directory.Services.Contracts
         Task<bool> ExistsByValue(string value);
 
         /// <summary>
-        /// Returns singular entity by it's Id
+        /// Returns singular entity by its Id
         /// </summary>
         /// <returns>The entity <typeparamref name="T"/> with given Id. Otherwise null</returns>
         Task<T> Get(int id);
+
+        /// <summary>
+        /// Returns singular entity by its Value
+        /// </summary>
+        /// <returns>The first entity <typeparamref name="T"/> with given Value. Otherwise null</returns>
+        Task<T> GetByValue(string value);
+
 
         /// <summary>
         /// Get all untracked entities
