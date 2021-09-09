@@ -1,24 +1,13 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using System.Collections.Generic;
 
 namespace Biobanks.Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Sniomed Tag entity.
     /// </summary>
-    public class SnomedTag
+    public class SnomedTag : ReferenceDataBase
     {
-        /// <summary>
-        /// Internal id.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Value for the term (i.e. friendly name)
-        /// </summary>
-        [Required]
-        public string Value { get; set; }
-
         /// <summary>
         /// Snomed Terms associated with this Tag.
         /// </summary>

@@ -1,16 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Entities.Shared.ReferenceData
 {
-    public class PreservationType
-    {
-        public int Id { get; set; }
-
-        [Required]
-        public string Value { get; set; }
-
-        public int SortOrder { get; set; }
-
+    public class PreservationType : ReferenceDataBase
+    { 
         public int? StorageTemperatureId { get; set; }
 
         public virtual StorageTemperature StorageTemperature { get; set; }
