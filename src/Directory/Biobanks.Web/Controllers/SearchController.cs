@@ -247,7 +247,7 @@ namespace Biobanks.Web.Controllers
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            var directoryOntologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var directoryOntologyTerms = await _biobankReadService.SearchOntologyTerms(wildcard, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding
@@ -281,7 +281,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var ontologyTerms = await _biobankReadService.SearchOntologyTerms(wildcard, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding

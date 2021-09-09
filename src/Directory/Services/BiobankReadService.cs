@@ -1094,7 +1094,7 @@ namespace Biobanks.Services
         #region RefData: OntologyTerm
 
         protected IQueryable<OntologyTerm> QueryOntologyTerms(
-            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false)
+            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false, bool fuzzyMatch = false)
         {
             var query = _context.OntologyTerms
                 .AsNoTracking()
@@ -1108,7 +1108,9 @@ namespace Biobanks.Services
 
             // Filter By Description
             if (!string.IsNullOrEmpty(description))
-                query = query.Where(x => x.Value == description);
+                query = fuzzyMatch
+                    ? query.Where(x => x.Value.Contains(description))
+                    : query.Where(x => x.Value == description);
 
             // Filter By SnomedTag
             if (tags != null)
@@ -1119,6 +1121,9 @@ namespace Biobanks.Services
 
             return query;
         }
+
+        public async Task<IEnumerable<OntologyTerm>> SearchOntologyTerms(string description = null, List<string> tags = null)
+            => await QueryOntologyTerms(id: null, description, tags, onlyDisplayable: true, fuzzyMatch: true).ToListAsync();
 
         public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(
             string description = null, List<string> tags = null, bool onlyDisplayable = false)
