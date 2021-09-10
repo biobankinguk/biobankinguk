@@ -1,4 +1,5 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -49,6 +50,18 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <returns>The first entity <typeparamref name="T"/> with given Value. Otherwise null</returns>
         Task<T> Get(string value);
+
+        /// <summary>
+        /// The number of times the entity is used or referenced
+        /// </summary>
+        /// <param name="id">The Id of the entity <typeparamref name="T"/></param>
+        Task<int> GetUsageCount(int id);
+
+        /// <summary>
+        /// Whether this entitiy is in use or is being referenced
+        /// </summary>
+        /// <param name="id">The Id of the entity <typeparamref name="T"/></param>
+        Task<bool> IsInUse(int id);
 
         /// <summary>
         /// Get all untracked entities

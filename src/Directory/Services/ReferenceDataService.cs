@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services
 {
-    public class ReferenceDataService<T> : IReferenceDataService<T> where T : ReferenceDataBase
+    public abstract class ReferenceDataService<T> : IReferenceDataService<T> where T : ReferenceDataBase
     {
         private readonly BiobanksDbContext _db;
 
@@ -17,6 +17,12 @@ namespace Biobanks.Directory.Services
         {
             _db = db;
         }
+
+        /// <inheritdoc/>
+        public abstract Task<int> GetUsageCount(int id);
+
+        /// <inheritdoc/>
+        public abstract Task<bool> IsInUse(int id);
 
         /// <summary>
         /// Exposes an IQueryable to the underlying database table. Called upon by all service methods to access
@@ -111,5 +117,6 @@ namespace Biobanks.Directory.Services
 
             return exisiting;
         }
+
     }
 }
