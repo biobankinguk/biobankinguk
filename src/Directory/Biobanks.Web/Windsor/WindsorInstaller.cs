@@ -123,6 +123,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(ConfigService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IPublicationService))
+                    .ImplementedBy(typeof(PublicationService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,
