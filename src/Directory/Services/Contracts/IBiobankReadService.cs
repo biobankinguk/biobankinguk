@@ -38,7 +38,7 @@ namespace Biobanks.Services.Contracts
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
-        Task<IEnumerable<AccessCondition>> ListAccessConditionsAsync();
+
         Task<IEnumerable<CollectionType>> ListCollectionTypesAsync();
         Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync();
 
@@ -151,10 +151,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidCountryNameAsync(string countryName);
         Task<bool> ValidCountryNameAsync(int countryId, string countryName);
 
-        Task<int> GetAccessConditionsCount(int id);
-        Task<bool> ValidAccessConditionDescriptionAsync(string accessConditionsDescription);
-        Task<bool> ValidAccessConditionDescriptionAsync(int accessConditionsId, string accessConditionsDescription);
-
         Task<int> GetMaterialTypeMaterialDetailCount(int id);
         Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription);
         Task<bool> ValidMaterialTypeDescriptionAsync(int materialTypeId, string materialTypeDescription);
@@ -209,7 +205,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsServiceOfferingInUse(int id);
         Task<bool> IsConsentRestrictionInUse(int id);
         Task<bool> IsCountryInUse(int id);
-        Task<bool> IsAccessConditionInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();

@@ -46,7 +46,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
-        private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _consentRestrictionRepository;
         private readonly IGenericEFRepository<Country> _countryRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
@@ -105,7 +104,6 @@ namespace Biobanks.Services
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
-            IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
             IGenericEFRepository<Country> countryRepository,
@@ -157,7 +155,6 @@ namespace Biobanks.Services
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
             _annualStatisticRepository = annualStatisticRepository;
             _annualStatisticGroupRepository = annualStatisticGroupRepository;
-            _accessConditionRepository = accessConditionRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
@@ -1105,65 +1102,6 @@ namespace Biobanks.Services
         {
             await _sopStatusRepository.DeleteAsync(sopStatus.Id);
             await _sopStatusRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Access Conditions
-        public async Task<AccessCondition> AddAccessConditionAsync(AccessCondition accessCondition)
-        {
-            _accessConditionRepository.Insert(accessCondition);
-            await _accessConditionRepository.SaveChangesAsync();
-
-            return accessCondition;
-        }
-
-        public async Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false)
-        {
-            var conditions = await _biobankReadService.ListAccessConditionsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                accessCondition.Value =
-                    conditions
-                        .Where(x => x.Id == accessCondition.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldCondition = conditions.Where(x => x.Id == accessCondition.Id).First();
-            var reverse = (oldCondition.SortOrder < accessCondition.SortOrder);
-
-            var newOrder = conditions
-                    .Prepend(accessCondition)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_accessConditionRepository.Update);
-
-            await _accessConditionRepository.SaveChangesAsync();
-
-            return accessCondition;
-        }
-
-        public async Task DeleteAccessConditionAsync(AccessCondition accessCondition)
-        {
-            await _accessConditionRepository.DeleteAsync(accessCondition.Id);
-            await _accessConditionRepository.SaveChangesAsync();
         }
         #endregion
 

@@ -131,10 +131,6 @@ namespace Biobanks.Services.Contracts
         Task DeleteConsentRestrictionAsync(ConsentRestriction consentRestriction);
         Task<ConsentRestriction> UpdateConsentRestrictionAsync(ConsentRestriction consentRestriction, bool sortOnly=false);
 
-        Task<AccessCondition> AddAccessConditionAsync(AccessCondition accessCondition);
-        Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false);
-        Task DeleteAccessConditionAsync(AccessCondition accessCondition);
-
         Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Country> AddCountryAsync(Country country);
