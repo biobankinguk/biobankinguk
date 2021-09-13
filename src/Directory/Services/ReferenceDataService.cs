@@ -11,7 +11,7 @@ namespace Biobanks.Directory.Services
 {
     public abstract class ReferenceDataService<T> : IReferenceDataService<T> where T : ReferenceDataBase
     {
-        private readonly BiobanksDbContext _db;
+        protected readonly BiobanksDbContext _db;
 
         public ReferenceDataService(BiobanksDbContext db)
         {
