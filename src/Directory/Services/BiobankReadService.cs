@@ -79,8 +79,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
         private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
 
-        private readonly IGenericEFRepository<Publication> _publicationRepository;
-
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
 
@@ -151,7 +149,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Country> countryRepository, 
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
-            IGenericEFRepository<Publication> publicationRespository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
@@ -216,8 +213,6 @@ namespace Biobanks.Services
             _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _annualStatisticRepository = annualStatisticRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
-
-            _publicationRepository = publicationRespository;
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
@@ -1094,7 +1089,7 @@ namespace Biobanks.Services
         #region RefData: OntologyTerm
 
         protected IQueryable<OntologyTerm> QueryOntologyTerms(
-            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false)
+            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false, bool fuzzyMatch = false)
         {
             var query = _context.OntologyTerms
                 .AsNoTracking()
@@ -1108,7 +1103,9 @@ namespace Biobanks.Services
 
             // Filter By Description
             if (!string.IsNullOrEmpty(description))
-                query = query.Where(x => x.Value == description);
+                query = fuzzyMatch
+                    ? query.Where(x => x.Value.Contains(description))
+                    : query.Where(x => x.Value == description);
 
             // Filter By SnomedTag
             if (tags != null)
@@ -1119,6 +1116,9 @@ namespace Biobanks.Services
 
             return query;
         }
+
+        public async Task<IEnumerable<OntologyTerm>> SearchOntologyTerms(string description = null, List<string> tags = null)
+            => await QueryOntologyTerms(id: null, description, tags, onlyDisplayable: true, fuzzyMatch: true).ToListAsync();
 
         public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(
             string description = null, List<string> tags = null, bool onlyDisplayable = false)
@@ -1444,20 +1444,11 @@ namespace Biobanks.Services
                 null,
                 x => x.RegistrationReason);
 
-        public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _publicationRepository.ListAsync(true, x => x.OrganisationId == biobankId);
-
         public async Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(int biobankId)
             => await _organisationNetworkRepository.ListAsync(false, x => x.OrganisationId == biobankId);
 
         public async Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworkAsync(int biobankId, int networkId)
             => await _organisationNetworkRepository.ListAsync(false, x => x.OrganisationId == biobankId && x.NetworkId == networkId);
-
-        public async Task<IEnumerable<Publication>> GetOrganisationPublicationsAsync(Organisation organisation)
-            => await ListOrganisationPublications(organisation.OrganisationId);
-
-        public async Task<IEnumerable<Publication>> GetAcceptedOrganisationPublicationsAsync(Organisation organisation)
-            => (await GetOrganisationPublicationsAsync(organisation)).Where(x => x.Accepted == true);
 
         public List<Organisation> GetOrganisations() => _organisationRepository.List(false, x => x.IsSuspended == false, x => x.OrderBy(c => c.Name)).ToList();
 
