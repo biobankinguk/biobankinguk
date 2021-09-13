@@ -46,6 +46,8 @@ namespace Biobanks.Web.Controllers
         private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
 
+        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -64,6 +66,7 @@ namespace Biobanks.Web.Controllers
         public BiobankController(
             ICollectionService collectionService,
             IPublicationService publicationService,
+            IReferenceDataService<AccessCondition> accessConditionService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -76,6 +79,7 @@ namespace Biobanks.Web.Controllers
         {
             _collectionService = collectionService;
             _publicationService = publicationService;
+            _accessConditionService = accessConditionService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1334,7 +1338,7 @@ namespace Biobanks.Web.Controllers
             IEnumerable<ConsentRestriction> consentRestrictions = null)
         {
 
-            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+            model.AccessConditions = (await _accessConditionService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -2041,7 +2045,7 @@ namespace Biobanks.Web.Controllers
             var model = new SubmissionsModel();
 
             //populate drop downs
-            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+            model.AccessConditions = (await _accessConditionService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,

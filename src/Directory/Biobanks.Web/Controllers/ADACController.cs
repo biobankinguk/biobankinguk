@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -50,6 +52,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<AccessCondition> accessConditionService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -63,6 +66,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _accessConditionService = accessConditionService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -989,14 +993,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Access Conditions
         public async Task<ActionResult> AccessConditions()
         {
-            var models = (await _biobankReadService.ListAccessConditionsAsync())
+            var models = (await _accessConditionService.List())
             .Select(x =>
                 Task.Run(async () => new ReadAccessConditionsModel
                 {
                     Id = x.Id,
                     Description = x.Value,
                     SortOrder = x.SortOrder,
-                    AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.Id),
+                    AccessConditionCount = await _accessConditionService.GetUsageCount(x.Id),
                 }
                 )
                 .Result
