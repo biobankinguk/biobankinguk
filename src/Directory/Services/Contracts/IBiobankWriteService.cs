@@ -154,10 +154,6 @@ namespace Biobanks.Services.Contracts
         Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);
 
-        Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
-        Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
-        Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
-
         Task<KeyValuePair<string, string>> GenerateNewApiClientForBiobank(int biobankId, string clientName = null);
         Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId);
     }

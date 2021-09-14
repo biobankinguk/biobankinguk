@@ -42,7 +42,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
-        private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
@@ -92,7 +91,6 @@ namespace Biobanks.Services
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<Sex> sexRepository,
-            IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
@@ -153,7 +151,6 @@ namespace Biobanks.Services
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
-            _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _accessConditionRepository = accessConditionRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
@@ -1935,27 +1932,6 @@ namespace Biobanks.Services
             await _associatedDataTypeGroupRepository.SaveChangesAsync();
 
             return associatedDataTypeGroup;
-        }
-        public async Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
-        {
-            await _annualStatisticGroupRepository.DeleteAsync(annualStatisticGroup.Id);
-            await _annualStatisticGroupRepository.SaveChangesAsync();
-        }
-
-        public async Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
-        {
-            _annualStatisticGroupRepository.Update(annualStatisticGroup);
-            await _annualStatisticGroupRepository.SaveChangesAsync();
-
-            return annualStatisticGroup;
-        }
-
-        public async Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
-        {
-            _annualStatisticGroupRepository.Insert(annualStatisticGroup);
-            await _annualStatisticGroupRepository.SaveChangesAsync();
-
-            return annualStatisticGroup;
         }
 
         public async Task<KeyValuePair<string,string>> GenerateNewApiClientForBiobank(int biobankId, string clientName=null)

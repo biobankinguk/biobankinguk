@@ -77,8 +77,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<County> _countyRepository;
         private readonly IGenericEFRepository<Country> _countryRepository;
 
-        private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
-
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
 
@@ -147,7 +145,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Funder> funderRepository, 
             IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Country> countryRepository, 
-            IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
@@ -209,7 +206,6 @@ namespace Biobanks.Services
             _funderRepository = funderRepository;
             _countyRepository = countyRepository;
             _countryRepository = countryRepository;
-            _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
@@ -1400,9 +1396,6 @@ namespace Biobanks.Services
                 .Select(r => new KeyValuePair<int, string>(r.NetworkRegisterRequestId, r.NetworkName))
                 .ToList();
         }
-        
-        public async Task<IEnumerable<AnnualStatisticGroup>> GetAnnualStatisticGroupsAsync()
-            =>  await _annualStatisticGroupRepository.ListAsync(false, null, null, asg => asg.AnnualStatistics);
 
         public async Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(IEnumerable<int> organisationIds)
             => await _networkOrganisationRepository.ListAsync(
@@ -1431,35 +1424,6 @@ namespace Biobanks.Services
             => await _organisationNetworkRepository.ListAsync(false, x => x.OrganisationId == biobankId && x.NetworkId == networkId);
 
         public List<Organisation> GetOrganisations() => _organisationRepository.List(false, x => x.IsSuspended == false, x => x.OrderBy(c => c.Name)).ToList();
-
-        public async Task<IEnumerable<AnnualStatisticGroup>> ListAnnualStatisticGroupsAsync(string wildcard = "")
-        => await _annualStatisticGroupRepository.ListAsync(false, x => x.Value.Contains(wildcard));
-
-        public async Task<bool> ValidAnnualStatisticGroupNameAsync(string annualStatisticGroupName)
-            => (await _annualStatisticGroupRepository.ListAsync(false, x => x.Value == annualStatisticGroupName)).Any();
-
-        public async Task<bool> ValidAnnualStatisticGroupNameAsync(int annualStatisticGroupId, string annualStatisticGroupName)
-            => (await _annualStatisticGroupRepository.ListAsync(
-                false,
-                x => x.Value == annualStatisticGroupName &&
-                     x.Id != annualStatisticGroupId)).Any();
-
-        public async Task<AnnualStatisticGroup> GetAnnualStatisticGroupByName(string name)
-            => (await _annualStatisticGroupRepository.ListAsync(false, x => x.Value == name)).Single();
-
-        public async Task<int> GetAnnualStatisticAnnualStatisticGroupCount(int annualStatisticGroupId)
-        {
-            var groups = await _annualStatisticGroupRepository.ListAsync(
-                filter: x => x.Id == annualStatisticGroupId, 
-                includeProperties: x => x.AnnualStatistics);
-
-            return groups.Any()
-                ? groups.First().AnnualStatistics.Count()
-                : 0;
-        }
-
-        public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
-            => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
 
         public async Task<bool> OrganisationIncludesPublications(int biobankId)
             => (!(await GetBiobankByIdAsync(biobankId)).ExcludePublications);
