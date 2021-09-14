@@ -46,6 +46,8 @@ namespace Biobanks.Web.Controllers
         private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
 
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -64,6 +66,7 @@ namespace Biobanks.Web.Controllers
         public BiobankController(
             ICollectionService collectionService,
             IPublicationService publicationService,
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -76,6 +79,7 @@ namespace Biobanks.Web.Controllers
         {
             _collectionService = collectionService;
             _publicationService = publicationService;
+            _annualStatisticGroupService = annualStatisticGroupService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -102,7 +106,7 @@ namespace Biobanks.Web.Controllers
             //for viewing details only, we include networks
             var networks = await _biobankReadService.GetNetworksByBiobankIdAsync(biobankId);
 
-            model.AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync();
+            model.AnnualStatisticGroups = await _annualStatisticGroupService.List();
 
             model.NetworkModels = networks.Select(x => new NetworkMemberModel
             {
@@ -1943,7 +1947,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AnnualStats()
         => View(new BiobankAnnualStatsModel
         {
-            AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync(),
+            AnnualStatisticGroups = await _annualStatisticGroupService.List(),
             BiobankAnnualStatistics = (await _biobankReadService.GetBiobankByIdAsync(SessionHelper.GetBiobankId(Session))).OrganisationAnnualStatistics
         });
 
