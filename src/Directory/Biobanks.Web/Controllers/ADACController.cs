@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<AnnualStatistic> _annualStatisticsService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -50,6 +52,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<AnnualStatistic> annualStatisticsService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -63,6 +66,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _annualStatisticsService = annualStatisticsService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1086,13 +1090,13 @@ namespace Biobanks.Web.Controllers
                 })
                 .ToList();
 
-            var models = (await _biobankReadService.ListAnnualStatisticsAsync())
+            var models = (await _annualStatisticsService.List())
                 .Select(x =>
                     Task.Run(async () => new AnnualStatisticModel
                     {
                         Id = x.Id,
                         Name = x.Value,
-                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.Id),
+                        UsageCount = await _annualStatisticsService.GetUsageCount(x.Id),
                         AnnualStatisticGroupId = x.AnnualStatisticGroupId,
                         AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
                     })
