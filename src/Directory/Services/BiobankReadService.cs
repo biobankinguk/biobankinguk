@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Constants;
+using Hangfire.States;
 
 namespace Biobanks.Services
 {
@@ -77,7 +78,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Country> _countryRepository;
 
         private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
-        private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
 
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
@@ -148,7 +148,6 @@ namespace Biobanks.Services
             IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Country> countryRepository, 
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
-            IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
@@ -211,7 +210,6 @@ namespace Biobanks.Services
             _countyRepository = countyRepository;
             _countryRepository = countryRepository;
             _annualStatisticGroupRepository = annualStatisticGroupRepository;
-            _annualStatisticRepository = annualStatisticRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
@@ -919,24 +917,6 @@ namespace Biobanks.Services
             => (await _materialDetailRepository.ListAsync(false, x => x.MacroscopicAssessmentId == id)).Count();
         #endregion
 
-        #region RefData: Annual Statistics
-        public async Task<IEnumerable<AnnualStatistic>> ListAnnualStatisticsAsync()
-            => await _annualStatisticRepository.ListAsync(false);
-
-        public async Task<int> GetAnnualStatisticUsageCount(int id)
-            => (await _organisationAnnualStatisticRepository.CountAsync(x => x.AnnualStatisticId == id));
-
-        public async Task<bool> IsAnnualStatisticInUse(int id)
-            => (await GetAnnualStatisticUsageCount(id)) > 0;
-
-        public async Task<bool> ValidAnnualStatisticAsync(string annualStatisticDescription, int annualStatisticGroupId)
-            => (await _annualStatisticRepository.ListAsync(false, x =>
-                    x.Value == annualStatisticDescription && x.AnnualStatisticGroupId == annualStatisticGroupId
-                )
-            ).Any();
-
-        #endregion
-
         #region RefData: Associated Data Type Groups
 
         public async Task<IEnumerable<AssociatedDataTypeGroup>> ListAssociatedDataTypeGroupsAsync(string wildcard = "")
@@ -1468,9 +1448,15 @@ namespace Biobanks.Services
             => (await _annualStatisticGroupRepository.ListAsync(false, x => x.Value == name)).Single();
 
         public async Task<int> GetAnnualStatisticAnnualStatisticGroupCount(int annualStatisticGroupId)
-        => (await _annualStatisticRepository.ListAsync(
-                   false,
-                   x => x.AnnualStatisticGroupId == annualStatisticGroupId)).Count();
+        {
+            var groups = await _annualStatisticGroupRepository.ListAsync(
+                filter: x => x.Id == annualStatisticGroupId, 
+                includeProperties: x => x.AnnualStatistics);
+
+            return groups.Any()
+                ? groups.First().AnnualStatistics.Count()
+                : 0;
+        }
 
         public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
             => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);

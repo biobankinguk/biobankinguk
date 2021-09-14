@@ -42,7 +42,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
-        private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
         private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
@@ -93,7 +92,6 @@ namespace Biobanks.Services
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<Sex> sexRepository,
-            IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
@@ -155,7 +153,6 @@ namespace Biobanks.Services
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
-            _annualStatisticRepository = annualStatisticRepository;
             _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _accessConditionRepository = accessConditionRepository;
             _materialTypeRepository = materialTypeRepository;
@@ -1164,30 +1161,6 @@ namespace Biobanks.Services
         {
             await _accessConditionRepository.DeleteAsync(accessCondition.Id);
             await _accessConditionRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Annual Statistic
-        public async Task<AnnualStatistic> AddAnnualStatisticAsync(AnnualStatistic annualStatistic)
-        {
-            _annualStatisticRepository.Insert(annualStatistic);
-            await _annualStatisticRepository.SaveChangesAsync();
-
-            return annualStatistic;
-        }
-
-        public async Task<AnnualStatistic> UpdateAnnualStatisticAsync(AnnualStatistic annualStatistic, bool sortOnly = false)
-        {
-            _annualStatisticRepository.Update(annualStatistic);
-            await _annualStatisticRepository.SaveChangesAsync();
-
-            return annualStatistic;
-        }
-
-        public async Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic)
-        {
-            await _annualStatisticRepository.DeleteAsync(annualStatistic.Id);
-            await _annualStatisticRepository.SaveChangesAsync();
         }
         #endregion
 
