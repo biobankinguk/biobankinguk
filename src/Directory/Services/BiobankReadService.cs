@@ -33,7 +33,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
-        private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
@@ -68,7 +67,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
-        private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
@@ -100,7 +98,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
-            IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
@@ -135,7 +132,6 @@ namespace Biobanks.Services
          
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
-            IGenericEFRepository<CollectionPercentage> collectionPercentage,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
@@ -164,7 +160,6 @@ namespace Biobanks.Services
             _accessConditionRepository = accessConditionRepository;
             _collectionTypeRepository = collectionTypeRepository;
             _collectionStatusRepository = collectionStatusRepository;
-            _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
             _ontologyTermRepository = ontologyTermRepository;
@@ -197,7 +192,6 @@ namespace Biobanks.Services
             _serviceOfferingRepository = serviceOfferingRepository;
 
             _storageTemperatureRepository = storageTemperatureRepository;
-            _collectionPercentage = collectionPercentage;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _preservationTypeRepository = preservationTypeRepository;
@@ -874,20 +868,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsMaterialTypeGroupInUse(int id)
             => await _materialTypeGroupRepository.AnyAsync(x => x.Id == id && x.MaterialTypes.Count > 0);
-        #endregion
-
-        #region RefData: Collection Percentages
-        public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()
-            => await _collectionPercentageRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidCollectionPercentageAsync(string collectionPercentageDescription) 
-            => (await _collectionPercentageRepository.ListAsync(false, x => x.Value == collectionPercentageDescription)).Any();
-
-        public async Task<bool> IsCollectionPercentageInUse(int id)
-            => (await GetCollectionPercentageUsageCount(id)) > 0;
-
-        public async Task<int> GetCollectionPercentageUsageCount(int id)
-            => (await _materialDetailRepository.ListAsync(false, x => x.CollectionPercentageId == id)).Count();
         #endregion
 
         #region RefData: Collection Type

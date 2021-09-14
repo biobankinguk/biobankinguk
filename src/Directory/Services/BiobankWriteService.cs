@@ -33,7 +33,6 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
-        private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
@@ -97,7 +96,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
-            IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<DonorCount> donorCountRepository,
             IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
@@ -146,7 +144,6 @@ namespace Biobanks.Services
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
-            _collectionPercentageRepository = collectionPercentageRepository;
             _donorCountRepository = donorCountRepository;
             _ageRangeRepository = ageRangeRepository;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
@@ -751,65 +748,6 @@ namespace Biobanks.Services
         {
             await _sampleCollectionModeRepository.DeleteAsync(sampleCollectionMode.Id);
             await _sampleCollectionModeRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Collection Percentage
-        public async Task<CollectionPercentage> AddCollectionPercentageAsync(CollectionPercentage collectionPercentage)
-        {
-            _collectionPercentageRepository.Insert(collectionPercentage);
-            await _collectionPercentageRepository.SaveChangesAsync();
-
-            return collectionPercentage;
-        }
-
-        public async Task<CollectionPercentage> UpdateCollectionPercentageAsync(CollectionPercentage collectionPercentage, bool sortOnly = false)
-        {
-            var percentages = await _biobankReadService.ListCollectionPercentagesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                collectionPercentage.Value =
-                    percentages
-                        .Where(x => x.Id == collectionPercentage.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldPercentage = percentages.Where(x => x.Id == collectionPercentage.Id).First();
-            var reverse = (oldPercentage.SortOrder < collectionPercentage.SortOrder);
-
-            var newOrder = percentages
-                    .Prepend(collectionPercentage)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_collectionPercentageRepository.Update);
-
-            await _collectionPercentageRepository.SaveChangesAsync();
-
-            return collectionPercentage;
-        }
-
-        public async Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage)
-        {
-            await _collectionPercentageRepository.DeleteAsync(collectionPercentage.Id);
-            await _collectionPercentageRepository.SaveChangesAsync();
         }
         #endregion
 

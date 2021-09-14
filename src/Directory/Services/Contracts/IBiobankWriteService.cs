@@ -83,10 +83,6 @@ namespace Biobanks.Services.Contracts
         Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason);
         Task<RegistrationReason> AddRegistrationReasonAsync(RegistrationReason registrationReason);
 
-        Task<CollectionPercentage> AddCollectionPercentageAsync(CollectionPercentage collectionPercentage);
-        Task<CollectionPercentage> UpdateCollectionPercentageAsync(CollectionPercentage collectionPercentage, bool sortOnly = false);
-        Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage);
-
         Task<DonorCount> AddDonorCountAsync(DonorCount donorCount);
         Task<DonorCount> UpdateDonorCountAsync(DonorCount donorCount, bool sortOnly = false);
         Task DeleteDonorCountAsync(DonorCount donorCount);
