@@ -131,6 +131,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(AnnualStatisticService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<AnnualStatisticGroup>))
+                    .ImplementedBy(typeof(AnnualStatisticGroupService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,
