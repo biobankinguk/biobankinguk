@@ -1,4 +1,4 @@
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class SopStatus : ReferenceDataBase { }
+    public class SopStatus : BaseReferenceData { }
 }

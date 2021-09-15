@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services.Contracts
 {
-    public interface IReferenceDataService<T> where T : ReferenceDataBase
+    public interface IReferenceDataService<T> where T : BaseReferenceData
     {
         /// <summary>
         /// Create a new entity <typeparamref name="T"/>. The Id of the OntologyTerm should be null, as it is

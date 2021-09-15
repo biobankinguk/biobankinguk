@@ -6,7 +6,7 @@ namespace Biobanks.Entities.Shared.ReferenceData
     /// <summary>
     /// Sniomed Tag entity.
     /// </summary>
-    public class SnomedTag : ReferenceDataBase
+    public class SnomedTag : BaseReferenceData
     {
         /// <summary>
         /// Snomed Terms associated with this Tag.

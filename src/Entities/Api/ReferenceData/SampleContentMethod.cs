@@ -5,5 +5,5 @@ namespace Biobanks.Entities.Api.ReferenceData
     /// <summary>
     /// Sample Content Method.
     /// </summary>
-    public class SampleContentMethod : ReferenceDataBase { }
+    public class SampleContentMethod : BaseReferenceData { }
 }

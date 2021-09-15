@@ -1,6 +1,6 @@
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class AgeRange : ReferenceDataBase
+    public class AgeRange : BaseReferenceData
     {
         public string LowerBound { get; set; }
 

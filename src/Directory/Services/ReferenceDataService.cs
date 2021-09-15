@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services
 {
-    public abstract class ReferenceDataService<T> : IReferenceDataService<T> where T : ReferenceDataBase
+    public abstract class ReferenceDataService<T> : IReferenceDataService<T> where T : BaseReferenceData
     {
         protected readonly BiobanksDbContext _db;
 
