@@ -32,7 +32,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
-        private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
@@ -99,7 +98,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<CollectionType> collectionTypeRepository,
-            IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
@@ -163,7 +161,6 @@ namespace Biobanks.Services
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
             _accessConditionRepository = accessConditionRepository;
             _collectionTypeRepository = collectionTypeRepository;
-            _collectionStatusRepository = collectionStatusRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
@@ -513,9 +510,6 @@ namespace Biobanks.Services
         public async Task<bool> IsAccessConditionInUse(int id)
             => (await GetAccessConditionsCount(id) > 0);
 
-        public async Task<bool> IsCollectionStatusInUse(int id)
-            => (await GetCollectionStatusCollectionCount(id) > 0);
-
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
 
@@ -843,10 +837,6 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<CollectionType>> ListCollectionTypesAsync()
             => await _collectionTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-
-        public async Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync()
-            => await _collectionStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<IEnumerable<Sex>> ListSexesAsync()
             => await _sexRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
@@ -1225,15 +1215,6 @@ namespace Biobanks.Services
                 x => x.Value == countryName &&
                      x.Id != countryId)).Any();
 
-        public async Task<bool> ValidCollectionStatusDescriptionAsync(string collectionStatusDescription)
-        => (await _collectionStatusRepository.ListAsync(false, x => x.Value == collectionStatusDescription)).Any();
-
-        public async Task<bool> ValidCollectionStatusDescriptionAsync(int collectionStatusId, string collectionStatusDescription)
-            => (await _collectionStatusRepository.ListAsync(
-                false,
-                x => x.Value == collectionStatusDescription &&
-                     x.Id != collectionStatusId)).Any();
-
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
@@ -1276,9 +1257,6 @@ namespace Biobanks.Services
            x => x.AssociatedDataProcurementTimeframeId == id)).Count() + (await _capabilityAssociatedDataRepository.ListAsync(
            false,
            x => x.AssociatedDataProcurementTimeframeId == id)).Count();
-
-        public async Task<int> GetCollectionStatusCollectionCount(int id)
-            => (await _collectionRepository.ListAsync(false, x => x.CollectionStatusId == id)).Count();
 
         public async Task<int> GetServiceOfferingOrganisationCount(int id)
             => (await _organisationServiceOfferingRepository.ListAsync(
