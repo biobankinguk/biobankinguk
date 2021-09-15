@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private IReferenceDataService<CollectionType> _collectionTypeService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -50,6 +52,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<CollectionType> collectionTypeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -63,6 +66,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _collectionTypeService = collectionTypeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1268,14 +1272,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CollectionTypeModel
             {
-                CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                CollectionTypes = (await _collectionTypeService.List())
                      .Select(x =>
 
                  Task.Run(async () => new ReadCollectionTypeModel
                  {
                      Id = x.Id,
                      Description = x.Value,
-                     CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.Id),
+                     CollectionCount = await _collectionTypeService.GetUsageCount(x.Id),
                      SortOrder = x.SortOrder
                  }).Result)
 
