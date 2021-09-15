@@ -87,35 +87,35 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<T> Update(T entity)
         {
-            var exisiting = await Query().FirstOrDefaultAsync(x => x.Id == entity.Id);
+            var existing = await Query().FirstOrDefaultAsync(x => x.Id == entity.Id);
 
-            if (exisiting is null)
+            if (existing is null)
                 throw new KeyNotFoundException($"No exisiting { nameof(T) } for given Id={ entity.Id }");
 
             // Update Properties
-            exisiting.SortOrder = entity.SortOrder;
-            exisiting.Value = entity.Value;
+            existing.SortOrder = entity.SortOrder;
+            existing.Value = entity.Value;
 
             // Re-Order If Necessary
-            if (exisiting.SortOrder != default)
+            if (existing.SortOrder != default)
             {
                 var sortable = await Query()
-                    .Where(x => x.Id != exisiting.Id)
-                    .Where(x => x.SortOrder >= exisiting.SortOrder)
+                    .Where(x => x.Id != existing.Id)
+                    .Where(x => x.SortOrder >= existing.SortOrder)
                     .OrderBy(x => x.SortOrder)
                     .ToListAsync();
 
                 // Update SortOrder Indicies
                 for (int i=0; i < sortable.Count; i++)
                 {
-                    sortable[i].SortOrder = exisiting.SortOrder + i + 1;
+                    sortable[i].SortOrder = existing.SortOrder + i + 1;
                 }
             }
 
             // Save Changes
             await _db.SaveChangesAsync();
 
-            return exisiting;
+            return existing;
         }
 
     }
