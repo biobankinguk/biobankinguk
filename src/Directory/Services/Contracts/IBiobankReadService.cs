@@ -112,11 +112,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsSopStatusInUse(int id);
         Task<int> GetSopStatusUsageCount(int id);
 
-        Task<IEnumerable<MacroscopicAssessment>> ListMacroscopicAssessmentsAsync();
-        Task<bool> ValidMacroscopicAssessmentAsync(string macroscopicAssessmentDescription);
-        Task<bool> IsMacroscopicAssessmentInUse(int id);
-        Task<int> GetMacroscopicAssessmentUsageCount(int id);
-
         Task<IEnumerable<SampleCollectionMode>> ListSampleCollectionModeAsync();
         Task<bool> ValidSampleCollectionModeAsync(string sampleCollectionMode);
         Task<bool> IsSampleCollectionModeInUse(int id);

@@ -69,7 +69,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
-        private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
@@ -136,7 +135,6 @@ namespace Biobanks.Services
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
-            IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
@@ -198,7 +196,6 @@ namespace Biobanks.Services
 
             _storageTemperatureRepository = storageTemperatureRepository;
             _collectionPercentage = collectionPercentage;
-            _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
@@ -903,20 +900,6 @@ namespace Biobanks.Services
                 false,
                 x => x.Value == collectionTypeDescription &&
                      x.Id != collectionTypeId)).Any();
-        #endregion
-
-        #region RefData: Macroscopic Assessments
-        public async Task<IEnumerable<MacroscopicAssessment>> ListMacroscopicAssessmentsAsync()
-            => await _macroscopicAssessmentRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidMacroscopicAssessmentAsync(string macroscopicAssessmentDescription)
-            => (await _macroscopicAssessmentRepository.ListAsync(false, x => x.Value == macroscopicAssessmentDescription)).Any();
-
-        public async Task<bool> IsMacroscopicAssessmentInUse(int id)
-            => (await GetMacroscopicAssessmentUsageCount(id)) > 0;
-
-        public async Task<int> GetMacroscopicAssessmentUsageCount(int id)
-            => (await _materialDetailRepository.ListAsync(false, x => x.MacroscopicAssessmentId == id)).Count();
         #endregion
 
         #region RefData: Annual Statistics
