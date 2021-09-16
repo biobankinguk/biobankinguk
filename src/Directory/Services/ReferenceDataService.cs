@@ -33,10 +33,12 @@ namespace Biobanks.Directory.Services
             => _db.Set<T>().AsQueryable();
 
         /// <inheritdoc/>
-        public async Task Add(T entity)
+        public async Task<T> Add(T entity)
         {
             _db.Set<T>().Add(entity);
             await _db.SaveChangesAsync();
+
+            return entity;
         }
 
         /// <inheritdoc/>
@@ -78,11 +80,16 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.Value == value);
 
         /// <inheritdoc/>
-        public async Task<ICollection<T>> List()
+        public async Task<ICollection<T>> List(string wildcard)
             => await Query()
                 .AsNoTracking()
+                .Where(x => x.Value.Contains(wildcard))
                 .OrderBy(x => x.SortOrder)
                 .ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<ICollection<T>> List()
+            => await List(string.Empty);
 
         /// <inheritdoc/>
         public async Task<T> Update(T entity)
