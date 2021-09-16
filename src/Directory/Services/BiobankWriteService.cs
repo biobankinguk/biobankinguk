@@ -51,7 +51,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Country> _countryRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
-        private readonly IGenericEFRepository<County> _countyRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
@@ -109,7 +108,6 @@ namespace Biobanks.Services
             IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
             IGenericEFRepository<Country> countryRepository,
-            IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
@@ -163,7 +161,6 @@ namespace Biobanks.Services
             _sexRepository = sexRepository;
             _consentRestrictionRepository = consentRestrictionRepository;
             _countryRepository = countryRepository;
-            _countyRepository = countyRepository;
             _collectionStatusRepository = collectionStatusRepository;
             _collectionTypeRepository = collectionTypeRepository;
 
@@ -1721,28 +1718,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: County
-        public async Task<County> AddCountyAsync(County county) {
-            _countyRepository.Insert(county);
-            await _countyRepository.SaveChangesAsync();
-
-            return county;
-        }
-
-        public async Task<County> UpdateCountyAsync(County county) {
-            _countyRepository.Update(county);
-            await _countyRepository.SaveChangesAsync();
-
-            return county;
-        }
-        public async Task DeleteCountyAsync(County county)
-        {
-            await _countyRepository.DeleteAsync(county.Id);
-            await _countyRepository.SaveChangesAsync();
-        }
-
-        #endregion
-        
         public async Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason)
         {
             await _registrationReasonRepository.DeleteAsync(registrationReason.Id);
