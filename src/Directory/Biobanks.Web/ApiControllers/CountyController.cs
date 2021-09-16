@@ -6,6 +6,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -13,12 +14,17 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/County")]
     public class CountyController : ApiBaseController
     {
+        private readonly IReferenceDataService<Country> _countryService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
-        public CountyController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public CountyController(
+            IReferenceDataService<Country> countryService,
+            IBiobankReadService biobankReadService,
+            IBiobankWriteService biobankWriteService)
         {
+            _countryService = countryService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
         }
@@ -29,7 +35,8 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<CountiesModel> Get()
         {
-                var countries = await _biobankReadService.ListCountriesAsync();
+            var countries = await _countryService.List();
+            
             var model = new CountiesModel
             {
                 Counties = countries.ToDictionary(
@@ -48,6 +55,7 @@ namespace Biobanks.Web.ApiControllers
                         )
                     )
             };
+
             return model;
         }
 
@@ -124,7 +132,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCountriesAsync()).Select(x => x.Counties.Where(y=>y.Id == id).First()).First();
+            var model = (await _countryService.Get(id)).Counties.First(x => x.CountryId == id);
 
             if (await _biobankReadService.IsCountyInUse(id))
             {

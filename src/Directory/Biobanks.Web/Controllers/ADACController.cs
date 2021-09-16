@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<Country> _countryService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -50,6 +52,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<Country> countryService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -63,6 +66,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _countryService = countryService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1520,14 +1524,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CountryModel
             {
-                Countries = (await _biobankReadService.ListCountriesAsync())
+                Countries = (await _countryService.List())
                      .Select(x =>
 
                      Task.Run(async () => new ReadCountryModel
                      {
                          Id = x.Id,
                          Name = x.Value,
-                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.Id)
+                         CountyOrganisationCount = await _countryService.GetUsageCount(x.Id)
                      }).Result)
 
                      .ToList()
@@ -1540,7 +1544,7 @@ namespace Biobanks.Web.Controllers
         {
             if (await _configService.GetFlagConfigValue("site.display.counties") == true)
             {
-                var countries = await _biobankReadService.ListCountriesAsync();
+                var countries = await _countryService.List();
 
                 return View(
                     new CountiesModel

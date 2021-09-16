@@ -14,23 +14,28 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class SearchController : Controller
     {
+        private readonly IReferenceDataService<Country> _countryController;
+
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
         private readonly IBiobankReadService _biobankReadService;
 
         public SearchController(
+            IReferenceDataService<Country> countryController,
             ISearchProvider searchProvider,
             IMapper mapper,
             IBiobankReadService biobankReadService)
         {
+            _countryController = countryController;
             _searchProvider = searchProvider;
             _mapper = mapper;
             _biobankReadService = biobankReadService;
@@ -79,7 +84,7 @@ namespace Biobanks.Web.Controllers
                     SearchType = SearchDocumentType.Collection
                 });
 
-            model.Countries = (await _biobankReadService.ListCountriesAsync())
+            model.Countries = (await _countryController.List())
                 .ToDictionary(
                     x => x.Value,
                     x => x.Counties.Select(y => y.Value).ToList()
