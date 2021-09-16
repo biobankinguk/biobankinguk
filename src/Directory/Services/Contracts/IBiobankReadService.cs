@@ -76,11 +76,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsCollectionPercentageInUse(int id);
         Task<int> GetCollectionPercentageUsageCount(int id);
 
-        Task<IEnumerable<DonorCount>> ListDonorCountsAsync(bool ignoreCache = false);
-        Task<int> GetDonorCountUsageCount(int id);
-        Task<bool> ValidDonorCountAsync(string donorCountDescription);
-        Task<bool> IsDonorCountInUse(int id);
-
         Task<int> GetRegistrationReasonOrganisationCount(int id);
         Task<bool> IsRegistrationReasonInUse(int id);
         Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription);

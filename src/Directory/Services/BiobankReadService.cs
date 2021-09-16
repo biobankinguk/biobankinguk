@@ -55,7 +55,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
-        private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
@@ -120,7 +119,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AgeRange> ageRangeRepository,
-            IGenericEFRepository<DonorCount> donorCountRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
@@ -183,7 +181,6 @@ namespace Biobanks.Services
             _organisationTypeRepository = organisationTypeRepository;
             _sexRepository = sexRepository;
             _ageRangeRepository = ageRangeRepository;
-            _donorCountRepository = donorCountRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
@@ -960,39 +957,6 @@ namespace Biobanks.Services
                 x => x.Value == associatedDataTypeGroupName &&
                      x.Id != associatedDataTypeGroupId)).Any();
 
-        #endregion
-
-        #region RefData: Donor Count
-        public async Task<IEnumerable<DonorCount>> ListDonorCountsAsync(bool ignoreCache = false)
-        {
-            if (ignoreCache)
-            {
-                return await _donorCountRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-            }
-            else
-            {
-                try
-                {
-                    return _cacheProvider.Retrieve<IEnumerable<DonorCount>>(CacheKeys.DonorCounts);
-                }
-                catch
-                {
-                    var donorCounts = await _donorCountRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-                    _cacheProvider.Store<IEnumerable<DonorCount>>(CacheKeys.DonorCounts, donorCounts);
-
-                    return donorCounts;
-                }
-            }
-        }
-
-        public async Task<bool> ValidDonorCountAsync(string donorCountDescription)
-            => (await _donorCountRepository.ListAsync(false, x => x.Value == donorCountDescription)).Any();
-
-        public async Task<bool> IsDonorCountInUse(int id)
-            => (await GetDonorCountUsageCount(id)) > 0;
-
-        public async Task<int> GetDonorCountUsageCount(int id)
-            => (await _collectionSampleSetRepository.ListAsync(false, x => x.DonorCountId == id)).Count();
         #endregion
 
         #region RefData: Age Range
