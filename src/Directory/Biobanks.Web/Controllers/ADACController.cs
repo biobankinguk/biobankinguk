@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<County> _countyService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -50,6 +52,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<County> countyService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -63,6 +66,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _countyService = countyService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1554,7 +1558,7 @@ namespace Biobanks.Web.Controllers
                                         Id = county.Id,
                                         CountryId = x.Id,
                                         Name = county.Value,
-                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.Id)
+                                        CountyUsageCount = await _countyService.GetUsageCount(county.Id)
                                     }
                                  )
                                 .Result
