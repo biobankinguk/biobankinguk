@@ -127,7 +127,7 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(PublicationService))
                     .LifeStyle.Transient,
 
-                Component.For(typeof(IReferenceDataService<FunderService>))
+                Component.For(typeof(IReferenceDataService<Funder>))
                     .ImplementedBy(typeof(FunderService))
                     .LifeStyle.Transient,
 
