@@ -46,6 +46,8 @@ namespace Biobanks.Web.Controllers
         private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
 
+        private readonly IReferenceDataService<Funder> _funderService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -64,6 +66,7 @@ namespace Biobanks.Web.Controllers
         public BiobankController(
             ICollectionService collectionService,
             IPublicationService publicationService,
+            IReferenceDataService<Funder> funderService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -76,6 +79,7 @@ namespace Biobanks.Web.Controllers
         {
             _collectionService = collectionService;
             _publicationService = publicationService;
+            _funderService = funderService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -756,7 +760,7 @@ namespace Biobanks.Web.Controllers
                         .Select(x => x.ErrorMessage).ToList()
                 });
 
-            var funder = await _biobankReadService.GetFunderbyName(model.FunderName);
+            var funder = await _funderService.Get(model.FunderName);
 
             // Funder Doesn't Exist
             if (funder == null)
@@ -766,13 +770,10 @@ namespace Biobanks.Web.Controllers
                 if (useFreeText)
                 {
                     // Add Funder to Database
-                    await _biobankWriteService.AddFunderAsync(new Funder
+                    funder = await _funderService.Add(new Funder
                     {
                         Value = model.FunderName
                     });
-
-                    // Retrieve Funder (ensures no null values)
-                    funder = await _biobankReadService.GetFunderbyName(model.FunderName);
                 }
                 else
                 {
@@ -821,7 +822,7 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> SearchFunders(string wildcard)
         {
-            var funders = await _biobankReadService.ListFundersAsync(wildcard);
+            var funders = await _funderService.List(wildcard);
 
             var funderResults = funders
                 .Select(x => new
