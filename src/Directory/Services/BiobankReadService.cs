@@ -65,7 +65,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
-        private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
@@ -130,7 +129,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
             IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
             IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
-            IGenericEFRepository<RegistrationReason> registrationReasonRepository,
             IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
          
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
@@ -193,7 +191,6 @@ namespace Biobanks.Services
             _organisationUserRepository = organisationUserRepository;
             _organisationNetworkRepository = organisationNetworkRepository;
             _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
-            _registrationReasonRepository = registrationReasonRepository;
             _serviceOfferingRepository = serviceOfferingRepository;
 
             _storageTemperatureRepository = storageTemperatureRepository;
@@ -499,8 +496,6 @@ namespace Biobanks.Services
         public async Task<bool> IsCollectionTypeInUse(int id)
             => (await GetCollectionTypeCollectionCount(id) > 0);
 
-        public async Task<bool> IsRegistrationReasonInUse(int id)
-            => (await GetRegistrationReasonOrganisationCount(id) > 0);
         public async Task<bool> IsServiceOfferingInUse(int id)
             => (await GetServiceOfferingOrganisationCount(id) > 0);
 
@@ -1208,14 +1203,6 @@ namespace Biobanks.Services
                 x => x.Value == associatedDataTypeDescription &&
                      x.Id != associatedDataTypeId)).Any();
 
-        public async Task<bool> ValidRegistrationReasonDescriptionAsync(string reasonDescription)
-            => (await _registrationReasonRepository.ListAsync(false, x => x.Value == reasonDescription)).Any();
-        public async Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription)
-            => (await _registrationReasonRepository.ListAsync(
-                false,
-                x => x.Value == reasonDescription &&
-                     x.Id != reasonId)).Any();
-
         public async Task<bool> ValidCountryNameAsync(string countryName)
       => (await _countryRepository.ListAsync(false, x => x.Value == countryName)).Any();
 
@@ -1284,9 +1271,6 @@ namespace Biobanks.Services
             => (await _organisationServiceOfferingRepository.ListAsync(
             false,
              x => x.ServiceOfferingId == id)).Count();
-
-        public async Task<int> GetRegistrationReasonOrganisationCount(int id)
-            => await _organisationRegistrationReasonRepository.CountAsync(x => x.RegistrationReasonId == id);
 
         public async Task<int> GetSexCount(int id)
             => await _sampleSetRepository.CountAsync(x => x.SexId == id);
@@ -1433,9 +1417,6 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<Organisation>> GetBiobanksByAnonymousIdentifiersAsync(IEnumerable<Guid> biobankAnonymousIdentifiers)
             => await _organisationRepository.ListAsync(false, o => o.AnonymousIdentifier.HasValue && biobankAnonymousIdentifiers.Contains(o.AnonymousIdentifier.Value));
-
-        public async Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync()
-            => await _registrationReasonRepository.ListAsync();
 
         public async Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId)
             => await _organisationRegistrationReasonRepository.ListAsync(

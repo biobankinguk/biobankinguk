@@ -1742,26 +1742,7 @@ namespace Biobanks.Services
         }
 
         #endregion
-        
-        public async Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason)
-        {
-            await _registrationReasonRepository.DeleteAsync(registrationReason.Id);
-            await _registrationReasonRepository.SaveChangesAsync();
-        }
-        public async Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason)
-        {
-            _registrationReasonRepository.Update(registrationReason);
-            await _registrationReasonRepository.SaveChangesAsync();
-            return registrationReason;
-        }
 
-        public async Task<RegistrationReason> AddRegistrationReasonAsync(RegistrationReason registrationReason)
-        {
-            _registrationReasonRepository.Insert(registrationReason);
-            await _registrationReasonRepository.SaveChangesAsync();
-
-            return registrationReason;
-        }
         public async Task<Organisation> SuspendBiobankAsync(int id)
         {
             var biobank = await _organisationRepository.GetByIdAsync(id);
