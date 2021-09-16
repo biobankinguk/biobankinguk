@@ -1860,28 +1860,6 @@ namespace Biobanks.Services
             await _organisationRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteFunderByIdAsync(int id)
-        {
-            await _funderRepository.DeleteAsync(id);
-            await _funderRepository.SaveChangesAsync();
-        }
-
-        public async Task<Funder> AddFunderAsync(Funder funder)
-        {
-            _funderRepository.Insert(funder);
-            await _funderRepository.SaveChangesAsync();
-
-            return funder;
-        }
-
-        public async Task<Funder> UpdateFunderAsync(Funder funder)
-        {
-            _funderRepository.Update(funder);
-            await _funderRepository.SaveChangesAsync();
-
-            return funder;
-        }
-
         public async Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year)
         {
             var organisationAnnualStatistic = new OrganisationAnnualStatistic
