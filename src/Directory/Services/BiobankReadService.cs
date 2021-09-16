@@ -1306,13 +1306,6 @@ namespace Biobanks.Services
                    false,
                    x => x.AssociatedDataTypeId == id)).Count();
 
-        public async Task<int> GetCountryCountyOrganisationCount(int id)
-            => (await _countyRepository.ListAsync(
-                false,
-                x => x.CountryId == id)).Count() + (await _organisationRepository.ListAsync(
-                false,
-                x => x.CountryId == id)).Count();
-
         public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
             => await _organisationServiceOfferingRepository.ListAsync(
                 false,

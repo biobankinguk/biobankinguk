@@ -147,8 +147,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription);
 
-        Task<int> GetCountryCountyOrganisationCount(int id);
-
         Task<int> GetAccessConditionsCount(int id);
         Task<bool> ValidAccessConditionDescriptionAsync(string accessConditionsDescription);
         Task<bool> ValidAccessConditionDescriptionAsync(int accessConditionsId, string accessConditionsDescription);
