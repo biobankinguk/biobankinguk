@@ -159,11 +159,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription);
         Task<bool> ValidMaterialTypeDescriptionAsync(int materialTypeId, string materialTypeDescription);
 
-        Task<IEnumerable<ConsentRestriction>> ListConsentRestrictionsAsync();
-        Task<int> GetConsentRestrictionCollectionCount(int id);
-        Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription);
-        Task<bool> ValidConsentRestrictionDescriptionAsync(int consentId, string consentDescription);
-
         Task<int> GetServiceOfferingOrganisationCount(int id);
         Task<bool> ValidServiceOfferingName(int offeringId, string offeringName);
         Task<bool> ValidServiceOfferingName(string offeringName);
@@ -207,7 +202,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsAssociatedDataTypeInUse(int id);
         Task<bool> IsSexInUse(int id);
         Task<bool> IsServiceOfferingInUse(int id);
-        Task<bool> IsConsentRestrictionInUse(int id);
         Task<bool> IsCountryInUse(int id);
         Task<bool> IsAccessConditionInUse(int id);
 

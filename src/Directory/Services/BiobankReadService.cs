@@ -35,7 +35,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
-        private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
@@ -102,7 +101,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
-            IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
@@ -166,7 +164,6 @@ namespace Biobanks.Services
             _collectionStatusRepository = collectionStatusRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
-            _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
             _ontologyTermRepository = ontologyTermRepository;
             _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
@@ -489,9 +486,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsAssociatedDataTypeInUse(int id)
             => (await GetAssociatedDataTypeCollectionCapabilityCount(id) > 0);
-
-        public async Task<bool> IsConsentRestrictionInUse(int id)
-            => (await GetConsentRestrictionCollectionCount(id) > 0);
 
         public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse (int id)
              => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
@@ -854,9 +848,6 @@ namespace Biobanks.Services
         public async Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync()
             => await _associatedDataTypeRepository.ListAsync();
 
-        public async Task<IEnumerable<ConsentRestriction>> ListConsentRestrictionsAsync()
-            => await _collectionConsentRestrictionRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
         public async Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames()
             => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
         
@@ -1174,15 +1165,6 @@ namespace Biobanks.Services
 
         #endregion
 
-        public async Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription)
-            => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Value == consentDescription)).Any();
-
-        public async Task<bool> ValidConsentRestrictionDescriptionAsync(int consentId, string consentDescription)
-            => (await _collectionConsentRestrictionRepository.ListAsync(
-                false,
-                x => x.Value == consentDescription &&
-                     x.Id != consentId)).Any();
-
         public async Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription)
         => (await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, x => x.Value == procurementDescription)).Any();
 
@@ -1255,20 +1237,6 @@ namespace Biobanks.Services
                 false,
                 x => x.Value == materialTypeDescription &&
                      x.Id != materialTypeId)).Any();
-
-        public async Task<int> GetConsentRestrictionCollectionCount(int id)
-        {
-            var restrictions = (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Id == id, null, x => x.Collections)).SingleOrDefault();
-            if (restrictions is null)
-            {
-                throw new KeyNotFoundException();
-            }
-            else
-            {
-                return restrictions.Collections.Count();
-            }
-        }
-
 
         public async Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id)
             => (await _collectionAssociatedDataRepository.ListAsync(

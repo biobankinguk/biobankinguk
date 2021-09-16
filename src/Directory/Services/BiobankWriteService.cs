@@ -47,7 +47,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
-        private readonly IGenericEFRepository<ConsentRestriction> _consentRestrictionRepository;
         private readonly IGenericEFRepository<Country> _countryRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
@@ -107,7 +106,6 @@ namespace Biobanks.Services
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
-            IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
             IGenericEFRepository<Country> countryRepository,
             IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Collection> collectionRepository,
@@ -161,7 +159,6 @@ namespace Biobanks.Services
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
-            _consentRestrictionRepository = consentRestrictionRepository;
             _countryRepository = countryRepository;
             _countyRepository = countyRepository;
             _collectionStatusRepository = collectionStatusRepository;
@@ -810,65 +807,6 @@ namespace Biobanks.Services
         {
             await _collectionPercentageRepository.DeleteAsync(collectionPercentage.Id);
             await _collectionPercentageRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Consent Restrictions
-        public async Task<ConsentRestriction> AddConsentRestrictionAsync(ConsentRestriction consentRestriction)
-        {
-            _consentRestrictionRepository.Insert(consentRestriction);
-            await _consentRestrictionRepository.SaveChangesAsync();
-
-            return consentRestriction;
-        }
-
-        public async Task<ConsentRestriction> UpdateConsentRestrictionAsync(ConsentRestriction consentRestriction, bool sortOnly = false)
-        {
-            var restrictions = await _biobankReadService.ListConsentRestrictionsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                consentRestriction.Value =
-                    restrictions
-                        .Where(x => x.Id == consentRestriction.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldRestriction = restrictions.Where(x => x.Id == consentRestriction.Id).First();
-            var reverse = (oldRestriction.SortOrder < consentRestriction.SortOrder);
-
-            var newOrder = restrictions
-                    .Prepend(consentRestriction)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_consentRestrictionRepository.Update);
-
-            await _consentRestrictionRepository.SaveChangesAsync();
-
-            return consentRestriction;
-        }
-
-        public async Task DeleteConsentRestrictionAsync(ConsentRestriction consentRestriction)
-        {
-            await _consentRestrictionRepository.DeleteAsync(consentRestriction.Id);
-            await _consentRestrictionRepository.SaveChangesAsync();
         }
         #endregion
 
