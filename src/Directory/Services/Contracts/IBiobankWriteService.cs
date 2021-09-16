@@ -137,10 +137,6 @@ namespace Biobanks.Services.Contracts
 
         Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering);
 
-        Task<Country> AddCountryAsync(Country country);
-        Task<Country> UpdateCountryAsync(Country country);
-        Task DeleteCountryAsync(Country country);
-
         Task<County> AddCountyAsync(County county);
         Task<County> UpdateCountyAsync(County county);
         Task DeleteCountyAsync(County county);

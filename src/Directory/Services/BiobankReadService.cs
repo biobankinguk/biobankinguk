@@ -311,9 +311,6 @@ namespace Biobanks.Services
             => (await _organisationRepository.ListAsync(false, x => x.CountyId == id)).Count();
         #endregion
 
-        public async Task<ICollection<Country>> ListCountriesAsync() =>
-            (await _countryRepository.ListAsync(false, null, x => x.OrderBy(c => c.Value))).ToList();
-
         public async Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync()
         {
                 var organisations = await _organisationRepository.ListAsync(
@@ -506,9 +503,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
-
-        public async Task<bool> IsCountryInUse(int id)
-            => (await GetCountryCountyOrganisationCount(id) > 0);
 
         public async Task<bool> IsAccessConditionInUse(int id)
             => (await GetAccessConditionsCount(id) > 0);
@@ -1215,15 +1209,6 @@ namespace Biobanks.Services
                 false,
                 x => x.Value == reasonDescription &&
                      x.Id != reasonId)).Any();
-
-        public async Task<bool> ValidCountryNameAsync(string countryName)
-      => (await _countryRepository.ListAsync(false, x => x.Value == countryName)).Any();
-
-        public async Task<bool> ValidCountryNameAsync(int countryId, string countryName)
-            => (await _countryRepository.ListAsync(
-                false,
-                x => x.Value == countryName &&
-                     x.Id != countryId)).Any();
 
         public async Task<bool> ValidCollectionStatusDescriptionAsync(string collectionStatusDescription)
         => (await _collectionStatusRepository.ListAsync(false, x => x.Value == collectionStatusDescription)).Any();

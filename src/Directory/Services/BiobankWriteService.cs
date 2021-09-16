@@ -48,7 +48,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<ConsentRestriction> _consentRestrictionRepository;
-        private readonly IGenericEFRepository<Country> _countryRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
         private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
         private readonly IGenericEFRepository<County> _countyRepository;
@@ -108,7 +107,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
-            IGenericEFRepository<Country> countryRepository,
             IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
@@ -162,7 +160,6 @@ namespace Biobanks.Services
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
             _consentRestrictionRepository = consentRestrictionRepository;
-            _countryRepository = countryRepository;
             _countyRepository = countyRepository;
             _collectionStatusRepository = collectionStatusRepository;
             _collectionTypeRepository = collectionTypeRepository;
@@ -1696,30 +1693,6 @@ namespace Biobanks.Services
 
             return associatedDataType;
         }
-
-        #region RefData: Country
-        public async Task<Country> AddCountryAsync(Country country)
-        {
-            _countryRepository.Insert(country);
-            await _countryRepository.SaveChangesAsync();
-
-            return country;
-        }
-
-        public async Task<Country> UpdateCountryAsync(Country country)
-        {
-            _countryRepository.Update(country);
-            await _countryRepository.SaveChangesAsync();
-
-            return country;
-        }
-
-        public async Task DeleteCountryAsync(Country country)
-        {
-            await _countryRepository.DeleteAsync(country.Id);
-            await _countryRepository.SaveChangesAsync();
-        }
-        #endregion
 
         #region RefData: County
         public async Task<County> AddCountyAsync(County county) {

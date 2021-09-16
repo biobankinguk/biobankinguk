@@ -148,8 +148,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription);
 
         Task<int> GetCountryCountyOrganisationCount(int id);
-        Task<bool> ValidCountryNameAsync(string countryName);
-        Task<bool> ValidCountryNameAsync(int countryId, string countryName);
 
         Task<int> GetAccessConditionsCount(int id);
         Task<bool> ValidAccessConditionDescriptionAsync(string accessConditionsDescription);
@@ -208,7 +206,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsSexInUse(int id);
         Task<bool> IsServiceOfferingInUse(int id);
         Task<bool> IsConsentRestrictionInUse(int id);
-        Task<bool> IsCountryInUse(int id);
         Task<bool> IsAccessConditionInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
@@ -252,7 +249,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsCountyInUse(int id);
         Task<int> GetCountyUsageCount(int id);
 
-        Task<ICollection<Country>> ListCountriesAsync();
         Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
         Task<Funder> GetFunderByIdAsync(int id);
         List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId);
