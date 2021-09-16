@@ -46,6 +46,8 @@ namespace Biobanks.Web.Controllers
         private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
 
+        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -64,6 +66,7 @@ namespace Biobanks.Web.Controllers
         public BiobankController(
             ICollectionService collectionService,
             IPublicationService publicationService,
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -76,6 +79,7 @@ namespace Biobanks.Web.Controllers
         {
             _collectionService = collectionService;
             _publicationService = publicationService;
+            _macroscopicAssessmentService = macroscopicAssessmentService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1299,7 +1303,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> SampleSet(int id)
         {
             var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
@@ -1513,7 +1517,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             model.MacroscopicAssessments = assessments
                 .Select(
