@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -50,6 +52,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -63,6 +66,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _registrationReasonService = registrationReasonService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1600,14 +1604,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.RegistrationReasonModel
             {
-                RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
+                RegistrationReasons = (await _registrationReasonService.List())
                     .Select(x =>
 
                         Task.Run(async () => new ReadRegistrationReasonModel
                         {
                             Id = x.Id,
                             Description = x.Value,
-                            OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
+                            OrganisationCount = await _registrationReasonService.GetUsageCount(x.Id),
                         }).Result)
 
                     .ToList()
