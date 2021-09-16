@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -50,6 +52,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<ConsentRestriction> consentRestrictionService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -1412,14 +1415,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.ConsentRestrictionModel
             {
-                ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+                ConsentRestrictions = (await _consentRestrictionService.List())
                     .Select(x =>
 
                         Task.Run(async () => new ReadConsentRestrictionModel
                         {
                             Id = x.Id,
                             Description = x.Value,
-                            CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
+                            CollectionCount = await _consentRestrictionService.GetUsageCount(x.Id),
                             SortOrder = x.SortOrder
                         }).Result)
 
