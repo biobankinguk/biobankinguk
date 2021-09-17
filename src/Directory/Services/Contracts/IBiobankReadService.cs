@@ -117,11 +117,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsMacroscopicAssessmentInUse(int id);
         Task<int> GetMacroscopicAssessmentUsageCount(int id);
 
-        Task<IEnumerable<SampleCollectionMode>> ListSampleCollectionModeAsync();
-        Task<bool> ValidSampleCollectionModeAsync(string sampleCollectionMode);
-        Task<bool> IsSampleCollectionModeInUse(int id);
-        Task<int> GetSampleCollectionModeUsageCount(int id);
-
         Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames();
         Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id);
         Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id);
