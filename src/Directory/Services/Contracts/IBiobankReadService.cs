@@ -126,10 +126,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription);
 
-        Task<int> GetCountryCountyOrganisationCount(int id);
-        Task<bool> ValidCountryNameAsync(string countryName);
-        Task<bool> ValidCountryNameAsync(int countryId, string countryName);
-
         Task<int> GetAccessConditionsCount(int id);
         Task<bool> ValidAccessConditionDescriptionAsync(string accessConditionsDescription);
         Task<bool> ValidAccessConditionDescriptionAsync(int accessConditionsId, string accessConditionsDescription);
@@ -183,7 +179,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsAssociatedDataTypeInUse(int id);
         Task<bool> IsSexInUse(int id);
         Task<bool> IsConsentRestrictionInUse(int id);
-        Task<bool> IsCountryInUse(int id);
         Task<bool> IsAccessConditionInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
@@ -222,7 +217,6 @@ namespace Biobanks.Services.Contracts
         Task<Funder> GetFunderbyName(string name);
         Task<IEnumerable<Funder>>  ListFundersAsync(string wildcard);
 
-        Task<ICollection<Country>> ListCountriesAsync();
         Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
         Task<Funder> GetFunderByIdAsync(int id);
         List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId);

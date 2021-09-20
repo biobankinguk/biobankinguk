@@ -39,6 +39,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
         private readonly IReferenceDataService<DonorCount> _donorCountService;
         private readonly IReferenceDataService<County> _countyService;
+        private readonly IReferenceDataService<Country> _countryService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -63,6 +64,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
             IReferenceDataService<DonorCount> donorCountService,
             IReferenceDataService<County> countyService,
+            IReferenceDataService<Country> countryService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -82,6 +84,7 @@ namespace Biobanks.Web.Controllers
             _macroscopicAssessmentService = macroscopicAssessmentService;
             _donorCountService = donorCountService;
             _countyService = countyService;
+            _countryService = countryService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1539,14 +1542,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CountryModel
             {
-                Countries = (await _biobankReadService.ListCountriesAsync())
+                Countries = (await _countryService.List())
                      .Select(x =>
 
                      Task.Run(async () => new ReadCountryModel
                      {
                          Id = x.Id,
                          Name = x.Value,
-                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.Id)
+                         CountyOrganisationCount = await _countryService.GetUsageCount(x.Id)
                      }).Result)
 
                      .ToList()
@@ -1559,7 +1562,7 @@ namespace Biobanks.Web.Controllers
         {
             if (await _configService.GetFlagConfigValue("site.display.counties") == true)
             {
-                var countries = await _biobankReadService.ListCountriesAsync();
+                var countries = await _countryService.List();
 
                 return View(
                     new CountiesModel

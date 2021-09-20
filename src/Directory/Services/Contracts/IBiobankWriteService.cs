@@ -117,10 +117,6 @@ namespace Biobanks.Services.Contracts
         Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false);
         Task DeleteAccessConditionAsync(AccessCondition accessCondition);
 
-        Task<Country> AddCountryAsync(Country country);
-        Task<Country> UpdateCountryAsync(Country country);
-        Task DeleteCountryAsync(Country country);
-
         Task<Organisation> SuspendBiobankAsync(int id);
         Task<Organisation> UnsuspendBiobankAsync(int id);
         Task UpdateOrganisationURLAsync(int id);

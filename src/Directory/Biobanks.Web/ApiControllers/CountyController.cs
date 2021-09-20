@@ -2,13 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Filters;
 using Biobanks.Directory.Services.Contracts;
-using Biobanks.Services;
-using Hangfire.States;
 using System;
 using System.Collections.Generic;
 
@@ -19,15 +16,14 @@ namespace Biobanks.Web.ApiControllers
     public class CountyController : ApiBaseController
     {
         private readonly IReferenceDataService<County> _countyService;
-
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly IReferenceDataService<Country> _countryService;
 
         public CountyController(
             IReferenceDataService<County> countyService,
-            BiobankReadService bioankReadService)
+            IReferenceDataService<Country> countryService)
         {
             _countyService = countyService;
-            _biobankReadService = bioankReadService;
+            _countryService = countryService;
         }
 
         [HttpGet]
@@ -35,8 +31,8 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<CountiesModel> Get()
         {
-            var countries = await _biobankReadService.ListCountriesAsync();
-
+            var countries = await _countryService.List();
+            
             var model = new CountiesModel
             {
                 Counties = countries.ToDictionary(
@@ -132,7 +128,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCountriesAsync()).Select(x => x.Counties.Where(y=>y.Id == id).First()).First();
+            var model = (await _countryService.Get(id)).Counties.First(x => x.CountryId == id);
 
             if (await _countyService.IsInUse(id))
             {
