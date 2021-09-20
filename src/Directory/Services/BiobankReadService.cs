@@ -65,8 +65,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
-        private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
-        private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
@@ -127,7 +125,9 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
             IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
-         
+            IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
+            IGenericEFRepository<OrganisationUser> organisationUserRepository,
+
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
@@ -183,6 +183,12 @@ namespace Biobanks.Services
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
             _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
+
+            _organisationRegistrationReasonRepository = organisationRegistrationReasonRepository;
+            _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
+            _organisationNetworkRepository = organisationNetworkRepository;
+            _organisationUserRepository = organisationUserRepository;
+
 
             _storageTemperatureRepository = storageTemperatureRepository;
             _collectionPercentage = collectionPercentage;
