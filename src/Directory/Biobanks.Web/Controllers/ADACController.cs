@@ -33,6 +33,7 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
 
         private readonly IBiobankReadService _biobankReadService;
@@ -53,6 +54,7 @@ namespace Biobanks.Web.Controllers
         public ADACController(
             ICollectionService collectionService,
             IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -67,6 +69,7 @@ namespace Biobanks.Web.Controllers
         {
             _collectionService = collectionService;
             _serviceOfferingService = serviceOfferingService;
+            _sampleCollectionModeService = sampleCollectionModeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1478,14 +1481,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sample Collection Mode
         public async Task<ActionResult> SampleCollectionModes()
         {
-            var models = (await _biobankReadService.ListSampleCollectionModeAsync())
+            var models = (await _sampleCollectionModeService.List())
                 .Select(x =>
                     Task.Run(async () => new SampleCollectionModeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.Id)
+                        SampleSetsCount = await _sampleCollectionModeService.GetUsageCount(x.Id)
                     })
                     .Result
                 )

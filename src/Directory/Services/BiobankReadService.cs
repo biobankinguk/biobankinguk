@@ -69,7 +69,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
-        private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
         private readonly IGenericEFRepository<County> _countyRepository;
@@ -135,7 +134,6 @@ namespace Biobanks.Services
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
             IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
-            IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             ICacheProvider cacheProvider,
@@ -196,7 +194,6 @@ namespace Biobanks.Services
             _storageTemperatureRepository = storageTemperatureRepository;
             _collectionPercentage = collectionPercentage;
             _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
-            _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
@@ -1030,20 +1027,6 @@ namespace Biobanks.Services
                     x.Value == value &&
                     x.StorageTemperatureId == storageTemperatureId)
                 ).Any();
-        #endregion
-
-        #region RefData: Sample Collection Mode
-        public async Task<IEnumerable<SampleCollectionMode>> ListSampleCollectionModeAsync()
-            => await _sampleCollectionModeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidSampleCollectionModeAsync(string sampleCollectionModeDesc)
-            => (await _sampleCollectionModeRepository.ListAsync(false, x => x.Value == sampleCollectionModeDesc)).Any();
-
-        public async Task<bool> IsSampleCollectionModeInUse(int id)
-            => (await GetSampleCollectionModeUsageCount(id)) > 0;
-
-        public async Task<int> GetSampleCollectionModeUsageCount(int id)
-            => (await _capabilityRepository.ListAsync(false, x => x.SampleCollectionModeId == id)).Count();
         #endregion
 
         #region RefData: Sop Status
