@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+
         private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
 
@@ -54,6 +56,7 @@ namespace Biobanks.Web.Controllers
         public ADACController(
             ICollectionService collectionService,
             IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
             IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -68,6 +71,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _serviceOfferingService = serviceOfferingService;
             _serviceOfferingService = serviceOfferingService;
             _sampleCollectionModeService = sampleCollectionModeService;
             _biobankReadService = biobankReadService;
