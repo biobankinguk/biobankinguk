@@ -46,6 +46,10 @@ namespace Biobanks.Web.Controllers
         private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
 
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
         private readonly IReferenceDataService<County> _countyService;
 
         private readonly IBiobankReadService _biobankReadService;
@@ -66,6 +70,10 @@ namespace Biobanks.Web.Controllers
         public BiobankController(
             ICollectionService collectionService,
             IPublicationService publicationService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+            IReferenceDataService<DonorCount> donorCountService,
             IReferenceDataService<County> countyService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -79,6 +87,10 @@ namespace Biobanks.Web.Controllers
         {
             _collectionService = collectionService;
             _publicationService = publicationService;
+            _serviceOfferingService = serviceOfferingService;
+            _registrationReasonService = registrationReasonService;
+            _macroscopicAssessmentService = macroscopicAssessmentService;
+            _donorCountService = donorCountService;
             _countyService = countyService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -344,7 +356,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
         {
-            var allServices = await _biobankReadService.ListServiceOfferingsAsync();
+            var allServices = await _serviceOfferingService.List();
 
             return allServices.Select(service => new OrganisationServiceModel
             {
@@ -359,7 +371,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationRegistrationReasonModel>> GetAllRegistrationReasonsAsync()
         {
-            var allRegistrationReasons = await _biobankReadService.ListRegistrationReasonsAsync();
+            var allRegistrationReasons = await _registrationReasonService.List();
 
             return allRegistrationReasons.Select(regReason => new OrganisationRegistrationReasonModel
             {
@@ -1303,7 +1315,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> SampleSet(int id)
         {
             var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
@@ -1449,7 +1461,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.DonorCounts = (await _biobankReadService.ListDonorCountsAsync())
+            model.DonorCounts = (await _donorCountService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1517,7 +1529,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             model.MacroscopicAssessments = assessments
                 .Select(
