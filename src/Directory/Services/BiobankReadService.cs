@@ -1307,5 +1307,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id)
              => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
+    
     }
 }
