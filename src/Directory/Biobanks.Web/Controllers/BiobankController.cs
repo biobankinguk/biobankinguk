@@ -52,6 +52,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<DonorCount> _donorCountService;
         private readonly IReferenceDataService<County> _countyService;
         private readonly IReferenceDataService<Country> _countryService;
+        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -77,6 +78,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<DonorCount> donorCountService,
             IReferenceDataService<County> countyService,
             IReferenceDataService<Country> countryService,
+            IReferenceDataService<ConsentRestriction> consentRestrictionService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -95,6 +97,7 @@ namespace Biobanks.Web.Controllers
             _donorCountService = donorCountService;
             _countyService = countyService;
             _countryService = countryService;
+            _consentRestrictionService = consentRestrictionService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -957,7 +960,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> EditCollection(int id)
         {
             var collection = await _collectionService.Get(id);
-            var consentRestrictions = await _biobankReadService.ListConsentRestrictionsAsync();
+            var consentRestrictions = await _consentRestrictionService.List();
 
             var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
@@ -1380,7 +1383,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+            model.ConsentRestrictions = (await _consentRestrictionService.List())
                 .OrderBy(x => x.SortOrder)
                 .Select(x => new Models.Biobank.ConsentRestrictionModel
                 {
