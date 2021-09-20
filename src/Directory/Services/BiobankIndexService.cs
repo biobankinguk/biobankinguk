@@ -17,6 +17,7 @@ using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Services
 {
@@ -24,15 +25,19 @@ namespace Biobanks.Services
     {
         private const int BulkIndexChunkSize = 100;
 
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
         private readonly ISearchProvider _searchProvider;
 
         public BiobankIndexService(
+            IReferenceDataService<DonorCount> donorCountService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider)
         {
+            _donorCountService = donorCountService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
@@ -132,10 +137,10 @@ namespace Biobanks.Services
             var createdCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
 
             // Get the donor counts.
-            var donorCounts = (await _biobankReadService.ListDonorCountsAsync()).ToList();
+            var donorCounts = await _donorCountService.List();
 
             // Set up the capability search document.
-            var capabilitySearchDocument = createdCapability.ToCapabilitySearchDocument(donorCounts);
+            var capabilitySearchDocument = createdCapability.ToCapabilitySearchDocument(donorCounts.ToList());
 
             // Queue up a job to add the sample set to the search index.
             BackgroundJob.Enqueue(() => _indexProvider.IndexCapabilitySearchDocument(
@@ -199,7 +204,7 @@ namespace Biobanks.Services
 
             // Get the donor counts and get expectations from them
             var donorExpectation = DiagnosisCapabilityExtensions.GetAnnualDonorExpectationRange(
-                        await _biobankReadService.ListDonorCountsAsync(),
+                        await _donorCountService.List(),
                         updatedCapability.AnnualDonorExpectation);
 
             //Prep metadata for the facet value
@@ -440,7 +445,7 @@ namespace Biobanks.Services
             var remainingIdCount = capabilityIds.Count() % BulkIndexChunkSize;
 
             // Get the donor counts.
-            var donorCounts = (await _biobankReadService.ListDonorCountsAsync()).ToList();
+            var donorCounts = (await _donorCountService.List()).ToList();
 
             for (var i = 0; i < chunkCount; i++)
             {

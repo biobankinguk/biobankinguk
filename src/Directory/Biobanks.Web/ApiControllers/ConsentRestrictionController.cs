@@ -7,6 +7,7 @@ using Biobanks.Web.Models.Shared;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,14 +15,11 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/ConsentRestriction")]
     public class ConsentRestrictionController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
 
-        public ConsentRestrictionController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public ConsentRestrictionController(IReferenceDataService<ConsentRestriction> consentRestrictionService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _consentRestrictionService = consentRestrictionService;
         }
 
         [HttpGet]
@@ -29,14 +27,14 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var model = (await _biobankReadService.ListConsentRestrictionsAsync())
+            var model = (await _consentRestrictionService.List())
                     .Select(x =>
 
                 Task.Run(async () => new Models.ADAC.ReadConsentRestrictionModel
                 {
                     Id = x.Id,
                     Description = x.Value,
-                    CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
+                    CollectionCount = await _consentRestrictionService.GetUsageCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -49,10 +47,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListConsentRestrictionsAsync()).Where(x => x.Id == id).First();
+            var model = await _consentRestrictionService.Get(id);
 
             // If in use, prevent update
-            if (await _biobankReadService.IsConsentRestrictionInUse(id))
+            if (await _consentRestrictionService.IsInUse(id))
             {
                 ModelState.AddModelError("ConsentRestriction", $"The consent restriction \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -62,11 +60,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteConsentRestrictionAsync(new ConsentRestriction
-            {
-                Id = id,
-                Value = model.Value
-            });
+            await _consentRestrictionService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -81,13 +75,13 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, ConsentRestrictionModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidConsentRestrictionDescriptionAsync(model.Description))
+            if (await _consentRestrictionService.Exists(model.Description))
             {
                 ModelState.AddModelError("ConsentRestriction", "That consent restriction already exists!");
             }
 
             // If in use, prevent update
-            if (await _biobankReadService.IsConsentRestrictionInUse(id))
+            if (await _consentRestrictionService.IsInUse(id))
             {
                 ModelState.AddModelError("ConsentRestriction", $"The consent restriction \"{model.Description}\" is currently in use, and cannot be updated.");
             }
@@ -97,7 +91,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
+            await _consentRestrictionService.Update(new ConsentRestriction
             {
                 Id = id,
                 Value = model.Description,
@@ -117,7 +111,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(ConsentRestrictionModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidConsentRestrictionDescriptionAsync(model.Description))
+            if (await _consentRestrictionService.Exists(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Consent restriction descriptions must be unique.");
             }
@@ -127,7 +121,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddConsentRestrictionAsync(new ConsentRestriction
+            await _consentRestrictionService.Add(new ConsentRestriction
             {
                 Value = model.Description,
                 SortOrder = model.SortOrder
@@ -145,13 +139,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, ConsentRestrictionModel model)
         {
-            await _biobankWriteService.UpdateConsentRestrictionAsync(new ConsentRestriction
+            await _consentRestrictionService.Update(new ConsentRestriction
             {
                 Id = id,
                 Value = model.Description,
                 SortOrder = model.SortOrder
-            },
-            true);
+            });
 
             //Everything went A-OK!
             return Json(new

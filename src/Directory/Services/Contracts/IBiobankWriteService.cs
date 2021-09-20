@@ -37,8 +37,6 @@ namespace Biobanks.Services.Contracts
 
         Task AddBiobankServicesAsync(IEnumerable<OrganisationServiceOffering> services);
         Task DeleteBiobankServiceAsync(int biobankId, int serviceId);
-        Task<ServiceOffering> UpdateServiceOfferingAsync(ServiceOffering serviceOffering, bool sortOnly = false);
-        Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Network> CreateNetworkAsync(Network network);
         Task<Network> UpdateNetworkAsync(NetworkDTO networkDto);
@@ -79,17 +77,9 @@ namespace Biobanks.Services.Contracts
         Task<AnnualStatistic> UpdateAnnualStatisticAsync(AnnualStatistic annualStatistic, bool sortOnly = false);
         Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic);
 
-        Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason);
-        Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason);
-        Task<RegistrationReason> AddRegistrationReasonAsync(RegistrationReason registrationReason);
-
         Task<CollectionPercentage> AddCollectionPercentageAsync(CollectionPercentage collectionPercentage);
         Task<CollectionPercentage> UpdateCollectionPercentageAsync(CollectionPercentage collectionPercentage, bool sortOnly = false);
         Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage);
-
-        Task<DonorCount> AddDonorCountAsync(DonorCount donorCount);
-        Task<DonorCount> UpdateDonorCountAsync(DonorCount donorCount, bool sortOnly = false);
-        Task DeleteDonorCountAsync(DonorCount donorCount);
 
         Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus);
         Task<SopStatus> UpdateSopStatusAsync(SopStatus sopStatus, bool sortOnly = false);
@@ -98,14 +88,6 @@ namespace Biobanks.Services.Contracts
         Task DeleteCollectionStatusAsync(CollectionStatus collectionStatus);
         Task<CollectionStatus> UpdateCollectionStatusAsync(CollectionStatus collectionStatus, bool sortOnly = false);
         Task<CollectionStatus> AddCollectionStatusAsync(CollectionStatus collectionStatus);
-
-        Task<MacroscopicAssessment> AddMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment);
-        Task<MacroscopicAssessment> UpdateMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment, bool sortOnly = false);
-        Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment);
-
-        Task<SampleCollectionMode> AddSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
-        Task<SampleCollectionMode> UpdateSampleCollectionModeAsync(SampleCollectionMode sampleCollection, bool sortOnly = false);
-        Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
 
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
@@ -123,23 +105,9 @@ namespace Biobanks.Services.Contracts
         Task<AssociatedDataTypeGroup> AddAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup);
         Task<AssociatedDataTypeGroup> UpdateAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup);
 
-        Task<ConsentRestriction> AddConsentRestrictionAsync(ConsentRestriction consentRestriction);
-        Task DeleteConsentRestrictionAsync(ConsentRestriction consentRestriction);
-        Task<ConsentRestriction> UpdateConsentRestrictionAsync(ConsentRestriction consentRestriction, bool sortOnly=false);
-
         Task<AccessCondition> AddAccessConditionAsync(AccessCondition accessCondition);
         Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false);
         Task DeleteAccessConditionAsync(AccessCondition accessCondition);
-
-        Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering);
-
-        Task<Country> AddCountryAsync(Country country);
-        Task<Country> UpdateCountryAsync(Country country);
-        Task DeleteCountryAsync(Country country);
-
-        Task<County> AddCountyAsync(County county);
-        Task<County> UpdateCountyAsync(County county);
-        Task DeleteCountyAsync(County county);
 
         Task<Organisation> SuspendBiobankAsync(int id);
         Task<Organisation> UnsuspendBiobankAsync(int id);
