@@ -37,8 +37,6 @@ namespace Biobanks.Services.Contracts
 
         Task AddBiobankServicesAsync(IEnumerable<OrganisationServiceOffering> services);
         Task DeleteBiobankServiceAsync(int biobankId, int serviceId);
-        Task<ServiceOffering> UpdateServiceOfferingAsync(ServiceOffering serviceOffering, bool sortOnly = false);
-        Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Network> CreateNetworkAsync(Network network);
         Task<Network> UpdateNetworkAsync(NetworkDTO networkDto);
@@ -79,10 +77,6 @@ namespace Biobanks.Services.Contracts
         Task<AnnualStatistic> UpdateAnnualStatisticAsync(AnnualStatistic annualStatistic, bool sortOnly = false);
         Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic);
 
-        Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason);
-        Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason);
-        Task<RegistrationReason> AddRegistrationReasonAsync(RegistrationReason registrationReason);
-
         Task<CollectionPercentage> AddCollectionPercentageAsync(CollectionPercentage collectionPercentage);
         Task<CollectionPercentage> UpdateCollectionPercentageAsync(CollectionPercentage collectionPercentage, bool sortOnly = false);
         Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage);
@@ -98,14 +92,6 @@ namespace Biobanks.Services.Contracts
         Task DeleteCollectionTypeAsync(CollectionType collectionType);
         Task<CollectionType> UpdateCollectionTypeAsync(CollectionType collectionType, bool sortOnly = false);
         Task<CollectionType> AddCollectionTypeAsync(CollectionType collectionType);
-
-        Task<MacroscopicAssessment> AddMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment);
-        Task<MacroscopicAssessment> UpdateMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment, bool sortOnly = false);
-        Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment);
-
-        Task<SampleCollectionMode> AddSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
-        Task<SampleCollectionMode> UpdateSampleCollectionModeAsync(SampleCollectionMode sampleCollection, bool sortOnly = false);
-        Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
 
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
@@ -130,8 +116,6 @@ namespace Biobanks.Services.Contracts
         Task<AccessCondition> AddAccessConditionAsync(AccessCondition accessCondition);
         Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false);
         Task DeleteAccessConditionAsync(AccessCondition accessCondition);
-
-        Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Country> AddCountryAsync(Country country);
         Task<Country> UpdateCountryAsync(Country country);
