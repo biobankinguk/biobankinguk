@@ -89,10 +89,6 @@ namespace Biobanks.Services.Contracts
         Task<CollectionStatus> UpdateCollectionStatusAsync(CollectionStatus collectionStatus, bool sortOnly = false);
         Task<CollectionStatus> AddCollectionStatusAsync(CollectionStatus collectionStatus);
 
-        Task DeleteCollectionTypeAsync(CollectionType collectionType);
-        Task<CollectionType> UpdateCollectionTypeAsync(CollectionType collectionType, bool sortOnly = false);
-        Task<CollectionType> AddCollectionTypeAsync(CollectionType collectionType);
-
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
         Task DeletePreservationTypeAsync(PreservationType preservationType);

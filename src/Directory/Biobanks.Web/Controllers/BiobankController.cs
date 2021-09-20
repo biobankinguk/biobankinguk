@@ -54,6 +54,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<Country> _countryService;
         private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
 
+        private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -79,6 +81,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<County> countyService,
             IReferenceDataService<Country> countryService,
             IReferenceDataService<ConsentRestriction> consentRestrictionService,
+            IReferenceDataService<CollectionType> collectionTypeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -98,6 +101,7 @@ namespace Biobanks.Web.Controllers
             _countyService = countyService;
             _countryService = countryService;
             _consentRestrictionService = consentRestrictionService;
+            _collectionService = collectionService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1365,7 +1369,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+            model.CollectionTypes = (await _collectionTypeService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -2071,7 +2075,7 @@ namespace Biobanks.Web.Controllers
                     SortOrder = x.SortOrder
                 }).OrderBy(x => x.SortOrder);
 
-            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+            model.CollectionTypes = (await _collectionTypeService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,

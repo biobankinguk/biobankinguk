@@ -159,6 +159,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(ConsentRestrictionService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<CollectionType>))
+                    .ImplementedBy(typeof(CollectionTypeService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,

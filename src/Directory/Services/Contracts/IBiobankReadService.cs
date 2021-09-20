@@ -38,7 +38,6 @@ namespace Biobanks.Services.Contracts
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
         Task<IEnumerable<AccessCondition>> ListAccessConditionsAsync();
-        Task<IEnumerable<CollectionType>> ListCollectionTypesAsync();
         Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync();
 
         Task<IEnumerable<Sex>> ListSexesAsync();
@@ -79,11 +78,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsCollectionStatusInUse(int id);
         Task<bool> ValidCollectionStatusDescriptionAsync(string collectionStatusDescription);
         Task<bool> ValidCollectionStatusDescriptionAsync(int collectionStatusId, string collectionStatusDescription);
-
-        Task<int> GetCollectionTypeCollectionCount(int id);
-        Task<bool> IsCollectionTypeInUse(int id);
-        Task<bool> ValidCollectionTypeDescriptionAsync(string collectionTypeDescription);
-        Task<bool> ValidCollectionTypeDescriptionAsync(int collectionTypeId, string collectionTypeDescription);
 
         Task<IEnumerable<PreservationType>> ListPreservationTypesAsync();
         Task<int> GetPreservationTypeUsageCount(int id);

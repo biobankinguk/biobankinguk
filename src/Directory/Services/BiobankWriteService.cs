@@ -45,7 +45,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
-        private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
@@ -92,7 +91,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
-            IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
@@ -148,7 +146,6 @@ namespace Biobanks.Services
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
             _collectionStatusRepository = collectionStatusRepository;
-            _collectionTypeRepository = collectionTypeRepository;
 
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
@@ -1254,55 +1251,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: Collection Type
-        public async Task DeleteCollectionTypeAsync(CollectionType collectionType)
-        {
-            await _collectionTypeRepository.DeleteAsync(collectionType.Id);
-            await _collectionTypeRepository.SaveChangesAsync();
-        }
-
-        public async Task<CollectionType> UpdateCollectionTypeAsync(CollectionType collectionType, bool sortOnly = false)
-        {
-            var types = await _biobankReadService.ListCollectionTypesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                collectionType.Value =
-                    types
-                        .Where(x => x.Id == collectionType.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Insert respecting Sort Order
-            types
-                .Prepend(collectionType)          // Add new item
-                .GroupBy(x => x.Id) // Remove old item of same ID
-                .Select(x => x.First())
-                .OrderByDescending(x => x.SortOrder)    // Order giving priority to new item
-                .Reverse()
-                .Select((x, i) =>                       // Reindex, starting at 1
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_collectionTypeRepository.Update);
-
-            await _collectionTypeRepository.SaveChangesAsync();
-
-            return collectionType;
-        }
-
-        public async Task<CollectionType> AddCollectionTypeAsync(CollectionType collectionType)
-        {
-            _collectionTypeRepository.Insert(collectionType);
-            await _collectionTypeRepository.SaveChangesAsync();
-
-            return collectionType;
-        }
-        #endregion
 
         #region RefData: Sex
         public async Task<Sex> AddSexAsync(Sex sex)

@@ -31,7 +31,6 @@ namespace Biobanks.Services
      
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
         private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
-        private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
@@ -92,7 +91,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CapabilityAssociatedData> capabilityAssociatedDataRepository,
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
-            IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
@@ -151,7 +149,6 @@ namespace Biobanks.Services
             _collectionAssociatedDataRepository = collectionAssociatedDataRepository;
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
             _accessConditionRepository = accessConditionRepository;
-            _collectionTypeRepository = collectionTypeRepository;
             _collectionStatusRepository = collectionStatusRepository;
             _collectionPercentageRepository = collectionPercentageRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
@@ -456,8 +453,7 @@ namespace Biobanks.Services
 
         public async Task<bool> IsAssociatedDataTypeInUse(int id)
             => (await GetAssociatedDataTypeCollectionCapabilityCount(id) > 0);
-
-         public async Task<bool> IsSexInUse(int id)
+        public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
 
         public async Task<bool> IsAccessConditionInUse(int id)
@@ -791,10 +787,6 @@ namespace Biobanks.Services
         public async Task<IEnumerable<AccessCondition>> ListAccessConditionsAsync()
             => await _accessConditionRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
-        public async Task<IEnumerable<CollectionType>> ListCollectionTypesAsync()
-            => await _collectionTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-
         public async Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync()
             => await _collectionStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
@@ -835,21 +827,6 @@ namespace Biobanks.Services
 
         public async Task<int> GetCollectionPercentageUsageCount(int id)
             => (await _materialDetailRepository.ListAsync(false, x => x.CollectionPercentageId == id)).Count();
-        #endregion
-
-        #region RefData: Collection Type
-
-        public async Task<int> GetCollectionTypeCollectionCount(int id)
-             => (await _collectionRepository.ListAsync(false, x => x.CollectionTypeId == id)).Count();
-
-        public async Task<bool> ValidCollectionTypeDescriptionAsync(string collectionTypeDescription)
-            => (await _collectionTypeRepository.ListAsync(false, x => x.Value == collectionTypeDescription)).Any();
-
-        public async Task<bool> ValidCollectionTypeDescriptionAsync(int collectionTypeId, string collectionTypeDescription)
-            => (await _collectionTypeRepository.ListAsync(
-                false,
-                x => x.Value == collectionTypeDescription &&
-                     x.Id != collectionTypeId)).Any();
         #endregion
 
         #region RefData: Annual Statistics
@@ -1327,9 +1304,6 @@ namespace Biobanks.Services
         
         public async Task<bool> IsBiobankAnApiClient(int biobankId)
             => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
-
-        public async Task<bool> IsCollectionTypeInUse(int id)
-            => (await GetCollectionTypeCollectionCount(id) > 0);
 
         public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id)
              => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
