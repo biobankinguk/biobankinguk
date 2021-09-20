@@ -67,8 +67,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
         private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
-        private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
-        private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
@@ -128,12 +126,7 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
-            IGenericEFRepository<RegistrationReason> registrationReasonRepository,
-            IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
-            IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
             IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
-            IGenericEFRepository<RegistrationReason> registrationReasonRepository,
-            IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
          
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
@@ -189,13 +182,7 @@ namespace Biobanks.Services
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
-            _registrationReasonRepository = registrationReasonRepository;
-            _serviceOfferingRepository = serviceOfferingRepository;
-            _organisationUserRepository = organisationUserRepository;
-            _organisationNetworkRepository = organisationNetworkRepository;
             _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
-            _registrationReasonRepository = registrationReasonRepository;
-            _serviceOfferingRepository = serviceOfferingRepository;
 
             _storageTemperatureRepository = storageTemperatureRepository;
             _collectionPercentage = collectionPercentage;
@@ -492,17 +479,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsConsentRestrictionInUse(int id)
             => (await GetConsentRestrictionCollectionCount(id) > 0);
-
-        public async Task<bool> IsRegistrationReasonInUse(int id)
-            => (await GetRegistrationReasonOrganisationCount(id) > 0);
-        public async Task<bool> IsServiceOfferingInUse(int id)
-            => (await GetServiceOfferingOrganisationCount(id) > 0);
-            => (await GetCollectionTypeCollectionCount(id) > 0);
-
-        public async Task<bool> IsRegistrationReasonInUse(int id)
-            => (await GetRegistrationReasonOrganisationCount(id) > 0);
-        public async Task<bool> IsServiceOfferingInUse(int id)
-            => (await GetServiceOfferingOrganisationCount(id) > 0);
 
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
@@ -1468,5 +1444,10 @@ namespace Biobanks.Services
         public async Task<bool> IsBiobankAnApiClient(int biobankId)
             => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
 
+        public async Task<bool> IsCollectionTypeInUse(int id)
+            => (await GetCollectionTypeCollectionCount(id) > 0);
+
+        public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id)
+             => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
     }
 }
