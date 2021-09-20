@@ -1305,9 +1305,6 @@ namespace Biobanks.Services
         public async Task<bool> IsBiobankAnApiClient(int biobankId)
             => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
 
-        public async Task<bool> IsCollectionTypeInUse(int id)
-            => (await GetCollectionTypeCollectionCount(id) > 0);
-
         public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id)
              => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
     }
