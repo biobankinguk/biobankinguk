@@ -151,8 +151,6 @@ namespace Biobanks.Services
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
             _consentRestrictionRepository = consentRestrictionRepository;
-            _countryRepository = countryRepository;
-            _countyRepository = countyRepository;
             _collectionStatusRepository = collectionStatusRepository;
             _collectionTypeRepository = collectionTypeRepository;
 
@@ -1449,7 +1447,6 @@ namespace Biobanks.Services
 
             return associatedDataType;
         }
-        #endregion
 
         public async Task<Organisation> SuspendBiobankAsync(int id)
         {
