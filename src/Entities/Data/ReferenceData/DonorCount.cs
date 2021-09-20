@@ -1,6 +1,6 @@
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class DonorCount : ReferenceDataBase
+    public class DonorCount : BaseReferenceData
     {
         public int? LowerBound { get; set; }
 

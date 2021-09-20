@@ -6,7 +6,7 @@ namespace Biobanks.Entities.Api.ReferenceData
     /// <summary>
     /// Ontology Versions.
     /// </summary>
-    public class OntologyVersion : ReferenceDataBase
+    public class OntologyVersion : BaseReferenceData
     {
         /// <summary>
         /// Ontology to which the version relates.

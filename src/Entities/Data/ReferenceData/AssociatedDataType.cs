@@ -1,6 +1,6 @@
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class AssociatedDataType : ReferenceDataBase
+    public class AssociatedDataType : BaseReferenceData
     {
         public string Message { get; set; }
 

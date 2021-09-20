@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class County : ReferenceDataBase
+    public class County : BaseReferenceData
     {
         public int? CountryId { get; set; }
 
