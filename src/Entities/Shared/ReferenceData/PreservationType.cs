@@ -2,7 +2,7 @@
 
 namespace Biobanks.Entities.Shared.ReferenceData
 {
-    public class PreservationType : ReferenceDataBase
+    public class PreservationType : BaseReferenceData
     { 
         public int? StorageTemperatureId { get; set; }
 
