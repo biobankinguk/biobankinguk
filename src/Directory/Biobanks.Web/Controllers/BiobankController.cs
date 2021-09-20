@@ -53,8 +53,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<County> _countyService;
         private readonly IReferenceDataService<Country> _countryService;
         private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
-
         private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -82,6 +82,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<Country> countryService,
             IReferenceDataService<ConsentRestriction> consentRestrictionService,
             IReferenceDataService<CollectionType> collectionTypeService,
+            IReferenceDataService<CollectionPercentage> collectionPercentageService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -102,6 +103,7 @@ namespace Biobanks.Web.Controllers
             _countryService = countryService;
             _consentRestrictionService = consentRestrictionService;
             _collectionService = collectionService;
+            _collectionPercentageService = collectionPercentageService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1528,7 +1530,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.Percentages = (await _biobankReadService.ListCollectionPercentagesAsync())
+            model.Percentages = (await _collectionPercentageService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel

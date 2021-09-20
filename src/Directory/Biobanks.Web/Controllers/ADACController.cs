@@ -41,8 +41,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<County> _countyService;
         private readonly IReferenceDataService<Country> _countryService;
         private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
-
-        private IReferenceDataService<CollectionType> _collectionTypeService;
+        private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -70,6 +70,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<Country> countryService,
             IReferenceDataService<ConsentRestriction> consentRestrictionService,
             IReferenceDataService<CollectionType> collectionTypeService,
+            IReferenceDataService<CollectionPercentage> collectionPercentageService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -92,6 +93,7 @@ namespace Biobanks.Web.Controllers
             _countryService = countryService;
             _consentRestrictionService = consentRestrictionService;
             _collectionTypeService = collectionTypeService;
+            _collectionPercentageService = collectionPercentageService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1236,7 +1238,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Percentages
         public async Task<ActionResult> CollectionPercentages()
         {
-            var models = (await _biobankReadService.ListCollectionPercentagesAsync())
+            var models = (await _collectionPercentageService.List())
                 .Select(x =>
                     Task.Run(async () => new CollectionPercentageModel()
                     {
@@ -1245,7 +1247,7 @@ namespace Biobanks.Web.Controllers
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.Id)
+                        SampleSetsCount = await _collectionPercentageService.GetUsageCount(x.Id)
                     })
                     .Result
                 )

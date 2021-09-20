@@ -77,10 +77,6 @@ namespace Biobanks.Services.Contracts
         Task<AnnualStatistic> UpdateAnnualStatisticAsync(AnnualStatistic annualStatistic, bool sortOnly = false);
         Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic);
 
-        Task<CollectionPercentage> AddCollectionPercentageAsync(CollectionPercentage collectionPercentage);
-        Task<CollectionPercentage> UpdateCollectionPercentageAsync(CollectionPercentage collectionPercentage, bool sortOnly = false);
-        Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage);
-
         Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus);
         Task<SopStatus> UpdateSopStatusAsync(SopStatus sopStatus, bool sortOnly = false);
         Task DeleteSopStatusAsync(SopStatus sopStatus);
