@@ -46,6 +46,8 @@ namespace Biobanks.Web.Controllers
         private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
 
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -64,6 +66,7 @@ namespace Biobanks.Web.Controllers
         public BiobankController(
             ICollectionService collectionService,
             IPublicationService publicationService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -76,6 +79,7 @@ namespace Biobanks.Web.Controllers
         {
             _collectionService = collectionService;
             _publicationService = publicationService;
+            _serviceOfferingService = serviceOfferingService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -340,7 +344,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
         {
-            var allServices = await _biobankReadService.ListServiceOfferingsAsync();
+            var allServices = await _serviceOfferingService.List();
 
             return allServices.Select(service => new OrganisationServiceModel
             {
