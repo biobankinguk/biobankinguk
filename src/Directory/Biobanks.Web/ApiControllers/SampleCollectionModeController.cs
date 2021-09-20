@@ -7,6 +7,7 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,14 +15,11 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/SampleCollectionMode")]
     public class SampleCollectionModeController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
 
-        public SampleCollectionModeController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public SampleCollectionModeController(IReferenceDataService<SampleCollectionMode> sampleCollectionModeService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _sampleCollectionModeService = sampleCollectionModeService;
         }
 
         [HttpGet]
@@ -29,14 +27,14 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var models = (await _biobankReadService.ListSampleCollectionModeAsync())
+            var models = (await _sampleCollectionModeService.List())
                 .Select(x =>
                     Task.Run(async () => new SampleCollectionModeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.Id)
+                        SampleSetsCount = await _sampleCollectionModeService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -50,7 +48,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(SampleCollectionModeModel model)
         {
             //// Validate model
-            if (await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
+            if (await _sampleCollectionModeService.Exists(model.Description))
             {
                 ModelState.AddModelError("SampleCollectionModes", "That description is already in use. Sample collection modes must be unique.");
             }
@@ -67,8 +65,8 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder
             };
 
-            await _biobankWriteService.AddSampleCollectionModeAsync(mode);
-            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode, true);
+            await _sampleCollectionModeService.Add(mode);
+            await _sampleCollectionModeService.Update(mode);
 
             // Success response
             return Json(new
@@ -83,12 +81,12 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, SampleCollectionModeModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidSampleCollectionModeAsync(model.Description))
+            if (await _sampleCollectionModeService.Exists(model.Description))
             {
                 ModelState.AddModelError("SampleCollectionModes", "That sample collection modes already exists!");
             }
 
-            if (await _biobankReadService.IsSampleCollectionModeInUse(id))
+            if (await _sampleCollectionModeService.IsInUse(id))
             {
                 ModelState.AddModelError("SampleCollectionModes", $"This sample collection mode \"{model.Description}\" is currently in use, and cannot be updated.");
             }
@@ -105,7 +103,7 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder
             };
 
-            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode);
+            await _sampleCollectionModeService.Update(mode);
 
             // Success message
             return Json(new
@@ -119,9 +117,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListSampleCollectionModeAsync()).Where(x => x.Id == id).First();
+            var model = await _sampleCollectionModeService.Get(id);
 
-            if (await _biobankReadService.IsSampleCollectionModeInUse(id))
+            if (await _sampleCollectionModeService.IsInUse(id))
             {
                 ModelState.AddModelError("SampleCollectionModes", $"This sample collection mode \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -131,14 +129,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            var mode = new SampleCollectionMode
-            {
-                Id = model.Id,
-                Value = model.Value,
-                SortOrder = model.SortOrder
-            };
-
-            await _biobankWriteService.DeleteSampleCollectionModeAsync(mode);
+            await _sampleCollectionModeService.Delete(id);
 
             // Success
             return Json(new
@@ -159,7 +150,7 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder
             };
 
-            await _biobankWriteService.UpdateSampleCollectionModeAsync(mode, true);
+            await _sampleCollectionModeService.Update(mode);
 
             //Everything went A-OK!
             return Json(new
@@ -167,7 +158,6 @@ namespace Biobanks.Web.ApiControllers
                 success = true,
                 name = model.Description,
             });
-
         }
     }
 }
