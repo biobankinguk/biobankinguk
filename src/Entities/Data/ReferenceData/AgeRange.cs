@@ -1,16 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class AgeRange
+    public class AgeRange : BaseReferenceData
     {
-        public int Id { get; set; }
-
-        [Required]
-        public string Value { get; set; }
-
-        public int SortOrder { get; set; }
-
         public string LowerBound { get; set; }
 
         public string UpperBound { get; set; }

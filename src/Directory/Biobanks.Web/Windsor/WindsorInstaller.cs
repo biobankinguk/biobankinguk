@@ -26,6 +26,7 @@ using Biobanks.Search.Elastic;
 using System.Web.Http;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Directory.Services;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Windsor
 {
@@ -177,7 +178,7 @@ namespace Biobanks.Web.Windsor
                     .DependsOn(Dependency.OnValue("password", ConfigurationManager.AppSettings["ElasticSearchPassword"]))
                     .LifeStyle.Transient,
 
-                Component.For<LegacySearchProvider,ISearchProvider>()
+                Component.For<LegacySearchProvider, ISearchProvider>()
                     .ImplementedBy<LegacySearchProvider>()
                     .LifeStyle.Transient,
                 Component.For<LegacyIndexProvider, IIndexProvider>()
