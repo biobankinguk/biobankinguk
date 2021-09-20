@@ -101,7 +101,6 @@ namespace Biobanks.Services
             IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
             IGenericEFRepository<Country> countryRepository,
-            IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,

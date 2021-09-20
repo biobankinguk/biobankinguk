@@ -2,16 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Filters;
 using Biobanks.Directory.Services.Contracts;
-using Biobanks.Services;
-using Hangfire.States;
 using System;
 using System.Collections.Generic;
-using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -21,7 +17,6 @@ namespace Biobanks.Web.ApiControllers
     {
         private readonly IReferenceDataService<County> _countyService;
         private readonly IReferenceDataService<Country> _countryService;
-
 
         public CountyController(
             IReferenceDataService<County> countyService,
