@@ -34,6 +34,7 @@ namespace Biobanks.Web.Controllers
         private readonly ICollectionService _collectionService;
 
         private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -52,6 +53,7 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
             IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -66,6 +68,7 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _serviceOfferingService = serviceOfferingService;
             _sampleCollectionModeService = sampleCollectionModeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -1649,7 +1652,7 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.ServiceOfferingModel
             {
-                ServiceOfferings = (await _biobankReadService.ListServiceOfferingsAsync())
+                ServiceOfferings = (await _serviceOfferingService.List())
                     .Select(x =>
 
                 Task.Run(async () => new ReadServiceOfferingModel

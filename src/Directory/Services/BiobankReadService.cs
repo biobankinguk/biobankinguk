@@ -66,7 +66,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
         private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
-        private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
@@ -130,7 +129,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
             IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
             IGenericEFRepository<RegistrationReason> registrationReasonRepository,
-            IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
          
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
@@ -192,7 +190,6 @@ namespace Biobanks.Services
             _organisationNetworkRepository = organisationNetworkRepository;
             _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
             _registrationReasonRepository = registrationReasonRepository;
-            _serviceOfferingRepository = serviceOfferingRepository;
 
             _storageTemperatureRepository = storageTemperatureRepository;
             _collectionPercentage = collectionPercentage;
@@ -498,8 +495,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsRegistrationReasonInUse(int id)
             => (await GetRegistrationReasonOrganisationCount(id) > 0);
-        public async Task<bool> IsServiceOfferingInUse(int id)
-            => (await GetServiceOfferingOrganisationCount(id) > 0);
 
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
@@ -1175,14 +1170,6 @@ namespace Biobanks.Services
                 x => x.Value == procurementDescription &&
                      x.Id != procurementId)).Any();
 
-        public async Task<bool> ValidServiceOfferingName(string offeringName)
-            => (await _serviceOfferingRepository.ListAsync(false, x => x.Value == offeringName)).Any();
-
-        public async Task<bool> ValidServiceOfferingName(int offeringId, string offeringName)
-            => (await _serviceOfferingRepository.ListAsync(
-                false,
-                x => x.Value == offeringName &&
-                     x.Id != offeringId)).Any();
         public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription)
     => (await _associatedDataTypeRepository.ListAsync(false, x => x.Value == associatedDataTypeDescription)).Any();
         public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription)
@@ -1317,9 +1304,6 @@ namespace Biobanks.Services
                 x => x.OrganisationId == biobankId,
                 null,
                 x => x.ServiceOffering);
-
-        public async Task<IEnumerable<ServiceOffering>> ListServiceOfferingsAsync()
-            => await _serviceOfferingRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId)
         {

@@ -1495,65 +1495,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: Service Offerings
-        public async Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering)
-        {
-            _serviceOfferingRepository.Insert(serviceOffering);
-            await _serviceOfferingRepository.SaveChangesAsync();
-
-            return serviceOffering;
-        }
-
-        public async Task<ServiceOffering> UpdateServiceOfferingAsync (ServiceOffering serviceOffering, bool sortOnly = false)
-        {
-            var offerings = await _biobankReadService.ListServiceOfferingsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                serviceOffering.Value =
-                    offerings
-                        .Where(x => x.Id == serviceOffering.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldStatus = offerings.Where(x => x.Id == serviceOffering.Id).First();
-            var reverse = (oldStatus.SortOrder < serviceOffering.SortOrder);
-
-            var newOrder = offerings
-                    .Prepend(serviceOffering)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_serviceOfferingRepository.Update);
-
-            await _serviceOfferingRepository.SaveChangesAsync();
-
-            return serviceOffering;
-        }
-      
-        public async Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering)
-        {
-            await _serviceOfferingRepository.DeleteAsync(serviceOffering.Id);
-            await _serviceOfferingRepository.SaveChangesAsync();
-        }
-        #endregion
-
         #region RefData: Sex
         public async Task<Sex> AddSexAsync(Sex sex)
         {

@@ -37,8 +37,6 @@ namespace Biobanks.Services.Contracts
 
         Task AddBiobankServicesAsync(IEnumerable<OrganisationServiceOffering> services);
         Task DeleteBiobankServiceAsync(int biobankId, int serviceId);
-        Task<ServiceOffering> UpdateServiceOfferingAsync(ServiceOffering serviceOffering, bool sortOnly = false);
-        Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Network> CreateNetworkAsync(Network network);
         Task<Network> UpdateNetworkAsync(NetworkDTO networkDto);
@@ -130,8 +128,6 @@ namespace Biobanks.Services.Contracts
         Task<AccessCondition> AddAccessConditionAsync(AccessCondition accessCondition);
         Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false);
         Task DeleteAccessConditionAsync(AccessCondition accessCondition);
-
-        Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Country> AddCountryAsync(Country country);
         Task<Country> UpdateCountryAsync(Country country);

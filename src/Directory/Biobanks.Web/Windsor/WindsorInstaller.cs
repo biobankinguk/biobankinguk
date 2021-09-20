@@ -127,6 +127,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(PublicationService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<ServiceOffering>))
+                    .ImplementedBy(typeof(ServiceOfferingService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IReferenceDataService<SampleCollectionMode>))
                     .ImplementedBy(typeof(SampleCollectionModeService))
                     .LifeStyle.Transient,
