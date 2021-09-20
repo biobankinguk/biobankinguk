@@ -50,6 +50,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
         private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
 
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -71,6 +73,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<ServiceOffering> serviceOfferingService,
             IReferenceDataService<RegistrationReason> registrationReasonService,
             IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+            IReferenceDataService<DonorCount> donorCountService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -86,6 +89,7 @@ namespace Biobanks.Web.Controllers
             _serviceOfferingService = serviceOfferingService;
             _registrationReasonService = registrationReasonService;
             _macroscopicAssessmentService = macroscopicAssessmentService;
+            _donorCountService = donorCountService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1455,7 +1459,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.DonorCounts = (await _biobankReadService.ListDonorCountsAsync())
+            model.DonorCounts = (await _donorCountService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel

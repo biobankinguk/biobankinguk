@@ -38,6 +38,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
         private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
 
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
@@ -59,6 +61,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
             IReferenceDataService<RegistrationReason> registrationReasonService,
             IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+            IReferenceDataService<DonorCount> donorCountService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -76,6 +79,7 @@ namespace Biobanks.Web.Controllers
             _sampleCollectionModeService = sampleCollectionModeService;
             _registrationReasonService = registrationReasonService;
             _macroscopicAssessmentService = macroscopicAssessmentService;
+            _donorCountService = donorCountService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1253,7 +1257,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DonorCounts()
         {
-            var models = (await _biobankReadService.ListDonorCountsAsync(true))
+            var models = (await _donorCountService.List())
                 .Select(x =>
                     Task.Run(async () => new DonorCountModel()
                     {
@@ -1262,7 +1266,7 @@ namespace Biobanks.Web.Controllers
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
+                        SampleSetsCount = await _donorCountService.GetUsageCount(x.Id)
                     })
                         .Result
                 )
