@@ -35,6 +35,7 @@ namespace Biobanks.Web.Controllers
 
         private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -55,6 +56,7 @@ namespace Biobanks.Web.Controllers
             ICollectionService collectionService,
             IReferenceDataService<ServiceOffering> serviceOfferingService,
             IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -70,6 +72,7 @@ namespace Biobanks.Web.Controllers
             _collectionService = collectionService;
             _serviceOfferingService = serviceOfferingService;
             _sampleCollectionModeService = sampleCollectionModeService;
+            _registrationReasonService = registrationReasonService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1607,14 +1610,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.RegistrationReasonModel
             {
-                RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
+                RegistrationReasons = (await _registrationReasonService.List())
                     .Select(x =>
 
                         Task.Run(async () => new ReadRegistrationReasonModel
                         {
                             Id = x.Id,
                             Description = x.Value,
-                            OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
+                            OrganisationCount = await _registrationReasonService.GetUsageCount(x.Id),
                         }).Result)
 
                     .ToList()

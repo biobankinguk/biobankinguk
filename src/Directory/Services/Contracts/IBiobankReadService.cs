@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Identity.Data.Entities;
-using Biobanks.Search.Constants;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -80,11 +79,6 @@ namespace Biobanks.Services.Contracts
         Task<int> GetDonorCountUsageCount(int id);
         Task<bool> ValidDonorCountAsync(string donorCountDescription);
         Task<bool> IsDonorCountInUse(int id);
-
-        Task<int> GetRegistrationReasonOrganisationCount(int id);
-        Task<bool> IsRegistrationReasonInUse(int id);
-        Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription);
-        Task<bool> ValidRegistrationReasonDescriptionAsync(string reasonDescription);
 
         Task<int> GetCollectionStatusCollectionCount(int id);
         Task<bool> IsCollectionStatusInUse(int id);
@@ -259,9 +253,7 @@ namespace Biobanks.Services.Contracts
 
 
         Task<IEnumerable<Organisation>> GetBiobanksByAnonymousIdentifiersAsync(IEnumerable<Guid> biobankAnonymousIdentifiers);
-        Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync();
         Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId);
-
 
         List<Organisation> GetOrganisations();
 

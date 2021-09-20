@@ -47,6 +47,7 @@ namespace Biobanks.Web.Controllers
         private readonly IPublicationService _publicationService;
 
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -67,6 +68,7 @@ namespace Biobanks.Web.Controllers
             ICollectionService collectionService,
             IPublicationService publicationService,
             IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -80,6 +82,7 @@ namespace Biobanks.Web.Controllers
             _collectionService = collectionService;
             _publicationService = publicationService;
             _serviceOfferingService = serviceOfferingService;
+            _registrationReasonService = registrationReasonService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -359,7 +362,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationRegistrationReasonModel>> GetAllRegistrationReasonsAsync()
         {
-            var allRegistrationReasons = await _biobankReadService.ListRegistrationReasonsAsync();
+            var allRegistrationReasons = await _registrationReasonService.List();
 
             return allRegistrationReasons.Select(regReason => new OrganisationRegistrationReasonModel
             {

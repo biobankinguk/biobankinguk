@@ -65,7 +65,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
-        private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
         private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
@@ -125,11 +124,10 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
-            IGenericEFRepository<OrganisationUser> organisationUserRepository,
-            IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
             IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
-            IGenericEFRepository<RegistrationReason> registrationReasonRepository,
-         
+            IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
+            IGenericEFRepository<OrganisationUser> organisationUserRepository,
+
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<CollectionPercentage> collectionPercentage,
@@ -184,12 +182,13 @@ namespace Biobanks.Services
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
+            _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
+
             _organisationRegistrationReasonRepository = organisationRegistrationReasonRepository;
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
-            _organisationUserRepository = organisationUserRepository;
             _organisationNetworkRepository = organisationNetworkRepository;
-            _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
-            _registrationReasonRepository = registrationReasonRepository;
+            _organisationUserRepository = organisationUserRepository;
+
 
             _storageTemperatureRepository = storageTemperatureRepository;
             _collectionPercentage = collectionPercentage;
@@ -486,15 +485,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsConsentRestrictionInUse(int id)
             => (await GetConsentRestrictionCollectionCount(id) > 0);
-
-        public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse (int id)
-             => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
-
-        public async Task<bool> IsCollectionTypeInUse(int id)
-            => (await GetCollectionTypeCollectionCount(id) > 0);
-
-        public async Task<bool> IsRegistrationReasonInUse(int id)
-            => (await GetRegistrationReasonOrganisationCount(id) > 0);
 
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
@@ -1178,14 +1168,6 @@ namespace Biobanks.Services
                 x => x.Value == associatedDataTypeDescription &&
                      x.Id != associatedDataTypeId)).Any();
 
-        public async Task<bool> ValidRegistrationReasonDescriptionAsync(string reasonDescription)
-            => (await _registrationReasonRepository.ListAsync(false, x => x.Value == reasonDescription)).Any();
-        public async Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription)
-            => (await _registrationReasonRepository.ListAsync(
-                false,
-                x => x.Value == reasonDescription &&
-                     x.Id != reasonId)).Any();
-
         public async Task<bool> ValidCountryNameAsync(string countryName)
       => (await _countryRepository.ListAsync(false, x => x.Value == countryName)).Any();
 
@@ -1254,9 +1236,6 @@ namespace Biobanks.Services
             => (await _organisationServiceOfferingRepository.ListAsync(
             false,
              x => x.ServiceOfferingId == id)).Count();
-
-        public async Task<int> GetRegistrationReasonOrganisationCount(int id)
-            => await _organisationRegistrationReasonRepository.CountAsync(x => x.RegistrationReasonId == id);
 
         public async Task<int> GetSexCount(int id)
             => await _sampleSetRepository.CountAsync(x => x.SexId == id);
@@ -1401,9 +1380,6 @@ namespace Biobanks.Services
         public async Task<IEnumerable<Organisation>> GetBiobanksByAnonymousIdentifiersAsync(IEnumerable<Guid> biobankAnonymousIdentifiers)
             => await _organisationRepository.ListAsync(false, o => o.AnonymousIdentifier.HasValue && biobankAnonymousIdentifiers.Contains(o.AnonymousIdentifier.Value));
 
-        public async Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync()
-            => await _registrationReasonRepository.ListAsync();
-
         public async Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId)
             => await _organisationRegistrationReasonRepository.ListAsync(
                 false,
@@ -1474,5 +1450,10 @@ namespace Biobanks.Services
         public async Task<bool> IsBiobankAnApiClient(int biobankId)
             => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
 
+        public async Task<bool> IsCollectionTypeInUse(int id)
+            => (await GetCollectionTypeCollectionCount(id) > 0);
+
+        public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id)
+             => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
     }
 }
