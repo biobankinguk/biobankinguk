@@ -97,10 +97,6 @@ namespace Biobanks.Services.Contracts
         Task<CollectionType> UpdateCollectionTypeAsync(CollectionType collectionType, bool sortOnly = false);
         Task<CollectionType> AddCollectionTypeAsync(CollectionType collectionType);
 
-        Task<MacroscopicAssessment> AddMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment);
-        Task<MacroscopicAssessment> UpdateMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment, bool sortOnly = false);
-        Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment);
-
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
         Task DeletePreservationTypeAsync(PreservationType preservationType);

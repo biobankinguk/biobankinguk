@@ -35,7 +35,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
         private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
-        private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
@@ -101,7 +100,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<AgeRange> ageRangeRepository,
-            IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
@@ -147,7 +145,6 @@ namespace Biobanks.Services
             _collectionPercentageRepository = collectionPercentageRepository;
             _donorCountRepository = donorCountRepository;
             _ageRangeRepository = ageRangeRepository;
-            _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _storageTemperatureRepository = storageTemperatureRepository;
             _sopStatusRepository = sopStatusRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
@@ -866,65 +863,6 @@ namespace Biobanks.Services
         {
             await _donorCountRepository.DeleteAsync(donorCount.Id);
             await _donorCountRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Macroscopic Assessment
-        public async Task<MacroscopicAssessment> AddMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment)
-        {
-            _macroscopicAssessmentRepository.Insert(macroscopicAssessment);
-            await _macroscopicAssessmentRepository.SaveChangesAsync();
-
-            return macroscopicAssessment;
-        }
-        
-        public async Task<MacroscopicAssessment> UpdateMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment, bool sortOnly = false)
-        {
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                macroscopicAssessment.Value =
-                    assessments
-                        .Where(x => x.Id == macroscopicAssessment.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldAssessment = assessments.Where(x => x.Id == macroscopicAssessment.Id).First();
-            var reverse = (oldAssessment.SortOrder < macroscopicAssessment.SortOrder);
-
-            var newOrder = assessments
-                    .Prepend(macroscopicAssessment)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_macroscopicAssessmentRepository.Update);
-
-            await _macroscopicAssessmentRepository.SaveChangesAsync();
-
-            return macroscopicAssessment;
-        }
-
-        public async Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment)
-        {
-            await _macroscopicAssessmentRepository.DeleteAsync(macroscopicAssessment.Id);
-            await _macroscopicAssessmentRepository.SaveChangesAsync();
         }
         #endregion
 

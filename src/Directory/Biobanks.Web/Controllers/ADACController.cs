@@ -36,6 +36,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
         private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -57,6 +58,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<ServiceOffering> serviceOfferingService,
             IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
             IReferenceDataService<RegistrationReason> registrationReasonService,
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -73,6 +75,7 @@ namespace Biobanks.Web.Controllers
             _serviceOfferingService = serviceOfferingService;
             _sampleCollectionModeService = sampleCollectionModeService;
             _registrationReasonService = registrationReasonService;
+            _macroscopicAssessmentService = macroscopicAssessmentService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1629,14 +1632,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Macroscopic Assessment
         public async Task<ActionResult> MacroscopicAssessments()
         {
-            var models = (await _biobankReadService.ListMacroscopicAssessmentsAsync())
+            var models = (await _macroscopicAssessmentService.List())
                 .Select(x =>
                     Task.Run(async () => new MacroscopicAssessmentModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetMacroscopicAssessmentUsageCount(x.Id)
+                        SampleSetsCount = await _macroscopicAssessmentService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
