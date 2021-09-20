@@ -5,5 +5,5 @@ namespace Biobanks.Entities.Shared.ReferenceData
     /// <summary>
     /// Storage Temperature entity.
     /// </summary>
-    public class StorageTemperature : ReferenceDataBase { }
+    public class StorageTemperature : BaseReferenceData { }
 }

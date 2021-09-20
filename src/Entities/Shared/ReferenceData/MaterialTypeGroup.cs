@@ -8,7 +8,7 @@ namespace Biobanks.Entities.Shared.ReferenceData
     /// It is used for conditional validation against certain material types.
     /// It can be used for any future purposes.
     /// </summary>
-    public class MaterialTypeGroup : ReferenceDataBase
+    public class MaterialTypeGroup : BaseReferenceData
     {
         /// <summary>
         /// Join entities for MaterialTypes in the group

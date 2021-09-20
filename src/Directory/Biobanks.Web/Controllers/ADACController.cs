@@ -33,6 +33,16 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly IReferenceDataService<County> _countyService;
+        private readonly IReferenceDataService<Country> _countryService;
+        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+        private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
         private readonly IReferenceDataService<AnnualStatistic> _annualStatisticsService;
         private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
 
@@ -53,6 +63,16 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+            IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataService<County> countyService,
+            IReferenceDataService<Country> countryService,
+            IReferenceDataService<ConsentRestriction> consentRestrictionService,
+            IReferenceDataService<CollectionType> collectionTypeService,
+            IReferenceDataService<CollectionPercentage> collectionPercentageService,
             IReferenceDataService<AnnualStatistic> annualStatisticsService,
             IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IBiobankReadService biobankReadService,
@@ -68,6 +88,16 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _serviceOfferingService = serviceOfferingService;
+            _sampleCollectionModeService = sampleCollectionModeService;
+            _registrationReasonService = registrationReasonService;
+            _macroscopicAssessmentService = macroscopicAssessmentService;
+            _donorCountService = donorCountService;
+            _countyService = countyService;
+            _countryService = countryService;
+            _consentRestrictionService = consentRestrictionService;
+            _collectionTypeService = collectionTypeService;
+            _collectionPercentageService = collectionPercentageService;
             _annualStatisticsService = annualStatisticsService;
             _annualStatisticGroupService = annualStatisticGroupService;
             _biobankReadService = biobankReadService;
@@ -1214,7 +1244,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Percentages
         public async Task<ActionResult> CollectionPercentages()
         {
-            var models = (await _biobankReadService.ListCollectionPercentagesAsync())
+            var models = (await _collectionPercentageService.List())
                 .Select(x =>
                     Task.Run(async () => new CollectionPercentageModel()
                     {
@@ -1223,7 +1253,7 @@ namespace Biobanks.Web.Controllers
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.Id)
+                        SampleSetsCount = await _collectionPercentageService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1247,7 +1277,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DonorCounts()
         {
-            var models = (await _biobankReadService.ListDonorCountsAsync(true))
+            var models = (await _donorCountService.List())
                 .Select(x =>
                     Task.Run(async () => new DonorCountModel()
                     {
@@ -1256,7 +1286,7 @@ namespace Biobanks.Web.Controllers
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
+                        SampleSetsCount = await _donorCountService.GetUsageCount(x.Id)
                     })
                         .Result
                 )
@@ -1275,14 +1305,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CollectionTypeModel
             {
-                CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                CollectionTypes = (await _collectionTypeService.List())
                      .Select(x =>
 
                  Task.Run(async () => new ReadCollectionTypeModel
                  {
                      Id = x.Id,
                      Description = x.Value,
-                     CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.Id),
+                     CollectionCount = await _collectionTypeService.GetUsageCount(x.Id),
                      SortOrder = x.SortOrder
                  }).Result)
 
@@ -1419,14 +1449,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.ConsentRestrictionModel
             {
-                ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+                ConsentRestrictions = (await _consentRestrictionService.List())
                     .Select(x =>
 
                         Task.Run(async () => new ReadConsentRestrictionModel
                         {
                             Id = x.Id,
                             Description = x.Value,
-                            CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
+                            CollectionCount = await _consentRestrictionService.GetUsageCount(x.Id),
                             SortOrder = x.SortOrder
                         }).Result)
 
@@ -1481,14 +1511,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sample Collection Mode
         public async Task<ActionResult> SampleCollectionModes()
         {
-            var models = (await _biobankReadService.ListSampleCollectionModeAsync())
+            var models = (await _sampleCollectionModeService.List())
                 .Select(x =>
                     Task.Run(async () => new SampleCollectionModeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.Id)
+                        SampleSetsCount = await _sampleCollectionModeService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1527,14 +1557,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CountryModel
             {
-                Countries = (await _biobankReadService.ListCountriesAsync())
+                Countries = (await _countryService.List())
                      .Select(x =>
 
                      Task.Run(async () => new ReadCountryModel
                      {
                          Id = x.Id,
                          Name = x.Value,
-                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.Id)
+                         CountyOrganisationCount = await _countryService.GetUsageCount(x.Id)
                      }).Result)
 
                      .ToList()
@@ -1547,7 +1577,7 @@ namespace Biobanks.Web.Controllers
         {
             if (await _configService.GetFlagConfigValue("site.display.counties") == true)
             {
-                var countries = await _biobankReadService.ListCountriesAsync();
+                var countries = await _countryService.List();
 
                 return View(
                     new CountiesModel
@@ -1561,7 +1591,7 @@ namespace Biobanks.Web.Controllers
                                         Id = county.Id,
                                         CountryId = x.Id,
                                         Name = county.Value,
-                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.Id)
+                                        CountyUsageCount = await _countyService.GetUsageCount(county.Id)
                                     }
                                  )
                                 .Result
@@ -1607,14 +1637,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.RegistrationReasonModel
             {
-                RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
+                RegistrationReasons = (await _registrationReasonService.List())
                     .Select(x =>
 
                         Task.Run(async () => new ReadRegistrationReasonModel
                         {
                             Id = x.Id,
                             Description = x.Value,
-                            OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
+                            OrganisationCount = await _registrationReasonService.GetUsageCount(x.Id),
                         }).Result)
 
                     .ToList()
@@ -1626,14 +1656,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Macroscopic Assessment
         public async Task<ActionResult> MacroscopicAssessments()
         {
-            var models = (await _biobankReadService.ListMacroscopicAssessmentsAsync())
+            var models = (await _macroscopicAssessmentService.List())
                 .Select(x =>
                     Task.Run(async () => new MacroscopicAssessmentModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetMacroscopicAssessmentUsageCount(x.Id)
+                        SampleSetsCount = await _macroscopicAssessmentService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1652,7 +1682,7 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.ServiceOfferingModel
             {
-                ServiceOfferings = (await _biobankReadService.ListServiceOfferingsAsync())
+                ServiceOfferings = (await _serviceOfferingService.List())
                     .Select(x =>
 
                 Task.Run(async () => new ReadServiceOfferingModel

@@ -2,7 +2,7 @@
 
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public abstract class ReferenceDataBase
+    public abstract class BaseReferenceData
     {
         public int Id { get; set; }
 
