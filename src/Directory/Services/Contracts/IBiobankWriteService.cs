@@ -37,8 +37,6 @@ namespace Biobanks.Services.Contracts
 
         Task AddBiobankServicesAsync(IEnumerable<OrganisationServiceOffering> services);
         Task DeleteBiobankServiceAsync(int biobankId, int serviceId);
-        Task<ServiceOffering> UpdateServiceOfferingAsync(ServiceOffering serviceOffering, bool sortOnly = false);
-        Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Network> CreateNetworkAsync(Network network);
         Task<Network> UpdateNetworkAsync(NetworkDTO networkDto);
@@ -103,10 +101,6 @@ namespace Biobanks.Services.Contracts
         Task<MacroscopicAssessment> UpdateMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment, bool sortOnly = false);
         Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment);
 
-        Task<SampleCollectionMode> AddSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
-        Task<SampleCollectionMode> UpdateSampleCollectionModeAsync(SampleCollectionMode sampleCollection, bool sortOnly = false);
-        Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollection);
-
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
         Task DeletePreservationTypeAsync(PreservationType preservationType);
@@ -130,8 +124,6 @@ namespace Biobanks.Services.Contracts
         Task<AccessCondition> AddAccessConditionAsync(AccessCondition accessCondition);
         Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false);
         Task DeleteAccessConditionAsync(AccessCondition accessCondition);
-
-        Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering);
 
         Task<Country> AddCountryAsync(Country country);
         Task<Country> UpdateCountryAsync(Country country);

@@ -33,6 +33,8 @@ namespace Biobanks.Web.Controllers
     {
         private readonly ICollectionService _collectionService;
 
+        private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
         private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
 
         private readonly IBiobankReadService _biobankReadService;
@@ -52,6 +54,8 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
             IReferenceDataService<RegistrationReason> registrationReasonService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -66,6 +70,8 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _serviceOfferingService = serviceOfferingService;
+            _sampleCollectionModeService = sampleCollectionModeService;
             _registrationReasonService = registrationReasonService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -1478,14 +1484,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sample Collection Mode
         public async Task<ActionResult> SampleCollectionModes()
         {
-            var models = (await _biobankReadService.ListSampleCollectionModeAsync())
+            var models = (await _sampleCollectionModeService.List())
                 .Select(x =>
                     Task.Run(async () => new SampleCollectionModeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.Id)
+                        SampleSetsCount = await _sampleCollectionModeService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1649,7 +1655,7 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.ServiceOfferingModel
             {
-                ServiceOfferings = (await _biobankReadService.ListServiceOfferingsAsync())
+                ServiceOfferings = (await _serviceOfferingService.List())
                     .Select(x =>
 
                 Task.Run(async () => new ReadServiceOfferingModel
