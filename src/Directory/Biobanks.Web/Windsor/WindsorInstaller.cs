@@ -147,6 +147,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(DonorCountService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<County>))
+                    .ImplementedBy(typeof(CountyService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,

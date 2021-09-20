@@ -37,8 +37,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
         private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
         private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
-
         private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly IReferenceDataService<County> _countyService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -62,6 +62,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<RegistrationReason> registrationReasonService,
             IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
             IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataService<County> countyService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -80,6 +81,7 @@ namespace Biobanks.Web.Controllers
             _registrationReasonService = registrationReasonService;
             _macroscopicAssessmentService = macroscopicAssessmentService;
             _donorCountService = donorCountService;
+            _countyService = countyService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1571,7 +1573,7 @@ namespace Biobanks.Web.Controllers
                                         Id = county.Id,
                                         CountryId = x.Id,
                                         Name = county.Value,
-                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.Id)
+                                        CountyUsageCount = await _countyService.GetUsageCount(county.Id)
                                     }
                                  )
                                 .Result

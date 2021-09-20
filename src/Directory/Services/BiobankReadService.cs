@@ -285,20 +285,6 @@ namespace Biobanks.Services
                 x => x.Value.Contains(wildcard)))
             .ToList();
 
-        #region RefData: County
-        public async Task<ICollection<County>> ListCountiesAsync() =>
-            (await _countyRepository.ListAsync(false, null, x => x.OrderBy(c => c.Value))).ToList();
-
-        public async Task<bool> ValidCountyAsync(string countyName)
-            => (await _countyRepository.ListAsync(false, x => x.Value == countyName)).Any();
-
-        public async Task<bool> IsCountyInUse(int id)
-            => (await GetCountyUsageCount(id)) > 0;
-
-        public async Task<int> GetCountyUsageCount(int id)
-            => (await _organisationRepository.ListAsync(false, x => x.CountyId == id)).Count();
-        #endregion
-
         public async Task<ICollection<Country>> ListCountriesAsync() =>
             (await _countryRepository.ListAsync(false, null, x => x.OrderBy(c => c.Value))).ToList();
 

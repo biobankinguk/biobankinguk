@@ -49,8 +49,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
         private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
         private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
-
         private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly IReferenceDataService<County> _countyService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -74,6 +74,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<RegistrationReason> registrationReasonService,
             IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
             IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataService<County> countyService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -90,6 +91,7 @@ namespace Biobanks.Web.Controllers
             _registrationReasonService = registrationReasonService;
             _macroscopicAssessmentService = macroscopicAssessmentService;
             _donorCountService = donorCountService;
+            _countyService = countyService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -232,7 +234,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<BiobankDetailsModel> AddCountiesToModel(BiobankDetailsModel model)
         {
-            model.Counties = await _biobankReadService.ListCountiesAsync();
+            model.Counties = await _countyService.List();
             model.Countries = await _biobankReadService.ListCountriesAsync();
             return model;
         }
@@ -393,7 +395,7 @@ namespace Biobanks.Web.Controllers
                 OrganisationName = request.OrganisationName,
                 ServiceModels = await GetAllServicesAsync(),
                 RegistrationReasons = await GetAllRegistrationReasonsAsync(),
-                Counties = await _biobankReadService.ListCountiesAsync(),
+                Counties = await _countyService.List(),
                 Countries = await _biobankReadService.ListCountriesAsync()
             };
 
@@ -456,7 +458,7 @@ namespace Biobanks.Web.Controllers
                 GoverningDepartment = bb.GoverningDepartment,
                 ServiceModels = services,
                 RegistrationReasons = registrationReasons,
-                Counties = await _biobankReadService.ListCountiesAsync(),
+                Counties = await _countyService.List(),
                 Countries = await _biobankReadService.ListCountriesAsync(),
                 SharingOptOut = bb.SharingOptOut,
                 EthicsRegistration = bb.EthicsRegistration,

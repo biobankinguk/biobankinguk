@@ -222,11 +222,6 @@ namespace Biobanks.Services.Contracts
         Task<Funder> GetFunderbyName(string name);
         Task<IEnumerable<Funder>>  ListFundersAsync(string wildcard);
 
-        Task<ICollection<County>> ListCountiesAsync();
-        Task<bool> ValidCountyAsync(string countyName);
-        Task<bool> IsCountyInUse(int id);
-        Task<int> GetCountyUsageCount(int id);
-
         Task<ICollection<Country>> ListCountriesAsync();
         Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
         Task<Funder> GetFunderByIdAsync(int id);
