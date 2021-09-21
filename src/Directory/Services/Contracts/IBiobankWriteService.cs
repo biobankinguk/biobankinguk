@@ -69,11 +69,7 @@ namespace Biobanks.Services.Contracts
         Task<Sex> UpdateSexAsync(Sex sex, bool sortOnly = false);
         Task DeleteSexAsync(Sex sex);
 
-        Task<AgeRange> AddAgeRangeAsync(AgeRange ageRange);
-        Task<AgeRange> UpdateAgeRangeAsync(AgeRange ageRange, bool sortOnly = false);
-        Task DeleteAgeRangeAsync(AgeRange ageRange);
-
-         Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus);
+        Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus);
         Task<SopStatus> UpdateSopStatusAsync(SopStatus sopStatus, bool sortOnly = false);
         Task DeleteSopStatusAsync(SopStatus sopStatus);
 

@@ -52,7 +52,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
-        private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
@@ -105,7 +104,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationType> organisationTypeRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<Sex> sexRepository,
-            IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
@@ -157,7 +155,6 @@ namespace Biobanks.Services
             _organisationRepository = organisationRepository;
             _organisationTypeRepository = organisationTypeRepository;
             _sexRepository = sexRepository;
-            _ageRangeRepository = ageRangeRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
@@ -827,32 +824,7 @@ namespace Biobanks.Services
 
         #endregion
 
-        #region RefData: Age Range
-        public async Task<IEnumerable<AgeRange>> ListAgeRangesAsync()
-            => await _ageRangeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetAgeRangeUsageCount(int id)
-            => (await _sampleSetRepository.ListAsync(false, x => x.AgeRangeId == id)).Count();
-
-        public async Task<bool> IsAgeRangeInUse(int id)
-            => (await GetAgeRangeUsageCount(id)) > 0;
-
-        public async Task<bool> ValidAgeRangeAsync(string ageRangeDescription)
-            => (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
-        
-
-        public async Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription)
-            => (await _ageRangeRepository.ListAsync(
-                false,
-                x => x.Value == ageRangeDescription &&
-                     x.Id != ageRangeId)).Any();
-
-        public async Task<bool> AreAgeRangeBoundsNull(int id)
-            => (await _ageRangeRepository.ListAsync(false, x => x.Id == id))
-                .Where(x => string.IsNullOrEmpty(x.LowerBound) && string.IsNullOrEmpty(x.UpperBound)).Any();
-        #endregion
-
-        #region RefData: Preservation Type
+         #region RefData: Preservation Type
         public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
             => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 

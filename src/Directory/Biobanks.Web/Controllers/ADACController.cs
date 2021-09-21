@@ -45,6 +45,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
         private readonly IReferenceDataService<AnnualStatistic> _annualStatisticsService;
         private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+        private readonly IReferenceDataService<AgeRange> _ageRangeService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -75,6 +76,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<CollectionPercentage> collectionPercentageService,
             IReferenceDataService<AnnualStatistic> annualStatisticsService,
             IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+            IReferenceDataService<AgeRange> ageRangeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -100,6 +102,7 @@ namespace Biobanks.Web.Controllers
             _collectionPercentageService = collectionPercentageService;
             _annualStatisticsService = annualStatisticsService;
             _annualStatisticGroupService = annualStatisticGroupService;
+            _ageRangeService = ageRangeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1050,14 +1053,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Age Ranges
         public async Task<ActionResult> AgeRanges()
         {
-            var models = (await _biobankReadService.ListAgeRangesAsync())
+            var models = (await _ageRangeService.List())
                 .Select(x =>
                     Task.Run(async () => new AgeRangeModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id),
+                        SampleSetsCount = await _ageRangeService.GetUsageCount(x.Id),
                         LowerBound = ConvertFromIsoDuration(x.LowerBound),
                         UpperBound = ConvertFromIsoDuration(x.UpperBound)
                     })

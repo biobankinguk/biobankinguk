@@ -55,16 +55,7 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
         Task<bool> IsMaterialTypeGroupInUse(int id);
 
-
-        Task<IEnumerable<AgeRange>> ListAgeRangesAsync();
-        Task<bool> ValidAgeRangeAsync(string ageRangeDescription);
-        Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription);
-        Task<bool> IsAgeRangeInUse(int id);
-        Task<int> GetAgeRangeUsageCount(int id);
-
-        Task<bool> AreAgeRangeBoundsNull(int id);
-
-              Task<int> GetCollectionStatusCollectionCount(int id);
+        Task<int> GetCollectionStatusCollectionCount(int id);
         Task<bool> IsCollectionStatusInUse(int id);
         Task<bool> ValidCollectionStatusDescriptionAsync(string collectionStatusDescription);
         Task<bool> ValidCollectionStatusDescriptionAsync(int collectionStatusId, string collectionStatusDescription);

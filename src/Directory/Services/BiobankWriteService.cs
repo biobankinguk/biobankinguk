@@ -32,7 +32,6 @@ namespace Biobanks.Services
         private readonly ILogoStorageProvider _logoStorageProvider;
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
-        private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
@@ -86,7 +85,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
-            IGenericEFRepository<AgeRange> ageRangeRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
@@ -127,7 +125,6 @@ namespace Biobanks.Services
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
-            _ageRangeRepository = ageRangeRepository;
             _storageTemperatureRepository = storageTemperatureRepository;
             _sopStatusRepository = sopStatusRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
@@ -665,67 +662,7 @@ namespace Biobanks.Services
 
             await _ontologyTermRepository.SaveChangesAsync();
         }
-
-
-        #region RefData: Age Range
-        public async Task<AgeRange> AddAgeRangeAsync(AgeRange ageRange)
-        {
-            _ageRangeRepository.Insert(ageRange);
-            await _ageRangeRepository.SaveChangesAsync();
-
-            return ageRange;
-        }
-
-        public async Task<AgeRange> UpdateAgeRangeAsync(AgeRange ageRange, bool sortOnly = false)
-        {
-            var types = await _biobankReadService.ListAgeRangesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                ageRange.Value =
-                    types
-                        .Where(x => x.Id == ageRange.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldType = types.Where(x => x.Id == ageRange.Id).First();
-            var reverse = (oldType.SortOrder < ageRange.SortOrder);
-
-            var newOrder = types
-                    .Prepend(ageRange)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_ageRangeRepository.Update);
-
-            await _ageRangeRepository.SaveChangesAsync();
-
-            return ageRange;
-        }
-
-        public async Task DeleteAgeRangeAsync(AgeRange ageRange)
-        {
-            await _ageRangeRepository.DeleteAsync(ageRange.Id);
-            await _ageRangeRepository.SaveChangesAsync();
-        }
-        #endregion
-        
+       
         #region RefData: Sop Status
         public async Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus)
         {
