@@ -6,7 +6,7 @@ namespace Biobanks.Entities.Shared.ReferenceData
     /// <summary>
     /// Material Type terms.
     /// </summary>
-    public class MaterialType : ReferenceDataBase
+    public class MaterialType : BaseReferenceData
     {
         /// <summary>
         /// Many to Many Relationship with MaterialTypeGroup
