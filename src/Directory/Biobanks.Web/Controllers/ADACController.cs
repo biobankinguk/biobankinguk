@@ -49,6 +49,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<AccessCondition> _accessConditionService;
         private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
         private readonly IReferenceDataService<Funder> _funderService;
+        private readonly IReferenceDataService<SopStatus> _sopStatusService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -83,6 +84,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<AccessCondition> accessConditionService,
             IReferenceDataService<CollectionStatus> collectionStatusService,
             IReferenceDataService<Funder> funderService,
+            IReferenceDataService<SopStatus> sopStatusService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -112,6 +114,7 @@ namespace Biobanks.Web.Controllers
             _accessConditionService = accessConditionService;
             _collectionStatusService = collectionStatusService;
             _funderService = funderService;
+            _sopStatusService = sopStatusService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1621,14 +1624,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sop Status
         public async Task<ActionResult> SopStatus()
         {
-            var models = (await _biobankReadService.ListSopStatusesAsync())
+            var models = (await _sopStatusService.List())
                 .Select(x =>
                     Task.Run(async () => new SopStatusModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.Id)
+                        SampleSetsCount = await _sopStatusService.GetUsageCount(x.Id)
                     })
                     .Result
                 )

@@ -113,6 +113,7 @@ namespace Biobanks.Web.Controllers
             _countryService = countryService;
             _consentRestrictionService = consentRestrictionService;
             _collectionService = collectionService;
+            _collectionTypeService = collectionTypeService;
             _collectionPercentageService = collectionPercentageService;
             _annualStatisticGroupService = annualStatisticGroupService;
             _ageRangeService = ageRangeService;
