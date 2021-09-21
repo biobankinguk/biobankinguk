@@ -43,6 +43,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
         private readonly IReferenceDataService<CollectionType> _collectionTypeService;
         private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
+        private readonly IReferenceDataService<AnnualStatistic> _annualStatisticsService;
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -71,6 +73,8 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<ConsentRestriction> consentRestrictionService,
             IReferenceDataService<CollectionType> collectionTypeService,
             IReferenceDataService<CollectionPercentage> collectionPercentageService,
+            IReferenceDataService<AnnualStatistic> annualStatisticsService,
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -94,6 +98,8 @@ namespace Biobanks.Web.Controllers
             _consentRestrictionService = consentRestrictionService;
             _collectionTypeService = collectionTypeService;
             _collectionPercentageService = collectionPercentageService;
+            _annualStatisticsService = annualStatisticsService;
+            _annualStatisticGroupService = annualStatisticGroupService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1109,7 +1115,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: AnnualStatistics
         public async Task<ActionResult> AnnualStatistics()
         {
-            var groups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
+            var groups = (await _annualStatisticGroupService.List())
                 .Select(x => new AnnualStatisticGroupModel
                 {
                     AnnualStatisticGroupId = x.Id,
@@ -1117,13 +1123,13 @@ namespace Biobanks.Web.Controllers
                 })
                 .ToList();
 
-            var models = (await _biobankReadService.ListAnnualStatisticsAsync())
+            var models = (await _annualStatisticsService.List())
                 .Select(x =>
                     Task.Run(async () => new AnnualStatisticModel
                     {
                         Id = x.Id,
                         Name = x.Value,
-                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.Id),
+                        UsageCount = await _annualStatisticsService.GetUsageCount(x.Id),
                         AnnualStatisticGroupId = x.AnnualStatisticGroupId,
                         AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
                     })
@@ -1486,14 +1492,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new AnnualStatisticGroupsModel
             {
-                AnnualStatisticGroups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
+                AnnualStatisticGroups = (await _annualStatisticGroupService.List())
                     .Select(x =>
 
                     Task.Run(async () => new ReadAnnualStatisticGroupModel
                     {
                         AnnualStatisticGroupId = x.Id,
                         Name = x.Value,
-                        AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.Id)
+                        AnnualStatisticGroupCount = await _annualStatisticGroupService.GetUsageCount(x.Id)
                     }).Result)
 
                     .ToList()

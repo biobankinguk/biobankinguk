@@ -11,12 +11,15 @@ using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
 using System;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class ProfileController : ApplicationBaseController
     {
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
 
@@ -24,11 +27,13 @@ namespace Biobanks.Web.Controllers
         private readonly IPublicationService _publicationService;
 
         public ProfileController(
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IBiobankReadService biobankReadService, 
             ICollectionService collectionService,
             IConfigService configService,
             IPublicationService publicationService)
         {
+            _annualStatisticGroupService = annualStatisticGroupService;
             _biobankReadService = biobankReadService;
             _collectionService = collectionService;
             _configService = configService;
@@ -122,7 +127,7 @@ namespace Biobanks.Web.Controllers
                     .ToList(),
                
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
-                AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync()
+                AnnualStatisticGroups = await _annualStatisticGroupService.List()
             };
 
             return View(model);

@@ -73,11 +73,7 @@ namespace Biobanks.Services.Contracts
         Task<AgeRange> UpdateAgeRangeAsync(AgeRange ageRange, bool sortOnly = false);
         Task DeleteAgeRangeAsync(AgeRange ageRange);
 
-        Task<AnnualStatistic> AddAnnualStatisticAsync(AnnualStatistic annualStatistic);
-        Task<AnnualStatistic> UpdateAnnualStatisticAsync(AnnualStatistic annualStatistic, bool sortOnly = false);
-        Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic);
-
-        Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus);
+         Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus);
         Task<SopStatus> UpdateSopStatusAsync(SopStatus sopStatus, bool sortOnly = false);
         Task DeleteSopStatusAsync(SopStatus sopStatus);
 
@@ -117,10 +113,6 @@ namespace Biobanks.Services.Contracts
         Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year);
         Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);
-
-        Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
-        Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
-        Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup);
 
         Task<KeyValuePair<string, string>> GenerateNewApiClientForBiobank(int biobankId, string clientName = null);
         Task<KeyValuePair<string, string>> GenerateNewSecretForBiobank(int biobankId);

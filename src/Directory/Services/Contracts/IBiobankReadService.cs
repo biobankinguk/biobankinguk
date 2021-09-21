@@ -64,12 +64,7 @@ namespace Biobanks.Services.Contracts
 
         Task<bool> AreAgeRangeBoundsNull(int id);
 
-        Task<IEnumerable<AnnualStatistic>> ListAnnualStatisticsAsync();
-        Task<bool> ValidAnnualStatisticAsync(string annualStatisticDescription, int annualStatisticGroupId);
-        Task<bool> IsAnnualStatisticInUse(int id);
-        Task<int> GetAnnualStatisticUsageCount(int id);
-
-        Task<int> GetCollectionStatusCollectionCount(int id);
+              Task<int> GetCollectionStatusCollectionCount(int id);
         Task<bool> IsCollectionStatusInUse(int id);
         Task<bool> ValidCollectionStatusDescriptionAsync(string collectionStatusDescription);
         Task<bool> ValidCollectionStatusDescriptionAsync(int collectionStatusId, string collectionStatusDescription);
@@ -207,8 +202,6 @@ namespace Biobanks.Services.Contracts
         List<KeyValuePair<int, string>> GetNetworkIdsAndNamesByUserId(string userId);
         List<KeyValuePair<int, string>> GetAcceptedNetworkRequestIdsAndNamesByUserId(string userId);
 
-        Task<IEnumerable<AnnualStatisticGroup>> GetAnnualStatisticGroupsAsync();
-
         Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(IEnumerable<int> organisationIds);
         Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(int biobankId);
         Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworkAsync(int biobankId, int networkId);
@@ -219,12 +212,6 @@ namespace Biobanks.Services.Contracts
 
         List<Organisation> GetOrganisations();
 
-        Task<AnnualStatisticGroup> GetAnnualStatisticGroupByName(string name);
-        Task<int> GetAnnualStatisticAnnualStatisticGroupCount(int annualStatisticGroupId);
-        Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId);
-        Task<IEnumerable<AnnualStatisticGroup>> ListAnnualStatisticGroupsAsync(string wildcard = "");
-        Task<bool> ValidAnnualStatisticGroupNameAsync(int annualStatisticGroupId, string annualStatisticGroupName);
-        Task<bool> ValidAnnualStatisticGroupNameAsync(string annualStatisticGroupName);
         Task<bool> OrganisationIncludesPublications(int biobankId);
         Task<string> GetUnusedTokenByUser(string biobankUserId);
         Task<bool> IsBiobankAnApiClient(int biobankId);
