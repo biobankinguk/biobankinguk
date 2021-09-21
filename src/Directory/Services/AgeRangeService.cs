@@ -14,10 +14,5 @@ namespace Biobanks.Directory.Services
 
         public override async Task<bool> IsInUse(int id)
             => await _db.SampleSets.AnyAsync(x => x.AgeRangeId == id);
-
-
-    //    public async Task<bool> AreAgeRangeBoundsNull(int id)
-    //=> (await _ageRangeRepository.ListAsync(false, x => x.Id == id))
-    //    .Where(x => string.IsNullOrEmpty(x.LowerBound) && string.IsNullOrEmpty(x.UpperBound)).Any();
     }
 }
