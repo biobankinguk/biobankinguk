@@ -93,10 +93,6 @@ namespace Biobanks.Services.Contracts
         Task<AssociatedDataTypeGroup> AddAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup);
         Task<AssociatedDataTypeGroup> UpdateAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup);
 
-        Task<AccessCondition> AddAccessConditionAsync(AccessCondition accessCondition);
-        Task<AccessCondition> UpdateAccessConditionAsync(AccessCondition accessCondition, bool sortOnly = false);
-        Task DeleteAccessConditionAsync(AccessCondition accessCondition);
-
         Task<Organisation> SuspendBiobankAsync(int id);
         Task<Organisation> UnsuspendBiobankAsync(int id);
         Task UpdateOrganisationURLAsync(int id);

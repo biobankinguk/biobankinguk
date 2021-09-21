@@ -46,6 +46,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<AnnualStatistic> _annualStatisticsService;
         private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
         private readonly IReferenceDataService<AgeRange> _ageRangeService;
+        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -77,6 +78,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<AnnualStatistic> annualStatisticsService,
             IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IReferenceDataService<AgeRange> ageRangeService,
+            IReferenceDataService<AccessCondition> accessConditionService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -103,6 +105,7 @@ namespace Biobanks.Web.Controllers
             _annualStatisticsService = annualStatisticsService;
             _annualStatisticGroupService = annualStatisticGroupService;
             _ageRangeService = ageRangeService;
+            _accessConditionService = accessConditionService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1029,14 +1032,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Access Conditions
         public async Task<ActionResult> AccessConditions()
         {
-            var models = (await _biobankReadService.ListAccessConditionsAsync())
+            var models = (await _accessConditionService.List())
             .Select(x =>
                 Task.Run(async () => new ReadAccessConditionsModel
                 {
                     Id = x.Id,
                     Description = x.Value,
                     SortOrder = x.SortOrder,
-                    AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.Id),
+                    AccessConditionCount = await _accessConditionService.GetUsageCount(x.Id),
                 }
                 )
                 .Result

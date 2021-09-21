@@ -31,7 +31,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CapabilityAssociatedData> _capabilityAssociatedDataRepository;
      
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
@@ -85,7 +84,6 @@ namespace Biobanks.Services
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<CapabilityAssociatedData> capabilityAssociatedDataRepository,
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
-            IGenericEFRepository<AccessCondition> accessConditionRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
@@ -137,7 +135,6 @@ namespace Biobanks.Services
             _capabilityRepository = capabilityRepository;
             _collectionAssociatedDataRepository = collectionAssociatedDataRepository;
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
-            _accessConditionRepository = accessConditionRepository;
             _collectionStatusRepository = collectionStatusRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _ontologyTermRepository = ontologyTermRepository;
@@ -439,9 +436,6 @@ namespace Biobanks.Services
             => (await GetAssociatedDataTypeCollectionCapabilityCount(id) > 0);
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
-
-        public async Task<bool> IsAccessConditionInUse(int id)
-            => (await GetAccessConditionsCount(id) > 0);
 
         public async Task<bool> IsCollectionStatusInUse(int id)
             => (await GetCollectionStatusCollectionCount(id) > 0);
@@ -768,9 +762,6 @@ namespace Biobanks.Services
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
 
-        public async Task<IEnumerable<AccessCondition>> ListAccessConditionsAsync()
-            => await _accessConditionRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
         public async Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync()
             => await _collectionStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
@@ -1037,20 +1028,6 @@ namespace Biobanks.Services
                 false,
                 x => x.Value == sexDescription &&
                      x.Id != sexId)).Any();
-
-        public async Task<int> GetAccessConditionsCount(int id)
-         => (await _collectionRepository.ListAsync(
-                    false,
-                    x => x.AccessConditionId == id)).Count();
-
-        public async Task<bool> ValidAccessConditionDescriptionAsync(string accessConditionsDescription)
-            => (await _accessConditionRepository.ListAsync(false, x => x.Value == accessConditionsDescription)).Any();
-
-        public async Task<bool> ValidAccessConditionDescriptionAsync(int accessConditionsId, string accessConditionsDescription)
-            => (await _accessConditionRepository.ListAsync(
-                false,
-                x => x.Value == accessConditionsDescription &&
-                     x.Id != accessConditionsId)).Any();
 
         public async Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id)
         => (await _collectionAssociatedDataRepository.ListAsync(
