@@ -2,13 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Biobanks.Services.Contracts;
-using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Filters;
 using ServiceOfferingModel = Biobanks.Web.Models.Shared.ServiceOfferingModel;
-
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -16,14 +15,11 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/ServiceOffering")]
     public class ServiceOfferingController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
 
-        public ServiceOfferingController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public ServiceOfferingController(ServiceOfferingService serviceOfferingService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _serviceOfferingService = serviceOfferingService;
         }
 
         [HttpGet]
@@ -31,14 +27,14 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var models = (await _biobankReadService.ListServiceOfferingsAsync())
+            var models = (await _serviceOfferingService.List())
                 .Select(x =>
 
             Task.Run(async () => new ReadServiceOfferingModel
             {
                 Id = x.Id,
                 Name = x.Value,
-                OrganisationCount = await _biobankReadService.GetServiceOfferingOrganisationCount(x.Id),
+                OrganisationCount = await _serviceOfferingService.GetUsageCount(x.Id),
                 SortOrder = x.SortOrder
             }).Result)
 
@@ -51,10 +47,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListServiceOfferingsAsync()).Where(x => x.Id == id).First();
+            var model = await _serviceOfferingService.Get(id);
 
             // If in use, prevent update
-            if (await _biobankReadService.IsServiceOfferingInUse(id))
+            if (await _serviceOfferingService.IsInUse(id))
             {
                 ModelState.AddModelError("ServiceOffering", $"The service offering \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -64,11 +60,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteServiceOfferingAsync(new ServiceOffering
-            {
-                Id = model.Id,
-                Value = model.Value
-            });
+            await _serviceOfferingService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -84,13 +76,13 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, ServiceOfferingModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidServiceOfferingName(model.Name))
+            if (await _serviceOfferingService.Exists(model.Name))
             {
                 ModelState.AddModelError("ServiceOffering", "That service offering already exists!");
             }
 
             // If in use, prevent update
-            if (await _biobankReadService.IsServiceOfferingInUse(id))
+            if (await _serviceOfferingService.IsInUse(id))
             {
                 ModelState.AddModelError("ServiceOffering", $"The service offering \"{model.Name}\" is currently in use, and cannot be updated.");
             }
@@ -101,7 +93,7 @@ namespace Biobanks.Web.ApiControllers
             }
 
             // Update Service Offering
-            await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
+            await _serviceOfferingService.Update(new ServiceOffering
             {
                 Id = id,
                 Value = model.Name,
@@ -121,7 +113,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(ServiceOfferingModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidServiceOfferingName(model.Name))
+            if (await _serviceOfferingService.Exists(model.Name))
             {
                 ModelState.AddModelError("Name", "That name is already in use. Service offering names must be unique.");
             }
@@ -131,12 +123,12 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-
-            await _biobankWriteService.AddServiceOfferingAsync(new ServiceOffering
+            await _serviceOfferingService.Add(new ServiceOffering
             {
                 Value = model.Name,
                 SortOrder = model.SortOrder
             });
+
             //Everything went A-OK!
             return Json(new
             {
@@ -149,13 +141,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, ServiceOfferingModel model)
         {
-            await _biobankWriteService.UpdateServiceOfferingAsync(new ServiceOffering
+            await _serviceOfferingService.Update(new ServiceOffering
             {
                 Id = id,
                 Value = model.Name,
                 SortOrder = model.SortOrder
-            },
-            true);
+            });
 
             //Everything went A-OK!
             return Json(new
@@ -163,7 +154,6 @@ namespace Biobanks.Web.ApiControllers
                 success = true,
                 name = model.Name,
             });
-
         }
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class Country
+    public class Country : BaseReferenceData
     {
         public virtual ICollection<Organisation> Organisations { get; set; }
 

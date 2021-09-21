@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Identity.Data.Entities;
-using Biobanks.Search.Constants;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -39,7 +38,6 @@ namespace Biobanks.Services.Contracts
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
         Task<IEnumerable<AccessCondition>> ListAccessConditionsAsync();
-        Task<IEnumerable<CollectionType>> ListCollectionTypesAsync();
 
         Task<IEnumerable<Sex>> ListSexesAsync();
         Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync();
@@ -56,40 +54,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
         Task<bool> IsMaterialTypeGroupInUse(int id);
 
-
-        Task<IEnumerable<AgeRange>> ListAgeRangesAsync();
-        Task<bool> ValidAgeRangeAsync(string ageRangeDescription);
-        Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription);
-        Task<bool> IsAgeRangeInUse(int id);
-        Task<int> GetAgeRangeUsageCount(int id);
-
-        Task<bool> AreAgeRangeBoundsNull(int id);
-
-        Task<IEnumerable<AnnualStatistic>> ListAnnualStatisticsAsync();
-        Task<bool> ValidAnnualStatisticAsync(string annualStatisticDescription, int annualStatisticGroupId);
-        Task<bool> IsAnnualStatisticInUse(int id);
-        Task<int> GetAnnualStatisticUsageCount(int id);
-
-        Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync();
-        Task<bool> ValidCollectionPercentageAsync(string collectionPercentageDescription);
-        Task<bool> IsCollectionPercentageInUse(int id);
-        Task<int> GetCollectionPercentageUsageCount(int id);
-
-        Task<IEnumerable<DonorCount>> ListDonorCountsAsync(bool ignoreCache = false);
-        Task<int> GetDonorCountUsageCount(int id);
-        Task<bool> ValidDonorCountAsync(string donorCountDescription);
-        Task<bool> IsDonorCountInUse(int id);
-
-        Task<int> GetRegistrationReasonOrganisationCount(int id);
-        Task<bool> IsRegistrationReasonInUse(int id);
-        Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription);
-        Task<bool> ValidRegistrationReasonDescriptionAsync(string reasonDescription);
-
-        Task<int> GetCollectionTypeCollectionCount(int id);
-        Task<bool> IsCollectionTypeInUse(int id);
-        Task<bool> ValidCollectionTypeDescriptionAsync(string collectionTypeDescription);
-        Task<bool> ValidCollectionTypeDescriptionAsync(int collectionTypeId, string collectionTypeDescription);
-
         Task<IEnumerable<PreservationType>> ListPreservationTypesAsync();
         Task<int> GetPreservationTypeUsageCount(int id);
         Task<bool> IsPreservationTypeInUse(int id);
@@ -105,16 +69,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidSopStatusAsync(string sopStatusDescription);
         Task<bool> IsSopStatusInUse(int id);
         Task<int> GetSopStatusUsageCount(int id);
-
-        Task<IEnumerable<MacroscopicAssessment>> ListMacroscopicAssessmentsAsync();
-        Task<bool> ValidMacroscopicAssessmentAsync(string macroscopicAssessmentDescription);
-        Task<bool> IsMacroscopicAssessmentInUse(int id);
-        Task<int> GetMacroscopicAssessmentUsageCount(int id);
-
-        Task<IEnumerable<SampleCollectionMode>> ListSampleCollectionModeAsync();
-        Task<bool> ValidSampleCollectionModeAsync(string sampleCollectionMode);
-        Task<bool> IsSampleCollectionModeInUse(int id);
-        Task<int> GetSampleCollectionModeUsageCount(int id);
 
         Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames();
         Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id);
@@ -141,10 +95,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
         Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription);
 
-        Task<int> GetCountryCountyOrganisationCount(int id);
-        Task<bool> ValidCountryNameAsync(string countryName);
-        Task<bool> ValidCountryNameAsync(int countryId, string countryName);
-
         Task<int> GetAccessConditionsCount(int id);
         Task<bool> ValidAccessConditionDescriptionAsync(string accessConditionsDescription);
         Task<bool> ValidAccessConditionDescriptionAsync(int accessConditionsId, string accessConditionsDescription);
@@ -153,21 +103,13 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription);
         Task<bool> ValidMaterialTypeDescriptionAsync(int materialTypeId, string materialTypeDescription);
 
-        Task<IEnumerable<ConsentRestriction>> ListConsentRestrictionsAsync();
-        Task<int> GetConsentRestrictionCollectionCount(int id);
-        Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription);
-        Task<bool> ValidConsentRestrictionDescriptionAsync(int consentId, string consentDescription);
-
         Task<int> GetServiceOfferingOrganisationCount(int id);
-        Task<bool> ValidServiceOfferingName(int offeringId, string offeringName);
-        Task<bool> ValidServiceOfferingName(string offeringName);
 
         Task<int> GetSexCount(int id);
         Task<bool> ValidSexDescriptionAsync(string sexDescription);
         Task<bool> ValidSexDescriptionAsync(int sexId, string sexDescription);
 
         Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
-        Task<IEnumerable<ServiceOffering>> ListServiceOfferingsAsync();
 
         Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
         Task<OrganisationType> GetBiobankOrganisationTypeAsync();
@@ -200,9 +142,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsMaterialTypeInUse(int id);
         Task<bool> IsAssociatedDataTypeInUse(int id);
         Task<bool> IsSexInUse(int id);
-        Task<bool> IsServiceOfferingInUse(int id);
-        Task<bool> IsConsentRestrictionInUse(int id);
-        Task<bool> IsCountryInUse(int id);
         Task<bool> IsAccessConditionInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
@@ -241,12 +180,6 @@ namespace Biobanks.Services.Contracts
         Task<Funder> GetFunderbyName(string name);
         Task<IEnumerable<Funder>>  ListFundersAsync(string wildcard);
 
-        Task<ICollection<County>> ListCountiesAsync();
-        Task<bool> ValidCountyAsync(string countyName);
-        Task<bool> IsCountyInUse(int id);
-        Task<int> GetCountyUsageCount(int id);
-
-        Task<ICollection<Country>> ListCountriesAsync();
         Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
         Task<Funder> GetFunderByIdAsync(int id);
         List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId);
@@ -254,26 +187,16 @@ namespace Biobanks.Services.Contracts
         List<KeyValuePair<int, string>> GetNetworkIdsAndNamesByUserId(string userId);
         List<KeyValuePair<int, string>> GetAcceptedNetworkRequestIdsAndNamesByUserId(string userId);
 
-        Task<IEnumerable<AnnualStatisticGroup>> GetAnnualStatisticGroupsAsync();
-
         Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(IEnumerable<int> organisationIds);
         Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(int biobankId);
         Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworkAsync(int biobankId, int networkId);
 
 
         Task<IEnumerable<Organisation>> GetBiobanksByAnonymousIdentifiersAsync(IEnumerable<Guid> biobankAnonymousIdentifiers);
-        Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync();
         Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId);
-
 
         List<Organisation> GetOrganisations();
 
-        Task<AnnualStatisticGroup> GetAnnualStatisticGroupByName(string name);
-        Task<int> GetAnnualStatisticAnnualStatisticGroupCount(int annualStatisticGroupId);
-        Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId);
-        Task<IEnumerable<AnnualStatisticGroup>> ListAnnualStatisticGroupsAsync(string wildcard = "");
-        Task<bool> ValidAnnualStatisticGroupNameAsync(int annualStatisticGroupId, string annualStatisticGroupName);
-        Task<bool> ValidAnnualStatisticGroupNameAsync(string annualStatisticGroupName);
         Task<bool> OrganisationIncludesPublications(int biobankId);
         Task<string> GetUnusedTokenByUser(string biobankUserId);
         Task<bool> IsBiobankAnApiClient(int biobankId);
