@@ -45,7 +45,6 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<Organisation> _organisationRepository;
         private readonly IGenericEFRepository<OrganisationType> _organisationTypeRepository;
-        private readonly IGenericEFRepository<Funder> _funderRepository;
 
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
@@ -118,7 +117,6 @@ namespace Biobanks.Services
 
             ISearchProvider searchProvider,
 
-            IGenericEFRepository<Funder> funderRepository, 
             IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Country> countryRepository, 
 
@@ -169,7 +167,6 @@ namespace Biobanks.Services
             _cacheProvider = cacheProvider;
 
             _searchProvider = searchProvider;
-            _funderRepository = funderRepository;
             _countyRepository = countyRepository;
             _countryRepository = countryRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
@@ -248,14 +245,6 @@ namespace Biobanks.Services
                 .Select(x => x.Funders)
                 .FirstOrDefault();
 
-        public async Task<Funder> GetFunderbyName(string name)
-            => (await _funderRepository.ListAsync(false, x => x.Value == name)).SingleOrDefault();
-
-        public async Task<IEnumerable<Funder>> ListFundersAsync(string wildcard) =>
-            (await _funderRepository.ListAsync(
-                false,
-                x => x.Value.Contains(wildcard)))
-            .ToList();
         public async Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync()
         {
                 var organisations = await _organisationRepository.ListAsync(
@@ -1044,9 +1033,6 @@ namespace Biobanks.Services
 
             return await _userManager.Users.Where(x => adminIds.Contains(x.Id)).ToListAsync();
         }
-
-        public async Task<Funder> GetFunderByIdAsync(int id)
-            => await _funderRepository.GetByIdAsync(id);
 
         public List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId)
         {

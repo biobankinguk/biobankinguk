@@ -48,6 +48,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<AgeRange> _ageRangeService;
         private readonly IReferenceDataService<AccessCondition> _accessConditionService;
         private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
+        private readonly IReferenceDataService<Funder> _funderService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -81,6 +82,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<AgeRange> ageRangeService,
             IReferenceDataService<AccessCondition> accessConditionService,
             IReferenceDataService<CollectionStatus> collectionStatusService,
+            IReferenceDataService<Funder> funderService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -109,6 +111,7 @@ namespace Biobanks.Web.Controllers
             _ageRangeService = ageRangeService;
             _accessConditionService = accessConditionService;
             _collectionStatusService = collectionStatusService;
+            _funderService = funderService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -753,7 +756,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Funders()
         {
             return View(
-                (await _biobankReadService.ListFundersAsync(string.Empty))
+                (await _funderService.List())
                     .Select(x =>
                         new FunderModel
                         {
@@ -766,16 +769,14 @@ namespace Biobanks.Web.Controllers
 
         [HttpGet]
         public async Task<ActionResult> DeleteFunder(int id)
-        {
-            return View(await _biobankReadService.GetFunderByIdAsync(id));
-        }
-
+            => View(await _funderService.Get(id));
+      
         [HttpPost]
         public async Task<ActionResult> DeleteFunder(FunderModel model)
         {
             try
             {
-                await _biobankWriteService.DeleteFunderByIdAsync(model.FunderId);
+                await _funderService.Delete(model.FunderId);
 
                 SetTemporaryFeedbackMessage($"{model.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
@@ -792,7 +793,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> EditFunderAjax(FunderModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.GetFunderbyName(model.Name) != null)
+            if (await _funderService.Exists(model.Name))
             {
                 ModelState.AddModelError("Name", "That funder name is already in use. Funder names must be unique.");
             }
@@ -802,7 +803,7 @@ namespace Biobanks.Web.Controllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateFunderAsync(new Funder
+            await _funderService.Update(new Funder
             {
                 Id = model.FunderId,
                 Value = model.Name
@@ -830,7 +831,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> AddFunderAjax(FunderModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.GetFunderbyName(model.Name) != null)
+            if (await _funderService.Exists(model.Name))
             {
                 ModelState.AddModelError("Name", "That funder name is already in use. Funder names must be unique.");
             }
@@ -840,7 +841,7 @@ namespace Biobanks.Web.Controllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddFunderAsync(new Funder
+            await _funderService.Add(new Funder
             {
                 Value = model.Name,
             });

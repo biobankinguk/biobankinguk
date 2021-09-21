@@ -171,11 +171,8 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsSampleSetBiobankSuspendedAsync(int sampleSetId);
 
         Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId);
-        Task<Funder> GetFunderbyName(string name);
-        Task<IEnumerable<Funder>>  ListFundersAsync(string wildcard);
 
         Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
-        Task<Funder> GetFunderByIdAsync(int id);
         List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId);
         List<KeyValuePair<int, string>> GetAcceptedBiobankRequestIdsAndNamesByUserId(string userId);
         List<KeyValuePair<int, string>> GetNetworkIdsAndNamesByUserId(string userId);

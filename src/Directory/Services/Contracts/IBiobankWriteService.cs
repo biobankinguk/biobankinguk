@@ -95,9 +95,7 @@ namespace Biobanks.Services.Contracts
         Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId);
         Task RemoveFunderFromBiobankAsync(int funderId, int biobankId);
         Task DeleteBiobankAsync(int id);
-        Task DeleteFunderByIdAsync(int id);
-        Task<Funder> AddFunderAsync(Funder funder);
-        Task<Funder> UpdateFunderAsync(Funder funder);
+
         Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year);
         Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);
