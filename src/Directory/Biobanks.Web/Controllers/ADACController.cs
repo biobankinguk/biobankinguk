@@ -47,6 +47,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
         private readonly IReferenceDataService<AgeRange> _ageRangeService;
         private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+        private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -79,6 +80,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IReferenceDataService<AgeRange> ageRangeService,
             IReferenceDataService<AccessCondition> accessConditionService,
+            IReferenceDataService<CollectionStatus> collectionStatusService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -106,6 +108,7 @@ namespace Biobanks.Web.Controllers
             _annualStatisticGroupService = annualStatisticGroupService;
             _ageRangeService = ageRangeService;
             _accessConditionService = accessConditionService;
+            _collectionStatusService = collectionStatusService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1477,14 +1480,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CollectionStatusModel
             {
-                CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
+                CollectionStatuses = (await _collectionStatusService.List())
                     .Select(x =>
 
                 Task.Run(async () => new ReadCollectionStatusModel
                 {
                     Id = x.Id,
                     Description = x.Value,
-                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.Id),
+                    CollectionCount = await _collectionStatusService.GetUsageCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 

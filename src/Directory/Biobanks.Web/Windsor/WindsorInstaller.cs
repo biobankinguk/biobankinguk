@@ -179,6 +179,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(AgeRangeService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<CollectionStatus>))
+                    .ImplementedBy(typeof(CollectionStatusService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,

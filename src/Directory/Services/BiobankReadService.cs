@@ -31,7 +31,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CapabilityAssociatedData> _capabilityAssociatedDataRepository;
      
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
         private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
@@ -84,7 +83,6 @@ namespace Biobanks.Services
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<CapabilityAssociatedData> capabilityAssociatedDataRepository,
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
-            IGenericEFRepository<CollectionStatus> collectionStatusRepository,
             IGenericEFRepository<SampleSet> collectionSampleSetRepository,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
@@ -135,7 +133,6 @@ namespace Biobanks.Services
             _capabilityRepository = capabilityRepository;
             _collectionAssociatedDataRepository = collectionAssociatedDataRepository;
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
-            _collectionStatusRepository = collectionStatusRepository;
             _collectionSampleSetRepository = collectionSampleSetRepository;
             _ontologyTermRepository = ontologyTermRepository;
             _snomedTagRepository = snomedTagRepository;
@@ -436,9 +433,6 @@ namespace Biobanks.Services
             => (await GetAssociatedDataTypeCollectionCapabilityCount(id) > 0);
         public async Task<bool> IsSexInUse(int id)
             => (await GetSexCount(id) > 0);
-
-        public async Task<bool> IsCollectionStatusInUse(int id)
-            => (await GetCollectionStatusCollectionCount(id) > 0);
 
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
@@ -762,9 +756,6 @@ namespace Biobanks.Services
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
 
-        public async Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync()
-            => await _collectionStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
         public async Task<IEnumerable<Sex>> ListSexesAsync()
             => await _sexRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
@@ -971,15 +962,6 @@ namespace Biobanks.Services
                 false,
                 x => x.Value == associatedDataTypeDescription &&
                      x.Id != associatedDataTypeId)).Any();
-        public async Task<bool> ValidCollectionStatusDescriptionAsync(string collectionStatusDescription)
-        => (await _collectionStatusRepository.ListAsync(false, x => x.Value == collectionStatusDescription)).Any();
-
-        public async Task<bool> ValidCollectionStatusDescriptionAsync(int collectionStatusId, string collectionStatusDescription)
-            => (await _collectionStatusRepository.ListAsync(
-                false,
-                x => x.Value == collectionStatusDescription &&
-                     x.Id != collectionStatusId)).Any();
-
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
@@ -1008,9 +990,6 @@ namespace Biobanks.Services
            x => x.AssociatedDataProcurementTimeframeId == id)).Count() + (await _capabilityAssociatedDataRepository.ListAsync(
            false,
            x => x.AssociatedDataProcurementTimeframeId == id)).Count();
-
-        public async Task<int> GetCollectionStatusCollectionCount(int id)
-            => (await _collectionRepository.ListAsync(false, x => x.CollectionStatusId == id)).Count();
 
         public async Task<int> GetServiceOfferingOrganisationCount(int id)
             => (await _organisationServiceOfferingRepository.ListAsync(

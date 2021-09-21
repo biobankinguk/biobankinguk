@@ -57,6 +57,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
         private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
         private readonly IReferenceDataService<AgeRange> _ageRangeService;
+        private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
 
         private readonly IReferenceDataService<AccessCondition> _accessConditionService;
 
@@ -90,6 +91,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IReferenceDataService<AgeRange> ageRangeService,
             IReferenceDataService<AccessCondition> accessConditionService,
+            IReferenceDataService<CollectionStatus> collectionStatusService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -114,6 +116,7 @@ namespace Biobanks.Web.Controllers
             _annualStatisticGroupService = annualStatisticGroupService;
             _ageRangeService = ageRangeService;
             _accessConditionService = accessConditionService;
+            _collectionStatusService = collectionStatusService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1390,7 +1393,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
+            model.CollectionStatuses = (await _collectionStatusService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
