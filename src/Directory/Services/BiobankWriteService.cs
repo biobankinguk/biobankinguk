@@ -32,25 +32,14 @@ namespace Biobanks.Services
         private readonly ILogoStorageProvider _logoStorageProvider;
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
-        private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
-        private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
-        private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
-        private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
-        private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
-        private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
-        private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
-        private readonly IGenericEFRepository<ConsentRestriction> _consentRestrictionRepository;
-        private readonly IGenericEFRepository<Country> _countryRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
-        private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
-        private readonly IGenericEFRepository<County> _countyRepository;
         private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
@@ -92,22 +81,12 @@ namespace Biobanks.Services
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<Sex> sexRepository,
-            IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
-            IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
-            IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
-            IGenericEFRepository<DonorCount> donorCountRepository,
-            IGenericEFRepository<CollectionType> collectionTypeRepository,
             IGenericEFRepository<CollectionStatus> collectionStatusRepository,
-            IGenericEFRepository<AgeRange> ageRangeRepository,
-            IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
-            IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<SopStatus> sopStatusRepository,
-            IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
             IGenericEFRepository<Country> countryRepository,
-            IGenericEFRepository<County> countyRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
@@ -144,25 +123,14 @@ namespace Biobanks.Services
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
-            _collectionPercentageRepository = collectionPercentageRepository;
-            _donorCountRepository = donorCountRepository;
-            _ageRangeRepository = ageRangeRepository;
-            _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
             _storageTemperatureRepository = storageTemperatureRepository;
             _sopStatusRepository = sopStatusRepository;
-            _sampleCollectionModeRepository = sampleCollectionModeRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
-            _annualStatisticRepository = annualStatisticRepository;
-            _annualStatisticGroupRepository = annualStatisticGroupRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _sexRepository = sexRepository;
-            _consentRestrictionRepository = consentRestrictionRepository;
-            _countryRepository = countryRepository;
-            _countyRepository = countyRepository;
             _collectionStatusRepository = collectionStatusRepository;
-            _collectionTypeRepository = collectionTypeRepository;
 
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
@@ -691,361 +659,7 @@ namespace Biobanks.Services
 
             await _ontologyTermRepository.SaveChangesAsync();
         }
-
-        #region RefData: Sample Collection Mode
-        public async Task<SampleCollectionMode> AddSampleCollectionModeAsync(SampleCollectionMode sampleCollectionMode)
-        {
-            _sampleCollectionModeRepository.Insert(sampleCollectionMode);
-            await _sampleCollectionModeRepository.SaveChangesAsync();
-
-            return sampleCollectionMode;
-        }
-
-        public async Task<SampleCollectionMode> UpdateSampleCollectionModeAsync(SampleCollectionMode sampleCollectionMode, bool sortOnly = false)
-        {
-            var modes = await _biobankReadService.ListSampleCollectionModeAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                sampleCollectionMode.Value =
-                    modes
-                        .Where(x => x.Id == sampleCollectionMode.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldMode = modes.Where(x => x.Id == sampleCollectionMode.Id).First();
-            var reverse = (oldMode.SortOrder < sampleCollectionMode.SortOrder);
-
-            var newOrder = modes
-                    .Prepend(sampleCollectionMode)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_sampleCollectionModeRepository.Update);
-
-            await _sampleCollectionModeRepository.SaveChangesAsync();
-
-            return sampleCollectionMode;
-        }
-
-        public async Task DeleteSampleCollectionModeAsync(SampleCollectionMode sampleCollectionMode)
-        {
-            await _sampleCollectionModeRepository.DeleteAsync(sampleCollectionMode.Id);
-            await _sampleCollectionModeRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Collection Percentage
-        public async Task<CollectionPercentage> AddCollectionPercentageAsync(CollectionPercentage collectionPercentage)
-        {
-            _collectionPercentageRepository.Insert(collectionPercentage);
-            await _collectionPercentageRepository.SaveChangesAsync();
-
-            return collectionPercentage;
-        }
-
-        public async Task<CollectionPercentage> UpdateCollectionPercentageAsync(CollectionPercentage collectionPercentage, bool sortOnly = false)
-        {
-            var percentages = await _biobankReadService.ListCollectionPercentagesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                collectionPercentage.Value =
-                    percentages
-                        .Where(x => x.Id == collectionPercentage.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldPercentage = percentages.Where(x => x.Id == collectionPercentage.Id).First();
-            var reverse = (oldPercentage.SortOrder < collectionPercentage.SortOrder);
-
-            var newOrder = percentages
-                    .Prepend(collectionPercentage)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_collectionPercentageRepository.Update);
-
-            await _collectionPercentageRepository.SaveChangesAsync();
-
-            return collectionPercentage;
-        }
-
-        public async Task DeleteCollectionPercentageAsync(CollectionPercentage collectionPercentage)
-        {
-            await _collectionPercentageRepository.DeleteAsync(collectionPercentage.Id);
-            await _collectionPercentageRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Consent Restrictions
-        public async Task<ConsentRestriction> AddConsentRestrictionAsync(ConsentRestriction consentRestriction)
-        {
-            _consentRestrictionRepository.Insert(consentRestriction);
-            await _consentRestrictionRepository.SaveChangesAsync();
-
-            return consentRestriction;
-        }
-
-        public async Task<ConsentRestriction> UpdateConsentRestrictionAsync(ConsentRestriction consentRestriction, bool sortOnly = false)
-        {
-            var restrictions = await _biobankReadService.ListConsentRestrictionsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                consentRestriction.Value =
-                    restrictions
-                        .Where(x => x.Id == consentRestriction.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldRestriction = restrictions.Where(x => x.Id == consentRestriction.Id).First();
-            var reverse = (oldRestriction.SortOrder < consentRestriction.SortOrder);
-
-            var newOrder = restrictions
-                    .Prepend(consentRestriction)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_consentRestrictionRepository.Update);
-
-            await _consentRestrictionRepository.SaveChangesAsync();
-
-            return consentRestriction;
-        }
-
-        public async Task DeleteConsentRestrictionAsync(ConsentRestriction consentRestriction)
-        {
-            await _consentRestrictionRepository.DeleteAsync(consentRestriction.Id);
-            await _consentRestrictionRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Donor Count
-        public async Task<DonorCount> AddDonorCountAsync(DonorCount donorCount)
-        {
-            _donorCountRepository.Insert(donorCount);
-            await _donorCountRepository.SaveChangesAsync();
-
-            return donorCount;
-        }
-
-        public async Task<DonorCount> UpdateDonorCountAsync(DonorCount donorCount, bool sortOnly = false)
-        {
-            var donorCounts = await _biobankReadService.ListDonorCountsAsync(true);
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                donorCount.Value =
-                    donorCounts
-                        .Where(x => x.Id == donorCount.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldCount = donorCounts.Where(x => x.Id == donorCount.Id).First();
-            var reverse = (oldCount.SortOrder < donorCount.SortOrder);
-
-            var newOrder = donorCounts
-                    .Prepend(donorCount)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_donorCountRepository.Update);
-
-            await _donorCountRepository.SaveChangesAsync();
-
-            return donorCount;
-        }
-
-        public async Task DeleteDonorCountAsync(DonorCount donorCount)
-        {
-            await _donorCountRepository.DeleteAsync(donorCount.Id);
-            await _donorCountRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Macroscopic Assessment
-        public async Task<MacroscopicAssessment> AddMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment)
-        {
-            _macroscopicAssessmentRepository.Insert(macroscopicAssessment);
-            await _macroscopicAssessmentRepository.SaveChangesAsync();
-
-            return macroscopicAssessment;
-        }
-        
-        public async Task<MacroscopicAssessment> UpdateMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment, bool sortOnly = false)
-        {
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                macroscopicAssessment.Value =
-                    assessments
-                        .Where(x => x.Id == macroscopicAssessment.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldAssessment = assessments.Where(x => x.Id == macroscopicAssessment.Id).First();
-            var reverse = (oldAssessment.SortOrder < macroscopicAssessment.SortOrder);
-
-            var newOrder = assessments
-                    .Prepend(macroscopicAssessment)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_macroscopicAssessmentRepository.Update);
-
-            await _macroscopicAssessmentRepository.SaveChangesAsync();
-
-            return macroscopicAssessment;
-        }
-
-        public async Task DeleteMacroscopicAssessmentAsync(MacroscopicAssessment macroscopicAssessment)
-        {
-            await _macroscopicAssessmentRepository.DeleteAsync(macroscopicAssessment.Id);
-            await _macroscopicAssessmentRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Age Range
-        public async Task<AgeRange> AddAgeRangeAsync(AgeRange ageRange)
-        {
-            _ageRangeRepository.Insert(ageRange);
-            await _ageRangeRepository.SaveChangesAsync();
-
-            return ageRange;
-        }
-
-        public async Task<AgeRange> UpdateAgeRangeAsync(AgeRange ageRange, bool sortOnly = false)
-        {
-            var types = await _biobankReadService.ListAgeRangesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                ageRange.Value =
-                    types
-                        .Where(x => x.Id == ageRange.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldType = types.Where(x => x.Id == ageRange.Id).First();
-            var reverse = (oldType.SortOrder < ageRange.SortOrder);
-
-            var newOrder = types
-                    .Prepend(ageRange)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_ageRangeRepository.Update);
-
-            await _ageRangeRepository.SaveChangesAsync();
-
-            return ageRange;
-        }
-
-        public async Task DeleteAgeRangeAsync(AgeRange ageRange)
-        {
-            await _ageRangeRepository.DeleteAsync(ageRange.Id);
-            await _ageRangeRepository.SaveChangesAsync();
-        }
-        #endregion
-        
+       
         #region RefData: Sop Status
         public async Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus)
         {
@@ -1102,30 +716,6 @@ namespace Biobanks.Services
         {
             await _sopStatusRepository.DeleteAsync(sopStatus.Id);
             await _sopStatusRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Annual Statistic
-        public async Task<AnnualStatistic> AddAnnualStatisticAsync(AnnualStatistic annualStatistic)
-        {
-            _annualStatisticRepository.Insert(annualStatistic);
-            await _annualStatisticRepository.SaveChangesAsync();
-
-            return annualStatistic;
-        }
-
-        public async Task<AnnualStatistic> UpdateAnnualStatisticAsync(AnnualStatistic annualStatistic, bool sortOnly = false)
-        {
-            _annualStatisticRepository.Update(annualStatistic);
-            await _annualStatisticRepository.SaveChangesAsync();
-
-            return annualStatistic;
-        }
-
-        public async Task DeleteAnnualStatisticAsync(AnnualStatistic annualStatistic)
-        {
-            await _annualStatisticRepository.DeleteAsync(annualStatistic.Id);
-            await _annualStatisticRepository.SaveChangesAsync();
         }
         #endregion
 
@@ -1445,114 +1035,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: Collection Type
-        public async Task DeleteCollectionTypeAsync(CollectionType collectionType)
-        {
-            await _collectionTypeRepository.DeleteAsync(collectionType.Id);
-            await _collectionTypeRepository.SaveChangesAsync();
-        }
-
-        public async Task<CollectionType> UpdateCollectionTypeAsync(CollectionType collectionType, bool sortOnly = false)
-        {
-            var types = await _biobankReadService.ListCollectionTypesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                collectionType.Value =
-                    types
-                        .Where(x => x.Id == collectionType.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Insert respecting Sort Order
-            types
-                .Prepend(collectionType)          // Add new item
-                .GroupBy(x => x.Id) // Remove old item of same ID
-                .Select(x => x.First())
-                .OrderByDescending(x => x.SortOrder)    // Order giving priority to new item
-                .Reverse()
-                .Select((x, i) =>                       // Reindex, starting at 1
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_collectionTypeRepository.Update);
-
-            await _collectionTypeRepository.SaveChangesAsync();
-
-            return collectionType;
-        }
-
-        public async Task<CollectionType> AddCollectionTypeAsync(CollectionType collectionType)
-        {
-            _collectionTypeRepository.Insert(collectionType);
-            await _collectionTypeRepository.SaveChangesAsync();
-
-            return collectionType;
-        }
-        #endregion
-
-        #region RefData: Service Offerings
-        public async Task<ServiceOffering> AddServiceOfferingAsync(ServiceOffering serviceOffering)
-        {
-            _serviceOfferingRepository.Insert(serviceOffering);
-            await _serviceOfferingRepository.SaveChangesAsync();
-
-            return serviceOffering;
-        }
-
-        public async Task<ServiceOffering> UpdateServiceOfferingAsync (ServiceOffering serviceOffering, bool sortOnly = false)
-        {
-            var offerings = await _biobankReadService.ListServiceOfferingsAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                serviceOffering.Value =
-                    offerings
-                        .Where(x => x.Id == serviceOffering.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldStatus = offerings.Where(x => x.Id == serviceOffering.Id).First();
-            var reverse = (oldStatus.SortOrder < serviceOffering.SortOrder);
-
-            var newOrder = offerings
-                    .Prepend(serviceOffering)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_serviceOfferingRepository.Update);
-
-            await _serviceOfferingRepository.SaveChangesAsync();
-
-            return serviceOffering;
-        }
-      
-        public async Task DeleteServiceOfferingAsync(ServiceOffering serviceOffering)
-        {
-            await _serviceOfferingRepository.DeleteAsync(serviceOffering.Id);
-            await _serviceOfferingRepository.SaveChangesAsync();
-        }
-        #endregion
 
         #region RefData: Sex
         public async Task<Sex> AddSexAsync(Sex sex)
@@ -1635,71 +1117,6 @@ namespace Biobanks.Services
             return associatedDataType;
         }
 
-        #region RefData: Country
-        public async Task<Country> AddCountryAsync(Country country)
-        {
-            _countryRepository.Insert(country);
-            await _countryRepository.SaveChangesAsync();
-
-            return country;
-        }
-
-        public async Task<Country> UpdateCountryAsync(Country country)
-        {
-            _countryRepository.Update(country);
-            await _countryRepository.SaveChangesAsync();
-
-            return country;
-        }
-
-        public async Task DeleteCountryAsync(Country country)
-        {
-            await _countryRepository.DeleteAsync(country.Id);
-            await _countryRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: County
-        public async Task<County> AddCountyAsync(County county) {
-            _countyRepository.Insert(county);
-            await _countyRepository.SaveChangesAsync();
-
-            return county;
-        }
-
-        public async Task<County> UpdateCountyAsync(County county) {
-            _countyRepository.Update(county);
-            await _countyRepository.SaveChangesAsync();
-
-            return county;
-        }
-        public async Task DeleteCountyAsync(County county)
-        {
-            await _countyRepository.DeleteAsync(county.Id);
-            await _countyRepository.SaveChangesAsync();
-        }
-
-        #endregion
-        
-        public async Task DeleteRegistrationReasonAsync(RegistrationReason registrationReason)
-        {
-            await _registrationReasonRepository.DeleteAsync(registrationReason.Id);
-            await _registrationReasonRepository.SaveChangesAsync();
-        }
-        public async Task<RegistrationReason> UpdateRegistrationReasonAsync(RegistrationReason registrationReason)
-        {
-            _registrationReasonRepository.Update(registrationReason);
-            await _registrationReasonRepository.SaveChangesAsync();
-            return registrationReason;
-        }
-
-        public async Task<RegistrationReason> AddRegistrationReasonAsync(RegistrationReason registrationReason)
-        {
-            _registrationReasonRepository.Insert(registrationReason);
-            await _registrationReasonRepository.SaveChangesAsync();
-
-            return registrationReason;
-        }
         public async Task<Organisation> SuspendBiobankAsync(int id)
         {
             var biobank = await _organisationRepository.GetByIdAsync(id);
@@ -1900,27 +1317,6 @@ namespace Biobanks.Services
             await _associatedDataTypeGroupRepository.SaveChangesAsync();
 
             return associatedDataTypeGroup;
-        }
-        public async Task DeleteAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
-        {
-            await _annualStatisticGroupRepository.DeleteAsync(annualStatisticGroup.Id);
-            await _annualStatisticGroupRepository.SaveChangesAsync();
-        }
-
-        public async Task<AnnualStatisticGroup> UpdateAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
-        {
-            _annualStatisticGroupRepository.Update(annualStatisticGroup);
-            await _annualStatisticGroupRepository.SaveChangesAsync();
-
-            return annualStatisticGroup;
-        }
-
-        public async Task<AnnualStatisticGroup> AddAnnualStatisticGroupAsync(AnnualStatisticGroup annualStatisticGroup)
-        {
-            _annualStatisticGroupRepository.Insert(annualStatisticGroup);
-            await _annualStatisticGroupRepository.SaveChangesAsync();
-
-            return annualStatisticGroup;
         }
 
         public async Task<KeyValuePair<string,string>> GenerateNewApiClientForBiobank(int biobankId, string clientName=null)

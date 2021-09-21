@@ -5,5 +5,5 @@ namespace Biobanks.Entities.Api.ReferenceData
     /// <summary>
     /// Treatment Location entity.
     /// </summary>
-    public class TreatmentLocation : ReferenceDataBase { }
+    public class TreatmentLocation : BaseReferenceData { }
 }

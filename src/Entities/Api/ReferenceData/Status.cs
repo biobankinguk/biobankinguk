@@ -2,5 +2,5 @@
 
 namespace Biobanks.Entities.Api.ReferenceData
 {
-    public class Status : ReferenceDataBase { }
+    public class Status : BaseReferenceData { }
 }

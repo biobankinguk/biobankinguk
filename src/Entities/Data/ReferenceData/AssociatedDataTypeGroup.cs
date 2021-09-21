@@ -2,7 +2,7 @@
 
 namespace Biobanks.Entities.Data.ReferenceData
 {
-    public class AssociatedDataTypeGroup : ReferenceDataBase
+    public class AssociatedDataTypeGroup : BaseReferenceData
     {
         public virtual ICollection<AssociatedDataType> AssociatedDataTypes { get; set; }
     }

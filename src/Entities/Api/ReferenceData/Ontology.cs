@@ -6,7 +6,7 @@ namespace Biobanks.Entities.Api.ReferenceData
     /// <summary>
     /// Ontology - for examples, see https://www.ebi.ac.uk/ols/ontologies.
     /// </summary>
-    public class Ontology : ReferenceDataBase
+    public class Ontology : BaseReferenceData
     {
         /// <summary>
         /// Versions available for this ontology.
