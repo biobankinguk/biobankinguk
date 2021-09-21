@@ -662,11 +662,6 @@ namespace Biobanks.Services
 
             await _ontologyTermRepository.SaveChangesAsync();
         }
-
-
-            return collectionPercentage;
-        }
-
        
         #region RefData: Sop Status
         public async Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus)
