@@ -40,7 +40,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Network> _networkRepository;
         private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
         private readonly IGenericEFRepository<NetworkRegisterRequest> _networkRegisterRequestRepository;
-        private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _networkOrganisationRepository;
 
         private readonly IGenericEFRepository<Organisation> _organisationRepository;
@@ -92,7 +91,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Network> networkRepository,
             IGenericEFRepository<NetworkUser> networkUserRepository,
             IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
-            IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<OrganisationNetwork> networkOrganisationRepository,
 
             IGenericEFRepository<Organisation> organisationRepository,
@@ -141,7 +139,6 @@ namespace Biobanks.Services
             _networkRepository = networkRepository;
             _networkUserRepository = networkUserRepository;
             _networkRegisterRequestRepository = networkRegisterRequestRepository;
-            _sopStatusRepository = sopStatusRepository;
             _networkOrganisationRepository = networkOrganisationRepository;
 
             _organisationRepository = organisationRepository;
@@ -810,20 +807,6 @@ namespace Biobanks.Services
                     x.Value == value &&
                     x.StorageTemperatureId == storageTemperatureId)
                 ).Any();
-        #endregion
-
-        #region RefData: Sop Status
-        public async Task<IEnumerable<SopStatus>> ListSopStatusesAsync()
-            => await _sopStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidSopStatusAsync(string sopStatusDescription)
-            => (await _sopStatusRepository.ListAsync(false, x => x.Value == sopStatusDescription)).Any();
-
-        public async Task<bool> IsSopStatusInUse(int id)
-            => (await GetSopStatusUsageCount(id)) > 0;
-
-        public async Task<int> GetSopStatusUsageCount(int id)
-            => (await _networkRepository.ListAsync(false, x => x.SopStatusId == id)).Count();
         #endregion
 
         #region RefData: StorageTemperature

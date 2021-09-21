@@ -69,10 +69,6 @@ namespace Biobanks.Services.Contracts
         Task<Sex> UpdateSexAsync(Sex sex, bool sortOnly = false);
         Task DeleteSexAsync(Sex sex);
 
-        Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus);
-        Task<SopStatus> UpdateSopStatusAsync(SopStatus sopStatus, bool sortOnly = false);
-        Task DeleteSopStatusAsync(SopStatus sopStatus);
-
         Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
         Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
         Task DeletePreservationTypeAsync(PreservationType preservationType);
