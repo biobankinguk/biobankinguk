@@ -62,6 +62,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<AccessCondition> _accessConditionService;
         private readonly IReferenceDataService<Funder> _funderService;
         private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataService<MaterialType> _materialTypeService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -96,6 +97,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<CollectionStatus> collectionStatusService,
             IReferenceDataService<Funder> funderService,
             IReferenceDataService<Sex> sexService,
+            IReferenceDataService<MaterialType> materialTypeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -124,6 +126,7 @@ namespace Biobanks.Web.Controllers
             _collectionStatusService = collectionStatusService;
             _funderService = funderService;
             _sexService = sexService;
+            _materialTypeService = materialTypeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1501,7 +1504,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
+            model.MaterialTypes = (await _materialTypeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
