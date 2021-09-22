@@ -17,13 +17,16 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/StorageTemperature")]
     public class StorageTemperatureController : ApiBaseController
     {
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
         private readonly IConfigService _configService;
 
         public StorageTemperatureController(
+            IReferenceDataService<PreservationType> preservationTypeService,
             IReferenceDataService<StorageTemperature> storageTemperatureService,
             IConfigService configService)
         {
+            _preservationTypeService = preservationTypeService;
             _storageTemperatureService = storageTemperatureService;
             _configService = configService;
         }
@@ -176,6 +179,9 @@ namespace Biobanks.Web.ApiControllers
         [AllowAnonymous]
         [Route("{storageTemperature}/preservationtype")]
         public async Task<IList> GetValidPreservationTypes(int storageTemperature)
-            => (await _biobankReadService.ListPreservationTypesAsync()).Where(x => x.StorageTemperatureId == storageTemperature).Select(x => x.Id).ToList();
+            => (await _preservationTypeService.List())
+                .Where(x => x.StorageTemperatureId == storageTemperature)
+                .Select(x => x.Id)
+                .ToList();
     }
 }

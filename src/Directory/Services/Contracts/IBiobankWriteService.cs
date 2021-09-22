@@ -65,10 +65,6 @@ namespace Biobanks.Services.Contracts
         Task<MaterialTypeGroup> UpdateMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
         Task DeleteMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
 
-        Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
-        Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
-        Task DeletePreservationTypeAsync(PreservationType preservationType);
-
         Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
         Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
         Task<AssociatedDataType> AddAssociatedDataTypeAsync(AssociatedDataType associatedDataType);

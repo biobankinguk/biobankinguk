@@ -129,7 +129,6 @@ namespace Biobanks.Services
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _organisationNetworkRepository = organisationNetworkRepository;
             _organisationUserRepository = organisationUserRepository;
-            
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
@@ -752,23 +751,6 @@ namespace Biobanks.Services
                 x => x.Value == associatedDataTypeGroupName &&
                      x.Id != associatedDataTypeGroupId)).Any();
 
-        #endregion
-
-         #region RefData: Preservation Type
-        public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
-            => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetPreservationTypeUsageCount(int id)
-        => await _materialDetailRepository.CountAsync(x => x.PreservationTypeId == id);
-
-        public async Task<bool> IsPreservationTypeInUse(int id)
-            => (await GetPreservationTypeUsageCount(id)) > 0;
-
-        public async Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId)
-            => (await _preservationTypeRepository.ListAsync(false, x =>
-                    x.Value == value &&
-                    x.StorageTemperatureId == storageTemperatureId)
-                ).Any();
         #endregion
 
         #region RefData: OntologyTerm

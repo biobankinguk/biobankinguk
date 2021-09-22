@@ -50,11 +50,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
         Task<bool> IsMaterialTypeGroupInUse(int id);
 
-        Task<IEnumerable<PreservationType>> ListPreservationTypesAsync();
-        Task<int> GetPreservationTypeUsageCount(int id);
-        Task<bool> IsPreservationTypeInUse(int id);
-        Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId);
-
         Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames();
         Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id);
         Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id);

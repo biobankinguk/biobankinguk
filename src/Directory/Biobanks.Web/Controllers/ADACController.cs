@@ -52,7 +52,11 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<Funder> _funderService;
         private readonly IReferenceDataService<SopStatus> _sopStatusService;
         private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataService<SopStatus> _sopStatusService;
+        private readonly IReferenceDataService<Sex> _sexService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -89,6 +93,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<Funder> funderService,
             IReferenceDataService<SopStatus> sopStatusService,
             IReferenceDataService<Sex> sexService,
+            IReferenceDataService<PreservationType> preservationType,
             IReferenceDataService<StorageTemperature> storageTemperatureService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -121,6 +126,7 @@ namespace Biobanks.Web.Controllers
             _funderService = funderService;
             _sopStatusService = sopStatusService;
             _sexService = sexService;
+            _preservationTypeService = preservationType;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1369,24 +1375,21 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> PreservationTypes()
         {
-            var models = (await _biobankReadService.ListPreservationTypesAsync())
+            var models = (await _preservationTypeService.List())
                 .Select(x =>
-                    new PreservationTypeModel()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                        StorageTemperatureId = x.StorageTemperatureId,
-                        StorageTemperatureName = x.StorageTemperature?.Value ?? ""
-                    }
+                    Task.Run(async () =>    
+                        new PreservationTypeModel()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            StorageTemperatureId = x.StorageTemperatureId,
+                            StorageTemperatureName = x.StorageTemperature?.Value ?? "",
+                            PreservationTypeCount = await _preservationTypeService.GetUsageCount(x.Id)
+                        }
+                    ).Result
                 )
                 .ToList();
-
-            // Fetch Sample Set Count
-            foreach (var model in models)
-            {
-                model.PreservationTypeCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
-            }
 
             return View(new PreservationTypesModel
             {

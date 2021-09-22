@@ -62,6 +62,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<AccessCondition> _accessConditionService;
         private readonly IReferenceDataService<Funder> _funderService;
         private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
 
         private readonly IBiobankReadService _biobankReadService;
@@ -97,6 +98,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<CollectionStatus> collectionStatusService,
             IReferenceDataService<Funder> funderService,
             IReferenceDataService<Sex> sexService,
+            IReferenceDataService<PreservationType> preservationTypeService,
             IReferenceDataService<StorageTemperature> storageTemperatureService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -126,6 +128,7 @@ namespace Biobanks.Web.Controllers
             _collectionStatusService = collectionStatusService;
             _funderService = funderService;
             _sexService = sexService;
+            _preservationTypeService = preservationTypeService;
             _storageTemperatureService = storageTemperatureService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -1528,7 +1531,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.Description);
 
-            model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
+            model.PreservationTypes = (await _preservationTypeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
