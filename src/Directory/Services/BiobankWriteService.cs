@@ -749,7 +749,7 @@ namespace Biobanks.Services
                 .ToList()
                 .ForEach(_preservationTypeRepository.Update);
 
-            await _storageTemperatureRepository.SaveChangesAsync();
+            await _preservationTypeRepository.SaveChangesAsync();
 
             return preservationType;
         }

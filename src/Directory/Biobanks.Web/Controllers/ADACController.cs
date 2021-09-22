@@ -52,6 +52,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<Funder> _funderService;
         private readonly IReferenceDataService<SopStatus> _sopStatusService;
         private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -88,6 +89,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<Funder> funderService,
             IReferenceDataService<SopStatus> sopStatusService,
             IReferenceDataService<Sex> sexService,
+            IReferenceDataService<StorageTemperature> storageTemperatureService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -1342,7 +1344,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> StorageTemperatures()
         {
-            var models = (await _biobankReadService.ListStorageTemperaturesAsync())
+            var models = (await _storageTemperatureService.List())
                 .Select(x =>
                     new StorageTemperatureModel()
                     {
@@ -1356,7 +1358,7 @@ namespace Biobanks.Web.Controllers
             // Fetch Sample Set Count and whether a Preservation Type is using this storage temperature
             foreach (var model in models)
             {
-                model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
+                model.SampleSetsCount = await _storageTemperatureService.GetUsageCount(model.Id);
                 model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
             }
 
@@ -1393,7 +1395,7 @@ namespace Biobanks.Web.Controllers
             return View(new PreservationTypesModel
             {
                 PreservationTypes = models,
-                StorageTemperatures = await _biobankReadService.ListStorageTemperaturesAsync()
+                StorageTemperatures = await _storageTemperatureService.List()
             });
         }
 
