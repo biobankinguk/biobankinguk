@@ -21,9 +21,7 @@ namespace Biobanks.Services.Contracts
         Task<Organisation> GetBiobankByNameAsync(string biobankName);
         Task<Blob> GetLogoBlobAsync(string logoName);
         
-        
         Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync();
-
 
         Task<SampleSet> GetSampleSetByIdAsync(int id);
         Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id);
@@ -63,11 +61,6 @@ namespace Biobanks.Services.Contracts
         Task<bool> IsStorageTemperatureInUse(int id);
         Task<bool> IsStorageTemperatureAssigned(int id);
         Task<int> GetStorageTemperatureUsageCount(int id);
-
-        Task<IEnumerable<SopStatus>> ListSopStatusesAsync();
-        Task<bool> ValidSopStatusAsync(string sopStatusDescription);
-        Task<bool> IsSopStatusInUse(int id);
-        Task<int> GetSopStatusUsageCount(int id);
 
         Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames();
         Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id);

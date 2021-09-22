@@ -36,7 +36,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<Sex> _sexRepository;
-        private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
@@ -83,8 +82,6 @@ namespace Biobanks.Services
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
-            IGenericEFRepository<SopStatus> sopStatusRepository,
-            IGenericEFRepository<Country> countryRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
@@ -122,7 +119,6 @@ namespace Biobanks.Services
 
             _ontologyTermRepository = ontologyTermRepository;
             _storageTemperatureRepository = storageTemperatureRepository;
-            _sopStatusRepository = sopStatusRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
             _materialTypeRepository = materialTypeRepository;
@@ -657,65 +653,6 @@ namespace Biobanks.Services
             await _ontologyTermRepository.SaveChangesAsync();
         }
        
-        #region RefData: Sop Status
-        public async Task<SopStatus> AddSopStatusAsync(SopStatus sopStatus)
-        {
-            _sopStatusRepository.Insert(sopStatus);
-            await _sopStatusRepository.SaveChangesAsync();
-
-            return sopStatus;
-        }
-
-        public async Task<SopStatus> UpdateSopStatusAsync(SopStatus sopStatus, bool sortOnly = false)
-        {
-            var statuses = await _biobankReadService.ListSopStatusesAsync();
-            
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                sopStatus.Value =
-                    statuses
-                        .Where(x => x.Id == sopStatus.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldStatus = statuses.Where(x => x.Id == sopStatus.Id).First();
-            var reverse = (oldStatus.SortOrder < sopStatus.SortOrder);
-
-            var newOrder = statuses
-                    .Prepend(sopStatus)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_sopStatusRepository.Update);
-
-            await _sopStatusRepository.SaveChangesAsync();
-
-            return sopStatus;
-        }
-
-        public async Task DeleteSopStatusAsync(SopStatus sopStatus)
-        {
-            await _sopStatusRepository.DeleteAsync(sopStatus.Id);
-            await _sopStatusRepository.SaveChangesAsync();
-        }
-        #endregion
-
         #region RefData: Associated Data Procurement Time Frame
         public async Task<AssociatedDataProcurementTimeframe> AddAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe timeframe)
         {
@@ -775,7 +712,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-   
         #region RefData: PreservationType
         public async Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType)
         {
@@ -972,7 +908,6 @@ namespace Biobanks.Services
             return materialTypeGroup;
         }
         #endregion
-
 
         #region RefData: Sex
         public async Task<Sex> AddSexAsync(Sex sex)
