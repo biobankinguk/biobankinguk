@@ -35,7 +35,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
-        private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
@@ -78,7 +77,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
-            IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
@@ -123,7 +121,6 @@ namespace Biobanks.Services
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
-            _sexRepository = sexRepository;
 
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
@@ -909,66 +906,7 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: Sex
-        public async Task<Sex> AddSexAsync(Sex sex)
-        {
-            _sexRepository.Insert(sex);
-            await _sexRepository.SaveChangesAsync();
-
-            return sex;
-        }
-
-        public async Task<Sex> UpdateSexAsync(Sex sex, bool sortOnly = false)
-        {
-            var sexes = await _biobankReadService.ListSexesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                sex.Value =
-                    sexes
-                        .Where(x => x.Id == sex.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldType = sexes.Where(x => x.Id == sex.Id).First();
-            var reverse = (oldType.SortOrder < sex.SortOrder);
-
-            var newOrder = sexes
-                    .Prepend(sex)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_sexRepository.Update);
-
-            await _sexRepository.SaveChangesAsync();
-
-            return sex;
-        }
-
-        public async Task DeleteSexAsync(Sex sex)
-        {
-            await _sexRepository.DeleteAsync(sex.Id);
-            await _sexRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        //delete adt
+         //delete adt
         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
         {
             await _associatedDataTypeRepository.DeleteAsync(associatedDataType.Id);
