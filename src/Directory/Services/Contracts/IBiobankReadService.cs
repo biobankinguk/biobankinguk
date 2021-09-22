@@ -36,7 +36,6 @@ namespace Biobanks.Services.Contracts
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
 
-        Task<IEnumerable<Sex>> ListSexesAsync();
         Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync();
         Task<IEnumerable<AssociatedDataTypeGroup>> ListAssociatedDataTypeGroupsAsync(string wildcard = "");
         Task<int> GetAssociatedDataTypeGroupCount(int associatedDataTypeGroupId);
@@ -93,10 +92,6 @@ namespace Biobanks.Services.Contracts
 
         Task<int> GetServiceOfferingOrganisationCount(int id);
 
-        Task<int> GetSexCount(int id);
-        Task<bool> ValidSexDescriptionAsync(string sexDescription);
-        Task<bool> ValidSexDescriptionAsync(int sexId, string sexDescription);
-
         Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
 
         Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
@@ -129,7 +124,6 @@ namespace Biobanks.Services.Contracts
 
         Task<bool> IsMaterialTypeInUse(int id);
         Task<bool> IsAssociatedDataTypeInUse(int id);
-        Task<bool> IsSexInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();

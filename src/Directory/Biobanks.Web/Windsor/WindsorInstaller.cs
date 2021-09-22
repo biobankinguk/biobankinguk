@@ -27,6 +27,7 @@ using System.Web.Http;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Directory.Services;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.Windsor
 {
@@ -191,12 +192,16 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(SopStatusService))
                     .LifeStyle.Transient,
 
-                Component.For(typeof(IRegistrationDomainService))
-                    .ImplementedBy(typeof(RegistrationDomainService))
-                    .LifeStyle.Transient,
-
                 Component.For(typeof(IReferenceDataService<AccessCondition>))
                     .ImplementedBy(typeof(AccessConditionService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<Sex>))
+                    .ImplementedBy(typeof(SexService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IRegistrationDomainService))
+                    .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,
 
                 // Doubled up For because Hangfire requires both concrete class and interface.

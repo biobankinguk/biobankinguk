@@ -31,8 +31,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CapabilityAssociatedData> _capabilityAssociatedDataRepository;
      
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
-        private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
@@ -47,7 +45,6 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
         private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
-        private readonly IGenericEFRepository<Sex> _sexRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
@@ -60,17 +57,10 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
-        private readonly IGenericEFRepository<County> _countyRepository;
-        private readonly IGenericEFRepository<Country> _countryRepository;
-
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
-
-        private readonly ICacheProvider _cacheProvider;
-
-        private readonly ISearchProvider _searchProvider;
 
         private readonly BiobanksDbContext _context;
 
@@ -81,8 +71,6 @@ namespace Biobanks.Services
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<CapabilityAssociatedData> capabilityAssociatedDataRepository,
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
-            IGenericEFRepository<SampleSet> collectionSampleSetRepository,
-            IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
@@ -96,7 +84,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationType> organisationTypeRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
-            IGenericEFRepository<Sex> sexRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
@@ -111,13 +98,6 @@ namespace Biobanks.Services
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
-            ICacheProvider cacheProvider,
-
-            ISearchProvider searchProvider,
-
-            IGenericEFRepository<County> countyRepository,
-            IGenericEFRepository<Country> countryRepository, 
-
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
             
@@ -129,8 +109,6 @@ namespace Biobanks.Services
             _capabilityRepository = capabilityRepository;
             _collectionAssociatedDataRepository = collectionAssociatedDataRepository;
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
-            _collectionSampleSetRepository = collectionSampleSetRepository;
-            _ontologyTermRepository = ontologyTermRepository;
             _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
             _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
@@ -143,7 +121,6 @@ namespace Biobanks.Services
 
             _organisationRepository = organisationRepository;
             _organisationTypeRepository = organisationTypeRepository;
-            _sexRepository = sexRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
@@ -154,18 +131,11 @@ namespace Biobanks.Services
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _organisationNetworkRepository = organisationNetworkRepository;
             _organisationUserRepository = organisationUserRepository;
-
-
+            
             _storageTemperatureRepository = storageTemperatureRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
-
-            _cacheProvider = cacheProvider;
-
-            _searchProvider = searchProvider;
-            _countyRepository = countyRepository;
-            _countryRepository = countryRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
@@ -417,8 +387,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsAssociatedDataTypeInUse(int id)
             => (await GetAssociatedDataTypeCollectionCapabilityCount(id) > 0);
-        public async Task<bool> IsSexInUse(int id)
-            => (await GetSexCount(id) > 0);
 
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
@@ -742,9 +710,6 @@ namespace Biobanks.Services
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
 
-        public async Task<IEnumerable<Sex>> ListSexesAsync()
-            => await _sexRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
         public async Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync()
             => await _associatedDataTypeRepository.ListAsync();
 
@@ -967,18 +932,6 @@ namespace Biobanks.Services
             => (await _organisationServiceOfferingRepository.ListAsync(
             false,
              x => x.ServiceOfferingId == id)).Count();
-
-        public async Task<int> GetSexCount(int id)
-            => await _sampleSetRepository.CountAsync(x => x.SexId == id);
-
-        public async Task<bool> ValidSexDescriptionAsync(string sexDescription)
-            => (await _sexRepository.ListAsync(false, x => x.Value == sexDescription)).Any();
-
-        public async Task<bool> ValidSexDescriptionAsync(int sexId, string sexDescription)
-            => (await _sexRepository.ListAsync(
-                false,
-                x => x.Value == sexDescription &&
-                     x.Id != sexId)).Any();
 
         public async Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id)
         => (await _collectionAssociatedDataRepository.ListAsync(
