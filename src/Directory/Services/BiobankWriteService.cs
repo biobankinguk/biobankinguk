@@ -32,7 +32,6 @@ namespace Biobanks.Services
         private readonly ILogoStorageProvider _logoStorageProvider;
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
-        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
@@ -79,7 +78,6 @@ namespace Biobanks.Services
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
-            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
@@ -116,7 +114,6 @@ namespace Biobanks.Services
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
-            _storageTemperatureRepository = storageTemperatureRepository;
             _associatedDataTypeRepository = associatedDataTypeRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
             _materialTypeRepository = materialTypeRepository;
@@ -761,65 +758,6 @@ namespace Biobanks.Services
         {
             await _preservationTypeRepository.DeleteAsync(preservationType.Id);
             await _preservationTypeRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Storage Temperature
-        public async Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature)
-        {
-            _storageTemperatureRepository.Insert(storageTemperature);
-            await _storageTemperatureRepository.SaveChangesAsync();
-
-            return storageTemperature;
-        }
-
-        public async Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly = false)
-        {
-            var types = await _biobankReadService.ListStorageTemperaturesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                storageTemperature.Value =
-                    types
-                        .Where(x => x.Id == storageTemperature.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldType = types.Where(x => x.Id == storageTemperature.Id).First();
-            var reverse = (oldType.SortOrder < storageTemperature.SortOrder);
-
-            var newOrder = types
-                    .Prepend(storageTemperature)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_storageTemperatureRepository.Update);
-
-            await _storageTemperatureRepository.SaveChangesAsync();
-
-            return storageTemperature;
-        }
-
-        public async Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature)
-        {
-            await _storageTemperatureRepository.DeleteAsync(storageTemperature.Id);
-            await _storageTemperatureRepository.SaveChangesAsync();
         }
         #endregion
 
