@@ -6,6 +6,7 @@ using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Identity.Constants;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
@@ -60,6 +61,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
         private readonly IReferenceDataService<AccessCondition> _accessConditionService;
         private readonly IReferenceDataService<Funder> _funderService;
+        private readonly IReferenceDataService<Sex> _sexService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -93,6 +95,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<AccessCondition> accessConditionService,
             IReferenceDataService<CollectionStatus> collectionStatusService,
             IReferenceDataService<Funder> funderService,
+            IReferenceDataService<Sex> sexService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -120,6 +123,7 @@ namespace Biobanks.Web.Controllers
             _accessConditionService = accessConditionService;
             _collectionStatusService = collectionStatusService;
             _funderService = funderService;
+            _sexService = sexService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1465,7 +1469,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<AbstractCRUDSampleSetModel> PopulateAbstractCRUDSampleSetModel(AbstractCRUDSampleSetModel model)
         {
-            model.Sexes = (await _biobankReadService.ListSexesAsync())
+            model.Sexes = (await _sexService.List())
                 .Select(
                     x => new ReferenceDataModel
                     {

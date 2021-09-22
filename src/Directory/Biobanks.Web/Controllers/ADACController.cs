@@ -25,6 +25,7 @@ using System.Net.Http;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
@@ -50,6 +51,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
         private readonly IReferenceDataService<Funder> _funderService;
         private readonly IReferenceDataService<SopStatus> _sopStatusService;
+        private readonly IReferenceDataService<Sex> _sexService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -85,6 +87,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<CollectionStatus> collectionStatusService,
             IReferenceDataService<Funder> funderService,
             IReferenceDataService<SopStatus> sopStatusService,
+            IReferenceDataService<Sex> sexService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -115,6 +118,7 @@ namespace Biobanks.Web.Controllers
             _collectionStatusService = collectionStatusService;
             _funderService = funderService;
             _sopStatusService = sopStatusService;
+            _sexService = sexService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1549,14 +1553,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new SexesModel
             {
-                Sexes = (await _biobankReadService.ListSexesAsync())
+                Sexes = (await _sexService.List())
                     .Select(x =>
 
                     Task.Run(async () => new ReadSexModel
                     {
                         Id = x.Id,
                         Description = x.Value,
-                        SexCount = await _biobankReadService.GetSexCount(x.Id),
+                        SexCount = await _sexService.GetUsageCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
