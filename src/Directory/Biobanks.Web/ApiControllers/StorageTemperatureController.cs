@@ -35,21 +35,17 @@ namespace Biobanks.Web.ApiControllers
         {
             var models = (await _storageTemperatureService.List())
                 .Select(x =>
-                    new StorageTemperatureModel()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                    }
+                    Task.Run(async () =>
+                        new StorageTemperatureModel()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            InUse = await _storageTemperatureService.IsInUse(x.Id)
+                        }
+                    ).Result
                 )
                 .ToList();
-
-            // Fetch Sample Set Count
-            foreach (var model in models)
-            {
-                model.SampleSetsCount = await _storageTemperatureService.GetUsageCount(model.Id);
-                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
-            }
 
             return models;
         }
@@ -104,7 +100,7 @@ namespace Biobanks.Web.ApiControllers
             }
 
             // If in use, prevent update
-            if ((model.SampleSetsCount > 0) || model.UsedByPreservationTypes)
+            if (model.InUse)
             {
                 ModelState.AddModelError("StorageTemperature", $"The storage temperature \"{model.Value}\" is currently in use, and cannot be updated.");
             }
@@ -135,11 +131,8 @@ namespace Biobanks.Web.ApiControllers
         {
             var model = await _storageTemperatureService.Get(id);
 
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
-
             // If in use, prevent update
-            if (await _storageTemperatureService.IsInUse(id) || await _biobankReadService.IsStorageTemperatureAssigned(id))
+            if (await _storageTemperatureService.IsInUse(id))
             {
                 ModelState.AddModelError("StorageTemperature", $"The storage temperature \"{model.Value}\" is currently in use, and cannot be deleted.");
             }

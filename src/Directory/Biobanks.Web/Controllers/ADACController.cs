@@ -1346,21 +1346,17 @@ namespace Biobanks.Web.Controllers
         {
             var models = (await _storageTemperatureService.List())
                 .Select(x =>
-                    new StorageTemperatureModel()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                    }
+                    Task.Run(async () => 
+                        new StorageTemperatureModel()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            InUse = await _storageTemperatureService.IsInUse(x.Id)
+                        }
+                    ).Result
                 )
                 .ToList();
-
-            // Fetch Sample Set Count and whether a Preservation Type is using this storage temperature
-            foreach (var model in models)
-            {
-                model.SampleSetsCount = await _storageTemperatureService.GetUsageCount(model.Id);
-                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
-            }
 
             return View(new StorageTemperaturesModel
             {
