@@ -69,14 +69,6 @@ namespace Biobanks.Services.Contracts
         Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly=false);
         Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature);
 
-        Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
-        Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
-        Task<AssociatedDataType> AddAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
-
-        Task DeleteAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup);
-        Task<AssociatedDataTypeGroup> AddAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup);
-        Task<AssociatedDataTypeGroup> UpdateAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup);
-
         Task<Organisation> SuspendBiobankAsync(int id);
         Task<Organisation> UnsuspendBiobankAsync(int id);
         Task UpdateOrganisationURLAsync(int id);

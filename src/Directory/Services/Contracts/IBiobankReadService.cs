@@ -36,13 +36,6 @@ namespace Biobanks.Services.Contracts
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
 
-        Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync();
-        Task<IEnumerable<AssociatedDataTypeGroup>> ListAssociatedDataTypeGroupsAsync(string wildcard = "");
-        Task<int> GetAssociatedDataTypeGroupCount(int associatedDataTypeGroupId);
-        Task<bool> IsAssociatedDataTypeGroupInUse(int associatedDataTypeGroupId);
-        Task<bool> ValidAssociatedDataTypeGroupNameAsync(int associatedDataTypeGroupId, string associatedDataTypeGroupName);
-        Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName);
-        
         Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
         Task<bool> IsMaterialTypeAssigned(int id);
 
@@ -76,10 +69,6 @@ namespace Biobanks.Services.Contracts
 
         Task<IEnumerable<SnomedTag>> ListSnomedTags();
         Task<SnomedTag> GetSnomedTagByDescription(string description);
-
-        Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
-        Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
-        Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription);
 
         Task<int> GetMaterialTypeMaterialDetailCount(int id);
         Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription);
@@ -118,7 +107,6 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<Network>> GetNetworksByBiobankIdAsync(int organisationId);
 
         Task<bool> IsMaterialTypeInUse(int id);
-        Task<bool> IsAssociatedDataTypeInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();
