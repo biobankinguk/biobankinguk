@@ -9,6 +9,7 @@ using System.Collections;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -16,13 +17,19 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/StorageTemperature")]
     public class StorageTemperatureController : ApiBaseController
     {
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
 
-        public StorageTemperatureController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService, IConfigService configService)
+        public StorageTemperatureController(
+            IReferenceDataService<PreservationType> preservationTypeService,
+            IBiobankReadService biobankReadService,
+            IBiobankWriteService biobankWriteService, 
+            IConfigService configService)
         {
+            _preservationTypeService = preservationTypeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -189,6 +196,9 @@ namespace Biobanks.Web.ApiControllers
         [AllowAnonymous]
         [Route("{storageTemperature}/preservationtype")]
         public async Task<IList> GetValidPreservationTypes(int storageTemperature)
-        => (await _biobankReadService.ListPreservationTypesAsync()).Where(x => x.StorageTemperatureId == storageTemperature).Select(x => x.Id).ToList();
+            => (await _preservationTypeService.List())
+                .Where(x => x.StorageTemperatureId == storageTemperature)
+                .Select(x => x.Id)
+                .ToList();
     }
 }

@@ -757,23 +757,6 @@ namespace Biobanks.Services
 
         #endregion
 
-         #region RefData: Preservation Type
-        public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
-            => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetPreservationTypeUsageCount(int id)
-        => await _materialDetailRepository.CountAsync(x => x.PreservationTypeId == id);
-
-        public async Task<bool> IsPreservationTypeInUse(int id)
-            => (await GetPreservationTypeUsageCount(id)) > 0;
-
-        public async Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId)
-            => (await _preservationTypeRepository.ListAsync(false, x =>
-                    x.Value == value &&
-                    x.StorageTemperatureId == storageTemperatureId)
-                ).Any();
-        #endregion
-
         #region RefData: StorageTemperature
         public async Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync()
             => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
