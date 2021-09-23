@@ -208,6 +208,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(AssociatedDataTypeService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<AssociatedDataTypeGroup>))
+                    .ImplementedBy(typeof(AssociatedDataTypeGroupService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,
