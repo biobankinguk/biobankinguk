@@ -9,6 +9,7 @@ using System.Collections;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -16,15 +17,17 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/StorageTemperature")]
     public class StorageTemperatureController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
         private readonly IConfigService _configService;
 
-        public StorageTemperatureController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService, IConfigService configService)
+        public StorageTemperatureController(
+            IReferenceDataService<PreservationType> preservationTypeService,
+            IReferenceDataService<StorageTemperature> storageTemperatureService,
+            IConfigService configService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _preservationTypeService = preservationTypeService;
+            _storageTemperatureService = storageTemperatureService;
             _configService = configService;
         }
 
@@ -33,23 +36,20 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var models = (await _biobankReadService.ListStorageTemperaturesAsync())
+            var models = (await _storageTemperatureService.List())
                 .Select(x =>
-                    new StorageTemperatureModel()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                    }
+                    Task.Run(async () =>
+                        new StorageTemperatureModel()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            IsInUse = await _storageTemperatureService.IsInUse(x.Id),
+                            SampleSetsCount = await _storageTemperatureService.GetUsageCount(x.Id)
+                        }
+                    ).Result
                 )
                 .ToList();
-
-            // Fetch Sample Set Count
-            foreach (var model in models)
-            {
-                model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
-                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
-            }
 
             return models;
         }
@@ -62,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
             Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
-            if (await _biobankReadService.ValidStorageTemperatureAsync(model.Value))
+            if (await _storageTemperatureService.Exists(model.Value))
             {
                 ModelState.AddModelError("StorageTemperature", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
             }
@@ -79,8 +79,8 @@ namespace Biobanks.Web.ApiControllers
                 SortOrder = model.SortOrder
             };
 
-            await _biobankWriteService.AddStorageTemperatureAsync(type);
-            await _biobankWriteService.UpdateStorageTemperatureAsync(type, true); // Ensure sortOrder is correct
+            await _storageTemperatureService.Add(type);
+            await _storageTemperatureService.Update(type); // Ensure sortOrder is correct
 
             // Success response
             return Json(new
@@ -98,13 +98,13 @@ namespace Biobanks.Web.ApiControllers
             Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
-            if (await _biobankReadService.ValidStorageTemperatureAsync(model.Value))
+            if (await _storageTemperatureService.Exists(model.Value))
             {
                 ModelState.AddModelError("StorageTemperature", $"That {currentReferenceName.Value} already exists!");
             }
 
             // If in use, prevent update
-            if ((model.SampleSetsCount > 0) || model.UsedByPreservationTypes)
+            if (model.IsInUse)
             {
                 ModelState.AddModelError("StorageTemperature", $"The storage temperature \"{model.Value}\" is currently in use, and cannot be updated.");
             }
@@ -114,7 +114,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateStorageTemperatureAsync(new StorageTemperature
+            await _storageTemperatureService.Update(new StorageTemperature
             {
                 Id = id,
                 Value = model.Value,
@@ -133,13 +133,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListStorageTemperaturesAsync()).Where(x => x.Id == id).First();
-
-            //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            var model = await _storageTemperatureService.Get(id);
 
             // If in use, prevent update
-            if (await _biobankReadService.IsStorageTemperatureInUse(id) || await _biobankReadService.IsStorageTemperatureAssigned(id))
+            if (await _storageTemperatureService.IsInUse(id))
             {
                 ModelState.AddModelError("StorageTemperature", $"The storage temperature \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -149,12 +146,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteStorageTemperatureAsync(new StorageTemperature
-            {
-                Id = model.Id,
-                Value = model.Value,
-                SortOrder = model.SortOrder
-            });
+            await _storageTemperatureService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -168,13 +160,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, StorageTemperatureModel model)
         {
-            await _biobankWriteService.UpdateStorageTemperatureAsync(new StorageTemperature
+            await _storageTemperatureService.Update(new StorageTemperature
             {
                 Id = id,
                 Value = model.Value,
                 SortOrder = model.SortOrder
-            },
-            true);
+            });
 
             //Everything went A-OK!
             return Json(new
@@ -189,6 +180,9 @@ namespace Biobanks.Web.ApiControllers
         [AllowAnonymous]
         [Route("{storageTemperature}/preservationtype")]
         public async Task<IList> GetValidPreservationTypes(int storageTemperature)
-        => (await _biobankReadService.ListPreservationTypesAsync()).Where(x => x.StorageTemperatureId == storageTemperature).Select(x => x.Id).ToList();
+            => (await _preservationTypeService.List())
+                .Where(x => x.StorageTemperatureId == storageTemperature)
+                .Select(x => x.Id)
+                .ToList();
     }
 }

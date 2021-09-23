@@ -57,14 +57,6 @@ namespace Biobanks.Services.Contracts
         Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
         Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
 
-        Task<PreservationType> AddPreservationTypeAsync(PreservationType preservationType);
-        Task<PreservationType> UpdatePreservationTypeAsync(PreservationType preservationType, bool sortOnly = false);
-        Task DeletePreservationTypeAsync(PreservationType preservationType);
-
-        Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature);
-        Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly=false);
-        Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature);
-
         Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
         Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
         Task<AssociatedDataType> AddAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
