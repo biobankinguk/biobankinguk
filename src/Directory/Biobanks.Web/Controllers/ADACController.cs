@@ -56,7 +56,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
         private readonly IReferenceDataService<MaterialType> _materialTypeService;
         private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
-
+        private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -97,6 +97,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<StorageTemperature> storageTemperatureService,
             IReferenceDataService<MaterialType> materialTypeService,
             IReferenceDataService<MaterialTypeGroup> materialTypeGroupService,
+            IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -132,6 +133,7 @@ namespace Biobanks.Web.Controllers
             _storageTemperatureService = storageTemperatureService;
             _materialTypeService = materialTypeService;
             _materialTypeGroupService = materialTypeGroupService;
+            _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1124,22 +1126,21 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel
             {
-                AssociatedDataProcurementTimeFrameModels = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
+                AssociatedDataProcurementTimeFrameModels = (await _associatedDataProcurementTimeframeService.List())
                     .Select(x =>
-
-                Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
-                {
-                    Id = x.Id,
-                    Description = x.Value,
-                    DisplayName = x.DisplayValue,
-                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.Id),
-                    SortOrder = x.SortOrder
-                }).Result)
-
+                        Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            DisplayName = x.DisplayValue,
+                            CollectionCapabilityCount = await _associatedDataProcurementTimeframeService.GetUsageCount(x.Id),
+                            SortOrder = x.SortOrder
+                        })
+                        .Result
+                    )
                     .ToList()
             });
         }
-
         #endregion
 
         #region RefData: AnnualStatistics
