@@ -17,6 +17,8 @@ namespace Biobanks.Web.Models.ADAC
 
         public int SortOrder { get; set; }
 
-        public bool InUse { get; set; }
+        public int SampleSetsCount { get; set; }
+
+        public bool IsInUse { get; set; }
     }
 }

@@ -1357,7 +1357,8 @@ namespace Biobanks.Web.Controllers
                             Id = x.Id,
                             Value = x.Value,
                             SortOrder = x.SortOrder,
-                            InUse = await _storageTemperatureService.IsInUse(x.Id)
+                            IsInUse = await _storageTemperatureService.IsInUse(x.Id),
+                            SampleSetsCount = await _storageTemperatureService.GetUsageCount(x.Id)
                         }
                     ).Result
                 )

@@ -44,7 +44,8 @@ namespace Biobanks.Web.ApiControllers
                             Id = x.Id,
                             Value = x.Value,
                             SortOrder = x.SortOrder,
-                            InUse = await _storageTemperatureService.IsInUse(x.Id)
+                            IsInUse = await _storageTemperatureService.IsInUse(x.Id),
+                            SampleSetsCount = await _storageTemperatureService.GetUsageCount(x.Id)
                         }
                     ).Result
                 )
@@ -103,7 +104,7 @@ namespace Biobanks.Web.ApiControllers
             }
 
             // If in use, prevent update
-            if (model.InUse)
+            if (model.IsInUse)
             {
                 ModelState.AddModelError("StorageTemperature", $"The storage temperature \"{model.Value}\" is currently in use, and cannot be updated.");
             }
