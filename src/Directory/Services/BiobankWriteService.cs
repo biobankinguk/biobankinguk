@@ -33,7 +33,6 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
-        private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
@@ -72,10 +71,6 @@ namespace Biobanks.Services
             ILogoStorageProvider logoStorageProvider,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
-            IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
-            IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
-            IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
-            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
@@ -111,11 +106,7 @@ namespace Biobanks.Services
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
-            _associatedDataTypeRepository = associatedDataTypeRepository;
-            _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
-            _storageTemperatureRepository = storageTemperatureRepository;
             _materialTypeRepository = materialTypeRepository;
-            _materialTypeGroupRepository = materialTypeGroupRepository;
 
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
@@ -719,8 +710,6 @@ namespace Biobanks.Services
 
             //Arrange removal from the search index
             await _indexService.BulkDeleteBiobank(id);
-
-
 
             return biobank;
         }
