@@ -33,8 +33,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
-        private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
-        
+
         private readonly IGenericEFRepository<Network> _networkRepository;
         private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
         private readonly IGenericEFRepository<NetworkRegisterRequest> _networkRegisterRequestRepository;
@@ -71,7 +70,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
-            IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
             IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
 
             IGenericEFRepository<Network> networkRepository,
@@ -107,7 +105,6 @@ namespace Biobanks.Services
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
             _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
-            _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
             _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
 
             _networkRepository = networkRepository;
@@ -703,9 +700,6 @@ namespace Biobanks.Services
         public async Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync()
             => await _associatedDataTypeRepository.ListAsync();
 
-        public async Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames()
-            => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-        
         #region RefData: Associated Data Type Groups
         public async Task<IEnumerable<AssociatedDataTypeGroup>> ListAssociatedDataTypeGroupsAsync(string wildcard = "")
             => await _associatedDataTypeGroupRepository.ListAsync(false, x => x.Value.Contains(wildcard));
@@ -818,15 +812,6 @@ namespace Biobanks.Services
 
         #endregion
 
-        public async Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription)
-        => (await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, x => x.Value == procurementDescription)).Any();
-
-        public async Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription)
-            => (await _associatedDataProcurementTimeFrameModelRepository.ListAsync(
-                false,
-                x => x.Value == procurementDescription &&
-                     x.Id != procurementId)).Any();
-
         public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription)
     => (await _associatedDataTypeRepository.ListAsync(false, x => x.Value == associatedDataTypeDescription)).Any();
         public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription)
@@ -846,13 +831,6 @@ namespace Biobanks.Services
             {
                 SnomedTags.ExtractionProcedure
             })).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
-
-        public async Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id)
-            => (await _collectionAssociatedDataRepository.ListAsync(
-           false,
-           x => x.AssociatedDataProcurementTimeframeId == id)).Count() + (await _capabilityAssociatedDataRepository.ListAsync(
-           false,
-           x => x.AssociatedDataProcurementTimeframeId == id)).Count();
 
         public async Task<int> GetServiceOfferingOrganisationCount(int id)
             => (await _organisationServiceOfferingRepository.ListAsync(
@@ -1010,8 +988,5 @@ namespace Biobanks.Services
         public async Task<bool> IsBiobankAnApiClient(int biobankId)
             => ((await GetBiobankByIdAsync(biobankId)).ApiClients.Any());
 
-        public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id)
-             => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
-    
     }
 }

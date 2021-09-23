@@ -21,10 +21,6 @@ namespace Biobanks.Services.Contracts
         Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference);
         Task RemoveLogoAsync(int organisationId);
 
-        Task DeleteAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe);
-        Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe, bool sortOnly = false);
-        Task<AssociatedDataProcurementTimeframe> AddAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe);
-
         Task<OrganisationNetwork> UpdateOrganisationNetworkAsync(OrganisationNetwork organisationNetwork);
 
         Task<Organisation> CreateBiobankAsync(OrganisationDTO biobank);
