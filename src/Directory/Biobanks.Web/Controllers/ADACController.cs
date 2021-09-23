@@ -53,8 +53,6 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<SopStatus> _sopStatusService;
         private readonly IReferenceDataService<Sex> _sexService;
         private readonly IReferenceDataService<PreservationType> _preservationTypeService;
-        private readonly IReferenceDataService<SopStatus> _sopStatusService;
-        private readonly IReferenceDataService<Sex> _sexService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
 
 
@@ -127,6 +125,7 @@ namespace Biobanks.Web.Controllers
             _sopStatusService = sopStatusService;
             _sexService = sexService;
             _preservationTypeService = preservationType;
+            _storageTemperatureService = storageTemperatureService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
