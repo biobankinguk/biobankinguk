@@ -43,14 +43,12 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
-        private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
         private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
-        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
@@ -79,7 +77,6 @@ namespace Biobanks.Services
             IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationType> organisationTypeRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
-            IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
@@ -89,7 +86,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
 
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
@@ -115,7 +111,6 @@ namespace Biobanks.Services
             _organisationRepository = organisationRepository;
             _organisationTypeRepository = organisationTypeRepository;
             _materialTypeRepository = materialTypeRepository;
-            _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
             _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
@@ -124,8 +119,6 @@ namespace Biobanks.Services
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _organisationNetworkRepository = organisationNetworkRepository;
             _organisationUserRepository = organisationUserRepository;
-            
-            _storageTemperatureRepository = storageTemperatureRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
@@ -373,9 +366,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsOntologyTermInUse(string id)
             => (await GetOntologyTermCollectionCapabilityCount(id) > 0);
-
-        public async Task<bool> IsMaterialTypeInUse(int id)
-            => (await GetMaterialTypeMaterialDetailCount(id) > 0);
 
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
@@ -702,43 +692,6 @@ namespace Biobanks.Services
         public async Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames()
             => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
         
-        public async Task<IEnumerable<MaterialType>> ListMaterialTypesAsync()
-            => await _materialTypeRepository.ListAsync(
-                orderBy: x => x.OrderBy(y => y.SortOrder), 
-                includeProperties: x => x.MaterialTypeGroups);
-
-        #region RefData: MaterialTypeGroup
-        public async Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync()
-            => await _materialTypeGroupRepository.ListAsync(includeProperties: x => x.MaterialTypes);
-
-        public async Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeGroupDescription)
-            => await _materialTypeGroupRepository.AnyAsync(x => x.Value == materialTypeGroupDescription);
-
-        public async Task<bool> IsMaterialTypeGroupInUse(int id)
-            => await _materialTypeGroupRepository.AnyAsync(x => x.Id == id && x.MaterialTypes.Count > 0);
-        #endregion
-
-        #region RefData: StorageTemperature
-        public async Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync()
-            => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetStorageTemperatureUsageCount(int id)
-            => (await _materialDetailRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
-
-        public async Task<bool> IsStorageTemperatureInUse(int id)
-            => (await GetStorageTemperatureUsageCount(id)) > 0;
-
-        public async Task<bool> IsStorageTemperatureAssigned(int id)
-        {
-            return (await _preservationTypeRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Any();
-        }
-
-        public async Task<bool> ValidStorageTemperatureAsync(string storageTemperature)
-        {
-            return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();
-        }
-        #endregion
-
         #region RefData: OntologyTerm
 
         protected IQueryable<OntologyTerm> QueryOntologyTerms(
@@ -848,15 +801,6 @@ namespace Biobanks.Services
             {
                 SnomedTags.ExtractionProcedure
             })).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
-
-        public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
-            => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
-
-        public async Task<bool> ValidMaterialTypeDescriptionAsync(int materialTypeId, string materialTypeDescription)
-            => (await _materialTypeRepository.ListAsync(
-                false,
-                x => x.Value == materialTypeDescription &&
-                     x.Id != materialTypeId)).Any();
 
         public async Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id)
             => (await _collectionAssociatedDataRepository.ListAsync(

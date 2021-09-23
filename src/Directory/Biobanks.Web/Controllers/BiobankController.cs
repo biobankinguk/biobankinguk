@@ -63,6 +63,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<Funder> _funderService;
         private readonly IReferenceDataService<Sex> _sexService;
         private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+        private readonly IReferenceDataService<MaterialType> _materialTypeService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -98,6 +100,8 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<Funder> funderService,
             IReferenceDataService<Sex> sexService,
             IReferenceDataService<PreservationType> preservationTypeService,
+            IReferenceDataService<StorageTemperature> storageTemperatureService,
+            IReferenceDataService<MaterialType> materialTypeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -127,6 +131,8 @@ namespace Biobanks.Web.Controllers
             _funderService = funderService;
             _sexService = sexService;
             _preservationTypeService = preservationTypeService;
+            _storageTemperatureService = storageTemperatureService;
+            _materialTypeService = materialTypeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1504,7 +1510,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
+            model.MaterialTypes = (await _materialTypeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1539,7 +1545,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.StorageTemperatures = (await _biobankReadService.ListStorageTemperaturesAsync())
+            model.StorageTemperatures = (await _storageTemperatureService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel

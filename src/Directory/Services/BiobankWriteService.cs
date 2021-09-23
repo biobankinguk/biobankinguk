@@ -32,7 +32,6 @@ namespace Biobanks.Services
         private readonly ILogoStorageProvider _logoStorageProvider;
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
-        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
@@ -74,6 +73,8 @@ namespace Biobanks.Services
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
+            IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
+            IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
@@ -110,6 +111,8 @@ namespace Biobanks.Services
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
+            _associatedDataTypeRepository = associatedDataTypeRepository;
+            _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
             _storageTemperatureRepository = storageTemperatureRepository;
             _materialTypeRepository = materialTypeRepository;
             _materialTypeGroupRepository = materialTypeGroupRepository;
@@ -700,147 +703,6 @@ namespace Biobanks.Services
         }
         #endregion
 
-        #region RefData: Storage Temperature
-        public async Task<StorageTemperature> AddStorageTemperatureAsync(StorageTemperature storageTemperature)
-        {
-            _storageTemperatureRepository.Insert(storageTemperature);
-            await _storageTemperatureRepository.SaveChangesAsync();
-
-            return storageTemperature;
-        }
-
-        public async Task<StorageTemperature> UpdateStorageTemperatureAsync(StorageTemperature storageTemperature, bool sortOnly = false)
-        {
-            var types = await _biobankReadService.ListStorageTemperaturesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                storageTemperature.Value =
-                    types
-                        .Where(x => x.Id == storageTemperature.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldType = types.Where(x => x.Id == storageTemperature.Id).First();
-            var reverse = (oldType.SortOrder < storageTemperature.SortOrder);
-
-            var newOrder = types
-                    .Prepend(storageTemperature)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_storageTemperatureRepository.Update);
-
-            await _storageTemperatureRepository.SaveChangesAsync();
-
-            return storageTemperature;
-        }
-
-        public async Task DeleteStorageTemperatureAsync(StorageTemperature storageTemperature)
-        {
-            await _storageTemperatureRepository.DeleteAsync(storageTemperature.Id);
-            await _storageTemperatureRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region RefData: Material Type
-        public async Task DeleteMaterialTypeAsync(MaterialType materialType)
-        {
-            await _materialTypeRepository.DeleteAsync(materialType.Id);
-            await _materialTypeRepository.SaveChangesAsync();
-        }
-
-        public async Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false)
-        {
-            var types = await _biobankReadService.ListMaterialTypesAsync();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                materialType.Value =
-                    types
-                        .Where(x => x.Id == materialType.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldType = types.Where(x => x.Id == materialType.Id).First();
-            var reverse = (oldType.SortOrder < materialType.SortOrder);
-
-            var newOrder = types
-                    .Prepend(materialType)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_materialTypeRepository.Update);
-
-            await _materialTypeRepository.SaveChangesAsync();
-
-            return materialType;
-        }
-
-        public async Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType)
-        {
-            _materialTypeRepository.Insert(materialType);
-            await _materialTypeRepository.SaveChangesAsync();
-
-            return materialType;
-        }
-        #endregion
-
-        #region RefData: Material Type Group
-        public async Task DeleteMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
-        {
-            await _materialTypeGroupRepository.DeleteAsync(materialTypeGroup.Id);
-            await _materialTypeGroupRepository.SaveChangesAsync();
-        }
-
-        public async Task<MaterialTypeGroup> UpdateMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
-        {
-            _materialTypeGroupRepository.Update(materialTypeGroup);
-            await _materialTypeRepository.SaveChangesAsync();
-
-            return materialTypeGroup;
-        }
-
-        public async Task<MaterialTypeGroup> AddMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup)
-        {
-            _materialTypeGroupRepository.Insert(materialTypeGroup);
-            await _materialTypeGroupRepository.SaveChangesAsync();
-
-            return materialTypeGroup;
-        }
-        #endregion
 
         public async Task<Organisation> SuspendBiobankAsync(int id)
         {

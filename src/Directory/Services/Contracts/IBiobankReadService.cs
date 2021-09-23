@@ -36,19 +36,7 @@ namespace Biobanks.Services.Contracts
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
 
-        Task<IEnumerable<MaterialType>> ListMaterialTypesAsync();
         Task<bool> IsMaterialTypeAssigned(int id);
-
-        Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync();
-        Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeDescription);
-        Task<bool> IsMaterialTypeGroupInUse(int id);
-
-        Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync();
-        Task<bool> ValidStorageTemperatureAsync(string preservationTypeDescription);
-        Task<bool> IsStorageTemperatureInUse(int id);
-        Task<bool> IsStorageTemperatureAssigned(int id);
-        Task<int> GetStorageTemperatureUsageCount(int id);
-
         Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames();
         Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id);
         Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id);
@@ -71,8 +59,6 @@ namespace Biobanks.Services.Contracts
         Task<SnomedTag> GetSnomedTagByDescription(string description);
 
         Task<int> GetMaterialTypeMaterialDetailCount(int id);
-        Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription);
-        Task<bool> ValidMaterialTypeDescriptionAsync(int materialTypeId, string materialTypeDescription);
 
         Task<int> GetServiceOfferingOrganisationCount(int id);
 
@@ -105,8 +91,6 @@ namespace Biobanks.Services.Contracts
         Task<Organisation> GetBiobankByExternalIdForSearchResultsAsync(string externalId);
         Task<IEnumerable<Organisation>> GetBiobanksByExternalIdsAsync(IList<string> biobankExternalIds);
         Task<IEnumerable<Network>> GetNetworksByBiobankIdAsync(int organisationId);
-
-        Task<bool> IsMaterialTypeInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();

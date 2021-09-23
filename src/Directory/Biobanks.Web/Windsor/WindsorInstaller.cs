@@ -204,6 +204,18 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(PreservationTypeService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<StorageTemperature>))
+                    .ImplementedBy(typeof(StorageTemperatureService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<MaterialType>))
+                    .ImplementedBy(typeof(MaterialTypeService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<MaterialTypeGroup>))
+                    .ImplementedBy(typeof(MaterialTypeGroupService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IReferenceDataService<AssociatedDataType>))
                     .ImplementedBy(typeof(AssociatedDataTypeService))
                     .LifeStyle.Transient,
