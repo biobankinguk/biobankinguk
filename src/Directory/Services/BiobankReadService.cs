@@ -54,7 +54,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
-        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
 
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
@@ -95,7 +94,6 @@ namespace Biobanks.Services
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
 
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
@@ -131,8 +129,6 @@ namespace Biobanks.Services
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _organisationNetworkRepository = organisationNetworkRepository;
             _organisationUserRepository = organisationUserRepository;
-            
-            _storageTemperatureRepository = storageTemperatureRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
@@ -755,27 +751,6 @@ namespace Biobanks.Services
                 x => x.Value == associatedDataTypeGroupName &&
                      x.Id != associatedDataTypeGroupId)).Any();
 
-        #endregion
-
-        #region RefData: StorageTemperature
-        public async Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync()
-            => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetStorageTemperatureUsageCount(int id)
-            => (await _materialDetailRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
-
-        public async Task<bool> IsStorageTemperatureInUse(int id)
-            => (await GetStorageTemperatureUsageCount(id)) > 0;
-
-        public async Task<bool> IsStorageTemperatureAssigned(int id)
-        {
-            return (await _preservationTypeRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Any();
-        }
-
-        public async Task<bool> ValidStorageTemperatureAsync(string storageTemperature)
-        {
-            return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();
-        }
         #endregion
 
         #region RefData: OntologyTerm

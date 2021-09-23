@@ -53,6 +53,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<SopStatus> _sopStatusService;
         private readonly IReferenceDataService<Sex> _sexService;
         private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
 
 
         private readonly IBiobankReadService _biobankReadService;
@@ -91,6 +92,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<SopStatus> sopStatusService,
             IReferenceDataService<Sex> sexService,
             IReferenceDataService<PreservationType> preservationType,
+            IReferenceDataService<StorageTemperature> storageTemperatureService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -123,6 +125,7 @@ namespace Biobanks.Web.Controllers
             _sopStatusService = sopStatusService;
             _sexService = sexService;
             _preservationTypeService = preservationType;
+            _storageTemperatureService = storageTemperatureService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1346,23 +1349,20 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> StorageTemperatures()
         {
-            var models = (await _biobankReadService.ListStorageTemperaturesAsync())
+            var models = (await _storageTemperatureService.List())
                 .Select(x =>
-                    new StorageTemperatureModel()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                    }
+                    Task.Run(async () => 
+                        new StorageTemperatureModel()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            IsInUse = await _storageTemperatureService.IsInUse(x.Id),
+                            SampleSetsCount = await _storageTemperatureService.GetUsageCount(x.Id)
+                        }
+                    ).Result
                 )
                 .ToList();
-
-            // Fetch Sample Set Count and whether a Preservation Type is using this storage temperature
-            foreach (var model in models)
-            {
-                model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
-                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
-            }
 
             return View(new StorageTemperaturesModel
             {
@@ -1394,7 +1394,7 @@ namespace Biobanks.Web.Controllers
             return View(new PreservationTypesModel
             {
                 PreservationTypes = models,
-                StorageTemperatures = await _biobankReadService.ListStorageTemperaturesAsync()
+                StorageTemperatures = await _storageTemperatureService.List()
             });
         }
 
