@@ -57,14 +57,6 @@ namespace Biobanks.Services.Contracts
         Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
         Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
 
-        Task<MaterialType> AddMaterialTypeAsync(MaterialType materialType);
-        Task<MaterialType> UpdateMaterialTypeAsync(MaterialType materialType, bool sortOnly = false);
-        Task DeleteMaterialTypeAsync(MaterialType materialType);
-
-        Task<MaterialTypeGroup> AddMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
-        Task<MaterialTypeGroup> UpdateMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
-        Task DeleteMaterialTypeGroupAsync(MaterialTypeGroup materialTypeGroup);
-
         Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
         Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType);
         Task<AssociatedDataType> AddAssociatedDataTypeAsync(AssociatedDataType associatedDataType);

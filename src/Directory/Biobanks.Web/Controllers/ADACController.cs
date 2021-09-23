@@ -54,6 +54,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<Sex> _sexService;
         private readonly IReferenceDataService<PreservationType> _preservationTypeService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+        private readonly IReferenceDataService<MaterialType> _materialTypeService;
+        private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
 
 
         private readonly IBiobankReadService _biobankReadService;
@@ -93,6 +95,8 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<Sex> sexService,
             IReferenceDataService<PreservationType> preservationType,
             IReferenceDataService<StorageTemperature> storageTemperatureService,
+            IReferenceDataService<MaterialType> materialTypeService,
+            IReferenceDataService<MaterialTypeGroup> materialTypeGroupService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -126,6 +130,8 @@ namespace Biobanks.Web.Controllers
             _sexService = sexService;
             _preservationTypeService = preservationType;
             _storageTemperatureService = storageTemperatureService;
+            _materialTypeService = materialTypeService;
+            _materialTypeGroupService = materialTypeGroupService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _analyticsReportGenerator = analyticsReportGenerator;
@@ -1174,7 +1180,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Types
         public async Task<ActionResult> MaterialTypes()
         {
-            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
+            var materialTypes = await _materialTypeService.List();
 
             return View(new MaterialTypesModel
             {
@@ -1198,7 +1204,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Type Groups
         public async Task<ActionResult> MaterialTypeGroups()
         {
-            var materialTypes = await _biobankReadService.ListMaterialTypeGroupsAsync();
+            var materialTypes = await _materialTypeGroupService.List();
 
             return View(materialTypes.Select(x => new MaterialTypeGroupModel
             {
@@ -1743,7 +1749,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .Result
             ).ToList(),
-                MaterialTypes = await _biobankReadService.ListMaterialTypesAsync()
+                MaterialTypes = await _materialTypeService.List()
             });
         }
         #endregion
