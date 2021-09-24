@@ -20,36 +20,39 @@ namespace Biobanks.Web.Controllers
     {
         private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
 
+        private readonly ICollectionService _collectionService;
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
-
-        private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
 
         public ProfileController(
             IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
-            IBiobankReadService biobankReadService, 
             ICollectionService collectionService,
-            IConfigService configService,
-            IPublicationService publicationService)
+            IPublicationService publicationService,
+            INetworkService networkService,
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService, 
+            IConfigService configService)
         {
             _annualStatisticGroupService = annualStatisticGroupService;
+            _networkService = networkService;
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _collectionService = collectionService;
             _configService = configService;
             _publicationService = publicationService;
         }
 
-        public ActionResult Biobanks()
-        {
-            var model = _biobankReadService.GetOrganisations();
-            return View(model);
-        }
+        public async Task<ActionResult> Biobanks()
+            => View(await _organisationService.List());
 
         public async Task<ActionResult> Biobank(string id)
         {
             //get the biobank
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(id);
+            var bb = await _organisationService.GetByExternalId(id);
 
             if(bb == null) return new HttpNotFoundResult();
 
@@ -89,7 +92,7 @@ namespace Biobanks.Web.Controllers
                 CountryName = bb.Country.Value,
                 ContactNumber = bb.ContactNumber,
                 LastUpdated = bb.LastUpdated,
-                NetworkMembers = (await _biobankReadService.GetNetworksByBiobankIdAsync(bb.OrganisationId)).Select(
+                NetworkMembers = (await _networkService.ListByOrganisationId(bb.OrganisationId)).Select(
                     x => new NetworkMemberModel
                     {
                         Id = x.NetworkId,
@@ -135,19 +138,19 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> Network(int id)
         {
-            var nw = await _biobankReadService.GetNetworkByIdAsync(id);
+            var network = await _networkService.Get(id);
+            var organisations = await _organisationService.ListByNetworkId(id);
 
             var model = new NetworkModel
             {
-                Id = nw.NetworkId,
-                Name = nw.Name,
-                Description = nw.Description,
-                Url = nw.Url,
-                Logo = nw.Logo,
-                ContactEmail = nw.Email,
-                SopStatus = nw.SopStatus.Value,
-                BiobankMembers = (await _biobankReadService.GetBiobanksByNetworkIdAsync(id)).Select(
-                    x => new BiobankMemberModel
+                Id = network.NetworkId,
+                Name = network.Name,
+                Description = network.Description,
+                Url = network.Url,
+                Logo = network.Logo,
+                ContactEmail = network.Email,
+                SopStatus = network.SopStatus.Value,
+                BiobankMembers = organisations.Select(x => new BiobankMemberModel
                     {
                         Id = x.OrganisationId,
                         ExternalId = x.OrganisationExternalId,
@@ -168,7 +171,7 @@ namespace Biobanks.Web.Controllers
                 return HttpNotFound();
 
             // Get the Organisation
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(id);
+            var bb = await _organisationService.GetByExternalId(id);
 
             if (bb == null)
             {

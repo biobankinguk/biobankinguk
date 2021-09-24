@@ -17,17 +17,19 @@ namespace Biobanks.Services.Contracts
         Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm);
         void DeleteSampleSet(int sampleSetId);
         void DeleteCapability(int capabilityId);
+        Task UpdateCollectionDetails(int collectionId);
+        Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm);
         
-        void UpdateCollectionDetails(Collection collection);
-        
-        Task UpdateBiobankDetails(int biobankId);
-        Task UpdateNetwork(int networkId);
-        Task JoinOrLeaveNetwork(int biobankId);
+        void UpdateOrganisationDetails(Organisation organisation);
+        void JoinOrLeaveNetwork(Organisation organisation);
 
-        Task BulkIndexBiobank(int biobankId);
+        void UpdateNetwork(Network network);
+
+        Task BulkIndexBiobank(Organisation organisation);
+        void BulkDeleteBiobank(Organisation organisation);
+
         Task BulkIndexSampleSets(IList<int> sampleSetIds);
         Task BulkIndexCapabilities(IList<int> capabilityIds);
-        Task BulkDeleteBiobank(int biobankId);
         void BulkDeleteSampleSets(IList<int> sampleSetIds);
         void BulkDeleteCapabilities(IList<int> capabilityIds);
 

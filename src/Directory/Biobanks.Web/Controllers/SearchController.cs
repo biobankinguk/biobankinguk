@@ -28,6 +28,8 @@ namespace Biobanks.Web.Controllers
 
         private readonly IOntologyTermService _ontologyTermService;
 
+        private readonly IOrganisationService _organisationService;
+
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
         private readonly IBiobankReadService _biobankReadService;
@@ -35,12 +37,14 @@ namespace Biobanks.Web.Controllers
         public SearchController(
             IReferenceDataService<Country> countryController,
             IOntologyTermService ontologyTermService,
+            IOrganisationService organisationService,
             ISearchProvider searchProvider,
             IMapper mapper,
             IBiobankReadService biobankReadService)
         {
             _countryController = countryController;
             _ontologyTermService = ontologyTermService;
+            _organisationService = organisationService;
             _searchProvider = searchProvider;
             _mapper = mapper;
             _biobankReadService = biobankReadService;
@@ -138,7 +142,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _biobankReadService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
 
             //Get Collection Descriptions in bulk
             var descriptions =
@@ -217,7 +221,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _biobankReadService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
 
             return View(model);
         }

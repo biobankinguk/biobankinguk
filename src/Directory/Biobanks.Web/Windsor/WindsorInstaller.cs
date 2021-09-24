@@ -24,6 +24,8 @@ using Microsoft.Owin.Security.DataProtection;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using System.Web.Http;
+using Biobanks.Directory.Services;
+using Biobanks.Directory.Services.Contracts;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Directory.Services;
 using Biobanks.Entities.Data.ReferenceData;
@@ -103,7 +105,7 @@ namespace Biobanks.Web.Windsor
                 Component.For<IUserStore<ApplicationUser, string>>()
                     .ImplementedBy<ApplicationUserStore>()
                     .LifeStyle.Transient,
-
+                
                 Component.For(typeof(IOntologyTermService))
                     .ImplementedBy(typeof(OntologyTermService))
                     .LifeStyle.Transient,

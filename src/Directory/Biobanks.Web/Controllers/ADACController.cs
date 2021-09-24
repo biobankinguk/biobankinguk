@@ -26,6 +26,8 @@ using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
@@ -33,6 +35,9 @@ namespace Biobanks.Web.Controllers
     public class ADACController : ApplicationBaseController
     {
         private readonly IOntologyTermService _ontologyTermService;
+
+        private INetworkService _networkService;
+        private IOrganisationService _organisationService;
 
         private readonly ICollectionService _collectionService;
 
@@ -105,6 +110,8 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
             IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
             IOntologyTermService ontologyTermService,
+            INetworkService networkService,
+            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IAnalyticsReportGenerator analyticsReportGenerator,
@@ -117,6 +124,8 @@ namespace Biobanks.Web.Controllers
             IMapper mapper,
             ITokenLoggingService tokenLog)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
             _collectionService = collectionService;
             _serviceOfferingService = serviceOfferingService;
             _sampleCollectionModeService = sampleCollectionModeService;
@@ -173,7 +182,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Requests()
         {
             var bbRequests =
-                (await _biobankReadService.ListOpenBiobankRegisterRequestsAsync())
+                (await _organisationService.ListOpenRegistrationRequests())
                 .Select(x => new BiobankRequestModel
                 {
                     RequestId = x.OrganisationRegisterRequestId,
@@ -183,7 +192,7 @@ namespace Biobanks.Web.Controllers
                 }).ToList();
 
             var nwRequests =
-                (await _biobankReadService.ListOpenNetworkRegisterRequestsAsync())
+                (await _networkService.ListOpenRegistrationRequests())
                 .Select(x => new NetworkRequestModel
                 {
                     RequestId = x.NetworkRegisterRequestId,
@@ -204,7 +213,8 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AcceptBiobankRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _biobankReadService.GetBiobankRegisterRequestAsync(requestId);
+            var request = await _organisationService.GetRegistrationRequest(requestId);
+            
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -289,7 +299,7 @@ namespace Biobanks.Web.Controllers
 
             //finally, update the request
             request.AcceptedDate = DateTime.Now;
-            await _biobankWriteService.UpdateOrganisationRegisterRequestAsync(request);
+            await _organisationService.UpdateRegistrationRequest(request);
 
             //send back, with feedback
             SetTemporaryFeedbackMessage(
@@ -301,14 +311,35 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> BiobankActivity()
         {
-            var biobanks = _mapper.Map<List<BiobankActivityModel>>(await _biobankReadService.GetBiobanksActivityAsync());
-            return View(biobanks);
+            var activity = new List<BiobankActivityDTO>();
+
+            foreach (var organisation in await _organisationService.ListForActivity(includeSuspended: false))
+            {
+                var lastActiveUser = await _organisationService.GetLastActiveUser(organisation.OrganisationId);
+
+                activity.Add(new BiobankActivityDTO
+                {
+                    OrganisationId = organisation.OrganisationId,
+                    Name = organisation.Name,
+                    ContactEmail = organisation.ContactEmail,
+                    LastUpdated = organisation.LastUpdated,
+                    LastCapabilityUpdated = organisation.DiagnosisCapabilities.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                    LastCollectionUpdated = organisation.Collections.OrderByDescending(c => c.LastUpdated).FirstOrDefault()?.LastUpdated,
+                    LastAdminLoginEmail = lastActiveUser?.Email,
+                    LastAdminLoginTime = lastActiveUser?.LastLogin
+                });
+            }
+
+            var model = _mapper.Map<List<BiobankActivityModel>>(activity);
+
+            return View(model);
         }
 
         public async Task<ActionResult> DeclineBiobankRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _biobankReadService.GetBiobankRegisterRequestAsync(requestId);
+            var request = await _organisationService.GetRegistrationRequest(requestId);
+
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -328,7 +359,7 @@ namespace Biobanks.Web.Controllers
 
             //update the request
             request.DeclinedDate = DateTime.Now;
-            await _biobankWriteService.UpdateOrganisationRegisterRequestAsync(request);
+            await _organisationService.UpdateRegistrationRequest(request);
 
             //send the requester an email
             await _emailService.SendRegisterEntityDeclined(
@@ -347,7 +378,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AcceptNetworkRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _biobankReadService.GetNetworkRegisterRequestAsync(requestId);
+            var request = await _networkService.GetRegistrationRequest(requestId);
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -428,7 +459,7 @@ namespace Biobanks.Web.Controllers
 
             //finally, update the request
             request.AcceptedDate = DateTime.Now;
-            await _biobankWriteService.UpdateNetworkRegisterRequestAsync(request);
+            await _networkService.UpdateRegistrationRequest(request);
 
             //send back, with feedback
             SetTemporaryFeedbackMessage(
@@ -441,7 +472,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> DeclineNetworkRequest(int requestId)
         {
             //Let's fetch the request
-            var request = await _biobankReadService.GetNetworkRegisterRequestAsync(requestId);
+            var request = await _networkService.GetRegistrationRequest(requestId);
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -461,7 +492,7 @@ namespace Biobanks.Web.Controllers
 
             //update the request
             request.DeclinedDate = DateTime.Now;
-            await _biobankWriteService.UpdateNetworkRegisterRequestAsync(request);
+            await _networkService.UpdateRegistrationRequest(request);
 
             //send the requester an email
             await _emailService.SendRegisterEntityDeclined(
@@ -507,7 +538,7 @@ namespace Biobanks.Web.Controllers
         #region Biobanks
         public async Task<ActionResult> BiobankAdmin(int id = 0)
         {
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(id);
+            var biobank = await _organisationService.Get(id);
 
             if (biobank != null)
             {
@@ -544,7 +575,7 @@ namespace Biobanks.Web.Controllers
                 }).SingleOrDefault(x => x.UserId == biobankUserId).UserFullName;
 
             //remove them from the network
-            await _biobankWriteService.RemoveUserFromBiobankAsync(biobankUserId, biobankId);
+            await _organisationService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
@@ -557,7 +588,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Biobanks()
         {
             var allBiobanks =
-                (await _biobankReadService.ListBiobanksAsync()).ToList();
+                (await _organisationService.List()).ToList();
 
             var biobanks = allBiobanks.Select(x => new BiobankModel
             {
@@ -591,7 +622,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> InviteAdminAjax(int biobankId)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var bb = await _organisationService.Get(biobankId);
 
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
@@ -617,7 +648,7 @@ namespace Biobanks.Web.Controllers
                 });
             }
 
-            var biobankId = (await _biobankReadService.GetBiobankByNameAsync(model.Entity)).OrganisationId;
+            var biobankId = (await _organisationService.GetByName(model.Entity)).OrganisationId;
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
@@ -674,7 +705,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/biobank relationship
-            await _biobankWriteService.AddUserToBiobankAsync(user.Id, biobankId);
+            await _organisationService.AddUserToOrganisation(user.Id, biobankId);
 
             //add user to BiobankAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
@@ -693,7 +724,7 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> DeleteBiobank(int id)
         {
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(id);
+            var biobank = await _organisationService.Get(id);
 
             if (biobank != null) return View(_mapper.Map<BiobankModel>(biobank));
 
@@ -707,9 +738,9 @@ namespace Biobanks.Web.Controllers
             try
             {
                 // remove the biobank itself
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(model.BiobankId);
+                var biobank = await _organisationService.Get(model.BiobankId);
                 var usersInBiobank = await _biobankReadService.ListSoleBiobankAdminIdsAsync(model.BiobankId);
-                await _biobankWriteService.DeleteBiobankAsync(model.BiobankId);
+                await _organisationService.Delete(model.BiobankId);
 
                 // remove admin role from users who had admin role only for this biobank
                 foreach (var user in usersInBiobank)
@@ -718,8 +749,8 @@ namespace Biobanks.Web.Controllers
                 }
 
                 //remove biobank registration request to allow re-registration 
-                var biobankRequest = await _biobankReadService.GetBiobankRegisterRequestByOrganisationNameAsync(biobank.Name);
-                await _biobankWriteService.DeleteRegisterRequestAsync(biobankRequest);
+                var biobankRequest = await _organisationService.GetRegistrationRequestByName(biobank.Name);
+                await _organisationService.RemoveRegistrationRequest(biobankRequest);
                 SetTemporaryFeedbackMessage($"{biobank.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
             catch
@@ -735,7 +766,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                var biobank = await _biobankWriteService.SuspendBiobankAsync(id);
+                var biobank = await _organisationService.Suspend(id);
                 if (biobank.IsSuspended)
                     SetTemporaryFeedbackMessage($"{biobank.Name} has been suspended.", FeedbackMessageType.Success);
             }
@@ -751,7 +782,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                var biobank = await _biobankWriteService.UnsuspendBiobankAsync(id);
+                var biobank = await _organisationService.Unsuspend(id);
                 if (!biobank.IsSuspended)
                     SetTemporaryFeedbackMessage($"{biobank.Name} has been unsuspended.", FeedbackMessageType.Success);
             }
@@ -903,7 +934,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Networks()
         {
             var allNetworks =
-                (await _biobankReadService.ListNetworksAsync()).ToList();
+                (await _networkService.List()).ToList();
 
             var networks = allNetworks.Select(x => new NetworkModel
             {
@@ -915,7 +946,7 @@ namespace Biobanks.Web.Controllers
             {
                 //get the admins
                 network.Admins =
-                    (await _biobankReadService.ListNetworkAdminsAsync(network.NetworkId)).Select(x => new RegisterEntityAdminModel
+                    (await _networkService.ListAdmins(network.NetworkId)).Select(x => new RegisterEntityAdminModel
                     {
                         UserId = x.Id,
                         UserFullName = x.Name,
@@ -940,7 +971,7 @@ namespace Biobanks.Web.Controllers
         {
             //get both network and biobank historical requests
             //and convert them to the viewmodel format
-            var bbRequests = (await _biobankReadService.ListHistoricalBiobankRegisterRequestsAsync())
+            var bbRequests = (await _organisationService.ListHistoricalRegistrationRequests())
                 .Select(x =>
 
                     Task.Run(async () =>
@@ -964,7 +995,7 @@ namespace Biobanks.Web.Controllers
 
                 ).ToList();
 
-            var nwRequests = (await _biobankReadService.ListHistoricalNetworkRegisterRequestsAsync())
+            var nwRequests = (await _networkService.ListHistoricalRegistrationRequests())
                 .Select(x =>
 
                     Task.Run(async () =>

@@ -1,28 +1,25 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Identity.Data.Entities;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Services.Dto;
 
 namespace Biobanks.Services.Contracts
 {
     public interface IBiobankReadService
     {
         Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false);
-        Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByUserEmailAsync(string email);
 
-        Task<NetworkRegisterRequest> GetNetworkRegisterRequestByUserEmailAsync(string email);
-
-        Task<Organisation> GetBiobankByIdAsync(int biobankId);
-        Task<Organisation> GetBiobankByIdForIndexingAsync(int biobankId);
-        Task<Organisation> GetBiobankByNameAsync(string biobankName);
         Task<Blob> GetLogoBlobAsync(string logoName);
+        Task<Collection> GetCollectionByIdAsync(int id);
+        Task<bool> IsCollectionFromApi(int id);
         
-        Task<IEnumerable<BiobankActivityDTO>> GetBiobanksActivityAsync();
-
+        Task<Collection> GetCollectionByIdForIndexingAsync(int id);
+        Task<Collection> GetCollectionWithSampleSetsByIdAsync(int id);
+        Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
+        Task<IEnumerable<Collection>> ListCollectionsAsync();
+        Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
         Task<SampleSet> GetSampleSetByIdAsync(int id);
         Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id);
         bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId);
@@ -51,40 +48,11 @@ namespace Biobanks.Services.Contracts
         Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
 
         Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
-        Task<OrganisationType> GetBiobankOrganisationTypeAsync();
-
-
-        Task<Network> GetNetworkByIdAsync(int networkId);
-        Task<IEnumerable<ApplicationUser>> ListNetworkAdminsAsync(int networkId);
-        Task<Network> GetNetworkByNameAsync(string networkName);
-
-        Task<IEnumerable<Organisation>> ListBiobanksAsync(string wildcard = "", bool includeSuspended = true);
-        Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdAsync(int networkId);
-        Task<IEnumerable<Organisation>> GetBiobanksByNetworkIdForIndexingAsync(int networkId);
-        Task<IEnumerable<Network>> ListNetworksAsync();
-        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedBiobankRegisterRequestsAsync();
-        Task<IEnumerable<OrganisationRegisterRequest>> ListOpenBiobankRegisterRequestsAsync();
-        Task<IEnumerable<NetworkRegisterRequest>> ListAcceptedNetworkRegisterRequestAsync();
-        Task<IEnumerable<NetworkRegisterRequest>> ListOpenNetworkRegisterRequestsAsync();
-
-        Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalBiobankRegisterRequestsAsync();
-        Task<IEnumerable<NetworkRegisterRequest>> ListHistoricalNetworkRegisterRequestsAsync();
-
-        Task<OrganisationRegisterRequest> GetBiobankRegisterRequestAsync(int requestId);
-        Task<OrganisationRegisterRequest> GetBiobankRegisterRequestByOrganisationNameAsync(string name);
-        Task<NetworkRegisterRequest> GetNetworkRegisterRequestAsync(int requestId);
-        Task<Organisation> GetBiobankByExternalIdAsync(string externalId);
-        Task<Organisation> GetBiobankByExternalIdForSearchResultsAsync(string externalId);
-        Task<IEnumerable<Organisation>> GetBiobanksByExternalIdsAsync(IList<string> biobankExternalIds);
-        Task<IEnumerable<Network>> GetNetworksByBiobankIdAsync(int organisationId);
-
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();
 
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
         Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(IEnumerable<int> capabilityIds);
-        Task<bool> BiobankRegisterRequestExists(string name);
-        Task<bool> NetworkRegisterRequestExists(string name);
 
         /// <summary>
         /// Gets a count of all Sample Sets in the database.
@@ -105,31 +73,12 @@ namespace Biobanks.Services.Contracts
         Task<int> GetSuspendedCapabilityCountAsync();
         Task<Dictionary<int,string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds);
 
-        Task<bool> IsBiobankSuspendedAsync(int biobankId);
-        Task<bool> IsCapabilityBiobankSuspendedAsync(int capabilityId);
-        Task<bool> IsCollectionBiobankSuspendedAsync(int collectonId);
-        Task<bool> IsSampleSetBiobankSuspendedAsync(int sampleSetId);
-
         Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId);
 
         Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
-        List<KeyValuePair<int, string>> GetBiobankIdsAndNamesByUserId(string userId);
-        List<KeyValuePair<int, string>> GetAcceptedBiobankRequestIdsAndNamesByUserId(string userId);
-        List<KeyValuePair<int, string>> GetNetworkIdsAndNamesByUserId(string userId);
-        List<KeyValuePair<int, string>> GetAcceptedNetworkRequestIdsAndNamesByUserId(string userId);
-
-        Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(IEnumerable<int> organisationIds);
-        Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworksAsync(int biobankId);
-        Task<IEnumerable<OrganisationNetwork>> GetOrganisationNetworkAsync(int biobankId, int networkId);
 
 
-        Task<IEnumerable<Organisation>> GetBiobanksByAnonymousIdentifiersAsync(IEnumerable<Guid> biobankAnonymousIdentifiers);
-        Task<IEnumerable<OrganisationRegistrationReason>> ListBiobankRegistrationReasonsAsync(int organisationId);
-
-        List<Organisation> GetOrganisations();
-
-        Task<bool> OrganisationIncludesPublications(int biobankId);
         Task<string> GetUnusedTokenByUser(string biobankUserId);
-        Task<bool> IsBiobankAnApiClient(int biobankId);
+        
     }
 }

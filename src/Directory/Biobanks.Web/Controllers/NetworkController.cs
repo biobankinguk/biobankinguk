@@ -33,6 +33,9 @@ namespace Biobanks.Web.Controllers
     {
         private readonly IReferenceDataService<SopStatus> _sopStatusService;
 
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -49,6 +52,8 @@ namespace Biobanks.Web.Controllers
 
         public NetworkController(
             IReferenceDataService<SopStatus> sopStatusService,
+            INetworkService networkService,
+            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -59,6 +64,8 @@ namespace Biobanks.Web.Controllers
             IMapper mapper)
         {
             _sopStatusService = sopStatusService;
+            _networkService = networkService;
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -67,6 +74,7 @@ namespace Biobanks.Web.Controllers
             _claimsManager = claimsManager;
             _tokenLog = tokenLog;
             _mapper = mapper;
+            _configService = configService;
         }
 
         #region Details
@@ -171,12 +179,9 @@ namespace Biobanks.Web.Controllers
                 } //no problem, just means no logo uploaded in this form submission
             }
 
-            //Build entities from the model
-            var network = new Network
+
+            var networkDto = new NetworkDTO
             {
-                //id is set only if we are editing, not creating
-                //same with external id
-                //and type
                 Name = model.NetworkName,
                 Description = model.Description,
                 Url = model.Url,
@@ -187,33 +192,32 @@ namespace Biobanks.Web.Controllers
 
             if (create)
             {
-                network = await _biobankWriteService.CreateNetworkAsync(network);
-                await _biobankWriteService.AddUserToNetworkAsync(User.Identity.GetUserId(), network.NetworkId);
+                var network = await _networkService.Create(networkDto);
+                await _networkService.AddNetworkUser(User.Identity.GetUserId(), networkDto.NetworkId);
 
                 //update the request to show network created
-                var request = await _biobankReadService.GetNetworkRegisterRequestByUserEmailAsync(User.Identity.Name);
+                var request = await _networkService.GetRegistrationRequestByEmail(User.Identity.Name);
                 request.NetworkCreatedDate = DateTime.Now;
-                await _biobankWriteService.UpdateNetworkRegisterRequestAsync(request);
+                await _networkService.UpdateRegistrationRequest(request);
 
                 //add a claim now that they're associated with the network
                 _claimsManager.AddClaims(new List<Claim>
                 {
-                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(network.NetworkId, network.Name)))
+                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(networkDto.NetworkId, networkDto.Name)))
                 });
 
                 //Logo upload (now we have the id, we can form the filename)
 
                 Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
-                Session[SessionKeys.ActiveOrganisationId] = network.NetworkId;
-                Session[SessionKeys.ActiveOrganisationName] = network.Name;
+                Session[SessionKeys.ActiveOrganisationId] = networkDto.NetworkId;
+                Session[SessionKeys.ActiveOrganisationName] = networkDto.Name;
 
                 if (model.Logo != null)
                 {
                     try
                     {
-                        network.Logo = await UploadNetworkLogoAsync(model.Logo, network.NetworkId);
-                        var networkDto = _mapper.Map<NetworkDTO>(network);
-                        await _biobankWriteService.UpdateNetworkAsync(networkDto);
+                        networkDto.Logo = await UploadNetworkLogoAsync(model.Logo, network.NetworkId);
+                        await _networkService.Update(networkDto);
                     }
                     catch (ArgumentNullException)
                     {
@@ -223,19 +227,17 @@ namespace Biobanks.Web.Controllers
             else
             {
                 //add Update only bits of the Entity
-                network.NetworkId = model.NetworkId.Value;
+                networkDto.NetworkId = model.NetworkId.Value;
 
                 // update handover Url components
-                network.ContactHandoverEnabled = model.ContactHandoverEnabled;
-                network.HandoverBaseUrl = model.HandoverBaseUrl;
-                network.HandoverOrgIdsUrlParamName = model.HandoverOrgIdsUrlParamName;
-                network.MultipleHandoverOrdIdsParams = model.MultipleHandoverOrdIdsParams;
-                network.HandoverNonMembers = model.HandoverNonMembers;
-                network.HandoverNonMembersUrlParamName = model.HandoverNonMembersUrlParamName;
+                networkDto.ContactHandoverEnabled = model.ContactHandoverEnabled;
+                networkDto.HandoverBaseUrl = model.HandoverBaseUrl;
+                networkDto.HandoverOrgIdsUrlParamName = model.HandoverOrgIdsUrlParamName;
+                networkDto.MultipleHandoverOrdIdsParams = model.MultipleHandoverOrdIdsParams;
+                networkDto.HandoverNonMembers = model.HandoverNonMembers;
+                networkDto.HandoverNonMembersUrlParamName = model.HandoverNonMembersUrlParamName;
 
-                var networkDto = _mapper.Map<NetworkDTO>(network);
-
-                await _biobankWriteService.UpdateNetworkAsync(networkDto);
+                await _networkService.Update(networkDto);
             }
 
             SetTemporaryFeedbackMessage("Network details updated!", FeedbackMessageType.Success);
@@ -275,7 +277,7 @@ namespace Biobanks.Web.Controllers
             var sopStatuses = await GetSopStatusKeyValuePairsAsync();
 
             //Network doesn't exist yet, but the request does, so get the name
-            var request = await _biobankReadService.GetNetworkRegisterRequestAsync(SessionHelper.GetNetworkId(Session));
+            var request = await _networkService.GetRegistrationRequest(SessionHelper.GetNetworkId(Session));
 
             //validate that the request is accepted
             if (request.AcceptedDate == null) return null;
@@ -293,7 +295,7 @@ namespace Biobanks.Web.Controllers
             var sopStatuses = await GetSopStatusKeyValuePairsAsync();
 
             //having a networkid claim means we can definitely get a network and return a model for it
-            var network = await _biobankReadService.GetNetworkByIdAsync(SessionHelper.GetNetworkId(Session));
+            var network = await _networkService.Get(SessionHelper.GetNetworkId(Session));
 
             //get SOP status desc for current SOP status
             var statusDesc = sopStatuses.FirstOrDefault(x => x.Key == network.SopStatusId).Value;
@@ -397,7 +399,7 @@ namespace Biobanks.Web.Controllers
             //we exclude the current user when we are making the list for them
             //but we may want the full list in other circumstances
             var admins =
-                (await _biobankReadService.ListNetworkAdminsAsync(networkId))
+                (await _networkService.ListAdmins(networkId))
                     .Select(nwAdmin => new RegisterEntityAdminModel
                     {
                         UserId = nwAdmin.Id,
@@ -433,7 +435,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> InviteAdminAjax(int networkId)
         {
-            var nw = await _biobankReadService.GetNetworkByIdAsync(networkId);
+            var nw = await _networkService.Get(networkId);
 
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
@@ -460,7 +462,7 @@ namespace Biobanks.Web.Controllers
                 });
             }
 
-            var networkId = (await _biobankReadService.GetNetworkByNameAsync(model.Entity)).NetworkId;
+            var networkId = (await _networkService.GetByName(model.Entity)).NetworkId;
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
@@ -517,7 +519,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/network relationship
-            await _biobankWriteService.AddUserToNetworkAsync(user.Id, networkId);
+            await _networkService.AddNetworkUser(user.Id, networkId);
 
             //add user to NetworkAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.NetworkAdmin.ToString());
@@ -537,7 +539,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName)
         {
             //remove them from the network
-            await _biobankWriteService.RemoveUserFromNetworkAsync(networkUserId, SessionHelper.GetNetworkId(Session));
+            await _networkService.RemoveNetworkUser(networkUserId, SessionHelper.GetNetworkId(Session));
 
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(networkUserId, Role.NetworkAdmin.ToString());
@@ -557,7 +559,7 @@ namespace Biobanks.Web.Controllers
         {
             var networkId = SessionHelper.GetNetworkId(Session);
             var networkBiobanks =
-                (await _biobankReadService.GetBiobanksByNetworkIdAsync(SessionHelper.GetNetworkId(Session))).ToList();
+                (await _organisationService.ListByNetworkId(SessionHelper.GetNetworkId(Session))).ToList();
 
             var biobanks = networkBiobanks.Select(x => new NetworkBiobankModel
             {
@@ -571,8 +573,8 @@ namespace Biobanks.Web.Controllers
                 biobank.Admins =
                     (await _biobankReadService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => x.Email).ToList();
 
-                var organisationNetwork = await _biobankReadService.GetOrganisationNetworkAsync(biobank.BiobankId, networkId);
-                biobank.ApprovedDate = organisationNetwork.First().ApprovedDate;
+                var organisationNetwork = await _networkService.GetOrganisationNetwork(biobank.BiobankId, networkId);
+                biobank.ApprovedDate = organisationNetwork.ApprovedDate;
             }
 
             //Get OrganisationNetwork with biobankId and networkId
@@ -590,7 +592,7 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                await _biobankWriteService.RemoveBiobankFromNetworkAsync(biobankId, SessionHelper.GetNetworkId(Session));
+                await _networkService.RemoveOrganisationFromNetwork(biobankId, SessionHelper.GetNetworkId(Session));
                 
                 //send back to the Biobanks list, with feedback (the list may be very long!
                 SetTemporaryFeedbackMessage(biobankName + " has been removed from your network!", FeedbackMessageType.Success);
@@ -615,10 +617,10 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model)
         {
             //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
-            var biobank = await _biobankReadService.GetBiobankByNameAsync(model.BiobankName);
+            var biobank = await _organisationService.GetByName(model.BiobankName);
 
             var networkId = SessionHelper.GetNetworkId(Session);
-            var network = await _biobankReadService.GetNetworkByIdAsync(networkId);
+            var network = await _networkService.Get(networkId);
 
             //Get all emails from admins and store in list
             var networkAdmins = await GetAdminsAsync(networkId, false);
@@ -675,7 +677,7 @@ namespace Biobanks.Web.Controllers
                 {
                     result =
                     await
-                        _biobankWriteService.AddBiobankToNetworkAsync(biobank.OrganisationId,
+                        _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
                             SessionHelper.GetNetworkId(Session), model.BiobankExternalID, true);
                     approved = true;
                 }
@@ -683,7 +685,7 @@ namespace Biobanks.Web.Controllers
                 {
                     result =
                     await
-                        _biobankWriteService.AddBiobankToNetworkAsync(biobank.OrganisationId,
+                        _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
                     SessionHelper.GetNetworkId(Session), model.BiobankExternalID, false);
                 }
 
@@ -720,7 +722,7 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Network)]
         public async Task<JsonResult> SearchBiobanks(string wildcard)
         {
-            var biobanks = await _biobankReadService.ListBiobanksAsync(wildcard, false);
+            var biobanks = await _organisationService.List(wildcard, false);
 
             var biobankResults = biobanks
                 .Select(x => new
