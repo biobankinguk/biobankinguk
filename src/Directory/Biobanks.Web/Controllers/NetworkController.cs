@@ -31,6 +31,8 @@ namespace Biobanks.Web.Controllers
     [UserAuthorize(Roles = "NetworkAdmin")]
     public class NetworkController : ApplicationBaseController
     {
+        private readonly IReferenceDataService<SopStatus> _sopStatusService;
+
         private readonly INetworkService _networkService;
         private readonly IOrganisationService _organisationService;
 
@@ -49,6 +51,7 @@ namespace Biobanks.Web.Controllers
         private const string TempNetworkLogoContentTypeSessionId = "TempNetworkLogoContentType";
 
         public NetworkController(
+            IReferenceDataService<SopStatus> sopStatusService,
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
@@ -60,10 +63,12 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog,
             IMapper mapper)
         {
+            _sopStatusService = sopStatusService;
             _networkService = networkService;
             _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
+            _configService = configService;
             _userManager = userManager;
             _emailService = emailService;
             _claimsManager = claimsManager;
@@ -259,10 +264,11 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<KeyValuePair<int, string>>> GetSopStatusKeyValuePairsAsync()
         {
-            var allSopStatuses = (List<SopStatus>) await _biobankReadService.ListSopStatusesAsync();
-            return
-                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
-                    .ToList();
+            var sopStatuses = await _sopStatusService.List();
+
+            return sopStatuses
+                .Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
+                .ToList();
         }
 
         private async Task<NetworkDetailsModel> NewNetworkDetailsModelAsync()

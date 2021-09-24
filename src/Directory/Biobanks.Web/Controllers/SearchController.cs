@@ -14,14 +14,17 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class SearchController : Controller
     {
+        private readonly IReferenceDataService<Country> _countryController;
+
         private readonly IOrganisationService _organisationService;
 
         private readonly ISearchProvider _searchProvider;
@@ -29,11 +32,13 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankReadService _biobankReadService;
 
         public SearchController(
+            IReferenceDataService<Country> countryController,
             IOrganisationService organisationService,
             ISearchProvider searchProvider,
             IMapper mapper,
             IBiobankReadService biobankReadService)
         {
+            _countryController = countryController;
             _organisationService = organisationService;
             _searchProvider = searchProvider;
             _mapper = mapper;
@@ -83,7 +88,7 @@ namespace Biobanks.Web.Controllers
                     SearchType = SearchDocumentType.Collection
                 });
 
-            model.Countries = (await _biobankReadService.ListCountriesAsync())
+            model.Countries = (await _countryController.List())
                 .ToDictionary(
                     x => x.Value,
                     x => x.Counties.Select(y => y.Value).ToList()
@@ -251,7 +256,7 @@ namespace Biobanks.Web.Controllers
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            var directoryOntologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var directoryOntologyTerms = await _biobankReadService.SearchOntologyTerms(wildcard, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding
@@ -285,7 +290,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var ontologyTerms = await _biobankReadService.SearchOntologyTerms(wildcard, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding

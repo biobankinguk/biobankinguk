@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using System.Collections.Generic;
 
 namespace Biobanks.Entities.Shared.ReferenceData
 {
@@ -8,19 +8,8 @@ namespace Biobanks.Entities.Shared.ReferenceData
     /// It is used for conditional validation against certain material types.
     /// It can be used for any future purposes.
     /// </summary>
-    public class MaterialTypeGroup
+    public class MaterialTypeGroup : BaseReferenceData
     {
-        /// <summary>
-        /// Internal id for the group.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// The friendly name of the group.
-        /// </summary>
-        [Required]
-        public string Value { get; set; }
-
         /// <summary>
         /// Join entities for MaterialTypes in the group
         /// </summary>

@@ -1,12 +1,11 @@
-﻿using Biobanks.Services.Contracts;
+﻿using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Biobanks.Entities.Data;
 using Biobanks.Web.Models.ADAC;
-using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,14 +13,11 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/CollectionPercentage")]
     public class CollectionPercentageController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
 
-        public CollectionPercentageController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public CollectionPercentageController(IReferenceDataService<CollectionPercentage> collectionPercentageService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _collectionPercentageService = collectionPercentageService;
         }
 
         [HttpGet]
@@ -29,7 +25,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var models = (await _biobankReadService.ListCollectionPercentagesAsync())
+            var models = (await _collectionPercentageService.List())
                 .Select(x =>
                     Task.Run(async () => new CollectionPercentageModel()
                     {
@@ -38,7 +34,7 @@ namespace Biobanks.Web.ApiControllers
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.Id)
+                        SampleSetsCount = await _collectionPercentageService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -52,7 +48,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(CollectionPercentageModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
+            if (await _collectionPercentageService.Exists(model.Description))
             {
                 ModelState.AddModelError("CollectionPercentage", "That description is already in use. Collection percentage descriptions must be unique.");
             }
@@ -71,8 +67,8 @@ namespace Biobanks.Web.ApiControllers
                 UpperBound = model.UpperBound,
             };
 
-            await _biobankWriteService.AddCollectionPercentageAsync(percentage);
-            await _biobankWriteService.UpdateCollectionPercentageAsync(percentage, true);
+            await _collectionPercentageService.Add(percentage);
+            await _collectionPercentageService.Update(percentage);
 
             // Success response
             return Json(new
@@ -87,7 +83,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, CollectionPercentageModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidCollectionPercentageAsync(model.Description))
+            if (await _collectionPercentageService.Exists(model.Description))
             {
                 ModelState.AddModelError("CollectionPercentage", "That collection percentage already exists!");
             }
@@ -103,7 +99,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
+            await _collectionPercentageService.Update(new CollectionPercentage
             {
                 Id = id,
                 Value = model.Description,
@@ -124,10 +120,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCollectionPercentagesAsync()).Where(x => x.Id == id).First();
+            var model = await _collectionPercentageService.Get(id);
 
             // If in use, prevent update
-            if (await _biobankReadService.IsCollectionPercentageInUse(id))
+            if (await _collectionPercentageService.IsInUse(id))
             {
                 ModelState.AddModelError("CollectionPercentage", $"The collection percentage \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -137,14 +133,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteCollectionPercentageAsync(new CollectionPercentage
-            {
-                Id = model.Id,
-                Value = model.Value,
-                SortOrder = model.SortOrder,
-                LowerBound = 0,
-                UpperBound = 1
-            });
+            await _collectionPercentageService.Delete(id);
 
             // Success
             return Json(new
@@ -158,14 +147,14 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, CollectionPercentageModel model)
         {
-            await _biobankWriteService.UpdateCollectionPercentageAsync(new CollectionPercentage
+            await _collectionPercentageService.Update(new CollectionPercentage
             {
                 Id = id,
                 Value = model.Description,
                 SortOrder = model.SortOrder,
                 LowerBound = model.LowerBound,
                 UpperBound = model.UpperBound
-            }, true);
+            });
 
             //Everything went A-OK!
             return Json(new

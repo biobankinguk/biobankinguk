@@ -1,5 +1,4 @@
-﻿using Biobanks.Services.Contracts;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Biobanks.Web.Models.ADAC;
@@ -7,6 +6,7 @@ using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using RegistrationReasonModel = Biobanks.Web.Models.Shared.RegistrationReasonModel;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,31 +14,26 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/RegistrationReason")]
     public class RegistrationReasonController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
 
-        public RegistrationReasonController(
-            IBiobankReadService biobankReadService,
-            IBiobankWriteService biobankWriteService)
+        public RegistrationReasonController(IReferenceDataService<RegistrationReason> registrationReasonService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _registrationReasonService = registrationReasonService;
         }
-
 
         [HttpGet]
         [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {
-                var model = (await _biobankReadService.ListRegistrationReasonsAsync())
+                var model = (await _registrationReasonService.List())
                     .Select(x =>
 
                 Task.Run(async () => new ReadRegistrationReasonModel
                 {
                     Id = x.Id,
                     Description = x.Value,
-                    OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
+                    OrganisationCount = await _registrationReasonService.GetUsageCount(x.Id),
                 }).Result)
 
                     .ToList();
@@ -50,9 +45,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListRegistrationReasonsAsync()).Where(x => x.Id == id).First();
+            var model = await _registrationReasonService.Get(id);
 
-            if (await _biobankReadService.IsRegistrationReasonInUse(id))
+            if (await _registrationReasonService.IsInUse(id))
             {
                 ModelState.AddModelError("Description", $"The registration reason \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -62,11 +57,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteRegistrationReasonAsync(new RegistrationReason
-            {
-                Id = model.Id,
-                Value = model.Value
-            });
+            await _registrationReasonService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -80,13 +71,15 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, RegistrationReasonModel model)
         {
+            var existing = await _registrationReasonService.Get(model.Description);
+
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(id, model.Description))
+            if (existing != null && existing.Id != id)
             {
                 ModelState.AddModelError("Description", "That description is already in use by another registration reason. Registration reason descriptions must be unique.");
             }
 
-            if (await _biobankReadService.IsRegistrationReasonInUse(id))
+            if (await _registrationReasonService.IsInUse(id))
             {
                 ModelState.AddModelError("Description", "This registration reason is currently in use and cannot be edited.");
             }
@@ -96,7 +89,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateRegistrationReasonAsync(new RegistrationReason
+            await _registrationReasonService.Update(new RegistrationReason
             {
                 Id = id,
                 Value = model.Description
@@ -115,7 +108,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(RegistrationReasonModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidRegistrationReasonDescriptionAsync(model.Description))
+            if (await _registrationReasonService.Exists(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Registration reason descriptions must be unique.");
             }
@@ -125,7 +118,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddRegistrationReasonAsync(new RegistrationReason
+            await _registrationReasonService.Add(new RegistrationReason
             {
                 Value = model.Description
             });

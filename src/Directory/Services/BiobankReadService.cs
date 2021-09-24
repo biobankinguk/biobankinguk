@@ -5,7 +5,6 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
-using Biobanks.Search.Legacy;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
 using Microsoft.AspNet.Identity;
@@ -29,65 +28,31 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<CapabilityAssociatedData> _capabilityAssociatedDataRepository;
      
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<AccessCondition> _accessConditionRepository;
-        private readonly IGenericEFRepository<CollectionType> _collectionTypeRepository;
-        private readonly IGenericEFRepository<CollectionStatus> _collectionStatusRepository;
-        private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentageRepository;
-        private readonly IGenericEFRepository<SampleSet> _collectionSampleSetRepository;
-        private readonly IGenericEFRepository<ConsentRestriction> _collectionConsentRestrictionRepository;
-        private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
-        private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameModelRepository;
-        
+
         private readonly IGenericEFRepository<Network> _networkRepository;
         private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
         private readonly IGenericEFRepository<NetworkRegisterRequest> _networkRegisterRequestRepository;
-        private readonly IGenericEFRepository<SopStatus> _sopStatusRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _networkOrganisationRepository;
 
         private readonly IGenericEFRepository<Organisation> _organisationRepository;
         private readonly IGenericEFRepository<OrganisationType> _organisationTypeRepository;
-        private readonly IGenericEFRepository<Funder> _funderRepository;
 
-        private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
-        private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
-        private readonly IGenericEFRepository<Sex> _sexRepository;
-        private readonly IGenericEFRepository<AgeRange> _ageRangeRepository;
-        private readonly IGenericEFRepository<DonorCount> _donorCountRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
-        private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
         private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
         private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
         private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
-        private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
-        private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
-        private readonly IGenericEFRepository<StorageTemperature> _storageTemperatureRepository;
-        private readonly IGenericEFRepository<CollectionPercentage> _collectionPercentage;
-        private readonly IGenericEFRepository<MacroscopicAssessment> _macroscopicAssessmentRepository;
-        private readonly IGenericEFRepository<SampleCollectionMode> _sampleCollectionModeRepository;
         private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
-
-        private readonly IGenericEFRepository<County> _countyRepository;
-        private readonly IGenericEFRepository<Country> _countryRepository;
-
-        private readonly IGenericEFRepository<AnnualStatisticGroup> _annualStatisticGroupRepository;
-        private readonly IGenericEFRepository<AnnualStatistic> _annualStatisticRepository;
-
-        private readonly IGenericEFRepository<Publication> _publicationRepository;
 
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
 
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
-
-        private readonly ICacheProvider _cacheProvider;
-
-        private readonly ISearchProvider _searchProvider;
 
         private readonly BiobanksDbContext _context;
 
@@ -98,59 +63,27 @@ namespace Biobanks.Services
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<CapabilityAssociatedData> capabilityAssociatedDataRepository,
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
-            IGenericEFRepository<AccessCondition> accessConditionRepository,
-            IGenericEFRepository<CollectionType> collectionTypeRepository,
-            IGenericEFRepository<CollectionStatus> collectionStatusRepository,
-            IGenericEFRepository<CollectionPercentage> collectionPercentageRepository,
-            IGenericEFRepository<SampleSet> collectionSampleSetRepository,
-            IGenericEFRepository<ConsentRestriction> collectionConsentRestrictionRepository,
-            IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
-            IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameModelRepository,
-            IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
 
             IGenericEFRepository<Network> networkRepository,
             IGenericEFRepository<NetworkUser> networkUserRepository,
             IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
-            IGenericEFRepository<SopStatus> sopStatusRepository,
             IGenericEFRepository<OrganisationNetwork> networkOrganisationRepository,
 
             IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationType> organisationTypeRepository,
-            IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
-            IGenericEFRepository<Sex> sexRepository,
-            IGenericEFRepository<AgeRange> ageRangeRepository,
-            IGenericEFRepository<DonorCount> donorCountRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
-            IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
-            IGenericEFRepository<OrganisationUser> organisationUserRepository,
-            IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
             IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
-            IGenericEFRepository<RegistrationReason> registrationReasonRepository,
-            IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
-         
+            IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
+            IGenericEFRepository<OrganisationUser> organisationUserRepository,
+
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IGenericEFRepository<StorageTemperature> storageTemperatureRepository,
-            IGenericEFRepository<CollectionPercentage> collectionPercentage,
-            IGenericEFRepository<MacroscopicAssessment> macroscopicAssessmentRepository,
-            IGenericEFRepository<SampleCollectionMode> sampleCollectionModeRepository,
             IGenericEFRepository<PreservationType> preservationTypeRepository,
-
-            ICacheProvider cacheProvider,
-
-            ISearchProvider searchProvider,
-
-            IGenericEFRepository<Funder> funderRepository, 
-            IGenericEFRepository<County> countyRepository,
-            IGenericEFRepository<Country> countryRepository, 
-            IGenericEFRepository<AnnualStatisticGroup> annualStatisticGroupRepository,
-            IGenericEFRepository<AnnualStatistic> annualStatisticRepository,
-            IGenericEFRepository<Publication> publicationRespository,
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
@@ -163,60 +96,28 @@ namespace Biobanks.Services
             _capabilityRepository = capabilityRepository;
             _collectionAssociatedDataRepository = collectionAssociatedDataRepository;
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
-            _accessConditionRepository = accessConditionRepository;
-            _collectionTypeRepository = collectionTypeRepository;
-            _collectionStatusRepository = collectionStatusRepository;
-            _collectionPercentageRepository = collectionPercentageRepository;
-            _collectionSampleSetRepository = collectionSampleSetRepository;
-            _collectionConsentRestrictionRepository = collectionConsentRestrictionRepository;
-            _ontologyTermRepository = ontologyTermRepository;
             _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
-            _associatedDataProcurementTimeFrameModelRepository = associatedDataProcurementTimeFrameModelRepository;
-            _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
 
             _networkRepository = networkRepository;
             _networkUserRepository = networkUserRepository;
             _networkRegisterRequestRepository = networkRegisterRequestRepository;
-            _sopStatusRepository = sopStatusRepository;
             _networkOrganisationRepository = networkOrganisationRepository;
 
             _organisationRepository = organisationRepository;
             _organisationTypeRepository = organisationTypeRepository;
-            _sexRepository = sexRepository;
-            _ageRangeRepository = ageRangeRepository;
-            _donorCountRepository = donorCountRepository;
             _materialTypeRepository = materialTypeRepository;
-            _materialTypeGroupRepository = materialTypeGroupRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
+            _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
+
             _organisationRegistrationReasonRepository = organisationRegistrationReasonRepository;
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
-            _organisationUserRepository = organisationUserRepository;
             _organisationNetworkRepository = organisationNetworkRepository;
-            _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
-            _registrationReasonRepository = registrationReasonRepository;
-            _serviceOfferingRepository = serviceOfferingRepository;
-
-            _storageTemperatureRepository = storageTemperatureRepository;
-            _collectionPercentage = collectionPercentage;
-            _macroscopicAssessmentRepository = macroscopicAssessmentRepository;
-            _sampleCollectionModeRepository = sampleCollectionModeRepository;
+            _organisationUserRepository = organisationUserRepository;
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
-
-            _cacheProvider = cacheProvider;
-
-            _searchProvider = searchProvider;
-            _funderRepository = funderRepository;
-            _countyRepository = countyRepository;
-            _countryRepository = countryRepository;
-            _annualStatisticGroupRepository = annualStatisticGroupRepository;
-            _annualStatisticRepository = annualStatisticRepository;
-            _associatedDataTypeRepository = associatedDataTypeRepository;
-
-            _publicationRepository = publicationRespository;
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
@@ -235,66 +136,8 @@ namespace Biobanks.Services
                 .Select(x => x.Funders)
                 .FirstOrDefault();
 
-        public async Task<Funder> GetFunderbyName(string name)
-            => (await _funderRepository.ListAsync(false, x => x.Value == name)).SingleOrDefault();
-
-        public async Task<IEnumerable<Funder>> ListFundersAsync(string wildcard) =>
-            (await _funderRepository.ListAsync(
-                false,
-                x => x.Value.Contains(wildcard)))
-            .ToList();
-
-        #region RefData: County
-        public async Task<ICollection<County>> ListCountiesAsync() =>
-            (await _countyRepository.ListAsync(false, null, x => x.OrderBy(c => c.Value))).ToList();
-
-        public async Task<bool> ValidCountyAsync(string countyName)
-            => (await _countyRepository.ListAsync(false, x => x.Value == countyName)).Any();
-
-        public async Task<bool> IsCountyInUse(int id)
-            => (await GetCountyUsageCount(id)) > 0;
-
-        public async Task<int> GetCountyUsageCount(int id)
-            => (await _organisationRepository.ListAsync(false, x => x.CountyId == id)).Count();
-        #endregion
-
-        public async Task<ICollection<Country>> ListCountriesAsync() =>
-            (await _countryRepository.ListAsync(false, null, x => x.OrderBy(c => c.Value))).ToList();
-
         public async Task<bool> IsOntologyTermInUse(string id)
             => (await GetOntologyTermCollectionCapabilityCount(id) > 0);
-
-        public async Task<bool> IsMaterialTypeInUse(int id)
-            => (await GetMaterialTypeMaterialDetailCount(id) > 0);
-
-        public async Task<bool> IsAssociatedDataTypeInUse(int id)
-            => (await GetAssociatedDataTypeCollectionCapabilityCount(id) > 0);
-
-        public async Task<bool> IsConsentRestrictionInUse(int id)
-            => (await GetConsentRestrictionCollectionCount(id) > 0);
-
-        public async Task<bool> IsAssociatedDataProcurementTimeFrameInUse (int id)
-             => (await GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(id) > 0);
-
-        public async Task<bool> IsCollectionTypeInUse(int id)
-            => (await GetCollectionTypeCollectionCount(id) > 0);
-
-        public async Task<bool> IsRegistrationReasonInUse(int id)
-            => (await GetRegistrationReasonOrganisationCount(id) > 0);
-        public async Task<bool> IsServiceOfferingInUse(int id)
-            => (await GetServiceOfferingOrganisationCount(id) > 0);
-
-        public async Task<bool> IsSexInUse(int id)
-            => (await GetSexCount(id) > 0);
-
-        public async Task<bool> IsCountryInUse(int id)
-            => (await GetCountryCountyOrganisationCount(id) > 0);
-
-        public async Task<bool> IsAccessConditionInUse(int id)
-            => (await GetAccessConditionsCount(id) > 0);
-
-        public async Task<bool> IsCollectionStatusInUse(int id)
-            => (await GetCollectionStatusCollectionCount(id) > 0);
 
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
@@ -605,258 +448,10 @@ namespace Biobanks.Services
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
 
-        public async Task<IEnumerable<AccessCondition>> ListAccessConditionsAsync()
-            => await _accessConditionRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<IEnumerable<CollectionType>> ListCollectionTypesAsync()
-            => await _collectionTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-
-        public async Task<IEnumerable<CollectionStatus>> ListCollectionStatusesAsync()
-            => await _collectionStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<IEnumerable<Sex>> ListSexesAsync()
-            => await _sexRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync()
-            => await _associatedDataTypeRepository.ListAsync();
-
-        public async Task<IEnumerable<ConsentRestriction>> ListConsentRestrictionsAsync()
-            => await _collectionConsentRestrictionRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames()
-            => await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-        
-        public async Task<IEnumerable<MaterialType>> ListMaterialTypesAsync()
-            => await _materialTypeRepository.ListAsync(
-                orderBy: x => x.OrderBy(y => y.SortOrder), 
-                includeProperties: x => x.MaterialTypeGroups);
-
-        #region RefData: MaterialTypeGroup
-        public async Task<IEnumerable<MaterialTypeGroup>> ListMaterialTypeGroupsAsync()
-            => await _materialTypeGroupRepository.ListAsync(includeProperties: x => x.MaterialTypes);
-
-        public async Task<bool> ValidMaterialTypeGroupDescriptionAsync(string materialTypeGroupDescription)
-            => await _materialTypeGroupRepository.AnyAsync(x => x.Value == materialTypeGroupDescription);
-
-        public async Task<bool> IsMaterialTypeGroupInUse(int id)
-            => await _materialTypeGroupRepository.AnyAsync(x => x.Id == id && x.MaterialTypes.Count > 0);
-        #endregion
-
-        #region RefData: Collection Percentages
-        public async Task<IEnumerable<CollectionPercentage>> ListCollectionPercentagesAsync()
-            => await _collectionPercentageRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidCollectionPercentageAsync(string collectionPercentageDescription) 
-            => (await _collectionPercentageRepository.ListAsync(false, x => x.Value == collectionPercentageDescription)).Any();
-
-        public async Task<bool> IsCollectionPercentageInUse(int id)
-            => (await GetCollectionPercentageUsageCount(id)) > 0;
-
-        public async Task<int> GetCollectionPercentageUsageCount(int id)
-            => (await _materialDetailRepository.ListAsync(false, x => x.CollectionPercentageId == id)).Count();
-        #endregion
-
-        #region RefData: Collection Type
-
-        public async Task<int> GetCollectionTypeCollectionCount(int id)
-             => (await _collectionRepository.ListAsync(false, x => x.CollectionTypeId == id)).Count();
-
-        public async Task<bool> ValidCollectionTypeDescriptionAsync(string collectionTypeDescription)
-            => (await _collectionTypeRepository.ListAsync(false, x => x.Value == collectionTypeDescription)).Any();
-
-        public async Task<bool> ValidCollectionTypeDescriptionAsync(int collectionTypeId, string collectionTypeDescription)
-            => (await _collectionTypeRepository.ListAsync(
-                false,
-                x => x.Value == collectionTypeDescription &&
-                     x.Id != collectionTypeId)).Any();
-        #endregion
-
-        #region RefData: Macroscopic Assessments
-        public async Task<IEnumerable<MacroscopicAssessment>> ListMacroscopicAssessmentsAsync()
-            => await _macroscopicAssessmentRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidMacroscopicAssessmentAsync(string macroscopicAssessmentDescription)
-            => (await _macroscopicAssessmentRepository.ListAsync(false, x => x.Value == macroscopicAssessmentDescription)).Any();
-
-        public async Task<bool> IsMacroscopicAssessmentInUse(int id)
-            => (await GetMacroscopicAssessmentUsageCount(id)) > 0;
-
-        public async Task<int> GetMacroscopicAssessmentUsageCount(int id)
-            => (await _materialDetailRepository.ListAsync(false, x => x.MacroscopicAssessmentId == id)).Count();
-        #endregion
-
-        #region RefData: Annual Statistics
-        public async Task<IEnumerable<AnnualStatistic>> ListAnnualStatisticsAsync()
-            => await _annualStatisticRepository.ListAsync(false);
-
-        public async Task<int> GetAnnualStatisticUsageCount(int id)
-            => (await _organisationAnnualStatisticRepository.CountAsync(x => x.AnnualStatisticId == id));
-
-        public async Task<bool> IsAnnualStatisticInUse(int id)
-            => (await GetAnnualStatisticUsageCount(id)) > 0;
-
-        public async Task<bool> ValidAnnualStatisticAsync(string annualStatisticDescription, int annualStatisticGroupId)
-            => (await _annualStatisticRepository.ListAsync(false, x =>
-                    x.Value == annualStatisticDescription && x.AnnualStatisticGroupId == annualStatisticGroupId
-                )
-            ).Any();
-
-        #endregion
-
-        #region RefData: Associated Data Type Groups
-
-        public async Task<IEnumerable<AssociatedDataTypeGroup>> ListAssociatedDataTypeGroupsAsync(string wildcard = "")
-            => await _associatedDataTypeGroupRepository.ListAsync(false, x => x.Value.Contains(wildcard));
-
-
-        public async Task<int> GetAssociatedDataTypeGroupCount(int associatedDataTypeGroupId)
-        => (await _associatedDataTypeRepository.ListAsync(
-                   false,
-                   x => x.AssociatedDataTypeGroupId == associatedDataTypeGroupId)).Count();
-
-        public async Task<bool> IsAssociatedDataTypeGroupInUse(int associatedDataTypeGroupId)
-            => (await GetAssociatedDataTypeGroupCount(associatedDataTypeGroupId) > 0);
-
-        public async Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName)
-            => (await _associatedDataTypeGroupRepository.ListAsync(false, x => x.Value == associatedDataTypeGroupName)).Any();
-
-        public async Task<bool> ValidAssociatedDataTypeGroupNameAsync(int associatedDataTypeGroupId, string associatedDataTypeGroupName)
-            => (await _associatedDataTypeGroupRepository.ListAsync(
-                false,
-                x => x.Value == associatedDataTypeGroupName &&
-                     x.Id != associatedDataTypeGroupId)).Any();
-
-        #endregion
-
-        #region RefData: Donor Count
-        public async Task<IEnumerable<DonorCount>> ListDonorCountsAsync(bool ignoreCache = false)
-        {
-            if (ignoreCache)
-            {
-                return await _donorCountRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-            }
-            else
-            {
-                try
-                {
-                    return _cacheProvider.Retrieve<IEnumerable<DonorCount>>(CacheKeys.DonorCounts);
-                }
-                catch
-                {
-                    var donorCounts = await _donorCountRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-                    _cacheProvider.Store<IEnumerable<DonorCount>>(CacheKeys.DonorCounts, donorCounts);
-
-                    return donorCounts;
-                }
-            }
-        }
-
-        public async Task<bool> ValidDonorCountAsync(string donorCountDescription)
-            => (await _donorCountRepository.ListAsync(false, x => x.Value == donorCountDescription)).Any();
-
-        public async Task<bool> IsDonorCountInUse(int id)
-            => (await GetDonorCountUsageCount(id)) > 0;
-
-        public async Task<int> GetDonorCountUsageCount(int id)
-            => (await _collectionSampleSetRepository.ListAsync(false, x => x.DonorCountId == id)).Count();
-        #endregion
-
-        #region RefData: Age Range
-        public async Task<IEnumerable<AgeRange>> ListAgeRangesAsync()
-            => await _ageRangeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetAgeRangeUsageCount(int id)
-            => (await _sampleSetRepository.ListAsync(false, x => x.AgeRangeId == id)).Count();
-
-        public async Task<bool> IsAgeRangeInUse(int id)
-            => (await GetAgeRangeUsageCount(id)) > 0;
-
-        public async Task<bool> ValidAgeRangeAsync(string ageRangeDescription)
-            => (await _ageRangeRepository.ListAsync(false, x => x.Value == ageRangeDescription)).Any();
-        
-
-        public async Task<bool> IsAgeRangeDescriptionInUse(int ageRangeId, string ageRangeDescription)
-            => (await _ageRangeRepository.ListAsync(
-                false,
-                x => x.Value == ageRangeDescription &&
-                     x.Id != ageRangeId)).Any();
-
-        public async Task<bool> AreAgeRangeBoundsNull(int id)
-            => (await _ageRangeRepository.ListAsync(false, x => x.Id == id))
-                .Where(x => string.IsNullOrEmpty(x.LowerBound) && string.IsNullOrEmpty(x.UpperBound)).Any();
-        #endregion
-
-        #region RefData: Preservation Type
-        public async Task<IEnumerable<PreservationType>> ListPreservationTypesAsync()
-            => await _preservationTypeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetPreservationTypeUsageCount(int id)
-        => await _materialDetailRepository.CountAsync(x => x.PreservationTypeId == id);
-
-        public async Task<bool> IsPreservationTypeInUse(int id)
-            => (await GetPreservationTypeUsageCount(id)) > 0;
-
-        public async Task<bool> ValidPreservationTypeAsync(string value, int? storageTemperatureId)
-            => (await _preservationTypeRepository.ListAsync(false, x =>
-                    x.Value == value &&
-                    x.StorageTemperatureId == storageTemperatureId)
-                ).Any();
-        #endregion
-
-        #region RefData: Sample Collection Mode
-        public async Task<IEnumerable<SampleCollectionMode>> ListSampleCollectionModeAsync()
-            => await _sampleCollectionModeRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidSampleCollectionModeAsync(string sampleCollectionModeDesc)
-            => (await _sampleCollectionModeRepository.ListAsync(false, x => x.Value == sampleCollectionModeDesc)).Any();
-
-        public async Task<bool> IsSampleCollectionModeInUse(int id)
-            => (await GetSampleCollectionModeUsageCount(id)) > 0;
-
-        public async Task<int> GetSampleCollectionModeUsageCount(int id)
-            => (await _capabilityRepository.ListAsync(false, x => x.SampleCollectionModeId == id)).Count();
-        #endregion
-
-        #region RefData: Sop Status
-        public async Task<IEnumerable<SopStatus>> ListSopStatusesAsync()
-            => await _sopStatusRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<bool> ValidSopStatusAsync(string sopStatusDescription)
-            => (await _sopStatusRepository.ListAsync(false, x => x.Value == sopStatusDescription)).Any();
-
-        public async Task<bool> IsSopStatusInUse(int id)
-            => (await GetSopStatusUsageCount(id)) > 0;
-
-        public async Task<int> GetSopStatusUsageCount(int id)
-            => (await _networkRepository.ListAsync(false, x => x.SopStatusId == id)).Count();
-        #endregion
-
-        #region RefData: StorageTemperature
-        public async Task<IEnumerable<StorageTemperature>> ListStorageTemperaturesAsync()
-            => await _storageTemperatureRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
-
-        public async Task<int> GetStorageTemperatureUsageCount(int id)
-            => (await _materialDetailRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Count();
-
-        public async Task<bool> IsStorageTemperatureInUse(int id)
-            => (await GetStorageTemperatureUsageCount(id)) > 0;
-
-        public async Task<bool> IsStorageTemperatureAssigned(int id)
-        {
-            return (await _preservationTypeRepository.ListAsync(false, x => x.StorageTemperatureId == id)).Any();
-        }
-
-        public async Task<bool> ValidStorageTemperatureAsync(string storageTemperature)
-        {
-            return (await _storageTemperatureRepository.ListAsync(false, x => x.Value == storageTemperature)).Any();
-        }
-        #endregion
-
         #region RefData: OntologyTerm
 
         protected IQueryable<OntologyTerm> QueryOntologyTerms(
-            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false)
+            string id = null, string description = null,  List<string> tags = null, bool onlyDisplayable = false, bool fuzzyMatch = false)
         {
             var query = _context.OntologyTerms
                 .AsNoTracking()
@@ -870,7 +465,9 @@ namespace Biobanks.Services
 
             // Filter By Description
             if (!string.IsNullOrEmpty(description))
-                query = query.Where(x => x.Value == description);
+                query = fuzzyMatch
+                    ? query.Where(x => x.Value.Contains(description))
+                    : query.Where(x => x.Value == description);
 
             // Filter By SnomedTag
             if (tags != null)
@@ -881,6 +478,9 @@ namespace Biobanks.Services
 
             return query;
         }
+
+        public async Task<IEnumerable<OntologyTerm>> SearchOntologyTerms(string description = null, List<string> tags = null)
+            => await QueryOntologyTerms(id: null, description, tags, onlyDisplayable: true, fuzzyMatch: true).ToListAsync();
 
         public async Task<IEnumerable<OntologyTerm>> ListOntologyTerms(
             string description = null, List<string> tags = null, bool onlyDisplayable = false)
@@ -936,66 +536,6 @@ namespace Biobanks.Services
 
         #endregion
 
-        public async Task<bool> ValidConsentRestrictionDescriptionAsync(string consentDescription)
-            => (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Value == consentDescription)).Any();
-
-        public async Task<bool> ValidConsentRestrictionDescriptionAsync(int consentId, string consentDescription)
-            => (await _collectionConsentRestrictionRepository.ListAsync(
-                false,
-                x => x.Value == consentDescription &&
-                     x.Id != consentId)).Any();
-
-        public async Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription)
-        => (await _associatedDataProcurementTimeFrameModelRepository.ListAsync(false, x => x.Value == procurementDescription)).Any();
-
-        public async Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription)
-            => (await _associatedDataProcurementTimeFrameModelRepository.ListAsync(
-                false,
-                x => x.Value == procurementDescription &&
-                     x.Id != procurementId)).Any();
-
-        public async Task<bool> ValidServiceOfferingName(string offeringName)
-            => (await _serviceOfferingRepository.ListAsync(false, x => x.Value == offeringName)).Any();
-
-        public async Task<bool> ValidServiceOfferingName(int offeringId, string offeringName)
-            => (await _serviceOfferingRepository.ListAsync(
-                false,
-                x => x.Value == offeringName &&
-                     x.Id != offeringId)).Any();
-        public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription)
-    => (await _associatedDataTypeRepository.ListAsync(false, x => x.Value == associatedDataTypeDescription)).Any();
-        public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription)
-            => (await _associatedDataTypeRepository.ListAsync(
-                false,
-                x => x.Value == associatedDataTypeDescription &&
-                     x.Id != associatedDataTypeId)).Any();
-
-        public async Task<bool> ValidRegistrationReasonDescriptionAsync(string reasonDescription)
-            => (await _registrationReasonRepository.ListAsync(false, x => x.Value == reasonDescription)).Any();
-        public async Task<bool> ValidRegistrationReasonDescriptionAsync(int reasonId, string reasonDescription)
-            => (await _registrationReasonRepository.ListAsync(
-                false,
-                x => x.Value == reasonDescription &&
-                     x.Id != reasonId)).Any();
-
-        public async Task<bool> ValidCountryNameAsync(string countryName)
-      => (await _countryRepository.ListAsync(false, x => x.Value == countryName)).Any();
-
-        public async Task<bool> ValidCountryNameAsync(int countryId, string countryName)
-            => (await _countryRepository.ListAsync(
-                false,
-                x => x.Value == countryName &&
-                     x.Id != countryId)).Any();
-
-        public async Task<bool> ValidCollectionStatusDescriptionAsync(string collectionStatusDescription)
-        => (await _collectionStatusRepository.ListAsync(false, x => x.Value == collectionStatusDescription)).Any();
-
-        public async Task<bool> ValidCollectionStatusDescriptionAsync(int collectionStatusId, string collectionStatusDescription)
-            => (await _collectionStatusRepository.ListAsync(
-                false,
-                x => x.Value == collectionStatusDescription &&
-                     x.Id != collectionStatusId)).Any();
-
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
@@ -1009,86 +549,10 @@ namespace Biobanks.Services
                 SnomedTags.ExtractionProcedure
             })).Any(x => x.MaterialTypes.Any(y=>y.Id == id));
 
-        public async Task<bool> ValidMaterialTypeDescriptionAsync(string materialTypeDescription)
-            => (await _materialTypeRepository.ListAsync(false, x => x.Value == materialTypeDescription)).Any();
-
-        public async Task<bool> ValidMaterialTypeDescriptionAsync(int materialTypeId, string materialTypeDescription)
-            => (await _materialTypeRepository.ListAsync(
-                false,
-                x => x.Value == materialTypeDescription &&
-                     x.Id != materialTypeId)).Any();
-
-        public async Task<int> GetConsentRestrictionCollectionCount(int id)
-        {
-            var restrictions = (await _collectionConsentRestrictionRepository.ListAsync(false, x => x.Id == id, null, x => x.Collections)).SingleOrDefault();
-            if (restrictions is null)
-            {
-                throw new KeyNotFoundException();
-            }
-            else
-            {
-                return restrictions.Collections.Count();
-            }
-        }
-
-
-        public async Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id)
-            => (await _collectionAssociatedDataRepository.ListAsync(
-           false,
-           x => x.AssociatedDataProcurementTimeframeId == id)).Count() + (await _capabilityAssociatedDataRepository.ListAsync(
-           false,
-           x => x.AssociatedDataProcurementTimeframeId == id)).Count();
-
-        public async Task<int> GetCollectionStatusCollectionCount(int id)
-            => (await _collectionRepository.ListAsync(false, x => x.CollectionStatusId == id)).Count();
-
         public async Task<int> GetServiceOfferingOrganisationCount(int id)
             => (await _organisationServiceOfferingRepository.ListAsync(
             false,
              x => x.ServiceOfferingId == id)).Count();
-
-        public async Task<int> GetRegistrationReasonOrganisationCount(int id)
-            => await _organisationRegistrationReasonRepository.CountAsync(x => x.RegistrationReasonId == id);
-
-        public async Task<int> GetSexCount(int id)
-            => await _sampleSetRepository.CountAsync(x => x.SexId == id);
-
-        public async Task<bool> ValidSexDescriptionAsync(string sexDescription)
-            => (await _sexRepository.ListAsync(false, x => x.Value == sexDescription)).Any();
-
-        public async Task<bool> ValidSexDescriptionAsync(int sexId, string sexDescription)
-            => (await _sexRepository.ListAsync(
-                false,
-                x => x.Value == sexDescription &&
-                     x.Id != sexId)).Any();
-
-        public async Task<int> GetAccessConditionsCount(int id)
-         => (await _collectionRepository.ListAsync(
-                    false,
-                    x => x.AccessConditionId == id)).Count();
-
-        public async Task<bool> ValidAccessConditionDescriptionAsync(string accessConditionsDescription)
-            => (await _accessConditionRepository.ListAsync(false, x => x.Value == accessConditionsDescription)).Any();
-
-        public async Task<bool> ValidAccessConditionDescriptionAsync(int accessConditionsId, string accessConditionsDescription)
-            => (await _accessConditionRepository.ListAsync(
-                false,
-                x => x.Value == accessConditionsDescription &&
-                     x.Id != accessConditionsId)).Any();
-
-        public async Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id)
-        => (await _collectionAssociatedDataRepository.ListAsync(
-                   false,
-                   x => x.AssociatedDataTypeId == id)).Count() + (await _capabilityAssociatedDataRepository.ListAsync(
-                   false,
-                   x => x.AssociatedDataTypeId == id)).Count();
-
-        public async Task<int> GetCountryCountyOrganisationCount(int id)
-            => (await _countyRepository.ListAsync(
-                false,
-                x => x.CountryId == id)).Count() + (await _organisationRepository.ListAsync(
-                false,
-                x => x.CountryId == id)).Count();
 
         public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
             => await _organisationServiceOfferingRepository.ListAsync(
@@ -1096,9 +560,6 @@ namespace Biobanks.Services
                 x => x.OrganisationId == biobankId,
                 null,
                 x => x.ServiceOffering);
-
-        public async Task<IEnumerable<ServiceOffering>> ListServiceOfferingsAsync()
-            => await _serviceOfferingRepository.ListAsync(false, null, x => x.OrderBy(y => y.SortOrder));
 
         public async Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId)
         {
@@ -1123,48 +584,7 @@ namespace Biobanks.Services
             return await _userManager.Users.Where(x => adminIds.Contains(x.Id)).ToListAsync();
         }
 
-        public async Task<Funder> GetFunderByIdAsync(int id)
-            => await _funderRepository.GetByIdAsync(id);
-        
-        public async Task<IEnumerable<AnnualStatisticGroup>> GetAnnualStatisticGroupsAsync()
-            =>  await _annualStatisticGroupRepository.ListAsync(false, null, null, asg => asg.AnnualStatistics);
-
-        public async Task<IEnumerable<RegistrationReason>> ListRegistrationReasonsAsync()
-            => await _registrationReasonRepository.ListAsync();
-
-        public async Task<IEnumerable<Publication>> ListOrganisationPublications(int biobankId)
-            => await _publicationRepository.ListAsync(true, x => x.OrganisationId == biobankId);
-
-        public async Task<IEnumerable<Publication>> GetOrganisationPublicationsAsync(Organisation organisation)
-            => await ListOrganisationPublications(organisation.OrganisationId);
-
-        public async Task<IEnumerable<Publication>> GetAcceptedOrganisationPublicationsAsync(Organisation organisation)
-            => (await GetOrganisationPublicationsAsync(organisation)).Where(x => x.Accepted == true);
-
         public List<Organisation> GetOrganisations() => _organisationRepository.List(false, x => x.IsSuspended == false, x => x.OrderBy(c => c.Name)).ToList();
-
-        public async Task<IEnumerable<AnnualStatisticGroup>> ListAnnualStatisticGroupsAsync(string wildcard = "")
-        => await _annualStatisticGroupRepository.ListAsync(false, x => x.Value.Contains(wildcard));
-
-        public async Task<bool> ValidAnnualStatisticGroupNameAsync(string annualStatisticGroupName)
-            => (await _annualStatisticGroupRepository.ListAsync(false, x => x.Value == annualStatisticGroupName)).Any();
-
-        public async Task<bool> ValidAnnualStatisticGroupNameAsync(int annualStatisticGroupId, string annualStatisticGroupName)
-            => (await _annualStatisticGroupRepository.ListAsync(
-                false,
-                x => x.Value == annualStatisticGroupName &&
-                     x.Id != annualStatisticGroupId)).Any();
-
-        public async Task<AnnualStatisticGroup> GetAnnualStatisticGroupByName(string name)
-            => (await _annualStatisticGroupRepository.ListAsync(false, x => x.Value == name)).Single();
-
-        public async Task<int> GetAnnualStatisticAnnualStatisticGroupCount(int annualStatisticGroupId)
-        => (await _annualStatisticRepository.ListAsync(
-                   false,
-                   x => x.AnnualStatisticGroupId == annualStatisticGroupId)).Count();
-
-        public async Task<bool> IsAnnualStatisticGroupInUse(int annualStatisticGroupId)
-            => (await GetAnnualStatisticAnnualStatisticGroupCount(annualStatisticGroupId) > 0);
 
         public async Task<string> GetUnusedTokenByUser(string biobankUserId)
         {

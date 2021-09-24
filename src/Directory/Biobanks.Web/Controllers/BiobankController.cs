@@ -6,6 +6,7 @@ using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Identity.Constants;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
@@ -44,6 +45,29 @@ namespace Biobanks.Web.Controllers
     public class BiobankController : ApplicationBaseController
     {
         private readonly ICollectionService _collectionService;
+        private readonly IPublicationService _publicationService;
+
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly IReferenceDataService<County> _countyService;
+        private readonly IReferenceDataService<Country> _countryService;
+        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+        private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+        private readonly IReferenceDataService<AgeRange> _ageRangeService;
+        private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
+        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+        private readonly IReferenceDataService<Funder> _funderService;
+        private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+        private readonly IReferenceDataService<MaterialType> _materialTypeService;
+        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+        private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
 
         private readonly INetworkService _networkService;
         private readonly IOrganisationService _organisationService;
@@ -65,6 +89,28 @@ namespace Biobanks.Web.Controllers
 
         public BiobankController(
             ICollectionService collectionService,
+            IPublicationService publicationService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+            IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataService<County> countyService,
+            IReferenceDataService<Country> countryService,
+            IReferenceDataService<ConsentRestriction> consentRestrictionService,
+            IReferenceDataService<CollectionType> collectionTypeService,
+            IReferenceDataService<CollectionPercentage> collectionPercentageService,
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+            IReferenceDataService<AgeRange> ageRangeService,
+            IReferenceDataService<AccessCondition> accessConditionService,
+            IReferenceDataService<CollectionStatus> collectionStatusService,
+            IReferenceDataService<Funder> funderService,
+            IReferenceDataService<Sex> sexService,
+            IReferenceDataService<PreservationType> preservationTypeService,
+            IReferenceDataService<StorageTemperature> storageTemperatureService,
+            IReferenceDataService<MaterialType> materialTypeService,
+            IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+            IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
@@ -78,6 +124,29 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _publicationService = publicationService;
+            _serviceOfferingService = serviceOfferingService;
+            _registrationReasonService = registrationReasonService;
+            _macroscopicAssessmentService = macroscopicAssessmentService;
+            _donorCountService = donorCountService;
+            _countyService = countyService;
+            _countryService = countryService;
+            _consentRestrictionService = consentRestrictionService;
+            _collectionService = collectionService;
+            _collectionTypeService = collectionTypeService;
+            _collectionPercentageService = collectionPercentageService;
+            _annualStatisticGroupService = annualStatisticGroupService;
+            _ageRangeService = ageRangeService;
+            _accessConditionService = accessConditionService;
+            _collectionStatusService = collectionStatusService;
+            _funderService = funderService;
+            _sexService = sexService;
+            _preservationTypeService = preservationTypeService;
+            _storageTemperatureService = storageTemperatureService;
+            _materialTypeService = materialTypeService;
+            _associatedDataTypeService = assocaitedDataTypeService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
+            _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
             _networkService = networkService;
             _organisationService = organisationService;
             _biobankReadService = biobankReadService;
@@ -106,7 +175,7 @@ namespace Biobanks.Web.Controllers
             //for viewing details only, we include networks
             var networks = await _networkService.ListByOrganisationId(biobankId);
 
-            model.AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync();
+            model.AnnualStatisticGroups = await _annualStatisticGroupService.List();
 
             model.NetworkModels = networks.Select(x => new NetworkMemberModel
             {
@@ -220,8 +289,8 @@ namespace Biobanks.Web.Controllers
 
         private async Task<BiobankDetailsModel> AddCountiesToModel(BiobankDetailsModel model)
         {
-            model.Counties = await _biobankReadService.ListCountiesAsync();
-            model.Countries = await _biobankReadService.ListCountriesAsync();
+            model.Counties = await _countyService.List();
+            model.Countries = await _countryService.List();
             return model;
         }
 
@@ -342,7 +411,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
         {
-            var allServices = await _biobankReadService.ListServiceOfferingsAsync();
+            var allServices = await _serviceOfferingService.List();
 
             return allServices.Select(service => new OrganisationServiceModel
             {
@@ -357,7 +426,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationRegistrationReasonModel>> GetAllRegistrationReasonsAsync()
         {
-            var allRegistrationReasons = await _biobankReadService.ListRegistrationReasonsAsync();
+            var allRegistrationReasons = await _registrationReasonService.List();
 
             return allRegistrationReasons.Select(regReason => new OrganisationRegistrationReasonModel
             {
@@ -381,8 +450,8 @@ namespace Biobanks.Web.Controllers
                 OrganisationName = request.OrganisationName,
                 ServiceModels = await GetAllServicesAsync(),
                 RegistrationReasons = await GetAllRegistrationReasonsAsync(),
-                Counties = await _biobankReadService.ListCountiesAsync(),
-                Countries = await _biobankReadService.ListCountriesAsync()
+                Counties = await _countyService.List(),
+                Countries = await _countryService.List()
             };
 
             model = await AddCountiesToModel(model);
@@ -444,8 +513,8 @@ namespace Biobanks.Web.Controllers
                 GoverningDepartment = bb.GoverningDepartment,
                 ServiceModels = services,
                 RegistrationReasons = registrationReasons,
-                Counties = await _biobankReadService.ListCountiesAsync(),
-                Countries = await _biobankReadService.ListCountriesAsync(),
+                Counties = await _countyService.List(),
+                Countries = await _countryService.List(),
                 SharingOptOut = bb.SharingOptOut,
                 EthicsRegistration = bb.EthicsRegistration,
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
@@ -758,7 +827,7 @@ namespace Biobanks.Web.Controllers
                         .Select(x => x.ErrorMessage).ToList()
                 });
 
-            var funder = await _biobankReadService.GetFunderbyName(model.FunderName);
+            var funder = await _funderService.Get(model.FunderName);
 
             // Funder Doesn't Exist
             if (funder == null)
@@ -768,13 +837,10 @@ namespace Biobanks.Web.Controllers
                 if (useFreeText)
                 {
                     // Add Funder to Database
-                    await _biobankWriteService.AddFunderAsync(new Funder
+                    funder = await _funderService.Add(new Funder
                     {
                         Value = model.FunderName
                     });
-
-                    // Retrieve Funder (ensures no null values)
-                    funder = await _biobankReadService.GetFunderbyName(model.FunderName);
                 }
                 else
                 {
@@ -823,7 +889,7 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> SearchFunders(string wildcard)
         {
-            var funders = await _biobankReadService.ListFundersAsync(wildcard);
+            var funders = await _funderService.List(wildcard);
 
             var funderResults = funders
                 .Select(x => new
@@ -940,7 +1006,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> EditCollection(int id)
         {
             var collection = await _collectionService.Get(id);
-            var consentRestrictions = await _biobankReadService.ListConsentRestrictionsAsync();
+            var consentRestrictions = await _consentRestrictionService.List();
 
             var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
@@ -1301,7 +1367,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> SampleSet(int id)
         {
             var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
@@ -1336,7 +1402,7 @@ namespace Biobanks.Web.Controllers
             IEnumerable<ConsentRestriction> consentRestrictions = null)
         {
 
-            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+            model.AccessConditions = (await _accessConditionService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -1345,7 +1411,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+            model.CollectionTypes = (await _collectionTypeService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -1354,7 +1420,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
+            model.CollectionStatuses = (await _collectionStatusService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -1363,7 +1429,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+            model.ConsentRestrictions = (await _consentRestrictionService.List())
                 .OrderBy(x => x.SortOrder)
                 .Select(x => new Models.Biobank.ConsentRestrictionModel
                 {
@@ -1386,7 +1452,7 @@ namespace Biobanks.Web.Controllers
         private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
             AbstractCRUDCapabilityModel model)
         {
-            var timeFrames = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
+            var timeFrames = (await _associatedDataProcurementTimeframeService.List())
                 .Select(x => new AssociatedDataTimeFrameModel
                 {
                     ProvisionTimeId = x.Id,
@@ -1394,7 +1460,7 @@ namespace Biobanks.Web.Controllers
                     ProvisionTimeValue = x.DisplayValue
                 });
 
-            var types = (await _biobankReadService.ListAssociatedDataTypesAsync())
+            var types = (await _associatedDataTypeService.List())
                      .Select(x => new AssociatedDataModel
                      {
                          DataTypeId = x.Id,
@@ -1405,7 +1471,7 @@ namespace Biobanks.Web.Controllers
                      });
 
             model.Groups = new List<AssociatedDataGroupModel>();
-            var groups = await _biobankReadService.ListAssociatedDataTypeGroupsAsync();
+            var groups = await _associatedDataTypeGroupService.List();
             foreach (var g in groups)
             {
                 var groupModel = new AssociatedDataGroupModel();
@@ -1426,7 +1492,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<AbstractCRUDSampleSetModel> PopulateAbstractCRUDSampleSetModel(AbstractCRUDSampleSetModel model)
         {
-            model.Sexes = (await _biobankReadService.ListSexesAsync())
+            model.Sexes = (await _sexService.List())
                 .Select(
                     x => new ReferenceDataModel
                     {
@@ -1436,7 +1502,7 @@ namespace Biobanks.Web.Controllers
                     })
                 .OrderBy(x => x.SortOrder);
 
-            model.AgeRanges = (await _biobankReadService.ListAgeRangesAsync())
+            model.AgeRanges = (await _ageRangeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1447,7 +1513,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.DonorCounts = (await _biobankReadService.ListDonorCountsAsync())
+            model.DonorCounts = (await _donorCountService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1458,7 +1524,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
+            model.MaterialTypes = (await _materialTypeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1482,7 +1548,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.Description);
 
-            model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
+            model.PreservationTypes = (await _preservationTypeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1493,7 +1559,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.StorageTemperatures = (await _biobankReadService.ListStorageTemperaturesAsync())
+            model.StorageTemperatures = (await _storageTemperatureService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1504,7 +1570,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.Percentages = (await _biobankReadService.ListCollectionPercentagesAsync())
+            model.Percentages = (await _collectionPercentageService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1515,7 +1581,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             model.MacroscopicAssessments = assessments
                 .Select(
@@ -1801,8 +1867,7 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId != 0)
             {
-                var biobank = await _organisationService.Get(biobankId);
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.ListByOrganisation(biobankId);
 
                 biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
             }
@@ -1821,11 +1886,8 @@ namespace Biobanks.Web.Controllers
 
         public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
         {
-            //TODO: Merge with core for when we rewrite the directory in core.
-            var biobank = await _organisationService.Get(biobankId);
-
             // Find Given Publication
-            var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+            var publications = await _publicationService.ListByOrganisation(biobankId);
             var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
             //retrieve from EPMC if not found
@@ -1875,10 +1937,8 @@ namespace Biobanks.Web.Controllers
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
-                var biobank = await _organisationService.Get(biobankId);
-
                 // Find Publication locally
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.ListByOrganisation(biobankId);
                 var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
                 // search online
@@ -1899,40 +1959,27 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0 || IsNullOrEmpty(publicationId))
                 return Json(new EmptyResult());
-            else
+
+            // Try Accept Local Publication
+            var publication = await _publicationService.Claim(publicationId, biobankId);
+
+            // No Local Publication - Fetch
+            if (publication == null)
             {
-                var biobank = await _organisationService.Get(biobankId);
+                publication = await PublicationSearch(publicationId, biobankId);
 
-                // Find Publication locally
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
-                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+                // No Publication Found
+                if (publication == null)
+                    return Json(new EmptyResult());
 
-                if (publication != null)
-                {
-                    // Update Publication in DB
-                    publication.Accepted = true;
-                    await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
+                // Add Publication to DB
+                publication.Accepted = true;
+                publication.OrganisationId = biobankId;
 
-                    return Json(_mapper.Map<BiobankPublicationModel>(publication));
-                }
-                else
-                {
-                    // search online
-                    publication = await PublicationSearch(publicationId, biobankId);
-
-                    if (publication != null)
-                    {
-                        // Add Publication to DB
-                        publication.Accepted = true;
-                        publication.OrganisationId = biobankId;
-
-                        await _biobankWriteService.AddOrganisationPublicationAsync(publication);
-                        return Json(_mapper.Map<BiobankPublicationModel>(publication));
-                    }
-                    else
-                        return Json(new EmptyResult());
-                }  
+                publication = await _publicationService.Create(publication);
             }
+
+            return Json(_mapper.Map<BiobankPublicationModel>(publication));
         }
 
         [HttpPost]
@@ -1941,26 +1988,13 @@ namespace Biobanks.Web.Controllers
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
 
-            if (biobankId == 0 || String.IsNullOrEmpty(publicationId))
-            {
-                return Json("");
-            }
-            else
-            {
-                var biobank = await _organisationService.Get(biobankId);
+            if (biobankId == 0 || IsNullOrEmpty(publicationId))
+                return Json(new EmptyResult());
 
-                // Find Given Publication
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
-                var publication = publications.Where(x => x.PublicationId == publicationId).First();
+            // Update Publication
+            var publication = await _publicationService.Claim(publicationId, biobankId, accept);
 
-                // Claim publication
-                publication.Accepted = accept;
-
-                // Add To Publication DB
-                await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
-
-                return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
-            }
+            return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AddPublicationSuccessFeedback(string publicationId)
@@ -1976,7 +2010,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AnnualStats()
         => View(new BiobankAnnualStatsModel
         {
-            AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync(),
+            AnnualStatisticGroups = await _annualStatisticGroupService.List(),
             BiobankAnnualStatistics = (await _organisationService.Get(SessionHelper.GetBiobankId(Session))).OrganisationAnnualStatistics
         });
 
@@ -2074,7 +2108,7 @@ namespace Biobanks.Web.Controllers
             var model = new SubmissionsModel();
 
             //populate drop downs
-            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+            model.AccessConditions = (await _accessConditionService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -2082,7 +2116,7 @@ namespace Biobanks.Web.Controllers
                     SortOrder = x.SortOrder
                 }).OrderBy(x => x.SortOrder);
 
-            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+            model.CollectionTypes = (await _collectionTypeService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
