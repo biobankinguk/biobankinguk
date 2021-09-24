@@ -47,12 +47,6 @@ namespace Biobanks.Services.Contracts
         Task<OrganisationRegisterRequest> UpdateOrganisationRegisterRequestAsync(OrganisationRegisterRequest request);
         Task<NetworkRegisterRequest> UpdateNetworkRegisterRequestAsync(NetworkRegisterRequest request);
 
-        Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
-        Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
-        Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis);
-        Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
-        Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
-
         Task<Organisation> SuspendBiobankAsync(int id);
         Task<Organisation> UnsuspendBiobankAsync(int id);
         Task UpdateOrganisationURLAsync(int id);

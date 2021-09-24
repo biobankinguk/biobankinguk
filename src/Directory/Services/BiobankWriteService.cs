@@ -23,6 +23,7 @@ namespace Biobanks.Services
     public class BiobankWriteService : IBiobankWriteService
     {
         #region Properties and ctor
+        private readonly IOntologyTermService _ontologyTermService;
 
         private readonly ICollectionService _collectionService;
 
@@ -65,6 +66,7 @@ namespace Biobanks.Services
 
         public BiobankWriteService(
             ICollectionService collectionService,
+            IOntologyTermService ontologyTermService,
             IBiobankReadService biobankReadService,
             IConfigService configService,
             ILogoStorageProvider logoStorageProvider,
@@ -98,6 +100,8 @@ namespace Biobanks.Services
             IGenericEFRepository<Funder> funderRepository)
         {
             _collectionService = collectionService;
+
+            _ontologyTermService = ontologyTermService;
 
             _biobankReadService = biobankReadService;
             _configService = configService;
@@ -238,7 +242,7 @@ namespace Biobanks.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(value: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             var capability = new DiagnosisCapability
             {
@@ -267,7 +271,7 @@ namespace Biobanks.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(value: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;
@@ -574,62 +578,6 @@ namespace Biobanks.Services
             _organisationNetworkRepository.Update(organisationNetwork);
             await _organisationNetworkRepository.SaveChangesAsync();
             return organisationNetwork;
-        }
-
-        public async Task DeleteOntologyTermAsync(OntologyTerm ontologyTerm)
-        {
-            await _ontologyTermRepository.DeleteAsync(ontologyTerm.Id);
-            await _ontologyTermRepository.SaveChangesAsync();
-        }
-
-        public async Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm)
-        {
-            _ontologyTermRepository.Update(ontologyTerm);
-            await _ontologyTermRepository.SaveChangesAsync();
-
-            // Update Indexed Capabilities
-            await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
-
-            // Update Indexed Collections
-            var collections = await _collectionService.ListByOntologyTerm(ontologyTerm.Value);
-
-            foreach (var collection in collections)
-            {
-                _indexService.UpdateCollectionDetails(
-                    await _collectionService.GetForIndexing(collection.CollectionId));
-            }
-
-            return ontologyTerm;
-        }
-
-        public async Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm)
-        {
-            _ontologyTermRepository.Insert(ontologyTerm);
-            await _ontologyTermRepository.SaveChangesAsync();
-
-            return ontologyTerm;
-        }
-
-        public async Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
-        {
-            foreach (var mId in materialTypeIds)
-            {
-                (await _materialTypeRepository.ListAsync(true, x => x.Id == mId, null, x => x.ExtractionProcedures))
-                    .FirstOrDefault().ExtractionProcedures
-                    .Add(ontologyTerm);
-                await _ontologyTermRepository.SaveChangesAsync();
-            }
-        }
-
-        public async Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
-        {
-            await UpdateOntologyTermAsync(ontologyTerm);
-
-            var Term = (await _ontologyTermRepository.ListAsync(true,x=>x.Id == ontologyTerm.Id,null, x=>x.MaterialTypes)).FirstOrDefault();
-            var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
-            Term.MaterialTypes = materialTypes;
-
-            await _ontologyTermRepository.SaveChangesAsync();
         }
 
         public async Task<Organisation> SuspendBiobankAsync(int id)
