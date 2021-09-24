@@ -65,6 +65,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<PreservationType> _preservationTypeService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
         private readonly IReferenceDataService<MaterialType> _materialTypeService;
+        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -102,6 +104,8 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<PreservationType> preservationTypeService,
             IReferenceDataService<StorageTemperature> storageTemperatureService,
             IReferenceDataService<MaterialType> materialTypeService,
+            IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -133,6 +137,8 @@ namespace Biobanks.Web.Controllers
             _preservationTypeService = preservationTypeService;
             _storageTemperatureService = storageTemperatureService;
             _materialTypeService = materialTypeService;
+            _associatedDataTypeService = assocaitedDataTypeService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1446,7 +1452,7 @@ namespace Biobanks.Web.Controllers
                     ProvisionTimeValue = x.DisplayValue
                 });
 
-            var types = (await _biobankReadService.ListAssociatedDataTypesAsync())
+            var types = (await _associatedDataTypeService.List())
                      .Select(x => new AssociatedDataModel
                      {
                          DataTypeId = x.Id,
@@ -1457,7 +1463,7 @@ namespace Biobanks.Web.Controllers
                      });
 
             model.Groups = new List<AssociatedDataGroupModel>();
-            var groups = await _biobankReadService.ListAssociatedDataTypeGroupsAsync();
+            var groups = await _associatedDataTypeGroupService.List();
             foreach (var g in groups)
             {
                 var groupModel = new AssociatedDataGroupModel();
