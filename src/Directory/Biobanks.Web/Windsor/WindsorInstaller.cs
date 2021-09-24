@@ -224,6 +224,10 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(AssociatedDataTypeGroupService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(IReferenceDataService<AssociatedDataProcurementTimeframe>))
+                    .ImplementedBy(typeof(AssociatedDataProcurementTimeframeService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IRegistrationDomainService))
                     .ImplementedBy(typeof(RegistrationDomainService))
                     .LifeStyle.Transient,

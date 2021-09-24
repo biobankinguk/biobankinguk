@@ -37,11 +37,6 @@ namespace Biobanks.Services.Contracts
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
 
         Task<bool> IsMaterialTypeAssigned(int id);
-        Task<IEnumerable<AssociatedDataProcurementTimeframe>> ListAssociatedDataProcurementTimeFrames();
-        Task<int> GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(int id);
-        Task<bool> IsAssociatedDataProcurementTimeFrameInUse(int id);
-        Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(int procurementId, string procurementDescription);
-        Task<bool> ValidAssociatedDataProcurementTimeFrameDescriptionAsync(string procurementDescription);
 
         Task<IEnumerable<OntologyTerm>> SearchOntologyTerms(string description = null, List<string> tags = null);
         Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string description = null, List<string> tags = null, bool onlyDisplayable = false);

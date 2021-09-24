@@ -33,7 +33,6 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
-        private readonly IGenericEFRepository<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameRepository;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
@@ -79,7 +78,6 @@ namespace Biobanks.Services
             IGenericEFRepository<NetworkUser> networkUserRepository,
             IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
             IGenericEFRepository<OrganisationNetwork> networkOrganisationRepository,
-            IGenericEFRepository<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameRepository,
 
             IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
@@ -128,7 +126,6 @@ namespace Biobanks.Services
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _registrationReasonRepository = registrationReasonRepository;
             _serviceOfferingRepository = serviceOfferingRepository;
-            _associatedDataProcurementTimeFrameRepository = associatedDataProcurementTimeFrameRepository;
 
             _siteConfigRepository = siteConfigRepository;
 
@@ -634,66 +631,6 @@ namespace Biobanks.Services
 
             await _ontologyTermRepository.SaveChangesAsync();
         }
-       
-        #region RefData: Associated Data Procurement Time Frame
-        public async Task<AssociatedDataProcurementTimeframe> AddAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe timeframe)
-        {
-            _associatedDataProcurementTimeFrameRepository.Insert(timeframe);
-            await _associatedDataProcurementTimeFrameRepository.SaveChangesAsync();
-
-            return timeframe;
-        }
-
-        public async Task<AssociatedDataProcurementTimeframe> UpdateAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe timeframe, bool sortOnly = false)
-        {
-            var procurements = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-
-            // If only updating sortOrder
-            if (sortOnly)
-            {
-                timeframe.Value =
-                    procurements
-                        .Where(x => x.Id == timeframe.Id)
-                        .First()
-                        .Value;
-            }
-
-            // Add new item, remove old
-            var oldTimeframe = procurements.Where(x => x.Id == timeframe.Id).First();
-            var reverse = (oldTimeframe.SortOrder < timeframe.SortOrder);
-
-            var newOrder = procurements
-                    .Prepend(timeframe)
-                    .GroupBy(x => x.Id)
-                    .Select(x => x.First());
-
-            // Sort depending on direction of change
-            newOrder = reverse
-                    ? newOrder.OrderByDescending(x => x.SortOrder).Reverse()
-                    : newOrder.OrderBy(x => x.SortOrder);
-
-            // Re-index and update
-            newOrder
-                .Select((x, i) =>
-                {
-                    x.SortOrder = (i + 1);
-                    return x;
-                })
-                .ToList()
-                .ForEach(_associatedDataProcurementTimeFrameRepository.Update);
-
-            await _associatedDataProcurementTimeFrameRepository.SaveChangesAsync();
-
-            return timeframe;
-        }
-
-        public async Task DeleteAssociatedDataProcurementTimeFrameAsync(AssociatedDataProcurementTimeframe associatedDataProcurementTimeframe)
-        {
-            await _associatedDataProcurementTimeFrameRepository.DeleteAsync(associatedDataProcurementTimeframe.Id);
-            await _associatedDataProcurementTimeFrameRepository.SaveChangesAsync();
-        }
-        #endregion
-
 
         public async Task<Organisation> SuspendBiobankAsync(int id)
         {

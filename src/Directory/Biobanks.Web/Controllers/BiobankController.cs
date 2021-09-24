@@ -67,6 +67,7 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<MaterialType> _materialTypeService;
         private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
         private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+        private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -106,6 +107,7 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<MaterialType> materialTypeService,
             IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
             IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+            IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -139,6 +141,7 @@ namespace Biobanks.Web.Controllers
             _materialTypeService = materialTypeService;
             _associatedDataTypeService = assocaitedDataTypeService;
             _associatedDataTypeGroupService = associatedDataTypeGroupService;
+            _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -1444,7 +1447,7 @@ namespace Biobanks.Web.Controllers
         private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
             AbstractCRUDCapabilityModel model)
         {
-            var timeFrames = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
+            var timeFrames = (await _associatedDataProcurementTimeframeService.List())
                 .Select(x => new AssociatedDataTimeFrameModel
                 {
                     ProvisionTimeId = x.Id,
