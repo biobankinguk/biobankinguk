@@ -8,6 +8,7 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -15,14 +16,11 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/AssociatedDataTypeGroup")]
     public class AssociatedDataTypeGroupController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
 
-        public AssociatedDataTypeGroupController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public AssociatedDataTypeGroupController(IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
         }
 
         [HttpGet]
@@ -30,17 +28,17 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var model = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
-                    .Select(x =>
-
+            var model = (await _associatedDataTypeGroupService.List())
+                .Select(x =>
                     Task.Run(async () => new ReadAssociatedDataTypeGroupModel
                     {
                         AssociatedDataTypeGroupId = x.Id,
                         Name = x.Value,
-                        AssociatedDataTypeGroupCount = await _biobankReadService.GetAssociatedDataTypeGroupCount(x.Id)
-                    }).Result)
-
-                    .ToList();
+                        AssociatedDataTypeGroupCount = await _associatedDataTypeGroupService.GetUsageCount(x.Id)
+                    })
+                    .Result
+                 )
+                .ToList();
 
             return model;
         }
@@ -49,9 +47,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync()).Where(x => x.Id == id).First();
+            var model = await _associatedDataTypeGroupService.Get(id);
 
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(id))
+            if (await _associatedDataTypeGroupService.IsInUse(id))
             {
                 ModelState.AddModelError("Name", $"The associated data type group \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -61,11 +59,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
-            {
-                Id = model.Id,
-                Value = model.Value
-            });
+            await _associatedDataTypeGroupService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -80,7 +74,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(AssociatedDataTypeGroupModel model)
         {
             //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAssociatedDataTypeGroupNameAsync(model.Name))
+            if (await _associatedDataTypeGroupService.Exists(model.Name))
             {
                 ModelState.AddModelError("Name", "That name is already in use. Associated Data Type Group names must be unique.");
             }
@@ -90,7 +84,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
+            await _associatedDataTypeGroupService.Add(new AssociatedDataTypeGroup
             {
                 Value = model.Name
             });
@@ -107,13 +101,15 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, AssociatedDataTypeGroupModel model)
         {
+            var exisiting = await _associatedDataTypeGroupService.Get(model.Name);
+
             //If this name is valid, it already exists
-            if (await _biobankReadService.ValidAssociatedDataTypeGroupNameAsync(id, model.Name))
+            if (exisiting != null && exisiting.Id != id)
             {
                 ModelState.AddModelError("Name", "That name is already in use by another asscoiated data type group. Associated Data Type Group names must be unique.");
             }
 
-            if (await _biobankReadService.IsAssociatedDataTypeGroupInUse(id))
+            if (await _associatedDataTypeGroupService.IsInUse(id))
             {
                 ModelState.AddModelError("Name", "This associated data type group is currently in use and cannot be edited.");
             }
@@ -123,7 +119,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateAssociatedDataTypeGroupAsync(new AssociatedDataTypeGroup
+            await _associatedDataTypeGroupService.Update(new AssociatedDataTypeGroup
             {
                 Id = id,
                 Value = model.Name

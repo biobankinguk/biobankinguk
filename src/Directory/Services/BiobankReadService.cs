@@ -5,7 +5,6 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
-using Biobanks.Search.Legacy;
 using Biobanks.Services.Contracts;
 using Biobanks.Services.Dto;
 using Microsoft.AspNet.Identity;
@@ -16,7 +15,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Directory.Data;
 using Biobanks.Directory.Services.Constants;
-using Hangfire.States;
 
 namespace Biobanks.Services
 {
@@ -42,8 +40,6 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Organisation> _organisationRepository;
         private readonly IGenericEFRepository<OrganisationType> _organisationTypeRepository;
 
-        private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
-        private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
@@ -70,7 +66,6 @@ namespace Biobanks.Services
             IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
             IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
-            IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
 
             IGenericEFRepository<Network> networkRepository,
             IGenericEFRepository<NetworkUser> networkUserRepository,
@@ -79,7 +74,6 @@ namespace Biobanks.Services
 
             IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationType> organisationTypeRepository,
-            IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
@@ -105,7 +99,6 @@ namespace Biobanks.Services
             _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
             _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
-            _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
 
             _networkRepository = networkRepository;
             _networkUserRepository = networkUserRepository;
@@ -126,7 +119,6 @@ namespace Biobanks.Services
             _preservationTypeRepository = preservationTypeRepository;
 
             _userManager = userManager;
-            _associatedDataTypeRepository = associatedDataTypeRepository;
 
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
@@ -371,9 +363,6 @@ namespace Biobanks.Services
 
         public async Task<bool> IsOntologyTermInUse(string id)
             => (await GetOntologyTermCollectionCapabilityCount(id) > 0);
-
-        public async Task<bool> IsAssociatedDataTypeInUse(int id)
-            => (await GetAssociatedDataTypeCollectionCapabilityCount(id) > 0);
 
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
@@ -697,33 +686,6 @@ namespace Biobanks.Services
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
 
-        public async Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync()
-            => await _associatedDataTypeRepository.ListAsync();
-
-        #region RefData: Associated Data Type Groups
-        public async Task<IEnumerable<AssociatedDataTypeGroup>> ListAssociatedDataTypeGroupsAsync(string wildcard = "")
-            => await _associatedDataTypeGroupRepository.ListAsync(false, x => x.Value.Contains(wildcard));
-
-
-        public async Task<int> GetAssociatedDataTypeGroupCount(int associatedDataTypeGroupId)
-        => (await _associatedDataTypeRepository.ListAsync(
-                   false,
-                   x => x.AssociatedDataTypeGroupId == associatedDataTypeGroupId)).Count();
-
-        public async Task<bool> IsAssociatedDataTypeGroupInUse(int associatedDataTypeGroupId)
-            => (await GetAssociatedDataTypeGroupCount(associatedDataTypeGroupId) > 0);
-
-        public async Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName)
-            => (await _associatedDataTypeGroupRepository.ListAsync(false, x => x.Value == associatedDataTypeGroupName)).Any();
-
-        public async Task<bool> ValidAssociatedDataTypeGroupNameAsync(int associatedDataTypeGroupId, string associatedDataTypeGroupName)
-            => (await _associatedDataTypeGroupRepository.ListAsync(
-                false,
-                x => x.Value == associatedDataTypeGroupName &&
-                     x.Id != associatedDataTypeGroupId)).Any();
-
-        #endregion
-
         #region RefData: OntologyTerm
 
         protected IQueryable<OntologyTerm> QueryOntologyTerms(
@@ -812,13 +774,6 @@ namespace Biobanks.Services
 
         #endregion
 
-        public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription)
-    => (await _associatedDataTypeRepository.ListAsync(false, x => x.Value == associatedDataTypeDescription)).Any();
-        public async Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription)
-            => (await _associatedDataTypeRepository.ListAsync(
-                false,
-                x => x.Value == associatedDataTypeDescription &&
-                     x.Id != associatedDataTypeId)).Any();
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
@@ -836,13 +791,6 @@ namespace Biobanks.Services
             => (await _organisationServiceOfferingRepository.ListAsync(
             false,
              x => x.ServiceOfferingId == id)).Count();
-
-        public async Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id)
-        => (await _collectionAssociatedDataRepository.ListAsync(
-                   false,
-                   x => x.AssociatedDataTypeId == id)).Count() + (await _capabilityAssociatedDataRepository.ListAsync(
-                   false,
-                   x => x.AssociatedDataTypeId == id)).Count();
 
         public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
             => await _organisationServiceOfferingRepository.ListAsync(

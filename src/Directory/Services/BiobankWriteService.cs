@@ -33,9 +33,6 @@ namespace Biobanks.Services
 
         private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
         private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
-        private readonly IGenericEFRepository<MaterialTypeGroup> _materialTypeGroupRepository;
-        private readonly IGenericEFRepository<AssociatedDataType> _associatedDataTypeRepository;
-        private readonly IGenericEFRepository<AssociatedDataTypeGroup> _associatedDataTypeGroupRepository;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
@@ -73,9 +70,6 @@ namespace Biobanks.Services
             ILogoStorageProvider logoStorageProvider,
             IGenericEFRepository<OntologyTerm> ontologyTermRepository,
             IGenericEFRepository<MaterialType> materialTypeRepository,
-            IGenericEFRepository<MaterialTypeGroup> materialTypeGroupRepository,
-            IGenericEFRepository<AssociatedDataType> associatedDataTypeRepository,
-            IGenericEFRepository<AssociatedDataTypeGroup> associatedDataTypeGroupRepository,
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
@@ -110,10 +104,7 @@ namespace Biobanks.Services
             _logoStorageProvider = logoStorageProvider;
 
             _ontologyTermRepository = ontologyTermRepository;
-            _associatedDataTypeRepository = associatedDataTypeRepository;
-            _associatedDataTypeGroupRepository = associatedDataTypeGroupRepository;
             _materialTypeRepository = materialTypeRepository;
-            _materialTypeGroupRepository = materialTypeGroupRepository;
 
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
@@ -640,27 +631,6 @@ namespace Biobanks.Services
 
             await _ontologyTermRepository.SaveChangesAsync();
         }
-       
-         public async Task DeleteAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
-        {
-            await _associatedDataTypeRepository.DeleteAsync(associatedDataType.Id);
-            await _associatedDataTypeRepository.SaveChangesAsync();
-        }
-        public async Task<AssociatedDataType> UpdateAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
-        {
-            _associatedDataTypeRepository.Update(associatedDataType);
-            await _associatedDataTypeRepository.SaveChangesAsync();
-
-            return associatedDataType;
-        }
-
-        public async Task<AssociatedDataType> AddAssociatedDataTypeAsync(AssociatedDataType associatedDataType)
-        {
-            _associatedDataTypeRepository.Insert(associatedDataType);
-            await _associatedDataTypeRepository.SaveChangesAsync();
-
-            return associatedDataType;
-        }
 
         public async Task<Organisation> SuspendBiobankAsync(int id)
         {
@@ -677,8 +647,6 @@ namespace Biobanks.Services
 
             //Arrange removal from the search index
             await _indexService.BulkDeleteBiobank(id);
-
-
 
             return biobank;
         }
@@ -821,27 +789,6 @@ namespace Biobanks.Services
             await _organisationRegistrationReasonRepository.SaveChangesAsync();
         }
     
-        public async Task DeleteAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup)
-        {
-            await _associatedDataTypeGroupRepository.DeleteAsync(associatedDataTypeGroup.Id);
-            await _associatedDataTypeGroupRepository.SaveChangesAsync();
-        }
-
-        public async Task<AssociatedDataTypeGroup> AddAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup)
-        {
-            _associatedDataTypeGroupRepository.Insert(associatedDataTypeGroup);
-            await _associatedDataTypeGroupRepository.SaveChangesAsync();
-
-            return associatedDataTypeGroup;
-        }
-        public async Task<AssociatedDataTypeGroup> UpdateAssociatedDataTypeGroupAsync(AssociatedDataTypeGroup associatedDataTypeGroup)
-        {
-            _associatedDataTypeGroupRepository.Update(associatedDataTypeGroup);
-            await _associatedDataTypeGroupRepository.SaveChangesAsync();
-
-            return associatedDataTypeGroup;
-        }
-
         public async Task<KeyValuePair<string,string>> GenerateNewApiClientForBiobank(int biobankId, string clientName=null)
         {
             var clientId = Crypto.GenerateId();

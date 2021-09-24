@@ -56,6 +56,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
         private readonly IReferenceDataService<MaterialType> _materialTypeService;
         private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
+        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
         private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
 
         private readonly IBiobankReadService _biobankReadService;
@@ -97,6 +99,8 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<StorageTemperature> storageTemperatureService,
             IReferenceDataService<MaterialType> materialTypeService,
             IReferenceDataService<MaterialTypeGroup> materialTypeGroupService,
+            IReferenceDataService<AssociatedDataType> associatedDataTypeService,
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
             IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -133,6 +137,8 @@ namespace Biobanks.Web.Controllers
             _storageTemperatureService = storageTemperatureService;
             _materialTypeService = materialTypeService;
             _materialTypeGroupService = materialTypeGroupService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
+            _associatedDataTypeService = associatedDataTypeService;
             _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -1411,31 +1417,34 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AssociatedDataTypes()
         {
-            var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
+            var associatedDataTypes = await _associatedDataTypeService.List();
+
+            var model = associatedDataTypes
+                .Select(x =>
+                    Task.Run(async () => new AssociatedDataTypeModel
+                    {
+                        Id = x.Id,
+                        Name = x.Value,
+                        Message = x.Message,
+                        CollectionCapabilityCount = await _associatedDataTypeService.GetUsageCount(x.Id),
+                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
+                        AssociatedDataTypeGroupName = x.AssociatedDataTypeGroup?.Value
+
+                    })
+                    .Result
+                )
+                .ToList();
+
+            var groups = associatedDataTypes
+                .Where(x => x.AssociatedDataTypeGroup != null)
+                .GroupBy(x => x.AssociatedDataTypeGroupId)
+                .Select(x => x.First())
                 .Select(x => new AssociatedDataTypeGroupModel
                 {
                     AssociatedDataTypeGroupId = x.Id,
                     Name = x.Value,
                 })
                 .ToList();
-            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Select(x =>
-
-                    Task.Run(async () => new AssociatedDataTypeModel
-                    {
-                        Id = x.Id,
-                        Name = x.Value,
-                        Message = x.Message,
-                        CollectionCapabilityCount =
-                            await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.Id),
-                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                        AssociatedDataTypeGroupName = groups
-                            .Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()
-                            ?.Name,
-
-                    }).Result)
-
-                .ToList();
-
 
             return View(new AssociatedDataTypesModel
             {
@@ -1452,17 +1461,16 @@ namespace Biobanks.Web.Controllers
         {
             return View(new AssociatedDataTypesGroupModel
             {
-                AssociatedDataTypeGroups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
+                AssociatedDataTypeGroups = (await _associatedDataTypeGroupService.List())
                     .Select(x =>
-
                         Task.Run(async () => new ReadAssociatedDataTypeGroupModel
                         {
                             AssociatedDataTypeGroupId = x.Id,
                             Name = x.Value,
-                            AssociatedDataTypeGroupCount =
-                                await _biobankReadService.GetAssociatedDataTypeGroupCount(x.Id)
-                        }).Result)
-
+                            AssociatedDataTypeGroupCount = await _associatedDataTypeGroupService.GetUsageCount(x.Id)
+                        })
+                        .Result
+                    )
                     .ToList()
             });
         }

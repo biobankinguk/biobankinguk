@@ -36,13 +36,6 @@ namespace Biobanks.Services.Contracts
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
 
-        Task<IEnumerable<AssociatedDataType>> ListAssociatedDataTypesAsync();
-        Task<IEnumerable<AssociatedDataTypeGroup>> ListAssociatedDataTypeGroupsAsync(string wildcard = "");
-        Task<int> GetAssociatedDataTypeGroupCount(int associatedDataTypeGroupId);
-        Task<bool> IsAssociatedDataTypeGroupInUse(int associatedDataTypeGroupId);
-        Task<bool> ValidAssociatedDataTypeGroupNameAsync(int associatedDataTypeGroupId, string associatedDataTypeGroupName);
-        Task<bool> ValidAssociatedDataTypeGroupNameAsync(string associatedDataTypeGroupName);
-
         Task<bool> IsMaterialTypeAssigned(int id);
 
         Task<IEnumerable<OntologyTerm>> SearchOntologyTerms(string description = null, List<string> tags = null);
@@ -59,10 +52,6 @@ namespace Biobanks.Services.Contracts
 
         Task<IEnumerable<SnomedTag>> ListSnomedTags();
         Task<SnomedTag> GetSnomedTagByDescription(string description);
-
-        Task<int> GetAssociatedDataTypeCollectionCapabilityCount(int id);
-        Task<bool> ValidAssociatedDataTypeDescriptionAsync(string associatedDataTypeDescription);
-        Task<bool> ValidAssociatedDataTypeDescriptionAsync(int associatedDataTypeId, string associatedDataTypeDescription);
 
         Task<int> GetMaterialTypeMaterialDetailCount(int id);
 
@@ -97,8 +86,6 @@ namespace Biobanks.Services.Contracts
         Task<Organisation> GetBiobankByExternalIdForSearchResultsAsync(string externalId);
         Task<IEnumerable<Organisation>> GetBiobanksByExternalIdsAsync(IList<string> biobankExternalIds);
         Task<IEnumerable<Network>> GetNetworksByBiobankIdAsync(int organisationId);
-
-        Task<bool> IsAssociatedDataTypeInUse(int id);
 
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
         Task<IEnumerable<int>> GetAllCapabilityIdsAsync();

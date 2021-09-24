@@ -65,6 +65,8 @@ namespace Biobanks.Web.Controllers
         private readonly IReferenceDataService<PreservationType> _preservationTypeService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
         private readonly IReferenceDataService<MaterialType> _materialTypeService;
+        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
         private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
 
         private readonly IBiobankReadService _biobankReadService;
@@ -103,6 +105,8 @@ namespace Biobanks.Web.Controllers
             IReferenceDataService<PreservationType> preservationTypeService,
             IReferenceDataService<StorageTemperature> storageTemperatureService,
             IReferenceDataService<MaterialType> materialTypeService,
+            IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
             IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -135,6 +139,8 @@ namespace Biobanks.Web.Controllers
             _preservationTypeService = preservationTypeService;
             _storageTemperatureService = storageTemperatureService;
             _materialTypeService = materialTypeService;
+            _associatedDataTypeService = assocaitedDataTypeService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
             _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -1449,7 +1455,7 @@ namespace Biobanks.Web.Controllers
                     ProvisionTimeValue = x.DisplayValue
                 });
 
-            var types = (await _biobankReadService.ListAssociatedDataTypesAsync())
+            var types = (await _associatedDataTypeService.List())
                      .Select(x => new AssociatedDataModel
                      {
                          DataTypeId = x.Id,
@@ -1460,7 +1466,7 @@ namespace Biobanks.Web.Controllers
                      });
 
             model.Groups = new List<AssociatedDataGroupModel>();
-            var groups = await _biobankReadService.ListAssociatedDataTypeGroupsAsync();
+            var groups = await _associatedDataTypeGroupService.List();
             foreach (var g in groups)
             {
                 var groupModel = new AssociatedDataGroupModel();
