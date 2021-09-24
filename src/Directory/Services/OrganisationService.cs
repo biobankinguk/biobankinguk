@@ -318,8 +318,6 @@ namespace Biobanks.Directory.Services
                 IsSuspended = suspend
             });
 
-            //await _indexService.BulkIndexBiobank(organisation);
-
             return organisation;
         }
 
