@@ -11,25 +11,33 @@ using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
 using System;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class ProfileController : ApplicationBaseController
     {
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IConfigService _configService;
 
         private readonly ICollectionService _collectionService;
+        private readonly IPublicationService _publicationService;
 
         public ProfileController(
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             IBiobankReadService biobankReadService, 
             ICollectionService collectionService,
-            IConfigService configService)
+            IConfigService configService,
+            IPublicationService publicationService)
         {
+            _annualStatisticGroupService = annualStatisticGroupService;
             _biobankReadService = biobankReadService;
             _collectionService = collectionService;
             _configService = configService;
+            _publicationService = publicationService;
         }
 
         public ActionResult Biobanks()
@@ -119,7 +127,7 @@ namespace Biobanks.Web.Controllers
                     .ToList(),
                
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
-                AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync()
+                AnnualStatisticGroups = await _annualStatisticGroupService.List()
             };
 
             return View(model);
@@ -169,7 +177,7 @@ namespace Biobanks.Web.Controllers
             else
             {
                 // Get accepted publications
-                var publications = await _biobankReadService.GetAcceptedOrganisationPublicationsAsync(bb);
+                var publications = await _publicationService.ListByOrganisation(bb.OrganisationId, acceptedOnly: true);
 
                 // TODO: Migrate/Recreate Model?
                 var model = new BiobankPublicationsModel

@@ -8,7 +8,6 @@
 
 @Html.Partial("_ADACTabs", (string)ViewBag.Title)
 
-
 <h3>
 	<div id="titleName" class="pull-left">
 		@App.Config[ConfigKey.StorageTemperatureName]
@@ -47,7 +46,7 @@
 			<tbody>
 				@foreach (var type in Model.StorageTemperatures)
 				{
-					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
+					<tr class="@(type.IsInUse ? "info" : "")"
 						data-resource-url="/api/StorageTemperature"
 						data-id="@type.Id"
 						data-value="@type.Value">
@@ -56,7 +55,7 @@
 						<td>@type.Value</td>
 						<td>@type.SampleSetsCount</td>
 						<td class="text-right">
-							@if ((type.SampleSetsCount > 0) || type.UsedByPreservationTypes)
+							@if (type.IsInUse)
 							{
 								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw($"{App.Config[ConfigKey.StorageTemperatureName]} in use ")
 							}

@@ -25,6 +25,7 @@ using System.Net.Http;
 using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
@@ -34,6 +35,32 @@ namespace Biobanks.Web.Controllers
         private readonly IOntologyTermService _ontologyTermService;
 
         private readonly ICollectionService _collectionService;
+
+        private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly IReferenceDataService<County> _countyService;
+        private readonly IReferenceDataService<Country> _countryService;
+        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+        private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
+        private readonly IReferenceDataService<AnnualStatistic> _annualStatisticsService;
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+        private readonly IReferenceDataService<AgeRange> _ageRangeService;
+        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+        private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
+        private readonly IReferenceDataService<Funder> _funderService;
+        private readonly IReferenceDataService<SopStatus> _sopStatusService;
+        private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+        private readonly IReferenceDataService<MaterialType> _materialTypeService;
+        private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
+        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+        private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -52,6 +79,31 @@ namespace Biobanks.Web.Controllers
 
         public ADACController(
             ICollectionService collectionService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+            IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataService<County> countyService,
+            IReferenceDataService<Country> countryService,
+            IReferenceDataService<ConsentRestriction> consentRestrictionService,
+            IReferenceDataService<CollectionType> collectionTypeService,
+            IReferenceDataService<CollectionPercentage> collectionPercentageService,
+            IReferenceDataService<AnnualStatistic> annualStatisticsService,
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+            IReferenceDataService<AgeRange> ageRangeService,
+            IReferenceDataService<AccessCondition> accessConditionService,
+            IReferenceDataService<CollectionStatus> collectionStatusService,
+            IReferenceDataService<Funder> funderService,
+            IReferenceDataService<SopStatus> sopStatusService,
+            IReferenceDataService<Sex> sexService,
+            IReferenceDataService<PreservationType> preservationType,
+            IReferenceDataService<StorageTemperature> storageTemperatureService,
+            IReferenceDataService<MaterialType> materialTypeService,
+            IReferenceDataService<MaterialTypeGroup> materialTypeGroupService,
+            IReferenceDataService<AssociatedDataType> associatedDataTypeService,
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+            IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
             IOntologyTermService ontologyTermService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
@@ -66,6 +118,31 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _serviceOfferingService = serviceOfferingService;
+            _sampleCollectionModeService = sampleCollectionModeService;
+            _registrationReasonService = registrationReasonService;
+            _macroscopicAssessmentService = macroscopicAssessmentService;
+            _donorCountService = donorCountService;
+            _countyService = countyService;
+            _countryService = countryService;
+            _consentRestrictionService = consentRestrictionService;
+            _collectionTypeService = collectionTypeService;
+            _collectionPercentageService = collectionPercentageService;
+            _annualStatisticsService = annualStatisticsService;
+            _annualStatisticGroupService = annualStatisticGroupService;
+            _ageRangeService = ageRangeService;
+            _accessConditionService = accessConditionService;
+            _collectionStatusService = collectionStatusService;
+            _funderService = funderService;
+            _sopStatusService = sopStatusService;
+            _sexService = sexService;
+            _preservationTypeService = preservationType;
+            _storageTemperatureService = storageTemperatureService;
+            _materialTypeService = materialTypeService;
+            _materialTypeGroupService = materialTypeGroupService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
+            _associatedDataTypeService = associatedDataTypeService;
+            _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
             _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -711,7 +788,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Funders()
         {
             return View(
-                (await _biobankReadService.ListFundersAsync(string.Empty))
+                (await _funderService.List())
                     .Select(x =>
                         new FunderModel
                         {
@@ -724,16 +801,14 @@ namespace Biobanks.Web.Controllers
 
         [HttpGet]
         public async Task<ActionResult> DeleteFunder(int id)
-        {
-            return View(await _biobankReadService.GetFunderByIdAsync(id));
-        }
-
+            => View(await _funderService.Get(id));
+      
         [HttpPost]
         public async Task<ActionResult> DeleteFunder(FunderModel model)
         {
             try
             {
-                await _biobankWriteService.DeleteFunderByIdAsync(model.FunderId);
+                await _funderService.Delete(model.FunderId);
 
                 SetTemporaryFeedbackMessage($"{model.Name} and its associated data has been deleted.", FeedbackMessageType.Success);
             }
@@ -750,7 +825,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> EditFunderAjax(FunderModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.GetFunderbyName(model.Name) != null)
+            if (await _funderService.Exists(model.Name))
             {
                 ModelState.AddModelError("Name", "That funder name is already in use. Funder names must be unique.");
             }
@@ -760,7 +835,7 @@ namespace Biobanks.Web.Controllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateFunderAsync(new Funder
+            await _funderService.Update(new Funder
             {
                 Id = model.FunderId,
                 Value = model.Name
@@ -788,7 +863,7 @@ namespace Biobanks.Web.Controllers
         public async Task<JsonResult> AddFunderAjax(FunderModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.GetFunderbyName(model.Name) != null)
+            if (await _funderService.Exists(model.Name))
             {
                 ModelState.AddModelError("Name", "That funder name is already in use. Funder names must be unique.");
             }
@@ -798,7 +873,7 @@ namespace Biobanks.Web.Controllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddFunderAsync(new Funder
+            await _funderService.Add(new Funder
             {
                 Value = model.Name,
             });
@@ -993,14 +1068,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Access Conditions
         public async Task<ActionResult> AccessConditions()
         {
-            var models = (await _biobankReadService.ListAccessConditionsAsync())
+            var models = (await _accessConditionService.List())
             .Select(x =>
                 Task.Run(async () => new ReadAccessConditionsModel
                 {
                     Id = x.Id,
                     Description = x.Value,
                     SortOrder = x.SortOrder,
-                    AccessConditionCount = await _biobankReadService.GetAccessConditionsCount(x.Id),
+                    AccessConditionCount = await _accessConditionService.GetUsageCount(x.Id),
                 }
                 )
                 .Result
@@ -1017,14 +1092,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Age Ranges
         public async Task<ActionResult> AgeRanges()
         {
-            var models = (await _biobankReadService.ListAgeRangesAsync())
+            var models = (await _ageRangeService.List())
                 .Select(x =>
                     Task.Run(async () => new AgeRangeModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetAgeRangeUsageCount(x.Id),
+                        SampleSetsCount = await _ageRangeService.GetUsageCount(x.Id),
                         LowerBound = ConvertFromIsoDuration(x.LowerBound),
                         UpperBound = ConvertFromIsoDuration(x.UpperBound)
                     })
@@ -1061,28 +1136,27 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel
             {
-                AssociatedDataProcurementTimeFrameModels = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
+                AssociatedDataProcurementTimeFrameModels = (await _associatedDataProcurementTimeframeService.List())
                     .Select(x =>
-
-                Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
-                {
-                    Id = x.Id,
-                    Description = x.Value,
-                    DisplayName = x.DisplayValue,
-                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.Id),
-                    SortOrder = x.SortOrder
-                }).Result)
-
+                        Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
+                        {
+                            Id = x.Id,
+                            Description = x.Value,
+                            DisplayName = x.DisplayValue,
+                            CollectionCapabilityCount = await _associatedDataProcurementTimeframeService.GetUsageCount(x.Id),
+                            SortOrder = x.SortOrder
+                        })
+                        .Result
+                    )
                     .ToList()
             });
         }
-
         #endregion
 
         #region RefData: AnnualStatistics
         public async Task<ActionResult> AnnualStatistics()
         {
-            var groups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
+            var groups = (await _annualStatisticGroupService.List())
                 .Select(x => new AnnualStatisticGroupModel
                 {
                     AnnualStatisticGroupId = x.Id,
@@ -1090,13 +1164,13 @@ namespace Biobanks.Web.Controllers
                 })
                 .ToList();
 
-            var models = (await _biobankReadService.ListAnnualStatisticsAsync())
+            var models = (await _annualStatisticsService.List())
                 .Select(x =>
                     Task.Run(async () => new AnnualStatisticModel
                     {
                         Id = x.Id,
                         Name = x.Value,
-                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.Id),
+                        UsageCount = await _annualStatisticsService.GetUsageCount(x.Id),
                         AnnualStatisticGroupId = x.AnnualStatisticGroupId,
                         AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
                     })
@@ -1117,7 +1191,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Types
         public async Task<ActionResult> MaterialTypes()
         {
-            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
+            var materialTypes = await _materialTypeService.List();
 
             return View(new MaterialTypesModel
             {
@@ -1141,7 +1215,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Material Type Groups
         public async Task<ActionResult> MaterialTypeGroups()
         {
-            var materialTypes = await _biobankReadService.ListMaterialTypeGroupsAsync();
+            var materialTypes = await _materialTypeGroupService.List();
 
             return View(materialTypes.Select(x => new MaterialTypeGroupModel
             {
@@ -1211,7 +1285,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Collection Percentages
         public async Task<ActionResult> CollectionPercentages()
         {
-            var models = (await _biobankReadService.ListCollectionPercentagesAsync())
+            var models = (await _collectionPercentageService.List())
                 .Select(x =>
                     Task.Run(async () => new CollectionPercentageModel()
                     {
@@ -1220,7 +1294,7 @@ namespace Biobanks.Web.Controllers
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetCollectionPercentageUsageCount(x.Id)
+                        SampleSetsCount = await _collectionPercentageService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1244,7 +1318,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> DonorCounts()
         {
-            var models = (await _biobankReadService.ListDonorCountsAsync(true))
+            var models = (await _donorCountService.List())
                 .Select(x =>
                     Task.Run(async () => new DonorCountModel()
                     {
@@ -1253,7 +1327,7 @@ namespace Biobanks.Web.Controllers
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                        SampleSetsCount = await _biobankReadService.GetDonorCountUsageCount(x.Id)
+                        SampleSetsCount = await _donorCountService.GetUsageCount(x.Id)
                     })
                         .Result
                 )
@@ -1272,14 +1346,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CollectionTypeModel
             {
-                CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+                CollectionTypes = (await _collectionTypeService.List())
                      .Select(x =>
 
                  Task.Run(async () => new ReadCollectionTypeModel
                  {
                      Id = x.Id,
                      Description = x.Value,
-                     CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.Id),
+                     CollectionCount = await _collectionTypeService.GetUsageCount(x.Id),
                      SortOrder = x.SortOrder
                  }).Result)
 
@@ -1292,23 +1366,20 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> StorageTemperatures()
         {
-            var models = (await _biobankReadService.ListStorageTemperaturesAsync())
+            var models = (await _storageTemperatureService.List())
                 .Select(x =>
-                    new StorageTemperatureModel()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                    }
+                    Task.Run(async () => 
+                        new StorageTemperatureModel()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            IsInUse = await _storageTemperatureService.IsInUse(x.Id),
+                            SampleSetsCount = await _storageTemperatureService.GetUsageCount(x.Id)
+                        }
+                    ).Result
                 )
                 .ToList();
-
-            // Fetch Sample Set Count and whether a Preservation Type is using this storage temperature
-            foreach (var model in models)
-            {
-                model.SampleSetsCount = await _biobankReadService.GetStorageTemperatureUsageCount(model.Id);
-                model.UsedByPreservationTypes = await _biobankReadService.IsStorageTemperatureAssigned(model.Id);
-            }
 
             return View(new StorageTemperaturesModel
             {
@@ -1321,29 +1392,26 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> PreservationTypes()
         {
-            var models = (await _biobankReadService.ListPreservationTypesAsync())
+            var models = (await _preservationTypeService.List())
                 .Select(x =>
-                    new PreservationTypeModel()
-                    {
-                        Id = x.Id,
-                        Value = x.Value,
-                        SortOrder = x.SortOrder,
-                        StorageTemperatureId = x.StorageTemperatureId,
-                        StorageTemperatureName = x.StorageTemperature?.Value ?? ""
-                    }
+                    Task.Run(async () =>    
+                        new PreservationTypeModel()
+                        {
+                            Id = x.Id,
+                            Value = x.Value,
+                            SortOrder = x.SortOrder,
+                            StorageTemperatureId = x.StorageTemperatureId,
+                            StorageTemperatureName = x.StorageTemperature?.Value ?? "",
+                            PreservationTypeCount = await _preservationTypeService.GetUsageCount(x.Id)
+                        }
+                    ).Result
                 )
                 .ToList();
-
-            // Fetch Sample Set Count
-            foreach (var model in models)
-            {
-                model.PreservationTypeCount = await _biobankReadService.GetPreservationTypeUsageCount(model.Id);
-            }
 
             return View(new PreservationTypesModel
             {
                 PreservationTypes = models,
-                StorageTemperatures = await _biobankReadService.ListStorageTemperaturesAsync()
+                StorageTemperatures = await _storageTemperatureService.List()
             });
         }
 
@@ -1353,31 +1421,34 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AssociatedDataTypes()
         {
-            var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
+            var associatedDataTypes = await _associatedDataTypeService.List();
+
+            var model = associatedDataTypes
+                .Select(x =>
+                    Task.Run(async () => new AssociatedDataTypeModel
+                    {
+                        Id = x.Id,
+                        Name = x.Value,
+                        Message = x.Message,
+                        CollectionCapabilityCount = await _associatedDataTypeService.GetUsageCount(x.Id),
+                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
+                        AssociatedDataTypeGroupName = x.AssociatedDataTypeGroup?.Value
+
+                    })
+                    .Result
+                )
+                .ToList();
+
+            var groups = associatedDataTypes
+                .Where(x => x.AssociatedDataTypeGroup != null)
+                .GroupBy(x => x.AssociatedDataTypeGroupId)
+                .Select(x => x.First())
                 .Select(x => new AssociatedDataTypeGroupModel
                 {
                     AssociatedDataTypeGroupId = x.Id,
                     Name = x.Value,
                 })
                 .ToList();
-            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Select(x =>
-
-                    Task.Run(async () => new AssociatedDataTypeModel
-                    {
-                        Id = x.Id,
-                        Name = x.Value,
-                        Message = x.Message,
-                        CollectionCapabilityCount =
-                            await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.Id),
-                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                        AssociatedDataTypeGroupName = groups
-                            .Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()
-                            ?.Name,
-
-                    }).Result)
-
-                .ToList();
-
 
             return View(new AssociatedDataTypesModel
             {
@@ -1394,17 +1465,16 @@ namespace Biobanks.Web.Controllers
         {
             return View(new AssociatedDataTypesGroupModel
             {
-                AssociatedDataTypeGroups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
+                AssociatedDataTypeGroups = (await _associatedDataTypeGroupService.List())
                     .Select(x =>
-
                         Task.Run(async () => new ReadAssociatedDataTypeGroupModel
                         {
                             AssociatedDataTypeGroupId = x.Id,
                             Name = x.Value,
-                            AssociatedDataTypeGroupCount =
-                                await _biobankReadService.GetAssociatedDataTypeGroupCount(x.Id)
-                        }).Result)
-
+                            AssociatedDataTypeGroupCount = await _associatedDataTypeGroupService.GetUsageCount(x.Id)
+                        })
+                        .Result
+                    )
                     .ToList()
             });
         }
@@ -1416,14 +1486,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.ConsentRestrictionModel
             {
-                ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+                ConsentRestrictions = (await _consentRestrictionService.List())
                     .Select(x =>
 
                         Task.Run(async () => new ReadConsentRestrictionModel
                         {
                             Id = x.Id,
                             Description = x.Value,
-                            CollectionCount = await _biobankReadService.GetConsentRestrictionCollectionCount(x.Id),
+                            CollectionCount = await _consentRestrictionService.GetUsageCount(x.Id),
                             SortOrder = x.SortOrder
                         }).Result)
 
@@ -1438,14 +1508,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CollectionStatusModel
             {
-                CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
+                CollectionStatuses = (await _collectionStatusService.List())
                     .Select(x =>
 
                 Task.Run(async () => new ReadCollectionStatusModel
                 {
                     Id = x.Id,
                     Description = x.Value,
-                    CollectionCount = await _biobankReadService.GetCollectionStatusCollectionCount(x.Id),
+                    CollectionCount = await _collectionStatusService.GetUsageCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -1459,14 +1529,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new AnnualStatisticGroupsModel
             {
-                AnnualStatisticGroups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
+                AnnualStatisticGroups = (await _annualStatisticGroupService.List())
                     .Select(x =>
 
                     Task.Run(async () => new ReadAnnualStatisticGroupModel
                     {
                         AnnualStatisticGroupId = x.Id,
                         Name = x.Value,
-                        AnnualStatisticGroupCount = await _biobankReadService.GetAnnualStatisticAnnualStatisticGroupCount(x.Id)
+                        AnnualStatisticGroupCount = await _annualStatisticGroupService.GetUsageCount(x.Id)
                     }).Result)
 
                     .ToList()
@@ -1478,14 +1548,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sample Collection Mode
         public async Task<ActionResult> SampleCollectionModes()
         {
-            var models = (await _biobankReadService.ListSampleCollectionModeAsync())
+            var models = (await _sampleCollectionModeService.List())
                 .Select(x =>
                     Task.Run(async () => new SampleCollectionModeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSampleCollectionModeUsageCount(x.Id)
+                        SampleSetsCount = await _sampleCollectionModeService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1503,14 +1573,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new SexesModel
             {
-                Sexes = (await _biobankReadService.ListSexesAsync())
+                Sexes = (await _sexService.List())
                     .Select(x =>
 
                     Task.Run(async () => new ReadSexModel
                     {
                         Id = x.Id,
                         Description = x.Value,
-                        SexCount = await _biobankReadService.GetSexCount(x.Id),
+                        SexCount = await _sexService.GetUsageCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result)
 
@@ -1524,14 +1594,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.CountryModel
             {
-                Countries = (await _biobankReadService.ListCountriesAsync())
+                Countries = (await _countryService.List())
                      .Select(x =>
 
                      Task.Run(async () => new ReadCountryModel
                      {
                          Id = x.Id,
                          Name = x.Value,
-                         CountyOrganisationCount = await _biobankReadService.GetCountryCountyOrganisationCount(x.Id)
+                         CountyOrganisationCount = await _countryService.GetUsageCount(x.Id)
                      }).Result)
 
                      .ToList()
@@ -1544,7 +1614,7 @@ namespace Biobanks.Web.Controllers
         {
             if (await _configService.GetFlagConfigValue("site.display.counties") == true)
             {
-                var countries = await _biobankReadService.ListCountriesAsync();
+                var countries = await _countryService.List();
 
                 return View(
                     new CountiesModel
@@ -1558,7 +1628,7 @@ namespace Biobanks.Web.Controllers
                                         Id = county.Id,
                                         CountryId = x.Id,
                                         Name = county.Value,
-                                        CountyUsageCount = await _biobankReadService.GetCountyUsageCount(county.Id)
+                                        CountyUsageCount = await _countyService.GetUsageCount(county.Id)
                                     }
                                  )
                                 .Result
@@ -1578,14 +1648,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Sop Status
         public async Task<ActionResult> SopStatus()
         {
-            var models = (await _biobankReadService.ListSopStatusesAsync())
+            var models = (await _sopStatusService.List())
                 .Select(x =>
                     Task.Run(async () => new SopStatusModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetSopStatusUsageCount(x.Id)
+                        SampleSetsCount = await _sopStatusService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1604,14 +1674,14 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.RegistrationReasonModel
             {
-                RegistrationReasons = (await _biobankReadService.ListRegistrationReasonsAsync())
+                RegistrationReasons = (await _registrationReasonService.List())
                     .Select(x =>
 
                         Task.Run(async () => new ReadRegistrationReasonModel
                         {
                             Id = x.Id,
                             Description = x.Value,
-                            OrganisationCount = await _biobankReadService.GetRegistrationReasonOrganisationCount(x.Id),
+                            OrganisationCount = await _registrationReasonService.GetUsageCount(x.Id),
                         }).Result)
 
                     .ToList()
@@ -1623,14 +1693,14 @@ namespace Biobanks.Web.Controllers
         #region RefData: Macroscopic Assessment
         public async Task<ActionResult> MacroscopicAssessments()
         {
-            var models = (await _biobankReadService.ListMacroscopicAssessmentsAsync())
+            var models = (await _macroscopicAssessmentService.List())
                 .Select(x =>
                     Task.Run(async () => new MacroscopicAssessmentModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        SampleSetsCount = await _biobankReadService.GetMacroscopicAssessmentUsageCount(x.Id)
+                        SampleSetsCount = await _macroscopicAssessmentService.GetUsageCount(x.Id)
                     })
                     .Result
                 )
@@ -1649,7 +1719,7 @@ namespace Biobanks.Web.Controllers
         {
             return View(new Models.ADAC.ServiceOfferingModel
             {
-                ServiceOfferings = (await _biobankReadService.ListServiceOfferingsAsync())
+                ServiceOfferings = (await _serviceOfferingService.List())
                     .Select(x =>
 
                 Task.Run(async () => new ReadServiceOfferingModel
@@ -1692,7 +1762,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .Result
             ).ToList(),
-                MaterialTypes = await _biobankReadService.ListMaterialTypesAsync()
+                MaterialTypes = await _materialTypeService.List()
             });
         }
         #endregion
@@ -1750,23 +1820,6 @@ namespace Biobanks.Web.Controllers
         [HttpPost]
         public ActionResult HomepageConfigPreview(HomepageContentModel homepage)
             => View("HomepageConfigPreview", homepage);
-        #endregion
-
-        #region Registration Domain Rules Config
-
-        public async Task<ActionResult> EmailConfig()
-        {
-            return View((await _registrationDomainService.ListRules())
-                .Select(x => new RegistrationDomainRuleModel
-                {
-                    Id = x.Id,
-                    RuleType = x.RuleType,
-                    Value = x.Value,
-                    Source = x.Source,
-                    DateModified = x.DateModified
-                }));     
-        }
-
         #endregion
 
         #region Termpage Config
@@ -1977,8 +2030,6 @@ namespace Biobanks.Web.Controllers
                 success = true,
             });
         }
-
-
 
         #endregion
 

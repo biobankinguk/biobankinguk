@@ -24,12 +24,15 @@ using Biobanks.Web.Extensions;
 using Biobanks.Web.Filters;
 using Biobanks.Directory.Data.Constants;
 using Newtonsoft.Json;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [UserAuthorize(Roles = "NetworkAdmin")]
     public class NetworkController : ApplicationBaseController
     {
+        private readonly IReferenceDataService<SopStatus> _sopStatusService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IConfigService _configService;
@@ -45,6 +48,7 @@ namespace Biobanks.Web.Controllers
         private const string TempNetworkLogoContentTypeSessionId = "TempNetworkLogoContentType";
 
         public NetworkController(
+            IReferenceDataService<SopStatus> sopStatusService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -54,8 +58,10 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog,
             IMapper mapper)
         {
+            _sopStatusService = sopStatusService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
+            _configService = configService;
             _userManager = userManager;
             _emailService = emailService;
             _claimsManager = claimsManager;
@@ -256,10 +262,11 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<KeyValuePair<int, string>>> GetSopStatusKeyValuePairsAsync()
         {
-            var allSopStatuses = (List<SopStatus>) await _biobankReadService.ListSopStatusesAsync();
-            return
-                allSopStatuses.Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
-                    .ToList();
+            var sopStatuses = await _sopStatusService.List();
+
+            return sopStatuses
+                .Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
+                .ToList();
         }
 
         private async Task<NetworkDetailsModel> NewNetworkDetailsModelAsync()

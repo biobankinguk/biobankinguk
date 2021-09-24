@@ -16,12 +16,16 @@ using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class SearchController : Controller
     {
+        private readonly IReferenceDataService<Country> _countryController;
+
         private readonly IOntologyTermService _ontologyTermService;
 
         private readonly ISearchProvider _searchProvider;
@@ -29,11 +33,13 @@ namespace Biobanks.Web.Controllers
         private readonly IBiobankReadService _biobankReadService;
 
         public SearchController(
+            IReferenceDataService<Country> countryController,
             IOntologyTermService ontologyTermService,
             ISearchProvider searchProvider,
             IMapper mapper,
             IBiobankReadService biobankReadService)
         {
+            _countryController = countryController;
             _ontologyTermService = ontologyTermService;
             _searchProvider = searchProvider;
             _mapper = mapper;
@@ -83,7 +89,7 @@ namespace Biobanks.Web.Controllers
                     SearchType = SearchDocumentType.Collection
                 });
 
-            model.Countries = (await _biobankReadService.ListCountriesAsync())
+            model.Countries = (await _countryController.List())
                 .ToDictionary(
                     x => x.Value,
                     x => x.Counties.Select(y => y.Value).ToList()

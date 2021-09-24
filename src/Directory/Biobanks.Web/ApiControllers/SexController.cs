@@ -1,5 +1,4 @@
-﻿using Biobanks.Services.Contracts;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Biobanks.Web.Models.Shared;
@@ -7,6 +6,7 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,34 +14,28 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/Sex")]
     public class SexController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<Sex> _sexService;
 
-        public SexController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public SexController(IReferenceDataService<Sex> sexService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _sexService = sexService;
         }
-
 
         [HttpGet]
         [AllowAnonymous]
         [Route("")]
         public async Task<IList> Get()
         {
-            var model = (await _biobankReadService.ListSexesAsync())
-            .Select(x =>
-
-            Task.Run(async () => new ReadSexModel
-            {
-                Id = x.Id,
-                Description = x.Value,
-                SexCount = await _biobankReadService.GetSexCount(x.Id),
-                SortOrder = x.SortOrder
-            }).Result)
-
-            .ToList();
+            var model = (await _sexService.List())
+                .Select(x =>
+                    Task.Run(async () => new ReadSexModel
+                    {
+                        Id = x.Id,
+                        Description = x.Value,
+                        SexCount = await _sexService.GetUsageCount(x.Id),
+                        SortOrder = x.SortOrder
+                    }).Result)
+                .ToList();
 
             return model;
         }
@@ -51,7 +45,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(SexModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSexDescriptionAsync(model.Description))
+            if (await _sexService.Exists(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Sex descriptions must be unique.");
             }
@@ -61,7 +55,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddSexAsync(new Sex
+            await _sexService.Add(new Sex
             {
                 Id = model.Id,
                 Value = model.Description,
@@ -80,13 +74,15 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, SexModel model)
         {
+            var existing = await _sexService.Get(model.Description);
+
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidSexDescriptionAsync(id, model.Description))
+            if (existing != null && existing.Id != id)
             {
                 ModelState.AddModelError("Description", "That description is already in use by another material type. Sex descriptions must be unique.");
             }
 
-            if (await _biobankReadService.IsSexInUse(id))
+            if (await _sexService.IsInUse(id))
             {
                 ModelState.AddModelError("Description", "This sex is currently in use and cannot be edited.");
             }
@@ -96,7 +92,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateSexAsync(new Sex
+            await _sexService.Update(new Sex
             {
                 Id = id,
                 Value = model.Description,
@@ -115,9 +111,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListSexesAsync()).Where(x => x.Id == id).First();
+            var model = await _sexService.Get(id);
 
-            if (await _biobankReadService.IsSexInUse(id))
+            if (await _sexService.IsInUse(id))
             {
                 ModelState.AddModelError("Description", $"The sex \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -127,12 +123,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteSexAsync(new Sex
-            {
-                Id = model.Id,
-                Value = model.Value,
-                SortOrder = model.SortOrder
-            });
+            await _sexService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -146,13 +137,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, SexModel model)
         {
-            await _biobankWriteService.UpdateSexAsync(new Sex
+            await _sexService.Update(new Sex
             {
                 Id = id,
                 Value = model.Description,
                 SortOrder = model.SortOrder
-            },
-            true);
+            });
 
             //Everything went A-OK!
             return Json(new

@@ -2,11 +2,10 @@
 using Biobanks.Web.Models.ADAC;
 using System.Web.Http;
 using System.Threading.Tasks;
-using Biobanks.Services.Contracts;
 using System.Linq;
-using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,23 +13,23 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/AnnualStatistic")]
     public class AnnualStatisticController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<AnnualStatistic> _annualStatisticService;
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
 
-        public AnnualStatisticController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public AnnualStatisticController(
+            IReferenceDataService<AnnualStatistic> annualStatisticService,
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _annualStatisticService = annualStatisticService;
+            _annualStatisticGroupService = annualStatisticGroupService;
         }
-
 
         [HttpGet]
         [AllowAnonymous]
         [Route("")]
         public async Task<IHttpActionResult> Get()
         {
-            var groups = (await _biobankReadService.ListAnnualStatisticGroupsAsync())
+            var groups = (await _annualStatisticGroupService.List())
                  .Select(x => new AnnualStatisticGroupModel
                  {
                      AnnualStatisticGroupId = x.Id,
@@ -38,13 +37,13 @@ namespace Biobanks.Web.ApiControllers
                  })
                  .ToList();
 
-            var models = (await _biobankReadService.ListAnnualStatisticsAsync())
+            var models = (await _annualStatisticService.List())
                 .Select(x =>
                     Task.Run(async () => new AnnualStatisticModel
                     {
                         Id = x.Id,
                         Name = x.Value,
-                        UsageCount = await _biobankReadService.GetAnnualStatisticUsageCount(x.Id),
+                        UsageCount = await _annualStatisticService.GetUsageCount(x.Id),
                         AnnualStatisticGroupId = x.AnnualStatisticGroupId,
                         AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
                     })
@@ -63,8 +62,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Post(AnnualStatisticModel model)
         {
+            var group = await _annualStatisticGroupService.Get(model.AnnualStatisticGroupId);
+
             // Validate model
-            if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
+            if (group.AnnualStatistics.Any(x => x.Value == model.Name))
             {
                 ModelState.AddModelError("AnnualStatistics", "That name is already in use. Annual statistics names must be unique.");
             }
@@ -81,7 +82,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Name
             };
 
-            await _biobankWriteService.AddAnnualStatisticAsync(annualStatistic);
+            await _annualStatisticService.Add(annualStatistic);
 
             // Success response
             return Json(new
@@ -95,13 +96,15 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, AnnualStatisticModel model)
         {
+            var group = await _annualStatisticGroupService.Get(model.AnnualStatisticGroupId);
+
             // Validate model
-            if (await _biobankReadService.ValidAnnualStatisticAsync(model.Name, model.AnnualStatisticGroupId))
+            if (group.AnnualStatistics.Any(x => x.Value == model.Name))
             {
                 ModelState.AddModelError("AnnualStatistics", "That annual statistic already exists!");
             }
 
-            if (await _biobankReadService.IsAnnualStatisticInUse(id))
+            if (await _annualStatisticService.IsInUse(id))
             {
                 ModelState.AddModelError("AnnualStatistics", "This annual statistic is currently in use and cannot be edited.");
             }
@@ -118,7 +121,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Name
             };
 
-            await _biobankWriteService.UpdateAnnualStatisticAsync(annualStatistics);
+            await _annualStatisticService.Update(annualStatistics);
 
             // Success response
             return Json(new
@@ -132,9 +135,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAnnualStatisticsAsync()).Where(x => x.Id == id).First();
+            var model = await _annualStatisticService.Get(id);
 
-            if (await _biobankReadService.IsAnnualStatisticInUse(id))
+            if (await _annualStatisticService.IsInUse(id))
             {
                 ModelState.AddModelError("AnnualStatistics", $"The annual statistic \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -144,14 +147,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            var annualStatistic = new AnnualStatistic
-            {
-                Id = id,
-                AnnualStatisticGroupId = model.AnnualStatisticGroupId,
-                Value = model.Value
-            };
-
-            await _biobankWriteService.DeleteAnnualStatisticAsync(annualStatistic);
+            await _annualStatisticService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -166,7 +162,6 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, AnnualStatisticModel model)
         {
-
             var annualStatistics = new AnnualStatistic
             {
                 Id = id,
@@ -174,7 +169,7 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Name
             };
 
-            await _biobankWriteService.UpdateAnnualStatisticAsync(annualStatistics, true);
+            await _annualStatisticService.Update(annualStatistics);
 
             //Everything went A-OK!
             return Json(new

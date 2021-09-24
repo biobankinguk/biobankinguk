@@ -18,16 +18,20 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/ExtractionProcedure")]
     public class ExtractionProcedureController : ApiBaseController
     {
+        private readonly IReferenceDataService<MaterialType> _materialTypeService;
+
         private readonly IOntologyTermService _ontologyTermService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
 
         public ExtractionProcedureController(
+            IReferenceDataService<MaterialType> materialTypeService,
             IOntologyTermService ontologyTermService,
             IBiobankReadService biobankReadService, 
             IBiobankWriteService biobankWriteService)
         {
+            _materialTypeService = materialTypeService;
             _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
@@ -126,7 +130,7 @@ namespace Biobanks.Web.ApiControllers
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
                 DisplayOnDirectory = model.DisplayOnDirectory,
-                MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync()).Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
+                MaterialTypes = (await _materialTypeService.List()).Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
             });
 
             //Everything went A-OK!
@@ -160,7 +164,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            var materialTypes = await _biobankReadService.ListMaterialTypesAsync();
+            var materialTypes = await _materialTypeService.List();
 
             await _ontologyTermService.Create(new OntologyTerm
             {
