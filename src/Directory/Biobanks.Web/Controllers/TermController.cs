@@ -14,13 +14,17 @@ namespace Biobanks.Web.Controllers
     [AllowAnonymous]
     public class TermController : ApplicationBaseController
     {
+        private readonly IOntologyTermService _ontologyTermService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly ICollectionService _collectionService;
 
         public TermController(
             IBiobankReadService biobankReadService,
-            ICollectionService collectionService)
+            ICollectionService collectionService,
+            IOntologyTermService ontologyTermService)
         {
+            _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
             _collectionService = collectionService;
         }
@@ -46,7 +50,7 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result

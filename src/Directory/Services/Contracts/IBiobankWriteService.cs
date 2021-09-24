@@ -23,12 +23,6 @@ namespace Biobanks.Services.Contracts
         Task AddBiobankServicesAsync(IEnumerable<OrganisationServiceOffering> services);
         Task DeleteBiobankServiceAsync(int biobankId, int serviceId);
 
-        Task DeleteOntologyTermAsync(OntologyTerm diagnosis);
-        Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm diagnosis);
-        Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm diagnosis);
-        Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
-        Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds);
-
         Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year);
         Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);
         Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId);

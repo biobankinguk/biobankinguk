@@ -35,15 +35,6 @@ namespace Biobanks.Services.Contracts
 
         Task<bool> IsMaterialTypeAssigned(int id);
 
-        Task<IEnumerable<OntologyTerm>> SearchOntologyTerms(string description = null, List<string> tags = null);
-        Task<IEnumerable<OntologyTerm>> ListOntologyTerms(string description = null, List<string> tags = null, bool onlyDisplayable = false);
-        Task<IEnumerable<OntologyTerm>> PaginateOntologyTerms(int start, int length, string description = null, List<string> tags = null);
-        Task<OntologyTerm> GetOntologyTerm(string id = null, string description = null, List<string> tags = null, bool onlyDisplayable = false);
-        Task<bool> ValidOntologyTerm(string id = null, string description = null, List<string> tags = null);
-        Task<bool> IsOntologyTermInUse(string id);
-        Task<int> CountOntologyTerms(string description = null, List<string> tags = null);
-        Task<int> GetOntologyTermCollectionCapabilityCount(string id);
-
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
         Task<bool> IsExtractionProcedureInUse(string id);
 

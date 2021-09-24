@@ -19,6 +19,7 @@ namespace Biobanks.Services
     public class BiobankWriteService : IBiobankWriteService
     {
         #region Properties and ctor
+        private readonly IOntologyTermService _ontologyTermService;
         private readonly INetworkService _networkService;
         private readonly IOrganisationService _organisationService;
 
@@ -65,6 +66,7 @@ namespace Biobanks.Services
 
         public BiobankWriteService(
             ICollectionService collectionService,
+            IOntologyTermService ontologyTermService,
             INetworkService networkService,
             IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
@@ -102,6 +104,8 @@ namespace Biobanks.Services
             IGenericEFRepository<Funder> funderRepository)
         {
             _collectionService = collectionService;
+
+            _ontologyTermService = ontologyTermService;
 
             _networkService = networkService;
             _organisationService = organisationService;
@@ -152,7 +156,7 @@ namespace Biobanks.Services
             IEnumerable<CollectionAssociatedData> associatedData,
             IEnumerable<int> consentRestrictionIds)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(value: ontologyTermDescription, onlyDisplayable: true);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -183,7 +187,7 @@ namespace Biobanks.Services
             existingCollection.AssociatedData.Clear();
             existingCollection.ConsentRestrictions.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: ontologyTermDescription, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(value: ontologyTermDescription, onlyDisplayable: true);
             var consentRestrictions = (await _consentRestrictionRepository.ListAsync(true,
                         x => consentRestrictionIds.Contains(x.Id))).ToList();
 
@@ -323,7 +327,7 @@ namespace Biobanks.Services
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(value: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             var capability = new DiagnosisCapability
             {
@@ -352,7 +356,7 @@ namespace Biobanks.Services
 
             existingCapability.AssociatedData.Clear();
 
-            var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: capabilityDTO.OntologyTerm, onlyDisplayable: true);
+            var ontologyTerm = await _ontologyTermService.Get(value: capabilityDTO.OntologyTerm, onlyDisplayable: true);
 
             existingCapability.OntologyTermId = ontologyTerm.Id;
             existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;
@@ -425,59 +429,52 @@ namespace Biobanks.Services
             await _organisationServiceOfferingRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteOntologyTermAsync(OntologyTerm ontologyTerm)
+        public async Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId)
         {
-            await _ontologyTermRepository.DeleteAsync(ontologyTerm.Id);
-            await _ontologyTermRepository.SaveChangesAsync();
-        }
+            var funder = await _funderRepository.GetByIdAsync(funderId);
+            var bb = await _organisationRepository.GetByIdAsync(biobankId);
 
-        public async Task<OntologyTerm> UpdateOntologyTermAsync(OntologyTerm ontologyTerm)
-        {
-            _ontologyTermRepository.Update(ontologyTerm);
-            await _ontologyTermRepository.SaveChangesAsync();
+            if (bb == null || funder == null) throw new ApplicationException();
 
-            // Update Indexed Capabilities
-            await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
-
-            // Update Indexed Collections
-            var collections = await _collectionService.ListByOntologyTerm(ontologyTerm.Value);
-
-            foreach (var collection in collections)
+            try
             {
-                await _indexService.UpdateCollectionDetails(collection.CollectionId);
+                funder.Organisations.Add(bb);
+
+                _funderRepository.Update(funder);
+                await _funderRepository.SaveChangesAsync();
+
+                return true;
             }
-
-            return ontologyTerm;
-        }
-
-        public async Task<OntologyTerm> AddOntologyTermAsync(OntologyTerm ontologyTerm)
-        {
-            _ontologyTermRepository.Insert(ontologyTerm);
-            await _ontologyTermRepository.SaveChangesAsync();
-
-            return ontologyTerm;
-        }
-
-        public async Task AddOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
-        {
-            foreach (var mId in materialTypeIds)
+            catch (DbUpdateException)
             {
-                (await _materialTypeRepository.ListAsync(true, x => x.Id == mId, null, x => x.ExtractionProcedures))
-                    .FirstOrDefault().ExtractionProcedures
-                    .Add(ontologyTerm);
-                await _ontologyTermRepository.SaveChangesAsync();
+                return false;
             }
         }
 
-        public async Task UpdateOntologyTermWithMaterialTypesAsync(OntologyTerm ontologyTerm, List<int> materialTypeIds)
+        public async Task RemoveFunderFromBiobankAsync(int funderId, int biobankId)
         {
-            await UpdateOntologyTermAsync(ontologyTerm);
+            var funder = await _funderRepository.GetByIdAsync(funderId);
 
-            var Term = (await _ontologyTermRepository.ListAsync(true,x=>x.Id == ontologyTerm.Id,null, x=>x.MaterialTypes)).FirstOrDefault();
-            var materialTypes = (await _materialTypeRepository.ListAsync(true, x => materialTypeIds.Contains(x.Id))).ToList();
-            Term.MaterialTypes = materialTypes;
+            if (funder == null) throw new ApplicationException();
 
-            await _ontologyTermRepository.SaveChangesAsync();
+            funder.Organisations.Remove(
+                funder.Organisations
+                    .FirstOrDefault(x => x.OrganisationId == biobankId));
+
+            _funderRepository.Update(funder);
+            await _funderRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteBiobankAsync(int id)
+        {
+            var organisation = await _organisationRepository.GetByIdAsync(id);
+
+            // Remove From Index
+            _indexService.BulkDeleteBiobank(organisation);
+            
+            // Delete Organisation
+            await _organisationRepository.DeleteAsync(id);
+            await _organisationRepository.SaveChangesAsync();
         }
 
         public async Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year)
