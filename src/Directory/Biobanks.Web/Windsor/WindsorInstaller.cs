@@ -297,6 +297,14 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(BiobankIndexService))
                     .LifeStyle.Transient,
 
+                Component.For<NetworkService, INetworkService>()
+                .ImplementedBy(typeof(NetworkService))
+                .LifeStyle.Transient,
+
+                Component.For<OrganisationService, IOrganisationService>()
+                .ImplementedBy(typeof(OrganisationService))
+                .LifeStyle.Transient,
+
                 Component.For<IAuthenticationManager>().UsingFactoryMethod(() =>
                 {
                     if (HttpContext.Current != null) return HttpContext.Current.GetOwinContext().Authentication;
