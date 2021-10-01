@@ -3,6 +3,7 @@ name: Process Overview
 ---
 
 import { TableOfContents } from "dokz";
+import { SimpleAlert } from "components/Alerts.jsx";
 
 # The Bulk Submissions Process
 
@@ -16,6 +17,54 @@ and the Directory will take care of the aggregation and surfacing of data via Se
 
 <TableOfContents />
 
-## 1. Generate Credentials
+## Prerequisites
 
-Most API requires authentication
+All Bulk Submission endpoints described here require **Token Authentication**.
+
+This process guide assumes you have a token and will use it to authenticate all requests.
+
+Getting a token in turn requires **Client Credentials** for an **Organisation**.
+
+- Generating Client Credentials is covered in the [Directory Guide](../../directory-guide/bulk-submissions/api-credentials)
+- Authenticating with Basic Auth (for the `/token` endpoint) is described in the [Authentication](../getting-started/authentication) documentation.
+- Authenticating with an access token is described in the [Authentication](../getting-started/authentication) documentation.
+
+<SimpleAlert>
+  Tokens have a short lifetime (e.g. 1 day), but last longer than a single
+  request, so a client can cache and reuse a token until it expires, and only
+  then request a new one.
+</SimpleAlert>
+
+## 1. Submitting samples
+
+The first step of the Bulk Submissions process is to submit the sample record data to a staging area.
+
+Submissions are made at the `/submit` endpoint, for a given Organisation Internal Identifier:
+
+HTTP POST: `https://<submissions-api>/submit/{id}`
+
+The payload is detailed in the [OpenAPI documentation](https://submissions.biobankinguk.org/),
+but some less obvious aspects are described here.
+
+### Operations
+
+Submission payloads can contain multiple **Operations**:
+
+- **Operations** are either `Submit` or `Delete`
+- `Submit` will insert or update a record in the staging area
+  - when the staged data is committed, this record will be included in the live dataset
+- `Delete` will stage a deletion request for a record
+  - when the staged data is committed, this record will be deleted from the live dataset
+- `Delete` operations only need to specify the identifying properties of the record.
+  These are properties marked as **required** in the OpenAPI model.
+- `Submit` operations will have further requirements of mandatory properties.
+  Some of these requirements are conditional on other property values. See below.
+
+### Submission Record Types
+
+There are three record types that can be contained in a Submission: Samples, Diagnoses and Treatments.
+
+While the API will accept and correctly store diagnoses and treatments,
+they are of no use at this time as the Directory only deals with samples.
+
+### Sample records
