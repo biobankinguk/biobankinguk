@@ -2,6 +2,12 @@
 
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
+## Development prerequisites
+
+- node.js `16.x+`
+- pnpm `6.x`
+  - Install with: `npx pnpm add -g pnpm`
+
 ### Installation
 
 ```
