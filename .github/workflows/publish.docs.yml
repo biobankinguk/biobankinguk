@@ -4,6 +4,9 @@ on:
   workflow_dispatch: # manual trigger
   push:
     branches: [main]
+    paths:
+      - docs/**
+      - .github/workflows/publish.docs.yml
 
 jobs:
   release:
