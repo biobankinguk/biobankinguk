@@ -20,7 +20,8 @@ jobs:
       - uses: pnpm/action-setup@v2.0.1
         with:
           version: 6.16
-          run_install: true
+          run_install: false
       - name: docs - pnpm build
-        run: >-
+        run: |
+          pnpm i --filter docs
           pnpm -C docs build

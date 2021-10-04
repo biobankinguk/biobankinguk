@@ -8,6 +8,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
     title: "BiobankingUK",
     url: "https://docs.biobaninguk.org",
     baseUrl: "/",
+    trailingSlash: false,
     onBrokenLinks: "throw",
     onBrokenMarkdownLinks: "warn",
     favicon: "i/tdcc.png",
