@@ -48,32 +48,43 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
           },
           items: [
             {
+              label: "Guides:",
+              href: "#",
+              position: "right",
+              "aria-label": "Navbar Group Label",
+            },
+            {
               type: "doc",
               docId: "directory-guide/index",
-              position: "left",
+              position: "right",
               label: "Directory",
             },
             {
               type: "doc",
               docId: "api-guide/index",
-              position: "left",
+              position: "right",
               label: "API",
             },
             {
               type: "doc",
               docId: "installation-guide/index",
-              position: "left",
+              position: "right",
               label: "Installation",
             },
             {
               type: "doc",
               docId: "dev-guide/index",
-              position: "left",
+              position: "right",
               label: "Developers",
             },
             {
+              label: "|",
+              href: "#",
+              position: "right",
+              "aria-label": "Navbar Group Separator",
+            },
+            {
               href: "https://github.com/biobankinguk/biobankinguk",
-              // label: "GitHub",
               position: "right",
               className: "header-github-link",
               "aria-label": "GitHub repository",
