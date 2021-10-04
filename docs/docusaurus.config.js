@@ -6,7 +6,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 (
   module.exports = {
     title: "BiobankingUK",
-    url: "https://docs.biobaninguk.org",
+    url: "https://docs.biobankinguk.org",
     baseUrl: "/",
     trailingSlash: false,
     onBrokenLinks: "throw",
