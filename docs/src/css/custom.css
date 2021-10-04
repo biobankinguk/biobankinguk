@@ -1,0 +1,13 @@
+div[class^="announcementBarContent"] {
+  /* color: #fff; */
+  font-size: 1.1em;
+  font-weight: bold;
+  background: repeating-linear-gradient(
+    135deg,
+    rgb(250, 252, 144, 0.5),
+    rgb(250, 252, 144, 0.5) 20px,
+    rgb(175, 177, 103, 0.5) 20px,
+    rgb(175, 177, 103, 0.5) 40px
+  );
+  /* text-shadow: 0 0 5px #000, 0 0 5px #000, 2px 2px 2px #000; */
+}

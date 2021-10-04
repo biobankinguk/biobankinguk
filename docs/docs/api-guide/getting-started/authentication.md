@@ -1,8 +1,6 @@
 ---
-name: Authentication
+title: Authentication
 ---
-
-# Authentication
 
 Most endpoints in the Directory API require authentication.
 

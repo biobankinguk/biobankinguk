@@ -1,5 +1,6 @@
 ---
-name: Developer Guide
+title: Developer Guide
+sidebar_position: 1
 ---
 
 # Overview

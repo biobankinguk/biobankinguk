@@ -1,5 +1,6 @@
 ---
-name: Installation Guide
+title: Installation Guide
+sidebar_position: 1
 ---
 
 # Overview

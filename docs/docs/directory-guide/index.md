@@ -1,5 +1,7 @@
 ---
-name: Directory Guide
+title: Directory Guide
+sidebar_position: 1
+slug: /
 ---
 
 # Overview

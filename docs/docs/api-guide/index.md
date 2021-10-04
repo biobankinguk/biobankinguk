@@ -1,5 +1,6 @@
 ---
-name: API Guide
+title: API Guide
+sidebar_position: 1
 ---
 
 # Overview

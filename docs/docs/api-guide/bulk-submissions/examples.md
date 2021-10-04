@@ -1,8 +1,7 @@
 ---
-name: Examples
+title: Examples
+sidebar_position: 2
 ---
-
-# Examples
 
 ## Submitting a sample record
 

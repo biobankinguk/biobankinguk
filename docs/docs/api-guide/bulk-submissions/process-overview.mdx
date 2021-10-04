@@ -1,11 +1,9 @@
 ---
-name: Process Overview
+title: Process Overview
+sidebar_position: 1
 ---
 
-import { TableOfContents } from "dokz";
-import { SimpleAlert } from "components/Alerts.jsx";
-
-# The Bulk Submissions Process
+import TOCInline from "@theme/TOCInline";
 
 Typically, data is submitted to the Directory manually, by Organisation Administrators through forms in the web application.
 
@@ -15,7 +13,7 @@ due to the volume of data and the need to aggregate individual sample records in
 The Directory API provides a set of HTTP endpoints and a process for submitting sample records in Bulk,
 and the Directory will take care of the aggregation and surfacing of data via Search.
 
-<TableOfContents />
+<TOCInline toc={toc} />
 
 ## Prerequisites
 
@@ -29,11 +27,11 @@ Getting a token in turn requires **Client Credentials** for an **Organisation**.
 - Authenticating with Basic Auth (for the `/token` endpoint) is described in the [Authentication](../getting-started/authentication) documentation.
 - Authenticating with an access token is described in the [Authentication](../getting-started/authentication) documentation.
 
-<SimpleAlert>
-  Tokens have a short lifetime (e.g. 1 day), but last longer than a single
-  request, so a client can cache and reuse a token until it expires, and only
-  then request a new one.
-</SimpleAlert>
+:::info
+Tokens have a short lifetime (e.g. 1 day), but last longer than a single
+request, so a client can cache and reuse a token until it expires, and only
+then request a new one.
+:::
 
 ## 1. Submitting samples
 
