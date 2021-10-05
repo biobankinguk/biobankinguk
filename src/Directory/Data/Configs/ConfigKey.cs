@@ -27,6 +27,7 @@
         public const string HomepageNetworkRegistration = "site.homepage.networkregistration";
         public const string HomepageSearchRadioSamplesCollected = "site.homepage.searchradiosamplescollected";
         public const string HomepageSearchRadioAccessSamples = "site.homepage.searchradioaccesssamples";
+        public const string HomepageFinalParagraph = "site.homepage.finalparagraph";
 
         // Editable Register
         public const string RegisterBiobankTitle = "site.register.biobank.title";

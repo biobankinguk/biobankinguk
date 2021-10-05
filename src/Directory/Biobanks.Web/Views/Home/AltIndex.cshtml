@@ -1,0 +1,83 @@
+@using System.Web.Optimization
+@using System.Configuration
+@using Biobanks.Directory.Data.Constants
+@using Biobanks.Web.HtmlHelpers
+@using Biobanks.Web.Models.Home
+@model HomepageContentModel
+@{
+	ViewBag.Title = "Index";
+	ViewBag.WideLayout = true;
+	ViewBag.SuppressDefaultFeedbackMessage = true;
+	ViewBag.SuppressFormErrorAlert = true;
+	ViewBag.NoFooterMargin = true;
+}
+
+
+@section FooterScripts
+{
+	@Scripts.Render("~/bundles/search")
+	@Scripts.Render("~/bundles/home")
+}
+
+@* Sets the splash image from configuration *@
+<style>
+	.splash-img {
+		background-image: url(@Url.Content("~/Content/images/splash_background.jpg"));
+	}
+</style>
+
+<section class="splash splash-img">
+	<div class="container-fluid">
+		<div class="row">
+			@* Homepage overrides the default positioning, so we can have this inside the splash area *@
+			<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+				@Html.Partial("_FeedbackMessage")
+			</section>
+		</div>
+		<div class="row">
+			<div class="big_splash">
+				<h1 class="big_title">@Model.Title</h1>
+				<div>
+					<a class="btn btn-search" href="#focus" role="button">Search</a>
+					<a class="btn btn-register" href="#register" role="button">Register</a>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<section class="info-white-full">
+				<div id="focus" class="container text-center">
+					<div class="jumbotron">
+						@Html.Partial("~/Views/Home/_UnifiedSearchBox.cshtml", Model)
+					</div>
+				</div>
+			</section>
+		</div>
+        <div class="row">
+            <section class="info-white-full">
+                <div class="container">
+                    <div id="register" class="row info">
+                        <div class="col-sm-6">
+                            @Html.Markdown(Model.ResourceRegistration)
+                        </div>
+                        <div class="col-sm-6">
+                            @Html.Markdown(Model.NetworkRegistration)
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <a class="btn btn-search" href="@Url.Action("Biobank", "Register")" role="button">Register a new @App.Config[ConfigKey.SampleResourceName]</a>
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <a class="btn btn-search" href="@Url.Action("Network", "Register")" role="button">Register a new network of resources</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="row">
+            <section class="info-white-full">
+                <div class="container text-center">
+                    <p>@Html.Markdown(Model.FinalParagraph)</p>
+                </div>
+            </section>
+        </div>
+	</div>
+</section>

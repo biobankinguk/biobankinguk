@@ -18,5 +18,7 @@ namespace Biobanks.Web.Models.Home
         public string NetworkRegistration { get; set; }
 
         public string ResourceRegistration { get; set; }
+
+        public string FinalParagraph { get; set; }
     }
 }
