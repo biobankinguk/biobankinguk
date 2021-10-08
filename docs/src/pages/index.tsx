@@ -1,23 +1,34 @@
 import React from "react";
 import Layout from "@theme/Layout";
-import { Heading, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import DocsLink from "@docusaurus/Link";
+import {
+  Heading,
+  Button,
+  Stack,
+  Text,
+  SimpleGrid,
+  Box,
+  Link,
+  UnorderedList,
+  ListItem,
+} from "@chakra-ui/react";
 
 const HeroBanner = () => {
-  const responsiveChildWidths = ["100%", "100%", "70%"];
+  const responsiveChildWidths = { sm: "100%", md: "70%" };
   return (
     <Stack
-      bgGradient="linear(to-br, blue.600, blue.800)"
+      bgGradient="linear(to-br, yellow.700, orange.900)"
       py={10}
       alignItems="center"
       color="white"
       textShadow="2px 2px 2px rgba(0,0,0,.8)"
     >
       <Heading size="2xl" p={5} width={responsiveChildWidths}>
-        <Text as="span" color="teal.300">
+        <Text as="span" color="cyan.300">
           Catalogue
         </Text>
         <Text as="span"> &amp; </Text>
-        <Text as="span" color="pink.300">
+        <Text as="span" color="yellow.200">
           Search
         </Text>
         <Text> Tissue Samples.</Text>
@@ -54,15 +65,46 @@ const Index = () => {
 
         <Stack p={5}>
           <Heading fontWeight="medium">Documentation</Heading>
-          <HStack>
+          {/* <HStack>
             <Icon
               as={DocsIcon}
               boxSize="256px"
-              fill="blue.600"
+              fill="orange.400"
               filter="drop-shadow(2px 2px 2px rgba(0, 0, 0, .8))"
             />
             <Text>This site contains documentation</Text>
-          </HStack>
+          </HStack> */}
+          <SimpleGrid p={8} columns={{ sm: 1, md: 2 }} spacing={8}>
+            <Link
+              as={DocsLink}
+              to="/directory"
+              _hover={{ textDecoration: "inherit", color: "inherit" }}
+            >
+              <Stack
+                bg="gray.700"
+                p={4}
+                borderRadius={5}
+                position="relative"
+                transition="top ease 1s, background ease .5s"
+                _hover={{ boxShadow: "dark-lg", top: "-2px", bg: "gray.600" }}
+              >
+                <Heading as="h3" size="md" fontWeight="medium" py={2}>
+                  Directory Guide
+                </Heading>
+                <Text>Documentation for the Directory website.</Text>
+                <UnorderedList pl={8}>
+                  <ListItem>Searching for samples or organisations</ListItem>
+                  <ListItem>
+                    Managing Organisation Data (Biobank or Network
+                    Administrators)
+                  </ListItem>
+                  <ListItem>
+                    Managing the Directory itself (Directory Administrators)
+                  </ListItem>
+                </UnorderedList>
+              </Stack>
+            </Link>
+          </SimpleGrid>
         </Stack>
       </Stack>
     </Layout>
