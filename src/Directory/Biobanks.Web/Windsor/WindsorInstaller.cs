@@ -24,6 +24,12 @@ using Microsoft.Owin.Security.DataProtection;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using System.Web.Http;
+using Biobanks.Directory.Services;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Directory.Services;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.Windsor
 {
@@ -99,6 +105,18 @@ namespace Biobanks.Web.Windsor
                 Component.For<IUserStore<ApplicationUser, string>>()
                     .ImplementedBy<ApplicationUserStore>()
                     .LifeStyle.Transient,
+                
+                Component.For(typeof(IOntologyTermService))
+                    .ImplementedBy(typeof(OntologyTermService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(INetworkService))
+                    .ImplementedBy(typeof(NetworkService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IOrganisationService))
+                    .ImplementedBy(typeof(OrganisationService))
+                    .LifeStyle.Transient,
 
                 Component.For(typeof(IBiobankReadService))
                     .ImplementedBy(typeof(BiobankReadService))
@@ -108,12 +126,120 @@ namespace Biobanks.Web.Windsor
                     .ImplementedBy(typeof(BiobankWriteService))
                     .LifeStyle.Transient,
 
+                Component.For(typeof(ICollectionService))
+                    .ImplementedBy(typeof(CollectionService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IContentPageService))
                     .ImplementedBy(typeof(ContentPageService))
                     .LifeStyle.Transient,
 
                 Component.For(typeof(IConfigService))
                     .ImplementedBy(typeof(ConfigService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IPublicationService))
+                    .ImplementedBy(typeof(PublicationService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<ServiceOffering>))
+                    .ImplementedBy(typeof(ServiceOfferingService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<SampleCollectionMode>))
+                    .ImplementedBy(typeof(SampleCollectionModeService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<RegistrationReason>))
+                    .ImplementedBy(typeof(RegistrationReasonService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<MacroscopicAssessment>))
+                    .ImplementedBy(typeof(MacroscopicAssessmentService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<DonorCount>))
+                    .ImplementedBy(typeof(DonorCountService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<County>))
+                    .ImplementedBy(typeof(CountyService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<Country>))
+                    .ImplementedBy(typeof(CountryService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<ConsentRestriction>))
+                    .ImplementedBy(typeof(ConsentRestrictionService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<CollectionType>))
+                    .ImplementedBy(typeof(CollectionTypeService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<CollectionPercentage>))
+                    .ImplementedBy(typeof(CollectionPercentageService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<AnnualStatistic>))
+                    .ImplementedBy(typeof(AnnualStatisticService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<AnnualStatisticGroup>))
+                    .ImplementedBy(typeof(AnnualStatisticGroupService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<AgeRange>))
+                    .ImplementedBy(typeof(AgeRangeService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<CollectionStatus>))
+                    .ImplementedBy(typeof(CollectionStatusService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<Funder>))
+                    .ImplementedBy(typeof(FunderService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<SopStatus>))
+                    .ImplementedBy(typeof(SopStatusService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<AccessCondition>))
+                    .ImplementedBy(typeof(AccessConditionService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<Sex>))
+                    .ImplementedBy(typeof(SexService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<PreservationType>))
+                    .ImplementedBy(typeof(PreservationTypeService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<StorageTemperature>))
+                    .ImplementedBy(typeof(StorageTemperatureService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<MaterialType>))
+                    .ImplementedBy(typeof(MaterialTypeService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<MaterialTypeGroup>))
+                    .ImplementedBy(typeof(MaterialTypeGroupService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<AssociatedDataType>))
+                    .ImplementedBy(typeof(AssociatedDataTypeService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<AssociatedDataTypeGroup>))
+                    .ImplementedBy(typeof(AssociatedDataTypeGroupService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IReferenceDataService<AssociatedDataProcurementTimeframe>))
+                    .ImplementedBy(typeof(AssociatedDataProcurementTimeframeService))
                     .LifeStyle.Transient,
 
                 Component.For(typeof(IRegistrationDomainService))
@@ -167,7 +293,7 @@ namespace Biobanks.Web.Windsor
                     .DependsOn(Dependency.OnValue("password", ConfigurationManager.AppSettings["ElasticSearchPassword"]))
                     .LifeStyle.Transient,
 
-                Component.For<LegacySearchProvider,ISearchProvider>()
+                Component.For<LegacySearchProvider, ISearchProvider>()
                     .ImplementedBy<LegacySearchProvider>()
                     .LifeStyle.Transient,
                 Component.For<LegacyIndexProvider, IIndexProvider>()

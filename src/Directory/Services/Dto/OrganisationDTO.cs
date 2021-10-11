@@ -33,6 +33,8 @@ namespace Biobanks.Services.Dto
 
         public bool SharingOptOut { get; set; }
 
+        public bool IsSuspended { get; set; }
+
         //Governing Body
         public string GoverningInstitution { get; set; }
         public string GoverningDepartment { get; set; }

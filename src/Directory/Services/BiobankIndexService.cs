@@ -15,6 +15,9 @@ using Biobanks.Services.Extensions;
 using System.IO;
 using System.Web.Hosting;
 using Microsoft.ApplicationInsights;
+using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
@@ -22,15 +25,19 @@ namespace Biobanks.Services
     {
         private const int BulkIndexChunkSize = 100;
 
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
         private readonly ISearchProvider _searchProvider;
 
         public BiobankIndexService(
+            IReferenceDataService<DonorCount> donorCountService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider)
         {
+            _donorCountService = donorCountService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
@@ -130,10 +137,10 @@ namespace Biobanks.Services
             var createdCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
 
             // Get the donor counts.
-            var donorCounts = (await _biobankReadService.ListDonorCountsAsync()).ToList();
+            var donorCounts = await _donorCountService.List();
 
             // Set up the capability search document.
-            var capabilitySearchDocument = createdCapability.ToCapabilitySearchDocument(donorCounts);
+            var capabilitySearchDocument = createdCapability.ToCapabilitySearchDocument(donorCounts.ToList());
 
             // Queue up a job to add the sample set to the search index.
             BackgroundJob.Enqueue(() => _indexProvider.IndexCapabilitySearchDocument(
@@ -144,27 +151,27 @@ namespace Biobanks.Services
         public async Task UpdateSampleSetDetails(int sampleSetId)
         {
             // Get the entire sample set object from the database.
-            var updatedSampleSet = await _biobankReadService.GetSampleSetByIdForIndexingAsync(sampleSetId);
+            var sampleSet = await _biobankReadService.GetSampleSetByIdForIndexingAsync(sampleSetId);
 
-            // Queue up a job to update the sample set in the search index.
-            BackgroundJob.Enqueue(() => _indexProvider.UpdateCollectionSearchDocument(
-                updatedSampleSet.Id,
-                new PartialSampleSet
+            // Partial Sample Set For Indexing
+            var partialSampleSet = new PartialSampleSet
+            {
+                Sex = sampleSet.Sex.Value,
+                AgeRange = sampleSet.AgeRange.Value,
+                AgeRangeMetadata = JsonConvert.SerializeObject(new
                 {
-                    Sex = updatedSampleSet.Sex.Value,
-                    AgeRange = updatedSampleSet.AgeRange.Value,
-                    AgeRangeMetadata = JsonConvert.SerializeObject(new
-                    {
-                        Name = updatedSampleSet.AgeRange.Value,
-                        updatedSampleSet.AgeRange.SortOrder
-                    }),
-                    DonorCount = updatedSampleSet.DonorCount.Value,
-                    DonorCountMetadata = JsonConvert.SerializeObject(new
-                    {
-                        Name = updatedSampleSet.DonorCount.Value,
-                        updatedSampleSet.DonorCount.SortOrder
-                    }),
-                    MaterialPreservationDetails = updatedSampleSet.MaterialDetails
+                    Name = sampleSet.AgeRange.Value,
+                    sampleSet.AgeRange.SortOrder
+                }),
+                DonorCount = sampleSet.DonorCount.Value,
+                DonorCountMetadata = JsonConvert.SerializeObject(new
+                {
+                    Name = sampleSet.DonorCount.Value,
+                    sampleSet.DonorCount.SortOrder
+                }),
+                MaterialPreservationDetails = 
+                    sampleSet
+                        .MaterialDetails
                         .Select(x => new MaterialPreservationDetailDocument
                         {
                             MaterialType = x.MaterialType.Value,
@@ -175,14 +182,19 @@ namespace Biobanks.Services
                                 x.StorageTemperature.SortOrder
                             }),
                             MacroscopicAssessment = x.MacroscopicAssessment.Value,
-                            PercentageOfSampleSet = x.CollectionPercentage.Value
-                        }),
-                    SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
-                        updatedSampleSet.DonorCount.Value, 
-                        updatedSampleSet.AgeRange.Value,
-                        updatedSampleSet.Sex.Value,
-                        updatedSampleSet.MaterialDetails)
-                }));
+                            PercentageOfSampleSet = x.CollectionPercentage?.Value
+                        })
+                        .ToList(),
+                SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
+                        sampleSet.DonorCount.Value,
+                        sampleSet.AgeRange.Value,
+                        sampleSet.Sex.Value,
+                        sampleSet.MaterialDetails)
+            };
+
+            // Queue up a job to update the sample set in the search index.
+            BackgroundJob.Enqueue(() => 
+                _indexProvider.UpdateCollectionSearchDocument(sampleSet.Id, partialSampleSet));
         }
 
         public async Task UpdateCapabilityDetails(int capabilityId)
@@ -192,7 +204,7 @@ namespace Biobanks.Services
 
             // Get the donor counts and get expectations from them
             var donorExpectation = DiagnosisCapabilityExtensions.GetAnnualDonorExpectationRange(
-                        await _biobankReadService.ListDonorCountsAsync(),
+                        await _donorCountService.List(),
                         updatedCapability.AnnualDonorExpectation);
 
             //Prep metadata for the facet value
@@ -237,11 +249,8 @@ namespace Biobanks.Services
             BackgroundJob.Enqueue(() => _indexProvider.DeleteCapabilitySearchDocument(capabilityId));
         }
 
-        public async Task UpdateCollectionDetails(int collectionId)
+        public void UpdateCollectionDetails(Collection collection)
         {
-            // Get the collection out of the database.
-            var collection = await _biobankReadService.GetCollectionByIdForIndexingAsync(collectionId);
-
             // Update all search documents that are relevant to this collection.
             foreach (var sampleSet in collection.SampleSets)
             {
@@ -273,11 +282,8 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task UpdateBiobankDetails(int biobankId)
+        public void UpdateOrganisationDetails(Organisation biobank)
         {
-            // Get the biobank from the database.
-            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
-
             var partialBiobank = new PartialBiobank
             {
                 Biobank = biobank.Name,
@@ -308,10 +314,10 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task UpdateNetwork(int networkId)
+        public void UpdateNetwork(Network network)
         {
             // For all biobanks attached to this network.
-            foreach (var biobank in await _biobankReadService.GetBiobanksByNetworkIdForIndexingAsync(networkId))
+            foreach (var biobank in network.OrganisationNetworks.Select(x => x.Organisation))
             {
                 // Build the list of network documents.
                 var networkDocuments = biobank.OrganisationNetworks
@@ -349,16 +355,14 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task JoinOrLeaveNetwork(int biobankId)
+        //TODO: Current unused method
+        public void JoinOrLeaveNetwork(Organisation organisation)
         {
-            // Get the biobank from the database.
-            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
-
             // Update all search documents that are relevant to this biobank.
-            foreach (var sampleSet in biobank.Collections.SelectMany(c => c.SampleSets))
+            foreach (var sampleSet in organisation.Collections.SelectMany(c => c.SampleSets))
             {
                 // Build the list of network documents.
-                var networkDocuments = biobank.OrganisationNetworks
+                var networkDocuments = organisation.OrganisationNetworks
                     .Select(on => on.Network)
                     .Select(n => new NetworkDocument
                     {
@@ -376,15 +380,12 @@ namespace Biobanks.Services
             }
         }
 
-        public async Task BulkIndexBiobank(int biobankId)
+        public async Task BulkIndexBiobank(Organisation organisation)
         {
-            //Get the biobank, complete with collections, samplesets, capabilities
-            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
-
             //Index samplesets
             await
                 BulkIndexSampleSets(
-                    biobank.Collections
+                    organisation.Collections
                         .SelectMany(x => x.SampleSets)
                         .Select(x => x.Id)
                         .ToList());
@@ -392,7 +393,7 @@ namespace Biobanks.Services
             //Index capabilities
             await
                 BulkIndexCapabilities(
-                    biobank.DiagnosisCapabilities
+                    organisation.DiagnosisCapabilities
                         .Select(x => x.DiagnosisCapabilityId)
                         .ToList());
         }
@@ -436,7 +437,7 @@ namespace Biobanks.Services
             var remainingIdCount = capabilityIds.Count() % BulkIndexChunkSize;
 
             // Get the donor counts.
-            var donorCounts = (await _biobankReadService.ListDonorCountsAsync()).ToList();
+            var donorCounts = (await _donorCountService.List()).ToList();
 
             for (var i = 0; i < chunkCount; i++)
             {
@@ -460,21 +461,18 @@ namespace Biobanks.Services
                     .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
         }
 
-        public async Task BulkDeleteBiobank(int biobankId)
+        public void BulkDeleteBiobank(Organisation organisation)
         {
-            //Get the biobank, complete with collections, samplesets, capabilities
-            var biobank = await _biobankReadService.GetBiobankByIdForIndexingAsync(biobankId);
-
             //Remove samplesets from the index
             BulkDeleteSampleSets(
-                    biobank.Collections
+                    organisation.Collections
                         .SelectMany(x => x.SampleSets)
                         .Select(x => x.Id)
                         .ToList());
 
             //Remove capabilities from the index
             BulkDeleteCapabilities(
-                    biobank.DiagnosisCapabilities
+                    organisation.DiagnosisCapabilities
                         .Select(x => x.DiagnosisCapabilityId)
                         .ToList());
         }
@@ -541,17 +539,6 @@ namespace Biobanks.Services
         private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
             => (int) Math.Floor((double) (intList.Count() / chunkSize));
 
-        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
-        {
-            // Get the collections with the ontologyTerm.
-            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
-            // Update all search documents that are relevant to this collection.
-            foreach (var collectionId in collectionIds)
-            {
-                await UpdateCollectionDetails(collectionId);
-            }
-        }
-
         public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
         {
             // Get the capabilitiess with the ontologyTerm.
@@ -560,6 +547,53 @@ namespace Biobanks.Services
             foreach (var capabilityId in capabilityIds)
             {
                 await UpdateCapabilityDetails(capabilityId);
+            }
+        }
+
+        public async Task UpdateCollectionDetails(int collectionId)
+        {
+            // Get the collection out of the database.
+            var collection = await _biobankReadService.GetCollectionByIdForIndexingAsync(collectionId);
+
+            // Update all search documents that are relevant to this collection.
+            foreach (var sampleSet in collection.SampleSets)
+            {
+                // Queue up a job to update the search document.
+                BackgroundJob.Enqueue(() =>
+                    _indexProvider.UpdateCollectionSearchDocument(
+                        sampleSet.Id,
+                        new PartialCollection
+                        {
+                            OntologyTerm = collection.OntologyTerm.Value,
+                            CollectionTitle = collection.Title,
+                            StartYear = collection.StartDate.Year.ToString(),
+                            CollectionStatus = collection.CollectionStatus.Value,
+                            ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
+                            AccessCondition = collection.AccessCondition.Value,
+                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
+                            AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
+                            {
+                                Text = ad.AssociatedDataType.Value,
+                                Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
+                                TimeframeMetadata = JsonConvert.SerializeObject(new
+                                {
+                                    Name = ad.AssociatedDataProcurementTimeframe.Value,
+                                    ad.AssociatedDataProcurementTimeframe.SortOrder
+                                })
+                            }),
+                            OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
+                        }));
+            }
+        }
+
+        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
+        {
+            // Get the collections with the ontologyTerm.
+            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
+            // Update all search documents that are relevant to this collection.
+            foreach (var collectionId in collectionIds)
+            {
+                await UpdateCollectionDetails(collectionId);
             }
         }
     }

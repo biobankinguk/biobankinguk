@@ -14,23 +14,37 @@ using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Biobanks.Web.Extensions;
 using Biobanks.Web.Results;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Directory.Services.Constants;
+using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class SearchController : Controller
     {
+        private readonly IReferenceDataService<Country> _countryController;
+
+        private readonly IOntologyTermService _ontologyTermService;
+
+        private readonly IOrganisationService _organisationService;
+
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
         private readonly IBiobankReadService _biobankReadService;
 
         public SearchController(
+            IReferenceDataService<Country> countryController,
+            IOntologyTermService ontologyTermService,
+            IOrganisationService organisationService,
             ISearchProvider searchProvider,
             IMapper mapper,
             IBiobankReadService biobankReadService)
         {
+            _countryController = countryController;
+            _ontologyTermService = ontologyTermService;
+            _organisationService = organisationService;
             _searchProvider = searchProvider;
             _mapper = mapper;
             _biobankReadService = biobankReadService;
@@ -42,7 +56,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrWhiteSpace(ontologyTerm))
             {
-                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm, onlyDisplayable: true);
+                var term = await _ontologyTermService.Get(value: ontologyTerm, onlyDisplayable: true);
 
                 if (term is null)
                 {
@@ -79,7 +93,7 @@ namespace Biobanks.Web.Controllers
                     SearchType = SearchDocumentType.Collection
                 });
 
-            model.Countries = (await _biobankReadService.ListCountriesAsync())
+            model.Countries = (await _countryController.List())
                 .ToDictionary(
                     x => x.Value,
                     x => x.Counties.Select(y => y.Value).ToList()
@@ -128,7 +142,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _biobankReadService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
 
             //Get Collection Descriptions in bulk
             var descriptions =
@@ -149,7 +163,7 @@ namespace Biobanks.Web.Controllers
             // Check If Valid and Visible Term
             if (!string.IsNullOrEmpty(ontologyTerm))
             {
-                var term = await _biobankReadService.GetOntologyTerm(description: ontologyTerm, onlyDisplayable: true);
+                var term = await _ontologyTermService.Get(value: ontologyTerm, onlyDisplayable: true);
 
                 if (term is null)
                 {
@@ -207,7 +221,7 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _biobankReadService.GetBiobankByExternalIdAsync(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
 
             return View(model);
         }
@@ -247,7 +261,7 @@ namespace Biobanks.Web.Controllers
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
         {
             var searchOntologyTerms = _searchProvider.ListOntologyTerms(type, wildcard);
-            var directoryOntologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var directoryOntologyTerms = await _ontologyTermService.List(wildcard, onlyDisplayable: true, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding
@@ -281,7 +295,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OntologyTermModel>> GetOntologyTermsAsync(string wildcard)
         {
-            var ontologyTerms = await _biobankReadService.ListOntologyTerms(wildcard, onlyDisplayable: true, tags: new List<string>
+            var ontologyTerms = await _ontologyTermService.List(wildcard, onlyDisplayable: true, tags: new List<string>
             {
                 SnomedTags.Disease,
                 SnomedTags.Finding

@@ -108,7 +108,7 @@ jobs:
           /P:SatelliteResourceLanguages=en-GB
           -r win-x64
           --self-contained false
-      - uses: edgarrc/action-7z@v1.0.4
+      - uses: edgarrc/action-7z@v1.0.5
         with:
           args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
       - uses: actions/upload-artifact@v2
@@ -135,7 +135,7 @@ jobs:
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
           /P:DebugType=embedded
-      - uses: edgarrc/action-7z@v1.0.4
+      - uses: edgarrc/action-7z@v1.0.5
         with:
           args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
       - uses: actions/upload-artifact@v2
@@ -161,7 +161,7 @@ jobs:
           -c ${{ env.CI_build-config }}
           -o ${{ env.CI_publish-dir }}
           /P:Version=${{ needs.init.outputs.version }}
-      - uses: edgarrc/action-7z@v1.0.4
+      - uses: edgarrc/action-7z@v1.0.5
         with:
           args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
       - uses: actions/upload-artifact@v2
@@ -252,7 +252,7 @@ jobs:
           cp -r ${{ env.CI_src }}/bin/* ${{ env.CI_publish-dir }}/bin
           cp -r ${{ env.CI_src }}/obj/* ${{ env.CI_publish-dir }}/obj
           cp ${{ env.CI_src }}/Data.csproj ${{ env.CI_publish-dir }}
-      - uses: edgarrc/action-7z@v1.0.4
+      - uses: edgarrc/action-7z@v1.0.5
         with:
           args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
       - uses: actions/upload-artifact@v2

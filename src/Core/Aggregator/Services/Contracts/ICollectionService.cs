@@ -1,5 +1,4 @@
 ﻿using Biobanks.Entities.Data;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Services.Contracts
@@ -13,9 +12,5 @@ namespace Biobanks.Aggregator.Services.Contracts
         Task AddCollection(Collection collection);
 
         Task DeleteCollection(int id);
-
-        Task DeleteSampleSetByIds(IEnumerable<int> ids);
-
-        Task DeleteMaterialDetailsBySampleSetIds(IEnumerable<int> ids);
     }
 }

@@ -10,7 +10,7 @@ namespace Biobanks.Aggregator.Services.Contracts
         IEnumerable<IEnumerable<LiveSample>> GroupIntoSampleSets(IEnumerable<LiveSample> samples);
         IEnumerable<IEnumerable<LiveSample>> GroupIntoMaterialDetails(IEnumerable<LiveSample> samples);
 
-        Collection GenerateCollection(IEnumerable<LiveSample> samples);
+        Collection GenerateCollection(IEnumerable<LiveSample> samples, string collectionName);
         SampleSet GenerateSampleSet(IEnumerable<LiveSample> samples);
         MaterialDetail GenerateMaterialDetail(IEnumerable<LiveSample> samples);
 

@@ -1,23 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using System.ComponentModel.DataAnnotations;
 
 namespace Biobanks.Entities.Api.ReferenceData
 {
     /// <summary>
     /// Ontology Versions.
     /// </summary>
-    public class OntologyVersion
+    public class OntologyVersion : BaseReferenceData
     {
-        /// <summary>
-        /// Internal id.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Value for the ontology version (i.e. friendly name)
-        /// </summary>
-        [Required]
-        public string Value { get; set; }
-
         /// <summary>
         /// Ontology to which the version relates.
         /// </summary>

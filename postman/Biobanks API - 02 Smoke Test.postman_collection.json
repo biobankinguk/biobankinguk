@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "81e9c1e9-fc5f-4ea1-9791-897831c26983",
+		"name": "Biobanks API - 02 Smoke Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Services",
+			"item": [
+				{
+					"name": "Submission API Swagger",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Expected server http response",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Assert that the responseBody contains 'Swagger UI'",
+									"pm.test(\"Response contains Swagger UI\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Swagger UI\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}",
+							"host": [
+								"{{api-url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submission API Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert Not Authorized",
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"// Assert Response Body Isn't Empty",
+									"pm.test(\"Response not empty\", function () {",
+									"    pm.expect(pm.response.text().value).to.not.eql(\"\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/token",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submission Biobank Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*  Assert HTTP OK 200",
+									"*   Assertion failure means user doesn't have access to biobank  */ ",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-url}}/status/biobank/{{user-biobank-id}}",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"status",
+								"biobank",
+								"{{user-biobank-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Directory Version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{directory-url}}/Version",
+							"host": [
+								"{{directory-url}}"
+							],
+							"path": [
+								"Version"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reject Staged Data Copy",
+			"item": [
+				{
+					"name": "Reject Staged Data - User 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Expected server HTTP response",
+									"pm.test(\"Status code is 204\", () => {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"//Assert that the responseBody is empty",
+									"tests[\"Body is empty\"] = (responseBody!==null && responseBody.length===0);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api-url}}/{{user-biobank-id}}/reject",
+							"host": [
+								"{{api-url}}"
+							],
+							"path": [
+								"{{user-biobank-id}}",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{user-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"function IsSuccessCode(statusCode) {",
+					"    return statusCode == 200 || statusCode == 201;",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

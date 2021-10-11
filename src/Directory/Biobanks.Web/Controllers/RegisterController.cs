@@ -11,11 +11,15 @@ using Biobanks.Web.Models.Register;
 using Microsoft.AspNet.Identity;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     public class RegisterController : ApplicationBaseController
     {
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IEmailService _emailService;
@@ -25,6 +29,8 @@ namespace Biobanks.Web.Controllers
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         public RegisterController(
+            INetworkService networkService,
+            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
@@ -32,6 +38,9 @@ namespace Biobanks.Web.Controllers
             IRegistrationDomainService registrationDomainService,
             IConfigService configService)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
+
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _userManager = userManager;
@@ -120,7 +129,7 @@ namespace Biobanks.Web.Controllers
                 return View("RegisterConfirmation");
 
             //check for duplicate Biobank name
-            var existingOrg = await _biobankReadService.GetBiobankByNameAsync(model.Entity);
+            var existingOrg = await _organisationService.GetByName(model.Entity);
 
             if (existingOrg != null)
             {
@@ -136,7 +145,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //check for duplicate name against non-declined requests too
-            if (await _biobankReadService.BiobankRegisterRequestExists(model.Entity))
+            if (await _organisationService.RegistrationRequestExists(model.Entity))
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage(
@@ -157,16 +166,12 @@ namespace Biobanks.Web.Controllers
                 return View(model);
             }
 
-            //get the org type id for biobanks
-            var type = await _biobankReadService.GetBiobankOrganisationTypeAsync();
-
             //Create a register request for this user and Biobank
-            var request = await _biobankWriteService.AddRegisterRequestAsync(
+            var request = await _organisationService.AddRegistrationRequest(
                 new OrganisationRegisterRequest
                 {
                     UserName = model.Name,
                     UserEmail = model.Email,
-                    OrganisationTypeId = type.OrganisationTypeId,
                     OrganisationName = model.Entity,
                     RequestDate = DateTime.Now
                 });
@@ -231,7 +236,7 @@ namespace Biobanks.Web.Controllers
                 return View("RegisterConfirmation");
 
             //check for duplicate Network name
-            var existingNetwork = await _biobankReadService.GetNetworkByNameAsync(model.Entity);
+            var existingNetwork = await _networkService.GetByName(model.Entity);
 
             if (existingNetwork != null)
             {
@@ -240,7 +245,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //check for duplicate name against non-declined requests too
-            if (await _biobankReadService.NetworkRegisterRequestExists(model.Entity))
+            if (await _networkService.HasActiveRegistrationRequest(model.Entity))
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                 SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
@@ -260,7 +265,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Create a register request for this user and Network
-            var request = await _biobankWriteService.AddNetworkRegisterRequestAsync(
+            var request = await _networkService.AddRegistrationRequest(
                 new NetworkRegisterRequest
                 {
                     UserName = model.Name,

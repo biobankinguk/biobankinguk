@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Services
 {
@@ -21,12 +22,23 @@ namespace Biobanks.Services
         private readonly string _apiClientId = ConfigurationManager.AppSettings["DirectoryApiClientId"] ?? "";
         private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
 
+        private readonly IOrganisationService _organisationService;
+        private readonly ICollectionService _collectionService;
+
         private readonly HttpClient _client;
         private readonly IBiobankReadService _biobankReadService;
 
-        public AnalyticsReportGenerator(IBiobankReadService biobankReadService)
+
+        public AnalyticsReportGenerator(
+            ICollectionService collectionService,
+            IOrganisationService organisationService,
+            IBiobankReadService biobankReadService)
         {
+            _collectionService = collectionService;
+            _organisationService = organisationService;
+
             _biobankReadService = biobankReadService;
+            
             _client = new HttpClient();
 
             if (!string.IsNullOrEmpty(_apiUrl))
@@ -44,7 +56,7 @@ namespace Biobanks.Services
         public async Task<ProfileStatusDTO> GetProfileStatus(string biobankId)
         {
             //can split into two functions that returns status code and status message
-            var bb = await _biobankReadService.GetBiobankByExternalIdAsync(biobankId);
+            var bb = await _organisationService.GetByExternalId(biobankId);
             int collectionCount = bb.Collections.Count;
             int capabilitiesCount = bb.DiagnosisCapabilities.Count;
 
@@ -53,9 +65,9 @@ namespace Biobanks.Services
 
             foreach (var col in bb.Collections)
             {
-                var ss = await _biobankReadService.GetCollectionWithSampleSetsByIdAsync(col.CollectionId);
-                if (ss.SampleSets.Count == 0)
-                { // Check if any collection exists without a sample set
+                // Check if any collection exists without a sample set
+                if (!await _collectionService.HasSampleSets(col.CollectionId))
+                { 
                     missingSampleSet = true;
                     break;
                 }
@@ -95,7 +107,7 @@ namespace Biobanks.Services
 
         public async Task<BiobankAnalyticReportDTO> GetBiobankReport(int Id, int year, int quarter, int period)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(Id);
+            var bb = await _organisationService.Get(Id);
             var biobankId = bb.OrganisationExternalId;
 
             if (bb is null) throw new KeyNotFoundException();

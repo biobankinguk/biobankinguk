@@ -7,17 +7,26 @@ using Biobanks.Web.Models.Search;
 using Biobanks.Services.Contracts;
 using Biobanks.Web.Extensions;
 using Biobanks.Directory.Data.Constants;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
     [AllowAnonymous]
     public class TermController : ApplicationBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly IOntologyTermService _ontologyTermService;
 
-        public TermController(IBiobankReadService biobankReadService)
+        private readonly IBiobankReadService _biobankReadService;
+        private readonly ICollectionService _collectionService;
+
+        public TermController(
+            IBiobankReadService biobankReadService,
+            ICollectionService collectionService,
+            IOntologyTermService ontologyTermService)
         {
+            _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
+            _collectionService = collectionService;
         }
 
         // GET: Term
@@ -30,7 +39,7 @@ namespace Biobanks.Web.Controllers
             };
 
             // List of Unique Diagnoses With Sample Sets
-            var ontologyTerms = (await _biobankReadService.ListCollectionsAsync())
+            var ontologyTerms = (await _collectionService.List())
                 .Where(x => x.SampleSets.Any() && x.OntologyTerm.DisplayOnDirectory && !x.Organisation.IsSuspended)
                 .GroupBy(x => x.OntologyTermId)
                 .Select(x => x.First().OntologyTerm);
@@ -41,7 +50,7 @@ namespace Biobanks.Web.Controllers
                 {
                     OntologyTermId = x.Id,
                     Description = x.Value,
-                    CollectionCapabilityCount = await _biobankReadService.GetOntologyTermCollectionCapabilityCount(x.Id),
+                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
                     OtherTerms = x.OtherTerms
                 })
                 .Result

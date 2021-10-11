@@ -17,6 +17,8 @@ using Biobanks.Web.Utilities;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Biobanks.Directory.Services.Contracts;
+using Hangfire.States;
 
 namespace Biobanks.Web.Controllers
 {
@@ -26,11 +28,16 @@ namespace Biobanks.Web.Controllers
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly CustomClaimsManager _claimsManager;
 
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
 
         public AccountController(
+            INetworkService networkService,
+            IOrganisationService organisationService,
             ApplicationSignInManager signInManager,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
             IEmailService emailService,
@@ -38,6 +45,9 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog,
             IBiobankReadService biobankReadService)
         {
+            _networkService = networkService;
+            _organisationService = organisationService;
+
             _signinManager = signInManager;
             _userManager = userManager;
             _claimsManager = claimsManager;
@@ -151,7 +161,7 @@ namespace Biobanks.Web.Controllers
             //Biobank
 
             //get all accepted biobanks
-            var biobankRequests = await _biobankReadService.ListAcceptedBiobankRegisterRequestsAsync();
+            var biobankRequests = await _organisationService.ListAcceptedRegistrationRequests();
             var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == CurrentUser.Name && x.UserEmail == CurrentUser.Email);
             
             // if there is an unregistered biobank to finish registering, go there
@@ -165,7 +175,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //get all accepted networks
-            var networkRequests = await _biobankReadService.ListAcceptedNetworkRegisterRequestAsync();
+            var networkRequests = await _networkService.ListAcceptedRegistrationRequests();
             var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == CurrentUser.Identity.GetUserName() && x.UserEmail == CurrentUser.Email);
 
             // if there is an unregistered network to finish registering, go there
@@ -572,12 +582,26 @@ namespace Biobanks.Web.Controllers
 
             // Get Biobank
             if (newBiobank)
-                biobanks = _biobankReadService.GetAcceptedBiobankRequestIdsAndNamesByUserId(userId); 
-            else 
-                biobanks = _biobankReadService.GetBiobankIdsAndNamesByUserId(userId);
+            {
+                var acceptedRequest = await _organisationService.ListAcceptedRegistrationRequests();
+
+                biobanks = acceptedRequest
+                    .Where(x => x.UserEmail == user.Email)
+                    .Select(x => new KeyValuePair<int, string>(x.OrganisationRegisterRequestId, x.OrganisationName))
+                    .ToList();
+            }
+            else
+            {
+                var organisations = await _organisationService.ListByUserId(userId);
+                
+                biobanks = organisations
+                    .Select(x => new KeyValuePair<int, string>(x.OrganisationId, x.Name))
+                    .ToList();
+            }
 
             // if they don't have access to any biobanks, 403
-            if (biobanks == null || biobanks.Count <= 0) return RedirectToAction("Forbidden");
+            if (biobanks == null || biobanks.Count <= 0) 
+                return RedirectToAction("Forbidden");
 
             var biobank = biobanks.FirstOrDefault(o => o.Key == id);
 
@@ -603,37 +627,33 @@ namespace Biobanks.Web.Controllers
         {
             var userId = CurrentUser.Identity.GetUserId();
             var user = _userManager.FindById(userId);
-            List<KeyValuePair<int, string>> networks;
-
+           
             // Refresh user cookies - ensures user has correct Roles
             await _signinManager.RefreshSignInAsync(user);
             await _claimsManager.SetUserClaimsAsync(user.Email);
 
-            if (newNetwork)
-                networks = _biobankReadService.GetAcceptedNetworkRequestIdsAndNamesByUserId(userId); 
-            else 
-                networks = _biobankReadService.GetNetworkIdsAndNamesByUserId(userId);
+            var networks = newNetwork
+                ? (await _networkService.ListAcceptedRegistrationRequestsByUserId(userId))
+                    .Select(x => (Id: x.NetworkRegisterRequestId, Name: x.NetworkName))
+                : (await _networkService.ListByUserId(userId))
+                    .Select(x => (Id: x.NetworkId, Name: x.Name));
+
+            var network = networks.FirstOrDefault(x => x.Id == id);
 
             // if they don't have access to any biobanks, 403
-            if (networks == null || networks.Count <= 0) return RedirectToAction("Forbidden");
-
-            var network = networks.FirstOrDefault(o => o.Key == id);
-
-            // if they don't have access to this biobank, 403
-            if(network.Equals(default(KeyValuePair<int, string>)))
+            if (network == default) 
                 return RedirectToAction("Forbidden");
 
             // else they do have access to this biobank - set session data and go to collections
-            Session[SessionKeys.ActiveOrganisationId] = network.Key;
-            Session[SessionKeys.ActiveOrganisationName] = network.Value;
+            Session[SessionKeys.ActiveOrganisationId] = network.Id;
+            Session[SessionKeys.ActiveOrganisationName] = network.Name;
 
-            if(newNetwork)
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewNetwork;
-            else
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
+            Session[SessionKeys.ActiveOrganisationType] = newNetwork 
+                ? ActiveOrganisationType.NewNetwork
+                : ActiveOrganisationType.Network;
 
-            return newNetwork ? 
-                RedirectToAction("Edit", "Network", new { detailsIncomplete = true } ) 
+            return newNetwork 
+                ? RedirectToAction("Edit", "Network", new { detailsIncomplete = true } ) 
                 : RedirectToAction("Biobanks", "Network");
         }
 
