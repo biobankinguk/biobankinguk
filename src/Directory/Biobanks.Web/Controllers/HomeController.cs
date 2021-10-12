@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Services.Contracts;
+using System.Configuration;
 
 namespace Biobanks.Web.Controllers
 {
@@ -20,21 +21,17 @@ namespace Biobanks.Web.Controllers
     {
         private readonly INetworkService _networkService;
         private readonly IOrganisationService _organisationService;
-
-        private readonly IBiobankReadService _biobankReadService;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
 
         public HomeController(
             INetworkService networkService,
             IOrganisationService organisationService,
-            IBiobankReadService biobankReadService,
             IMapper mapper,
             IEmailService emailService)
         {
             _networkService = networkService;
             _organisationService = organisationService;
-            _biobankReadService = biobankReadService;
             _mapper = mapper;
             _emailService = emailService;
         }
@@ -42,7 +39,10 @@ namespace Biobanks.Web.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            return View(new HomepageContentModel
+            var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] == "true" 
+                ? "AltIndex" : "Index";
+
+            return View(viewName, new HomepageContentModel
             {
                 Title = Config.Get(ConfigKey.HomepageTitle, ""),
                 SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
@@ -51,6 +51,7 @@ namespace Biobanks.Web.Controllers
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
                 AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+                FinalParagraph = Config.Get(ConfigKey.HomepageFinalParagraph)
             });
         }
 
