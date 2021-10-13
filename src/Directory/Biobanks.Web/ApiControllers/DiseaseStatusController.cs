@@ -89,7 +89,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
         {
             //If this description is valid, it already exists
-            if (await _ontologyTermService.Exists(id, value: model.Description))
+            if (await _ontologyTermService.Exists(id, value: model.Description, filterId: false))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }

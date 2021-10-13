@@ -24,7 +24,7 @@ namespace Biobanks.Directory.Services
         }
 
         protected IQueryable<OntologyTerm> ReadOnlyQuery(
-            string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false)
+            string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterId = true)
         {
             var query = _db.OntologyTerms
                 .AsNoTracking()
@@ -33,11 +33,11 @@ namespace Biobanks.Directory.Services
                 .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
 
             // Filter By ID
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id) && filterId)
                 query = query.Where(x => x.Id == id);
 
             // Filter By Description
-            if (!string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(value) && filterId)
                 query = query.Where(x => x.Value.Contains(value));
 
             // Filter By SnomedTag
@@ -80,8 +80,8 @@ namespace Biobanks.Directory.Services
              + await _db.DiagnosisCapabilities.CountAsync(x => x.OntologyTermId == ontologyTermId);
 
         /// <inheritdoc/>
-        public async Task<bool> Exists(string id = null, string value = null, List<string> tags = null)
-            => await ReadOnlyQuery(id, value, tags).AnyAsync();
+        public async Task<bool> Exists(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterId = true)
+            => await ReadOnlyQuery(id, value, tags, onlyDisplayable, filterId).AnyAsync();
 
         /// <inheritdoc/>
         public async Task<bool> IsInUse(string id)
