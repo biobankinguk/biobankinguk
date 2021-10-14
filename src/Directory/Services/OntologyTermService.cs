@@ -30,14 +30,14 @@ namespace Biobanks.Directory.Services
                 .AsNoTracking()
                 .Include(x => x.SnomedTag)
                 .Include(x => x.MaterialTypes)
-                .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
+                .Where(x => x.DisplayOnDirectory || !onlyDisplayable); 
 
             // Filter By ID
             if (!string.IsNullOrEmpty(id) && filterId)
                 query = query.Where(x => x.Id == id);
 
             // Filter By Description
-            if (!string.IsNullOrEmpty(value) && filterId)
+            if (!string.IsNullOrEmpty(value))
                 query = query.Where(x => x.Value.Contains(value));
 
             // Filter By SnomedTag
