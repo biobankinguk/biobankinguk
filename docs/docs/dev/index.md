@@ -1,6 +1,7 @@
 ---
 title: Developer Guide
 sidebar_position: 1
+slug: /dev
 ---
 
 # Overview
