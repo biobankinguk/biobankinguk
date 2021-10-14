@@ -1261,22 +1261,7 @@ namespace Biobanks.Web.Controllers
         #region RefData: Disease Status
         public async Task<ActionResult> DiseaseStatuses()
         {
-            var diseaseTerms = await _ontologyTermService.List(tags: new List<string>
-            {
-                SnomedTags.Disease
-            });
-
-            return View(diseaseTerms.Select(x =>
-
-                Task.Run(async () => new ReadOntologyTermModel
-                {
-                    OntologyTermId = x.Id,
-                    Description = x.Value,
-                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
-                    OtherTerms = x.OtherTerms
-                })
-                .Result
-            ));
+            return View();
         }
 
         public async Task<ActionResult> PagingatedDiseaseStatuses(int draw, int start, int length, IDictionary<string, string> search)

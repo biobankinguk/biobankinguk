@@ -59,11 +59,13 @@ namespace Biobanks.Directory.Services
         public async Task<IEnumerable<OntologyTerm>> ListPaginated(
             int skip, int take, string value = null, List<string> tags = null, bool onlyDisplayable = false)
         {
-            return await ReadOnlyQuery(id: null, value, tags, onlyDisplayable)
-                    .OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Value)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var query = ReadOnlyQuery(id: null, value, tags, onlyDisplayable);
+
+            query = query.OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Value)
+                    .Skip(0)
+                    .Take(25);
+
+            return await query.ToListAsync();
         }
 
         /// <inheritdoc/>
