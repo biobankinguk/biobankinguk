@@ -39,3 +39,8 @@ html[data-theme="dark"] .header-github-link:before {
 .navbar [href="#"]:hover {
   color: inherit;
 }
+
+/* Hide empty table headers */
+th:empty {
+  display: none;
+}
