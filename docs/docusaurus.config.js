@@ -10,7 +10,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
     baseUrl: "/",
     trailingSlash: false,
     onBrokenLinks: "throw",
-    onBrokenMarkdownLinks: "warn",
+    onBrokenMarkdownLinks: "throw",
     favicon: "i/tdcc.png",
     organizationName: "biobankinguk", // Usually your GitHub org/user name.
     projectName: "biobankinguk", // Usually your repo name.
