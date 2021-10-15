@@ -10,7 +10,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
     baseUrl: "/",
     trailingSlash: false,
     onBrokenLinks: "throw",
-    onBrokenMarkdownLinks: "warn",
+    onBrokenMarkdownLinks: "throw",
     favicon: "i/tdcc.png",
     organizationName: "biobankinguk", // Usually your GitHub org/user name.
     projectName: "biobankinguk", // Usually your repo name.
@@ -56,25 +56,25 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
             },
             {
               type: "doc",
-              docId: "directory-guide/index",
+              docId: "directory/index",
               position: "right",
               label: "Directory",
             },
             {
               type: "doc",
-              docId: "api-guide/index",
+              docId: "api/index",
               position: "right",
               label: "API",
             },
             {
               type: "doc",
-              docId: "installation-guide/index",
+              docId: "installation/index",
               position: "right",
               label: "Installation",
             },
             {
               type: "doc",
-              docId: "dev-guide/index",
+              docId: "dev/index",
               position: "right",
               label: "Developers",
             },

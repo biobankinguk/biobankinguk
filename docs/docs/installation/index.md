@@ -1,6 +1,7 @@
 ---
 title: Installation Guide
 sidebar_position: 1
+slug: /installation
 ---
 
 # Overview
