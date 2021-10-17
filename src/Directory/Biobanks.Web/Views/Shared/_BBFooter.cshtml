@@ -8,9 +8,9 @@
 	@* Logos *@
 	<section>
 		<div class ="row">
-			<p>@Model.FooterTitle</p>
+			<p class="footer-title">@Model.FooterTitle</p>
 		</div>
-		<div class="row">
+		<div class="row footer-section">
 			<div class="col-sm-12 footer-logos">
 				@foreach (var logo in Model.Logos.Children)
 				{
@@ -25,7 +25,7 @@
 
 	@* Footer Links *@
 	<section>
-		<div class="row">
+		<div class="row footer-link-section">
 			<div class="col-sm-12">
 				@foreach (var link in Model.Links.Children)
 				{
@@ -44,7 +44,7 @@
 
 	@* Copyright and Versioning *@
 	<section>
-		<div class="row">
+		<div class="row footer-copyright-section">
 			<div class="col-sm-12">
 				&copy; @DateTime.Now.Year @Model.Links.Title
 

@@ -38,8 +38,8 @@
 			<div class="big_splash">
 				<h1 class="big_title">@Model.Title</h1>
 				<div>
-					<a class="btn btn-search" href="#focus" role="button">Search</a>
-					<a class="btn btn-register" href="#register" role="button">Register</a>
+                    <a class="btn btn-search" href="#focus" role="button">Search &#xf002</a>
+                    <a class="btn btn-search" href="#register" role="button">Register &#xf04b</a>
 				</div>
 			</div>
 		</div>
@@ -56,26 +56,24 @@
             <section class="info-white-full">
                 <div class="container">
                     <div id="register" class="row info">
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 resource-registration">
                             @Html.Markdown(Model.ResourceRegistration)
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 network-registration">
                             @Html.Markdown(Model.NetworkRegistration)
                         </div>
                     </div>
-                    <div class="col-sm-6 text-center">
+                    <div class="col-sm-6 text-center resource-registration">
                         <a class="btn btn-search" href="@Url.Action("Biobank", "Register")" role="button">Register a new @App.Config[ConfigKey.SampleResourceName]</a>
                     </div>
-                    <div class="col-sm-6 text-center">
+                    <div class="col-sm-6 text-center network-registration">
                         <a class="btn btn-search" href="@Url.Action("Network", "Register")" role="button">Register a new network of resources</a>
                     </div>
                 </div>
-            </section>
-        </div>
-        <div class="row">
-            <section class="info-white-full">
-                <div class="container text-center">
-                    <p>@Html.Markdown(Model.FinalParagraph)</p>
+                <div class="row">
+                    <div class="container text-center">
+                        <p>@Html.Markdown(Model.FinalParagraph)</p>
+                    </div>
                 </div>
             </section>
         </div>
