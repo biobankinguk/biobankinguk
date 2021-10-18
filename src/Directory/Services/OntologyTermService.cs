@@ -24,7 +24,7 @@ namespace Biobanks.Directory.Services
         }
 
         protected IQueryable<OntologyTerm> ReadOnlyQuery(
-            string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterId = true)
+            string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool excludeId = true)
         {
             var query = _db.OntologyTerms
                 .AsNoTracking()
@@ -33,7 +33,7 @@ namespace Biobanks.Directory.Services
                 .Where(x => x.DisplayOnDirectory || !onlyDisplayable); 
 
             // Filter By ID
-            if (!string.IsNullOrEmpty(id) && filterId)
+            if (!string.IsNullOrEmpty(id) && excludeId)
                 query = query.Where(x => x.Id == id);
 
             // Filter By Description
@@ -61,7 +61,7 @@ namespace Biobanks.Directory.Services
         {
             var query = ReadOnlyQuery(id: null, value, tags, onlyDisplayable);
 
-            query = query.OrderByDescending(x => x.DisplayOnDirectory).ThenBy(x => x.Value)
+            query = query.OrderBy(x => x.Id)
                     .Skip(0)
                     .Take(25);
 
@@ -82,8 +82,8 @@ namespace Biobanks.Directory.Services
              + await _db.DiagnosisCapabilities.CountAsync(x => x.OntologyTermId == ontologyTermId);
 
         /// <inheritdoc/>
-        public async Task<bool> Exists(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterId = true)
-            => await ReadOnlyQuery(id, value, tags, onlyDisplayable, filterId).AnyAsync();
+        public async Task<bool> Exists(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool excludeId = true)
+            => await ReadOnlyQuery(id, value, tags, onlyDisplayable, excludeId).AnyAsync(x => x.Id != id);
 
         /// <inheritdoc/>
         public async Task<bool> IsInUse(string id)

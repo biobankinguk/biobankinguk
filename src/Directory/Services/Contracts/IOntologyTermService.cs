@@ -75,7 +75,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// untagged OntologyTerms. By default the value is null, hence tags as a filter will be ignored.
         /// </param>
         /// <returns>true - If at least one OntologyTerm exists that matches the given parameter filters</returns>
-        Task<bool> Exists(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterId = true);
+        Task<bool> Exists(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool excludeId = true);
 
         /// <summary>
         /// Check wheher the given OntologyTerm is being used by either a Collection or Capability 
