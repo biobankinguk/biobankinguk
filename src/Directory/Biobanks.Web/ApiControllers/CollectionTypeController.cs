@@ -7,6 +7,7 @@ using Biobanks.Web.Models.Shared;
 using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,14 +15,11 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/CollectionType")]
     public class CollectionTypeController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<CollectionType> _collectionTypeService;
 
-        public CollectionTypeController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public CollectionTypeController(IReferenceDataService<CollectionType> collectionTypeService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _collectionTypeService = collectionTypeService;
         }
 
         [HttpGet]
@@ -29,14 +27,14 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var model = (await _biobankReadService.ListCollectionTypesAsync())
+            var model = (await _collectionTypeService.List())
                     .Select(x =>
 
                 Task.Run(async () => new Models.ADAC.ReadCollectionTypeModel
                 {
                     Id = x.Id,
                     Description = x.Value,
-                    CollectionCount = await _biobankReadService.GetCollectionTypeCollectionCount(x.Id),
+                    CollectionCount = await _collectionTypeService.GetUsageCount(x.Id),
                     SortOrder = x.SortOrder
                 }).Result)
 
@@ -49,10 +47,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListCollectionTypesAsync()).Where(x => x.Id == id).First();
+            var model = await _collectionTypeService.Get(id);
 
             // If in use, prevent update
-            if (await _biobankReadService.IsCollectionTypeInUse(id))
+            if (await _collectionTypeService.IsInUse(id))
             {
                 ModelState.AddModelError("CollectionType", $"The Collection type \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -62,11 +60,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteCollectionTypeAsync(new CollectionType
-            {
-                Id = model.Id,
-                Value = model.Value
-            });
+            await _collectionTypeService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -82,13 +76,13 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, CollectionTypeModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
+            if (await _collectionTypeService.Exists(model.Description))
             {
                 ModelState.AddModelError("CollectionType", "That collection type already exists!");
             }
 
             // If in use, prevent update
-            if (await _biobankReadService.IsCollectionTypeInUse(id))
+            if (await _collectionTypeService.IsInUse(id))
             {
                 ModelState.AddModelError("CollectionType", $"The Collection type \"{model.Description}\" is currently in use, and cannot be updated.");
             }
@@ -98,7 +92,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
+            await _collectionTypeService.Update(new CollectionType
             {
                 Id = id,
                 Value = model.Description,
@@ -118,7 +112,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(CollectionTypeModel model)
         {
             //If this description is valid, it already exists
-            if (await _biobankReadService.ValidCollectionTypeDescriptionAsync(model.Description))
+            if (await _collectionTypeService.Exists(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Collection types descriptions must be unique.");
             }
@@ -128,7 +122,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddCollectionTypeAsync(new CollectionType
+            await _collectionTypeService.Add(new CollectionType
             {
                 Value = model.Description,
                 SortOrder = model.SortOrder
@@ -146,13 +140,12 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, CollectionTypeModel model)
         {
-            await _biobankWriteService.UpdateCollectionTypeAsync(new CollectionType
+            await _collectionTypeService.Update(new CollectionType
             {
                 Id = id,
                 Value = model.Description,
                 SortOrder = model.SortOrder
-            }, 
-            true);
+            });
 
             //Everything went A-OK!
             return Json(new

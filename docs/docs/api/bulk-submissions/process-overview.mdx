@@ -1,0 +1,303 @@
+---
+title: Process Overview
+sidebar_position: 1
+---
+
+import TOCInline from "@theme/TOCInline";
+
+Typically, data is submitted to the Directory manually, by Organisation Administrators through forms in the web application.
+
+However for many Organisations, this is an unrealistic expectation,
+due to the volume of data and the need to aggregate individual sample records into an anonymised, summarised **Collection**.
+
+The Directory API provides a set of HTTP endpoints and a process for submitting sample records in Bulk,
+and the Directory will take care of the aggregation and surfacing of data via Search.
+
+<TOCInline toc={toc} />
+
+## Prerequisites
+
+All Bulk Submission endpoints described here require **Token Authentication**.
+
+This process guide assumes you have a token and will use it to authenticate all requests.
+
+Getting a token in turn requires **Client Credentials** for an **Organisation**.
+
+- Generating Client Credentials is covered in the [Directory Guide](directory/bulk-submissions/api-credentials)
+- Authenticating with Basic Auth (for the `/token` endpoint) is described in the [Authentication](../getting-started/authentication) documentation.
+- Authenticating with an access token is described in the [Authentication](../getting-started/authentication) documentation.
+
+:::info
+Tokens have a short lifetime (e.g. 1 day), but last longer than a single
+request, so a client can cache and reuse a token until it expires, and only
+then request a new one.
+:::
+
+## 1. Submitting data
+
+The first step of the Bulk Submissions process is to submit the data to a staging area.
+
+Submissions are made at the `/submit` endpoint, for a given Organisation Internal Identifier:
+
+|            |                                         |
+| ---------- | --------------------------------------- |
+| **Method** | `POST`                                  |
+| **URL**    | `https://<submissions-api>/submit/{id}` |
+
+| Parameter | Type  | Description     |
+| --------- | ----- | --------------- |
+| `id`      | route | Organisation ID |
+
+The payload is detailed in the [OpenAPI spec](https://submissions.biobankinguk.org/),
+but some less obvious aspects are described here.
+
+It is possible (and sometimes desirable) to make multiple submissions to staging before proceeding with committing the data.
+
+:::tip
+A single submission has a record limit of 10,000 operations.
+:::
+
+### Operations
+
+Submission payloads can contain multiple **Operations**:
+
+#### Submit
+
+`Submit` will insert or update a record in the staging area.
+
+When the staged data is committed, this record will be included in the live dataset
+
+`Submit` operations will have further requirements of mandatory properties.
+Some of these requirements are conditional on other property values.
+See below for details depending on the submitted record type.
+
+#### Delete
+
+`Delete` will stage a deletion request for a record
+
+When the staged data is committed, this record will be deleted from the live dataset
+
+`Delete` operations only need to specify the identifying properties of the record.
+These are properties marked as **required** in the OpenAPI model.
+
+### Submission Record Types
+
+There are three record types that can be contained in a Submission:
+**Samples**, **Diagnoses** and **Treatments**.
+
+While the API will accept and correctly store diagnoses and treatments,
+they are of no use at this time as the Directory only deals with samples.
+
+### Sample records
+
+Submitting Sample Records requires a number of additional mandatory properties,
+including some which are conditionally required based on other property values.
+
+:::tip Lookup valid values
+The valid values differ in different Directory instances, based on configuration,
+but are accessible from public API endpoints on the Directory **website** app (**not** the API app).
+
+These endpoints are in the form
+
+```
+https://<directory-website>/api/<propertyname>
+```
+
+(unless the notes below indicate a different data type than the matching property name.)
+
+<details>
+  <summary>PreservationType Example</summary>
+  <div>
+
+You can see valid values for `PreservationType` and which `StorageTemperature` requires them
+by making the following request:
+
+|            |                                                    |
+| ---------- | -------------------------------------------------- |
+| **Method** | `GET`                                              |
+| **URL**    | `https://<directory-website>/api/PreservationType` |
+
+and in the response payload, you can see that the `StorageTemperature` `RT` requires a valid `PreservationType`
+of either `Paraffin`, `Resin (EM)` or `Resin (LM)`.
+
+<details>
+    <summary>Sample Response payload</summary>
+    <div>
+
+```json
+[
+  {
+    "Id": 4,
+    "Value": "N/A",
+    "SortOrder": 0,
+    "StorageTemperatureId": null,
+    "StorageTemperatureName": "",
+    "PreservationTypeCount": 0
+  },
+  {
+    "Id": 1,
+    "Value": "Paraffin",
+    "SortOrder": 1,
+    "StorageTemperatureId": 1,
+    "StorageTemperatureName": "RT",
+    "PreservationTypeCount": 0
+  },
+  {
+    "Id": 2,
+    "Value": "Resin (EM)",
+    "SortOrder": 2,
+    "StorageTemperatureId": 1,
+    "StorageTemperatureName": "RT",
+    "PreservationTypeCount": 0
+  },
+  {
+    "Id": 3,
+    "Value": "Resin (LM)",
+    "SortOrder": 3,
+    "StorageTemperatureId": 1,
+    "StorageTemperatureName": "RT",
+    "PreservationTypeCount": 0
+  }
+]
+```
+
+</div>
+</details>
+
+</div>
+</details>
+:::
+
+The Open API spec is poor at expressing these conditional relationships,
+so we cover that information here:
+
+| Property              | Mandatory status                                            | Notes                                                                                                                                                                                     |
+| --------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DateCreated`         | ✔ Yes                                                       | Must not be in the future compared to when the Submission payload was accepted.                                                                                                           |
+| `AgeAtDonation`       | ❔ If `YearOfBirth` is empty                                | Preferred over `YearOfBirth`. Must be a valid [ISO8601 Duration] value; negatives (prefixed with `-`) are accepted for pre-birth.                                                         |
+| `YearOfBirth`         | ❔ If `AgeAtDonation` is empty                              | If `AgeAtDonation` is empty, this value will be used to calculate a best-guess age when compared with the Sample's `DateCreated`.                                                         |
+| `Sex`                 | ❌ No                                                       | Must be a valid value                                                                                                                                                                     |
+| `MaterialType`        | ✔ Yes                                                       | Must be a valid value                                                                                                                                                                     |
+| `StorageTemperature`  | ✔ Yes                                                       | Must be a valid value                                                                                                                                                                     |
+| `PreservationType`    | ❔ If `StorageTemperature` requires it                      | If provided, must be a valid value for the associated `StorageTemperature`.                                                                                                               |
+| `SampleContentMethod` | ❔ If `MaterialType` is not in the `Extracted Sample` group | One of the following must be true: <ul><li>Both `SampleContentMethod` and `SampleContent` contain valid values</li><li>Both `SampleContentMethod` and `SampleContent` are empty</li></ul> |
+| `SampleContent`       | ❔ If `SampleContentMethod` is present                      | If provided, must be a valid SNOMED-CT Disease term from the Directory's `OntologyTerms` list.                                                                                            |
+| `ExtractionSite`      | ❔ If `MaterialType` is in the `Tissue Sample` group        | If provided Must be a valid SNOMED-CT Body Organ term from the Directory's `OntologyTerms` list.                                                                                          |
+| `ExtractionProcedure` | ❔ If `MaterialType` requires it                            | If provided, must be a valid SNOMED-CT Extraction Procedure term from the Directory's `OntologyTerms` list, for the associated `MaterialType`.                                            |
+
+[iso8601 duration]: https://en.wikipedia.org/wiki/ISO_8601#Durations
+
+## 2. Checking Submission Status
+
+When a `POST` request is made to the `/submit` endpoint,
+if it passes the initial validation a `Submission ID` will be returned.
+
+This ID value can be used to query the status of the submission,
+anywhere `submissionId` is required.
+
+There are a number of `/status` endpoints detailed in the [OpenAPI spec](https://submissions.biobankinguk.org/)
+
+The status endpoints are primarily provided for two reasons:
+
+- Determining errors with the submitted data
+- Determining when the submissions has completed processing.
+
+:::caution
+Currently the `recordsProcessed` field in the Status Summary does not function as expected.
+
+It is either `0` (while processing is in progress), or equal to `totalRecords`, once processing is complete.
+:::
+
+It is possible to have multiple submissions in progress at a time,
+but in order to proceed with committing or rejecting the staged operations
+all submissions must have finished processing. The status endpoints allow visibility of this.
+
+Often, the decision of whether to commit or reject is based on the errors identified during processing.
+Again, this information is discoverable by the status endpoints to provide feedback and inform that decision.
+
+## 3. Completing Staged Submissions
+
+Once all currently open Submissions have finished processing, there are several choices available:
+
+1. Make more submissions, to stage more data
+2. Commit the currently staged data to the live dataset
+3. Reject the currently staged data
+
+Making more submissions is as simple as returning to Step 1 above.
+
+:::tip
+Committing can only be proceed if there are no currently processing Submissions.
+:::
+
+### Commit staged data
+
+If the results of the Submissions processing are acceptable,
+the `/commit` endpoint can be used to take **all** currently staged data
+(from all Submissions since the last commit or reject) and update the live system with it.
+
+All staged operations (`Submit` and `Delete`) will be applied
+to the current live dataset for the organisation in question.
+
+:::tip
+If multiple operations (`Submit` and/or `Delete`) have been submitted for the same record identifiers,
+the most recent submission will take precedence
+:::
+
+#### Update mode
+
+A **Commit** can be performed in **Update** mode, whereby records in the live dataset are left alone
+unless they are have a matching (by identifying fields) staged **Operation**.
+
+Essentially this mode **updates** the live dataset for the Organisation
+as per the changes described by the staged **Operations**.
+
+|            |                                                     |
+| ---------- | --------------------------------------------------- |
+| **Method** | `POST`                                              |
+| **URL**    | `https://<submissions-api>/{id}/commit?type=update` |
+
+| Parameter | Type  | Description           |
+| --------- | ----- | --------------------- |
+| `id`      | route | Organisation ID       |
+| `type`    | query | `replace` or `update` |
+
+No request body is required; the request is a `POST` because it has side effects.
+
+#### Replace mode
+
+A **Commit** can be performed in **Replace** mode, whereby records in the live dataset are deleted
+unless they are have a matching (by identifying fields) staged **Operation**.
+
+Essentially this mode **replaces** the live dataset for the Organisation
+with the dataset described by the staged **Operations**.
+
+|            |                                                      |
+| ---------- | ---------------------------------------------------- |
+| **Method** | `POST`                                               |
+| **URL**    | `https://<submissions-api>/{id}/commit?type=replace` |
+
+| Parameter | Type  | Description           |
+| --------- | ----- | --------------------- |
+| `id`      | route | Organisation ID       |
+| `type`    | query | `replace` or `update` |
+
+No request body is required; the request is a `POST` because it has side effects.
+
+### Reject staged data
+
+If the results of the Submissions processing are **not** acceptable,
+the `/reject` endpoint can be used to delete **all** currently staged operations
+(from all Submissions since the last commit or reject) allowing for staging to start over.
+
+All staged operations (`Submit` and `Delete`) will be discarded.
+
+|            |                                         |
+| ---------- | --------------------------------------- |
+| **Method** | `POST`                                  |
+| **URL**    | `https://<submissions-api>/{id}/reject` |
+
+| Parameter | Type  | Description     |
+| --------- | ----- | --------------- |
+| `id`      | route | Organisation ID |
+
+No request body is required; the request is a `POST` because it has side effects.

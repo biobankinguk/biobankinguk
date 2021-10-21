@@ -212,11 +212,6 @@
                         class="@(Model == App.Config[ConfigKey.SampleResourceName] + " Config" ? "active" : "true")">
                         @Html.ActionLink((string)App.Config[ConfigKey.SampleResourceName] + " Config", "SampleResourceConfig", "ADAC")
                     </li>
-
-                    <li role="presentation"
-                        class="@(Model == "Email Config" ? "active" : "true")">
-                        @Html.ActionLink("Email Config", "EmailConfig", "ADAC")
-                    </li>
                 </ul>
             </li>
 

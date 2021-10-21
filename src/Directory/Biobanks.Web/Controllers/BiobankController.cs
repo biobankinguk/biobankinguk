@@ -6,6 +6,7 @@ using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Identity.Constants;
 using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Data.Entities;
@@ -44,6 +45,34 @@ namespace Biobanks.Web.Controllers
     public class BiobankController : ApplicationBaseController
     {
         private readonly ICollectionService _collectionService;
+        private readonly IPublicationService _publicationService;
+
+        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+        private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly IReferenceDataService<County> _countyService;
+        private readonly IReferenceDataService<Country> _countryService;
+        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+        private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
+        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+        private readonly IReferenceDataService<AgeRange> _ageRangeService;
+        private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
+        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+        private readonly IReferenceDataService<Funder> _funderService;
+        private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+        private readonly IReferenceDataService<MaterialType> _materialTypeService;
+        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+        private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
+
+        private readonly IOntologyTermService _ontologyTermService;
+
+        private readonly INetworkService _networkService;
+        private readonly IOrganisationService _organisationService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
@@ -62,6 +91,31 @@ namespace Biobanks.Web.Controllers
 
         public BiobankController(
             ICollectionService collectionService,
+            IPublicationService publicationService,
+            IReferenceDataService<ServiceOffering> serviceOfferingService,
+            IReferenceDataService<RegistrationReason> registrationReasonService,
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+            IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataService<County> countyService,
+            IReferenceDataService<Country> countryService,
+            IReferenceDataService<ConsentRestriction> consentRestrictionService,
+            IReferenceDataService<CollectionType> collectionTypeService,
+            IReferenceDataService<CollectionPercentage> collectionPercentageService,
+            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+            IReferenceDataService<AgeRange> ageRangeService,
+            IReferenceDataService<AccessCondition> accessConditionService,
+            IReferenceDataService<CollectionStatus> collectionStatusService,
+            IReferenceDataService<Funder> funderService,
+            IReferenceDataService<Sex> sexService,
+            IReferenceDataService<PreservationType> preservationTypeService,
+            IReferenceDataService<StorageTemperature> storageTemperatureService,
+            IReferenceDataService<MaterialType> materialTypeService,
+            IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+            IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+            IOntologyTermService ontologyTermService,
+            INetworkService networkService,
+            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IConfigService configService,
@@ -73,6 +127,32 @@ namespace Biobanks.Web.Controllers
             ITokenLoggingService tokenLog)
         {
             _collectionService = collectionService;
+            _publicationService = publicationService;
+            _serviceOfferingService = serviceOfferingService;
+            _registrationReasonService = registrationReasonService;
+            _macroscopicAssessmentService = macroscopicAssessmentService;
+            _donorCountService = donorCountService;
+            _countyService = countyService;
+            _countryService = countryService;
+            _consentRestrictionService = consentRestrictionService;
+            _collectionService = collectionService;
+            _collectionTypeService = collectionTypeService;
+            _collectionPercentageService = collectionPercentageService;
+            _annualStatisticGroupService = annualStatisticGroupService;
+            _ageRangeService = ageRangeService;
+            _accessConditionService = accessConditionService;
+            _collectionStatusService = collectionStatusService;
+            _funderService = funderService;
+            _sexService = sexService;
+            _preservationTypeService = preservationTypeService;
+            _storageTemperatureService = storageTemperatureService;
+            _materialTypeService = materialTypeService;
+            _associatedDataTypeService = assocaitedDataTypeService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
+            _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
+            _ontologyTermService = ontologyTermService;
+            _networkService = networkService;
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _configService = configService;
@@ -97,9 +177,9 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //for viewing details only, we include networks
-            var networks = await _biobankReadService.GetNetworksByBiobankIdAsync(biobankId);
+            var networks = await _networkService.ListByOrganisationId(biobankId);
 
-            model.AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync();
+            model.AnnualStatisticGroups = await _annualStatisticGroupService.List();
 
             model.NetworkModels = networks.Select(x => new NetworkMemberModel
             {
@@ -147,21 +227,19 @@ namespace Biobanks.Web.Controllers
             //Update bits Automapper doesn't do
             biobank.Logo = logoName;
 
-            return await _biobankWriteService.UpdateBiobankAsync(biobank);
+            return await _organisationService.Update(biobank);
         }
 
         private async Task<Organisation> CreateBiobank(BiobankDetailsModel model)
         {
-            var biobankDto = _mapper.Map<OrganisationDTO>(model);
-
-            var biobank = await _biobankWriteService.CreateBiobankAsync(biobankDto);
-            await _biobankWriteService.AddUserToBiobankAsync(User.Identity.GetUserId(), biobank.OrganisationId);
+            var biobank = await _organisationService.Create(_mapper.Map<OrganisationDTO>(model));
+            await _organisationService.AddUserToOrganisation(User.Identity.GetUserId(), biobank.OrganisationId);
 
             //update the request to show org created
-            var request = await _biobankReadService.GetBiobankRegisterRequestByUserEmailAsync(User.Identity.Name);
+            var request = await _organisationService.GetRegistrationRequestByEmail(User.Identity.Name);
             request.OrganisationCreatedDate = DateTime.Now;
             request.OrganisationExternalId = biobank.OrganisationExternalId;
-            await _biobankWriteService.UpdateOrganisationRegisterRequestAsync(request);
+            await _organisationService.UpdateRegistrationRequest(request);
 
             //add a claim now that they're associated with the biobank
             _claimsManager.AddClaims(new List<Claim>
@@ -181,14 +259,14 @@ namespace Biobanks.Web.Controllers
                     var logoStream = model.Logo.ToProcessableStream();
 
                     //use the DTO again to update
-                    biobankDto = _mapper.Map<OrganisationDTO>(biobank); //Update it against the real bb, now it has been created
-                    biobankDto.Logo = await
+                    biobank.Logo = await
                                 _biobankWriteService.StoreLogoAsync(logoStream,
                                     model.Logo.FileName,
                                     model.Logo.ContentType,
                                     biobank.OrganisationExternalId);
 
-                    biobank = await _biobankWriteService.UpdateBiobankAsync(biobankDto);
+                    //biobank = await _organisationService.Update(biobank);
+                    biobank = await _organisationService.Update(_mapper.Map<OrganisationDTO>(biobank));
                 }
                 catch (ArgumentNullException) //no problem, just means no logo uploaded in this form submission
                 {
@@ -215,8 +293,8 @@ namespace Biobanks.Web.Controllers
 
         private async Task<BiobankDetailsModel> AddCountiesToModel(BiobankDetailsModel model)
         {
-            model.Counties = await _biobankReadService.ListCountiesAsync();
-            model.Countries = await _biobankReadService.ListCountriesAsync();
+            model.Counties = await _countyService.List();
+            model.Countries = await _countryService.List();
             return model;
         }
 
@@ -337,7 +415,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
         {
-            var allServices = await _biobankReadService.ListServiceOfferingsAsync();
+            var allServices = await _serviceOfferingService.List();
 
             return allServices.Select(service => new OrganisationServiceModel
             {
@@ -352,7 +430,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<List<OrganisationRegistrationReasonModel>> GetAllRegistrationReasonsAsync()
         {
-            var allRegistrationReasons = await _biobankReadService.ListRegistrationReasonsAsync();
+            var allRegistrationReasons = await _registrationReasonService.List();
 
             return allRegistrationReasons.Select(regReason => new OrganisationRegistrationReasonModel
             {
@@ -366,7 +444,7 @@ namespace Biobanks.Web.Controllers
         private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync()
         {
             //the biobank doesn't exist yet, but a request should, so we can get the name
-            var request = await _biobankReadService.GetBiobankRegisterRequestAsync(SessionHelper.GetBiobankId(Session));
+            var request = await _organisationService.GetRegistrationRequest(SessionHelper.GetBiobankId(Session));
 
             //validate that the request is accepted
             if (request.AcceptedDate == null) return null;
@@ -376,8 +454,8 @@ namespace Biobanks.Web.Controllers
                 OrganisationName = request.OrganisationName,
                 ServiceModels = await GetAllServicesAsync(),
                 RegistrationReasons = await GetAllRegistrationReasonsAsync(),
-                Counties = await _biobankReadService.ListCountiesAsync(),
-                Countries = await _biobankReadService.ListCountriesAsync()
+                Counties = await _countyService.List(),
+                Countries = await _countryService.List()
             };
 
             model = await AddCountiesToModel(model);
@@ -388,7 +466,7 @@ namespace Biobanks.Web.Controllers
         private async Task<BiobankDetailsModel> GetBiobankDetailsModelAsync()
         {
             //having a biobankId claim means we can definitely get a biobank for that claim and return a model for that
-            var bb = await _biobankReadService.GetBiobankByIdAsync(SessionHelper.GetBiobankId(Session));
+            var bb = await _organisationService.Get(SessionHelper.GetBiobankId(Session));
 
             //Try and get any service offerings for this biobank
             var bbServices =
@@ -403,7 +481,7 @@ namespace Biobanks.Web.Controllers
 
             //Try and get any registration reasons for this biobank
             var bbRegistrationReasons =
-                    await _biobankReadService.ListBiobankRegistrationReasonsAsync(bb.OrganisationId);
+                    await _organisationService.ListRegistrationReasons(bb.OrganisationId);
 
             //mark services as active in the full list
             var registrationReasons = (await GetAllRegistrationReasonsAsync()).Select(regReason =>
@@ -439,8 +517,8 @@ namespace Biobanks.Web.Controllers
                 GoverningDepartment = bb.GoverningDepartment,
                 ServiceModels = services,
                 RegistrationReasons = registrationReasons,
-                Counties = await _biobankReadService.ListCountiesAsync(),
-                Countries = await _biobankReadService.ListCountriesAsync(),
+                Counties = await _countyService.List(),
+                Countries = await _countryService.List(),
                 SharingOptOut = bb.SharingOptOut,
                 EthicsRegistration = bb.EthicsRegistration,
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
@@ -570,7 +648,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> InviteAdminAjax(int biobankId)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var bb = await _organisationService.Get(biobankId);
 
             return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
             {
@@ -596,7 +674,7 @@ namespace Biobanks.Web.Controllers
                 });
             }
 
-            var biobankId = (await _biobankReadService.GetBiobankByNameAsync(model.Entity)).OrganisationId;
+            var biobankId = (await _organisationService.GetByName(model.Entity)).OrganisationId;
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
@@ -653,7 +731,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the user/biobank relationship
-            await _biobankWriteService.AddUserToBiobankAsync(user.Id, biobankId);
+            await _organisationService.AddUserToOrganisation(user.Id, biobankId);
 
             //add user to BiobankAdmin role
             await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
@@ -678,7 +756,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //remove them from the network
-            await _biobankWriteService.RemoveUserFromBiobankAsync(biobankUserId, biobankId);
+            await _organisationService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
             //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
             await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
@@ -731,7 +809,7 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AddFunderAjax(int biobankId)
         {
-            var bb = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var bb = await _organisationService.Get(biobankId);
 
             return PartialView("_ModalAddFunder", new AddFunderModel
             {
@@ -753,7 +831,7 @@ namespace Biobanks.Web.Controllers
                         .Select(x => x.ErrorMessage).ToList()
                 });
 
-            var funder = await _biobankReadService.GetFunderbyName(model.FunderName);
+            var funder = await _funderService.Get(model.FunderName);
 
             // Funder Doesn't Exist
             if (funder == null)
@@ -763,13 +841,10 @@ namespace Biobanks.Web.Controllers
                 if (useFreeText)
                 {
                     // Add Funder to Database
-                    await _biobankWriteService.AddFunderAsync(new Funder
+                    funder = await _funderService.Add(new Funder
                     {
                         Value = model.FunderName
                     });
-
-                    // Retrieve Funder (ensures no null values)
-                    funder = await _biobankReadService.GetFunderbyName(model.FunderName);
                 }
                 else
                 {
@@ -787,7 +862,7 @@ namespace Biobanks.Web.Controllers
             }
 
             //Add the funder/biobank relationship
-            await _biobankWriteService.AddFunderToBiobankAsync(
+            await _organisationService.AddFunder(
                 funder.Id, SessionHelper.GetBiobankId(Session));
 
             //return success, and enough details for adding to the viewmodel's list
@@ -808,7 +883,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             //remove them from the network
-            await _biobankWriteService.RemoveFunderFromBiobankAsync(funderId, biobankId);
+            await _organisationService.RemoveFunder(funderId, biobankId);
 
             SetTemporaryFeedbackMessage($"{funderName} has been removed from your list of funders!", FeedbackMessageType.Success);
 
@@ -818,7 +893,7 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<JsonResult> SearchFunders(string wildcard)
         {
-            var funders = await _biobankReadService.ListFundersAsync(wildcard);
+            var funders = await _funderService.List(wildcard);
 
             var funderResults = funders
                 .Select(x => new
@@ -876,7 +951,7 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            if (await model.IsValid(ModelState, _biobankReadService))
+            if (await model.IsValid(ModelState, _ontologyTermService))
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
@@ -895,7 +970,7 @@ namespace Biobanks.Web.Controllers
                     })
                     .ToList();
 
-                var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
+                var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
 
                 // Create and Add New Collection
                 var collection = await _collectionService.Add(new Collection
@@ -935,7 +1010,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> EditCollection(int id)
         {
             var collection = await _collectionService.Get(id);
-            var consentRestrictions = await _biobankReadService.ListConsentRestrictionsAsync();
+            var consentRestrictions = await _consentRestrictionService.List();
 
             var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
@@ -995,7 +1070,7 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Collection", new { id = model.Id });
             }
 
-            if (await model.IsValid(ModelState, _biobankReadService) && model.FromApi == false)
+            if (await model.IsValid(ModelState, _ontologyTermService) && model.FromApi == false)
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
@@ -1014,7 +1089,7 @@ namespace Biobanks.Web.Controllers
                     })
                     .ToList();
 
-                var ontologyTerm = await _biobankReadService.GetOntologyTerm(description: model.Diagnosis);
+                var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
 
                 await _collectionService.Update(new Collection
                 { 
@@ -1296,7 +1371,7 @@ namespace Biobanks.Web.Controllers
         public async Task<ViewResult> SampleSet(int id)
         {
             var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
@@ -1331,7 +1406,7 @@ namespace Biobanks.Web.Controllers
             IEnumerable<ConsentRestriction> consentRestrictions = null)
         {
 
-            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+            model.AccessConditions = (await _accessConditionService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -1340,7 +1415,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+            model.CollectionTypes = (await _collectionTypeService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -1349,7 +1424,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.CollectionStatuses = (await _biobankReadService.ListCollectionStatusesAsync())
+            model.CollectionStatuses = (await _collectionStatusService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -1358,7 +1433,7 @@ namespace Biobanks.Web.Controllers
                 })
                 .OrderBy(x => x.SortOrder);
 
-            model.ConsentRestrictions = (await _biobankReadService.ListConsentRestrictionsAsync())
+            model.ConsentRestrictions = (await _consentRestrictionService.List())
                 .OrderBy(x => x.SortOrder)
                 .Select(x => new Models.Biobank.ConsentRestrictionModel
                 {
@@ -1381,7 +1456,7 @@ namespace Biobanks.Web.Controllers
         private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
             AbstractCRUDCapabilityModel model)
         {
-            var timeFrames = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
+            var timeFrames = (await _associatedDataProcurementTimeframeService.List())
                 .Select(x => new AssociatedDataTimeFrameModel
                 {
                     ProvisionTimeId = x.Id,
@@ -1389,7 +1464,7 @@ namespace Biobanks.Web.Controllers
                     ProvisionTimeValue = x.DisplayValue
                 });
 
-            var types = (await _biobankReadService.ListAssociatedDataTypesAsync())
+            var types = (await _associatedDataTypeService.List())
                      .Select(x => new AssociatedDataModel
                      {
                          DataTypeId = x.Id,
@@ -1400,7 +1475,7 @@ namespace Biobanks.Web.Controllers
                      });
 
             model.Groups = new List<AssociatedDataGroupModel>();
-            var groups = await _biobankReadService.ListAssociatedDataTypeGroupsAsync();
+            var groups = await _associatedDataTypeGroupService.List();
             foreach (var g in groups)
             {
                 var groupModel = new AssociatedDataGroupModel();
@@ -1421,7 +1496,7 @@ namespace Biobanks.Web.Controllers
 
         private async Task<AbstractCRUDSampleSetModel> PopulateAbstractCRUDSampleSetModel(AbstractCRUDSampleSetModel model)
         {
-            model.Sexes = (await _biobankReadService.ListSexesAsync())
+            model.Sexes = (await _sexService.List())
                 .Select(
                     x => new ReferenceDataModel
                     {
@@ -1431,7 +1506,7 @@ namespace Biobanks.Web.Controllers
                     })
                 .OrderBy(x => x.SortOrder);
 
-            model.AgeRanges = (await _biobankReadService.ListAgeRangesAsync())
+            model.AgeRanges = (await _ageRangeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1442,7 +1517,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.DonorCounts = (await _biobankReadService.ListDonorCountsAsync())
+            model.DonorCounts = (await _donorCountService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1453,7 +1528,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.MaterialTypes = (await _biobankReadService.ListMaterialTypesAsync())
+            model.MaterialTypes = (await _materialTypeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1464,7 +1539,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.ExtractionProcedures = (await _biobankReadService.ListOntologyTerms(tags: new List<string>
+            model.ExtractionProcedures = (await _ontologyTermService.List(tags: new List<string>
                 {
                     SnomedTags.ExtractionProcedure
                 }, onlyDisplayable: true))
@@ -1477,7 +1552,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.Description);
 
-            model.PreservationTypes = (await _biobankReadService.ListPreservationTypesAsync())
+            model.PreservationTypes = (await _preservationTypeService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1488,7 +1563,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.StorageTemperatures = (await _biobankReadService.ListStorageTemperaturesAsync())
+            model.StorageTemperatures = (await _storageTemperatureService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1499,7 +1574,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            model.Percentages = (await _biobankReadService.ListCollectionPercentagesAsync())
+            model.Percentages = (await _collectionPercentageService.List())
                 .Select(
                     x =>
                         new ReferenceDataModel
@@ -1510,7 +1585,7 @@ namespace Biobanks.Web.Controllers
                         })
                 .OrderBy(x => x.SortOrder);
 
-            var assessments = await _biobankReadService.ListMacroscopicAssessmentsAsync();
+            var assessments = await _macroscopicAssessmentService.List();
 
             model.MacroscopicAssessments = assessments
                 .Select(
@@ -1577,7 +1652,7 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            if (await model.IsValid(ModelState, _biobankReadService))
+            if (await model.IsValid(ModelState, _ontologyTermService))
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
@@ -1659,7 +1734,7 @@ namespace Biobanks.Web.Controllers
         [AuthoriseToAdministerCapability]
         public async Task<ActionResult> EditCapability(EditCapabilityModel model)
         {
-            if (await model.IsValid(ModelState, _biobankReadService))
+            if (await model.IsValid(ModelState, _ontologyTermService))
             {
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
@@ -1731,11 +1806,11 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> NetworkAcceptance()
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
-            var organisationNetworks = await _biobankReadService.GetOrganisationNetworksAsync(biobankId);
+            var organisationNetworks = await _networkService.ListOrganisationNetworks(biobankId);
             var networkList = new List<NetworkAcceptanceModel>();
             foreach (var orgNetwork in organisationNetworks)
             {
-                var network = await _biobankReadService.GetNetworkByIdAsync(orgNetwork.NetworkId);
+                var network = await _networkService.Get(orgNetwork.NetworkId);
                 var organisation = new NetworkAcceptanceModel
                 {
                     BiobankId = biobankId,
@@ -1759,11 +1834,10 @@ namespace Biobanks.Web.Controllers
 
         public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
         {
-            var organisationNetworks = await _biobankReadService.GetOrganisationNetworkAsync(biobankId, networkId);
-            var organisationNetwork = organisationNetworks.First();
+            var organisationNetwork = await _networkService.GetOrganisationNetwork(biobankId, networkId);
 
             organisationNetwork.ApprovedDate = DateTime.Now;
-            await _biobankWriteService.UpdateOrganisationNetworkAsync(organisationNetwork);
+            await _networkService.UpdateOrganisationNetwork(organisationNetwork);
 
             SetTemporaryFeedbackMessage("Biobank added to the network successfully", FeedbackMessageType.Success);
 
@@ -1797,8 +1871,7 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId != 0)
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.ListByOrganisation(biobankId);
 
                 biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
             }
@@ -1817,11 +1890,8 @@ namespace Biobanks.Web.Controllers
 
         public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
         {
-            //TODO: Merge with core for when we rewrite the directory in core.
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-
             // Find Given Publication
-            var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+            var publications = await _publicationService.ListByOrganisation(biobankId);
             var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
             //retrieve from EPMC if not found
@@ -1871,10 +1941,8 @@ namespace Biobanks.Web.Controllers
                 return Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
             else
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
-
                 // Find Publication locally
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
+                var publications = await _publicationService.ListByOrganisation(biobankId);
                 var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
 
                 // search online
@@ -1895,40 +1963,27 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0 || IsNullOrEmpty(publicationId))
                 return Json(new EmptyResult());
-            else
+
+            // Try Accept Local Publication
+            var publication = await _publicationService.Claim(publicationId, biobankId);
+
+            // No Local Publication - Fetch
+            if (publication == null)
             {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+                publication = await PublicationSearch(publicationId, biobankId);
 
-                // Find Publication locally
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
-                var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+                // No Publication Found
+                if (publication == null)
+                    return Json(new EmptyResult());
 
-                if (publication != null)
-                {
-                    // Update Publication in DB
-                    publication.Accepted = true;
-                    await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
+                // Add Publication to DB
+                publication.Accepted = true;
+                publication.OrganisationId = biobankId;
 
-                    return Json(_mapper.Map<BiobankPublicationModel>(publication));
-                }
-                else
-                {
-                    // search online
-                    publication = await PublicationSearch(publicationId, biobankId);
-
-                    if (publication != null)
-                    {
-                        // Add Publication to DB
-                        publication.Accepted = true;
-                        publication.OrganisationId = biobankId;
-
-                        await _biobankWriteService.AddOrganisationPublicationAsync(publication);
-                        return Json(_mapper.Map<BiobankPublicationModel>(publication));
-                    }
-                    else
-                        return Json(new EmptyResult());
-                }  
+                publication = await _publicationService.Create(publication);
             }
+
+            return Json(_mapper.Map<BiobankPublicationModel>(publication));
         }
 
         [HttpPost]
@@ -1937,26 +1992,13 @@ namespace Biobanks.Web.Controllers
         {
             var biobankId = SessionHelper.GetBiobankId(Session);
 
-            if (biobankId == 0 || String.IsNullOrEmpty(publicationId))
-            {
-                return Json("");
-            }
-            else
-            {
-                var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            if (biobankId == 0 || IsNullOrEmpty(publicationId))
+                return Json(new EmptyResult());
 
-                // Find Given Publication
-                var publications = await _biobankReadService.GetOrganisationPublicationsAsync(biobank);
-                var publication = publications.Where(x => x.PublicationId == publicationId).First();
+            // Update Publication
+            var publication = await _publicationService.Claim(publicationId, biobankId, accept);
 
-                // Claim publication
-                publication.Accepted = accept;
-
-                // Add To Publication DB
-                await _biobankWriteService.UpdateOrganisationPublicationAsync(publication);
-
-                return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
-            }
+            return Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AddPublicationSuccessFeedback(string publicationId)
@@ -1972,8 +2014,8 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> AnnualStats()
         => View(new BiobankAnnualStatsModel
         {
-            AnnualStatisticGroups = await _biobankReadService.GetAnnualStatisticGroupsAsync(),
-            BiobankAnnualStatistics = (await _biobankReadService.GetBiobankByIdAsync(SessionHelper.GetBiobankId(Session))).OrganisationAnnualStatistics
+            AnnualStatisticGroups = await _annualStatisticGroupService.List(),
+            BiobankAnnualStatistics = (await _organisationService.Get(SessionHelper.GetBiobankId(Session))).OrganisationAnnualStatistics
         });
 
         [HttpPost]
@@ -2070,7 +2112,7 @@ namespace Biobanks.Web.Controllers
             var model = new SubmissionsModel();
 
             //populate drop downs
-            model.AccessConditions = (await _biobankReadService.ListAccessConditionsAsync())
+            model.AccessConditions = (await _accessConditionService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -2078,7 +2120,7 @@ namespace Biobanks.Web.Controllers
                     SortOrder = x.SortOrder
                 }).OrderBy(x => x.SortOrder);
 
-            model.CollectionTypes = (await _biobankReadService.ListCollectionTypesAsync())
+            model.CollectionTypes = (await _collectionTypeService.List())
                 .Select(x => new ReferenceDataModel
                 {
                     Id = x.Id,
@@ -2088,7 +2130,7 @@ namespace Biobanks.Web.Controllers
 
             //get currently selected values from org (if applicable)
             var biobankId = SessionHelper.GetBiobankId(Session);
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
+            var biobank = await _organisationService.Get(biobankId);
 
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
@@ -2105,12 +2147,13 @@ namespace Biobanks.Web.Controllers
         {
             //update Organisations table
             var biobankId = model.BiobankId;
-            var biobank = await _biobankReadService.GetBiobankByIdAsync(biobankId);
 
-            biobank.CollectionTypeId = model.CollectionType;
-            biobank.AccessConditionId = model.AccessCondition;
-
-            await _biobankWriteService.UpdateBiobankAsync(_mapper.Map<OrganisationDTO>(biobank));
+            await _organisationService.Update(new OrganisationDTO
+            {
+                OrganisationId = biobankId,
+                AccessConditionId = model.AccessCondition,
+                CollectionTypeId = model.CollectionType,
+            });
 
             //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
@@ -2123,9 +2166,9 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
             var credentials = 
-                await _biobankReadService.IsBiobankAnApiClient(biobankId)
-                    ? await _biobankWriteService.GenerateNewSecretForBiobank(biobankId)
-                    : await _biobankWriteService.GenerateNewApiClientForBiobank(biobankId);
+                await _organisationService.IsApiClient(biobankId)
+                    ? await _organisationService.GenerateNewSecretForBiobank(biobankId)
+                    : await _organisationService.GenerateNewApiClient(biobankId);
 
             return Json(new
             {

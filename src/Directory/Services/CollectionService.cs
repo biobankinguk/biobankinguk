@@ -68,6 +68,7 @@ namespace Biobanks.Directory.Services
             var currentCollection = await _db.Collections
                 .Include(x => x.AssociatedData)
                 .Include(x => x.ConsentRestrictions)
+                .Include(x => x.Organisation)
                 .FirstOrDefaultAsync(x => x.CollectionId == collection.CollectionId);
 
             if (currentCollection != null)
@@ -96,10 +97,9 @@ namespace Biobanks.Directory.Services
                 await _db.SaveChangesAsync();
 
                 // Index Updated Collection
-                if (!await _readService.IsCollectionBiobankSuspendedAsync(collection.CollectionId))
+                if (!collection.Organisation.IsSuspended)
                 {
-                    _indexService.UpdateCollectionDetails(
-                        await GetForIndexing(currentCollection.CollectionId));
+                    await _indexService.UpdateCollectionDetails(currentCollection.CollectionId);
                 }
             }
 

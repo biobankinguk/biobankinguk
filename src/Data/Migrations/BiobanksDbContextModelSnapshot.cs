@@ -258,6 +258,9 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -275,6 +278,9 @@ namespace Biobanks.Data.Migrations
                         .UseIdentityColumn();
 
                     b.Property<int>("OntologyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
@@ -295,6 +301,9 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -307,9 +316,15 @@ namespace Biobanks.Data.Migrations
             modelBuilder.Entity("Biobanks.Entities.Api.ReferenceData.Status", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -323,6 +338,9 @@ namespace Biobanks.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -1415,7 +1433,11 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Name")
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1433,7 +1455,11 @@ namespace Biobanks.Data.Migrations
                     b.Property<int>("AnnualStatisticGroupId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1450,7 +1476,11 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1495,6 +1525,9 @@ namespace Biobanks.Data.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1512,6 +1545,9 @@ namespace Biobanks.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -1611,7 +1647,11 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1629,7 +1669,11 @@ namespace Biobanks.Data.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1671,7 +1715,11 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1705,7 +1753,11 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1928,6 +1980,9 @@ namespace Biobanks.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2011,6 +2066,9 @@ namespace Biobanks.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .IsRequired()

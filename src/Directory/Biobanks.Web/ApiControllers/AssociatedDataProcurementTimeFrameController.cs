@@ -7,6 +7,7 @@ using Biobanks.Services.Contracts;
 using System.Linq;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,14 +15,12 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/AssociatedDataProcurementTimeFrame")]
     public class AssociatedDataProcurementTimeFrameController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameService;
 
-        public AssociatedDataProcurementTimeFrameController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public AssociatedDataProcurementTimeFrameController(
+            IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _associatedDataProcurementTimeFrameService = associatedDataProcurementTimeFrameService;
         }
 
         [HttpGet]
@@ -29,17 +28,19 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IList> Get()
         {
-            var models = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames())
-                    .Select(x =>
-
-                Task.Run(async () => new Models.ADAC.ReadAssociatedDataProcurementTimeFrameModel
-                {
-                    Id = x.Id,
-                    Description = x.Value,
-                    DisplayName = x.DisplayValue,
-                    CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataProcurementTimeFrameCollectionCapabilityCount(x.Id),
-                    SortOrder = x.SortOrder
-                }).Result).ToList();
+            var models = (await _associatedDataProcurementTimeFrameService.List())
+                .Select(x =>
+                    Task.Run(async () => new Models.ADAC.ReadAssociatedDataProcurementTimeFrameModel
+                    {
+                        Id = x.Id,
+                        Description = x.Value,
+                        DisplayName = x.DisplayValue,
+                        CollectionCapabilityCount = await _associatedDataProcurementTimeFrameService.GetUsageCount(x.Id),
+                        SortOrder = x.SortOrder
+                    })
+                    .Result
+                )
+                .ToList();
 
             return models;
 
@@ -49,16 +50,15 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAssociatedDataProcurementTimeFrames()).Where(x => x.Id == id).First();
+            var model = await _associatedDataProcurementTimeFrameService.Get(id);
 
             //Validate min amount of time frames
-            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-            if (timeFrames.Count() <= 2)
+            if (await _associatedDataProcurementTimeFrameService.Count() <= 2)
             {
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"A minimum amount of 2 time frames are allowed.");
             }
 
-            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
+            if (await _associatedDataProcurementTimeFrameService.IsInUse(id))
             {
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"The associated data procurement time frame \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -68,11 +68,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
-            {
-                Id = id,
-                Value = model.Value
-            });
+            await _associatedDataProcurementTimeFrameService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -88,13 +84,15 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, AssociatedDataProcurementTimeFrameModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(id, model.Description))
+            var exisiting = await _associatedDataProcurementTimeFrameService.Get(model.Description);
+            
+            if (exisiting != null && exisiting.Id != id)
             {
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That Associated Data Procurement Time Frame already exists!");
             }
 
             // If in use, prevent update
-            if (await _biobankReadService.IsAssociatedDataProcurementTimeFrameInUse(id))
+            if (await _associatedDataProcurementTimeFrameService.IsInUse(id))
             {
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"The Associated Data Procurement Time Frame \"{model.Description}\" is currently in use, and cannot be updated.");
             }
@@ -104,7 +102,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
+            await _associatedDataProcurementTimeFrameService.Update(new AssociatedDataProcurementTimeframe
             {
                 Id = id,
                 Value = model.Description,
@@ -125,13 +123,12 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(AssociatedDataProcurementTimeFrameModel model)
         {
             // Validate model
-            var timeFrames = await _biobankReadService.ListAssociatedDataProcurementTimeFrames();
-            if (timeFrames.Count() >= 5)
+            if (await _associatedDataProcurementTimeFrameService.Count() >= 5)
             {
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"A maximum amount of 5 time frames are allowed.");
             }
 
-            if (await _biobankReadService.ValidAssociatedDataProcurementTimeFrameDescriptionAsync(model.Description))
+            if (await _associatedDataProcurementTimeFrameService.Exists(model.Description))
             {
                 ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That description is already in use. Associated Data Procurement Time Frame descriptions must be unique.");
             }
@@ -149,8 +146,8 @@ namespace Biobanks.Web.ApiControllers
                 DisplayValue = model.DisplayName
             };
 
-            await _biobankWriteService.AddAssociatedDataProcurementTimeFrameAsync(procurement);
-            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(procurement, true);
+            await _associatedDataProcurementTimeFrameService.Add(procurement);
+            await _associatedDataProcurementTimeFrameService.Update(procurement);
 
             // Success response
             return Json(new
@@ -164,14 +161,13 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}/move")]
         public async Task<IHttpActionResult> Move(int id, AssociatedDataProcurementTimeFrameModel model)
         {
-            await _biobankWriteService.UpdateAssociatedDataProcurementTimeFrameAsync(new AssociatedDataProcurementTimeframe
+            await _associatedDataProcurementTimeFrameService.Update(new AssociatedDataProcurementTimeframe
             {
                 Id = id,
                 Value = model.Description,
                 SortOrder = model.SortOrder,
                 DisplayValue = model.DisplayName
-            },
-            true);
+            });
 
             //Everything went A-OK!
             return Json(new

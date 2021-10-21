@@ -1,13 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Entities.Api.ReferenceData
 {
-    public class Status
-    {
-        //We want Identity Insert for Reference Data
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
-
-        public string Value { get; set; }
-    }
+    public class Status : BaseReferenceData { }
 }

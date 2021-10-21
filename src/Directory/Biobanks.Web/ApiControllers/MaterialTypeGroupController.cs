@@ -7,6 +7,7 @@ using Biobanks.Web.Models.ADAC;
 using System.Collections;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,15 +15,11 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/MaterialTypeGroup")]
     public class MaterialTypeGroupController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
 
-        public MaterialTypeGroupController(
-            IBiobankReadService biobankReadService,
-            IBiobankWriteService biobankWriteService)
+        public MaterialTypeGroupController(IReferenceDataService<MaterialTypeGroup> materialTypeGroupService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _materialTypeGroupService = materialTypeGroupService;
         }
 
         [HttpGet]
@@ -30,7 +27,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IEnumerable> Get()
         {
-            var materialTypeGroups = await _biobankReadService.ListMaterialTypeGroupsAsync();
+            var materialTypeGroups = await _materialTypeGroupService.List();
 
             return materialTypeGroups.Select(x => new MaterialTypeGroupModel
             {
@@ -45,7 +42,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Post(MaterialTypeGroupModel model)
         {
-            if (await _biobankReadService.ValidMaterialTypeGroupDescriptionAsync(model.Description))
+            if (await _materialTypeGroupService.Exists(model.Description))
             {
                 ModelState.AddModelError("Description", "That description is already in use. Material Type Group descriptions must be unique.");
             }
@@ -55,7 +52,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.AddMaterialTypeGroupAsync(new MaterialTypeGroup
+            await _materialTypeGroupService.Add(new MaterialTypeGroup
             {
                 Id = model.Id,
                 Value = model.Description
@@ -73,13 +70,13 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, MaterialTypeGroupModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidMaterialTypeDescriptionAsync(model.Description))
+            if (await _materialTypeGroupService.Exists(model.Description))
             {
                 ModelState.AddModelError("MaterialType", "That description is already in use. Material Type Groups must be unique.");
             }
 
             // If in use, prevent update
-            if (await _biobankReadService.IsMaterialTypeGroupInUse(id))
+            if (await _materialTypeGroupService.IsInUse(id))
             {
                 ModelState.AddModelError("MaterialType", $"The material type group \"{model.Description}\" is currently in use, and cannot be updated.");
             }
@@ -89,7 +86,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.UpdateMaterialTypeGroupAsync(new MaterialTypeGroup
+            await _materialTypeGroupService.Update(new MaterialTypeGroup
             {
                 Id = model.Id,
                 Value = model.Description
@@ -106,10 +103,10 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListMaterialTypeGroupsAsync()).Where(x => x.Id == id).First();
+            var model = await _materialTypeGroupService.Get(id);
 
             // If in use, prevent update
-            if (await _biobankReadService.IsMaterialTypeGroupInUse(id))
+            if (await _materialTypeGroupService.IsInUse(id))
             {
                 ModelState.AddModelError("MaterialType", $"The material type group \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -119,11 +116,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteMaterialTypeGroupAsync(new MaterialTypeGroup
-            {
-                Id = model.Id,
-                Value = model.Value
-            });
+            await _materialTypeGroupService.Delete(id);
 
             //Everything went A-OK!
             return Json(new

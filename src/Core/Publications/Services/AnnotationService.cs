@@ -23,26 +23,24 @@ namespace Biobanks.Publications.Services
         {
             var publication = await _db.Publications.Include(o => o.Annotations).FirstOrDefaultAsync(x => x.PublicationId == publicationId);
 
-            var annotationList = new List<Annotation>();
-            foreach (var annotation in annotations)
-            {
-                foreach (var tags in annotation.Tags)
-                {
-                    var annotationEntity = new Annotation(){Name = tags.Name.ToLower()};
-                    annotationList.Add(annotationEntity);
-                }
-            }
+            var annotationList = annotations
+                    .SelectMany(x => x.Tags)
+                    .Select(x => new Annotation
+                    {
+                        Value = x.Name.ToLower()
+                    })
+                    .ToList();
 
             //Remove duplicate Annotation Names
-            var annList = annotationList.GroupBy(x => x.Name).Select(x => x.First()).ToHashSet();
+            var annList = annotationList.GroupBy(x => x.Value).Select(x => x.First()).ToHashSet();
             
             foreach (var annotation in annList)
             {
                 //If annotation doesn't already exist (new annotation)
-                if (_db.Annotations.Any(x => x.Name == annotation.Name))
+                if (_db.Annotations.Any(x => x.Value == annotation.Value))
                 {
                     //link annotation to publication
-                    var oldAnnotation = _db.Annotations.First(x => x.Name == annotation.Name);
+                    var oldAnnotation = _db.Annotations.First(x => x.Value == annotation.Value);
                     if (!publication.Annotations.Any(x => x.Id == oldAnnotation.Id))
                         publication.Annotations.Add(oldAnnotation);
                 }

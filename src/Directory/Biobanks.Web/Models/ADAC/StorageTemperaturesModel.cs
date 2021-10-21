@@ -19,6 +19,6 @@ namespace Biobanks.Web.Models.ADAC
 
         public int SampleSetsCount { get; set; }
 
-        public bool UsedByPreservationTypes { get; set; }
+        public bool IsInUse { get; set; }
     }
 }

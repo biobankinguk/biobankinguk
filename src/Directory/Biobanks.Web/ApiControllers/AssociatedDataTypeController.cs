@@ -1,12 +1,11 @@
-﻿using Biobanks.Services.Contracts;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Filters;
+using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -14,14 +13,15 @@ namespace Biobanks.Web.ApiControllers
     [RoutePrefix("api/AssociatedDataType")]
     public class AssociatedDataTypeController : ApiBaseController
     {
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
+        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
 
-        public AssociatedDataTypeController(IBiobankReadService biobankReadService,
-                                          IBiobankWriteService biobankWriteService)
+        public AssociatedDataTypeController(
+            IReferenceDataService<AssociatedDataType> associatedDataTypeService,
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService)
         {
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _associatedDataTypeService = associatedDataTypeService;
+            _associatedDataTypeGroupService = associatedDataTypeGroupService;
         }
 
         [HttpGet]
@@ -29,27 +29,33 @@ namespace Biobanks.Web.ApiControllers
         [Route("")]
         public async Task<IHttpActionResult> Get()
         {
-            var groups = (await _biobankReadService.ListAssociatedDataTypeGroupsAsync())
+            var associatedDataTypes = await _associatedDataTypeService.List();
+
+            var model = associatedDataTypes
+                .Select(x =>
+                    Task.Run(async () => new AssociatedDataTypeModel
+                    {
+                        Id = x.Id,
+                        Name = x.Value,
+                        Message = x.Message,
+                        CollectionCapabilityCount = await _associatedDataTypeService.GetUsageCount(x.Id),
+                        AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
+                        AssociatedDataTypeGroupName = x.AssociatedDataTypeGroup?.Value,
+                    })
+                    .Result
+               )
+               .ToList();
+
+            var groups = associatedDataTypes
+                .Where(x => x.AssociatedDataTypeGroup != null)
+                .GroupBy(x => x.AssociatedDataTypeGroupId)
+                .Select(x => x.First())
                 .Select(x => new AssociatedDataTypeGroupModel
                 {
                     AssociatedDataTypeGroupId = x.Id,
                     Name = x.Value,
                 })
                 .ToList();
-            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Select(x =>
-
-            Task.Run(async () => new AssociatedDataTypeModel
-            {
-                Id = x.Id,
-                Name = x.Value,
-                Message = x.Message,
-                CollectionCapabilityCount = await _biobankReadService.GetAssociatedDataTypeCollectionCapabilityCount(x.Id),
-                AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                AssociatedDataTypeGroupName = groups.Where(y => y.AssociatedDataTypeGroupId == x.AssociatedDataTypeGroupId).FirstOrDefault()?.Name,
-
-            }).Result)
-
-               .ToList();
 
             return Json(new 
             {
@@ -62,9 +68,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Delete(int id)
         {
-            var model = (await _biobankReadService.ListAssociatedDataTypesAsync()).Where(x => x.Id == id).First();
+            var model = await _associatedDataTypeService.Get(id);
 
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(id))
+            if (await _associatedDataTypeService.IsInUse(id))
             {
                 ModelState.AddModelError("AssociatedDataTypes", $"The associated data type \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -74,11 +80,7 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            await _biobankWriteService.DeleteAssociatedDataTypeAsync(new AssociatedDataType
-            {
-                Id = id,
-                Value = model.Value
-            });
+            await _associatedDataTypeService.Delete(id);
 
             //Everything went A-OK!
             return Json(new
@@ -93,12 +95,12 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, AssociatedDataTypeModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidAssociatedDataTypeDescriptionAsync(model.Name))
+            if (await _associatedDataTypeService.Exists(model.Name))
             {
                 ModelState.AddModelError("AssociatedDataTypes", "That associated data type already exists!");
             }
 
-            if (await _biobankReadService.IsAssociatedDataTypeInUse(id))
+            if (await _associatedDataTypeService.IsInUse(id))
             {
                 ModelState.AddModelError("AssociatedDataTypes", "This associated data type is currently in use and cannot be edited.");
             }
@@ -108,16 +110,13 @@ namespace Biobanks.Web.ApiControllers
                 return JsonModelInvalidResponse(ModelState);
             }
 
-            var associatedDataTypes = new AssociatedDataType
+            await _associatedDataTypeService.Update(new AssociatedDataType
             {
                 Id = id,
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Value = model.Name,
                 Message = model.Message
-
-            };
-
-            await _biobankWriteService.UpdateAssociatedDataTypeAsync(associatedDataTypes);
+            });
 
             // Success response
             return Json(new
@@ -132,7 +131,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(AssociatedDataTypeModel model)
         {
             // Validate model
-            if (await _biobankReadService.ValidAssociatedDataTypeDescriptionAsync(model.Name))
+            if (await _associatedDataTypeService.Exists(model.Name))
             {
                 ModelState.AddModelError("AssociatedDataTypes", "That name is already in use. Associated Data Type names must be unique.");
             }
@@ -150,7 +149,7 @@ namespace Biobanks.Web.ApiControllers
                 Message = model.Message
             };
 
-            await _biobankWriteService.AddAssociatedDataTypeAsync(associatedDataType);
+            await _associatedDataTypeService.Add(associatedDataType);
 
             // Success response
             return Json(new

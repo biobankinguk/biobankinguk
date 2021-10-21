@@ -14,27 +14,36 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
 using Biobanks.Directory.Data;
 using Biobanks.Directory.Data.Transforms.Url;
+using AutoMapper;
+using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
     [UserAuthorize(Roles = "SuperUser")]
     public class SuperUserController : ApplicationBaseController
     {
+        private readonly IOrganisationService _organisationService;
+
         private readonly IBiobankReadService _biobankReadService;
         private readonly IBiobankWriteService _biobankWriteService;
         private readonly IBiobankIndexService _indexService;
         private readonly ISearchProvider _searchProvider;
+        private readonly IMapper _mapper;
 
         public SuperUserController(
+            IOrganisationService organisationService,
             IBiobankReadService biobankReadService,
             IBiobankWriteService biobankWriteService,
             IBiobankIndexService indexService,
-            ISearchProvider searchProvider)
+            ISearchProvider searchProvider,
+            IMapper mapper)
         {
+            _organisationService = organisationService;
             _biobankReadService = biobankReadService;
             _biobankWriteService = biobankWriteService;
             _indexService = indexService;
             _searchProvider = searchProvider;
+            _mapper = mapper;
         }
 
         // GET: SuperUser
@@ -54,10 +63,16 @@ namespace Biobanks.Web.Controllers
         {
             try
             {
-                var organisations =  _biobankReadService.GetOrganisations();
+                var organisations = await _organisationService.List();
+                
                 foreach (var organisation in organisations)
                 {
-                    await _biobankWriteService.UpdateOrganisationURLAsync(organisation.OrganisationId);
+                    var dto = _mapper.Map<OrganisationDTO>(organisation);
+
+                    // Update URL
+                    dto.Url = UrlTransformer.Transform(dto.Url);
+
+                    await _organisationService.Update(dto);
                 }
                 
             }
