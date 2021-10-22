@@ -143,13 +143,11 @@ namespace Biobanks.Web.ApiControllers
             if (model.UpperDuration == "N/A") { model.UpperDuration = null; }
 
             // Validate model
-            if (exisiting != null)
+            if (exisiting != null && exisiting.Id != id)
             {
-                if (exisiting.Id != id)
-                {
-                    ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
-                }
+                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
             }
+            
 
             // If in use, prevent update
             if (model.SampleSetsCount > 0)
