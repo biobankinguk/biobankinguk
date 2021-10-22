@@ -143,9 +143,12 @@ namespace Biobanks.Web.ApiControllers
             if (model.UpperDuration == "N/A") { model.UpperDuration = null; }
 
             // Validate model
-            if (exisiting.Id != id)
+            if (exisiting != null)
             {
-                ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
+                if (exisiting.Id != id)
+                {
+                    ModelState.AddModelError("AgeRange", "That description is already in use. Age ranges must be unique.");
+                }
             }
 
             // If in use, prevent update
@@ -174,12 +177,15 @@ namespace Biobanks.Web.ApiControllers
             }
 
             // Checks if entry already had both null values prior to edit
-            var nullBefore = string.IsNullOrEmpty(exisiting.LowerBound) && string.IsNullOrEmpty(exisiting.UpperBound);
-            var nullAfter = string.IsNullOrEmpty(model.LowerBound) && string.IsNullOrEmpty(model.UpperBound);
-
-            if (!nullBefore && nullAfter)
+            if (exisiting != null)
             {
-                ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
+                var nullBefore = string.IsNullOrEmpty(exisiting.LowerBound) && string.IsNullOrEmpty(exisiting.UpperBound);
+                var nullAfter = string.IsNullOrEmpty(model.LowerBound) && string.IsNullOrEmpty(model.UpperBound);
+
+                if (!nullBefore && nullAfter)
+                {
+                    ModelState.AddModelError("AgeRange", "Both Upper and Lower Bounds must not be null.");
+                }
             }
 
             var convertedModel = new AgeRangeModel();

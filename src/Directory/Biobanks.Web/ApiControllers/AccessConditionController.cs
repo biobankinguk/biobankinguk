@@ -83,9 +83,12 @@ namespace Biobanks.Web.ApiControllers
             var existing = await _accessConditionService.Get(model.Description);
 
             //If this description is valid, it already exists
-            if (existing.Id != id)
+            if (existing != null)
             {
-                ModelState.AddModelError("Description", "That description is already in use by another access condition. Access condition descriptions must be unique.");
+                if (existing.Id != id)
+                {
+                    ModelState.AddModelError("Description", "That description is already in use by another access condition. Access condition descriptions must be unique.");
+                }
             }
 
             // If in use, prevent update
