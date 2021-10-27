@@ -39,8 +39,12 @@ namespace Biobanks.Directory.Services.Contracts
         /// <returns>true - If at least one entity exists with given descriptive value</returns>
         Task<bool> Exists(string value);
 
-        Task<bool> Exists(int id, string value);
-
+        /// <summary>
+        /// Checks if an entity with given value exists
+        /// </summary>
+        /// <param name="value">The descriptive value of the Entity <typeparamref name="T"/></param>
+        /// <returns>true - If at least one entity exists with given descriptive value not equal to the Id</returns>
+        Task<bool> ExistsExcludingId(int id, string value);
 
         /// <summary>
         /// Returns singular entity by its Id
