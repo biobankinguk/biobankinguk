@@ -58,7 +58,7 @@ namespace Biobanks.Web.ApiControllers
             Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // Validate model
-            if (await _donorCountService.Exists(model.Id, model.Description))
+            if (await _donorCountService.ExistsExcludingId(model.Id, model.Description))
             {
                 ModelState.AddModelError("DonorCounts", $"That description is already in use. {currentReferenceName.Value} descriptions must be unique.");
             }
@@ -97,7 +97,7 @@ namespace Biobanks.Web.ApiControllers
             Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // Validate model
-            if (await _donorCountService.Exists(id, model.Description))
+            if (await _donorCountService.ExistsExcludingId(id, model.Description))
             {
                 ModelState.AddModelError("DonorCounts", $"That {currentReferenceName.Value} already exists!");
             }

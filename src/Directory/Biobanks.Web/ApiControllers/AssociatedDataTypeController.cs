@@ -95,7 +95,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, AssociatedDataTypeModel model)
         {
             // Validate model
-            if (await _associatedDataTypeService.Exists(id, model.Name))
+            if (await _associatedDataTypeService.ExistsExcludingId(id, model.Name))
             {
                 ModelState.AddModelError("AssociatedDataTypes", "That associated data type already exists!");
             }

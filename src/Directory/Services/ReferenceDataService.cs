@@ -68,7 +68,7 @@ namespace Biobanks.Directory.Services
             => await Query().AnyAsync(x => x.Value == value);
 
         /// <inheritdoc/>
-        public async Task<bool> Exists(int id, string value)
+        public async Task<bool> ExistsExcludingId(int id, string value)
             => await Query().AnyAsync(x => x.Value == value && x.Id != id);
 
         /// <inheritdoc/>
