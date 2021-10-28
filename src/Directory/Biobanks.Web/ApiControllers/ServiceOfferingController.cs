@@ -17,7 +17,7 @@ namespace Biobanks.Web.ApiControllers
     {
         private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
 
-        public ServiceOfferingController(ServiceOfferingService serviceOfferingService)
+        public ServiceOfferingController(IReferenceDataService<ServiceOffering> serviceOfferingService)
         {
             _serviceOfferingService = serviceOfferingService;
         }

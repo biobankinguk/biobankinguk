@@ -106,6 +106,10 @@ namespace Biobanks.Web.ApiControllers
             {
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
+            else if (ontologyTerm is null)
+            {
+                ontologyTerm = await _ontologyTermService.Get(id);
+            }
 
             //Extraction procedure should belong to at least one material type 
             if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)

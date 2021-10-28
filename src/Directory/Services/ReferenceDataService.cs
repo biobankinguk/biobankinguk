@@ -92,7 +92,7 @@ namespace Biobanks.Directory.Services
             => await List(string.Empty);
 
         /// <inheritdoc/>
-        public async Task<T> Update(T entity)
+        public virtual async Task<T> Update(T entity)
         {
             var existing = await Query().FirstOrDefaultAsync(x => x.Id == entity.Id);
 

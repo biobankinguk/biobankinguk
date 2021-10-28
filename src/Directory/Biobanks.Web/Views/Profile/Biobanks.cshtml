@@ -67,7 +67,7 @@
 					<th width="250">County</th>}
 					<th>Description</th>
 
-					@foreach (var organisation in Model)
+					@foreach (var organisation in Model.OrderBy(x => x.Name))
 					{
 						<tr>
 							<td></td>
