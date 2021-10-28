@@ -11,12 +11,12 @@ namespace Biobanks.Directory.Services
         public ConsentRestrictionService(BiobanksDbContext db) : base(db) { }
 
         protected override IQueryable<ConsentRestriction> Query()
-            => Query().Include(x => x.Collections);
+            => base.Query().Include(x => x.Collections);
 
         public override async Task<int> GetUsageCount(int id)
-            => await Query().Where(x => x.Id == id).Select(x => x.Collections).CountAsync();
+            => await Query().Where(x => x.Id == id).Where(x => x.Collections.Count() > 0).CountAsync();
 
         public override async Task<bool> IsInUse(int id)
-            => await Query().Where(x => x.Id == id).Select(x => x.Collections).AnyAsync();
+            => await Query().Where(x => x.Id == id).Where(x => x.Collections.Count() > 0).AnyAsync();
     }
 }
