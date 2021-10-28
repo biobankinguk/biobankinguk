@@ -20,5 +20,16 @@ namespace Biobanks.Directory.Services
         public override async Task<bool> IsInUse(int id)
             => await _db.CollectionAssociatedDatas.AnyAsync(x => x.AssociatedDataTypeId == id)
             || await _db.CapabilityAssociatedDatas.AnyAsync(x => x.AssociatedDataTypeId == id);
+
+        public override async Task<AssociatedDataType> Update(AssociatedDataType entity)
+        {
+            var existing = await base.Update(entity);
+            existing.AssociatedDataTypeGroup = entity.AssociatedDataTypeGroup;
+            existing.AssociatedDataTypeGroupId = entity.AssociatedDataTypeGroupId;
+            existing.Message = entity.Message;
+            await _db.SaveChangesAsync();
+
+            return existing;
+        }
     }
 }

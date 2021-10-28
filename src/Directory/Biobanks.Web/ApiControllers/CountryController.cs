@@ -72,7 +72,7 @@ namespace Biobanks.Web.ApiControllers
         [Route("{id}")]
         public async Task<IHttpActionResult> Put(int id, CountryModel model)
         {
-            var exisiting = _countryService.Get(model.Name);
+            var exisiting = await _countryService.Get(model.Name);
 
             //If this description is valid, it already exists
             if (exisiting != null && exisiting.Id != id)
