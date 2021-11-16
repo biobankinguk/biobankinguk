@@ -116,35 +116,15 @@ namespace Biobanks.Analytics.Services
             return (filters, filterCount);
         }
 
-        /*private static string[] GetSearchFilters(string pagePath)
-            => new Regex("selectedFacets=([^&]+)").Match(pagePath) switch
+        private static string[] GetSearchFilters(string pagePath)
+            => new Regex("selectedFacets=([(.*?)])").Match(pagePath) switch
             {
                 var m when m.Success
                     // TODO: are we sure the captured value has been URL decoded?!
                     // if not, it won't be valid JSON yet, as the `[` `]` will still be encoded
                     => JsonSerializer.Deserialize<string[]>(m.Groups[1].Captures[0].Value),
                 _ => new[] { "" }
-            };*/
+            };
 
-        private static string[] GetSearchFilters(string pagePath)
-        {
-            Regex regex = new Regex("selectedFacets=([^&]+)");
-            Match match = regex.Match(pagePath);
-            if (match.Success)
-            {
-                try
-                {
-                    return JsonSerializer.Deserialize<string[]>(match.Groups[1].Captures[0].Value);
-                }
-                catch
-                {
-                    return new[] { "" };
-                }
-            }
-            else
-            {
-                return new[] { "" };
-            }
-        }
     }
 }
