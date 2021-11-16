@@ -117,7 +117,9 @@ namespace Biobanks.Analytics.Services
         }
 
         private static string[] GetSearchFilters(string pagePath)
-            => new Regex("selectedFacets=([(.*?)])").Match(pagePath) switch
+        {
+            var pattern = @"selectedFacets=(\[(.*?)\])";
+            return new Regex(pattern).Match(pagePath) switch
             {
                 var m when m.Success
                     // TODO: are we sure the captured value has been URL decoded?!
@@ -125,6 +127,7 @@ namespace Biobanks.Analytics.Services
                     => JsonSerializer.Deserialize<string[]>(m.Groups[1].Captures[0].Value),
                 _ => new[] { "" }
             };
+        }
 
     }
 }
