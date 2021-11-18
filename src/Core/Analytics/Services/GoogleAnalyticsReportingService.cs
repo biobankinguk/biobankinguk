@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Biobanks.Analytics.Services
@@ -88,8 +89,8 @@ namespace Biobanks.Analytics.Services
                         _db.OrganisationAnalytics.Add(new OrganisationAnalytic
                         {
                             Date = ConvertToDateTime(bbd.Dimensions[0], "yyyyMMdd"),
-                            PagePath = bbd.Dimensions[1],
-                            PreviousPagePath = bbd.Dimensions[2],
+                            PagePath = Regex.Replace(bbd.Dimensions[1], "(diagnosis=)", "ontologyTerm="),
+                            PreviousPagePath = Regex.Replace(bbd.Dimensions[2], "(diagnosis=)", "ontologyTerm="),
                             Segment = bbd.Dimensions[3],
                             Source = bbd.Dimensions[4],
                             Hostname = bbd.Dimensions[5],
@@ -151,7 +152,7 @@ namespace Biobanks.Analytics.Services
                 _db.DirectoryAnalyticMetrics.Add(new DirectoryAnalyticMetric
                 {
                     Date = ConvertToDateTime(metric.Dimensions[0], "yyyyMMdd"),
-                    PagePath = metric.Dimensions[1],
+                    PagePath = Regex.Replace(metric.Dimensions[1], "(diagnosis=)", "ontologyTerm="),
                     PagePathLevel1 = metric.Dimensions[2],
                     Segment = metric.Dimensions[3],
                     Source = metric.Dimensions[4],
