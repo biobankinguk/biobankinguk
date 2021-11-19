@@ -91,7 +91,7 @@ namespace Biobanks.Directory.Services
         public async Task<OntologyTerm> Create(OntologyTerm ontologyTerm)
         {
             // Get Attached References To MaterialType
-            var materialTypeIds = ontologyTerm?.MaterialTypes.Select(x => x.Id) ?? new List<int>();
+            var materialTypeIds = ontologyTerm?.MaterialTypes?.Select(x => x.Id) ?? new List<int>();
             
             var materialTypes = await _db.MaterialTypes
                 .Where(x => materialTypeIds.Contains(x.Id))
