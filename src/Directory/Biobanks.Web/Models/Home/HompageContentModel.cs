@@ -16,9 +16,14 @@ namespace Biobanks.Web.Models.Home
         public string AccessExistingSamples { get; set; }
 
         public string NetworkRegistration { get; set; }
+        public string NetworkRegistration2 { get; set; }
 
         public string ResourceRegistration { get; set; }
+        public string ResourceRegistration2 { get; set; }
 
         public string FinalParagraph { get; set; }
+
+        public string NetworkRegistrationButton { get; set; }
+        public string ResourceRegistrationButton { get; set; }
     }
 }

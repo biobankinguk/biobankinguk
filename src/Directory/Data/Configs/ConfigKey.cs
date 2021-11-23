@@ -24,7 +24,9 @@
         public const string HomepageSearchTitle = "site.homepage.searchtitle";
         public const string HomepageSearchSubTitle = "site.homepage.searchsubtitle";
         public const string HomepageResourceRegistration = "site.homepage.resourceregistration";
+        public const string HomepageResourceRegistration2 = "site.homepage.resourceregistration2";
         public const string HomepageNetworkRegistration = "site.homepage.networkregistration";
+        public const string HomepageNetworkRegistration2 = "site.homepage.networkregistration2";
         public const string HomepageSearchRadioSamplesCollected = "site.homepage.searchradiosamplescollected";
         public const string HomepageSearchRadioAccessSamples = "site.homepage.searchradioaccesssamples";
         public const string HomepageFinalParagraph = "site.homepage.finalparagraph";
