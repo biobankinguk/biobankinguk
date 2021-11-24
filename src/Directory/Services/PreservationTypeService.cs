@@ -18,5 +18,15 @@ namespace Biobanks.Directory.Services
 
         public override async Task<bool> IsInUse(int id)
             => await _db.MaterialDetails.AnyAsync(x => x.PreservationTypeId == id);
+
+        public override async Task<PreservationType> Update(PreservationType entity)
+        {
+            var existing = await base.Update(entity);
+            existing.StorageTemperature = entity.StorageTemperature;
+            existing.StorageTemperatureId = entity.StorageTemperatureId;
+            await _db.SaveChangesAsync();
+
+            return existing;
+        }
     }
 }

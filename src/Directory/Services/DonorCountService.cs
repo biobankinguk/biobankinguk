@@ -14,5 +14,15 @@ namespace Biobanks.Directory.Services
 
         public override async Task<bool> IsInUse(int id)
             => await _db.SampleSets.AnyAsync(x => x.DonorCountId == id);
+
+        public override async Task<DonorCount> Update(DonorCount entity)
+        {
+            var existing = await base.Update(entity);
+            existing.LowerBound = entity.LowerBound;
+            existing.UpperBound = entity.UpperBound;
+            await _db.SaveChangesAsync();
+
+            return existing;
+        }
     }
 }

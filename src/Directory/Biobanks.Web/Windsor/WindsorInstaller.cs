@@ -105,7 +105,15 @@ namespace Biobanks.Web.Windsor
                 Component.For<IUserStore<ApplicationUser, string>>()
                     .ImplementedBy<ApplicationUserStore>()
                     .LifeStyle.Transient,
-                
+
+                Component.For(typeof(INetworkService))
+                    .ImplementedBy(typeof(NetworkService))
+                    .LifeStyle.Transient,
+
+                Component.For(typeof(IOrganisationService))
+                    .ImplementedBy(typeof(OrganisationService))
+                    .LifeStyle.Transient,
+
                 Component.For(typeof(IOntologyTermService))
                     .ImplementedBy(typeof(OntologyTermService))
                     .LifeStyle.Transient,

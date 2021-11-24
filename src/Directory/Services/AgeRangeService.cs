@@ -14,5 +14,15 @@ namespace Biobanks.Directory.Services
 
         public override async Task<bool> IsInUse(int id)
             => await _db.SampleSets.AnyAsync(x => x.AgeRangeId == id);
+
+        public override async Task<AgeRange> Update(AgeRange entity)
+        {
+            var existing = await base.Update(entity);
+            existing.UpperBound = entity.UpperBound;
+            existing.LowerBound = entity.LowerBound;
+            await _db.SaveChangesAsync();
+
+            return existing;
+        }
     }
 }

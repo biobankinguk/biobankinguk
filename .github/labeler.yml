@@ -33,7 +33,8 @@
 "Area: Aggregator":
   - src/Core/Aggregator/**/*
   - src/Core/Jobs/AggregatorJob.cs
- 
+"Area: Docs":
+  - docs/**/*
 
 # label types of changes contained in a PR
 "Contains: Migrations":
