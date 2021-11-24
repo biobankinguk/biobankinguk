@@ -855,7 +855,7 @@
     <Content Include="Views\ADAC\DeleteFunder.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Shared\_BBFooter.cshtml" />
-    <Content Include="Views\Home\_UnifiedSearchBox.cshtml" />
+    <Content Include="Views\Home\_AltUnifiedSearchBox.cshtml" />
     <Content Include="Views\Shared\_ContactButton.cshtml" />
     <Content Include="Views\SuperUser\Index.cshtml" />
     <Content Include="Views\SuperUser\_SuperUserTabs.cshtml" />

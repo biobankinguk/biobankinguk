@@ -48,10 +48,14 @@ namespace Biobanks.Web.Controllers
                 SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
                 SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
+                ResourceRegistration2 = Config.Get(ConfigKey.HomepageResourceRegistration2, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
+                NetworkRegistration2 = Config.Get(ConfigKey.HomepageNetworkRegistration2, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
                 AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
-                FinalParagraph = Config.Get(ConfigKey.HomepageFinalParagraph)
+                FinalParagraph = Config.Get(ConfigKey.HomepageFinalParagraph),
+                ResourceRegistrationButton = Config.Get(ConfigKey.RegisterBiobankTitle, ""),
+                NetworkRegistrationButton = Config.Get(ConfigKey.RegisterNetworkTitle, "")
             });
         }
 
