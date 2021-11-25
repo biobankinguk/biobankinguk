@@ -1813,7 +1813,9 @@ namespace Biobanks.Web.Controllers
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
-                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, "")
+                AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+                ResourceRegistrationButton = Config.Get(ConfigKey.RegisterBiobankTitle, ""),
+                NetworkRegistrationButton = Config.Get(ConfigKey.RegisterNetworkTitle, "")
             });
         }
 
@@ -1833,7 +1835,9 @@ namespace Biobanks.Web.Controllers
                     new Config { Key = ConfigKey.HomepageResourceRegistration, Value = homepage.ResourceRegistration ?? "" },
                     new Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" },
                     new Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = homepage.RequireSamplesCollected ?? ""},
-                    new Config { Key = ConfigKey.HomepageSearchRadioAccessSamples, Value = homepage.AccessExistingSamples ?? "" }
+                    new Config { Key = ConfigKey.HomepageSearchRadioAccessSamples, Value = homepage.AccessExistingSamples ?? "" },
+                    new Config { Key = ConfigKey.RegisterBiobankTitle, Value = homepage.ResourceRegistrationButton ?? "" },
+                    new Config { Key = ConfigKey.RegisterNetworkTitle, Value = homepage.NetworkRegistrationButton ?? ""}
                 }
             );
 
