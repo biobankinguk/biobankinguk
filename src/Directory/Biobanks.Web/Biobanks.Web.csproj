@@ -875,6 +875,8 @@
     <Content Include="Views\ADAC\ExtractionProcedure.cshtml" />
     <Content Include="Views\ADAC\MaterialTypeGroups.cshtml" />
     <Content Include="Views\Flags\FlagsConfig.cshtml" />
+    <Content Include="Views\Home\AltIndex.cshtml" />
+    <Content Include="Views\Home\_UnifiedSearchBox.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
