@@ -34,8 +34,12 @@
     <div class="row big_splash">
         <h1 class="big_title">@Model.Title</h1>
         <div>
-            <a class="btn btn-search" href="#focus" role="button">Search &#xf002</a>
-            <a class="btn btn-search" href="#register" role="button">Register &#xf04b</a>
+            <button class="btn-search" href="#focus">
+            Search <i class="fa fa-search"></i>
+            </button>
+            <button class="btn-search" href="#register">
+                Register <i class="fa fa-play"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -44,7 +48,7 @@
          @Html.Partial("~/Views/Home/_AltUnifiedSearchBox.cshtml", Model)
     </div>
 </div>
-<div class="row container-fluid info registration-section">
+<div id="register" class="row container-fluid info registration-section">
     <div class="col-sm-3 resource-registration left-panel">
         @Html.Markdown(Model.ResourceRegistration)
     </div>
