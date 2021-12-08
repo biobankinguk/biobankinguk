@@ -15,5 +15,15 @@ namespace Biobanks.Directory.Services
         public override async Task<bool> IsInUse(int id)
             => await _db.MaterialDetails.AnyAsync(x => x.CollectionPercentageId == id);
 
+        public override async Task<CollectionPercentage> Update(CollectionPercentage entity)
+        {
+            var existing = await base.Update(entity);
+            existing.LowerBound = entity.LowerBound;
+            existing.UpperBound = entity.UpperBound;
+            await _db.SaveChangesAsync();
+
+            return existing;
+        }
+
     }
 }

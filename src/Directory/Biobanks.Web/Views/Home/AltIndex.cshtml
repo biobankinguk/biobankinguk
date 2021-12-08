@@ -1,0 +1,74 @@
+@using System.Web.Optimization
+@using Biobanks.Web.HtmlHelpers
+@using Biobanks.Web.Models.Home
+@model HomepageContentModel
+@{
+    ViewBag.Title = "Index";
+    ViewBag.WideLayout = true;
+    ViewBag.SuppressDefaultFeedbackMessage = true;
+    ViewBag.SuppressFormErrorAlert = true;
+    ViewBag.NoFooterMargin = true;
+}
+
+
+@section FooterScripts
+{
+    @Scripts.Render("~/bundles/search")
+    @Scripts.Render("~/bundles/home")
+}
+
+@* Sets the splash image from configuration *@
+<style>
+    .splash-img {
+        background-image: url( @Url.Content("~/Content/images/splash_background_tinted.jpg") );
+    }
+</style>
+
+<div class="splash splash-img container-fluid">
+    <div class="row">
+        @* Homepage overrides the default positioning, so we can have this inside the splash area *@
+        <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+            @Html.Partial("_FeedbackMessage")
+        </section>
+    </div>
+    <div class="row big_splash">
+        <h1 class="big_title">@Model.Title</h1>
+        <div>
+            <button class="btn-search" href="#focus">
+            Search <i class="fa fa-search"></i>
+            </button>
+            <button class="btn-search" href="#register">
+                Register <i class="fa fa-play"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="container-fluid search-section">
+    <div id="focus" class="container text-center">
+         @Html.Partial("~/Views/Home/_AltUnifiedSearchBox.cshtml", Model)
+    </div>
+</div>
+<div id="register" class="row container-fluid info registration-section">
+    <div class="col-sm-3 resource-registration left-panel">
+        @Html.Markdown(Model.ResourceRegistration)
+    </div>
+    <div class="col-sm-3 resource-registration">
+        @Html.Markdown(Model.ResourceRegistration2)
+        <a class="btn btn-search registration" href="@Url.Action("Biobank", "Register")" role="button">@Model.ResourceRegistrationButton</a>
+    </div>
+    <div class="col-sm-3 network-registration left-panel">
+        @Html.Markdown(Model.NetworkRegistration)
+    </div>
+    <div class="col-sm-3 network-registration">
+        @Html.Markdown(Model.NetworkRegistration2)
+        <a class="btn btn-search registration" href="@Url.Action("Network", "Register")" role="button">@Model.NetworkRegistrationButton</a>
+    </div>
+</div>
+<div class="row container-fluid lowertext-section">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        <p>@Html.Markdown(Model.FinalParagraph)</p>
+    </div>
+    <div class="col-sm-2"></div>
+</div>
+<hr class="shadow" />

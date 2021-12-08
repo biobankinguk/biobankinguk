@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Biobanks.Web.Utilities;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Services.Contracts;
+using System.Configuration;
 
 namespace Biobanks.Web.Controllers
 {
@@ -20,21 +21,17 @@ namespace Biobanks.Web.Controllers
     {
         private readonly INetworkService _networkService;
         private readonly IOrganisationService _organisationService;
-
-        private readonly IBiobankReadService _biobankReadService;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
 
         public HomeController(
             INetworkService networkService,
             IOrganisationService organisationService,
-            IBiobankReadService biobankReadService,
             IMapper mapper,
             IEmailService emailService)
         {
             _networkService = networkService;
             _organisationService = organisationService;
-            _biobankReadService = biobankReadService;
             _mapper = mapper;
             _emailService = emailService;
         }
@@ -42,15 +39,23 @@ namespace Biobanks.Web.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            return View(new HomepageContentModel
+            var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] == "true" 
+                ? "AltIndex" : "Index";
+
+            return View(viewName, new HomepageContentModel
             {
                 Title = Config.Get(ConfigKey.HomepageTitle, ""),
                 SearchTitle = Config.Get(ConfigKey.HomepageSearchTitle, ""),
                 SearchSubTitle = Config.Get(ConfigKey.HomepageSearchSubTitle, ""),
                 ResourceRegistration = Config.Get(ConfigKey.HomepageResourceRegistration, ""),
+                ResourceRegistration2 = Config.Get(ConfigKey.HomepageResourceRegistration2, ""),
                 NetworkRegistration = Config.Get(ConfigKey.HomepageNetworkRegistration, ""),
+                NetworkRegistration2 = Config.Get(ConfigKey.HomepageNetworkRegistration2, ""),
                 RequireSamplesCollected = Config.Get(ConfigKey.HomepageSearchRadioSamplesCollected, ""),
                 AccessExistingSamples = Config.Get(ConfigKey.HomepageSearchRadioAccessSamples, ""),
+                FinalParagraph = Config.Get(ConfigKey.HomepageFinalParagraph),
+                ResourceRegistrationButton = Config.Get(ConfigKey.RegisterBiobankTitle, ""),
+                NetworkRegistrationButton = Config.Get(ConfigKey.RegisterNetworkTitle, "")
             });
         }
 

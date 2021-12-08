@@ -16,5 +16,14 @@ namespace Biobanks.Directory.Services
         public override async Task<bool> IsInUse(int id)
             => await _db.CollectionAssociatedDatas.AnyAsync(x => x.AssociatedDataProcurementTimeframeId == id)
             || await _db.CapabilityAssociatedDatas.AnyAsync(x => x.AssociatedDataProcurementTimeframeId == id);
+
+        public override async Task<AssociatedDataProcurementTimeframe> Update(AssociatedDataProcurementTimeframe entity)
+        {
+            var existing = await base.Update(entity);
+            existing.DisplayValue = entity.DisplayValue;
+            await _db.SaveChangesAsync();
+
+            return existing;
+        }
     }
 }

@@ -3,26 +3,27 @@
 @using Biobanks.Web.Models.Footer
 @model FooterModel
 
-<div class="container">
+<div class="container-fluid">
 
 	@* Logos *@
-	<section>
-		<div class="row">
-			<div class="col-sm-12 footer-logos">
-				@foreach (var logo in Model.Logos.Children)
+	<div class ="row col-sm-12">
+		<p class="footer-title">@Model.FooterTitle</p>
+	</div>
+	<div class="row footer-logo-section">
+		<div class="col-sm-12 footer-logos">
+			@foreach (var logo in Model.Logos.Children)
+			{
+				if (!string.IsNullOrEmpty(logo.Src))
 				{
-					if (!string.IsNullOrEmpty(logo.Src))
-					{
-						<a href="@logo.Url"><img src="@Url.Content(logo.Src)" alt="@logo.Title" /></a>
-					}
+					<a href="@logo.Url"><img src="@Url.Content(logo.Src)" alt="@logo.Title" /></a>
 				}
-			</div>
+			}
 		</div>
-	</section>
+	</div>
 
 	@* Footer Links *@
 	<section>
-		<div class="row">
+		<div class="row footer-link-section">
 			<div class="col-sm-12">
 				@foreach (var link in Model.Links.Children)
 				{
@@ -41,7 +42,7 @@
 
 	@* Copyright and Versioning *@
 	<section>
-		<div class="row">
+		<div class="row footer-copyright-section">
 			<div class="col-sm-12">
 				&copy; @DateTime.Now.Year @Model.Links.Title
 
