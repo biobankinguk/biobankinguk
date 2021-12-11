@@ -67,12 +67,10 @@ namespace Biobanks.Web.Controllers
                 
                 foreach (var organisation in organisations)
                 {
-                    var dto = _mapper.Map<OrganisationDTO>(organisation);
-
                     // Update URL
-                    dto.Url = UrlTransformer.Transform(dto.Url);
+                    organisation.Url = UrlTransformer.Transform(organisation.Url);
 
-                    await _organisationService.Update(dto);
+                    await _organisationService.Update(organisation);
                 }
                 
             }

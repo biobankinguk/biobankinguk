@@ -222,11 +222,27 @@ namespace Biobanks.Web.Controllers
                 } //no problem, just means no logo uploaded in this form submission
             }
 
-            var biobank = _mapper.Map<OrganisationDTO>(model);
+            var biobank = _mapper.Map<Organisation>(model);
 
             //Update bits Automapper doesn't do
-            biobank.Logo = logoName;
+            biobank.OrganisationRegistrationReasons = new List<OrganisationRegistrationReason>();
+            biobank.OrganisationServiceOfferings = new List<OrganisationServiceOffering>();
 
+            foreach (var rr in model.RegistrationReasons)
+            {
+                if (rr.Active)
+                    biobank.OrganisationRegistrationReasons.Add(new OrganisationRegistrationReason 
+                        { OrganisationId = biobank.OrganisationId, RegistrationReasonId = rr.RegistrationReasonId });
+            }
+
+            foreach (var sm in model.ServiceModels)
+            {
+                if (sm.Active)
+                    biobank.OrganisationServiceOfferings.Add(new OrganisationServiceOffering
+                    { OrganisationId = biobank.OrganisationId, ServiceOfferingId = sm.ServiceOfferingId });
+            }
+
+            biobank.Logo = logoName;
             return await _organisationService.Update(biobank);
         }
 
@@ -264,14 +280,14 @@ namespace Biobanks.Web.Controllers
                                     model.Logo.FileName,
                                     model.Logo.ContentType,
                                     biobank.OrganisationExternalId);
-
-                    //biobank = await _organisationService.Update(biobank);
-                    biobank = await _organisationService.Update(_mapper.Map<OrganisationDTO>(biobank));
                 }
-                catch (ArgumentNullException) //no problem, just means no logo uploaded in this form submission
+                catch (ArgumentNullException)
                 {
-                }
-            }
+                } //no problem, just means no logo uploaded in this form submission
+                
+                biobank = await _organisationService.Update(biobank);
+             }
+            
 
             return biobank;
         }
@@ -2130,7 +2146,7 @@ namespace Biobanks.Web.Controllers
 
             //get currently selected values from org (if applicable)
             var biobankId = SessionHelper.GetBiobankId(Session);
-            var biobank = await _organisationService.Get(biobankId);
+            var biobank = await _organisationService.GetForBulkSubmissions(biobankId);
 
             model.BiobankId = biobankId;
             model.AccessCondition = biobank.AccessConditionId;
@@ -2146,14 +2162,15 @@ namespace Biobanks.Web.Controllers
         public async Task<ActionResult> Submissions(SubmissionsModel model)
         {
             //update Organisations table
-            var biobankId = model.BiobankId;
+            var biobankId = SessionHelper.GetBiobankId(Session);
+            var biobank = await _organisationService.Get(biobankId);
+            biobank.AccessConditionId = model.AccessCondition;
+            biobank.CollectionTypeId = model.CollectionType;
 
-            await _organisationService.Update(new OrganisationDTO
-            {
-                OrganisationId = biobankId,
-                AccessConditionId = model.AccessCondition,
-                CollectionTypeId = model.CollectionType,
-            });
+       //     biobank.AccessCondition = await _accessConditionService.Get(biobank.AccessConditionId.GetValueOrDefault());
+       //     biobank.CollectionType = await _collectionTypeService.Get(biobank.CollectionTypeId.GetValueOrDefault());
+            
+            await _organisationService.Update(biobank);
 
             //Set feedback and redirect
             SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
