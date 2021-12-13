@@ -200,12 +200,25 @@ namespace Biobanks.Directory.Services
                 currentOrganisation.AccessConditionId = organisation.AccessConditionId;
                 currentOrganisation.CollectionTypeId = organisation.CollectionTypeId;
 
-    /*            currentOrganisation.OrganisationRegistrationReasons?.Clear();
+                //need to clear and load these collections due to tracking
+                currentOrganisation.OrganisationRegistrationReasons?.Clear();
                 currentOrganisation.OrganisationServiceOfferings?.Clear();
 
-                currentOrganisation.OrganisationRegistrationReasons = organisation.OrganisationRegistrationReasons;
-                currentOrganisation.OrganisationServiceOfferings = organisation.OrganisationServiceOfferings;
-*/
+
+                var allRegistrationReasons = await _db.OrganisationRegistrationReasons.ToListAsync();
+                foreach(var orr in organisation.OrganisationRegistrationReasons)
+                {
+                    var orgReason = allRegistrationReasons.SingleOrDefault(x => x.OrganisationId == orr.OrganisationId 
+                        && x.RegistrationReasonId == orr.RegistrationReasonId);
+                    currentOrganisation.OrganisationRegistrationReasons.Add(orgReason);
+                }
+
+                var allServiceOfferings = await _db.OrganisationServiceOfferings.ToListAsync();
+                foreach(var ser in organisation.OrganisationServiceOfferings)
+                {
+                    var serviceOffering = allServiceOfferings.SingleOrDefault(x => x.OrganisationId == ser.ServiceOfferingId
+                        && x.ServiceOfferingId == ser.ServiceOfferingId);
+                }
 
                 // Set Timestamp
                 currentOrganisation.LastUpdated = DateTime.Now;
