@@ -226,15 +226,9 @@ namespace Biobanks.Directory.Services
                 // Ensure AnonymousIdentifier Exists
                 if (!currentOrganisation.AnonymousIdentifier.HasValue)
                     currentOrganisation.AnonymousIdentifier = Guid.NewGuid();
-                try
-                {
-                    await _db.SaveChangesAsync();
-                }
-                catch(Exception e)
-                {
-                    var x = e.Message;
-                    var y = e.InnerException;
-                }
+
+                await _db.SaveChangesAsync();
+
                 // Update Organisation Index
                 if (!await IsSuspended(currentOrganisation.OrganisationId))
                 {

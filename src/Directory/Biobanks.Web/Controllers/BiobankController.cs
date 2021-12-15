@@ -2163,12 +2163,10 @@ namespace Biobanks.Web.Controllers
         {
             //update Organisations table
             var biobankId = SessionHelper.GetBiobankId(Session);
+
             var biobank = await _organisationService.Get(biobankId);
             biobank.AccessConditionId = model.AccessCondition;
             biobank.CollectionTypeId = model.CollectionType;
-
-       //     biobank.AccessCondition = await _accessConditionService.Get(biobank.AccessConditionId.GetValueOrDefault());
-       //     biobank.CollectionType = await _collectionTypeService.Get(biobank.CollectionTypeId.GetValueOrDefault());
             
             await _organisationService.Update(biobank);
 
