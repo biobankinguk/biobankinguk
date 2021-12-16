@@ -48,7 +48,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Post(CollectionPercentageModel model)
         {
             // Validate model
-            if (await _collectionPercentageService.Exists(model.Description))
+            if (await _collectionPercentageService.ExistsExcludingId(model.Id, model.Description))
             {
                 ModelState.AddModelError("CollectionPercentage", "That description is already in use. Collection percentage descriptions must be unique.");
             }
@@ -83,7 +83,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<IHttpActionResult> Put(int id, CollectionPercentageModel model)
         {
             // Validate model
-            if (await _collectionPercentageService.Exists(model.Description))
+            if (await _collectionPercentageService.ExistsExcludingId(model.Id, model.Description))
             {
                 ModelState.AddModelError("CollectionPercentage", "That collection percentage already exists!");
             }
