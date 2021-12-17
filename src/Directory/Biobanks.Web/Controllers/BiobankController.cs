@@ -280,12 +280,13 @@ namespace Biobanks.Web.Controllers
                                     model.Logo.FileName,
                                     model.Logo.ContentType,
                                     biobank.OrganisationExternalId);
+
+                    biobank = await _organisationService.Update(biobank);
                 }
                 catch (ArgumentNullException)
                 {
                 } //no problem, just means no logo uploaded in this form submission
                 
-                biobank = await _organisationService.Update(biobank);
              }
             
 
