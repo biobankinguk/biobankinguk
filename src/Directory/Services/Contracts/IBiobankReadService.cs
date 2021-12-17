@@ -14,7 +14,7 @@ namespace Biobanks.Services.Contracts
         Task<Blob> GetLogoBlobAsync(string logoName);
         Task<Collection> GetCollectionByIdAsync(int id);
         Task<bool> IsCollectionFromApi(int id);
-        
+
         Task<Collection> GetCollectionByIdForIndexingAsync(int id);
         Task<Collection> GetCollectionWithSampleSetsByIdAsync(int id);
         Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
@@ -71,7 +71,7 @@ namespace Biobanks.Services.Contracts
         Task<int> GetIndexableCapabilityCountAsync();
         Task<int> GetSuspendedSampleSetCountAsync();
         Task<int> GetSuspendedCapabilityCountAsync();
-        Task<Dictionary<int,string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds);
+        Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds);
 
         Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId);
 
@@ -79,6 +79,6 @@ namespace Biobanks.Services.Contracts
 
 
         Task<string> GetUnusedTokenByUser(string biobankUserId);
-        
+
     }
 }

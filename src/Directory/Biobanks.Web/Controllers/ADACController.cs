@@ -214,7 +214,7 @@ namespace Biobanks.Web.Controllers
         {
             //Let's fetch the request
             var request = await _organisationService.GetRegistrationRequest(requestId);
-            
+
             if (request == null)
             {
                 SetTemporaryFeedbackMessage(
@@ -833,7 +833,7 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> DeleteFunder(int id)
             => View(await _funderService.Get(id));
-      
+
         [HttpPost]
         public async Task<ActionResult> DeleteFunder(FunderModel model)
         {
@@ -1399,7 +1399,7 @@ namespace Biobanks.Web.Controllers
         {
             var models = (await _storageTemperatureService.List())
                 .Select(x =>
-                    Task.Run(async () => 
+                    Task.Run(async () =>
                         new StorageTemperatureModel()
                         {
                             Id = x.Id,
@@ -1425,7 +1425,7 @@ namespace Biobanks.Web.Controllers
         {
             var models = (await _preservationTypeService.List())
                 .Select(x =>
-                    Task.Run(async () =>    
+                    Task.Run(async () =>
                         new PreservationTypeModel()
                         {
                             Id = x.Id,
@@ -1788,7 +1788,7 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
                     OtherTerms = x.OtherTerms,
-                    MaterialTypeIds = x.MaterialTypes.Select(x=>x.Id).ToList(),
+                    MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList(),
                     DisplayOnDirectory = x.DisplayOnDirectory
                 })
                 .Result
@@ -2040,7 +2040,7 @@ namespace Biobanks.Web.Controllers
         }
 
         #endregion
-        
+
         //Method for updating specific Reference Terms Names via Config
         public async Task<JsonResult> UpdateReferenceTermName(string newReferenceTermKey, string newReferenceTermName)
         {

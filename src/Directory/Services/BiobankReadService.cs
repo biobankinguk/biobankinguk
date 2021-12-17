@@ -27,7 +27,7 @@ namespace Biobanks.Services
         private readonly IGenericEFRepository<Collection> _collectionRepository;
         private readonly IGenericEFRepository<CollectionAssociatedData> _collectionAssociatedDataRepository;
         private readonly IGenericEFRepository<CapabilityAssociatedData> _capabilityAssociatedDataRepository;
-     
+
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
         private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
@@ -88,7 +88,7 @@ namespace Biobanks.Services
 
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
-            
+
             BiobanksDbContext context)
         {
             _logoStorageProvider = logoStorageProvider;
@@ -451,7 +451,7 @@ namespace Biobanks.Services
         public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false)
         => (await _materialTypeRepository.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures))
         .FirstOrDefault()?.ExtractionProcedures
-        .Where(x=> x.DisplayOnDirectory || !onlyDisplayable)
+        .Where(x => x.DisplayOnDirectory || !onlyDisplayable)
         .ToList();
 
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
@@ -473,7 +473,7 @@ namespace Biobanks.Services
 
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
-                x => x.OntologyTerm.Value == ontologyTerm)).Select(x=>x.CollectionId);
+                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.CollectionId);
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
             => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
@@ -527,7 +527,7 @@ namespace Biobanks.Services
             var tokenIssue = (await _tokenIssueRecordRepository.ListAsync(
                                         false,
                                         x => x.UserId.Contains(biobankUserId),
-                                        x => x.OrderBy(c => c.IssueDate))).FirstOrDefault();            
+                                        x => x.OrderBy(c => c.IssueDate))).FirstOrDefault();
 
             // Check validation records
             var tokenValidation = await _tokenValidationRecordRepository.ListAsync(
@@ -540,11 +540,11 @@ namespace Biobanks.Services
             if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
             {
                 return await _userManager.GeneratePasswordResetTokenAsync(biobankUserId);
-            }                     
+            }
             else
             {
                 return tokenIssue.Token;
-            }           
+            }
         }
     }
 }
