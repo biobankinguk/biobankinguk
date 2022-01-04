@@ -26,11 +26,9 @@ namespace Biobanks.Web.ApiControllers
         [Route("IncludePublications/{id}/{value}")]
         public async Task IncludePublications(int id, bool value)
         {
-            await _organisationService.Update(new OrganisationDTO
-            {
-                OrganisationId = id,
-                ExcludePublications = !value
-            });
+            var organisation = await _organisationService.Get(id);
+            organisation.ExcludePublications = !value;
+            await _organisationService.Update(organisation);
         }
     }
 }

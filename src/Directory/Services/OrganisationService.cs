@@ -127,6 +127,13 @@ namespace Biobanks.Directory.Services
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
+        public async Task<Organisation> GetForBulkSubmissions(int id)
+            => await Query()
+            .AsNoTracking()
+            .Include(x => x.AccessCondition)
+            .Include(x => x.CollectionType)
+            .FirstOrDefaultAsync(x => x.OrganisationId == id);
+
         /// <inheritdoc/>
         public async Task<Organisation> GetByName(string name)
             => await Query()
@@ -162,50 +169,95 @@ namespace Biobanks.Directory.Services
         }
 
         /// <inheritdoc/>
-        public async Task<Organisation> Update(OrganisationDTO organisationDto)
+        public async Task<Organisation> Update(Organisation organisation)
         {
-            var organisation = await QueryForIndexing()
-                .FirstOrDefaultAsync(x => x.OrganisationId == organisationDto.OrganisationId);
+            var currentOrganisation = await _db.Organisations
+                .FirstOrDefaultAsync(x => x.OrganisationId == organisation.OrganisationId);
 
-            if (organisation is null)
-                throw new KeyNotFoundException($"No Organisation exists with Id={organisationDto.OrganisationId}");
-
-            // Map Updates To Existing Organisation
-            _mapper.Map(organisationDto, organisation);
-
-            // Set Timestamp
-            organisation.LastUpdated = DateTime.Now;
-
-            // Ensure AnonymousIdentifier Exists
-            if (!organisation.AnonymousIdentifier.HasValue)
-                organisation.AnonymousIdentifier = Guid.NewGuid();
-
-            await _db.SaveChangesAsync();
-
-            // Update Organisation Index
-            if (!await IsSuspended(organisation.OrganisationId))
+            if(currentOrganisation != null)
             {
-                var partial = new PartialBiobank
+                currentOrganisation.ExcludePublications = organisation.ExcludePublications;
+                currentOrganisation.Name = organisation.Name;
+                currentOrganisation.Description = organisation.Description;
+                currentOrganisation.Url = organisation.Url;
+                currentOrganisation.ContactEmail = organisation.ContactEmail;
+                currentOrganisation.ContactNumber = organisation.ContactNumber;
+                currentOrganisation.AddressLine1 = organisation.AddressLine1;
+                currentOrganisation.AddressLine2 = organisation.AddressLine2;
+                currentOrganisation.AddressLine3 = organisation.AddressLine3;
+                currentOrganisation.AddressLine4 = organisation.AddressLine4;
+                currentOrganisation.Logo = organisation.Logo;
+                currentOrganisation.City = organisation.City;
+                currentOrganisation.CountyId = organisation.CountyId;
+                currentOrganisation.CountryId = organisation.CountryId;
+                currentOrganisation.PostCode = organisation.PostCode;
+                currentOrganisation.GoverningInstitution = organisation.GoverningInstitution;
+                currentOrganisation.GoverningDepartment = organisation.GoverningDepartment;
+                currentOrganisation.EthicsRegistration = organisation.EthicsRegistration;
+                currentOrganisation.SharingOptOut = organisation.SharingOptOut;
+                currentOrganisation.IsSuspended = organisation.IsSuspended;
+                currentOrganisation.OtherRegistrationReason = organisation.OtherRegistrationReason;
+                currentOrganisation.AccessConditionId = organisation.AccessConditionId;
+                currentOrganisation.CollectionTypeId = organisation.CollectionTypeId;
+
+                //need to clear and load these collections due to tracking
+                currentOrganisation.OrganisationRegistrationReasons?.Clear();
+                currentOrganisation.OrganisationServiceOfferings?.Clear();
+
+
+                var allRegistrationReasons = await _db.OrganisationRegistrationReasons.ToListAsync();
+                foreach(var orr in organisation.OrganisationRegistrationReasons)
                 {
-                    Biobank = organisation.Name,
-                    BiobankServices = organisation.OrganisationServiceOfferings.Select(x => new BiobankServiceDocument
+                    var orgReason = allRegistrationReasons.SingleOrDefault(x => x.OrganisationId == orr.OrganisationId 
+                        && x.RegistrationReasonId == orr.RegistrationReasonId);
+                    currentOrganisation.OrganisationRegistrationReasons.Add(orgReason);
+                }
+
+                var allServiceOfferings = await _db.OrganisationServiceOfferings.ToListAsync();
+                foreach(var ser in organisation.OrganisationServiceOfferings)
+                {
+                    var serviceOffering = allServiceOfferings.SingleOrDefault(x => x.OrganisationId == ser.ServiceOfferingId
+                        && x.ServiceOfferingId == ser.ServiceOfferingId);
+                }
+
+                // Set Timestamp
+                currentOrganisation.LastUpdated = DateTime.Now;
+
+                // Ensure AnonymousIdentifier Exists
+                if (!currentOrganisation.AnonymousIdentifier.HasValue)
+                    currentOrganisation.AnonymousIdentifier = Guid.NewGuid();
+
+                await _db.SaveChangesAsync();
+
+                // Update Organisation Index
+                if (!await IsSuspended(currentOrganisation.OrganisationId))
+                {
+                    var organisationServiceOfferings = await _db.OrganisationServiceOfferings.AsNoTracking()
+                        .Where(x => x.OrganisationId == currentOrganisation.OrganisationId)
+                        .ToListAsync();
+
+                    var partial = new PartialBiobank
                     {
-                        Name = x.ServiceOffering.Value
-                    })
-                };
+                        Biobank = currentOrganisation.Name,
+                        BiobankServices = organisationServiceOfferings.Select(x => new BiobankServiceDocument
+                        {
+                            Name = x.ServiceOffering.Value
+                        })
+                    };
 
-                // Update Collections
-                organisation.Collections
-                    .SelectMany(c => c.SampleSets)
-                    .ToList()
-                    .ForEach(s => BackgroundJob.Enqueue(() => _collectionsIndex.Update(s.Id, partial)));
+                    // Update Collections
+                    currentOrganisation.Collections
+                        .SelectMany(c => c.SampleSets)
+                        .ToList()
+                        .ForEach(s => BackgroundJob.Enqueue(() => _collectionsIndex.Update(s.Id, partial)));
 
-                // Update Capabilities
-                organisation.DiagnosisCapabilities
-                    .ToList()
-                    .ForEach(c => BackgroundJob.Enqueue(() => _capabilitiesIndex.Update(c.DiagnosisCapabilityId, partial)));
+                    // Update Capabilities
+                    currentOrganisation.DiagnosisCapabilities
+                        .ToList()
+                        .ForEach(c => BackgroundJob.Enqueue(() => _capabilitiesIndex.Update(c.DiagnosisCapabilityId, partial)));
+                }
+
             }
-                
             return organisation;
         }
 
@@ -312,11 +364,10 @@ namespace Biobanks.Directory.Services
 
         private async Task<Organisation> Suspend(int organisationId, bool suspend)
         {
-            var organisation = await Update(new OrganisationDTO
-            {
-                OrganisationId = organisationId,
-                IsSuspended = suspend
-            });
+            var organisation = await Get(organisationId);
+            organisation.IsSuspended = suspend;
+
+            await Update(organisation);
 
             return organisation;
         }

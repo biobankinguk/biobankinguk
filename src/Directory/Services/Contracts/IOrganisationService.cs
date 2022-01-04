@@ -63,6 +63,13 @@ namespace Biobanks.Services.Contracts
         /// </summary>
         /// <returns>The Organisation of given Id. Otherwise null</returns>
         Task<Organisation> Get(int biobankId);
+        /// <summary>
+        /// Get the untracked Organisation by a given Id, with default Access Condition and 
+        /// Collection Type for bulk submissions
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Organisation> GetForBulkSubmissions(int id);
 
         /// <summary>
         /// Get the untracked Organisation for a given External Id
@@ -86,7 +93,7 @@ namespace Biobanks.Services.Contracts
         /// Update an exisiting Organisation
         /// </summary>
         /// <returns>The updated Organisation reference</returns>
-        Task<Organisation> Update(OrganisationDTO organisationDto);
+        Task<Organisation> Update(Organisation organisation);
 
         /// <summary>
         /// Delete an exisiting Organisation
