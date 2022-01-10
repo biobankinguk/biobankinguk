@@ -2,8 +2,8 @@ DECLARE @FullName NVARCHAR(MAX), @Email NVARCHAR(256)
 DECLARE @Roles TABLE (RoleName NVARCHAR(256))
 
 -- 1. Set these for the user
-SET @FullName = ''
-SET @Email = ''
+SET @FullName = 'Miriam Aydt'
+SET @Email = 'miriam.aydt@nottingham.ac.uk'
 
 -- 2. set one or more role name values to add the user to
 -- you can see available role names here:
@@ -11,6 +11,8 @@ SET @Email = ''
 INSERT INTO @Roles
     (RoleName)
 VALUES
+('ADAC'),
+('SUPERUSER')
     -- set role names here
     -- e.g. ('ADAC')
 
