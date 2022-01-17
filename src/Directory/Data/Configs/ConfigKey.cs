@@ -13,6 +13,8 @@
 
         public const string ContactThirdParty = "site.display.thirdparty";
 
+        public const string CollectionsNotes = "site.display.collectionsnotes";
+
         //Email Config
         public const string RegistrationEmails = "site.email.registration";
 
@@ -53,6 +55,5 @@
         public const string EthicsFieldName = "site.sampleresource.ethics.name";
         public const string EthicsFieldIsCheckbox = "site.sampleresource.ethics.type";
         public const string SampleResourceName = "site.sampleresource.name";
-
     }
 }
