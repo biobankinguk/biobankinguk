@@ -1,4 +1,5 @@
 ﻿@model Biobanks.Web.Models.Biobank.AbstractCRUDWithAssociatedDataModel
+@using Biobanks.Directory.Data.Constants;
 
 <div class="col-sm-offset-1 col-sm-10">
     <h4>Associated data <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-associateddata"></span></h4>
@@ -6,8 +7,11 @@
 <div class="row">
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <label for="notesText">Notes (NTD Only)</label>
-            <textarea class="form-control" id="Notes" name="Notes" rows="3"></textarea>
+            @if (App.Config[ConfigKey.CollectionsNotes] != "false")
+            {
+                <label for="notesText">Notes (NTD Only)</label>
+                <textarea class="form-control" id="Notes" name="Notes" rows="3"></textarea>
+            }
             <table id="Groups" class="table table-striped">
                 <thead>
                     <tr>
@@ -31,4 +35,4 @@
             @Html.ValidationMessageFor(x => x.Groups)
         </div>
     </div>
-    </div>
+</div>
