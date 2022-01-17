@@ -1,11 +1,11 @@
-﻿using Biobanks.Directory.Data.Transforms.Url;
+﻿using Biobanks.Directory.Data.Constants;
+using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
-
 
 namespace Biobanks.Directory.Data
 {
@@ -57,7 +57,7 @@ namespace Biobanks.Directory.Data
     
         private void SeedContentPages(BiobanksDbContext context)
         {
-            var pages = new[]
+            var pages = new List<ContentPage>()
             {
                 new ContentPage
                 {
@@ -76,6 +76,20 @@ namespace Biobanks.Directory.Data
                     LastUpdated = DateTime.UtcNow
                 }
             };
+
+            var NTDConfig = context.Configs.Where(x => x.Key.Contains(ConfigKey.CollectionsNotes)).FirstOrDefault();
+
+            if (NTDConfig.Value != "false")
+            {
+                pages.Add(new ContentPage
+                {
+                    Title = "Neglected Tropical Disease Associated Data Types",
+                    Body = "",
+                    RouteSlug = "NTD",
+                    IsEnabled = true,
+                    LastUpdated = DateTime.UtcNow
+                });
+            }
 
             foreach (var page in pages)
             {
