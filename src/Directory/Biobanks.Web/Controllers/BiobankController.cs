@@ -1002,7 +1002,8 @@ namespace Biobanks.Web.Controllers
                     CollectionStatusId = model.CollectionStatus,
                     ConsentRestrictions = consentRestrictions,
                     OntologyTermId = ontologyTerm.Id,
-                    FromApi = model.FromApi
+                    FromApi = model.FromApi,
+                    Notes = model.Notes
                 });
 
                 SetTemporaryFeedbackMessage("Collection added!", FeedbackMessageType.Success);
