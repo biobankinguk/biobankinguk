@@ -5,6 +5,7 @@ namespace Biobanks.Web.Models.Biobank
 {
     public abstract class AbstractCRUDWithAssociatedDataModel
     {
+        public string? Notes { get; set; }
         public List<AssociatedDataGroupModel> Groups { get; set; }
         public bool AssociatedDataModelsValid ()
         {

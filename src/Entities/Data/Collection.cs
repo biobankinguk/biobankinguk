@@ -28,6 +28,8 @@ namespace Biobanks.Entities.Data
 
         public bool FromApi { get; set; }
 
+        public string? Notes { get; set; }
+
         public int AccessConditionId { get; set; }
         public virtual AccessCondition AccessCondition { get; set; }
 
