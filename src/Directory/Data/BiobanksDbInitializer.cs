@@ -77,20 +77,6 @@ namespace Biobanks.Directory.Data
                 }
             };
 
-            var NTDConfig = context.Configs.Where(x => x.Key.Contains(ConfigKey.CollectionsNotes)).FirstOrDefault();
-
-            if (NTDConfig.Value != "false")
-            {
-                pages.Add(new ContentPage
-                {
-                    Title = "Neglected Tropical Disease Associated Data Types",
-                    Body = "",
-                    RouteSlug = "NTD",
-                    IsEnabled = true,
-                    LastUpdated = DateTime.UtcNow
-                });
-            }
-
             foreach (var page in pages)
             {
                 if (!context.ContentPages.Any(x => x.RouteSlug == page.RouteSlug))
