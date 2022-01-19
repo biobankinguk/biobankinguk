@@ -8,25 +8,30 @@
 }
 
 <h2>
-	@ViewBag.Title
-	@using (
-		Html.BeginForm("DeleteCollection", "Biobank", FormMethod.Post, new
-		{
-			@class = "pull-right",
-			id = "DeleteCollection"
-		}))
-	{
-		@Html.AntiForgeryToken()
-		@Html.Hidden("id", Model.Id)
+    @ViewBag.Title
+    @using (
+        Html.BeginForm("DeleteCollection", "Biobank", FormMethod.Post, new
+        {
+            @class = "pull-right",
+            id = "DeleteCollection"
+        }))
+    {
+        @Html.ActionLink("Copy", "CopyCollection", new { Model.Id }, new { @class = "btn btn-success" })
+        @Html.Raw("&nbsp;")
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("model", Model)
 
-		@Html.ActionLink("Edit", "EditCollection", new { Model.Id }, new { @class = "btn btn-primary" });
+        @Html.ActionLink("Edit", "EditCollection", new { Model.Id }, new { @class = "btn btn-primary" });
 
-		<button @Html.DisabledIf(Model.FromApi) 
-				type="submit" 
-				class="btn btn-default bootbox-confirm" 
-				data-form-id="DeleteCollection" 
-				data-confirm-message="Are you sure you wish to delete this collection?">Delete</button>
-	}
+        <button @Html.DisabledIf(Model.FromApi)
+                type="submit"
+                class="btn btn-default bootbox-confirm"
+                data-form-id="DeleteCollection"
+                data-confirm-message="Are you sure you wish to delete this collection?">
+            Delete
+        </button>
+    }
 </h2>
 
 @if (!Model.SampleSets.Any())

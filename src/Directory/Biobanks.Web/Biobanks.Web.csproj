@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
@@ -481,6 +481,7 @@
     <Compile Include="Models\Biobank\AcceptanceModel.cs" />
     <Compile Include="Models\Biobank\AssociatedDataTimeFrameModel.cs" />
     <Compile Include="Models\ADAC\BlockAllowListModel.cs" />
+    <Compile Include="Models\Biobank\CopyCollectionModel.cs" />
     <Compile Include="Models\Shared\PublicationSearchModel.cs" />
     <Compile Include="Models\Biobank\SubmissionsModel.cs" />
     <Compile Include="Models\Footer\FooterModel.cs" />
@@ -877,6 +878,7 @@
     <Content Include="Views\Flags\FlagsConfig.cshtml" />
     <Content Include="Views\Home\AltIndex.cshtml" />
     <Content Include="Views\Home\_UnifiedSearchBox.cshtml" />
+    <Content Include="Views\Biobank\CopyCollection.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -54,6 +54,7 @@ namespace Biobanks.Directory.Services
 
             // Update Timestamp
             collection.LastUpdated = DateTime.Now;
+            collection.CollectionStatusId = 3;
 
             _db.Collections.Add(collection);
 
@@ -166,6 +167,13 @@ namespace Biobanks.Directory.Services
             => await _db.Collections
                 .AsNoTracking()
                 .Where(x => x.OntologyTerm.Value == ontologyTerm)
+                .ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<Collection>> ListByTitle(string title)
+            => await _db.Collections
+                .AsNoTracking()
+                .Where(x => x.Title == title)
                 .ToListAsync();
 
         /// <inheritdoc/>
