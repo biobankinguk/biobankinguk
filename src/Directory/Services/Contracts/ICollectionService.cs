@@ -19,6 +19,13 @@ namespace Biobanks.Directory.Services.Contracts
         /// <returns>The newly created Collection with assigned idenitity Id</returns>
         Task<Collection> Add(Collection collection);
 
+
+        /// <summary>
+        /// Copy an exisiting Collection on both database and search index
+        /// </summary>
+        /// <returns>The copied Collection with updated fields and timestamp</returns>
+        Task<Collection> Copy(Collection collection);
+
         /// <summary>
         /// Update an exisiting Collection on both database and search index
         /// </summary>

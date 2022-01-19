@@ -1021,7 +1021,7 @@ namespace Biobanks.Web.Controllers
             return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(model)));
         }
 
-      
+
         //[HttpGet]
         //[AuthoriseToAdministerCollection]
         //public async Task<ActionResult> CopyCollection(int id)
@@ -1083,6 +1083,44 @@ namespace Biobanks.Web.Controllers
 
             var collection = await _collectionService.Get(id);
 
+            // create new title
+            var collections = await _collectionService.List();
+
+            var newTitle = "";
+
+            if (string.IsNullOrEmpty(collection.Title))
+            {
+                newTitle = collection.CollectionStatus.Value;
+            }
+            else
+            {
+                newTitle = collection.Title;
+            }
+
+            var index = 1;
+
+            while (true)
+            {
+                var tmpTitle = " (Copy " + index + ")";
+
+                 var titleExists = collections
+                    .Where(x => x.Title == newTitle + tmpTitle)
+                    .Select(x => x.Title)
+                    .Distinct();
+
+                if (titleExists.Any())
+                {
+                    index++;
+                }
+                else
+                {
+                    newTitle = newTitle + tmpTitle;
+                    break;
+                }
+            }
+
+            collection.Title = newTitle;
+
 
             var newCollection = new Collection
             {
@@ -1097,14 +1135,13 @@ namespace Biobanks.Web.Controllers
                 FromApi = collection.FromApi
             };
 
-            newCollection.Title = "Tesjjhjt";
-
             try
             { // Create and Add New Collection  
-                newCollection = await _collectionService.Add(newCollection);
+                newCollection = await _collectionService.Copy(newCollection);
 
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 var hallo = 1;
             }

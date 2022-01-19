@@ -54,7 +54,6 @@ namespace Biobanks.Directory.Services
 
             // Update Timestamp
             collection.LastUpdated = DateTime.Now;
-            collection.CollectionStatusId = 3;
 
             _db.Collections.Add(collection);
 
@@ -62,6 +61,41 @@ namespace Biobanks.Directory.Services
 
             return collection;
         }
+
+
+        /// <inheritdoc/>
+        public async Task<Collection> Copy(Collection collection)
+        {
+
+            if (collection != null)
+            {
+                collection.LastUpdated = DateTime.Now;
+
+                // Clear Old Associated Data In Favour Of New Data
+                collection.AssociatedData?.Clear(); 
+
+                // Reference Exisiting Consent Restrictions
+                var consentRestrictionIds = collection.ConsentRestrictions?.Select(x => x.Id) ?? Enumerable.Empty<int>();
+
+                collection.ConsentRestrictions?.Clear();
+                collection.ConsentRestrictions = await _db.ConsentRestrictions
+                    .Where(x => consentRestrictionIds.Contains(x.Id))
+                    .ToListAsync();
+
+                _db.Collections.Add(collection);
+
+                await _db.SaveChangesAsync();
+
+                // Index Updated Collection
+                //if (!collection.Organisation.IsSuspended)
+                //{
+                //    await _indexService.UpdateCollectionDetails(collection.CollectionId);
+                //}
+            }
+
+            return collection;
+        }
+
 
         /// <inheritdoc/>
         public async Task<Collection> Update(Collection collection)
