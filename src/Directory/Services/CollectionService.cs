@@ -66,7 +66,6 @@ namespace Biobanks.Directory.Services
         /// <inheritdoc/>
         public async Task<Collection> Copy(Collection collection)
         {
-
             if (collection != null)
             {
                 collection.LastUpdated = DateTime.Now;
@@ -85,12 +84,6 @@ namespace Biobanks.Directory.Services
                 _db.Collections.Add(collection);
 
                 await _db.SaveChangesAsync();
-
-                // Index Updated Collection
-                //if (!collection.Organisation.IsSuspended)
-                //{
-                //    await _indexService.UpdateCollectionDetails(collection.CollectionId);
-                //}
             }
 
             return collection;
