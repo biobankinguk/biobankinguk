@@ -70,8 +70,6 @@ namespace Biobanks.Directory.Services
             {
                 collection.LastUpdated = DateTime.Now;
 
-                // Clear Old Associated Data In Favour Of New Data
-                collection.AssociatedData?.Clear(); 
 
                 // Reference Exisiting Consent Restrictions
                 var consentRestrictionIds = collection.ConsentRestrictions?.Select(x => x.Id) ?? Enumerable.Empty<int>();

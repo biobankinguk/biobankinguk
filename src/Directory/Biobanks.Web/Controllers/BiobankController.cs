@@ -923,7 +923,7 @@ namespace Biobanks.Web.Controllers
 
         #endregion
 
-          #region Collections
+        #region Collections
         [HttpGet]
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> Collections()
@@ -1049,23 +1049,25 @@ namespace Biobanks.Web.Controllers
 
             var index = 1;
 
-            // create new name of collection
+            // create new name of collection. Pattern is 'oldName (Copy 1)' etc.
             while (true)
             {
                 var tmpTitle = " (Copy " + index + ")";
 
+                // check if there a collection with created title
                 var titleExists = collections
                    .Where(x => x.Title == newTitle + tmpTitle)
                    .Select(x => x.Title)
                    .Distinct();
 
+                // if title already exists, keep creating new title and check again
                 if (titleExists.Any())
                 {
                     index++;
                 }
                 else
                 {
-                    newTitle = newTitle + tmpTitle;
+                    newTitle += tmpTitle;
                     break;
                 }
             }
@@ -1076,6 +1078,13 @@ namespace Biobanks.Web.Controllers
                 OrganisationId = biobankId,
                 Title = newTitle,
                 Description = collectionToCopy.Description,
+                AssociatedData = collectionToCopy.AssociatedData
+                    .Select(y => new CollectionAssociatedData
+                    {
+                        AssociatedDataTypeId = y.AssociatedDataTypeId,
+                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId // GroupID
+                    })
+                    .ToList(),
                 StartDate = new DateTime(year: collectionToCopy.StartDate.Year, month: 1, day: 1),
                 AccessConditionId = collectionToCopy.AccessConditionId,
                 CollectionStatusId = collectionToCopy.CollectionStatusId,
@@ -1123,7 +1132,7 @@ namespace Biobanks.Web.Controllers
             }
 
 
-            SetTemporaryFeedbackMessage("Collection copied!", FeedbackMessageType.Success);
+            SetTemporaryFeedbackMessage("This is your copied collection. It has been saved and you are now free to edit it.", FeedbackMessageType.Success);
 
             return RedirectToAction("Collection", new
             {
