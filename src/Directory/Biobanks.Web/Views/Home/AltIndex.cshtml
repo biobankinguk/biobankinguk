@@ -23,13 +23,12 @@
         background-image: url( @Url.Content("~/Content/images/splash_background_tinted.jpg") );
     }
 </style>
-
+@* Homepage overrides the default positioning, so we can have this inside the splash area *@
+<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+    @Html.Partial("_FeedbackMessage")
+</section>
 <div class="splash splash-img container-fluid">
     <div class="row big_splash">
-        @* Homepage overrides the default positioning, so we can have this inside the splash area *@
-        <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
-            @Html.Partial("_FeedbackMessage")
-        </section>
         <h1 class="big_title">@Model.Title</h1>
         <div>
             <a class="btn btn-search" href="#focus" role="button">Search <i class="fa fa-search"></i></a>
