@@ -1094,7 +1094,9 @@ namespace Biobanks.Web.Controllers
             };
 
             // Copy and Add New Collection  
-            newCollection = await _collectionService.Copy(newCollection);
+            newCollection = await _collectionService.Copy(
+                newCollection,
+                (collectionToCopy.SampleSets != null && collectionToCopy.SampleSets.Any()));
 
             // Copy Sample Set 
             foreach (SampleSet sampleSet in collectionToCopy.SampleSets)
@@ -1119,16 +1121,9 @@ namespace Biobanks.Web.Controllers
                       .ToList()
                 };
 
-                try
-                {
-                    // Add New SampleSet
-                    await _biobankWriteService.AddSampleSetAsync(newSampleSet);
-                }
-                catch (Exception ex)
-                {
-                    var tettee = 5;
-                }
-
+                // Add New SampleSet
+                await _biobankWriteService.AddSampleSetAsync(newSampleSet);
+     
             }
 
 
@@ -1139,117 +1134,6 @@ namespace Biobanks.Web.Controllers
                 id = newCollection.CollectionId
             });
         }
-
-        //[HttpGet]
-        //[AuthoriseToAdministerCollection]
-        //public async Task<ActionResult> CopyCollection(int id)
-        //{
-
-        //    var biobankId = SessionHelper.GetBiobankId(Session);
-
-        //    if (biobankId == 0)
-        //        return RedirectToAction("Index", "Home");
-
-        //    var collectionToCopy = await _collectionService.Get(id);
-
-        //    // get all collections to determine whether new ttle is already exists
-        //    var collections = await _collectionService.List();
-
-        //    var newTitle = "";
-
-        //    if (string.IsNullOrEmpty(collectionToCopy.Title))
-        //    {
-        //        newTitle = collectionToCopy.CollectionStatus.Value;
-        //    }
-        //    else
-        //    {
-        //        newTitle = collectionToCopy.Title;
-        //    }
-
-        //    var index = 1;
-
-        //    // create new name of collection
-        //    while (true)
-        //    {
-        //        var tmpTitle = " (Copy " + index + ")";
-
-        //         var titleExists = collections
-        //            .Where(x => x.Title == newTitle + tmpTitle)
-        //            .Select(x => x.Title)
-        //            .Distinct();
-
-        //        if (titleExists.Any())
-        //        {
-        //            index++;
-        //        }
-        //        else
-        //        {
-        //            newTitle = newTitle + tmpTitle;
-        //            break;
-        //        }
-        //    }
-
-
-        //    var newCollection = new Collection
-        //    {
-        //        OrganisationId = biobankId,
-        //        Title = newTitle,
-        //        Description = collectionToCopy.Description,
-        //        StartDate = new DateTime(year: collectionToCopy.StartDate.Year, month: 1, day: 1),
-        //        AccessConditionId = collectionToCopy.AccessConditionId,
-        //        CollectionStatusId = collectionToCopy.CollectionStatusId,
-        //        ConsentRestrictions = collectionToCopy.ConsentRestrictions,
-        //        OntologyTermId = collectionToCopy.OntologyTermId,
-        //        FromApi = collectionToCopy.FromApi
-        //    };
-
-        //    // Copy and Add New Collection  
-        //    newCollection = await _collectionService.Copy(newCollection);   
-
-        //    // Copy Sample Set 
-        //    foreach (SampleSet sampleSet in collectionToCopy.SampleSets)
-        //    {
-        //      var newSampleSet = new SampleSet
-        //        {
-        //            CollectionId = newCollection.CollectionId,
-        //            SexId = sampleSet.SexId,
-        //            AgeRangeId =  sampleSet.AgeRangeId,
-        //            DonorCountId =  sampleSet.DonorCountId,
-        //            MaterialDetails =  sampleSet.MaterialDetails.Select(x =>
-        //                new MaterialDetail
-        //                {
-        //                    MaterialTypeId = x.MaterialTypeId,
-        //                    PreservationTypeId = x.PreservationTypeId,
-        //                    StorageTemperatureId = x.StorageTemperatureId,
-        //                    CollectionPercentageId = x.CollectionPercentageId,
-        //                    MacroscopicAssessmentId = x.MacroscopicAssessmentId,
-        //                    ExtractionProcedureId = x.ExtractionProcedureId
-        //                }
-        //            )
-        //            .ToList()
-        //        };
-
-        //        try
-        //        {
-        //            // Add New SampleSet
-        //            await _biobankWriteService.AddSampleSetAsync(sampleSet);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            var tettee = 5;
-        //        }
-
-        //    }
-
-
-        //    SetTemporaryFeedbackMessage("Collection copied!", FeedbackMessageType.Success);
-
-        //    return RedirectToAction("Collection", new
-        //    {
-        //        id = newCollection.CollectionId
-        //    });
-        //}
-
 
         [HttpGet]
         [AuthoriseToAdministerCollection]

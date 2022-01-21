@@ -64,7 +64,7 @@ namespace Biobanks.Directory.Services
 
 
         /// <inheritdoc/>
-        public async Task<Collection> Copy(Collection collection)
+        public async Task<Collection> Copy(Collection collection, bool isValid)
         {
             if (collection != null)
             {
@@ -82,6 +82,12 @@ namespace Biobanks.Directory.Services
                 _db.Collections.Add(collection);
 
                 await _db.SaveChangesAsync();
+
+                // Index Updated Collection
+                if (isValid)
+                {
+                    await _indexService.UpdateCollectionDetails(collection.CollectionId);
+                }
             }
 
             return collection;
@@ -123,7 +129,7 @@ namespace Biobanks.Directory.Services
                 await _db.SaveChangesAsync();
 
                 // Index Updated Collection
-                if (!collection.Organisation.IsSuspended)
+                if (!currentCollection.Organisation.IsSuspended)
                 {
                     await _indexService.UpdateCollectionDetails(currentCollection.CollectionId);
                 }
