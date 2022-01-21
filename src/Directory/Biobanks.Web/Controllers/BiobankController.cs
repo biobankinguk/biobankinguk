@@ -1077,6 +1077,7 @@ namespace Biobanks.Web.Controllers
             {
                 OrganisationId = biobankId,
                 Title = newTitle,
+                CollectionTypeId = collectionToCopy.CollectionTypeId,
                 Description = collectionToCopy.Description,
                 AssociatedData = collectionToCopy.AssociatedData
                     .Select(y => new CollectionAssociatedData
