@@ -9,7 +9,7 @@
         <div class="col-sm-offset-2 col-sm-10">
             @if (App.Config[ConfigKey.CollectionsNotes] != "false")
             {
-            <label for="notesText">Notes (NTD Only)  <span class="fa fa-info-circle help-icon-button help-icon-for-label" onclick="window.location='@Url.Action("NTD", "Pages")'"></span></label>
+                <label for="notesText">Notes (NTD Only)  <a style="color: black; text-decoration: none;" class="fa fa-info-circle help-icon-button" target="_blank" href="@Url.Action("NTD", "Pages")"></a></label>
                 <textarea class="form-control" id="Notes" name="Notes" rows="3"></textarea>
             }
             <table id="Groups" class="table table-striped">
