@@ -1040,7 +1040,7 @@ namespace Biobanks.Web.Controllers
 
             if (string.IsNullOrEmpty(collectionToCopy.Title))
             {
-                newTitle = collectionToCopy.CollectionStatus.Value;
+                newTitle = collectionToCopy.OntologyTerm.Value;
             }
             else
             {
