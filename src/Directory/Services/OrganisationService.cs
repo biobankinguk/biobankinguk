@@ -161,9 +161,7 @@ namespace Biobanks.Directory.Services
 
             await _db.SaveChangesAsync();
 
-            //// TODO: Is there a better External ID Schema
-            //// Update External Id
-            ////organisation.OrganisationExternalId += organisation.OrganisationId;
+           organisation.OrganisationExternalId += organisation.OrganisationId;
 
             return organisation;
         }
