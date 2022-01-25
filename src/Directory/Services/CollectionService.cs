@@ -64,33 +64,93 @@ namespace Biobanks.Directory.Services
 
 
         /// <inheritdoc/>
-        public async Task<Collection> Copy(Collection collection, bool isValid)
+        public async Task<Collection> Copy(int id, int biobankId)
         {
-            if (collection != null)
-            {
-                collection.LastUpdated = DateTime.Now;
+              var collectionToCopy = await Get(id);
 
+            // get all collections to determine whether new ttle is already exists
+            var collections = await List();
+
+            var newTitle = "";
+
+            if (string.IsNullOrEmpty(collectionToCopy.Title))
+            {
+                newTitle = collectionToCopy.OntologyTerm.Value;
+            }
+            else
+            {
+                newTitle = collectionToCopy.Title;
+            }
+
+            var index = 1;
+
+            // create new name of collection. Pattern is 'oldName (Copy 1)' etc.
+            while (true)
+            {
+                var tmpTitle = " (Copy " + index + ")";
+
+                // check if there a collection with created title
+                var titleExists = collections
+                   .Where(x => x.Title == newTitle + tmpTitle)
+                   .Select(x => x.Title)
+                   .Distinct();
+
+                // if title already exists, keep creating new title and check again
+                if (titleExists.Any())
+                {
+                    index++;
+                }
+                else
+                {
+                    newTitle += tmpTitle;
+                    break;
+                }
+            }
+
+
+            var newCollection = new Collection
+            {
+                OrganisationId = biobankId,
+                Title = newTitle,
+                CollectionTypeId = collectionToCopy.CollectionTypeId,
+                Description = collectionToCopy.Description,
+                AssociatedData = collectionToCopy.AssociatedData
+                    .Select(y => new CollectionAssociatedData
+                    {
+                        AssociatedDataTypeId = y.AssociatedDataTypeId,
+                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId // GroupID
+                    })
+                    .ToList(),
+                StartDate = new DateTime(year: collectionToCopy.StartDate.Year, month: 1, day: 1),
+                AccessConditionId = collectionToCopy.AccessConditionId,
+                LastUpdated =  DateTime.Now,
+                CollectionStatusId = collectionToCopy.CollectionStatusId,
+                ConsentRestrictions = collectionToCopy.ConsentRestrictions,
+                OntologyTermId = collectionToCopy.OntologyTermId,
+                FromApi = false
+            };
 
                 // Reference Exisiting Consent Restrictions
-                var consentRestrictionIds = collection.ConsentRestrictions?.Select(x => x.Id) ?? Enumerable.Empty<int>();
+                var consentRestrictionIds = newCollection.ConsentRestrictions?.Select(x => x.Id) ?? Enumerable.Empty<int>();
 
-                collection.ConsentRestrictions?.Clear();
-                collection.ConsentRestrictions = await _db.ConsentRestrictions
+                newCollection.ConsentRestrictions?.Clear();
+                newCollection.ConsentRestrictions = await _db.ConsentRestrictions
                     .Where(x => consentRestrictionIds.Contains(x.Id))
                     .ToListAsync();
 
-                _db.Collections.Add(collection);
+                _db.Collections.Add(newCollection);
 
                 await _db.SaveChangesAsync();
 
                 // Index Updated Collection
-                if (isValid)
+                if (collectionToCopy.SampleSets != null && collectionToCopy.SampleSets.Any())
                 {
-                    await _indexService.UpdateCollectionDetails(collection.CollectionId);
+                    await _indexService.UpdateCollectionDetails(newCollection.CollectionId);
                 }
-            }
 
-            return collection;
+            newCollection.SampleSets = collectionToCopy.SampleSets;
+           
+            return newCollection;
         }
 
 

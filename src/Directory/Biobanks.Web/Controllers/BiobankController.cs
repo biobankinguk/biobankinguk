@@ -1032,76 +1032,12 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            var collectionToCopy = await _collectionService.Get(id);
-
-            // get all collections to determine whether new ttle is already exists
-            var collections = await _collectionService.List();
-
-            var newTitle = "";
-
-            if (string.IsNullOrEmpty(collectionToCopy.Title))
-            {
-                newTitle = collectionToCopy.OntologyTerm.Value;
-            }
-            else
-            {
-                newTitle = collectionToCopy.Title;
-            }
-
-            var index = 1;
-
-            // create new name of collection. Pattern is 'oldName (Copy 1)' etc.
-            while (true)
-            {
-                var tmpTitle = " (Copy " + index + ")";
-
-                // check if there a collection with created title
-                var titleExists = collections
-                   .Where(x => x.Title == newTitle + tmpTitle)
-                   .Select(x => x.Title)
-                   .Distinct();
-
-                // if title already exists, keep creating new title and check again
-                if (titleExists.Any())
-                {
-                    index++;
-                }
-                else
-                {
-                    newTitle += tmpTitle;
-                    break;
-                }
-            }
-
-
-            var newCollection = new Collection
-            {
-                OrganisationId = biobankId,
-                Title = newTitle,
-                CollectionTypeId = collectionToCopy.CollectionTypeId,
-                Description = collectionToCopy.Description,
-                AssociatedData = collectionToCopy.AssociatedData
-                    .Select(y => new CollectionAssociatedData
-                    {
-                        AssociatedDataTypeId = y.AssociatedDataTypeId,
-                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId // GroupID
-                    })
-                    .ToList(),
-                StartDate = new DateTime(year: collectionToCopy.StartDate.Year, month: 1, day: 1),
-                AccessConditionId = collectionToCopy.AccessConditionId,
-                CollectionStatusId = collectionToCopy.CollectionStatusId,
-                ConsentRestrictions = collectionToCopy.ConsentRestrictions,
-                OntologyTermId = collectionToCopy.OntologyTermId,
-                FromApi = collectionToCopy.FromApi
-            };
 
             // Copy and Add New Collection  
-            newCollection = await _collectionService.Copy(
-                newCollection,
-                (collectionToCopy.SampleSets != null && collectionToCopy.SampleSets.Any()));
+            var newCollection = await _collectionService.Copy(id, biobankId);
 
             // Copy Sample Set 
-            foreach (SampleSet sampleSet in collectionToCopy.SampleSets)
+            foreach (SampleSet sampleSet in newCollection.SampleSets)
             {
                 var newSampleSet = new SampleSet
                 {

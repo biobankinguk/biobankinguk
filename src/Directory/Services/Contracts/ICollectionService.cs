@@ -24,7 +24,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// Copy an exisiting Collection on both database and search index
         /// </summary>
         /// <returns>The copied Collection with updated fields and timestamp</returns>
-        Task<Collection> Copy(Collection collection, bool isValid);
+        Task<Collection> Copy(int id, int biobankId);
 
         /// <summary>
         /// Update an exisiting Collection on both database and search index
