@@ -11,8 +11,7 @@ SET @Email = ''
 INSERT INTO @Roles
     (RoleName)
 VALUES
-('ADAC'),
-('SUPERUSER')
+
     -- set role names here
     -- e.g. ('ADAC')
 
