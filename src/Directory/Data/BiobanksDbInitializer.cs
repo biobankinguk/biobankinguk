@@ -1,11 +1,11 @@
-﻿using Biobanks.Directory.Data.Transforms.Url;
+﻿using Biobanks.Directory.Data.Constants;
+using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
-
 
 namespace Biobanks.Directory.Data
 {
@@ -57,7 +57,7 @@ namespace Biobanks.Directory.Data
     
         private void SeedContentPages(BiobanksDbContext context)
         {
-            var pages = new[]
+            var pages = new List<ContentPage>()
             {
                 new ContentPage
                 {

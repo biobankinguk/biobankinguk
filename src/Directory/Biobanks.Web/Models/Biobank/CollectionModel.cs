@@ -13,6 +13,7 @@ namespace Biobanks.Web.Models.Biobank
         public string AccessCondition { get; set; }
         public string CollectionType { get; set; }
         public bool FromApi { get; set; }
+        public string? Notes { get; set; }
 
         public IEnumerable<AssociatedDataSummaryModel> AssociatedData { get; set; }
 

@@ -89,6 +89,14 @@ namespace Biobanks.Directory.Data.Configs
                 Description = "Enable/Disable third party contact in Contact List",
                 ReadOnly = false
             },
+            new Config
+            {
+                Key = "site.display.collectionsnotes",
+                Value = "false",
+                Name = "Show notes field for Collections",
+                Description = "Display notes text field when adding a Collection",
+                ReadOnly = false
+            },
             // Storage Temperature Name Override
             new Config 
             {

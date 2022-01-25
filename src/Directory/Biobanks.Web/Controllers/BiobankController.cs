@@ -1001,7 +1001,8 @@ namespace Biobanks.Web.Controllers
                     CollectionStatusId = model.CollectionStatus,
                     ConsentRestrictions = consentRestrictions,
                     OntologyTermId = ontologyTerm.Id,
-                    FromApi = model.FromApi
+                    FromApi = model.FromApi,
+                    Notes = model.Notes
                 });
 
                 SetTemporaryFeedbackMessage("Collection added!", FeedbackMessageType.Success);
@@ -1288,6 +1289,7 @@ namespace Biobanks.Web.Controllers
                 AccessCondition = collection.AccessCondition.Value,
                 CollectionType = collection.CollectionType?.Value,
                 FromApi = collection.FromApi,
+                Notes = collection.Notes,
                 AssociatedData = collection.AssociatedData.Select(x => new AssociatedDataSummaryModel
                 {
                     Description = x.AssociatedDataType.Value,
