@@ -62,6 +62,98 @@ namespace Biobanks.Directory.Services
             return collection;
         }
 
+
+        /// <inheritdoc/>
+        public async Task<Collection> Copy(int id, int biobankId)
+        {
+              var collectionToCopy = await Get(id);
+
+            // get all collections to determine whether new ttle is already exists
+            var collections = await List();
+
+            var newTitle = "";
+
+            if (string.IsNullOrEmpty(collectionToCopy.Title))
+            {
+                newTitle = collectionToCopy.OntologyTerm.Value;
+            }
+            else
+            {
+                newTitle = collectionToCopy.Title;
+            }
+
+            var index = 1;
+
+            // create new name of collection. Pattern is 'oldName (Copy 1)' etc.
+            while (true)
+            {
+                var tmpTitle = " (Copy " + index + ")";
+
+                // check if there a collection with created title
+                var titleExists = collections
+                   .Where(x => x.Title == newTitle + tmpTitle)
+                   .Select(x => x.Title)
+                   .Distinct();
+
+                // if title already exists, keep creating new title and check again
+                if (titleExists.Any())
+                {
+                    index++;
+                }
+                else
+                {
+                    newTitle += tmpTitle;
+                    break;
+                }
+            }
+
+
+            var newCollection = new Collection
+            {
+                OrganisationId = biobankId,
+                Title = newTitle,
+                CollectionTypeId = collectionToCopy.CollectionTypeId,
+                Description = collectionToCopy.Description,
+                AssociatedData = collectionToCopy.AssociatedData
+                    .Select(y => new CollectionAssociatedData
+                    {
+                        AssociatedDataTypeId = y.AssociatedDataTypeId,
+                        AssociatedDataProcurementTimeframeId = y.AssociatedDataProcurementTimeframeId // GroupID
+                    })
+                    .ToList(),
+                StartDate = new DateTime(year: collectionToCopy.StartDate.Year, month: 1, day: 1),
+                AccessConditionId = collectionToCopy.AccessConditionId,
+                LastUpdated =  DateTime.Now,
+                CollectionStatusId = collectionToCopy.CollectionStatusId,
+                ConsentRestrictions = collectionToCopy.ConsentRestrictions,
+                OntologyTermId = collectionToCopy.OntologyTermId,
+                FromApi = false
+            };
+
+                // Reference Exisiting Consent Restrictions
+                var consentRestrictionIds = newCollection.ConsentRestrictions?.Select(x => x.Id) ?? Enumerable.Empty<int>();
+
+                newCollection.ConsentRestrictions?.Clear();
+                newCollection.ConsentRestrictions = await _db.ConsentRestrictions
+                    .Where(x => consentRestrictionIds.Contains(x.Id))
+                    .ToListAsync();
+
+                _db.Collections.Add(newCollection);
+
+                await _db.SaveChangesAsync();
+
+                // Index Updated Collection
+                if (collectionToCopy.SampleSets != null && collectionToCopy.SampleSets.Any())
+                {
+                    await _indexService.UpdateCollectionDetails(newCollection.CollectionId);
+                }
+
+            newCollection.SampleSets = collectionToCopy.SampleSets;
+           
+            return newCollection;
+        }
+
+
         /// <inheritdoc/>
         public async Task<Collection> Update(Collection collection)
         {
@@ -97,7 +189,7 @@ namespace Biobanks.Directory.Services
                 await _db.SaveChangesAsync();
 
                 // Index Updated Collection
-                if (!collection.Organisation.IsSuspended)
+                if (!currentCollection.Organisation.IsSuspended)
                 {
                     await _indexService.UpdateCollectionDetails(currentCollection.CollectionId);
                 }
@@ -166,6 +258,13 @@ namespace Biobanks.Directory.Services
             => await _db.Collections
                 .AsNoTracking()
                 .Where(x => x.OntologyTerm.Value == ontologyTerm)
+                .ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<Collection>> ListByTitle(string title)
+            => await _db.Collections
+                .AsNoTracking()
+                .Where(x => x.Title == title)
                 .ToListAsync();
 
         /// <inheritdoc/>

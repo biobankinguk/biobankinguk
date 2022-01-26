@@ -1,5 +1,4 @@
 using AutoMapper;
-
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Directory.Services.Constants;
@@ -231,8 +230,8 @@ namespace Biobanks.Web.Controllers
             foreach (var rr in model.RegistrationReasons)
             {
                 if (rr.Active)
-                    biobank.OrganisationRegistrationReasons.Add(new OrganisationRegistrationReason 
-                        { OrganisationId = biobank.OrganisationId, RegistrationReasonId = rr.RegistrationReasonId });
+                    biobank.OrganisationRegistrationReasons.Add(new OrganisationRegistrationReason
+                    { OrganisationId = biobank.OrganisationId, RegistrationReasonId = rr.RegistrationReasonId });
             }
 
             foreach (var sm in model.ServiceModels)
@@ -286,9 +285,9 @@ namespace Biobanks.Web.Controllers
                 catch (ArgumentNullException)
                 {
                 } //no problem, just means no logo uploaded in this form submission
-                
-             }
-            
+
+            }
+
 
             return biobank;
         }
@@ -324,7 +323,7 @@ namespace Biobanks.Web.Controllers
                 model = await AddCountiesToModel(model);
                 return View(model);
             }
-     
+
             //Extra form validation that the model state can't do for us
 
             //Logo, if any
@@ -956,7 +955,7 @@ namespace Biobanks.Web.Controllers
         [HttpGet]
         public async Task<ViewResult> AddCollection()
         {
-            return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(new AddCollectionModel {FromApi = false })));
+            return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(new AddCollectionModel { FromApi = false })));
         }
 
         [HttpPost]
@@ -1021,6 +1020,57 @@ namespace Biobanks.Web.Controllers
             }
 
             return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(model)));
+        }
+
+        [HttpGet]
+        [AuthoriseToAdministerCollection]
+        public async Task<ActionResult> CopyCollection(int id)
+        {
+
+            var biobankId = SessionHelper.GetBiobankId(Session);
+
+            if (biobankId == 0)
+                return RedirectToAction("Index", "Home");
+
+
+            // Copy and Add New Collection  
+            var newCollection = await _collectionService.Copy(id, biobankId);
+
+            // Copy Sample Set 
+            foreach (SampleSet sampleSet in newCollection.SampleSets)
+            {
+                var newSampleSet = new SampleSet
+                {
+                    CollectionId = newCollection.CollectionId,
+                    SexId = sampleSet.SexId,
+                    AgeRangeId = sampleSet.AgeRangeId,
+                    DonorCountId = sampleSet.DonorCountId,
+                    MaterialDetails = sampleSet.MaterialDetails.Select(x =>
+                       new MaterialDetail
+                       {
+                           MaterialTypeId = x.MaterialTypeId,
+                           PreservationTypeId = x.PreservationTypeId,
+                           StorageTemperatureId = x.StorageTemperatureId,
+                           CollectionPercentageId = x.CollectionPercentageId,
+                           MacroscopicAssessmentId = x.MacroscopicAssessmentId,
+                           ExtractionProcedureId = x.ExtractionProcedureId
+                       }
+                      )
+                      .ToList()
+                };
+
+                // Add New SampleSet
+                await _biobankWriteService.AddSampleSetAsync(newSampleSet);
+     
+            }
+
+
+            SetTemporaryFeedbackMessage("This is your copied collection. It has been saved and you are now free to edit it.", FeedbackMessageType.Success);
+
+            return RedirectToAction("Collection", new
+            {
+                id = newCollection.CollectionId
+            });
         }
 
         [HttpGet]
@@ -1110,7 +1160,7 @@ namespace Biobanks.Web.Controllers
                 var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
 
                 await _collectionService.Update(new Collection
-                { 
+                {
                     AccessConditionId = model.AccessCondition,
                     AssociatedData = associatedData,
                     CollectionId = model.Id,
@@ -1190,8 +1240,8 @@ namespace Biobanks.Web.Controllers
                     MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
                     PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
                     StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct()),
-                    ExtractionProcedures = Join(" / ", sampleSet.MaterialDetails.Where(x=>x.ExtractionProcedure?.DisplayOnDirectory == true)
-                                           .Select(x=>x.ExtractionProcedure?.Value).Distinct())
+                    ExtractionProcedures = Join(" / ", sampleSet.MaterialDetails.Where(x => x.ExtractionProcedure?.DisplayOnDirectory == true)
+                                           .Select(x => x.ExtractionProcedure?.Value).Distinct())
                 })
             };
 
@@ -1411,7 +1461,7 @@ namespace Biobanks.Web.Controllers
                     PreservationType = x.PreservationType?.Value,
                     StorageTemperature = x.StorageTemperature.Value,
                     ExtractionProcedure = x.ExtractionProcedure?.DisplayOnDirectory == true ? x.ExtractionProcedure.Value : null
-                    
+
                 }),
                 ShowMacroscopicAssessment = (assessments.Count() > 1)
             };
@@ -1894,7 +1944,7 @@ namespace Biobanks.Web.Controllers
 
                 biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
             }
-                        
+
             return new JsonResult
             {
                 Data = biobankPublications,
@@ -1933,8 +1983,8 @@ namespace Biobanks.Web.Controllers
                     return _mapper.Map<Publication>(jPublications?.ToObject<List<PublicationSearchModel>>().FirstOrDefault());
                 }
                 catch (Exception e) when (
-                    e is HttpRequestException || 
-                    e is JsonReaderException  ||
+                    e is HttpRequestException ||
+                    e is JsonReaderException ||
                     e is UriFormatException)
                 {
                     // Log Error via Application Insights
@@ -1943,7 +1993,7 @@ namespace Biobanks.Web.Controllers
 
                     return null;
                 }
-                
+
             }
 
             return publication;
@@ -1968,10 +2018,10 @@ namespace Biobanks.Web.Controllers
                 if (publication == null)
                     publication = await PublicationSearch(publicationId, biobankId);
 
-                return publication != null 
-                    ?Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet) 
-                    :Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
-            }                
+                return publication != null
+                    ? Json(_mapper.Map<BiobankPublicationModel>(publication), JsonRequestBehavior.AllowGet)
+                    : Json(new EmptyResult(), JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
@@ -2170,7 +2220,7 @@ namespace Biobanks.Web.Controllers
             var biobank = await _organisationService.Get(biobankId);
             biobank.AccessConditionId = model.AccessCondition;
             biobank.CollectionTypeId = model.CollectionType;
-            
+
             await _organisationService.Update(biobank);
 
             //Set feedback and redirect
@@ -2183,7 +2233,7 @@ namespace Biobanks.Web.Controllers
         [Authorize(ClaimType = CustomClaimType.Biobank)]
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
-            var credentials = 
+            var credentials =
                 await _organisationService.IsApiClient(biobankId)
                     ? await _organisationService.GenerateNewSecretForBiobank(biobankId)
                     : await _organisationService.GenerateNewApiClient(biobankId);
