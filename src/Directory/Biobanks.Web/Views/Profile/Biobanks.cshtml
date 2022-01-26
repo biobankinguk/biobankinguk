@@ -67,7 +67,7 @@
 					<th width="250">County</th>}
 					<th>Description</th>
 
-					@foreach (var organisation in Model.OrderBy(x => x.Name))
+					@foreach (var organisation in Model.OrderBy(x => x.Name).Where(x => !x.IsSuspended))
 					{
 						<tr>
 							<td></td>
