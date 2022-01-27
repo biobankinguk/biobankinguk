@@ -38,7 +38,7 @@ namespace Biobanks.Directory.Services
 
             // Filter By Description
             if (!string.IsNullOrEmpty(value))
-                query = query.Where(x => x.Value == value);
+                query = query.Where(x => x.Value.Contains(value));
 
             // Filter By SnomedTag
             if (tags != null)
