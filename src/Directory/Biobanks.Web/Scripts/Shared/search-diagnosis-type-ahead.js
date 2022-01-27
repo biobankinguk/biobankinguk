@@ -38,7 +38,7 @@ $(function() {
     searchElement.typeahead({
         hint: false,
         highlight: true,
-        minLength: 1,
+        minLength: 3,
         autoselect: true
     },
     {
