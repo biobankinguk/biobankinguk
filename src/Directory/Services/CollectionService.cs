@@ -147,8 +147,6 @@ namespace Biobanks.Directory.Services
                 {
                     await _indexService.UpdateCollectionDetails(newCollection.CollectionId);
                 }
-
-            newCollection.SampleSets = collectionToCopy.SampleSets;
            
             return newCollection;
         }

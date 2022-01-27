@@ -1036,8 +1036,10 @@ namespace Biobanks.Web.Controllers
             // Copy and Add New Collection  
             var newCollection = await _collectionService.Copy(id, biobankId);
 
+            var originalCollection = await _collectionService.Get(id);
+
             // Copy Sample Set 
-            foreach (SampleSet sampleSet in newCollection.SampleSets)
+            foreach (SampleSet sampleSet in originalCollection.SampleSets)
             {
                 var newSampleSet = new SampleSet
                 {
@@ -1059,9 +1061,8 @@ namespace Biobanks.Web.Controllers
                       .ToList()
                 };
 
-                // Add New SampleSet
-                await _biobankWriteService.AddSampleSetAsync(newSampleSet);
-     
+                    // Add New SampleSet
+                    await _biobankWriteService.AddSampleSetAsync(newSampleSet);
             }
 
 
