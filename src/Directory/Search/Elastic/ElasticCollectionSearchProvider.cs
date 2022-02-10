@@ -217,6 +217,7 @@ namespace Biobanks.Search.Elastic
                 });
             }
 
+
             // Add the current collection to the extract.
             extract.Collections.Add(currentCollection);
 
@@ -235,8 +236,14 @@ namespace Biobanks.Search.Elastic
                 AccessCondition = document.AccessCondition,
                 CollectionType = document.CollectionType,
                 CollectionStatus = document.CollectionStatus,
-                ConsentRestrictions = document.ConsentRestrictions.Select(x => x.Description)
-            };
+                ConsentRestrictions = document.ConsentRestrictions.Select(x => x.Description),
+                AssociatedData = document.AssociatedData.Select(x => new AssociatedDataSummary
+                {
+                    DataType = x.Text,
+                    ProcurementTimeframe = x.Timeframe
+                }).ToList()
+
+        };
         }
 
         #endregion

@@ -20,5 +20,7 @@ namespace Biobanks.Web.Models.Search
         public IEnumerable<string> ConsentRestrictions { get; set; }
 
         public IList<DetailedCollectionSearchSampleSetModel> SampleSets { get; set; }
+
+        public IEnumerable<KeyValuePair<string, string>> AssociatedData { get; set; }
     }
 }

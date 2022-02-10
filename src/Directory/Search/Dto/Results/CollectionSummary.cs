@@ -22,5 +22,6 @@ namespace Biobanks.Search.Dto.Results
         public IEnumerable<string> ConsentRestrictions { get; set; }
 
         public IList<SampleSetSummary> SampleSets { get; set; }
+        public IList<AssociatedDataSummary> AssociatedData { get; set; }
     }
 }
