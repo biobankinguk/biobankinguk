@@ -13,6 +13,8 @@ using Core.Jobs;
 using Core.Submissions.Services;
 using Core.Submissions.Services.Contracts;
 
+using Omop;
+
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -73,6 +75,14 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // config OMOP PostGres db
+            services
+                .AddDbContext<OmopDbContext>
+                (options => options.UseNpgsql(
+                    Configuration.GetConnectionString("Omop"));
+        
+
+
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();

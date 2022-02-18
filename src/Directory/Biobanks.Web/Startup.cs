@@ -11,10 +11,11 @@ using Castle.Windsor;
 
 using Hangfire;
 using Hangfire.Windsor;
-
 using Microsoft.Owin.Security.DataProtection;
 
+
 using Owin;
+
 
 namespace Biobanks.Web
 {
@@ -28,12 +29,15 @@ namespace Biobanks.Web
         // Hangfire AuthorizationFilters
         public void Configuration(IAppBuilder app)
         {
+
+            var rsdasd = Database.CanConnect();
+
             DataProtectionProvider = app.GetDataProtectionProvider();
 
             // Do Windsor initialisation here, so we can pass it OWIN stuff, like DataProtectionProvider.
             var windsorContainer = new WindsorContainer();
 
-            windsorContainer.Install(new WindsorInstaller(DataProtectionProvider));
+             windsorContainer.Install(new WindsorInstaller(DataProtectionProvider));
             MvcApplication.WindsorContainer = windsorContainer;
             ControllerBuilder.Current.SetControllerFactory(new WindsorControllerFactory(MvcApplication.WindsorContainer));
 
