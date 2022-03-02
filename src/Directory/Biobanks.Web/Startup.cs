@@ -30,7 +30,6 @@ namespace Biobanks.Web
         public void Configuration(IAppBuilder app)
         {
 
-            var rsdasd = Database.CanConnect();
 
             DataProtectionProvider = app.GetDataProtectionProvider();
 
