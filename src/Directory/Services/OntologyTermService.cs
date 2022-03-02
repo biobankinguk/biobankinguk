@@ -25,20 +25,20 @@ namespace Biobanks.Directory.Services
 
         protected IQueryable<OntologyTerm> ReadOnlyQuery(
             string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterById = true)
-        {     
-              var query = _db.OntologyTerms
-             .AsNoTracking()
-             .Include(x => x.SnomedTag)
-             .Include(x => x.MaterialTypes)
-             .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
+        {
+            var query = _db.OntologyTerms
+                .AsNoTracking()
+                .Include(x => x.SnomedTag)
+                .Include(x => x.MaterialTypes)
+                .Where(x => x.DisplayOnDirectory || !onlyDisplayable); 
 
             // Filter By ID
             if (!string.IsNullOrEmpty(id) && filterById)
                 query = query.Where(x => x.Id == id);
 
-            // Filter By OntologyTerm and OtherTerms
+            // Filter By Description
             if (!string.IsNullOrEmpty(value))
-                query = query.Where(x => x.Value.Contains(value) || x.OtherTerms.Contains(value));
+                query = query.Where(x => x.Value.Contains(value));
 
             // Filter By SnomedTag
             if (tags != null)
@@ -55,7 +55,6 @@ namespace Biobanks.Directory.Services
             string value = null, List<string> tags = null, bool onlyDisplayable = false)
             => await ReadOnlyQuery(id: null, value, tags, onlyDisplayable).ToListAsync();
 
-
         /// <inheritdoc/>
         public async Task<IEnumerable<OntologyTerm>> ListPaginated(
             int skip, int take, string value = null, List<string> tags = null, bool onlyDisplayable = false)
@@ -69,7 +68,7 @@ namespace Biobanks.Directory.Services
 
         /// <inheritdoc/>
         public async Task<OntologyTerm> Get(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false)
-            => await ReadOnlyQuery(id, value, tags, onlyDisplayable).FirstOrDefaultAsync();
+            => await ReadOnlyQuery(id, value, tags, onlyDisplayable).SingleOrDefaultAsync();
 
         /// <inheritdoc/>
         public async Task<int> Count(string value = null, List<string> tags = null)

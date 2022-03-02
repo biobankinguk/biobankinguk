@@ -4,7 +4,7 @@
       "commandName": "Project",
       "commandLineArgs": "seed",
       "environmentVariables": {
-        "DOTNET_RefDataConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=Biobanks;Trusted_Connection=True;MultipleActiveResultSets=true;"
+        "DOTNET_RefDataConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=Biobanks; user id=atlas@atlas-maps; password=2vdCJlSEcdPGbkUAtN2pXJRc4nlW7HF7waslrmyKBoiLI5pjuEiKsKg6LG;Trusted_Connection=True;MultipleActiveResultSets=true;"
       }
     }
   }

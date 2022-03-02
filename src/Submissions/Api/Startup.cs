@@ -6,12 +6,16 @@ using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Omop.Context;
+
 using ClacksMiddleware.Extensions;
 using Core.AzureStorage;
 
 using Core.Jobs;
 using Core.Submissions.Services;
 using Core.Submissions.Services.Contracts;
+
+
 
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +28,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
 
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -47,6 +52,7 @@ using Hangfire.Dashboard;
 using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
 using Biobanks.Aggregator;
+
 
 namespace Biobanks.Submissions.Api
 {
@@ -73,8 +79,16 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // local config
-            var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
+            // config OMOP PostGres db
+            services
+                .AddDbContext<OmopDbContext>
+                (options => options.UseNpgsql(
+                    Configuration.GetConnectionString("Omop")));
+
+
+
+           // local config  
+           var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
             var hangfireConfig = Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 

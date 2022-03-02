@@ -7,6 +7,7 @@ namespace Biobanks.Web.Models.Search
         public string Disease { get; set; }
         public string Protocols { get; set; }
         public string AnnualDonorExpectation { get; set; }
+
         public IEnumerable<KeyValuePair<string, string>> AssociatedData { get; set; }
     }
 }

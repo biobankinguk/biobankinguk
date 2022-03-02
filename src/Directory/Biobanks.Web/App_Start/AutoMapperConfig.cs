@@ -20,10 +20,7 @@ namespace Biobanks.Web
             return new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<BiobankCollectionResult, DetailedCollectionSearchModel>();
-                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>()
-                 .ForMember(dest => dest.AssociatedData,
-                        opts => opts.MapFrom(src => src.AssociatedData.Select(
-                            x => new KeyValuePair<string, string>(x.DataType, x.ProcurementTimeframe))));
+                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>();
 
                 cfg.CreateMap<BiobankActivityDTO, BiobankActivityModel>();
 
@@ -33,11 +30,7 @@ namespace Biobanks.Web
                         opts => opts.MapFrom(src => src.AssociatedData.Select(
                             x => new KeyValuePair<string, string>(x.DataType, x.ProcurementTimeframe))));
 
-                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>()
-                .ForMember(dest => dest.AssociatedData,
-                        opts => opts.MapFrom(src => src.AssociatedData.Select(
-                            x => new KeyValuePair<string, string>(x.DataType, x.ProcurementTimeframe))));
-
+                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>();
                 cfg.CreateMap<SampleSetSummary, DetailedCollectionSearchSampleSetModel>();
                 cfg.CreateMap<MaterialPreservationDetailSummary, DetailedCollectionSearchMPDModel>();
 
