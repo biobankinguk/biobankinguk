@@ -7,11 +7,34 @@
 
 @Html.Partial("_ADACTabs", "BiobankActivity")
 
-<h3>@ViewBag.Title</h3>
-
 <div class="row">
-    <div class="col-sm-12">
-        <br />
+
+    <style>
+        .vl {
+            border-right: 1px solid grey;
+            background-color: lightgrey;
+            }
+    </style>
+
+    <div class="col-sm-2">
+
+        <div class="sidebar-nav">
+
+            <ul class="nav flex-column vl">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Biobanks Activity</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+    <div class="col-sm-9">
+
+        <h3>@ViewBag.Title</h3>
+
         @if (@Model.Any())
         {
             <table id="adac-biobanks" class="table table-striped">
@@ -51,7 +74,9 @@
                 @Html.ActionLink("Invite a new Biobank now", "AdacBiobank", "Register")
             </div>
         }
+
     </div>
+
 </div>
 
 @section FooterScripts
