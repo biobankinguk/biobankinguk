@@ -20,7 +20,10 @@ namespace Biobanks.Web
             return new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<BiobankCollectionResult, DetailedCollectionSearchModel>();
-                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>();
+                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>()
+                 .ForMember(dest => dest.AssociatedData,
+                        opts => opts.MapFrom(src => src.AssociatedData.Select(
+                            x => new KeyValuePair<string, string>(x.DataType, x.ProcurementTimeframe))));
 
                 cfg.CreateMap<BiobankActivityDTO, BiobankActivityModel>();
 
@@ -30,7 +33,11 @@ namespace Biobanks.Web
                         opts => opts.MapFrom(src => src.AssociatedData.Select(
                             x => new KeyValuePair<string, string>(x.DataType, x.ProcurementTimeframe))));
 
-                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>();
+                cfg.CreateMap<CollectionSummary, DetailedCollectionSearchCollectionModel>()
+                .ForMember(dest => dest.AssociatedData,
+                        opts => opts.MapFrom(src => src.AssociatedData.Select(
+                            x => new KeyValuePair<string, string>(x.DataType, x.ProcurementTimeframe))));
+
                 cfg.CreateMap<SampleSetSummary, DetailedCollectionSearchSampleSetModel>();
                 cfg.CreateMap<MaterialPreservationDetailSummary, DetailedCollectionSearchMPDModel>();
 
@@ -58,7 +65,7 @@ namespace Biobanks.Web
                     .ForMember(dest => dest.BiobankExternalId, opts => opts.MapFrom(src => src.OrganisationExternalId));
 
                 cfg.CreateMap<Organisation, BiobankModel>()
-                    .ForMember(dest => dest.BiobankId, opts => opts.MapFrom(src =>   src.OrganisationId))
+                    .ForMember(dest => dest.BiobankId, opts => opts.MapFrom(src => src.OrganisationId))
                     .ForMember(dest => dest.BiobankExternalId, opts => opts.MapFrom(src => src.OrganisationExternalId));
 
                 // needed for creation of biobank or else it doesn't map correctly
