@@ -305,7 +305,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\custom.css" />
+    <Content Include="Content\Site\divider.css" />
     <Content Include="Content\bootstrap-slider.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
