@@ -6,6 +6,7 @@
     <RootNamespace>Biobanks.Submissions.Api</RootNamespace>
     <AssemblyName>Biobanks.Submissions.Api</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>

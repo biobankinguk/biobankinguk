@@ -1,5 +1,7 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Services.Contracts
 {
@@ -16,5 +18,10 @@ namespace Biobanks.Aggregator.Services.Contracts
         OntologyTerm GetOntologyTerm(string id);
 
         AgeRange GetDefaultAgeRange();
+
+        Task<int> GetUsageCount(int id);
+
+        Task<ICollection<AccessCondition>> List();
+       
     }
 }
