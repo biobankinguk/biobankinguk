@@ -1,7 +1,8 @@
-﻿using Biobanks.Aggregator.Services.Contracts;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Models.ADAC;
+using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace Biobanks.Submissions.Api.Controllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
 
     [Route("api/[controller]")]
@@ -17,9 +18,9 @@ namespace Biobanks.Submissions.Api.Controllers
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class AccessConditionController : ControllerBase
     {
-        private readonly IReferenceDataService _accessConditionService;
+        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
 
-        public AccessConditionController(IReferenceDataService accessConditionService)
+        public AccessConditionController(IReferenceDataService<AccessCondition> accessConditionService)
         {
             _accessConditionService = accessConditionService;
         }
@@ -30,17 +31,16 @@ namespace Biobanks.Submissions.Api.Controllers
         /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
-        [SwaggerResponse(200 , Type = typeof(ReadAccessConditionsModel))]
+        [SwaggerResponse(200 , Type = typeof(AccessConditionModel))]
         public async Task<IList> Get()
         {
             var models = (await _accessConditionService.List())
                 .Select(x =>
-                    Task.Run(async () => new ReadAccessConditionsModel
+                    Task.Run(async () => new AccessConditionModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                        AccessConditionCount = await _accessConditionService.GetUsageCount(x.Id),
                     }
                     )
                     .Result

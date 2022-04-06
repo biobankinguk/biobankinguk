@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Services
 {
-    public class ReferenceDataService : IReferenceDataService
+    public class ReferenceDataAggregatorService : IReferenceDataAggregatorService
     {
         private readonly BiobanksDbContext _db;
 
-        public ReferenceDataService(BiobanksDbContext db)
+        public ReferenceDataAggregatorService(BiobanksDbContext db)
         {
             _db = db;
         }
@@ -40,24 +40,6 @@ namespace Biobanks.Aggregator.Services
 
         public AgeRange GetDefaultAgeRange()
             => _db.AgeRanges.First(x => x.LowerBound == null && x.UpperBound == null);
-
-        public async Task<int> GetUsageCount(int id)
-            => await _db.Collections.CountAsync(x => x.AccessConditionId == id);
-
-        public  async Task<bool> IsInUse(int id)
-            => await _db.Collections.AnyAsync(x => x.AccessConditionId == id);
-
-        protected virtual IQueryable<AccessCondition> Query()
-            => _db.Set<AccessCondition>().AsQueryable();
-
-        public async Task<ICollection<AccessCondition>> List(string wildcard)
-            => await Query()
-                .AsNoTracking()
-                .Where(x => x.Value.Contains(wildcard))
-                .OrderBy(x => x.SortOrder)
-                .ToListAsync();
-        public async Task<ICollection<AccessCondition>> List()
-            => await List(string.Empty);
 
     }
 }

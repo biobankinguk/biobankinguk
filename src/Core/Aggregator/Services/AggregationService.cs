@@ -13,13 +13,13 @@ namespace Biobanks.Aggregator.Services
 {
     public class AggregationService : IAggregationService
     {
-        private readonly IReferenceDataService _refDataService;
+        private readonly IReferenceDataAggregatorService _refDataService;
 
         private readonly AggregatorOptions _options;
         private readonly BiobanksDbContext _db;
         
         public AggregationService(
-            IReferenceDataService refDataService,
+            IReferenceDataAggregatorService refDataService,
             IOptions<AggregatorOptions> options,
             BiobanksDbContext db)
         {

@@ -13,7 +13,7 @@ namespace Core.Jobs
     public class AggregatorJob
     {
         private readonly IAggregationService _aggregationService;
-        private readonly IReferenceDataService _refDataService;
+        private readonly IReferenceDataAggregatorService _refDataService;
         private readonly IOrganisationService _organisationService;
         private readonly ICollectionService _collectionService;
         private readonly ISampleService _sampleService;
@@ -22,7 +22,7 @@ namespace Core.Jobs
 
         public AggregatorJob(
             IAggregationService aggregationService,
-            IReferenceDataService refDataService,
+            IReferenceDataAggregatorService refDataService,
             IOrganisationService organisationService,
             ICollectionService collectionService,
             ISampleService sampleService,

@@ -47,6 +47,7 @@ using Hangfire.Dashboard;
 using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
 using Biobanks.Aggregator;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Submissions.Api
 {
@@ -201,14 +202,15 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISampleValidationService, SampleValidationService>()
                 .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
                 .AddTransient<IErrorService, ErrorService>()
+
                 
-                .AddTransient<IReferenceDataService, ReferenceDataService>()
                 .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
+                .AddTransient(typeof(IReferenceDataService<>), typeof(ReferenceDataService<>)) 
 
-                .AddTransient<IReferenceDataService, ReferenceDataService>()
+                .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
                 .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
