@@ -1,6 +1,5 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Shared.Services.Contracts;
-using Biobanks.Submissions.Api.Models.ADAC;
 using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
