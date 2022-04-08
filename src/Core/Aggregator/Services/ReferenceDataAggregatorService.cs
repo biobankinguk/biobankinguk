@@ -3,15 +3,18 @@ using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Extensions;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Services
 {
-    public class ReferenceDataService : IReferenceDataService
+    public class ReferenceDataAggregatorService : IReferenceDataAggregatorService
     {
         private readonly BiobanksDbContext _db;
 
-        public ReferenceDataService(BiobanksDbContext db)
+        public ReferenceDataAggregatorService(BiobanksDbContext db)
         {
             _db = db;
         }
