@@ -33,12 +33,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = (await _collectionTypeService.List())
                     .Select(x =>
 
-                Task.Run(async () => new CollectionTypeModel
+                Task.Run(() => new CollectionTypeModel
                 {
                     Id = x.Id,
                     Description = x.Value,
                     SortOrder = x.SortOrder
-                }).Result)
+                }))
 
                     .ToList();
 

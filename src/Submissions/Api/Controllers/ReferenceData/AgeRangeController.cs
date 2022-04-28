@@ -32,15 +32,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var models = (await _ageRangeService.List())
                 .Select(x =>
-                    Task.Run(async () => new AgeRangeModel()
+                    Task.Run(() => new AgeRangeModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound
-                    })
-                    .Result
+                    }) 
                 )
                 .ToList();
 

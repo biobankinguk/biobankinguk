@@ -34,11 +34,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = (await _registrationReasonService.List())
                 .Select(x =>
 
-            Task.Run(async () => new RegistrationReasonModel
+            Task.Run(() => new RegistrationReasonModel
             {
                 Id = x.Id,
                 Description = x.Value
-            }).Result)
+            }))
 
                 .ToList();
 

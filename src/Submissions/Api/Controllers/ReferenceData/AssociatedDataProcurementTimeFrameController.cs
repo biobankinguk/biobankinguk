@@ -34,14 +34,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var models = (await _associatedDataProcurementTimeFrameService.List())
                 .Select(x =>
-                    Task.Run(async () => new AssociatedDataProcurementTimeFrameModel
+                    Task.Run(() => new AssociatedDataProcurementTimeFrameModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         DisplayName = x.DisplayValue,
                         SortOrder = x.SortOrder
                     })
-                    .Result
                 )
                 .ToList();
 

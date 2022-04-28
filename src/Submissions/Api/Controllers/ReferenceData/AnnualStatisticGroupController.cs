@@ -35,11 +35,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = (await _annualStatisticGroupService.List())
                 .Select(x =>
 
-                Task.Run(async () => new AnnualStatisticGroupModel
+                Task.Run(() => new AnnualStatisticGroupModel
                 {
                     AnnualStatisticGroupId = x.Id,
                     Name = x.Value,
-                }).Result)
+                }))
 
                 .ToList();
 

@@ -34,7 +34,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var models = (await _donorCountService.List())
                 .Select(x =>
-                    Task.Run(async () => new DonorCountModel()
+                    Task.Run(() => new DonorCountModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
@@ -42,7 +42,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
                     })
-                    .Result
                 )
                 .ToList();
 

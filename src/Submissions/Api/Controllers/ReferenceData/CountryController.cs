@@ -34,11 +34,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = (await _countryService.List())
                 .Select(x =>
 
-                Task.Run(async () => new CountryModel
+                Task.Run(() => new CountryModel
                 {
                     Id = x.Id,
                     Name = x.Value,
-                }).Result)
+                }))
 
                 .ToList();
 

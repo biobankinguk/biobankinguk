@@ -33,12 +33,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var model = (await _sexService.List())
                 .Select(x =>
-                    Task.Run(async () => new SexModel
+                    Task.Run(() => new SexModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder
-                    }).Result)
+                    }))
                 .ToList();
 
             return model;

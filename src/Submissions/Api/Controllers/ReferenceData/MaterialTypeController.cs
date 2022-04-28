@@ -35,12 +35,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = (await _materialTypeService.List())
                     .Select(x =>
 
-                    Task.Run(async () => new MaterialTypeModel
+                    Task.Run(() => new MaterialTypeModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder
-                    }).Result).ToList();
+                    })).ToList();
 
             return model;
         }

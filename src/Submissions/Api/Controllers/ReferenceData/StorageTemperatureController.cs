@@ -33,7 +33,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var models = (await _storageTemperatureService.List())
                 .Select(x =>
-                    Task.Run(async () =>
+                    Task.Run(() =>
                         new StorageTemperatureModel()
                         {
                             Id = x.Id,
@@ -42,7 +42,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                             /*IsInUse = await _storageTemperatureService.IsInUse(x.Id),
                             SampleSetsCount = await _storageTemperatureService.GetUsageCount(x.Id)*/
                         }
-                    ).Result
+                    )
                 )
                 .ToList();
 

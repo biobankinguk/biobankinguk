@@ -32,7 +32,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var models = (await _collectionPercentageService.List())
                 .Select(x =>
-                    Task.Run(async () => new CollectionPercentageModel()
+                    Task.Run(() => new CollectionPercentageModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
@@ -40,7 +40,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
                     })
-                    .Result
                 )
                 .ToList();
 

@@ -38,7 +38,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
             var model = associatedDataTypes
                 .Select(x =>
-                    Task.Run(async () => new AssociatedDataTypeModel
+                    Task.Run(() => new AssociatedDataTypeModel
                     {
                         Id = x.Id,
                         Name = x.Value,
@@ -46,7 +46,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                         AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
                         AssociatedDataTypeGroupName = x.AssociatedDataTypeGroup?.Value,
                     })
-                    .Result
                )
                .ToList();
 
