@@ -32,16 +32,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var models = (await _macroscopicAssessmentService.List())
-                .Select(x =>
-                    Task.Run(() => new MacroscopicAssessmentModel()
+                .Select(x => new MacroscopicAssessmentModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder
-                    })
+                    }
                 )
                 .ToList();
-
             return models;
         }
     }

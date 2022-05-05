@@ -45,14 +45,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                  })
                  .ToList();
             var models = (await _annualStatisticService.List())
-                .Select(x =>
-                    Task.Run(() => new AnnualStatisticModel
+                .Select(x => new AnnualStatisticModel
                     {
                         Id = x.Id,
                         Name = x.Value,
                         AnnualStatisticGroupId = x.AnnualStatisticGroupId,
                         AnnualStatisticGroupName = groups.Where(y => y.AnnualStatisticGroupId == x.AnnualStatisticGroupId).FirstOrDefault()?.Name,
-                    })
+                    }
                 )
                 .ToList();
 

@@ -32,15 +32,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var model = (await _associatedDataTypeGroupService.List())
-                .Select(x =>
-                    Task.Run(() => new AssociatedDataTypeGroupModel
+                .Select(x => new AssociatedDataTypeGroupModel
                     {
                         AssociatedDataTypeGroupId = x.Id,
                         Name = x.Value,
-                    })
+                    }
                  )
                 .ToList();
-
             return model;
         }
     }

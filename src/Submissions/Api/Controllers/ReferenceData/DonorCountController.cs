@@ -33,15 +33,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var models = (await _donorCountService.List())
-                .Select(x =>
-                    Task.Run(() => new DonorCountModel()
+                .Select(x => new DonorCountModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                    })
+                    }
                 )
                 .ToList();
 

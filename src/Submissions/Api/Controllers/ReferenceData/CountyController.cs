@@ -40,8 +40,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             {
                 Counties = countries.ToDictionary(
                         x => x.Value,
-                        x => x.Counties.Select(county =>
-                            Task.Run(() =>
+                        x => x.Counties.Select(county =>                           
                                 new CountyModel
                                 {
                                     Id = county.Id,
@@ -49,12 +48,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                                     Name = county.Value
                                 }
                                 )
-                            .Result
                         )
-                    )
             };
-
-            return model;
+               return model;
         }
     }
 }

@@ -37,15 +37,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var associatedDataTypes = await _associatedDataTypeService.List();
 
             var model = associatedDataTypes
-                .Select(x =>
-                    Task.Run(() => new AssociatedDataTypeModel
+                .Select(x => new AssociatedDataTypeModel
                     {
                         Id = x.Id,
                         Name = x.Value,
                         Message = x.Message,
                         AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
                         AssociatedDataTypeGroupName = x.AssociatedDataTypeGroup?.Value,
-                    })
+                    }
                )
                .ToList();
 

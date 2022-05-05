@@ -32,19 +32,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var model = (await _consentRestrictionService.List())
-                    .Select(x =>
-
-                Task.Run(() => new ConsentRestrictionModel
+                    .Select(x => new ConsentRestrictionModel
                 {
                     Id = x.Id,
                     Description = x.Value,
                     SortOrder = x.SortOrder
-                }))
-
-                    .ToList();
-
+                })
+                .ToList();
             return model;
         }
-
     }
 }

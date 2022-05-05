@@ -32,15 +32,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var model = (await _sexService.List())
-                .Select(x =>
-                    Task.Run(() => new SexModel
+                .Select(x => new SexModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder
-                    }))
+                    })
                 .ToList();
-
             return model;
         }
     }

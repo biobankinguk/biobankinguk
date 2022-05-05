@@ -31,18 +31,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var models = (await _collectionPercentageService.List())
-                .Select(x =>
-                    Task.Run(() => new CollectionPercentageModel()
+                .Select(x => new CollectionPercentageModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound,
-                    })
+                    }
                 )
                 .ToList();
-
             return models;
         }
     }

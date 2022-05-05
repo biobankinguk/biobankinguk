@@ -32,13 +32,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var models = (await _sopStatusService.List())
-                .Select(x =>
-                    Task.Run(() => new SopStatusModel()
+                .Select(x => new SopStatusModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                    })
+                    }
                 )
                 .ToList();
             return models;

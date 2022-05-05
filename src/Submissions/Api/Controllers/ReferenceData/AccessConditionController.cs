@@ -34,14 +34,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<IList> Get()
         {
             var models = (await _accessConditionService.List())
-                .Select(x =>
-                    Task.Run(() => new AccessConditionModel
+                .Select(x => new AccessConditionModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                     }
-                    )
                 )
                 .ToList();
             return models;
