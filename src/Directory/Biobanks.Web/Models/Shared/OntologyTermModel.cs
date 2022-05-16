@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Biobanks.Web.Models.Shared
@@ -18,5 +19,7 @@ namespace Biobanks.Web.Models.Shared
 
         public List<string> MatchingOtherTerms { get; set; }
         public List<string> NonMatchingOtherTerms { get; set; }
+
+        public List<AssociatedDataType> AssociatedDataTypes {get; set;}
     }
 }

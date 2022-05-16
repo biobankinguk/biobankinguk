@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -46,5 +47,7 @@ namespace Biobanks.Entities.Shared.ReferenceData
         /// Join entities for MaterialTypes in the group
         /// </summary>
         public ICollection<MaterialType> MaterialTypes { get; set; }
+
+        public List<AssociatedDataType> AssociatedDataTypes { get; set; }
     }
 }
