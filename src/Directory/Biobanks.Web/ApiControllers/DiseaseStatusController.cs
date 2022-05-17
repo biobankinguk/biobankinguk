@@ -65,7 +65,7 @@ namespace Biobanks.Web.ApiControllers
         public async Task<List<AssociatedDataType>> GetAssociatedDataTypes(string id)
         {
            
-            var associatedDataTypes = await _ontologyTermService.ListAssociatedDataTypes(id);
+            var associatedDataTypes = await _ontologyTermService.ListAssociatedDataTypesByOntologyTerm(id);
             return associatedDataTypes;
             
         }

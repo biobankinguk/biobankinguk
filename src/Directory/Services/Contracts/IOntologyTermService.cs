@@ -35,7 +35,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <param name="id">Id of the OntologyTerm to delete. Assumed the OntologyTerm Id exists</param>
         Task Delete(string id);
-        Task<List<AssociatedDataType>> ListAssociatedDataTypes(string id);
+        Task<List<AssociatedDataType>> ListAssociatedDataTypesByOntologyTerm(string id);
 
         /// <summary>
         /// Returns singular OntologyTerm that matches the given parameter filters. If more than one OntologyTerm is found
