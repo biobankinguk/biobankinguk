@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using System.Collections.Generic;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -56,6 +57,17 @@ namespace Biobanks.Web.ApiControllers
                 .Result
             )
             .ToList();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("{id}/AssociatedDataTypes")]
+        public async Task<List<AssociatedDataType>> GetAssociatedDataTypes(string id)
+        {
+           
+            var associatedDataTypes = await _ontologyTermService.ListAssociatedDataTypes(id);
+            return associatedDataTypes;
+            
         }
 
         [HttpDelete]
