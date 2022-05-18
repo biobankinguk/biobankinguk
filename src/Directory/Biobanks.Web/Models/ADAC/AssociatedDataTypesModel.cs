@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Biobanks.Web.Models.Shared;
 using System.ComponentModel.DataAnnotations;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.Models.ADAC
 {
@@ -24,5 +25,7 @@ namespace Biobanks.Web.Models.ADAC
         public int SortOrder { get; set; }
         public string Message { get; set; }
         public int CollectionCapabilityCount { get; set; }
+
+        public List<OntologyTerm> OntologyTerms { get; set; }
     }
 }
