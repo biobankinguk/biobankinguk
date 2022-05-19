@@ -175,6 +175,5 @@ namespace Biobanks.Directory.Services
 
             return list;
         }
-        
     }
 }
