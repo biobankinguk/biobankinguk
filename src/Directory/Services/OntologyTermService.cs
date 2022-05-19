@@ -155,6 +155,16 @@ namespace Biobanks.Directory.Services
             await _db.SaveChangesAsync();
         }
 
+        public async Task<List<OntologyTerm>> GetByAssociatedDataType(int id)
+        {
+            var list = await _db.AssociatedDataTypes 
+                    .Where(p => p.Id == id)
+                    .SelectMany(p => p.OntologyTerms)
+                    .OrderByDescending(p => p.Id)
+                    .ToListAsync();
+            return list;
+        }
+
         public async Task<List<AssociatedDataType>> ListAssociatedDataTypesByOntologyTerm(string id)
         {
             var list = await _db.OntologyTerms
@@ -165,7 +175,5 @@ namespace Biobanks.Directory.Services
 
             return list;
         }
-
-        
     }
 }

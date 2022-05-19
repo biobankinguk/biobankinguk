@@ -102,5 +102,6 @@ namespace Biobanks.Directory.Services.Contracts
         /// <param name="ontologyTermId">The alphanumeric Id of the OntologyTerm</param>
         /// <returns>The integer number of occurances of the OntologyTerm in both Collections and Capabilities </returns>
         Task<int> CountCollectionCapabilityUsage(string ontologyTermId);
+        Task<List<OntologyTerm>> GetByAssociatedDataType(int id);
     }
 }
