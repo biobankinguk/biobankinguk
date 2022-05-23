@@ -123,7 +123,7 @@ $(function () {
   }
 
   document
-    .getElementById("diagnosis-textbox")
+    .getElementsByClassName("diagnosis-search")[0]
     .addEventListener("input", function () {
       removeId();
     });
