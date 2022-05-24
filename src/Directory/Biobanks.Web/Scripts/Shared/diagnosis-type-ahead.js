@@ -59,48 +59,17 @@ $(function () {
     // next make an ajax call using the ontology term id
     $.ajax({
       type: "GET",
-      url: "/api/" + "DiseaseStatus" + "/" + id + "/AssociatedDataTypes",
+      url: `/Biobank/GetAssociatedDataTypeViews?id=${id}`,
       beforeSend: function () {
         setLoading(true); // Show loader icon
       },
       success: function (response) {
-        // insert each value from result into the table under the right header
-        $.each(response, function (index, assData) {
-          $(
-            `<tr class='linked-data'>
-                            <td>
-                                <div class="checkbox">
-                                    <span data-message="" data-title="Cold ischemic time" class="fa fa-info-circle help-icon-button help-associateddata"></span>
-                                    <label>
-                                        <input class="ass-dat-chk" data-val="true" data-val-required="The Active field is required." id="Groups_0__Types_0__Active" name="Groups[0].Types[0].Active" type="checkbox" value="true"><input name="Groups[0].Types[0].Active" type="hidden" value="false">
-                                        ${assData.Value}
-                                    </label>
-                                    <input data-val="true" data-val-number="The field DataTypeId must be a number." data-val-required="The DataTypeId field is required." id="Groups_0__Types_0__DataTypeId" name="Groups[0].Types[0].DataTypeId" type="hidden" value="3">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="radio">
-                                        <label class="timeFrames">
-                                            <input class="ass-dat-rad" data-val="true" data-val-number="The field ProvisionTimeId must be a number." id="Groups_0__Types_0__ProvisionTimeId" name="Groups[0].Types[0].ProvisionTimeId" type="radio" value="1">
-                                            Immediate
-                                        </label>
-                                        <label class="timeFrames">
-                                            <input class="ass-dat-rad" id="Groups_0__Types_0__ProvisionTimeId" name="Groups[0].Types[0].ProvisionTimeId" type="radio" value="2">
-                                            0-3
-                                        </label>
-                                        <label class="timeFrames">
-                                            <input class="ass-dat-rad" id="Groups_0__Types_0__ProvisionTimeId" name="Groups[0].Types[0].ProvisionTimeId" type="radio" value="3">
-                                            3-6
-                                        </label>
-                                        <label class="timeFrames">
-                                            <input class="ass-dat-rad" id="Groups_0__Types_0__ProvisionTimeId" name="Groups[0].Types[0].ProvisionTimeId" type="radio" value="4">
-                                            &gt;6
-                                        </label>
-                                </div>
-                            </td>
-
-                        </tr>`
-          ).insertAfter(`.${assData.GroupId}`);
+        var table = document.createElement("div");
+        table.innerHTML = response.trim();
+        const itemList = table.getElementsByTagName("tr");
+        // insert each row from result into the table under the right header
+        Array.from(itemList).forEach(function (tableRow) {
+          $(tableRow).insertAfter(`.${tableRow.dataset.groupid}`);
         });
       },
       complete: function () {
