@@ -1004,6 +1004,15 @@ namespace Biobanks.Web.Controllers
 
         }
 
+        private async Task<Boolean> checkLinkedDataIsValid(
+            List<AssociatedDataModel> linkedData, string ontologyTermId)
+        {
+            if(!list.Any()){
+                return true;
+            }
+            return false;
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddCollection(AddCollectionModel model)
@@ -1012,9 +1021,27 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
-
-            if (await model.IsValid(ModelState, _ontologyTermService))
+            // check linked types are valid
+            List<AssociatedDataModel> linkedData = new List<AssociatedDataModel>();
+            foreach (var group in model.Groups)
             {
+                foreach(var type in group.Types)
+                {
+                    // only check the types that are linked
+                    if(type.isLinked){
+                        // add type to list that needs to be checked
+                        linkedData.Add(type);
+                    }
+                }
+            } 
+            bool linkedIsValid = await checkLinkedDataIsValid(linkedData,await _ontologyTermService.Get(value: model.Diagnosis));
+            
+
+            if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
+            {
+                
+
+
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
                     .Select(y => new CollectionAssociatedData
