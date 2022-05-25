@@ -959,7 +959,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAssociatedDataTypeViews(string id)
+        public async Task<ActionResult> GetAssociatedDataTypeViewsAjax(string id)
         {
             AddCollectionModel model = new AddCollectionModel { FromApi = false };
 
