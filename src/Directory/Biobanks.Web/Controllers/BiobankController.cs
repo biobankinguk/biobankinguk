@@ -1018,9 +1018,7 @@ namespace Biobanks.Web.Controllers
             foreach (var type in newAssociatedData)
             {
                 // only check linked data
-                if (type.OntologyTerms != null)
-                {
-                    if (type.OntologyTerms.Find(x => x.Id == ontologyTermId) == null)
+                if (type.OntologyTerms != null) && (type.OntologyTerms.Find(x => x.Id == ontologyTermId) == null)
                     {
                         return false;
                     }
