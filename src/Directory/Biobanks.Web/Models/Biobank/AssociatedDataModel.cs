@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Biobanks.Web.Models.Biobank
@@ -15,5 +16,7 @@ namespace Biobanks.Web.Models.Biobank
 
         public bool IsValid() => !Active || (Active && ProvisionTimeId != null && ProvisionTimeId > 0);
         public string LowercaseEntityName => DataTypeDescription.ToLower(CultureInfo.CurrentCulture).Replace(" ", string.Empty).Replace("/", string.Empty);
+
+        public Boolean isLinked { get; set; } = false;
     }
 }

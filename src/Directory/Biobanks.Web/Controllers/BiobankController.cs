@@ -958,6 +958,52 @@ namespace Biobanks.Web.Controllers
             return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(new AddCollectionModel { FromApi = false })));
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetAssociatedDataTypeViewsAjax(string id)
+        {
+            AddCollectionModel model = new AddCollectionModel { FromApi = false };
+
+            var timeFrames = (await _associatedDataProcurementTimeframeService.List())
+               .Select(x => new AssociatedDataTimeFrameModel
+               {
+                   ProvisionTimeId = x.Id,
+                   ProvisionTimeDescription = x.Value,
+                   ProvisionTimeValue = x.DisplayValue
+               });
+
+            var types = (await _ontologyTermService.ListAssociatedDataTypesByOntologyTerm(id))
+                     .Select(x => new AssociatedDataModel
+                     {
+                         DataTypeId = x.Id,
+                         DataTypeDescription = x.Value,
+                         DataGroupId = x.AssociatedDataTypeGroupId,
+                         Message = x.Message,
+                         TimeFrames = timeFrames,
+                         isLinked = true
+        });
+            model.Groups = new List<AssociatedDataGroupModel>();
+            var groups = await _associatedDataTypeGroupService.List();
+
+            foreach (var g in groups)
+            {
+                var groupModel = new AssociatedDataGroupModel();
+                groupModel.GroupId = g.Id;
+                groupModel.Name = g.Value;
+                groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
+                
+                model.Groups.Add(groupModel);
+            }
+
+            //Check if types are valid
+            foreach (var type in types)
+            {
+                type.Active = model.AssociatedDataModelsValid();
+            }
+
+            return PartialView("_LinkedAssociatedData", model);
+
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddCollection(AddCollectionModel model)
@@ -1543,6 +1589,7 @@ namespace Biobanks.Web.Controllers
                          Message = x.Message,
                          TimeFrames = timeFrames
                      });
+            
 
             model.Groups = new List<AssociatedDataGroupModel>();
             var groups = await _associatedDataTypeGroupService.List();
