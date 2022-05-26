@@ -1569,7 +1569,9 @@ namespace Biobanks.Web.Controllers
             return model;
         }
 
+
          private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
+
             AbstractCRUDCapabilityModel model, Boolean excludeLinkedData = false)
         {
             var timeFrames = (await _associatedDataProcurementTimeframeService.List())
@@ -1585,6 +1587,14 @@ namespace Biobanks.Web.Controllers
                 typeList = typeList.Where(x => x.OntologyTerms == null).ToList();
             }
 
+            else
+            {
+                var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
+                if(ontologyTerm != null) {
+                    typeList = typeList.Where(x => x.OntologyTerms == null || (x.OntologyTerms.Find(y => y.Id == ontologyTerm.Id) != null)).ToList();
+                }   
+            }
+
             var types = typeList
                      .Select(x => new AssociatedDataModel
                      {
@@ -1592,10 +1602,9 @@ namespace Biobanks.Web.Controllers
                          DataTypeDescription = x.Value,
                          DataGroupId = x.AssociatedDataTypeGroupId,
                          Message = x.Message,
-                         TimeFrames = timeFrames
+                         TimeFrames = timeFrames,
+                         isLinked = x.OntologyTerms != null
                      });
-            
-
             
             model.Groups = new List<AssociatedDataGroupModel>();
             var groups = await _associatedDataTypeGroupService.List();
