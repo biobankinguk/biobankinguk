@@ -959,7 +959,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAssociatedDataTypeViews(string id)
+        public async Task<ActionResult> GetAssociatedDataTypeViewsAjax(string id)
         {
             AddCollectionModel model = new AddCollectionModel { FromApi = false };
 
@@ -1612,8 +1612,10 @@ namespace Biobanks.Web.Controllers
             return model;
         }
 
-        private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
-            AbstractCRUDCapabilityModel model)
+
+         private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
+
+            AbstractCRUDCapabilityModel model, Boolean excludeLinkedData = false)
         {
             var timeFrames = (await _associatedDataProcurementTimeframeService.List())
                 .Select(x => new AssociatedDataTimeFrameModel
@@ -1622,18 +1624,31 @@ namespace Biobanks.Web.Controllers
                     ProvisionTimeDescription = x.Value,
                     ProvisionTimeValue = x.DisplayValue
                 });
+            var typeList = await _associatedDataTypeService.List();
+            if (excludeLinkedData)
+            {
+                typeList = typeList.Where(x => x.OntologyTerms == null).ToList();
+            }
 
-            var types = (await _associatedDataTypeService.List())
+            else
+            {
+                var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
+                if(ontologyTerm != null) {
+                    typeList = typeList.Where(x => x.OntologyTerms == null || (x.OntologyTerms.Find(y => y.Id == ontologyTerm.Id) != null)).ToList();
+                }   
+            }
+
+            var types = typeList
                      .Select(x => new AssociatedDataModel
                      {
                          DataTypeId = x.Id,
                          DataTypeDescription = x.Value,
                          DataGroupId = x.AssociatedDataTypeGroupId,
                          Message = x.Message,
-                         TimeFrames = timeFrames
+                         TimeFrames = timeFrames,
+                         isLinked = x.OntologyTerms != null
                      });
             
-
             model.Groups = new List<AssociatedDataGroupModel>();
             var groups = await _associatedDataTypeGroupService.List();
             foreach (var g in groups)
@@ -1644,7 +1659,7 @@ namespace Biobanks.Web.Controllers
                 groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
                 model.Groups.Add(groupModel);
             }
-
+            
             //Check if types are valid
             foreach (var type in types)
             {

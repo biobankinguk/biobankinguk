@@ -59,7 +59,7 @@ $(function () {
     // next make an ajax call using the ontology term id
     $.ajax({
       type: "GET",
-      url: `/Biobank/GetAssociatedDataTypeViews?id=${id}`,
+      url: `/Biobank/GetAssociatedDataTypeViewsAjax?id=${id}`,
       beforeSend: function () {
         setLoading(true); // Show loader icon
       },
