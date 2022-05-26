@@ -1018,11 +1018,10 @@ namespace Biobanks.Web.Controllers
             foreach (var type in newAssociatedData)
             {
                 // only check linked data
-                if (type.OntologyTerms != null) && (type.OntologyTerms.Find(x => x.Id == ontologyTermId) == null)
+                if (type.OntologyTerms != null && (type.OntologyTerms.Find(x => x.Id == ontologyTermId) == null))
                     {
                         return false;
                     }
-                }
             }
             
             return true;
@@ -1048,7 +1047,7 @@ namespace Biobanks.Web.Controllers
                 }
             }
             // check that any linked associated data is related to the ontology term
-            bool linkedIsValid = await linkedAssociatedDataIsValid(linkedData, (await _ontologyTermService.Get(value: model.Diagnosis)).Id);
+            bool linkedIsValid = await IsLinkedAssociatedDataValid(linkedData, (await _ontologyTermService.Get(value: model.Diagnosis)).Id);
 
 
             if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
