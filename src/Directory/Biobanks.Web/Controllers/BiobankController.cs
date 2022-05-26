@@ -1004,7 +1004,7 @@ namespace Biobanks.Web.Controllers
 
         }
 
-        private async Task<Boolean> linkedAssociatedDataIsValid(
+        private async Task<Boolean> IsLinkedAssociatedDataValid(
             List<AssociatedDataModel> linkedData, string ontologyTermId)
         {
             var associatedDataList = await _associatedDataTypeService.List();
