@@ -199,6 +199,16 @@ namespace Biobanks.Directory.Data
 
             modelBuilder.Entity<Status>()
                 .ToTable("Statuses");
+
+            modelBuilder.Entity<OntologyTerm>()
+                .HasMany(c => c.AssociatedDataTypes)
+                .WithMany(o => o.OntologyTerms)
+                .Map(join =>
+                {
+                    join.MapLeftKey("OntologyTermsId");
+                    join.MapRightKey("AssociatedDataTypesId");
+                    join.ToTable("AssociatedDataTypeOntologyTerm");
+                });
         }
     }
 }
