@@ -1569,8 +1569,8 @@ namespace Biobanks.Web.Controllers
             return model;
         }
 
-        private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
-            AbstractCRUDCapabilityModel model)
+         private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
+            AbstractCRUDCapabilityModel model, Boolean excludeLinkedData = false)
         {
             var timeFrames = (await _associatedDataProcurementTimeframeService.List())
                 .Select(x => new AssociatedDataTimeFrameModel
@@ -1579,8 +1579,13 @@ namespace Biobanks.Web.Controllers
                     ProvisionTimeDescription = x.Value,
                     ProvisionTimeValue = x.DisplayValue
                 });
+            var typeList = await _associatedDataTypeService.List();
+            if (excludeLinkedData)
+            {
+                typeList = typeList.Where(x => x.OntologyTerms == null).ToList();
+            }
 
-            var types = (await _associatedDataTypeService.List())
+            var types = typeList
                      .Select(x => new AssociatedDataModel
                      {
                          DataTypeId = x.Id,
@@ -1591,6 +1596,7 @@ namespace Biobanks.Web.Controllers
                      });
             
 
+            
             model.Groups = new List<AssociatedDataGroupModel>();
             var groups = await _associatedDataTypeGroupService.List();
             foreach (var g in groups)
@@ -1601,7 +1607,7 @@ namespace Biobanks.Web.Controllers
                 groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
                 model.Groups.Add(groupModel);
             }
-
+            
             //Check if types are valid
             foreach (var type in types)
             {
