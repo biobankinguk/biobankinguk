@@ -1004,13 +1004,30 @@ namespace Biobanks.Web.Controllers
 
         }
 
-        private async Task<Boolean> checkLinkedDataIsValid(
+        private async Task<Boolean> linkedAssociatedDataIsValid(
             List<AssociatedDataModel> linkedData, string ontologyTermId)
         {
-            if(!list.Any()){
-                return true;
+            var associatedDataList = await _associatedDataTypeService.List();
+            var newAssociatedData = associatedDataList.Where(x => linkedData.Find(y=>y.DataTypeId == x.Id) != null);
+            // first check that all the data is present in the data list
+            if(newAssociatedData.Count() != linkedData.Count())
+            {
+                return false;
             }
-            return false;
+            // then check that all the linked data is linked to the ontologyTerm
+            foreach (var type in newAssociatedData)
+            {
+                // only check linked data
+                if (type.OntologyTerms != null)
+                {
+                    if (type.OntologyTerms.Find(x => x.Id == ontologyTermId) == null)
+                    {
+                        return false;
+                    }
+                }
+            }
+            
+            return true;
         }
 
         [HttpPost]
@@ -1021,21 +1038,20 @@ namespace Biobanks.Web.Controllers
 
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
+
             // check linked types are valid
             List<AssociatedDataModel> linkedData = new List<AssociatedDataModel>();
             foreach (var group in model.Groups)
             {
-                foreach(var type in group.Types)
+                foreach (var type in group.Types)
                 {
-                    // only check the types that are linked
-                    if(type.isLinked){
-                        // add type to list that needs to be checked
-                        linkedData.Add(type);
-                    }
+                    // create list of associated data types from model
+                    linkedData.Add(type);
                 }
-            } 
-            bool linkedIsValid = await checkLinkedDataIsValid(linkedData,await _ontologyTermService.Get(value: model.Diagnosis));
-            
+            }
+            // check that any linked associated data is related to the ontology term
+            bool linkedIsValid = await linkedAssociatedDataIsValid(linkedData, (await _ontologyTermService.Get(value: model.Diagnosis)).Id);
+
 
             if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
             {
