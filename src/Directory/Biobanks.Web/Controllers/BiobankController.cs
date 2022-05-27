@@ -1004,6 +1004,29 @@ namespace Biobanks.Web.Controllers
 
         }
 
+        private async Task<Boolean> IsLinkedAssociatedDataValid(
+            List<AssociatedDataModel> linkedData, string ontologyTermId)
+        {
+            var associatedDataList = await _associatedDataTypeService.List();
+            var newAssociatedData = associatedDataList.Where(x => linkedData.Find(y=>y.DataTypeId == x.Id) != null);
+            // first check that all the data is present in the data list
+            if(newAssociatedData.Count() != linkedData.Count())
+            {
+                return false;
+            }
+            // then check that all the linked data is linked to the ontologyTerm
+            foreach (var type in newAssociatedData)
+            {
+                // only check linked data
+                if (type.OntologyTerms != null && (type.OntologyTerms.Find(x => x.Id == ontologyTermId) == null))
+                    {
+                        return false;
+                    }
+            }
+            
+            return true;
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddCollection(AddCollectionModel model)
@@ -1013,8 +1036,25 @@ namespace Biobanks.Web.Controllers
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
-            if (await model.IsValid(ModelState, _ontologyTermService))
+            // check linked types are valid
+            List<AssociatedDataModel> linkedData = new List<AssociatedDataModel>();
+            foreach (var group in model.Groups)
             {
+                foreach (var type in group.Types)
+                {
+                    // create list of associated data types from model
+                    linkedData.Add(type);
+                }
+            }
+            // check that any linked associated data is related to the ontology term
+            bool linkedIsValid = await IsLinkedAssociatedDataValid(linkedData, (await _ontologyTermService.Get(value: model.Diagnosis)).Id);
+
+
+            if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
+            {
+                
+
+
                 var associatedData = model.ListAssociatedDataModels()
                     .Where(x => x.Active)
                     .Select(y => new CollectionAssociatedData
