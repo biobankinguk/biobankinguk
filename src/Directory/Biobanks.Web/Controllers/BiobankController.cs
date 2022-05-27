@@ -1037,25 +1037,16 @@ namespace Biobanks.Web.Controllers
                 return RedirectToAction("Index", "Home");
 
             // check linked types are valid
-            List<AssociatedDataModel> linkedData = new List<AssociatedDataModel>();
-            foreach (var group in model.Groups)
-            {
-                foreach (var type in group.Types)
-                {
-                    // create list of associated data types from model
-                    linkedData.Add(type);
-                }
-            }
+            List<AssociatedDataModel> associatedDataModels = model.ListAssociatedDataModels().ToList(); 
             // check that any linked associated data is related to the ontology term
-            bool linkedIsValid = await IsLinkedAssociatedDataValid(linkedData, (await _ontologyTermService.Get(value: model.Diagnosis)).Id);
-
+            bool linkedIsValid = await IsLinkedAssociatedDataValid(associatedDataModels, (await _ontologyTermService.Get(value: model.Diagnosis)).Id);
 
             if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
             {
                 
 
 
-                var associatedData = model.ListAssociatedDataModels()
+                var associatedData = associatedDataModels
                     .Where(x => x.Active)
                     .Select(y => new CollectionAssociatedData
                     {
@@ -1224,10 +1215,14 @@ namespace Biobanks.Web.Controllers
 
                 return RedirectToAction("Collection", new { id = model.Id });
             }
+            // check linked types are valid
+            List<AssociatedDataModel> associatedDataModels = model.ListAssociatedDataModels().ToList(); 
+            // check that any linked associated data is related to the ontology term
+            bool linkedIsValid = await IsLinkedAssociatedDataValid(associatedDataModels, (await _ontologyTermService.Get(value: model.Diagnosis)).Id);
 
-            if (await model.IsValid(ModelState, _ontologyTermService) && model.FromApi == false)
+            if (await model.IsValid(ModelState, _ontologyTermService) && model.FromApi == false && linkedIsValid)
             {
-                var associatedData = model.ListAssociatedDataModels()
+                var associatedData = associatedDataModels
                     .Where(x => x.Active)
                     .Select(y => new CollectionAssociatedData
                     {
