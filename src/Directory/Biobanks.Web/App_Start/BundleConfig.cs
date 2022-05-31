@@ -181,6 +181,7 @@ namespace Biobanks.Web
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/associated-data-types").Include(
                 "~/Scripts/bootbox*",
+                "~/Scripts/typeahead.bundle*",
                 "~/Scripts/ADAC/adac-associated-data-types.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/associated-data-type-groups").Include(
