@@ -157,6 +157,7 @@ namespace Biobanks.Web
             //ADAC Admin
             bundles.Add(new ScriptBundle("~/bundles/adac/disease-statuses").Include(
                 "~/Scripts/bootbox*",
+                "~/Scripts/typeahead.bundle*",
                 "~/Scripts/ADAC/adac-disease-statuses.js",
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
             bundles.Add(new ScriptBundle("~/bundles/adac/material-types").Include(
