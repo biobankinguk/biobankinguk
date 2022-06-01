@@ -132,14 +132,16 @@ function AdacDiseaseStatusViewModel() {
   };
   this.addAssociatedData = function () {
     if (
-      !_this.modal
+      _this.modal
         .diseaseStatus()
         .associatedData()
-        .includes($("#ass-data-select").val())
+        .find(
+          (item) => item.Id === JSON.parse($("#ass-data-select").val()).Id
+        ) == null
     ) {
       _this.modal
         .diseaseStatus()
-        .associatedData.push($("#ass-data-select").val());
+        .associatedData.push(JSON.parse($("#ass-data-select").val()));
     }
   };
   this.removeAssociatedData = function (idx) {
@@ -154,8 +156,9 @@ function AdacDiseaseStatusViewModel() {
     },
     success: function (response) {
       response.AssociatedDataTypes.forEach(function (type) {
+        const val = JSON.stringify(type);
         $("#ass-data-select").append(
-          `<option value="${type.Name}">${type.Name}</option>`
+          `<option value='${val}'>${type.Name}</option>`
         );
       });
     },

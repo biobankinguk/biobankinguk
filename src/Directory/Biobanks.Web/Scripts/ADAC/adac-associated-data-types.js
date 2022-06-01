@@ -105,14 +105,17 @@ function AdacAssociatedDataTypeViewModel() {
   };
   this.addOntologyTerm = function () {
     if (
-      !_this.modal
+      _this.modal
         .associatedDataType()
         .ontologyTerms()
-        .includes($(".diagnosis-search").val())
+        .find(
+          (item) =>
+            item.Id == JSON.parse($(".diagnosis-search").attr("data-id")).Id
+        ) == undefined
     ) {
       _this.modal
         .associatedDataType()
-        .ontologyTerms.push($(".diagnosis-search").val());
+        .ontologyTerms.push(JSON.parse($(".diagnosis-search").attr("data-id")));
     }
     $(".diagnosis-search").val("");
     $("#diagnosis-submit").prop("disabled", true);
@@ -128,10 +131,7 @@ function AdacAssociatedDataTypeViewModel() {
       url: "/Search/ListOntologyTerms?wildcard=%QUERY",
       filter: function (x) {
         return $.map(x, function (item) {
-          return {
-            desc: item.Description,
-            id: item.Id,
-          };
+          return item;
         });
       },
       wildcard: "%QUERY",
@@ -150,14 +150,14 @@ function AdacAssociatedDataTypeViewModel() {
         autoselect: true,
       },
       {
-        name: "desc",
-        displayKey: "desc",
+        name: "Description",
+        displayKey: "Description",
         source: diseases.ttAdapter(),
         limit: 100,
       }
     )
     .bind("typeahead:select", function (ev, item) {
-      $(".diagnosis-search").attr("data-id", item.id);
+      $(".diagnosis-search").attr("data-id", JSON.stringify(item));
       onchangeAssociatedData();
     });
   function onchangeAssociatedData() {
