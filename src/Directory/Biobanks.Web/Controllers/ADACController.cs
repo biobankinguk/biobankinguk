@@ -1297,7 +1297,8 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory,
-                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id)
+                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
+                    AssociatedDataTypes = x.AssociatedDataTypes
                 })
                 .Result
             );
