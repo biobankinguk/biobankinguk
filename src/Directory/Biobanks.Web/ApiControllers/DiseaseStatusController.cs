@@ -162,7 +162,8 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
-                DisplayOnDirectory = model.DisplayOnDirectory
+                DisplayOnDirectory = model.DisplayOnDirectory,
+                AssociatedDataTypes = model.AssociatedDataTypes
             });
 
             //Everything went A-OK!
