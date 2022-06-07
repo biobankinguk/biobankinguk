@@ -149,7 +149,17 @@ $(function () {
           return bool.charAt(0).toUpperCase() + bool.slice(1);
         },
       },
-      { data: "AssociatedDataTypes" },
+      {
+        data: "AssociatedDataTypes",
+        render: function (data, type, row) {
+          console.log(data);
+          const returnString = data
+            ? "[" + data.map((item) => item.Value).join() + "]"
+            : "[]";
+          console.log(returnString);
+          return returnString;
+        },
+      },
       {
         // Action Links
         data: function (row, type, val, meta) {

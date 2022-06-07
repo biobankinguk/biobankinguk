@@ -1273,7 +1273,8 @@ namespace Biobanks.Web.Controllers
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    AssociatedDataTypes = x.AssociatedDataTypes
                 })
                 .Result
             ));
