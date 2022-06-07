@@ -201,9 +201,19 @@ $(function () {
         data: "AssociatedDataTypes",
         render: function (data, type, row) {
           console.log(data);
-          const returnString = data
-            ? "[" + data.map((item) => item.Value).join() + "]"
-            : "[]";
+          let returnString = "";
+          if (data) {
+            if (data.length === 1) {
+              returnString = data[0].Value;
+            } else {
+              // return their values as a list
+              let displayData = data
+                .map((item) => `<li>${item.Value}</li>`)
+                .join("");
+              returnString = `<ul>${displayData}</ul>  `;
+            }
+          }
+
           console.log(returnString);
           return returnString;
         },
