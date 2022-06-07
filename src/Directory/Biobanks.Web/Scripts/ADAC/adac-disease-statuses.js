@@ -9,19 +9,22 @@ function DiseaseStatus(
   ontologyTermId,
   description,
   otherTerms,
-  displayOnDirectory
+  displayOnDirectory,
+  associatedData
 ) {
   this.ontologyTermId = ko.observable(ontologyTermId);
   this.description = ko.observable(description);
   this.otherTerms = ko.observableArray(otherTerms);
   this.displayOnDirectory = ko.observable(displayOnDirectory);
+  this.associatedData = ko.observableArray(associatedData);
 }
 
 function DiseaseStatusModal(
   ontologyTermId,
   description,
   otherTerms,
-  displayOnDirectory
+  displayOnDirectory,
+  associatedData
 ) {
   this.modalModeAdd = "Add";
   this.modalModeEdit = "Update";
@@ -33,7 +36,8 @@ function DiseaseStatusModal(
       ontologyTermId,
       description,
       otherTerms,
-      displayOnDirectory
+      displayOnDirectory,
+      associatedData
     )
   );
 }
@@ -42,7 +46,7 @@ function AdacDiseaseStatusViewModel() {
   var _this = this;
 
   this.modalId = "#disease-status-modal";
-  this.modal = new DiseaseStatusModal("", "", [], false);
+  this.modal = new DiseaseStatusModal("", "", [], false, []);
   this.dialogErrors = ko.observableArray([]);
 
   this.showModal = function () {
@@ -56,7 +60,7 @@ function AdacDiseaseStatusViewModel() {
 
   this.openModalForAdd = function () {
     _this.modal.mode(_this.modal.modalModeAdd);
-    _this.modal.diseaseStatus(new DiseaseStatus("", "", [], false));
+    _this.modal.diseaseStatus(new DiseaseStatus("", "", [], false, []));
     _this.setPartialEdit(false);
     _this.showModal();
   };
@@ -72,12 +76,17 @@ function AdacDiseaseStatusViewModel() {
       ? diseaseStatus.OtherTerms.split(",").map((item) => item.trim())
       : diseaseStatus.OtherTerms;
 
+    let associatedData = diseaseStatus.associatedData
+      ? diseaseStatus.associatedData.split(",").map((item) => item.trim())
+      : diseaseStatus.associatedData;
+
     _this.modal.diseaseStatus(
       new DiseaseStatus(
         diseaseStatus.OntologyTermId,
         diseaseStatus.Description,
         otherTerms,
-        diseaseStatus.DisplayOnDirectory
+        diseaseStatus.DisplayOnDirectory,
+        associatedData
       )
     );
 
@@ -121,6 +130,45 @@ function AdacDiseaseStatusViewModel() {
   this.removeOtherTerms = function (idx) {
     _this.modal.diseaseStatus().otherTerms.splice(idx, 1);
   };
+  this.addAssociatedData = function () {
+    if (
+      _this.modal
+        .diseaseStatus()
+        .associatedData()
+        .find(
+          (item) => item.Id === JSON.parse($("#ass-data-select").val()).Id
+        ) == null
+    ) {
+      _this.modal
+        .diseaseStatus()
+        .associatedData.push(JSON.parse($("#ass-data-select").val()));
+    }
+  };
+  this.removeAssociatedData = function (idx) {
+    _this.modal.diseaseStatus().associatedData.splice(idx, 1);
+  };
+
+  $.ajax({
+    type: "GET",
+    url: `/api/AssociatedDataType`,
+    beforeSend: function () {
+      //setLoading(true); // Show loader icon
+    },
+    success: function (response) {
+      response.AssociatedDataTypes.forEach(function (type) {
+        const val = JSON.stringify(type);
+        $("#ass-data-select").append(
+          `<option value='${val}'>${type.Name}</option>`
+        );
+      });
+    },
+    complete: function () {
+      //setLoading(false); // Hide loader icon
+    },
+    failure: function (jqXHR, textStatus, errorThrown) {
+      console.log("an error was thrown");
+    },
+  });
 }
 
 // DataTables

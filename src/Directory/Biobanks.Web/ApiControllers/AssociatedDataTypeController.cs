@@ -146,7 +146,8 @@ namespace Biobanks.Web.ApiControllers
                 Id = model.Id,
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Value = model.Name,
-                Message = model.Message
+                Message = model.Message,
+                OntologyTerms = model.OntologyTerms
             };
 
             await _associatedDataTypeService.Add(associatedDataType);
