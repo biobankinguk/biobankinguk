@@ -214,7 +214,6 @@ $(function () {
             }
           }
 
-          console.log(returnString);
           return returnString;
         },
       },
