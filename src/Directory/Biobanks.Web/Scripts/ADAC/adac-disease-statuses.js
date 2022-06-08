@@ -200,7 +200,6 @@ $(function () {
       {
         data: "AssociatedDataTypes",
         render: function (data, type, row) {
-          console.log(data);
           let returnString = "";
           if (data) {
             if (data.length === 1) {
