@@ -55,15 +55,15 @@
                             <td>
                                 @if (@item.OntologyTerms == null)
                                 {
-                                    @Html.Raw("[]")
+                                    @Html.Raw("")
 
                                 }
                                 else
                                 {
                                     // map list of ontology terms to their names and print out
                                     // the array of names
-                                    string[] stringList = item.OntologyTerms.Select(r => r.Value).ToArray();
-                                    string outputString = "[" + String.Join(",", stringList) + "]";
+                                    string[] stringList = item.OntologyTerms.Select(r => "<li>"+r.Value+"</li>").ToArray();
+                                    string outputString = "<ul>" + String.Join("", stringList) + "</ul>";
                                     @Html.Raw(outputString)
 
                                 }
