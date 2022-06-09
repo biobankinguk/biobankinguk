@@ -32,6 +32,7 @@
                 <tr>
                     <th>Description</th>
                     <th>Collection and Capability Count</th>
+                    <th>Ontology Terms</th>
                     <th>@* Actions *@</th>
                 </tr>
             </thead>
@@ -51,7 +52,22 @@
 
                             <td>@item.Name</td>
                             <td>@item.CollectionCapabilityCount</td>
+                            <td>
+                                @if (@item.OntologyTerms == null)
+                                {
+                                    @Html.Raw("")
 
+                                }
+                                else
+                                {
+                                    // map list of ontology terms to their names and print out
+                                    // the array of names
+                                    string[] stringList = item.OntologyTerms.Select(r => "<li>"+r.Value+"</li>").ToArray();
+                                    string outputString = "<ul>" + String.Join("", stringList) + "</ul>";
+                                    @Html.Raw(outputString)
+
+                                }
+                            </td>
 
                             <td class="text-right">
                                 @if (item.CollectionCapabilityCount > 0)
@@ -180,7 +196,7 @@
                             <span class="field-validation-valid" data-valmsg-for="Diagnosis" data-valmsg-replace="true"></span>
                         </div>
                     </div>
-                    
+
                     <button type="button" class="btn btn-success" id="diagnosis-submit" data-bind="click: addOntologyTerm" disabled>Add Ontology Term</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
