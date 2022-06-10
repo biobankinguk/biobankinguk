@@ -1,5 +1,7 @@
 ﻿using Biobanks.Directory.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,9 +29,20 @@ namespace Biobanks.Directory.Services
             existing.AssociatedDataTypeGroup = entity.AssociatedDataTypeGroup;
             existing.AssociatedDataTypeGroupId = entity.AssociatedDataTypeGroupId;
             existing.Message = entity.Message;
+            existing.OntologyTerms = entity.OntologyTerms;
             await _db.SaveChangesAsync();
 
             return existing;
         }
+
+        public override async Task<ICollection<AssociatedDataType>> List(string wildcard)
+            => await _db.AssociatedDataTypes
+                .AsNoTracking()
+                .Include(x => x.OntologyTerms)
+                .Where(x => x.Value.Contains(wildcard))
+                .OrderBy(x => x.SortOrder)
+                .ToListAsync();
+
+
     }
 }
