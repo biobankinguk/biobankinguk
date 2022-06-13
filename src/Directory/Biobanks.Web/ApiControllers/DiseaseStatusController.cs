@@ -141,7 +141,7 @@ namespace Biobanks.Web.ApiControllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post([System.Web.Mvc.Bind(Exclude = "Value",Include ="OntologyTermId, Description",Prefix = "")] OntologyTermModel model)
+        public async Task<IHttpActionResult> Post(OntologyTermModel model)
         {
             // Had to do this as it is not binding to ontology term model
             ModelState.Clear();
