@@ -72,7 +72,7 @@ namespace Biobanks.Directory.Services
             => await Query().AnyAsync(x => x.Value == value && x.Id != id);
 
         /// <inheritdoc/>
-        public async Task<T> Get(int id)
+        public virtual async Task<T> Get(int id)
             => await Query()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
