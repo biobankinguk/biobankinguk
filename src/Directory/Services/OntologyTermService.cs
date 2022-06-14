@@ -32,6 +32,7 @@ namespace Biobanks.Directory.Services
            .AsNoTracking()
            .Include(x => x.SnomedTag)
            .Include(x => x.MaterialTypes)
+           .Include(x => x.AssociatedDataTypes)
            .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
 
             // Filter By ID
@@ -127,12 +128,14 @@ namespace Biobanks.Directory.Services
             // Update Current Term
             var currentTerm = await _db.OntologyTerms
                 .Include(x => x.MaterialTypes)
+                .Include(x => x.AssociatedDataTypes)
                 .FirstAsync(x => x.Id == ontologyTerm.Id);
 
             currentTerm.Value = ontologyTerm.Value;
             currentTerm.OtherTerms = ontologyTerm.OtherTerms;
             currentTerm.DisplayOnDirectory = ontologyTerm.DisplayOnDirectory;
             currentTerm.SnomedTag = ontologyTerm.SnomedTag;
+            currentTerm.AssociatedDataTypes = ontologyTerm.AssociatedDataTypes;
 
             // Link To Existing Material Types
             currentTerm.MaterialTypes = await _db.MaterialTypes.Where(x => materialIds.Contains(x.Id)).ToListAsync();
@@ -157,7 +160,7 @@ namespace Biobanks.Directory.Services
 
         public async Task<List<OntologyTerm>> GetByAssociatedDataType(int id)
         {
-            var list = await _db.AssociatedDataTypes 
+            var list = await _db.AssociatedDataTypes
                     .Where(p => p.Id == id)
                     .SelectMany(p => p.OntologyTerms)
                     .OrderByDescending(p => p.Id)
@@ -173,6 +176,22 @@ namespace Biobanks.Directory.Services
                     .OrderByDescending(p => p.Id)
                     .ToListAsync();
 
+            return list;
+        }
+
+        public async Task<List<OntologyTerm>> GetOntologyTermsFromList(List<string> input)
+        {
+            var list = await _db.OntologyTerms
+                    .Where(r => input.Contains(r.Id))
+                    .ToListAsync();
+            return list;
+        }
+
+        public async Task<List<AssociatedDataType>> GetAssociatedDataFromList(List<int> input)
+        {
+            var list = await _db.AssociatedDataTypes
+                    .Where(r => input.Contains(r.Id))
+                    .ToListAsync();
             return list;
         }
     }

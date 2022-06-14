@@ -84,6 +84,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <param name="id">The alphanumeric Id of the OntologyTerm</param>
         Task<bool> IsInUse(string id);
+        Task<List<OntologyTerm>> GetOntologyTermsFromList(List<string> list);
 
         /// <summary>
         /// Counts the number of OntologyTerms which match the given parameter filters
@@ -103,5 +104,6 @@ namespace Biobanks.Directory.Services.Contracts
         /// <returns>The integer number of occurances of the OntologyTerm in both Collections and Capabilities </returns>
         Task<int> CountCollectionCapabilityUsage(string ontologyTermId);
         Task<List<OntologyTerm>> GetByAssociatedDataType(int id);
+        Task<List<AssociatedDataType>> GetAssociatedDataFromList(List<int> list);
     }
 }

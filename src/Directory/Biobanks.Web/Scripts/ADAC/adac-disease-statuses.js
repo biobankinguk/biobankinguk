@@ -76,9 +76,9 @@ function AdacDiseaseStatusViewModel() {
       ? diseaseStatus.OtherTerms.split(",").map((item) => item.trim())
       : diseaseStatus.OtherTerms;
 
-    let associatedData = diseaseStatus.associatedData
-      ? diseaseStatus.associatedData.split(",").map((item) => item.trim())
-      : diseaseStatus.associatedData;
+    let associatedData = diseaseStatus.AssociatedDataTypes
+      ? diseaseStatus.AssociatedDataTypes
+      : [];
 
     _this.modal.diseaseStatus(
       new DiseaseStatus(

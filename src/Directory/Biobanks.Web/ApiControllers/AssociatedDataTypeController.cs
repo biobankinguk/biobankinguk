@@ -6,6 +6,9 @@ using Biobanks.Web.Models.Shared;
 using Biobanks.Web.Models.ADAC;
 using Biobanks.Web.Filters;
 using Biobanks.Directory.Services.Contracts;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Web.ApiControllers
 {
@@ -15,13 +18,15 @@ namespace Biobanks.Web.ApiControllers
     {
         private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
         private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
-
+        private readonly IOntologyTermService _ontologyTermService;
         public AssociatedDataTypeController(
             IReferenceDataService<AssociatedDataType> associatedDataTypeService,
-            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService)
+            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+            IOntologyTermService ontologyTermService)
         {
             _associatedDataTypeService = associatedDataTypeService;
             _associatedDataTypeGroupService = associatedDataTypeGroupService;
+            _ontologyTermService = ontologyTermService;
         }
 
         [HttpGet]
@@ -109,13 +114,15 @@ namespace Biobanks.Web.ApiControllers
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-
+            var ontologyTerms = ((List<OntologyTermModel>)JsonConvert.DeserializeObject(model.OntologyTermsJson, typeof(List<OntologyTermModel>)));
+            List<OntologyTerm> terms = await _ontologyTermService.GetOntologyTermsFromList(ontologyTerms.Select(x => x.OntologyTermId).ToList());
             await _associatedDataTypeService.Update(new AssociatedDataType
             {
                 Id = id,
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Value = model.Name,
-                Message = model.Message
+                Message = model.Message,
+                OntologyTerms = terms
             });
 
             // Success response
@@ -140,14 +147,15 @@ namespace Biobanks.Web.ApiControllers
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-
+            var ontologyTerms = ((List<OntologyTermModel>)JsonConvert.DeserializeObject(model.OntologyTermsJson, typeof(List<OntologyTermModel>)));
+            List<OntologyTerm> terms = await _ontologyTermService.GetOntologyTermsFromList(ontologyTerms.Select(x => x.OntologyTermId).ToList());
             var associatedDataType = new AssociatedDataType
             {
                 Id = model.Id,
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Value = model.Name,
                 Message = model.Message,
-                OntologyTerms = model.OntologyTerms
+                OntologyTerms = terms  
             };
 
             await _associatedDataTypeService.Add(associatedDataType);

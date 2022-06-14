@@ -18,7 +18,7 @@ $(function () {
         return $.map(x, function (item) {
           return {
             desc: item.Description,
-            id: item.Id,
+            id: item.OntologyTermId,
           };
         });
       },
