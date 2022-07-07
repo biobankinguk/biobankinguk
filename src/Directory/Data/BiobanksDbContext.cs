@@ -200,6 +200,17 @@ namespace Biobanks.Directory.Data
             modelBuilder.Entity<Status>()
                 .ToTable("Statuses");
 
+            modelBuilder.Entity<AgeRange>()
+                .HasMany(a => a.SampleSets)
+                .WithMany(s => s.AgeRanges)
+                .Map(asa =>
+                {
+                    asa.MapLeftKey("AgeRangesId");
+                    asa.MapRightKey("SampleSetsId");
+                    asa.ToTable("AgeRangeSampleSet");
+                });
+
+
             modelBuilder.Entity<OntologyTerm>()
                 .HasMany(c => c.AssociatedDataTypes)
                 .WithMany(o => o.OntologyTerms)
