@@ -1,4 +1,5 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Web.Models.ADAC;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,9 +18,10 @@ namespace Biobanks.Web.Models.Shared
 
         public bool DisplayOnDirectory { get; set; }
 
-        public List<string> MatchingOtherTerms { get; set; }
-        public List<string> NonMatchingOtherTerms { get; set; }
+        public List<string> MatchingOtherTerms { get; set; } = new List<string>();
+        public List<string> NonMatchingOtherTerms { get; set; } = new List<string>();
 
-        public List<AssociatedDataType> AssociatedDataTypes {get; set;}
+        public List<AssociatedDataTypeModel> AssociatedDataTypes {get; set;}
+        public string AssociatedDataTypesJson {get; set; }
     }
 }

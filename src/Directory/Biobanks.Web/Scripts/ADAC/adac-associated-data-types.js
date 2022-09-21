@@ -61,9 +61,9 @@ function AdacAssociatedDataTypeViewModel() {
 
     var associatedDataType = $(event.currentTarget).data("associated-types");
 
-    let ontologyTerms = associatedDataType.ontologyTerms
-      ? associatedDataType.ontologyTerms.split(",").map((item) => item.trim())
-      : associatedDataType.ontologyTerms;
+    let ontologyTerms = associatedDataType.OntologyTerms
+      ? associatedDataType.OntologyTerms
+      : [];
 
     _this.modal.associatedDataType(
       new AssociatedDataType(
@@ -110,7 +110,8 @@ function AdacAssociatedDataTypeViewModel() {
         .ontologyTerms()
         .find(
           (item) =>
-            item.Id == JSON.parse($(".diagnosis-search").attr("data-id")).Id
+            item.OntologyTermId ==
+            JSON.parse($(".diagnosis-search").attr("data-id")).OntologyTermId
         ) == undefined
     ) {
       _this.modal

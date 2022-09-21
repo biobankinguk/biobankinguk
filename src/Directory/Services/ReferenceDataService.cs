@@ -72,7 +72,7 @@ namespace Biobanks.Directory.Services
             => await Query().AnyAsync(x => x.Value == value && x.Id != id);
 
         /// <inheritdoc/>
-        public async Task<T> Get(int id)
+        public virtual async Task<T> Get(int id)
             => await Query()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -84,7 +84,7 @@ namespace Biobanks.Directory.Services
                 .FirstOrDefaultAsync(x => x.Value == value);
 
         /// <inheritdoc/>
-        public async Task<ICollection<T>> List(string wildcard)
+        public virtual async Task<ICollection<T>> List(string wildcard)
             => await Query()
                 .AsNoTracking()
                 .Where(x => x.Value.Contains(wildcard))

@@ -62,7 +62,7 @@
                                 {
                                     // map list of ontology terms to their names and print out
                                     // the array of names
-                                    string[] stringList = item.OntologyTerms.Select(r => "<li>"+r.Value+"</li>").ToArray();
+                                    string[] stringList = item.OntologyTerms.Select(r => "<li>"+r.Description+"</li>").ToArray();
                                     string outputString = "<ul>" + String.Join("", stringList) + "</ul>";
                                     @Html.Raw(outputString)
 
@@ -140,7 +140,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.associatedDataType().id">
-                            <input type="hidden" id="OntologyTerms" name="OntologyTerms" data-bind="value: modal.associatedDataType().ontologyTerms()">
+                            <input type="hidden" id="OntologyTermsJson" name="OntologyTermsJson" data-bind="value: ko.toJSON(modal.associatedDataType().ontologyTerms)">
 
                             <!-- Annual Statistic -->
                             <div class="form-group">

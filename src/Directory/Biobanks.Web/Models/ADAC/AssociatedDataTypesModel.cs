@@ -26,6 +26,8 @@ namespace Biobanks.Web.Models.ADAC
         public string Message { get; set; }
         public int CollectionCapabilityCount { get; set; }
 
-        public List<OntologyTerm> OntologyTerms { get; set; }
+        public List<OntologyTermModel> OntologyTerms { get; set; }
+
+        public string OntologyTermsJson { get; set; } = "";
     }
 }

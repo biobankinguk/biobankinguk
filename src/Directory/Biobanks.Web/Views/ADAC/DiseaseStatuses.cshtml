@@ -62,7 +62,7 @@
 
                             <input type="hidden" id="Id" name="Id" data-bind="value: modal.diseaseStatus().ontologyTermId()">
                             <input type="hidden" id="OtherTerms" name="OtherTerms">
-                            <input type="hidden" id="AssociatedDataTypes" name="AssociatedDataTypes" data-bind="value: modal.diseaseStatus().associatedData()">
+                            <input type="hidden" id="AssociatedDataTypesJson" name="AssociatedDataTypesJson" data-bind="value: ko.toJSON(modal.diseaseStatus().associatedData)">
 
                             <!-- SNOMED ID -->
                             <div class="form-group">
