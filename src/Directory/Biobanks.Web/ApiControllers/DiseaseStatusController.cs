@@ -55,7 +55,11 @@ namespace Biobanks.Web.ApiControllers
                     CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory,
-                    AssociatedDataTypes = x.AssociatedDataTypes
+                    AssociatedDataTypes = x.AssociatedDataTypes.Select(x => new AssociatedDataTypeModel 
+                    { 
+                        Id = x.Id,
+                        Name = x.Value
+                    }).ToList(),
                 })
                 .Result
             )
