@@ -222,7 +222,7 @@ $(function () {
                       href: "#",
                       html: 
                           $("<span/>", {
-                              text: "...View More",
+                              text: "...View All",
                           })
                   });
                   returnString = `${displayData}`  ;
