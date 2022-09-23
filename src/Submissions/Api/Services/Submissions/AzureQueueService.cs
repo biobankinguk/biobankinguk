@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Api.Services.Contracts;
+﻿using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Core.Submissions.Models;
 using Core.Submissions.Services.Contracts;
 using Core.Submissions.Types;
@@ -6,7 +6,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services
+namespace Biobanks.Submissions.Api.Services.Submissions
 {
     /// <inheritdoc />
     public class AzureQueueService : IBackgroundJobEnqueueingService
@@ -48,7 +48,7 @@ namespace Biobanks.Submissions.Api.Services
 
         /// <inheritdoc />
         public async Task Reject(int biobankId)
-            => await _queueWriteService.PushAsync("reject", 
+            => await _queueWriteService.PushAsync("reject",
                 JsonSerializer.Serialize(
                     new RejectQueueItem
                     {

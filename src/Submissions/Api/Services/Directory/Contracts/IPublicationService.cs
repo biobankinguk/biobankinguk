@@ -1,18 +1,15 @@
 ﻿using Biobanks.Entities.Data;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Directory.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
     public interface IPublicationService
     {
         /// <summary>
         /// Get all untracked Publication assoicated to a given Organisation
         /// </summary>
+        /// <param name="organisationId">The organisation to which the publications belong. Filters the query by organisation Id.</param>
         /// <param name="acceptedOnly">Whether to return Publications that have been accepted by the Organisation, false by default</param>
         /// <returns>An Enumerable of all applicable untracked Publications</returns>
         Task<IEnumerable<Publication>> ListByOrganisation(int organisationId, bool acceptedOnly = false);

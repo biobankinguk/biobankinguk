@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Api.Services.Contracts;
+﻿using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Core.Jobs;
 using Core.Submissions.Models;
 using Core.Submissions.Types;
@@ -6,7 +6,7 @@ using Hangfire;
 using System;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services
+namespace Biobanks.Submissions.Api.Services.Submissions
 {
     /// <inheritdoc />
     public class HangfireQueueService : IBackgroundJobEnqueueingService
