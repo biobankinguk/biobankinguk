@@ -15,9 +15,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
-using Biobanks.Submissions.Api.Services.Contracts;
+using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 
-namespace Biobanks.Submissions.Api.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
     /// <summary>
     /// Controller for handling submissions of data for a biobank
@@ -163,7 +163,7 @@ namespace Biobanks.Submissions.Api.Controllers
                             return await CancelSubmissionAndReturnBadRequest(sampleModel, submission.Id, "At least one of AgeAtDonation or YearOfBirth must be provided.");
                         else if (!string.IsNullOrEmpty(sampleModel.AgeAtDonation))
                         {
-                            int ageAtDonationInt; 
+                            int ageAtDonationInt;
                             if (int.TryParse(sampleModel.AgeAtDonation, out ageAtDonationInt))
                             {
                                 if (ageAtDonationInt > 150)
@@ -198,7 +198,7 @@ namespace Biobanks.Submissions.Api.Controllers
                             }
 
                         }
-                            samplesUpdates.Add(sampleModel);
+                        samplesUpdates.Add(sampleModel);
                         break;
 
                     case Operation.Delete:
