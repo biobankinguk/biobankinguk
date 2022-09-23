@@ -202,7 +202,6 @@ $(function () {
           render: function (data, type, row, meta) {
 
               let returnString = "N/A";
-              console.log(data)
           if (data) {
               if (data.length === 1) {
                   returnString = `<li>${data[0].Name}</li>`;
