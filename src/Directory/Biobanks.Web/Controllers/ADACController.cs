@@ -1274,11 +1274,11 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
                     OtherTerms = x.OtherTerms,
-                    AssociatedDataTypes = x.AssociatedDataTypes.Select(x => new AssociatedDataTypeModel
-                    {
-                        Id = x.Id,
-                        Name = x.Value
-                    }).ToList(),
+                    AssociatedDataTypes = x.AssociatedDataTypes.Select(y => new AssociatedDataTypeModel
+                        {
+                            Id = y.Id,
+                            Name = y.Value
+                        }).ToList()
                 })
                 .Result
             ));
@@ -1310,7 +1310,6 @@ namespace Biobanks.Web.Controllers
                         {
                             Id = y.Id,
                             Name = y.Value,
-                            Message = y.Message
                         }).ToList()
                 })
                 .Result

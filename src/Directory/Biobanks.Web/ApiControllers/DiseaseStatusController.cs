@@ -55,11 +55,11 @@ namespace Biobanks.Web.ApiControllers
                     CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory,
-                    AssociatedDataTypes = x.AssociatedDataTypes.Select(x => new AssociatedDataTypeModel 
-                    { 
-                        Id = x.Id,
-                        Name = x.Value
-                    }).ToList(),
+                    AssociatedDataTypes = x.AssociatedDataTypes.Select(y => new AssociatedDataTypeModel
+                        {
+                            Id = y.Id,
+                            Name = y.Value
+                        }).ToList()
                 })
                 .Result
             )
@@ -126,14 +126,16 @@ namespace Biobanks.Web.ApiControllers
             {
                 return JsonModelInvalidResponse(ModelState);
             }
-
+            var associatedData = ((List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>)));
+            List<AssociatedDataType> types = await _ontologyTermService.GetAssociatedDataFromList(associatedData.Select(x => x.Id).ToList());
             await _ontologyTermService.Update(new OntologyTerm
             {
                 Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
-                DisplayOnDirectory = model.DisplayOnDirectory
+                DisplayOnDirectory = model.DisplayOnDirectory,
+                AssociatedDataTypes = types
             });
 
             //Everything went A-OK!
@@ -179,6 +181,7 @@ namespace Biobanks.Web.ApiControllers
             }
             var associatedData = ((List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>)));
             List<AssociatedDataType> types = await _ontologyTermService.GetAssociatedDataFromList(associatedData.Select(x => x.Id).ToList());
+
             await _ontologyTermService.Create(new OntologyTerm
             {
                 Id = model.OntologyTermId,

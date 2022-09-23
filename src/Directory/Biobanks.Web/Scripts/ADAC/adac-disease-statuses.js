@@ -201,10 +201,11 @@ $(function () {
         data: "AssociatedDataTypes",
           render: function (data, type, row, meta) {
 
-            let returnString = "N/A";
+              let returnString = "N/A";
+              console.log(data)
           if (data) {
               if (data.length === 1) {
-                  returnString = data[0].Value;
+                  returnString = `<li>${data[0].Name}</li>`;
               } else if (data.length < 4 && data.length > 1) {
                   // return their values as a list
                   let displayData = data
