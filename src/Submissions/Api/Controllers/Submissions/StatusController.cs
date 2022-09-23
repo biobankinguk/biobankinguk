@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Biobanks.Submissions.Api.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
     /// <inheritdoc />
     /// <summary>
@@ -49,7 +49,7 @@ namespace Biobanks.Submissions.Api.Controllers
         [SwaggerResponse(200, Type = typeof(PaginatedSubmissionSummariesModel))]
         [SwaggerResponse(400, "Offset exceeds the total records available.")]
         [SwaggerResponse(400, "The parameters 'Since' and 'N' are mutually exclusive.")]
-        public async Task<IActionResult> List(int biobankId, [FromQuery]SubmissionPaginationParams paging)
+        public async Task<IActionResult> List(int biobankId, [FromQuery] SubmissionPaginationParams paging)
         {
             if (!User.HasClaim(CustomClaimTypes.BiobankId,
                 biobankId.ToString()))

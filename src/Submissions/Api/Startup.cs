@@ -4,8 +4,6 @@ using Biobanks.Publications.Services.Contracts;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Services;
-using Biobanks.Submissions.Api.Services.Contracts;
 using ClacksMiddleware.Extensions;
 using Core.AzureStorage;
 
@@ -48,6 +46,10 @@ using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
 using Biobanks.Aggregator;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Api.Services.Submissions.Contracts;
+using Biobanks.Submissions.Api.Services.Submissions;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.Directory;
 
 namespace Biobanks.Submissions.Api
 {
@@ -203,12 +205,12 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
                 .AddTransient<IErrorService, ErrorService>()
 
-                
+
                 .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
-                .AddTransient(typeof(IReferenceDataService<>), typeof(ReferenceDataService<>)) 
+                .AddTransient(typeof(IReferenceDataService<>), typeof(ReferenceDataService<>))
 
                 .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
                 .AddTransient<ICollectionService, CollectionService>()
@@ -216,7 +218,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
 
-                .AddTransient<IPublicationService, PublicationService>()
+                .AddTransient<IPublicationJobService, PublicationJobService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
@@ -227,7 +229,10 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IAnalyticsService, AnalyticsService>()
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
-                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>();
+                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
+
+                //Directory Services
+                .AddTransient<IPublicationService, PublicationService>();
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)

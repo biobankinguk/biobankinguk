@@ -9,13 +9,13 @@ namespace Core.Jobs
     public class PublicationsJob
     {
 
-        private readonly IPublicationService _publicationService;
+        private readonly IPublicationJobService _publicationService;
         private readonly IAnnotationService _annotationService;
         private readonly IEpmcService _epmcWebService;
         private readonly IOrganisationService _organisationService;
         
         public PublicationsJob(
-            IPublicationService publicationService,
+            IPublicationJobService publicationService,
             IAnnotationService annotationService,
             IEpmcService epmcWebService,
             IOrganisationService organisationService)

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Core.Submissions.Types;
 using Core.Submissions.Services.Contracts;
 
-namespace Biobanks.Submissions.Api.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
     /// <summary>
     /// This controller serves as a sub-controller for submission errors only
@@ -45,7 +45,7 @@ namespace Biobanks.Submissions.Api.Controllers
         [SwaggerResponse(200, Type = typeof(PaginatedErrorsModel))]
         [SwaggerResponse(404, "No submission found with the specified id.")]
         [SwaggerResponse(400, "Offset exceeds the total records available.")]
-        public async Task<IActionResult> ListErrors(int submissionId, [FromQuery]PaginationParams paging)
+        public async Task<IActionResult> ListErrors(int submissionId, [FromQuery] PaginationParams paging)
         {
             var (subBiobankId, total, errors) = await _errors.List(submissionId, paging);
 

@@ -10,11 +10,11 @@ using Biobanks.Publications.Dto;
 
 namespace Biobanks.Publications.Services
 {
-    public class PublicationService : IPublicationService
+    public class PublicationJobService : IPublicationJobService
     {
         private BiobanksDbContext _db;
 
-        public PublicationService(BiobanksDbContext db)
+        public PublicationJobService(BiobanksDbContext db)
         {
             _db = db;
         }

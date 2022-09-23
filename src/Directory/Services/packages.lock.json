@@ -234,8 +234,8 @@
       },
       "Newtonsoft.Json": {
         "type": "Transitive",
-        "resolved": "12.0.3",
-        "contentHash": "6mgjfnRB4jKMlzHSl+VD+oUc1IebOZabkbyWj2RiTgWwYPPuaK1H97G1sHqGwPlS5npiF5Q0OrxN1wni2n5QWg=="
+        "resolved": "13.0.1",
+        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
       },
       "Owin": {
         "type": "Transitive",
@@ -298,7 +298,7 @@
         "dependencies": {
           "Biobanks.Entities": "1.0.0",
           "EntityFramework": "6.4.4",
-          "Newtonsoft.Json": "12.0.3",
+          "Newtonsoft.Json": "13.0.1",
           "System.Runtime.Caching": "4.7.0"
         }
       },
@@ -318,7 +318,7 @@
           "Microsoft.AspNet.Identity.EntityFramework": "2.2.3",
           "Microsoft.AspNet.Identity.Owin": "2.2.3",
           "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "12.0.3"
+          "Newtonsoft.Json": "13.0.1"
         }
       },
       "Biobanks.IdentityModel": {
@@ -332,7 +332,7 @@
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "NEST": "7.8.1",
-          "Newtonsoft.Json": "12.0.3"
+          "Newtonsoft.Json": "13.0.1"
         }
       }
     }

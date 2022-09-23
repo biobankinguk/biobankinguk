@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Biobanks.Submissions.Api.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
     /// <summary>
     /// Controller for Token issuing
