@@ -211,7 +211,7 @@ $(function () {
                   let displayData = data
                       .map((item) => `<li>${item.Name}</li>`)
                       .join("");
-                  returnString = `<ul>${displayData}</ul>  `;
+                  returnString = `${displayData}  `;
               } else if (data.length > 3) {
                   let displayData = data.slice(2)
                       .map((item) => `<li>${item.Name}</li>`)
@@ -225,9 +225,8 @@ $(function () {
                           $("<span/>", {
                               text: "...View More",
                           })
-                      
                   });
-                  returnString = `<ul>${displayData}</ul> `  ;
+                  returnString = `${displayData}`  ;
               }
           }
               return $("<div/>").append(returnString).append(ViewMore).html();

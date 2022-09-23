@@ -181,7 +181,6 @@ namespace Biobanks.Web.ApiControllers
             }
             var associatedData = ((List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>)));
             List<AssociatedDataType> types = await _ontologyTermService.GetAssociatedDataFromList(associatedData.Select(x => x.Id).ToList());
-
             await _ontologyTermService.Create(new OntologyTerm
             {
                 Id = model.OntologyTermId,
@@ -191,6 +190,7 @@ namespace Biobanks.Web.ApiControllers
                 DisplayOnDirectory = model.DisplayOnDirectory,
                 AssociatedDataTypes = types
             });
+
 
             //Everything went A-OK!
             return Json(new
