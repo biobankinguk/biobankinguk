@@ -215,13 +215,11 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
                 .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
-                .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
 
                 .AddTransient<IPublicationJobService, PublicationJobService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
-                .AddTransient<IOrganisationService, OrganisationService>()
 
                 .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
                 .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
@@ -232,7 +230,8 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
 
                 //Directory Services
-                .AddTransient<IPublicationService, PublicationService>();
+                .AddTransient<IPublicationService, PublicationService>()
+                .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>();
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
