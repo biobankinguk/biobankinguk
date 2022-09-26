@@ -231,7 +231,7 @@ namespace Biobanks.Submissions.Api
 
                 //Directory Services
                 .AddTransient<IPublicationService, PublicationService>()
-                .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>();
+                .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>(); //TODO: merge or resolve OrganisationDirectory and Organisation Services
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
