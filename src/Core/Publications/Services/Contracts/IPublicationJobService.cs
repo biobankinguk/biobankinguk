@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Publications.Services.Contracts
 {
-    public interface IPublicationService
+    public interface IPublicationJobService
     {
         Task<IEnumerable<Publication>> ListOrganisationPublications(int organisationId);
 

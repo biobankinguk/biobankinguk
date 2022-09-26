@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Submissions.Contracts
 {
     /// <summary>
     /// Wrapper service for handling
@@ -27,7 +27,7 @@ namespace Biobanks.Submissions.Api.Services.Contracts
         /// <param name="replace">Confirms if all the current data in the live table should be deleted prior this commit</param>
         /// <returns></returns>
         Task Commit(int biobankId, bool replace);
-        
+
         /// <summary>
         /// Rejects, and therefore deletes all of the currently staged data for a given Biobank
         /// </summary>

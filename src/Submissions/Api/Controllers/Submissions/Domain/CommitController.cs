@@ -3,14 +3,14 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Services.Contracts;
 
 using Microsoft.AspNetCore.Authorization;
 using Core.Submissions.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 
-namespace Biobanks.Submissions.Api.Controllers.Domain
+namespace Biobanks.Submissions.Api.Controllers.Submissions.Domain
 {
     /// <inheritdoc />
     /// <summary>
