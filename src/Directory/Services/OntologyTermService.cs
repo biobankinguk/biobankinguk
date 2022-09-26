@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Entities.Data.ReferenceData;
+
 
 namespace Biobanks.Directory.Services
 {
@@ -25,12 +27,13 @@ namespace Biobanks.Directory.Services
 
         protected IQueryable<OntologyTerm> ReadOnlyQuery(
             string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterById = true)
-        {     
-              var query = _db.OntologyTerms
-             .AsNoTracking()
-             .Include(x => x.SnomedTag)
-             .Include(x => x.MaterialTypes)
-             .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
+        {
+            var query = _db.OntologyTerms
+           .AsNoTracking()
+           .Include(x => x.SnomedTag)
+           .Include(x => x.MaterialTypes)
+           .Include(x => x.AssociatedDataTypes)
+           .Where(x => x.DisplayOnDirectory || !onlyDisplayable);
 
             // Filter By ID
             if (!string.IsNullOrEmpty(id) && filterById)
@@ -77,7 +80,7 @@ namespace Biobanks.Directory.Services
 
         /// <inheritdoc/>
         public async Task<int> CountCollectionCapabilityUsage(string ontologyTermId)
-            => await _db.Collections.CountAsync(x => x.OntologyTermId == ontologyTermId) 
+            => await _db.Collections.CountAsync(x => x.OntologyTermId == ontologyTermId)
              + await _db.DiagnosisCapabilities.CountAsync(x => x.OntologyTermId == ontologyTermId);
 
         /// <inheritdoc/>
@@ -93,11 +96,11 @@ namespace Biobanks.Directory.Services
         {
             // Get Attached References To MaterialType
             var materialTypeIds = ontologyTerm?.MaterialTypes?.Select(x => x.Id) ?? new List<int>();
-            
+
             var materialTypes = await _db.MaterialTypes
                 .Where(x => materialTypeIds.Contains(x.Id))
                 .ToListAsync();
-                 
+
             var newTerm = new OntologyTerm
             {
                 Id = ontologyTerm.Id,
@@ -105,7 +108,8 @@ namespace Biobanks.Directory.Services
                 OtherTerms = ontologyTerm.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
                 DisplayOnDirectory = ontologyTerm.DisplayOnDirectory,
-                MaterialTypes = materialTypes
+                MaterialTypes = materialTypes,
+                AssociatedDataTypes = ontologyTerm.AssociatedDataTypes
             };
 
             _db.OntologyTerms.Add(newTerm);
@@ -125,12 +129,14 @@ namespace Biobanks.Directory.Services
             // Update Current Term
             var currentTerm = await _db.OntologyTerms
                 .Include(x => x.MaterialTypes)
+                .Include(x => x.AssociatedDataTypes)
                 .FirstAsync(x => x.Id == ontologyTerm.Id);
-            
+
             currentTerm.Value = ontologyTerm.Value;
             currentTerm.OtherTerms = ontologyTerm.OtherTerms;
             currentTerm.DisplayOnDirectory = ontologyTerm.DisplayOnDirectory;
             currentTerm.SnomedTag = ontologyTerm.SnomedTag;
+            currentTerm.AssociatedDataTypes = ontologyTerm.AssociatedDataTypes;
 
             // Link To Existing Material Types
             currentTerm.MaterialTypes = await _db.MaterialTypes.Where(x => materialIds.Contains(x.Id)).ToListAsync();
@@ -151,6 +157,43 @@ namespace Biobanks.Directory.Services
             _db.OntologyTerms.Remove(ontologyTerm);
 
             await _db.SaveChangesAsync();
+        }
+
+        public async Task<List<OntologyTerm>> GetByAssociatedDataType(int id)
+        {
+            var list = await _db.AssociatedDataTypes
+                    .Where(p => p.Id == id)
+                    .SelectMany(p => p.OntologyTerms)
+                    .OrderByDescending(p => p.Id)
+                    .ToListAsync();
+            return list;
+        }
+
+        public async Task<List<AssociatedDataType>> ListAssociatedDataTypesByOntologyTerm(string id)
+        {
+            var list = await _db.OntologyTerms
+                    .Where(p => p.Id == id)
+                    .SelectMany(p => p.AssociatedDataTypes)
+                    .OrderByDescending(p => p.Id)
+                    .ToListAsync();
+
+            return list;
+        }
+
+        public async Task<List<OntologyTerm>> GetOntologyTermsFromList(List<string> input)
+        {
+            var list = await _db.OntologyTerms
+                    .Where(r => input.Contains(r.Id))
+                    .ToListAsync();
+            return list;
+        }
+
+        public async Task<List<AssociatedDataType>> GetAssociatedDataFromList(List<int> input)
+        {
+            var list = await _db.AssociatedDataTypes
+                    .Where(r => input.Contains(r.Id))
+                    .ToListAsync();
+            return list;
         }
     }
 }

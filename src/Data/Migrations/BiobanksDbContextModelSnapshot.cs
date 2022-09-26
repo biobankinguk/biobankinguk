@@ -49,6 +49,21 @@ namespace Biobanks.Data.Migrations
                     b.ToTable("ApiClientOrganisation");
                 });
 
+            modelBuilder.Entity("AssociatedDataTypeOntologyTerm", b =>
+                {
+                    b.Property<int>("AssociatedDataTypesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OntologyTermsId")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("AssociatedDataTypesId", "OntologyTermsId");
+
+                    b.HasIndex("OntologyTermsId");
+
+                    b.ToTable("AssociatedDataTypeOntologyTerm");
+                });
+
             modelBuilder.Entity("Biobanks.Entities.Api.Error", b =>
                 {
                     b.Property<int>("Id")
@@ -2187,6 +2202,21 @@ namespace Biobanks.Data.Migrations
                     b.HasOne("Biobanks.Entities.Data.Organisation", null)
                         .WithMany()
                         .HasForeignKey("OrganisationsOrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AssociatedDataTypeOntologyTerm", b =>
+                {
+                    b.HasOne("Biobanks.Entities.Data.ReferenceData.AssociatedDataType", null)
+                        .WithMany()
+                        .HasForeignKey("AssociatedDataTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Biobanks.Entities.Shared.ReferenceData.OntologyTerm", null)
+                        .WithMany()
+                        .HasForeignKey("OntologyTermsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

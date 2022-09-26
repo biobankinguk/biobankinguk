@@ -10,6 +10,13 @@ on:
   pull_request:
     types: [ready_for_review, opened, synchronize, reopened]
 
+# this workflow fails for dependabot without these permissions
+permissions:
+  # All other permissions are set to none
+  checks: write
+  contents: read
+  pull-requests: write
+
 jobs:
   label:
     if: github.event.pull_request.draft == false

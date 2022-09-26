@@ -1,4 +1,5 @@
-﻿using Biobanks.Entities.Shared.ReferenceData;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -34,6 +35,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <param name="id">Id of the OntologyTerm to delete. Assumed the OntologyTerm Id exists</param>
         Task Delete(string id);
+        Task<List<AssociatedDataType>> ListAssociatedDataTypesByOntologyTerm(string id);
 
         /// <summary>
         /// Returns singular OntologyTerm that matches the given parameter filters. If more than one OntologyTerm is found
@@ -82,6 +84,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// </summary>
         /// <param name="id">The alphanumeric Id of the OntologyTerm</param>
         Task<bool> IsInUse(string id);
+        Task<List<OntologyTerm>> GetOntologyTermsFromList(List<string> list);
 
         /// <summary>
         /// Counts the number of OntologyTerms which match the given parameter filters
@@ -100,5 +103,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// <param name="ontologyTermId">The alphanumeric Id of the OntologyTerm</param>
         /// <returns>The integer number of occurances of the OntologyTerm in both Collections and Capabilities </returns>
         Task<int> CountCollectionCapabilityUsage(string ontologyTermId);
+        Task<List<OntologyTerm>> GetByAssociatedDataType(int id);
+        Task<List<AssociatedDataType>> GetAssociatedDataFromList(List<int> list);
     }
 }

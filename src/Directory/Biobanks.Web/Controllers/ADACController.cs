@@ -1273,7 +1273,12 @@ namespace Biobanks.Web.Controllers
                     OntologyTermId = x.Id,
                     Description = x.Value,
                     CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
-                    OtherTerms = x.OtherTerms
+                    OtherTerms = x.OtherTerms,
+                    AssociatedDataTypes = x.AssociatedDataTypes.Select(y => new AssociatedDataTypeModel
+                        {
+                            Id = y.Id,
+                            Name = y.Value
+                        }).ToList()
                 })
                 .Result
             ));
@@ -1297,7 +1302,15 @@ namespace Biobanks.Web.Controllers
                     Description = x.Value,
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory,
-                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id)
+                    CollectionCapabilityCount = await _ontologyTermService.CountCollectionCapabilityUsage(x.Id),
+                    AssociatedDataTypes = x.AssociatedDataTypes==null?
+                        null
+                        :
+                        x.AssociatedDataTypes.Select(y => new AssociatedDataTypeModel
+                        {
+                            Id = y.Id,
+                            Name = y.Value,
+                        }).ToList()
                 })
                 .Result
             );
@@ -1463,8 +1476,17 @@ namespace Biobanks.Web.Controllers
                         Message = x.Message,
                         CollectionCapabilityCount = await _associatedDataTypeService.GetUsageCount(x.Id),
                         AssociatedDataTypeGroupId = x.AssociatedDataTypeGroupId,
-                        AssociatedDataTypeGroupName = x.AssociatedDataTypeGroup?.Value
-
+                        AssociatedDataTypeGroupName = x.AssociatedDataTypeGroup?.Value,
+                        OntologyTerms = (x.OntologyTerms != null)?
+                            x.OntologyTerms.Select(y=> new OntologyTermModel
+                            {
+                                OntologyTermId = y.Id,
+                                Description = y.Value,
+                                OtherTerms = y.OtherTerms,
+                                DisplayOnDirectory= y.DisplayOnDirectory
+                            }).ToList()
+                            :
+                            null
                     })
                     .Result
                 )

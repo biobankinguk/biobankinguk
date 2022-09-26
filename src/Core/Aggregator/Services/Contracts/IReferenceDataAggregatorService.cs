@@ -1,9 +1,10 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 
+
 namespace Biobanks.Aggregator.Services.Contracts
 {
-    public interface IReferenceDataService
+    public interface IReferenceDataAggregatorService
     {
         AgeRange GetAgeRange(string age);
 
@@ -16,5 +17,6 @@ namespace Biobanks.Aggregator.Services.Contracts
         OntologyTerm GetOntologyTerm(string id);
 
         AgeRange GetDefaultAgeRange();
+       
     }
 }

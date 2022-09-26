@@ -1,9 +1,13 @@
 ﻿using Biobanks.Entities.Data;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services.Contracts
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+        " Any changes made here will need to be made in the corresponding core version"
+        , false)]
     public interface IPublicationService
     {
         /// <summary>
@@ -25,7 +29,7 @@ namespace Biobanks.Directory.Services.Contracts
         /// <param name="publicationId">The EPMRC Identifier of the Publication</param>
         /// <param name="organisationId">The Id of the Organisation</param>
         /// <param name="accept">If the Publication is to be accepted or rejected by the Organisation</param>
-        /// <exception cref="KeyNotFoundException">Thrown when no such Publication is assigned to the given Organisation</exception>
+        /// <returns>Returns publication if found, or null if no such Publication is assigned to the given Organisation</returns>
         Task<Publication> Claim(string publicationId, int organisationId, bool accept = true);
     }
 }

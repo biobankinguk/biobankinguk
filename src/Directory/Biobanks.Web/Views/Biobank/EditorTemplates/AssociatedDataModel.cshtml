@@ -1,6 +1,6 @@
 ﻿@model Biobanks.Web.Models.Biobank.AssociatedDataModel
-
-    <tr>
+    
+    <tr class="@(Model.isLinked == true ? "linked-data" : "")" data-groupid="@Model.DataGroupId">
         <td>
             <div class="checkbox">
                 <span data-message="@Model.Message" data-title="@Model.DataTypeDescription" class="fa fa-info-circle help-icon-button help-associateddata"></span>
