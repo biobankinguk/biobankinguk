@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Biobanks.Omop.Entities
 {
     /// <inheritdoc />
     public class ConditionOccurence
     {
+        [Key]
         public int ConditionOccurenceId { get; set; }
         public int PersonId { get; set; }
         public int ConditionConceptId { get; set; }
