@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace Biobanks.Shared.Services
 {
+    //TODO merge or resolve with OrganisationDirectoryService
     public class OrganisationService : IOrganisationService
     {
         private readonly BiobanksDbContext _db;
