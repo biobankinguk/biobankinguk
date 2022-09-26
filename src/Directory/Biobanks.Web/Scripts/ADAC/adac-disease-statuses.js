@@ -63,7 +63,7 @@ function AdacDiseaseStatusViewModel() {
     _this.modal.diseaseStatus(new DiseaseStatus("", "", [], false, []));
     _this.setPartialEdit(false);
     _this.showModal();
-  };
+    };
 
   this.openModalForEdit = function (_, event) {
     _this.modal.mode(_this.modal.modalModeEdit);
@@ -198,6 +198,40 @@ $(function () {
         },
       },
       {
+        data: "AssociatedDataTypes",
+          render: function (data, type, row, meta) {
+
+              let returnString = "N/A";
+          if (data) {
+              if (data.length === 1) {
+                  returnString = `<li>${data[0].Name}</li>`;
+              } else if (data.length < 4 && data.length > 1) {
+                  // return their values as a list
+                  let displayData = data
+                      .map((item) => `<li>${item.Name}</li>`)
+                      .join("");
+                  returnString = `${displayData}  `;
+              } else if (data.length > 3) {
+                  let displayData = data.slice(2)
+                      .map((item) => `<li>${item.Name}</li>`)
+                      .join("");
+
+                  var ViewMore = $("<a/>", {
+                      "data-row": meta.row,
+                      class: "action-icon click-view-more-assdata",
+                      href: "#",
+                      html: 
+                          $("<span/>", {
+                              text: "...View All",
+                          })
+                  });
+                  returnString = `${displayData}`  ;
+              }
+          }
+              return $("<div/>").append(returnString).append(ViewMore).html();
+        },
+      },
+      {
         // Action Links
         data: function (row, type, val, meta) {
           // Edit Link - Binds To Knockout Modal
@@ -275,6 +309,22 @@ $(function () {
       }
     );
   });
+
+   //View More Associated Data
+    $(document.body).on("click", ".click-view-more-assdata", function (e) {
+        e.preventDefault();
+
+        var rowIndex = $(this).data("row");
+        var data = dataTable.row(rowIndex).data();
+        let displayData = data
+            .AssociatedDataTypes
+            .map((item) => `<li>${item.Name}</li>`)
+            .join("")
+
+        bootbox.alert(
+             displayData
+        );
+    });
 
   // Knockout View Model Binding
   adacDiseaseStatusVM = new AdacDiseaseStatusViewModel();

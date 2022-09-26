@@ -108,7 +108,8 @@ namespace Biobanks.Directory.Services
                 OtherTerms = ontologyTerm.OtherTerms,
                 SnomedTagId = ontologyTerm.SnomedTagId,
                 DisplayOnDirectory = ontologyTerm.DisplayOnDirectory,
-                MaterialTypes = materialTypes
+                MaterialTypes = materialTypes,
+                AssociatedDataTypes = ontologyTerm.AssociatedDataTypes
             };
 
             _db.OntologyTerms.Add(newTerm);
