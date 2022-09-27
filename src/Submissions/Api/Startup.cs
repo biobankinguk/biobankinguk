@@ -229,7 +229,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IAnalyticsService, AnalyticsService>()
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
-                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>();
+                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
 
 
             //Directory Services
