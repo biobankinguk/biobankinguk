@@ -237,8 +237,8 @@ namespace Biobanks.Submissions.Api
                 services
                     .AddTransient<IPublicationService, PublicationService>()
                     .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
-                    .AddTransient<IContentPageService, ContentPageService> ()
-                    .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>),
+                    .AddTransient<IContentPageService, ContentPageService>()
+                    .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>));
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
             }
