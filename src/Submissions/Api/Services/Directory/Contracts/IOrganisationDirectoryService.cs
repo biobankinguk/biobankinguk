@@ -1,16 +1,13 @@
 ﻿using Biobanks.Entities.Data;
-using Biobanks.Identity.Data.Entities;
-using Biobanks.Services.Dto;
+using Biobanks.Submissions.Api.Auth.Entities;
+using Biobanks.Submissions.Api.Models.Directory;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
-    public interface IOrganisationService
+    public interface IOrganisationDirectoryService
     {
         /// <summary>
         /// Get all untracked Organisation which match the given parameter filters
@@ -169,7 +166,7 @@ namespace Biobanks.Services.Contracts
         /// <param name="name">The name of the request's Organisation</param>
         /// <returns>A Registration Request if it exists, otherwise null</returns>
         Task<OrganisationRegisterRequest> GetRegistrationRequestByName(string name);
-        
+
         /// <summary>
         /// Add a new Registration Request for a new Organisation
         /// </summary>
