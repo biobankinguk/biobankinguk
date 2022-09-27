@@ -1,18 +1,20 @@
 ﻿using Biobanks.Entities.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using static Biobanks.Services.ConfigService;
 
 namespace Biobanks.Services.Contracts
 {
+
     /// <summary>
     /// Domain specific service
     /// Config Services moved from read/write services
     /// Specific methods dealing with boolean flags only
     /// </summary>
+    [Obsolete("To be deleted when the Directory core version goes live." +
+     " Any changes made here will need to be made in the corresponding core version"
+     , false)]
     public interface IConfigService
     {
         /// <summary>
