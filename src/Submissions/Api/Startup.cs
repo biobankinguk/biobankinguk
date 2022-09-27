@@ -50,6 +50,8 @@ using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Biobanks.Submissions.Api.Services.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Elastic;
 
 namespace Biobanks.Submissions.Api
 {
@@ -227,11 +229,18 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IAnalyticsService, AnalyticsService>()
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
-                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
+                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>();
 
-                //Directory Services
-                .AddTransient<IPublicationService, PublicationService>()
-                .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>(); //TODO: merge or resolve OrganisationDirectory and Organisation Services
+
+            //Directory Services
+            if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
+            {
+                services
+                    .AddTransient<IPublicationService, PublicationService>()
+                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>(); //TODO: merge or resolve OrganisationDirectory and Organisation Services
+             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+
+            }
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
