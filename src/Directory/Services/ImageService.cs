@@ -3,6 +3,9 @@ using System.IO;
 
 namespace Biobanks.Services
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+        " Any changes made here will need to be made in the corresponding core version"
+        , false)]
     // General helpers for working with images
     public static class ImageService
     {
