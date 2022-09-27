@@ -212,7 +212,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
-                .AddTransient(typeof(IReferenceDataService<>), typeof(ReferenceDataService<>))
+                .AddTransient(typeof(Shared.Services.Contracts.IReferenceDataService<>), typeof(Shared.Services.ReferenceDataService<>))
 
                 .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
                 .AddTransient<ICollectionService, CollectionService>()
@@ -237,10 +237,12 @@ namespace Biobanks.Submissions.Api
             {
                 services
                     .AddTransient<IPublicationService, PublicationService>()
-                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>(); //TODO: merge or resolve OrganisationDirectory and Organisation Services
+                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+                    .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>), typeof(Services.Directory.ReferenceDataService<>));
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
             }
+
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
