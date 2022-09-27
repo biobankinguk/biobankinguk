@@ -19,8 +19,7 @@ namespace Biobanks.Services
                     (IBytesSource)inStream,
                     (IOutputDestination)outStream,
                     $"width={maxX};height={maxY};mode=max")
-                                .Finish();
-
+                    .Finish();
             }
 
             return outStream;
