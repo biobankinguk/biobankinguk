@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Shared.Services.Contracts
 {
+    //TODO merge or resolve with IOrganisationDirectoryService
     public interface IOrganisationService
     {
         Task<int> Count();

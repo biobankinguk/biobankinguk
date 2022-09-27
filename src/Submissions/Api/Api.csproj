@@ -25,6 +25,7 @@
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="Hangfire" Version="1.7.19" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.4" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
@@ -39,6 +40,8 @@
     <ProjectReference Include="..\..\Core.AzureStorage\Core.AzureStorage.csproj" />
     <ProjectReference Include="..\..\Core\Core.csproj" />
     <ProjectReference Include="..\..\Data\Data.csproj" />
+    <ProjectReference Include="..\..\Directory\Identity\Identity.csproj" />
+    <ProjectReference Include="..\..\Directory\Search\Search.csproj" />
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj" />
   </ItemGroup>
 
