@@ -208,14 +208,13 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IErrorService, ErrorService>()
 
 
-                .AddTransient<ICollectionService, CollectionService>()
+
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
                 .AddTransient(typeof(IReferenceDataService<>), typeof(ReferenceDataService<>))
 
                 .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
-                .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IAggregationService, AggregationService>()
 
@@ -237,7 +236,8 @@ namespace Biobanks.Submissions.Api
             {
                 services
                     .AddTransient<IPublicationService, PublicationService>()
-                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>(); //TODO: merge or resolve OrganisationDirectory and Organisation Services
+                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+                    .AddTransient<IContentPageService, ContentPageService> ();
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
             }
