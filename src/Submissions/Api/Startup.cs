@@ -243,6 +243,7 @@ namespace Biobanks.Submissions.Api
 
             }
 
+
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
             {
