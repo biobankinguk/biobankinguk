@@ -1,16 +1,16 @@
-﻿using System;
-using Biobanks.Identity.Contracts;
-using Biobanks.Identity.Data.Entities;
+﻿using Biobanks.Identity.Contracts;
 using Biobanks.Identity.Constants;
+using Biobanks.Identity.Data.Entities;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Z.Expressions;
-using Postal;
-using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Configuration;
+using Postal;
 using IEmailService = Biobanks.Submissions.Api.Services.Directory.Contracts.IEmailService;
 
 namespace Biobanks.Submissions.Api.Services.Directory
