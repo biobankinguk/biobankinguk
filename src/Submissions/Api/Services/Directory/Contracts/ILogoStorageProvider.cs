@@ -1,13 +1,9 @@
-using Biobanks.Entities.Data;
-using System;
+﻿using Biobanks.Entities.Data;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Biobanks.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-     " Any changes made here will need to be made in the corresponding core version"
-     , false)]
     public interface ILogoStorageProvider
     {
         Task<Blob> GetLogoBlobAsync(string resourceName);

@@ -1,4 +1,4 @@
-using Biobanks.IdentityModel.Helpers;
+﻿using Biobanks.IdentityModel.Helpers;
 using Biobanks.Publications.Services;
 using Biobanks.Publications.Services.Contracts;
 using Biobanks.Submissions.Api.Auth;
@@ -240,7 +240,12 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
-                    .AddTransient<IConfigService, ConfigService>();
+                    .AddTransient<IConfigService, ConfigService>()
+                    .AddTransient<ICollectionService, CollectionService>()
+                    .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
+                    .AddTransient<IBiobankReadService, BiobankReadService>()
+                    .AddTransient<IBiobankIndexService, BiobankIndexService>()
+                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
             }
