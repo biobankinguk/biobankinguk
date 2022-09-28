@@ -3,7 +3,6 @@ using Biobanks.Identity.Constants;
 using Biobanks.Identity.Data.Entities;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
