@@ -1,20 +1,13 @@
-﻿using Biobanks.Entities.Data;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Biobanks.Services.ConfigService;
 
-namespace Biobanks.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-
     /// <summary>
     /// Domain specific service
     /// Config Services moved from read/write services
     /// Specific methods dealing with boolean flags only
     /// </summary>
-    [Obsolete("To be deleted when the Directory core version goes live." +
-     " Any changes made here will need to be made in the corresponding core version"
-     , false)]
     public interface IConfigService
     {
         /// <summary>
@@ -22,21 +15,21 @@ namespace Biobanks.Services.Contracts
         /// </summary>
         /// <param name="wildcard"> Optional, specifies area/type of config </param>
         /// <returns>List of Site Configs</returns>
-        IEnumerable<Config> ListSiteConfigs(string wildcard = "");
+        IEnumerable<Entities.Data.Config> ListSiteConfigs(string wildcard = "");
 
         /// <summary>
         /// Async version of ListSiteConfigs()
         /// </summary>
         /// <param name="wildcard"> Optional, specifies area/type of config </param>
         /// <returns>List of Site Configs</returns>
-        Task<IEnumerable<Config>> ListSiteConfigsAsync(string wildcard = "");
+        Task<IEnumerable<Entities.Data.Config>> ListSiteConfigsAsync(string wildcard = "");
 
         /// <summary>
         /// Get Site Config given its key
         /// </summary>
         /// <param name="key">Config key</param>
         /// <returns>Config obj</returns>
-        Task<Config> GetSiteConfig(string key);
+        Task<Entities.Data.Config> GetSiteConfig(string key);
 
         /// <summary>
         /// Gets site Config value given its key
@@ -51,7 +44,7 @@ namespace Biobanks.Services.Contracts
         /// </summary>
         /// <param name="configs">List of Config objs to be updatd</param>
         /// <returns></returns>
-        Task UpdateSiteConfigsAsync(IEnumerable<Config> configs);
+        Task UpdateSiteConfigsAsync(IEnumerable<Entities.Data.Config> configs);
 
         /// <summary>
         /// Gets Flag Config Value
@@ -71,7 +64,7 @@ namespace Biobanks.Services.Contracts
         /// </param>
         /// <param name="wildcard">Optional, specifies area/type of config</param>
         /// <returns>List of Config objs</returns>
-        Task<List<Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "");
+        Task<List<Entities.Data.Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "");
 
         /// <summary>
         /// Updates boolean flag value
