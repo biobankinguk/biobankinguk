@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity", "..\Directory\Id
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Search", "..\Directory\Search\Search.csproj", "{36F148AD-93BC-4918-8B28-E543BF5F120E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omop", "..\Omop\Omop\Omop.csproj", "{60BDA32C-8090-48D8-8758-0840694D8A2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{36F148AD-93BC-4918-8B28-E543BF5F120E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36F148AD-93BC-4918-8B28-E543BF5F120E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36F148AD-93BC-4918-8B28-E543BF5F120E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60BDA32C-8090-48D8-8758-0840694D8A2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60BDA32C-8090-48D8-8758-0840694D8A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60BDA32C-8090-48D8-8758-0840694D8A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60BDA32C-8090-48D8-8758-0840694D8A2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F} = {E6110395-5696-4D01-BF99-A1BF9F0C6A2B}
 		{D28C9594-A921-4930-8086-B182BE30A43C} = {E6110395-5696-4D01-BF99-A1BF9F0C6A2B}
 		{36F148AD-93BC-4918-8B28-E543BF5F120E} = {E6110395-5696-4D01-BF99-A1BF9F0C6A2B}
+		{60BDA32C-8090-48D8-8758-0840694D8A2B} = {E6110395-5696-4D01-BF99-A1BF9F0C6A2B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09E011EE-A232-4E71-A777-D9BB21E3B503}

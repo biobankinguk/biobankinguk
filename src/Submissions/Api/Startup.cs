@@ -52,6 +52,8 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
+using Biobanks.Omop.Context;
+using Npgsql;
 
 namespace Biobanks.Submissions.Api
 {
@@ -78,6 +80,12 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+                  // config OMOP PostGres db
+            services
+                .AddDbContext<OmopDbContext>
+                (options => options.UseNpgsql(
+                    Configuration.GetConnectionString("Omop")));
+
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();

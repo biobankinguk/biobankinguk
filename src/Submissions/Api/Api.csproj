@@ -43,6 +43,7 @@
     <ProjectReference Include="..\..\Directory\Identity\Identity.csproj" />
     <ProjectReference Include="..\..\Directory\Search\Search.csproj" />
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj" />
+    <ProjectReference Include="..\..\Omop\Omop\Omop.csproj" />
   </ItemGroup>
 
   <ItemGroup>
