@@ -212,10 +212,9 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
-                .AddTransient(typeof(IReferenceDataService<>), typeof(ReferenceDataService<>))
+                .AddTransient(typeof(Shared.Services.Contracts.IReferenceDataService<>), typeof(Shared.Services.ReferenceDataService<>))
 
                 .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
-                .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IAggregationService, AggregationService>()
 
@@ -229,7 +228,22 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IAnalyticsService, AnalyticsService>()
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
-                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>();
+                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
+                .AddTransient<IRegistrationDomainService, RegistrationDomainService>();
+
+
+            //Directory Services
+            if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
+            {
+                services
+                    .AddTransient<IPublicationService, PublicationService>()
+                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+                    .AddTransient<IContentPageService, ContentPageService>()
+                    .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>));
+             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+
+            }
+
 
 
             //Directory Services
