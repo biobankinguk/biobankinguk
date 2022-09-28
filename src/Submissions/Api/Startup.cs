@@ -239,24 +239,12 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IPublicationService, PublicationService>()
                     .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
                     .AddTransient<IContentPageService, ContentPageService>()
-                    .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>));
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
-
-            }
-
-
-
-            //Directory Services
-            if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
-            {
-                services
-                    .AddTransient<IPublicationService, PublicationService>()
-                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>()
+                    .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
                     .AddTransient<IConfigService, ConfigService>();
-                    //TODO: merge or resolve OrganisationDirectory and Organisation Services
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
             }
+
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
