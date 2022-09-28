@@ -208,7 +208,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IErrorService, ErrorService>()
 
 
-
+                .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
