@@ -1,17 +1,13 @@
-﻿using System.Threading.Tasks;
-using Biobanks.Services.Contracts;
+﻿using Biobanks.Data;
 using Biobanks.Entities.Data;
-using Biobanks.Directory.Data;
-using System.Linq;
-using System.Data.Entity;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Biobanks.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-      " Any changes made here will need to be made in the corresponding core version"
-      , false)]
     public class RegistrationDomainService : IRegistrationDomainService
     {
         private readonly BiobanksDbContext _db;

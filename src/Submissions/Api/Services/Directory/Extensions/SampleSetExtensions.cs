@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Search.Dto.Documents;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Biobanks.Services.Extensions
+namespace Biobanks.Submissions.Api.Services.Directory.Extensions
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
     public static class SampleSetExtensions
     {
         public static CollectionDocument ToCollectionSearchDocument(this SampleSet sampleSet)
@@ -25,7 +21,7 @@ namespace Biobanks.Services.Extensions
                 Biobank = sampleSet.Collection.Organisation.Name,
 
                 Networks = sampleSet.Collection.Organisation.OrganisationNetworks
-                    .Select(x => new NetworkDocument {Name = x.Network.Name }).ToList(),
+                    .Select(x => new NetworkDocument { Name = x.Network.Name }).ToList(),
 
                 CollectionId = sampleSet.CollectionId,
                 CollectionTitle = sampleSet.Collection.Title,
@@ -104,8 +100,8 @@ namespace Biobanks.Services.Extensions
         }
 
         public static string BuildSampleSetSummary(
-            string donorCount, 
-            string ageRange, 
+            string donorCount,
+            string ageRange,
             string sex,
             ICollection<MaterialDetail> materialDetails)
         {
@@ -123,13 +119,13 @@ namespace Biobanks.Services.Extensions
         public static IEnumerable<ConsentRestrictionDocument> BuildConsentRestrictions(IList<ConsentRestriction> consentRestrictions)
         {
             return consentRestrictions.Any()
-                ? consentRestrictions.Select(cr => new ConsentRestrictionDocument {Description = cr.Value})
-                : new List<ConsentRestrictionDocument> { new ConsentRestrictionDocument {Description = "No restrictions"} };
+                ? consentRestrictions.Select(cr => new ConsentRestrictionDocument { Description = cr.Value })
+                : new List<ConsentRestrictionDocument> { new ConsentRestrictionDocument { Description = "No restrictions" } };
         }
 
         public static IEnumerable<OtherTermsDocument> ParseOtherTerms(string otherTerms)
-            => string.IsNullOrWhiteSpace(otherTerms) 
-            ? new List<OtherTermsDocument>() 
+            => string.IsNullOrWhiteSpace(otherTerms)
+            ? new List<OtherTermsDocument>()
             : otherTerms.Split(',').Select(x => new OtherTermsDocument { Name = x.Trim() });
     }
 }

@@ -50,6 +50,8 @@ using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Biobanks.Submissions.Api.Services.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
 using Npgsql;
 
@@ -218,18 +220,15 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
-                .AddTransient(typeof(IReferenceDataService<>), typeof(ReferenceDataService<>))
+                .AddTransient(typeof(Shared.Services.Contracts.IReferenceDataService<>), typeof(Shared.Services.ReferenceDataService<>))
 
                 .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
-                .AddTransient<ICollectionService, CollectionService>()
                 .AddTransient<ISampleService, SampleService>()
-                .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
 
                 .AddTransient<IPublicationJobService, PublicationJobService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
-                .AddTransient<IOrganisationService, OrganisationService>()
 
                 .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
                 .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
@@ -238,9 +237,22 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
+                .AddTransient<IRegistrationDomainService, RegistrationDomainService>();
 
-                //Directory Services
-                .AddTransient<IPublicationService, PublicationService>();
+
+            //Directory Services
+            if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
+            {
+                services
+                    .AddTransient<IPublicationService, PublicationService>()
+                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+                    .AddTransient<IContentPageService, ContentPageService>()
+                    .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
+                    .AddTransient<IConfigService, ConfigService>();
+             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+
+            }
+
 
             // Conditional services
             if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
