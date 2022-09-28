@@ -281,6 +281,7 @@ namespace Biobanks.Web.Windsor
                     .DependsOn(Dependency.OnValue("username", ConfigurationManager.AppSettings["ElasticSearchUsername"]))
                     .DependsOn(Dependency.OnValue("password", ConfigurationManager.AppSettings["ElasticSearchPassword"]))
                     .LifeStyle.Transient,
+
                 Component.For<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>()
                     .ImplementedBy<ElasticCapabilityIndexProvider>()
                     .DependsOn(Dependency.OnValue("elasticSearchUrl",
