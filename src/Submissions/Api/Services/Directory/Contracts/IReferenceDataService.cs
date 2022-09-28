@@ -1,13 +1,10 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Entities.Data.ReferenceData;
 
-namespace Biobanks.Directory.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
     public interface IReferenceDataService<T> where T : BaseReferenceData
     {
         /// <summary>
@@ -93,3 +90,4 @@ namespace Biobanks.Directory.Services.Contracts
         Task<T> Update(T entity);
     }
 }
+
