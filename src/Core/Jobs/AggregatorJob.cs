@@ -15,7 +15,7 @@ namespace Core.Jobs
         private readonly IAggregationService _aggregationService;
         private readonly IReferenceDataAggregatorService _refDataService;
         private readonly IOrganisationService _organisationService;
-        private readonly ICollectionService _collectionService;
+        private readonly ICollectionAggregatorService _collectionService;
         private readonly ISampleService _sampleService;
 
         private readonly AggregatorOptions _options;
@@ -24,7 +24,7 @@ namespace Core.Jobs
             IAggregationService aggregationService,
             IReferenceDataAggregatorService refDataService,
             IOrganisationService organisationService,
-            ICollectionService collectionService,
+            ICollectionAggregatorService collectionService,
             ISampleService sampleService,
             IOptions<AggregatorOptions> options)
         {

@@ -1,4 +1,4 @@
-﻿using Biobanks.IdentityModel.Helpers;
+using Biobanks.IdentityModel.Helpers;
 using Biobanks.Publications.Services;
 using Biobanks.Publications.Services.Contracts;
 using Biobanks.Submissions.Api.Auth;
@@ -208,7 +208,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IErrorService, ErrorService>()
 
 
-                .AddTransient<ICollectionService, CollectionService>()
+                .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
