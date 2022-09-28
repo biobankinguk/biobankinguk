@@ -216,7 +216,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IErrorService, ErrorService>()
 
 
-                .AddTransient<ICollectionService, CollectionService>()
+                .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
@@ -248,7 +248,12 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
-                    .AddTransient<IConfigService, ConfigService>();
+                    .AddTransient<IConfigService, ConfigService>()
+                    .AddTransient<ICollectionService, CollectionService>()
+                    .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
+                    .AddTransient<IBiobankReadService, BiobankReadService>()
+                    .AddTransient<IBiobankIndexService, BiobankIndexService>()
+                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
             }

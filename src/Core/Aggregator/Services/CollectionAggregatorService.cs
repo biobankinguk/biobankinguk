@@ -9,11 +9,11 @@ using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Services
 {
-    public class CollectionService : ICollectionService
+    public class CollectionAggregatorService : ICollectionAggregatorService
     {
         private readonly BiobanksDbContext _db;
 
-        public CollectionService(BiobanksDbContext db)
+        public CollectionAggregatorService(BiobanksDbContext db)
         {
             _db = db;
         }

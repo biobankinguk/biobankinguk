@@ -1,13 +1,9 @@
-using Biobanks.Entities.Data;
-using System;
+﻿using Biobanks.Entities.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     public interface IBiobankIndexService
     {
         Task BuildIndex();
@@ -23,7 +19,7 @@ namespace Biobanks.Services.Contracts
         void DeleteCapability(int capabilityId);
         Task UpdateCollectionDetails(int collectionId);
         Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm);
-        
+
         void UpdateOrganisationDetails(Organisation organisation);
         void JoinOrLeaveNetwork(Organisation organisation);
 
