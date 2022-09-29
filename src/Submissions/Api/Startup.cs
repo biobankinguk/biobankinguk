@@ -254,7 +254,11 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
                     .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+
+                // Reference Data
+                services
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>();
 
             }
 
