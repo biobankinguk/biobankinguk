@@ -258,8 +258,8 @@ namespace Biobanks.Submissions.Api
 
                 // Reference Data
                 services
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>();
-
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>();
             }
 
 
