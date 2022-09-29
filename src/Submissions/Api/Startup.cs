@@ -253,6 +253,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
+                    .AddTransient<ITokenLoggingService, TokenLoggingService>()
                     .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
