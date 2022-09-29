@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class OntologyTermService
+    public class OntologyTermService : IOntologyTermService
     {
         private readonly IBiobankIndexService _indexService;
 
