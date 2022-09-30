@@ -1,11 +1,15 @@
 ﻿using Biobanks.Directory.Data;
 using Biobanks.Entities.Data.ReferenceData;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Directory.Services
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+    " Any changes made here will need to be made in the corresponding core version"
+    , false)]
     public class CountryService : ReferenceDataService<Country>
     {
         public CountryService(BiobanksDbContext db) : base(db) { }
