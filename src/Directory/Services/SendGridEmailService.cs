@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System;
 using System.Diagnostics;
 using System.Configuration;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Biobanks.Services
 {
@@ -21,7 +22,7 @@ namespace Biobanks.Services
         private readonly string _fromName;
         private readonly string _directoryName;
         private readonly Postal.IEmailService _emailService;
-        private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
+        private readonly IApplicationRoleManager<ApplicationRole, IdentityRole> _roleManager;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         public SendGridEmailService(
@@ -30,7 +31,7 @@ namespace Biobanks.Services
             string fromName,
             string directoryName,
             Postal.IEmailService emailService,
-            IApplicationRoleManager<ApplicationRole> roleManager,
+            IApplicationRoleManager<ApplicationRole, IdentityRole> roleManager,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager)
         {
             _apiKey = apiKey;
