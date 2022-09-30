@@ -17,12 +17,12 @@ namespace Biobanks.Services
     public class EmailService : Contracts.IEmailService
     {
         private readonly Postal.IEmailService _service;
-        private readonly IApplicationRoleManager<ApplicationRole, IdentityRole> _roleManager;
+        private readonly IApplicationRoleManager<ApplicationRole, IdentityResult> _roleManager;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         public EmailService(
             Postal.IEmailService service,
-            IApplicationRoleManager<ApplicationRole, IdentityRole> roleManager,
+            IApplicationRoleManager<ApplicationRole, IdentityResult> roleManager,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager)
         {
             _service = service;

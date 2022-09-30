@@ -22,7 +22,7 @@ namespace Biobanks.Services
         private readonly string _fromName;
         private readonly string _directoryName;
         private readonly Postal.IEmailService _emailService;
-        private readonly IApplicationRoleManager<ApplicationRole, IdentityRole> _roleManager;
+        private readonly IApplicationRoleManager<ApplicationRole, IdentityResult> _roleManager;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         public SendGridEmailService(
@@ -31,7 +31,7 @@ namespace Biobanks.Services
             string fromName,
             string directoryName,
             Postal.IEmailService emailService,
-            IApplicationRoleManager<ApplicationRole, IdentityRole> roleManager,
+            IApplicationRoleManager<ApplicationRole, IdentityResult> roleManager,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager)
         {
             _apiKey = apiKey;
