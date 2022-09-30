@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Aggregator.Services.Contracts
 {
-    public interface ICollectionService
+    public interface ICollectionAggregatorService
     {
         Task<Collection> GetCollection(int organisationId, string collectionName);
 

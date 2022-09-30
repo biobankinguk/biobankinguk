@@ -52,6 +52,9 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
+using Biobanks.Omop.Context;
+using Biobanks.Search.Legacy;
+using Npgsql;
 
 namespace Biobanks.Submissions.Api
 {
@@ -78,6 +81,12 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+                  // config OMOP PostGres db
+            services
+                .AddDbContext<OmopDbContext>
+                (options => options.UseNpgsql(
+                    Configuration.GetConnectionString("Omop")));
+
             // local config
             var jwtConfig = Configuration.GetSection("JWT").Get<JwtBearerConfig>();
             var workersConfig = Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
@@ -208,7 +217,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IErrorService, ErrorService>()
 
 
-                .AddTransient<ICollectionService, CollectionService>()
+                .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
                 .AddTransient<ISampleService, SampleService>()
                 .AddTransient<IOrganisationService, OrganisationService>()
                 .AddTransient<IAggregationService, AggregationService>()
@@ -241,8 +250,16 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient<IEmailService, EmailService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
-                    .AddTransient<IConfigService, ConfigService>();
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+                    .AddTransient<IConfigService, ConfigService>()
+                    .AddTransient<ICollectionService, CollectionService>()
+                    .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
+                    .AddTransient<IBiobankReadService, BiobankReadService>()
+                    .AddTransient<IBiobankIndexService, BiobankIndexService>()
+                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+                    .AddTransient<IIndexProvider, LegacyIndexProvider>()
+                    .AddTransient<INetworkService, NetworkService>();
+                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+
 
             }
 
