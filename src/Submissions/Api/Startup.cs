@@ -262,7 +262,11 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>();
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
 
             }
 
