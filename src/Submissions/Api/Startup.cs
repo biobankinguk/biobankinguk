@@ -55,7 +55,6 @@ using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
 using Biobanks.Search.Legacy;
 using Npgsql;
-using Biobanks.Directory.Services;
 
 namespace Biobanks.Submissions.Api
 {
@@ -264,7 +263,7 @@ namespace Biobanks.Submissions.Api
 
                 // Reference Data
                 services
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, Services.Directory.AccessConditionService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
