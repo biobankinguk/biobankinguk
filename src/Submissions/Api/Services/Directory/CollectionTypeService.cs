@@ -1,8 +1,8 @@
 ﻿using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
