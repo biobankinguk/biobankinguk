@@ -53,6 +53,7 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
+using Biobanks.Search.Legacy;
 using Npgsql;
 
 namespace Biobanks.Submissions.Api
@@ -253,8 +254,11 @@ namespace Biobanks.Submissions.Api
                     .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
-                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+                    .AddTransient<IIndexProvider, LegacyIndexProvider>()
+                    .AddTransient<INetworkService, NetworkService>();
+                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+
 
             }
 
