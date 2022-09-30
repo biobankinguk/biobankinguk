@@ -1,14 +1,12 @@
-﻿using Biobanks.Directory.Data;
+﻿using System;
+using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using System;
-using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
     public class AgeRangeService : ReferenceDataService<AgeRange>
     {
         public AgeRangeService(BiobanksDbContext db) : base(db) { }
@@ -30,3 +28,4 @@ namespace Biobanks.Directory.Services
         }
     }
 }
+

@@ -261,7 +261,12 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<INetworkService, NetworkService>();
                 //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
-
+                // Reference Data
+                services
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>();
             }
 
 
