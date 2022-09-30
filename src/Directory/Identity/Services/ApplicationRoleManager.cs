@@ -7,7 +7,7 @@ using Microsoft.Owin;
 
 namespace Biobanks.Identity.Services
 {
-    public class ApplicationRoleManager : RoleManager<ApplicationRole>, IApplicationRoleManager<ApplicationRole>
+    public class ApplicationRoleManager : RoleManager<ApplicationRole>, IApplicationRoleManager<ApplicationRole, IdentityResult>
     {
         public ApplicationRoleManager(IRoleStore<ApplicationRole, string> roleStore)
             : base(roleStore)
