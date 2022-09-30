@@ -11,11 +11,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Configuration;
 using Postal;
-using IEmailService = Biobanks.Submissions.Api.Services.Directory.Contracts.IEmailService;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class EmailService : IEmailService
+    public class EmailService : Contracts.IEmailService
     {
         private readonly Postal.IEmailService _service;
         private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
