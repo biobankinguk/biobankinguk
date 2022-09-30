@@ -1,15 +1,11 @@
 ﻿using Biobanks.Entities.Data;
-using Biobanks.Identity.Data.Entities;
-using Biobanks.Services.Dto;
-using System;
+using Biobanks.Submissions.Api.Auth.Entities;
+using Biobanks.Submissions.Api.Services.Directory.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Biobanks.Directory.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     public interface INetworkService
     {
         /// <summary>
