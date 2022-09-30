@@ -53,6 +53,7 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
+using Biobanks.Search.Legacy;
 using Npgsql;
 using Biobanks.Directory.Services;
 
@@ -254,7 +255,9 @@ namespace Biobanks.Submissions.Api
                     .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
-                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
+                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+                    .AddTransient<IIndexProvider, LegacyIndexProvider>()
+                    .AddTransient<INetworkService, NetworkService>();
                 //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
                 // Reference Data
@@ -267,6 +270,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
+
 
             }
 
