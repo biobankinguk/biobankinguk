@@ -54,6 +54,7 @@ using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
 using Npgsql;
+using Biobanks.Directory.Services;
 
 namespace Biobanks.Submissions.Api
 {
@@ -254,7 +255,14 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
                     .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+
+                // Reference Data
+                services
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>();
 
             }
 
