@@ -10,18 +10,19 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Configuration;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Biobanks.Services
 {
     public class EmailService : Contracts.IEmailService
     {
         private readonly Postal.IEmailService _service;
-        private readonly IApplicationRoleManager<ApplicationRole> _roleManager;
+        private readonly IApplicationRoleManager<ApplicationRole, IdentityRole> _roleManager;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         public EmailService(
             Postal.IEmailService service,
-            IApplicationRoleManager<ApplicationRole> roleManager,
+            IApplicationRoleManager<ApplicationRole, IdentityRole> roleManager,
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager)
         {
             _service = service;
