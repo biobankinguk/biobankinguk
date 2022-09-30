@@ -53,6 +53,7 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
+using Biobanks.Search.Legacy;
 using Npgsql;
 
 namespace Biobanks.Submissions.Api
@@ -250,12 +251,22 @@ namespace Biobanks.Submissions.Api
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
                     .AddTransient<IConfigService, ConfigService>()
                     .AddTransient<ICollectionService, CollectionService>()
+                    .AddTransient<IOntologyTermService, OntologyTermService>()
+                    .AddTransient<ITokenLoggingService, TokenLoggingService>()
                     .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
-                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>();
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+                    .AddTransient<IIndexProvider, LegacyIndexProvider>()
+                    .AddTransient<INetworkService, NetworkService>();
+                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
+                // Reference Data
+                services
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>();
             }
 
 
