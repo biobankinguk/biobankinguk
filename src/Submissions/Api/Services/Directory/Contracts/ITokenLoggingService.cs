@@ -1,11 +1,8 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
-namespace Biobanks.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
     public interface ITokenLoggingService
     {
         //Validation records get created and return an id, so you can update success status
@@ -22,3 +19,4 @@ namespace Biobanks.Services.Contracts
         Task PasswordTokenIssued(string token, string userId);
     }
 }
+

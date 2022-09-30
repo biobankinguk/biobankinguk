@@ -251,6 +251,8 @@ namespace Biobanks.Submissions.Api
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
                     .AddTransient<IConfigService, ConfigService>()
                     .AddTransient<ICollectionService, CollectionService>()
+                    .AddTransient<IOntologyTermService, OntologyTermService>()
+                    .AddTransient<ITokenLoggingService, TokenLoggingService>()
                     .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
