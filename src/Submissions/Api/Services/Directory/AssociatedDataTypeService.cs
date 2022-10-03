@@ -1,17 +1,12 @@
-﻿using Biobanks.Directory.Data;
+﻿using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
     public class AssociatedDataTypeService : ReferenceDataService<AssociatedDataType>
     {
         public AssociatedDataTypeService(BiobanksDbContext db) : base(db) { }
@@ -22,7 +17,7 @@ namespace Biobanks.Directory.Services
         public override async Task<int> GetUsageCount(int id)
             => await _db.CollectionAssociatedDatas.CountAsync(x => x.AssociatedDataTypeId == id)
              + await _db.CapabilityAssociatedDatas.CountAsync(x => x.AssociatedDataTypeId == id);
-        
+
         public override async Task<bool> IsInUse(int id)
             => await _db.CollectionAssociatedDatas.AnyAsync(x => x.AssociatedDataTypeId == id)
             || await _db.CapabilityAssociatedDatas.AnyAsync(x => x.AssociatedDataTypeId == id);
@@ -46,7 +41,6 @@ namespace Biobanks.Directory.Services
                 .OrderBy(x => x.SortOrder)
                 .ToListAsync();
 
-
         public override async Task<AssociatedDataType> Get(int id)
         {
             var list = await _db.AssociatedDataTypes
@@ -58,9 +52,8 @@ namespace Biobanks.Directory.Services
                 return list[0];
             }
             return null;
-            
+
         }
-
-
     }
 }
+

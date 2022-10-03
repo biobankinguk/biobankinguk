@@ -1,16 +1,11 @@
+﻿using Biobanks.Entities.Data;
+using Biobanks.Submissions.Api.Models.Directory;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.IO;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Services.Dto;
-using System;
+using System.Threading.Tasks;
 
-namespace Biobanks.Services.Contracts
+namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     public interface IBiobankWriteService
     {
         Task AddSampleSetAsync(SampleSet sampleSet);

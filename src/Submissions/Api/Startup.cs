@@ -257,9 +257,12 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IBiobankReadService, BiobankReadService>()
                     .AddTransient<IBiobankIndexService, BiobankIndexService>()
                     .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+                    .AddTransient<IBiobankWriteService, BiobankWriteService>()
+                    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
                     .AddTransient<IIndexProvider, LegacyIndexProvider>()
-                    .AddTransient<INetworkService, NetworkService>();
-                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+                    .AddTransient<INetworkService, NetworkService>()
+                    .AddTransient<IBiobankWriteService, BiobankWriteService>();
+             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
                 // Reference Data
                 services
@@ -267,10 +270,18 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>();
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
 
             }
 
