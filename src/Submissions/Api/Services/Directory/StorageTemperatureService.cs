@@ -1,15 +1,11 @@
-﻿using Biobanks.Directory.Data;
-using Biobanks.Entities.Shared.ReferenceData;
-using System;
-using System.Data.Entity;
+﻿using System.Threading.Tasks;
 using System.Linq;
-using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Entities.Shared.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     public class StorageTemperatureService : ReferenceDataService<StorageTemperature>
     {
         public StorageTemperatureService(BiobanksDbContext db) : base(db) { }
@@ -23,3 +19,4 @@ namespace Biobanks.Directory.Services
             => await _db.MaterialDetails.AnyAsync(x => x.StorageTemperatureId == id);
     }
 }
+

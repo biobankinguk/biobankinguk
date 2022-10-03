@@ -1,15 +1,11 @@
-﻿using Biobanks.Directory.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using System;
-using System.Data.Entity;
+﻿using Biobanks.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Entities.Data.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
     public class ServiceOfferingService : ReferenceDataService<ServiceOffering>
     {
         public ServiceOfferingService(BiobanksDbContext db) : base(db) { }
@@ -24,3 +20,4 @@ namespace Biobanks.Directory.Services
             => await _db.OrganisationServiceOfferings.AnyAsync(x => x.ServiceOfferingId == id);
     }
 }
+
