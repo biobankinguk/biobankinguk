@@ -48,8 +48,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return models;
         }
 
+        /// <summary>
+        /// Insert an Access Condition.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>The created Access Condition.</returns>
         [HttpPost]
-        [Route("")]
+        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
         public async Task<ActionResult> Post(AccessConditionModel model)
         {
             //If this description is valid, it already exists
@@ -74,15 +79,17 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Update(access);
 
             //Everything went A-OK!
-            return new JsonResult(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Accepted(model.Description);
         }
 
-        [HttpPut]
-        [Route("{id}")]
+        /// <summary>
+        /// Update an Access Condition.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>The updated Access Condition.</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
         public async Task<ActionResult> Put(int id, AccessConditionModel model)
         {
             var existing = await _accessConditionService.Get(model.Description);
@@ -115,15 +122,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Update(access);
 
             //Everything went A-OK!
-            return new JsonResult(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Accepted(model.Description);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        /// <summary>
+        /// Delete an access condition.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Deleted access condition.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _accessConditionService.Get(id);
@@ -142,15 +150,17 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Delete(id);
 
             //Everything went A-OK!
-            return new JsonResult(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Accepted(model.Value);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
+        /// <summary>
+        /// Move an Access Condition.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>The updated Access Condition.</returns>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
         public async Task<ActionResult> Move(int id, AccessConditionModel model)
         {
             var access = new AccessCondition
@@ -163,12 +173,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Update(access);
 
             //Everything went A-OK!
-            return new JsonResult(new
-            {
-                success = true,
-                name = model.Description,
-            });
-
+            return Accepted(model.Description);
         }
 
     }
