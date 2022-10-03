@@ -263,7 +263,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IIndexProvider, LegacyIndexProvider>()
                     .AddTransient<INetworkService, NetworkService>()
                     .AddTransient<IBiobankWriteService, BiobankWriteService>();
-              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
                 // Reference Data
                 services
