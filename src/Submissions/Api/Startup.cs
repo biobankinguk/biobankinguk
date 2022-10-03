@@ -55,6 +55,7 @@ using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
 using Biobanks.Search.Legacy;
 using Npgsql;
+using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Submissions.Api
 {
@@ -281,6 +282,10 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.MaterialType>, MaterialTypeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
+                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
+                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
 
             }
