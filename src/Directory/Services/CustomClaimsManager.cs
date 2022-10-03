@@ -11,9 +11,13 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Newtonsoft.Json;
 using Biobanks.Directory.Services.Contracts;
+using System;
 
 namespace Biobanks.Services
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+    " Any changes made here will need to be made in the corresponding core version"
+    , false)]
     public class CustomClaimsManager
     {
         private INetworkService _networkService;
