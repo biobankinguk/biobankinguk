@@ -263,7 +263,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IIndexProvider, LegacyIndexProvider>()
                     .AddTransient<INetworkService, NetworkService>()
                     .AddTransient<IBiobankWriteService, BiobankWriteService>();
-                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
                 // Reference Data
                 services
@@ -288,7 +288,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
-                
 
             }
 
