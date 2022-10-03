@@ -1,14 +1,10 @@
-﻿using Biobanks.Directory.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using System.Data.Entity;
+﻿using Biobanks.Data;
 using System.Threading.Tasks;
-using System;
+using Microsoft.EntityFrameworkCore;
+using Biobanks.Entities.Data.ReferenceData;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     public class RegistrationReasonService : ReferenceDataService<RegistrationReason>
     {
         public RegistrationReasonService(BiobanksDbContext db) : base(db) { }
