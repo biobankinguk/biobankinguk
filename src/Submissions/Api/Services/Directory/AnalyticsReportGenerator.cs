@@ -1,20 +1,18 @@
-﻿using System;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Net.Http;
+using Microsoft.EntityFrameworkCore;
+using System;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System.Configuration;
-using Biobanks.Services.Contracts;
-using Biobanks.Services.Dto;
-using Newtonsoft.Json;
+using Biobanks.Shared.Services.Contracts;
+using System.Net.Http;
 using System.Text;
-using System.Linq;
+using Biobanks.Submissions.Api.Services.Directory.Dto;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using Biobanks.Directory.Services.Contracts;
 
-namespace Biobanks.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     /// <summary>
     /// This Service makes HTTP calls to an API to generate Analytics Reports for the Directory
     /// </summary>
@@ -25,7 +23,7 @@ namespace Biobanks.Services
         private readonly string _apiClientId = ConfigurationManager.AppSettings["DirectoryApiClientId"] ?? "";
         private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
 
-        private readonly IOrganisationService _organisationService;
+        private readonly IOrganisationDirectoryService _organisationService;
         private readonly ICollectionService _collectionService;
 
         private readonly HttpClient _client;
@@ -34,14 +32,14 @@ namespace Biobanks.Services
 
         public AnalyticsReportGenerator(
             ICollectionService collectionService,
-            IOrganisationService organisationService,
+            IOrganisationDirectoryService organisationService,
             IBiobankReadService biobankReadService)
         {
             _collectionService = collectionService;
             _organisationService = organisationService;
 
             _biobankReadService = biobankReadService;
-            
+
             _client = new HttpClient();
 
             if (!string.IsNullOrEmpty(_apiUrl))
@@ -70,7 +68,7 @@ namespace Biobanks.Services
             {
                 // Check if any collection exists without a sample set
                 if (!await _collectionService.HasSampleSets(col.CollectionId))
-                { 
+                {
                     missingSampleSet = true;
                     break;
                 }
