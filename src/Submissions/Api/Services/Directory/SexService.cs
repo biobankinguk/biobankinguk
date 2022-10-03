@@ -1,14 +1,11 @@
-﻿using Biobanks.Directory.Data;
-using Biobanks.Entities.Shared.ReferenceData;
-using System;
-using System.Data.Entity;
+﻿using System;
+using Biobanks.Data;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Submissions.Api.Services.Directory
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     public class SexService : ReferenceDataService<Sex>
     {
         public SexService(BiobanksDbContext db) : base(db) { }
@@ -20,3 +17,4 @@ namespace Biobanks.Directory.Services
             => await _db.SampleSets.AnyAsync(x => x.SexId == id);
     }
 }
+

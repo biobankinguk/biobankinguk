@@ -46,6 +46,7 @@ using Biobanks.Submissions.Api.JsonConverters;
 using Core.Submissions.Models.OptionsModels;
 using Biobanks.Aggregator;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Biobanks.Submissions.Api.Services.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -281,7 +282,12 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
 
             }
 
