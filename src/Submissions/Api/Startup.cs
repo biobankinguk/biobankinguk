@@ -56,7 +56,6 @@ using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
 using Biobanks.Search.Legacy;
 using Npgsql;
-using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Submissions.Api
 {
