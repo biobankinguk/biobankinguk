@@ -1,6 +1,6 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -51,7 +51,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <summary>
         /// Insert an Access Condition.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">The model to be inserted.</param>
         /// <returns>The created Access Condition.</returns>
         [HttpPost]
         [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
@@ -86,8 +86,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <summary>
         /// Update an Access Condition.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
+        /// <param name="id">The ID of the condition to update.</param>
+        /// <param name="model">The new model to be inserted.</param>
         /// <returns>The updated Access Condition.</returns>
         [HttpPut("{id}")]
         [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
@@ -130,7 +130,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <summary>
         /// Delete an access condition.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The ID of the condition to update.</param>
         /// <returns>Deleted access condition.</returns>
         [HttpDelete("{id}")]
         [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
@@ -159,8 +159,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <summary>
         /// Move an Access Condition.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
+        /// <param name="id">The ID of the condition to move.</param>
+        /// <param name="model">The new model to update.</param>
         /// <returns>The updated Access Condition.</returns>
         [HttpPost("{id}/move")]
         [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
