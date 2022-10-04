@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Search", "..\Directory\Sear
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omop", "..\Omop\Omop\Omop.csproj", "{60BDA32C-8090-48D8-8758-0840694D8A2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Directory", "Directory\Directory.csproj", "{54B6E931-DBBF-49EA-82EA-E9DE12B15111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{60BDA32C-8090-48D8-8758-0840694D8A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60BDA32C-8090-48D8-8758-0840694D8A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60BDA32C-8090-48D8-8758-0840694D8A2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54B6E931-DBBF-49EA-82EA-E9DE12B15111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54B6E931-DBBF-49EA-82EA-E9DE12B15111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54B6E931-DBBF-49EA-82EA-E9DE12B15111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54B6E931-DBBF-49EA-82EA-E9DE12B15111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
