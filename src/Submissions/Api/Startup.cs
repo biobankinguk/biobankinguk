@@ -239,7 +239,10 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
-                .AddTransient<IRegistrationDomainService, RegistrationDomainService>();
+                .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+
+                // Reference Data
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>();
 
 
             //Directory Services
@@ -291,7 +294,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.MaterialType>, MaterialTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
-                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
                      .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
 

@@ -83,7 +83,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _preservationTypeService.Update(type); // Ensure sortOrder is correct
 
             // Success response
-            return Accepted(model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             });
 
             // Success message
-            return Accepted(model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _preservationTypeService.Delete(id);
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             });
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
     }
 }
