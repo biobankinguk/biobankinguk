@@ -35,11 +35,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = (await _annualStatisticGroupService.List())
                 .Select(x =>
 
-                Task.Run(async () => new AnnualStatisticGroupModel
+                Task.Run(() => Task.FromResult(new AnnualStatisticGroupModel
                 {
                     AnnualStatisticGroupId = x.Id,
                     Name = x.Value,
-                }).Result)
+                })).Result)
 
                 .ToList();
 
@@ -74,7 +74,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             });
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             });
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _annualStatisticGroupService.Delete(id);
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
     }
 }
