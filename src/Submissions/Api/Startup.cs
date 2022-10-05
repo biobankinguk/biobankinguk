@@ -264,6 +264,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
                     .AddTransient<IIndexProvider, LegacyIndexProvider>()
                     .AddTransient<INetworkService, NetworkService>()
+                    .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
                     .AddTransient<IBiobankWriteService, BiobankWriteService>();
              //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
