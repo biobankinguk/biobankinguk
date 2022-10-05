@@ -1,14 +1,12 @@
 ﻿using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
