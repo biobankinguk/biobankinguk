@@ -2,6 +2,7 @@
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>A list of annual statistic groups</returns>
         /// <response code="200">Request Successful</response>
         [HttpGet]
+        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(AnnualStatisticGroupModel))]
         public async Task<IList> Get()
         {
