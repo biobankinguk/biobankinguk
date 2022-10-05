@@ -33,14 +33,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var models = (await _ageRangeService.List())
                 .Select(x =>
-                    Task.Run(async () => new AgeRangeModel()
+                    Task.Run(() => Task.FromResult(new AgeRangeModel()
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
                         LowerBound = x.LowerBound,
                         UpperBound = x.UpperBound
-                    })
+                    }))
                     .Result
                 )
                 .ToList();
@@ -49,6 +49,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
         [HttpPost]
         [SwaggerResponse(200, Type = typeof(AgeRangeModel))]
+        [SwaggerResponse(400, "Invalid request body.")]
+
         public async Task<IActionResult> Post(AgeRangeModel model)
         {
             if (model.LowerDuration == "N/A") { model.LowerDuration = null; }
@@ -129,6 +131,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
         [HttpDelete("{id}")]
         [SwaggerResponse(200, Type = typeof(AgeRangeModel))]
+        [SwaggerResponse(400, "Invalid request body.")]
         public async Task<IActionResult> Delete(int id)
         {
             var model = await _ageRangeService.Get(id);
@@ -145,6 +148,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
         [HttpPut("{id}")]
         [SwaggerResponse(200, Type = typeof(AgeRangeModel))]
+        [SwaggerResponse(400, "Invalid request body.")]
         public async Task<IActionResult> Put(int id, AgeRangeModel model)
         {
             var exisiting = await _ageRangeService.Get(model.Description);
