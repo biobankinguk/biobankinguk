@@ -61,8 +61,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return models;
         }
 
+
+        /// <summary>
+        /// Insert an Annual Statistic.
+        /// </summary>
+        /// <param name="model">The model to be inserted.</param>
+        /// <returns>The created Annual Statistic.</returns>
         [HttpPost]
-        [SwaggerResponse(202, Type = typeof(AnnualStatisticModel))]
+        [SwaggerResponse(200, Type = typeof(AnnualStatisticModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Post(AnnualStatisticModel model)
         {
@@ -89,11 +95,17 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _annualStatisticService.Add(annualStatistic);
 
             // Success response
-            return Accepted(model);
+            return Ok(model);
         }
 
+        /// <summary>
+        /// Update an Annual Statistic.
+        /// </summary>
+        /// <param name="id">The ID of the condition to update.</param>
+        /// <param name="model">The new model to be inserted.</param>
+        /// <returns>The updated Annual Statistic.</returns>
         [HttpPut("{id}")]
-        [SwaggerResponse(202, Type = typeof(AnnualStatisticModel))]
+        [SwaggerResponse(200, Type = typeof(AnnualStatisticModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Put(int id, AnnualStatisticModel model)
         {
@@ -125,12 +137,17 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _annualStatisticService.Update(annualStatistics);
 
             // Success response
-            return Accepted(model);
+            return Ok(model);
 
         }
 
+        /// <summary>
+        /// Delete an Annual Statistic.
+        /// </summary>
+        /// <param name="id">The ID of the condition to update.</param>
+        /// <returns>Deleted Annual Statistic.</returns>
         [HttpDelete("{id}")]
-        [SwaggerResponse(202, Type = typeof(AnnualStatisticModel))]
+        [SwaggerResponse(200, Type = typeof(AnnualStatisticModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -149,13 +166,18 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _annualStatisticService.Delete(id);
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
 
         }
 
-
+        /// <summary>
+        /// Move an Annual Statistic.
+        /// </summary>
+        /// <param name="id">The ID of the condition to move.</param>
+        /// <param name="model">The new model to update.</param>
+        /// <returns>The updated Annual Statistic.</returns>
         [HttpPost("{id}/move")]
-        [SwaggerResponse(202, Type = typeof(AnnualStatisticModel))]
+        [SwaggerResponse(200, Type = typeof(AnnualStatisticModel))]
         public async Task<IActionResult> Move(int id, AnnualStatisticModel model)
         {
             var annualStatistics = new AnnualStatistic
@@ -168,7 +190,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _annualStatisticService.Update(annualStatistics);
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
     }
 }
