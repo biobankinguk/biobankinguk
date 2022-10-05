@@ -47,7 +47,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                  .ToList();
             var models = (await _annualStatisticService.List())
                 .Select(x =>
-                    Task.Run(async () => new AnnualStatisticModel
+                    Task.Run(() => new AnnualStatisticModel
                     {
                         Id = x.Id,
                         Name = x.Value,
