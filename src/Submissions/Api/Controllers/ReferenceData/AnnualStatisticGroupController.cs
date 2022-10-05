@@ -45,21 +45,20 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// Delete annual statistic group.
+        /// Insert new annual statistic group.
         /// </summary>
-        /// <param name="id">ID of the group to delete.</param>
-        /// <returns>Model of the deleted group.</returns>
+        /// <param name="model">Model of the group to insert.</param>
+        /// <returns>Model of the inserted group.</returns>
         /// <response code="202">Request Accepted</response>
-        [HttpDelete("{id}")]
+        [HttpPost]
         [SwaggerResponse(202, Type = typeof(AnnualStatisticGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Post(AnnualStatisticGroupModel model)
         {
-            var model = await _annualStatisticGroupService.Get(id);
-
-            if (await _annualStatisticGroupService.IsInUse(id))
+            //If this name is valid, it already exists
+            if (await _annualStatisticGroupService.Exists(model.Name))
             {
-                ModelState.AddModelError("Name", "This annual statistic group is currently in use and cannot be deleted.");
+                ModelState.AddModelError("Name", "That name is already in use. Annual Statistic Group names must be unique.");
             }
 
             if (!ModelState.IsValid)
@@ -67,7 +66,10 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 return BadRequest(ModelState);
             }
 
-            await _annualStatisticGroupService.Delete(id);
+            await _annualStatisticGroupService.Add(new AnnualStatisticGroup
+            {
+                Value = model.Name
+            });
 
             //Everything went A-OK!
             return Accepted(model);
@@ -114,20 +116,21 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// Insert new annual statistic group.
+        /// Delete annual statistic group.
         /// </summary>
-        /// <param name="model">Model of the group to insert.</param>
-        /// <returns>Model of the inserted group.</returns>
+        /// <param name="id">ID of the group to delete.</param>
+        /// <returns>Model of the deleted group.</returns>
         /// <response code="202">Request Accepted</response>
-        [HttpPost]
+        [HttpDelete("{id}")]
         [SwaggerResponse(202, Type = typeof(AnnualStatisticGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
-        public async Task<ActionResult> Post(AnnualStatisticGroupModel model)
+        public async Task<ActionResult> Delete(int id)
         {
-            //If this name is valid, it already exists
-            if (await _annualStatisticGroupService.Exists(model.Name))
+            var model = await _annualStatisticGroupService.Get(id);
+
+            if (await _annualStatisticGroupService.IsInUse(id))
             {
-                ModelState.AddModelError("Name", "That name is already in use. Annual Statistic Group names must be unique.");
+                ModelState.AddModelError("Name", "This annual statistic group is currently in use and cannot be deleted.");
             }
 
             if (!ModelState.IsValid)
@@ -135,10 +138,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 return BadRequest(ModelState);
             }
 
-            await _annualStatisticGroupService.Add(new AnnualStatisticGroup
-            {
-                Value = model.Name
-            });
+            await _annualStatisticGroupService.Delete(id);
 
             //Everything went A-OK!
             return Accepted(model);
