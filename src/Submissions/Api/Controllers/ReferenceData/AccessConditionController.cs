@@ -55,7 +55,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <param name="model">The model to be inserted.</param>
         /// <returns>The created Access Condition.</returns>
         [HttpPost]
-        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
+        [SwaggerResponse(200, Type = typeof(AccessConditionModel))]
         [SwaggerResponse(400, "Invalid request body.")]
         public async Task<ActionResult> Post(AccessConditionModel model)
         {
@@ -91,7 +91,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <param name="model">The new model to be inserted.</param>
         /// <returns>The updated Access Condition.</returns>
         [HttpPut("{id}")]
-        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
+        [SwaggerResponse(200, Type = typeof(AccessConditionModel))]
         [SwaggerResponse(400, "Invalid request body.")]
         public async Task<ActionResult> Put(int id, AccessConditionModel model)
         {
@@ -134,7 +134,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <param name="id">The ID of the condition to update.</param>
         /// <returns>Deleted access condition.</returns>
         [HttpDelete("{id}")]
-        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
+        [SwaggerResponse(200, Type = typeof(AccessConditionModel))]
         [SwaggerResponse(400, "Invalid request body.")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -164,7 +164,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <param name="model">The new model to update.</param>
         /// <returns>The updated Access Condition.</returns>
         [HttpPost("{id}/move")]
-        [SwaggerResponse(202, Type = typeof(AccessConditionModel))]
+        [SwaggerResponse(200, Type = typeof(AccessConditionModel))]
         public async Task<ActionResult> Move(int id, AccessConditionModel model)
         {
             var access = new AccessCondition
