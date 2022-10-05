@@ -142,6 +142,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 ModelState.AddModelError("AgeRange", $"The age range \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _ageRangeService.Delete(id);
 
             return Ok(id);
