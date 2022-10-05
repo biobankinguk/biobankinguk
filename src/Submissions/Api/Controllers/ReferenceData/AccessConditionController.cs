@@ -35,12 +35,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         {
             var models = (await _accessConditionService.List())
                 .Select(x =>
-                    Task.Run(async () => new AccessConditionModel
+                    Task.Run(() => Task.FromResult(new AccessConditionModel
                     {
                         Id = x.Id,
                         Description = x.Value,
                         SortOrder = x.SortOrder,
-                    }
+                    })
+
                     )
                     .Result
                 )
@@ -80,7 +81,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Update(access);
 
             //Everything went A-OK!
-            return Accepted(model.Description);
+            return Ok(model);
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Update(access);
 
             //Everything went A-OK!
-            return Accepted(model.Description);
+            return Ok(model);
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Delete(id);
 
             //Everything went A-OK!
-            return Accepted(model.Value);
+            return Ok(model);
         }
 
         /// <summary>
@@ -176,7 +177,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _accessConditionService.Update(access);
 
             //Everything went A-OK!
-            return Accepted(model.Description);
+            return Ok(model);
         }
 
     }
