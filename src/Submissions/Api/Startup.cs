@@ -364,7 +364,7 @@ namespace Biobanks.Submissions.Api
                 {
                     c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                    c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Put, SubmitMethod.Delete);
+                    c.SupportedSubmitMethods(SubmitMethod.Get);
                 })
 
                 // Everything past this point is routed and subject to Auth
