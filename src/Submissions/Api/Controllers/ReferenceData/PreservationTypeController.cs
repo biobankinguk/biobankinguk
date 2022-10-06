@@ -29,7 +29,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
-        [SwaggerResponse(202, Type = typeof(PreservationTypeModel))]
+        [SwaggerResponse(200, Type = typeof(PreservationTypeModel))]
         public async Task<IList> Get()
         {
             var model = (await _preservationTypeService.List())
@@ -53,9 +53,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// </summary>
         /// <param name="model">Model of preservation type to insert.</param>
         /// <returns></returns>
-        /// <response code="202">Request Accepted</response>
+        /// <response code="200">Request Accepted</response>
         [HttpPost]
-        [SwaggerResponse(202, Type = typeof(PreservationTypeModel))]
+        [SwaggerResponse(200, Type = typeof(PreservationTypeModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(PreservationTypeModel model)
         {
@@ -92,9 +92,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <param name="id">ID of the preservation type to update.</param>
         /// <param name="model">Model of the values to update with.</param>
         /// <returns>The updated preservation type model.</returns>
-        /// <response code="202">Request Accepted</response>
+        /// <response code="200">Request Accepted</response>
         [HttpPut("{id}")]
-        [SwaggerResponse(202, Type = typeof(PreservationTypeModel))]
+        [SwaggerResponse(200, Type = typeof(PreservationTypeModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, PreservationTypeModel model)
         {
@@ -132,9 +132,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// </summary>
         /// <param name="id">ID of the preservation type to delete.</param>
         /// <returns>The deleted preservation type.</returns>
-        /// <response code="202">Request Accepted</response>
+        /// <response code="200">Request Accepted</response>
         [HttpDelete("{id}")]
-        [SwaggerResponse(202, Type = typeof(PreservationTypeModel))]
+        [SwaggerResponse(200, Type = typeof(PreservationTypeModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -163,9 +163,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <param name="id">ID of the preservation type to move.</param>
         /// <param name="model">Model of the values to update with.</param>
         /// <returns>The updated preservation type.</returns>
-        /// <response code="202">Request Accepted</response>
+        /// <response code="200">Request Accepted</response>
         [HttpPost("{id}/move")]
-        [SwaggerResponse(202, Type = typeof(PreservationTypeModel))]
+        [SwaggerResponse(200, Type = typeof(PreservationTypeModel))]
         public async Task<ActionResult> Move(int id, PreservationTypeModel model)
         {
             await _preservationTypeService.Update(new PreservationType()
