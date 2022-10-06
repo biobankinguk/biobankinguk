@@ -17,7 +17,7 @@ namespace Biobanks.Submissions.Api.Models.Shared
 
         public int SortOrder { get; set; }
 
-        //public int SampleSetsCount { get; set; }
+        public int SampleSetsCount { get; set; }
 
         public string LowerBound { get; set; }
         public string UpperBound { get; set; }
