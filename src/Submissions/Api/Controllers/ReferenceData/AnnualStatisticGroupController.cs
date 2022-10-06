@@ -51,9 +51,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// </summary>
         /// <param name="model">Model of the group to insert.</param>
         /// <returns>Model of the inserted group.</returns>
-        /// <response code="202">Request Accepted</response>
+        /// <response code="200">Request Accepted</response>
         [HttpPost]
-        [SwaggerResponse(202, Type = typeof(AnnualStatisticGroupModel))]
+        [SwaggerResponse(200, Type = typeof(AnnualStatisticGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(AnnualStatisticGroupModel model)
         {
@@ -83,9 +83,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <param name="id">ID of the group to update.</param>
         /// <param name="model">Model with new values.</param>
         /// <returns>Model of the updated group.</returns>
-        /// <response code="202">Request Accepted</response>
+        /// <response code="200">Request Accepted</response>
         [HttpPut("{id}")]
-        [SwaggerResponse(202, Type = typeof(AnnualStatisticGroupModel))]
+        [SwaggerResponse(200, Type = typeof(AnnualStatisticGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, AnnualStatisticGroupModel model)
         {
@@ -122,9 +122,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// </summary>
         /// <param name="id">ID of the group to delete.</param>
         /// <returns>Model of the deleted group.</returns>
-        /// <response code="202">Request Accepted</response>
+        /// <response code="200">Request Accepted</response>
         [HttpDelete("{id}")]
-        [SwaggerResponse(202, Type = typeof(AnnualStatisticGroupModel))]
+        [SwaggerResponse(200, Type = typeof(AnnualStatisticGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
