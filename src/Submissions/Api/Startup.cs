@@ -242,7 +242,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
 
                 // Reference Data
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>();
 
 
