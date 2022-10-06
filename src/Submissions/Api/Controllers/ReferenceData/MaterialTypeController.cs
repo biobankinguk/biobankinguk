@@ -26,8 +26,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _biobankReadService = biobankReadService;
         }
 
+        /// <summary>
+        /// Generate a list of Material Types.
+        /// </summary>
+        /// <returns>List of material types.</returns>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MaterialType))]
+        [SwaggerResponse(400, "Invalid request")]
         public async Task<IList> Get()
         {
             var model = (await _materialTypeService.List())
@@ -44,8 +50,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return model;
         }
 
+        /// <summary>
+        /// Insert a new Material Type.
+        /// </summary>
+        /// <param name="model">Model of Material Type to insert.</param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MaterialType))]
+        [SwaggerResponse(400, "Invalid request")]
         public async Task<ActionResult> Post(MaterialTypeModel model)
         {
             //If this description is valid, it already exists
@@ -67,11 +80,19 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             });
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MaterialType))]
+        [SwaggerResponse(400, "Invalid request")]
         public async Task<ActionResult> Put(int id, MaterialTypeModel model)
         {
             // Validate model
@@ -98,11 +119,18 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 SortOrder = model.SortOrder
             });
 
-            return Accepted(model);
+            return Ok(model);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MaterialType))]
+        [SwaggerResponse(400, "Invalid request")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _materialTypeService.Get(id);
@@ -121,11 +149,18 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _materialTypeService.Delete(id);
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("{id}/move")]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MaterialType))]
         public async Task<ActionResult> Move(int id, MaterialTypeModel model)
         {
             await _materialTypeService.Update(new MaterialType
@@ -136,11 +171,17 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             });
 
             //Everything went A-OK!
-            return Accepted(model);
+            return Ok(model);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="materialType"></param>
+        /// <returns></returns>
         [HttpGet("{materialType}/extractionprocedure")]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MaterialType))]
         public async Task<IList> GetValidExtractionProcedures(int materialType)
             => (await _biobankReadService.GetMaterialTypeExtractionProcedures(materialType, true)).Select(x => new { x.Id, x.Value }).ToList();
     }
