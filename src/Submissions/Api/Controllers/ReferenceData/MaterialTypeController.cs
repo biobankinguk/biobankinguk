@@ -1,5 +1,6 @@
 ﻿using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class MaterialTypeController : ControllerBase
     {
-        private readonly IReferenceDataService<MaterialType> _materialTypeService;
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly IMaterialService _materialTypeService;
 
         public MaterialTypeController(
-            IReferenceDataService<MaterialType> materialTypeService,
-            IBiobankReadService biobankReadService)
+            IMaterialService materialTypeService)
         {
             _materialTypeService = materialTypeService;
-            _biobankReadService = biobankReadService;
         }
 
         /// <summary>
@@ -43,7 +41,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                     {
                         Id = x.Id,
                         Description = x.Value,
-                        MaterialDetailCount = await _biobankReadService.GetMaterialTypeMaterialDetailCount(x.Id),
+                        MaterialDetailCount = await _materialTypeService.GetDetailCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result).ToList();
 
@@ -84,10 +82,10 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// 
+        /// Update a Material Type.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
+        /// <param name="id">Id of the Material Type to update.</param>
+        /// <param name="model">Model with new values.</param>
         /// <returns></returns>
         [HttpPut("{id}")]
         [AllowAnonymous]
@@ -123,9 +121,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// 
+        /// Deleta a Material Type.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Id of the Material Type to delete</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         [AllowAnonymous]
@@ -153,10 +151,10 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// 
+        /// Move a Material Type.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
+        /// <param name="id">Id of the Material Type to move.</param>
+        /// <param name="model">Model with updated values.</param>
         /// <returns></returns>
         [HttpPost("{id}/move")]
         [AllowAnonymous]
@@ -183,6 +181,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
         public async Task<IList> GetValidExtractionProcedures(int materialType)
-            => (await _biobankReadService.GetMaterialTypeExtractionProcedures(materialType, true)).Select(x => new { x.Id, x.Value }).ToList();
+            => (await _materialTypeService.GetMaterialTypeExtractionProcedures(materialType, true)).Select(x => new { x.Id, x.Value }).ToList();
     }
 }
