@@ -239,14 +239,14 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
-
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
 
                 // Reference Data
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>();
 
             //Directory Services
             if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -274,7 +274,6 @@ namespace Biobanks.Submissions.Api
 
                 // Reference Data
                 services
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
