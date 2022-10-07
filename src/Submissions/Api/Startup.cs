@@ -243,7 +243,7 @@ namespace Biobanks.Submissions.Api
 
                 // Ref data
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
-                .AddTransient<Services.Directory.Contracts.IMaterialService, MaterialTypeService>();
+                .AddTransient<Services.Directory.Contracts.IMaterialTypeService, MaterialTypeService>();
                 //.AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.MaterialType>, MaterialTypeService>();
 
 

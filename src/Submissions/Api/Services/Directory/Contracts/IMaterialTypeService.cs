@@ -6,9 +6,9 @@ using Biobanks.Entities.Data;
 
 namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    public interface IMaterialService : IReferenceDataService<MaterialType>
+    public interface IMaterialTypeService : IReferenceDataService<MaterialType>
     {
-        //Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
+        Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
 
         Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false);
     }

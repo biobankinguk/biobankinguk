@@ -16,10 +16,10 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class MaterialTypeController : ControllerBase
     {
-        private readonly IMaterialService _materialTypeService;
+        private readonly IMaterialTypeService _materialTypeService;
 
         public MaterialTypeController(
-            IMaterialService materialTypeService)
+            IMaterialTypeService materialTypeService)
         {
             _materialTypeService = materialTypeService;
         }

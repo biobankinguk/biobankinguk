@@ -10,7 +10,7 @@ using Biobanks.Entities.Data;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class MaterialTypeService : ReferenceDataService<MaterialType>, IMaterialService
+    public class MaterialTypeService : ReferenceDataService<MaterialType>, IMaterialTypeService
     {
         public MaterialTypeService(BiobanksDbContext db) : base(db) { }
 
