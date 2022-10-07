@@ -30,7 +30,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>List of material types.</returns>
         [HttpGet]
         [AllowAnonymous]
-        [SwaggerResponse(200, Type = typeof(MaterialType))]
+        [SwaggerResponse(200, Type = typeof(ReadMaterialTypeModel))]
         [SwaggerResponse(400, "Invalid request")]
         public async Task<IList> Get()
         {
