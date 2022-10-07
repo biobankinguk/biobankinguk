@@ -1,8 +1,11 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Models.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,13 +24,19 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _associatedDataProcurementTimeFrameService = associatedDataProcurementTimeFrameService;
         }
 
+        /// <summary>
+        /// Generate Associated Data Procurement TimeFrame
+        /// </summary>
+        /// <returns>A list of Associated Data Procurement TimeFrame</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(ReadAssociatedDataProcurementTimeFrameModel))]
         public async Task<IList> Get()
         {
             var models = (await _associatedDataProcurementTimeFrameService.List())
                 .Select(x =>
-                    Task.Run(async () => new Models.Submissions.ReadAssociatedDataProcurementTimeFrameModel
+                    Task.Run(async () => new ReadAssociatedDataProcurementTimeFrameModel
                     {
                         Id = x.Id,
                         Description = x.Value,
@@ -42,8 +51,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return models;
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        /// <summary>
+        /// Delete an Associated Data Procurement TimeFrame.
+        /// </summary>
+        /// <param name="id">The ID of the condition to update.</param>
+        /// <returns>Deleted Associated Data Procurement TimeFrame.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(AssociatedDataProcurementTimeFrameModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Delete(int id)
         {
             var model = await _associatedDataProcurementTimeFrameService.Get(id);
@@ -70,7 +85,55 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update an Associated Data Procurement TimeFrame
+        /// </summary>
+        /// <param name="id">The ID of the condition to update.</param>
+        /// <param name="model">The new model to update.</param>
+        /// <returns>The updated Associated Data Procurement TimeFrame.</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(AssociatedDataProcurementTimeFrameModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<IActionResult> Put(int id, AssociatedDataProcurementTimeFrameModel model)
+        {
+            // Validate model
+            var exisiting = await _associatedDataProcurementTimeFrameService.Get(model.Description);
+
+            if (exisiting != null && exisiting.Id != id)
+            {
+                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", "That Associated Data Procurement Time Frame already exists!");
+            }
+
+            // If in use, prevent update
+            if (await _associatedDataProcurementTimeFrameService.IsInUse(id))
+            {
+                ModelState.AddModelError("AssociatedDataProcurementTimeFrame", $"The Associated Data Procurement Time Frame \"{model.Description}\" is currently in use, and cannot be updated.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _associatedDataProcurementTimeFrameService.Update(new AssociatedDataProcurementTimeframe
+            {
+                Id = id,
+                Value = model.Description,
+                DisplayValue = model.DisplayName,
+                SortOrder = model.SortOrder
+            });
+
+            // Success message
+            return Ok(model);
+        }
+
+        /// <summary>
+        /// Insert an Associated Data Procurement TimeFrame
+        /// </summary>
+        /// <param name="model">The new model to update.</param>
+        /// <returns>The updated Associated Data Procurement TimeFrame.</returns>
         [HttpPost]
+        [SwaggerResponse(200, Type = typeof(AssociatedDataProcurementTimeFrameModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Post(AssociatedDataProcurementTimeFrameModel model)
         {
             // Validate model
@@ -104,7 +167,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Move an Associated Data Procurement TimeFrame
+        /// </summary>
+        /// <param name="id">The ID of the condition to move.</param>
+        /// <param name="model">The new model to update.</param>
+        /// <returns>The updated Associated Data Procurement TimeFrame.</returns>
         [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(AssociatedDataProcurementTimeFrameModel))]
         public async Task<IActionResult> Move(int id, AssociatedDataProcurementTimeFrameModel model)
         {
             await _associatedDataProcurementTimeFrameService.Update(new AssociatedDataProcurementTimeframe
