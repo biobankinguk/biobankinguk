@@ -6,9 +6,13 @@ using System.Linq;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Web.Filters;
 using Biobanks.Directory.Services.Contracts;
+using System;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+    " Any changes made here will need to be made in the corresponding core version"
+    , false)]
     [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/AnnualStatistic")]
     public class AnnualStatisticController : ApiBaseController
