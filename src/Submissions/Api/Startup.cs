@@ -240,7 +240,11 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-              .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>();
+
+                // Ref data
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
+                .AddTransient<Services.Directory.Contracts.IMaterialService, MaterialTypeService>();
+                //.AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.MaterialType>, MaterialTypeService>();
 
 
             //Directory Services
@@ -290,7 +294,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.MaterialType>, MaterialTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
                      .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
                      .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
@@ -365,7 +368,7 @@ namespace Biobanks.Submissions.Api
                 {
                     c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                    c.SupportedSubmitMethods(SubmitMethod.Get);
+                    c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Delete);
                 })
 
                 // Everything past this point is routed and subject to Auth
