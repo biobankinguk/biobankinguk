@@ -31,7 +31,12 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
             => await _db.MaterialDetails.CountAsync(x => x.ExtractionProcedureId == id);
 
-        public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false)
-            => (await _db.MaterialDetails.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures));
+        public Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false)
+            => Task.FromResult(_db.MaterialTypes
+                .Where(x => x.Id == id)
+                .Include(x => x.ExtractionProcedures)
+                .FirstOrDefault()?
+                .ExtractionProcedures
+                .Where(x => x.DisplayOnDirectory || !onlyDisplayable));
     }
 }
