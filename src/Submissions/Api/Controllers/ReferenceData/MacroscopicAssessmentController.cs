@@ -58,7 +58,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// Insert a new Macroscopic Assessment.
         /// </summary>
         /// <param name="model">Model of new Macroscopic Assessment.</param>
-        /// <returns></returns>
+        /// <returns>The inserted model.</returns>
         /// <response code="200">Request Successful</response>
         [HttpPost]
         [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
@@ -136,7 +136,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// Delete a Macroscopiv Assessment.
+        /// Delete a Macroscopic Assessment.
         /// </summary>
         /// <param name="id">Id of the model to delete.</param>
         /// <returns>The delete model.</returns>
