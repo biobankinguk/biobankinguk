@@ -22,6 +22,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _materialTypeGroupService = materialTypeGroupService;
         }
 
+        /// <summary>
+        /// Generate a Material Type Group list.
+        /// </summary>
+        /// <returns>List of Material Group Types.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
@@ -39,8 +44,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             });
         }
 
+        /// <summary>
+        /// Insert a new Material Type Group.
+        /// </summary>
+        /// <param name="model">The model to insert.</param>
+        /// <returns>The insert Material Type Group.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(MaterialTypeGroupModel model)
@@ -64,8 +74,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a Material Type Group.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">The new values to update with.</param>
+        /// <returns>The updated Material Type Group.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, MaterialTypeGroupModel model)
@@ -96,8 +112,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete a Material Type Group.
+        /// </summary>
+        /// <param name="id">Id of the Material Type Group to delete.</param>
+        /// <returns>The deleted Material Type Group.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
         [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
