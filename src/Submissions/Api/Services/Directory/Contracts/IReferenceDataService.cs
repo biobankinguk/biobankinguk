@@ -21,12 +21,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<int> Count();
 
         /// <summary>
-        /// TODO: Counts the number of entities with details.
-        /// </summary>
-        /// <returns></returns>
-        Task<int> GetDetailCount(int id);
-
-        /// <summary>
         /// Delete a given entity with Id
         /// </summary>
         /// <param name="id">Id of the entity to delete</param>

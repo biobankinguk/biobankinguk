@@ -46,10 +46,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => await Query().CountAsync();
 
         /// <inheritdoc/>
-        public virtual async Task<int> GetDetailCount(int id)
-            => await Query().CountAsync();
-
-        /// <inheritdoc/>
         public async Task Delete(int id)
         {
             // Instantiate Generic

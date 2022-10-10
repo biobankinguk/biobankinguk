@@ -41,7 +41,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                     {
                         Id = x.Id,
                         Description = x.Value,
-                        MaterialDetailCount = await _materialTypeService.GetDetailCount(x.Id),
+                        MaterialDetailCount = await _materialTypeService.GetUsageCount(x.Id),
                         SortOrder = x.SortOrder
                     }).Result).ToList();
 
