@@ -1,16 +1,14 @@
-﻿using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Entities.Data.ReferenceData;
+﻿using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Config;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Config;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
@@ -30,8 +28,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _configService = configService;
         }
 
+        /// <summary>
+        /// Generate a list of Macroscopic Assessments.
+        /// </summary>
+        /// <returns>List of Macroscopic Assessments.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessmentModel))]
         public async Task<IList> Get()
         {
             var models = (await _macroscopicAssessmentService.List())
@@ -50,8 +54,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return models;
         }
 
+        /// <summary>
+        /// Insert a new Macroscopic Assessment.
+        /// </summary>
+        /// <param name="model">Model of new Macroscopic Assessment.</param>
+        /// <returns></returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
@@ -82,8 +93,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a Macroscopic Assessment.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Model with updates values.</param>
+        /// <returns>The updated model.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
@@ -116,8 +135,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete a Macroscopiv Assessment.
+        /// </summary>
+        /// <param name="id">Id of the model to delete.</param>
+        /// <returns>The delete model.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
 
@@ -147,8 +173,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Move a Macroscopic Assessment.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>The updated model.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost("{id}/move")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
         public async Task<ActionResult> Move(int id, MacroscopicAssessmentModel model)
         {
             await _macroscopicAssessmentService.Update(new MacroscopicAssessment
