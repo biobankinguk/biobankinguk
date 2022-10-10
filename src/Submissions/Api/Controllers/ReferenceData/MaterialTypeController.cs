@@ -28,6 +28,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// Generate a list of Material Types.
         /// </summary>
         /// <returns>List of material types.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(ReadMaterialTypeModel))]
@@ -52,7 +53,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// Insert a new Material Type.
         /// </summary>
         /// <param name="model">Model of Material Type to insert.</param>
-        /// <returns></returns>
+        /// <returns>Inserted Material Type.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
@@ -86,7 +88,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// </summary>
         /// <param name="id">Id of the Material Type to update.</param>
         /// <param name="model">Model with new values.</param>
-        /// <returns></returns>
+        /// <returns>Updated Material Type.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
@@ -121,10 +124,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// Deleta a Material Type.
+        /// Delete a Material Type.
         /// </summary>
         /// <param name="id">Id of the Material Type to delete</param>
-        /// <returns></returns>
+        /// <returns>The deleted material type.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
@@ -155,7 +159,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// </summary>
         /// <param name="id">Id of the Material Type to move.</param>
         /// <param name="model">Model with updated values.</param>
-        /// <returns></returns>
+        /// <returns>The updated material type.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost("{id}/move")]
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
@@ -173,13 +178,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         }
 
         /// <summary>
-        /// 
+        /// Get the extraction procedures for a material type.
         /// </summary>
-        /// <param name="materialType"></param>
-        /// <returns></returns>
+        /// <param name="materialType">ID of material type.</param>
+        /// <returns>List of ontology terms.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet("{materialType}/extractionprocedure")]
         [AllowAnonymous]
-        [SwaggerResponse(200, Type = typeof(MaterialType))]
+        [SwaggerResponse(200, Type = typeof(OntologyTerm))]
         public async Task<IList> GetValidExtractionProcedures(int materialType)
             => (await _materialTypeService.GetMaterialTypeExtractionProcedures(materialType, true)).Select(x => new { x.Id, x.Value }).ToList();
     }
