@@ -242,12 +242,12 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
 
                 // Reference Data
-                .AddTransient<Services.Directory.Contracts.IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
+                .AddTransient<Services.Directory.Contracts.IMaterialTypeService, MaterialTypeService>();
 
             //Directory Services
             if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -365,7 +365,7 @@ namespace Biobanks.Submissions.Api
                 {
                     c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                    c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Delete);
+                    c.SupportedSubmitMethods(SubmitMethod.Get);
                 })
 
                 // Everything past this point is routed and subject to Auth
