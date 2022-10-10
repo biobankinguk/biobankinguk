@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System.Collections.Generic;
-using Biobanks.Entities.Data;
-
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
