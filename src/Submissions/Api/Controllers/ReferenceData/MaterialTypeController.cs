@@ -55,7 +55,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>Inserted Material Type.</returns>
         /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
         [SwaggerResponse(400, "Invalid request")]
         public async Task<ActionResult> Post(MaterialTypeModel model)
@@ -90,7 +89,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>Updated Material Type.</returns>
         /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
         [SwaggerResponse(400, "Invalid request")]
         public async Task<ActionResult> Put(int id, MaterialTypeModel model)
@@ -129,7 +127,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>The deleted material type.</returns>
         /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
         [SwaggerResponse(400, "Invalid request")]
         public async Task<ActionResult> Delete(int id)
@@ -161,7 +158,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>The updated material type.</returns>
         /// <response code="200">Request Successful</response>
         [HttpPost("{id}/move")]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(MaterialType))]
         public async Task<ActionResult> Move(int id, MaterialTypeModel model)
         {
@@ -183,7 +179,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>List of ontology terms.</returns>
         /// <response code="200">Request Successful</response>
         [HttpGet("{materialType}/extractionprocedure")]
-        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(OntologyTerm))]
         public async Task<IList> GetValidExtractionProcedures(int materialType)
             => (await _materialTypeService.GetMaterialTypeExtractionProcedures(materialType, true)).Select(x => new { x.Id, x.Value }).ToList();
