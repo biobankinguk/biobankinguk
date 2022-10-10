@@ -42,7 +42,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         /// <inheritdoc/>
-        public virtual async Task<int> Count()
+        public async Task<int> Count()
             => await Query().CountAsync();
 
         /// <inheritdoc/>
