@@ -1,5 +1,4 @@
-﻿using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+﻿using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Entities.Data.ReferenceData;
@@ -7,7 +6,6 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,8 +28,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _configService = configService;
         }
 
+        /// <summary>
+        /// Generate a Donor Count list.
+        /// </summary>
+        /// <returns>List of donor counts.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(DonorCountModel))]
         public async Task<IList> Get()
         {
             var models = (await _donorCountService.List())
@@ -52,8 +56,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return models;
         }
 
+        /// <summary>
+        /// Insert a new Donor Count
+        /// </summary>
+        /// <param name="model">Model to insert.</param>
+        /// <returns>The inserted model.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(DonorCountModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
@@ -87,8 +98,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a Donor count.
+        /// </summary>
+        /// <param name="id">Id of the Donor Count to update.</param>
+        /// <param name="model">Model of values to update with.</param>
+        /// <returns>The updated model.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(DonorCountModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
@@ -124,8 +143,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete a Donor Count.
+        /// </summary>
+        /// <param name="id">Id of the Donor Count to delete.</param>
+        /// <returns>The deleted Donor Count.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(DonorCountModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _donorCountService.Get(id);
@@ -150,8 +176,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Move a Donor Count.
+        /// </summary>
+        /// <param name="id">Id of the Donor Count to move.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The moved model.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost("{id}/move")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(DonorCountModel))]
         public async Task<ActionResult> Move(int id, DonorCountModel model)
         {
             await _donorCountService.Update(new DonorCount
