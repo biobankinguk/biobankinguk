@@ -28,6 +28,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>List of countries.</returns>
         /// <response code="200">Request Successful</response>
         [HttpGet]
+        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(ReadCountryModel))]
         public async Task<IList> Get()
         {
