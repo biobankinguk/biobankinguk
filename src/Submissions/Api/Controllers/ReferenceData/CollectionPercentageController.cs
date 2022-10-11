@@ -1,22 +1,21 @@
-﻿using System.Collections;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Web.Models.ADAC;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
-using System;
+using System.Xml;
 
-namespace Biobanks.Web.ApiControllers
+
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding service."
-    , false)]
-
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/CollectionPercentage")]
-    public class CollectionPercentageController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class CollectionPercentageController : ControllerBase
     {
         private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
 
@@ -25,9 +24,12 @@ namespace Biobanks.Web.ApiControllers
             _collectionPercentageService = collectionPercentageService;
         }
 
+        /// <summary>
+        /// Generate a Collection Percentage list
+        /// </summary>
+        /// <returns>A list of Collection Percentage</returns>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
         public async Task<IList> Get()
         {
             var models = (await _collectionPercentageService.List())
@@ -48,9 +50,16 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
+        /// <summary>
+        /// Insert new Collection Percentag.
+        /// </summary>
+        /// <param name="model">Model of the collection percentage to insert.</param>
+        /// <returns>Model of the inserted collection percentage .</returns>
+        /// <response code="200">Request Accepted</response>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(CollectionPercentageModel model)
+        [SwaggerResponse(200, Type = typeof(CollectionPercentageModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<IActionResult> Post(CollectionPercentageModel model)
         {
             // Validate model
             if (await _collectionPercentageService.ExistsExcludingId(model.Id, model.Description))
@@ -60,7 +69,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             var percentage = new CollectionPercentage
@@ -76,16 +85,20 @@ namespace Biobanks.Web.ApiControllers
             await _collectionPercentageService.Update(percentage);
 
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, CollectionPercentageModel model)
+        /// <summary>
+        /// Update existing collection percentage.
+        /// </summary>
+        /// <param name="id">ID of the collection percentage to update.</param>
+        /// <param name="model">Model with new values.</param>
+        /// <returns>Model of the updated collection percentage.</returns>
+        /// <response code="200">Request Accepted</response>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(CollectionPercentageModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<IActionResult> Put(int id, CollectionPercentageModel model)
         {
             // Validate model
             if (await _collectionPercentageService.ExistsExcludingId(model.Id, model.Description))
@@ -101,7 +114,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _collectionPercentageService.Update(new CollectionPercentage
@@ -114,16 +127,20 @@ namespace Biobanks.Web.ApiControllers
             });
 
             // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
+
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete collection percentage.
+        /// </summary>
+        /// <param name="id">ID of the collection percentage to delete.</param>
+        /// <returns>Model of the deleted collection percentage.</returns>
+        /// <response code="200">Request Accepted</response>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(CollectionPercentageModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<IActionResult> Delete(int id)
         {
             var model = await _collectionPercentageService.Get(id);
 
@@ -135,22 +152,26 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
+
 
             await _collectionPercentageService.Delete(id);
 
             // Success
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
+
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, CollectionPercentageModel model)
+        /// <summary>
+        /// Move a collection percentage.
+        /// </summary>
+        /// <param name="id">The ID of the collection percentage to move.</param>
+        /// <param name="model">The new model to update.</param>
+        /// <returns>The updated collection percentage.</returns>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(CollectionPercentageModel))]
+        public async Task<IActionResult> Move(int id, CollectionPercentageModel model)
         {
             await _collectionPercentageService.Update(new CollectionPercentage
             {
@@ -162,11 +183,7 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
 
         }
 
