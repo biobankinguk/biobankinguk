@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Submissions.Api.Models.Shared
+namespace Biobanks.Submissions.Api.Models.Submissions
 {
     public class CollectionPercentagesModel
     {
