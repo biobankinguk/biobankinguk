@@ -22,8 +22,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _countryService = countryService;
         }
 
+        /// <summary>
+        /// Generate a list of Countries.
+        /// </summary>
+        /// <returns>List of countries.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(ReadCountryModel))]
         public async Task<IList> Get()
         {
             var model = (await _countryService.List())
@@ -41,8 +46,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return model;
         }
 
+        /// <summary>
+        /// Insert a new country.
+        /// </summary>
+        /// <param name="model">Model to insert.</param>
+        /// <returns>The inserted country.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(CountryModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(CountryModel model)
         {
             //If this description is valid, it already exists
@@ -65,8 +77,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update an existing country.
+        /// </summary>
+        /// <param name="id">Id of the country to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated country.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(CountryModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, CountryModel model)
         {
             var exisiting = await _countryService.Get(model.Name);
@@ -97,8 +117,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete an existing country.
+        /// </summary>
+        /// <param name="id">Id of the country to delete.</param>
+        /// <returns>The deleted country.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(CountryModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _countryService.Get(id);
