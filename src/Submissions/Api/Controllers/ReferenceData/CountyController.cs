@@ -28,8 +28,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _countryService = countryService;
         }
 
+        /// <summary>
+        /// Generate a list of countries with their counties.
+        /// </summary>
+        /// <returns>List of countries and counties.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(CountiesModel))]
         public async Task<CountiesModel> Get()
         {
             var countries = await _countryService.List();
@@ -56,8 +62,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return model;
         }
 
+        /// <summary>
+        /// Insert a new county.
+        /// </summary>
+        /// <param name="model">The county to be inserted.</param>
+        /// <returns>The inserted county.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(CountyModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(CountyModel model)
         {
             // Validate model
@@ -84,8 +97,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a county.
+        /// </summary>
+        /// <param name="id">Id of county to update.</param>
+        /// <param name="model">The updated values.</param>
+        /// <returns>Tjhe updated county.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(CountyModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, CountyModel model)
         {
             // Validate model
@@ -117,8 +138,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete a county.
+        /// </summary>
+        /// <param name="id">Id of the county to delete.</param>
+        /// <returns>The Id of the deleted county.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(int))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _countyService.Get(id);
@@ -139,8 +167,18 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(id);
         }
 
+        /// <summary>
+        /// Get the country Id of a County Id
+        /// </summary>
+        /// <param name="id">Id of the county</param>
+        /// <returns>The Country Id of the given County Id</returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        /// <exception cref="Exception"></exception>
+        /// <response code="200">Request Successful</response>
         [HttpGet("{id}/country")]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(int))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<int> GetCountryId(int id)
         {
             var county = await _countyService.Get(id);
