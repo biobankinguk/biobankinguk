@@ -89,7 +89,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         [HttpPut("{id}")]
         [SwaggerResponse(200, Type = typeof(ReadCollectionStatusModel))]
         [SwaggerResponse(400, "Invalid request body.")]
-        public async Task<IActionResult> Put(int id, CollectionStatusModel model, bool sortOnly = false)
+        public async Task<IActionResult> Put(int id, CollectionStatusModel model)
         {
             // Validate model
             if (await _collectionStatusService.Exists(model.Description))
