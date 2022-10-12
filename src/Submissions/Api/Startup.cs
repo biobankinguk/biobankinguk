@@ -247,7 +247,6 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
