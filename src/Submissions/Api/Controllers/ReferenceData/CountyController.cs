@@ -179,14 +179,26 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(int))]
         [SwaggerResponse(400, "Invalid request.")]
-        public async Task<int> GetCountryId(int id)
+        public async Task<ActionResult> GetCountryId(int id)
         {
             var county = await _countyService.Get(id);
 
             if (county is null)
-                throw new KeyNotFoundException("No County exists with given Id");
+            {
+                ModelState.AddModelError("County", "No County exists with given Id.");
+            }
 
-            return county.CountryId ?? throw new Exception("This county does not have an associated Country");
+            if (county?.CountryId is null)
+            {
+                ModelState.AddModelError("Country", "This County does not have an associated Country.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(county.CountryId);
         }
     }
 }
