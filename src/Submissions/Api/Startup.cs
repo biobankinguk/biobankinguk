@@ -241,7 +241,6 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<IConfigService, ConfigService>()
 
                 // Reference Data
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
