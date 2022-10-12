@@ -8,6 +8,7 @@ using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Api.Models.Submissions;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
@@ -23,15 +24,20 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _consentRestrictionService = consentRestrictionService;
         }
 
+        /// <summary>
+        /// Generate a consent restriction list.
+        /// </summary>
+        /// <returns>List of consent restriction.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(ReadConsentRestrictionModel))]
         public async Task<IList> Get()
         {
             var model = (await _consentRestrictionService.List())
                     .Select(x =>
 
-                Task.Run(async () => new Models.Submissions.ReadConsentRestrictionModel
+                Task.Run(async () => new ReadConsentRestrictionModel
                 {
                     Id = x.Id,
                     Description = x.Value,
@@ -44,8 +50,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return model;
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        /// <summary>
+        /// Delete existing consent restriction.
+        /// </summary>
+        /// <param name="id">ID of the  conesent restriction to delete.</param>
+        /// <returns>The deleted consent restrict.</returns>
+        /// <response code="200">Request Accepted</response>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(ConsentRestrictionModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Delete(int id)
         {
             var model = await _consentRestrictionService.Get(id);
@@ -68,8 +81,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
         }
 
-        [HttpPut]
-        [Route("{id}")]
+        /// <summary>
+        /// Update existing consent restrict.
+        /// </summary>
+        /// <param name="id">ID of the consent restriction to update.</param>
+        /// <param name="model">Model of the values to update with.</param>
+        /// <returns>The updated preservation type model.</returns>
+        /// <response code="200">Request Accepted</response>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(ConsentRestrictionModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Put(int id, ConsentRestrictionModel model)
         {
             // Validate model
@@ -100,9 +121,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
 
         }
-
+        /// <summary>
+        /// Insert new consent restriction.
+        /// </summary>
+        /// <param name="model">Model of consent restriction to insert.</param>
+        /// <returns></returns>
+        /// <response code="200">Request Accepted</response>
         [HttpPost]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(ConsentRestrictionModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<IActionResult> Post(ConsentRestrictionModel model)
         {
             //If this description is valid, it already exists
@@ -126,8 +153,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
+        /// <summary>
+        /// Move an existing consent restriction.
+        /// </summary>
+        /// <param name="id">ID of the consent restriction to move.</param>
+        /// <param name="model">Model of the values to update with.</param>
+        /// <returns>The updated consent restriction.</returns>
+        /// <response code="200">Request Accepted</response>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(ConsentRestrictionModel))]
         public async Task<IActionResult> Move(int id, ConsentRestrictionModel model)
         {
             await _consentRestrictionService.Update(new ConsentRestriction
