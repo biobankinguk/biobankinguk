@@ -1,39 +1,41 @@
-﻿using System;
-using Biobanks.Services.Contracts;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Config;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Entities.Data;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Directory.Data.Constants;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/MacroscopicAssessment")]
-    public class MacroscopicAssessmentController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class MacroscopicAssessmentController : ControllerBase
     {
         private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
         private readonly IConfigService _configService;
 
         public MacroscopicAssessmentController(
-            IReferenceDataService<MacroscopicAssessment> macroscopicAssessment, 
+            IReferenceDataService<MacroscopicAssessment> macroscopicAssessment,
             IConfigService configService)
         {
             _macroscopicAssessmentService = macroscopicAssessment;
             _configService = configService;
         }
 
+        /// <summary>
+        /// Generate a list of Macroscopic Assessments.
+        /// </summary>
+        /// <returns>List of Macroscopic Assessments.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessmentModel))]
         public async Task<IList> Get()
         {
             var models = (await _macroscopicAssessmentService.List())
@@ -52,12 +54,19 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
+        /// <summary>
+        /// Insert a new Macroscopic Assessment.
+        /// </summary>
+        /// <param name="model">Model of new Macroscopic Assessment.</param>
+        /// <returns>The inserted model.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(MacroscopicAssessmentModel model)
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Post(MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             // Validate model
             if (await _macroscopicAssessmentService.Exists(model.Description))
@@ -67,7 +76,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             var assessment = new MacroscopicAssessment
@@ -81,20 +90,23 @@ namespace Biobanks.Web.ApiControllers
             await _macroscopicAssessmentService.Update(assessment);
 
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-                redirect = $"AddMacroscopicAssessmentSuccess?name={model.Description}&referencename={currentReferenceName.Value}"
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, MacroscopicAssessmentModel model)
+        /// <summary>
+        /// Update a Macroscopic Assessment.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Model with updates values.</param>
+        /// <returns>The updated model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Put(int id, MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             // Validate model
             if (await _macroscopicAssessmentService.Exists(model.Description))
@@ -109,7 +121,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _macroscopicAssessmentService.Update(new MacroscopicAssessment
@@ -120,22 +132,25 @@ namespace Biobanks.Web.ApiControllers
             });
 
             // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete a Macroscopic Assessment.
+        /// </summary>
+        /// <param name="id">Id of the model to delete.</param>
+        /// <returns>The delete model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Delete(int id)
         {
 
             var model = await _macroscopicAssessmentService.Get(id);
 
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             if (await _macroscopicAssessmentService.IsInUse(id))
             {
@@ -149,22 +164,25 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _macroscopicAssessmentService.Delete(id);
 
             // Success
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, MacroscopicAssessmentModel model)
+        /// <summary>
+        /// Move a Macroscopic Assessment.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>The updated model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(MacroscopicAssessment))]
+        public async Task<ActionResult> Move(int id, MacroscopicAssessmentModel model)
         {
             await _macroscopicAssessmentService.Update(new MacroscopicAssessment
             {
@@ -174,12 +192,8 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
-
+            return Ok(model);
         }
     }
 }
+
