@@ -253,7 +253,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>();
 
             //Directory Services
