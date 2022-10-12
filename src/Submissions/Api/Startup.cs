@@ -230,6 +230,7 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<IPublicationJobService, PublicationJobService>()
                 .AddTransient<IAnnotationService, AnnotationService>()
+                .AddTransient<IConfigService, ConfigService>()
                 .AddTransient<IEpmcService, EpmcWebService>()
 
                 .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
@@ -247,6 +248,7 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>();
@@ -259,7 +261,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
-                    .AddTransient<IConfigService, ConfigService>()
                     .AddTransient<ICollectionService, CollectionService>()
                     .AddTransient<IOntologyTermService, OntologyTermService>()
                     .AddTransient<ITokenLoggingService, TokenLoggingService>()
@@ -287,7 +288,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
