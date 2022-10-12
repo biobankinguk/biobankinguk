@@ -5,6 +5,7 @@ namespace Biobanks.Submissions.Api.Config
     {
         // Ref Data Name Configuration Options
         public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
+        public const string DonorCountName = "site.display.donorcount.name";
     }
 }
 
