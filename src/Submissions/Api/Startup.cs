@@ -235,6 +235,7 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
                 .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+                .AddTransient<IOntologyTermService, OntologyTermService>()
                 .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
                 .AddTransient<IAnalyticsService, AnalyticsService>()
                 .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
@@ -262,7 +263,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
                     .AddTransient<ICollectionService, CollectionService>()
-                    .AddTransient<IOntologyTermService, OntologyTermService>()
                     .AddTransient<ITokenLoggingService, TokenLoggingService>()
                     .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
                     .AddTransient<IBiobankReadService, BiobankReadService>()
