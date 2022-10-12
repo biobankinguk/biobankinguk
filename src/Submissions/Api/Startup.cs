@@ -251,7 +251,8 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>();
 
             //Directory Services
             if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -283,7 +284,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
