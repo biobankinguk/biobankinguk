@@ -251,7 +251,8 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>();
 
             //Directory Services
             if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -292,10 +293,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
-
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
             }
 
 
