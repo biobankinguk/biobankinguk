@@ -24,12 +24,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
         private readonly IOntologyTermService _ontologyTermService;
 
-        //private readonly IBiobankReadService _biobankReadService;
+        private readonly IBiobankReadService _biobankReadService;
 
         public ExtractionProcedureController(
             IMaterialTypeService materialTypeService,
-            IOntologyTermService ontologyTermService,
-            IBiobankReadService biobankReadService)
+            IOntologyTermService ontologyTermService)
         {
             _materialTypeService = materialTypeService;
             _ontologyTermService = ontologyTermService;
@@ -104,6 +103,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
+                // TODO: Remove the readService - maybe move Snomed to its own Service?
                 SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription(SnomedTags.ExtractionProcedure)).Id,
                 DisplayOnDirectory = model.DisplayOnDirectory,
                 MaterialTypes = materialTypes.Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
@@ -145,7 +145,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             if (model.MaterialTypeIds == null || model.MaterialTypeIds.Count == 0)
                 ModelState.AddModelError("MaterialTypeIds", "Add at least one material type to the extraction procedure.");
 
-            if (await _biobankReadService.IsExtractionProcedureInUse(id))
+            // Check if its in use.
+            if (await _materialTypeService.GetExtractionProcedureMaterialDetailsCount(id) > 0)
             {
                 //Allow editing of only Other terms field if ontologyterm in use
                 if (ontologyTerm.Value != model.Description)
@@ -188,7 +189,8 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 SnomedTags.ExtractionProcedure
             });
 
-            if (await _biobankReadService.IsExtractionProcedureInUse(id))
+            // Check if its in use.
+            if (await _materialTypeService.GetExtractionProcedureMaterialDetailsCount(id) > 0)
             {
                 ModelState.AddModelError("Description", $"The extraction procedure \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
@@ -201,7 +203,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             await _ontologyTermService.Delete(model.Id);
 
             //Everything went A-OK!
-            return Ok(model);
+            return Ok(id);
         }
     }
 }
