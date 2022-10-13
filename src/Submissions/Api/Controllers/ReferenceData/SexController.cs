@@ -22,8 +22,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _sexService = sexService;
         }
 
+        /// <summary>
+        /// Generate a list of Sexes
+        /// </summary>
+        /// <returns>List of Sexes</returns>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(ReadSexModel))]
         public async Task<IList> Get()
         {
             var model = (await _sexService.List())
@@ -40,8 +45,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return model;
         }
 
+        /// <summary>
+        /// Insert a new Sex.
+        /// </summary>
+        /// <param name="model">New model to insert.</param>
+        /// <returns>The inserted Sex.</returns>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(SexModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(SexModel model)
         {
             //If this description is valid, it already exists
@@ -66,8 +77,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update an existing Sex.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Sex with new values.</param>
+        /// <returns>The updated Sex.</returns>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(SexModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, SexModel model)
         {
             var existing = await _sexService.Get(model.Description);
@@ -99,8 +117,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete an existing Sex.
+        /// </summary>
+        /// <param name="id">Id of the Sex to delete.</param>
+        /// <returns>The deleted Sex.</returns>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(Sex))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _sexService.Get(id);
@@ -121,8 +145,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Move an existing Sex.
+        /// </summary>
+        /// <param name="id">Id of the Sex to move.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns></returns>
         [HttpPost("{id}/move")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(SexModel))]
         public async Task<ActionResult> Move(int id, SexModel model)
         {
             await _sexService.Update(new Sex
@@ -134,7 +164,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
             //Everything went A-OK!
             return Ok(model);
-
         }
     }
 }
