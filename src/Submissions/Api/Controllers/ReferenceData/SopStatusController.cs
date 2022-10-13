@@ -24,6 +24,10 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _sopStatusService = sopStatusService;
         }
 
+        /// <summary>
+        /// Generate a list of SOP Status.
+        /// </summary>
+        /// <returns>The list of SOP Status.</returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IList> Get()
@@ -43,8 +47,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return models;
         }
 
+        /// <summary>
+        /// Insert a new SOP Status.
+        /// </summary>
+        /// <param name="model">The model to insert.</param>
+        /// <returns>The inserted model.</returns>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(SopStatusModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(SopStatusModel model)
         {
             // Validate model
@@ -72,8 +82,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a SOP Status.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated model.</returns>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(SopStatusModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, SopStatusModel model)
         {
             // Validate model
@@ -104,8 +121,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete an existing SOP Status.
+        /// </summary>
+        /// <param name="id">Id of the SOP Status to delete.</param>
+        /// <returns>The deleted SOP Status.</returns>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(SopStatus))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _sopStatusService.Get(id);
@@ -127,8 +150,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Move an existing SOP Status.
+        /// </summary>
+        /// <param name="id">Id of the SOP Status to move.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated model.</returns>
         [HttpPost("{id}/move")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(SopStatusModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Move(int id, SopStatusModel model)
         {
             await _sopStatusService.Update(new SopStatus
