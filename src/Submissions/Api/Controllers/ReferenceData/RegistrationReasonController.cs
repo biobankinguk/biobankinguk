@@ -23,8 +23,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _registrationReasonService = registrationReasonService;
         }
 
+        /// <summary>
+        /// Generate a list of Registration Reasons.
+        /// </summary>
+        /// <returns>The list of Registration Reasons.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(ReadRegistrationReasonModel))]
         public async Task<IList> Get()
         {
             var model = (await _registrationReasonService.List())
@@ -42,8 +48,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return model;
         }
 
+        /// <summary>
+        /// Insert a new Registration Reason.
+        /// </summary>
+        /// <param name="model">The model to insert.</param>
+        /// <returns>The inserted Registration Reason.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(RegistrationReason))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(RegistrationReasonModel model)
         {
             //If this description is valid, it already exists
@@ -66,8 +79,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a Registration Reason.
+        /// </summary>
+        /// <param name="id">Id of the Registration Reason.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated Registration Reason.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(RegistrationReason))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, RegistrationReasonModel model)
         {
             var existing = await _registrationReasonService.Get(model.Description);
@@ -98,8 +119,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete a Registration Reason.
+        /// </summary>
+        /// <param name="id">Id of the Registration Reason to delete.</param>
+        /// <returns>The deleted Registration Reason.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(RegistrationReason))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _registrationReasonService.Get(id);
