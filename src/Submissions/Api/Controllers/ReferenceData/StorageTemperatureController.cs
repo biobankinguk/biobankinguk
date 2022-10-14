@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
@@ -31,8 +32,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             _configService = configService;
         }
 
+        /// <summary>
+        /// Generate a list of Storage Temperatures.
+        /// </summary>
+        /// <returns>List of Storage Temperatures.</returns>
         [HttpGet]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
         public async Task<IList> Get()
         {
             var models = (await _storageTemperatureService.List())
@@ -53,8 +59,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return models;
         }
 
+        /// <summary>
+        /// Insert a new Storage Temperature.
+        /// </summary>
+        /// <param name="model">Model to insert.</param>
+        /// <returns>The inserted Storage Temperature.</returns>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
@@ -85,8 +97,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a Storage Temperature.
+        /// </summary>
+        /// <param name="id">Id of the Storage Temperature to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated Storage Temperature.</returns>
         [HttpPut("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
@@ -120,8 +139,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete an existing Storage Temperature.
+        /// </summary>
+        /// <param name="id">Id of the Storage Temperature to delete.</param>
+        /// <returns>Deleted Storage Temperature.</returns>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(StorageTemperature))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = await _storageTemperatureService.Get(id);
@@ -143,8 +168,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Move a Storage Temperature.
+        /// </summary>
+        /// <param name="id">Id of the Storage Temperature to move.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated Storage Temperature.</returns>
         [HttpPost("{id}/move")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
         public async Task<ActionResult> Move(int id, StorageTemperatureModel model)
         {
             await _storageTemperatureService.Update(new StorageTemperature
@@ -158,8 +189,14 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Gets Preservation Types that use a Storage Temperature.
+        /// </summary>
+        /// <param name="storageTemperature">Name of the storage temperature.</param>
+        /// <returns>List of Ids of matching Preservation Types.</returns>
         [HttpGet("{storageTemperature}/preservationtype")]
         [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(IEnumerable))]
         public async Task<IList> GetValidPreservationTypes(int storageTemperature)
             => (await _preservationTypeService.List())
                 .Where(x => x.StorageTemperatureId == storageTemperature)
