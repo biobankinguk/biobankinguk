@@ -259,7 +259,8 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>();
 
             //Directory Services
             if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -289,7 +290,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
