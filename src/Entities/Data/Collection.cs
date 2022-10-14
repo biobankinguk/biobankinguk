@@ -28,7 +28,9 @@ namespace Biobanks.Entities.Data
 
         public bool FromApi { get; set; }
 
+        #nullable enable
         public string? Notes { get; set; }
+        #nullable disable
 
         public int AccessConditionId { get; set; }
         public virtual AccessCondition AccessCondition { get; set; }
