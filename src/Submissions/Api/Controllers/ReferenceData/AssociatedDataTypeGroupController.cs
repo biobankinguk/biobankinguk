@@ -1,24 +1,24 @@
-﻿using Biobanks.Services.Contracts;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Models.Submissions;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Entities.Data;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
-using System;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/AssociatedDataTypeGroup")]
-    public class AssociatedDataTypeGroupController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class AssociatedDataTypeGroupController : ControllerBase
     {
         private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
 
@@ -27,9 +27,13 @@ namespace Biobanks.Web.ApiControllers
             _associatedDataTypeGroupService = associatedDataTypeGroupService;
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Generate a list of Associated Data Type Group.
+        /// </summary>
+        /// <returns>List of Associated Data Type Group.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpGet("")]
         [AllowAnonymous]
-        [Route("")]
         public async Task<IList> Get()
         {
             var model = (await _associatedDataTypeGroupService.List())
@@ -47,9 +51,14 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete an Associated Data Type Group.
+        /// </summary>
+        /// <param name="id">Id of the model to delete.</param>
+        /// <returns>The delete model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             var model = await _associatedDataTypeGroupService.Get(id);
 
@@ -60,22 +69,23 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _associatedDataTypeGroupService.Delete(id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value
-            });
+            return Ok(model);
         }
 
-        [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(AssociatedDataTypeGroupModel model)
+        /// <summary>
+        /// Insert a new Associated Data Type Group.
+        /// </summary>
+        /// <param name="model">Model of new  Associated Data Type Group.</param>
+        /// <returns>The inserted model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPost("")]
+        public async Task<IActionResult> Post(AssociatedDataTypeGroupModel model)
         {
             //If this name is valid, it already exists
             if (await _associatedDataTypeGroupService.Exists(model.Name))
@@ -85,7 +95,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _associatedDataTypeGroupService.Add(new AssociatedDataTypeGroup
@@ -94,16 +104,18 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, AssociatedDataTypeGroupModel model)
+        /// <summary>
+        /// Update an Associated Data Type Group.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Model with updates values.</param>
+        /// <returns>The updated model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, AssociatedDataTypeGroupModel model)
         {
             var exisiting = await _associatedDataTypeGroupService.Get(model.Name);
 
@@ -120,7 +132,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _associatedDataTypeGroupService.Update(new AssociatedDataTypeGroup
@@ -130,11 +142,7 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Name
-            });
+            return Ok(model);
         }
     }
 }
