@@ -28,6 +28,7 @@ namespace Biobanks.Entities.Data
 
         public bool FromApi { get; set; }
 
+        // TODO: Remove the nullable context when the whole project supports .net 5+.
         #nullable enable
         public string? Notes { get; set; }
         #nullable disable
