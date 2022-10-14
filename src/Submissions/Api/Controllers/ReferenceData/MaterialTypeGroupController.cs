@@ -1,23 +1,19 @@
-﻿using System;
-using Biobanks.Services.Contracts;
+﻿using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/MaterialTypeGroup")]
-    public class MaterialTypeGroupController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class MaterialTypeGroupController : ControllerBase
     {
         private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
 
@@ -26,9 +22,15 @@ namespace Biobanks.Web.ApiControllers
             _materialTypeGroupService = materialTypeGroupService;
         }
 
+        /// <summary>
+        /// Generate a Material Type Group list.
+        /// </summary>
+        /// <returns>List of Material Group Types.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<IEnumerable> Get()
         {
             var materialTypeGroups = await _materialTypeGroupService.List();
@@ -42,9 +44,16 @@ namespace Biobanks.Web.ApiControllers
             });
         }
 
+        /// <summary>
+        /// Insert a new Material Type Group.
+        /// </summary>
+        /// <param name="model">The model to insert.</param>
+        /// <returns>The insert Material Type Group.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(MaterialTypeGroupModel model)
+        [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Post(MaterialTypeGroupModel model)
         {
             if (await _materialTypeGroupService.Exists(model.Description))
             {
@@ -53,7 +62,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _materialTypeGroupService.Add(new MaterialTypeGroup
@@ -62,16 +71,20 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description
             });
 
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, MaterialTypeGroupModel model)
+        /// <summary>
+        /// Update a Material Type Group.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">The new values to update with.</param>
+        /// <returns>The updated Material Type Group.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Put(int id, MaterialTypeGroupModel model)
         {
             // Validate model
             if (await _materialTypeGroupService.Exists(model.Description))
@@ -87,7 +100,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _materialTypeGroupService.Update(new MaterialTypeGroup
@@ -96,16 +109,19 @@ namespace Biobanks.Web.ApiControllers
                 Value = model.Description
             });
 
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete a Material Type Group.
+        /// </summary>
+        /// <param name="id">Id of the Material Type Group to delete.</param>
+        /// <returns>The deleted Material Type Group.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(MaterialTypeGroupModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Delete(int id)
         {
             var model = await _materialTypeGroupService.Get(id);
 
@@ -117,18 +133,13 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _materialTypeGroupService.Delete(id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
-
     }
 }
