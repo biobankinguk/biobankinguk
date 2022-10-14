@@ -7,6 +7,7 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Extensions;
 using Hangfire;
 using Microsoft.ApplicationInsights;
+// using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System;
@@ -31,18 +32,22 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         private readonly IHostEnvironment _hostEnvironment;
 
+        private readonly TelemetryClient _telemetryClient;
+
         public BiobankIndexService(
             IReferenceDataService<DonorCount> donorCountService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider,
-            IHostEnvironment hostEnvironment)
+            IHostEnvironment hostEnvironment,
+            TelemetryClient telemetryClient)
         {
             _donorCountService = donorCountService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
             _hostEnvironment = hostEnvironment;
+            _telemetryClient = telemetryClient;
         }
 
         public async Task BuildIndex()
@@ -87,8 +92,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 }
                 catch (Exception e) when (e is IOException || e is HttpRequestException)
                 {
-                    var ai = new TelemetryClient();
-                    ai.TrackException(e);
+                    _telemetryClient.TrackException(e);
                     throw;
                 }
             }
@@ -115,8 +119,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             catch (Exception e)
             {
                 // Log Error via Application Insights
-                var ai = new TelemetryClient();
-                ai.TrackException(e);
+                _telemetryClient.TrackException(e);
             }
 
             return null;
