@@ -77,6 +77,8 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// The tags to filter by. A null value will not filter by tag, where an empty list will only return
         /// untagged OntologyTerms. By default the value is null, hence tags as a filter will be ignored.
         /// </param>
+        /// <param name="onlyDisplayable">Whether to return only OntologyTerms that are displayable in the Directory</param>
+        /// <param name="filterById">Whether to filter by Id.</param>
         /// <returns>true - If at least one OntologyTerm exists that matches the given parameter filters</returns>
         Task<bool> Exists(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterById = true);
 
