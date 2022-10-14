@@ -42,6 +42,7 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// <summary>
         /// Checks if an entity with given value exists
         /// </summary>
+        /// <param name="id">The Id of the Entity <typeparamref name="T"/></param>
         /// <param name="value">The descriptive value of the Entity <typeparamref name="T"/></param>
         /// <returns>true - If at least one entity exists with given descriptive value not equal to the Id</returns>
         Task<bool> ExistsExcludingId(int id, string value);
