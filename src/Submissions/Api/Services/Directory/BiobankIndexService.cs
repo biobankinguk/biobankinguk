@@ -7,7 +7,6 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Extensions;
 using Hangfire;
 using Microsoft.ApplicationInsights;
-// using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System;
