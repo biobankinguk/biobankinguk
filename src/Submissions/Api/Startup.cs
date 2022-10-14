@@ -82,7 +82,7 @@ namespace Biobanks.Submissions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // config OMOP PostGres db
+                  // config OMOP PostGres db
             services
                 .AddDbContext<OmopDbContext>
                 (options => options.UseNpgsql(
@@ -149,46 +149,46 @@ namespace Biobanks.Submissions.Api
                 })
 
                 .AddSwaggerGen(opts =>
-                {
-                    // Docs details
-                    opts.SwaggerDoc("v1",
-                        new OpenApiInfo
+                    {
+                        // Docs details
+                        opts.SwaggerDoc("v1",
+                            new OpenApiInfo
+                            {
+                                Title = "BiobankingUK Directory API",
+                                Version = "v1"
+                            });
+
+                        // Doc generation sources
+                        opts.EnableAnnotations();
+                        opts.IncludeXmlComments(Path.Combine(
+                            PlatformServices.Default.Application.ApplicationBasePath,
+                            Configuration["Swagger:Filename"]));
+
+                        // Auth configuration
+                        opts.AddSecurityDefinition("basic", new OpenApiSecurityScheme
                         {
-                            Title = "BiobankingUK Directory API",
-                            Version = "v1"
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "basic"
                         });
+                        opts.AddSecurityDefinition("jwtbearer", new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "bearer",
+                            BearerFormat = "JWT"
+                        });
+                        opts.OperationFilter<SecurityRequirementsOperationFilter>();
 
-                    // Doc generation sources
-                    opts.EnableAnnotations();
-                    opts.IncludeXmlComments(Path.Combine(
-                        PlatformServices.Default.Application.ApplicationBasePath,
-                        Configuration["Swagger:Filename"]));
+                        // Allow grouping across controllers
+                        opts.TagActionsBy(api =>
+                        {
+                            var tag = api.GroupName
+                                ?? (api.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
 
-                    // Auth configuration
-                    opts.AddSecurityDefinition("basic", new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "basic"
-                    });
-                    opts.AddSecurityDefinition("jwtbearer", new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "bearer",
-                        BearerFormat = "JWT"
-                    });
-                    opts.OperationFilter<SecurityRequirementsOperationFilter>();
-
-                    // Allow grouping across controllers
-                    opts.TagActionsBy(api =>
-                    {
-                        var tag = api.GroupName
-                            ?? (api.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
-
-                        if (tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
-                        return new[] { tag };
-                    });
-                    opts.DocInclusionPredicate((name, api) => true);
-                })
+                            if (tag is null) throw new InvalidOperationException("Unable to determine tag for endpoint.");
+                            return new[] { tag };
+                        });
+                        opts.DocInclusionPredicate((name, api) => true);
+                    })
 
                 .AddAutoMapper(
                     typeof(Core.Submissions.MappingProfiles.DiagnosisProfile),
@@ -248,18 +248,18 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>();
-            
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>();
 
-        //Directory Services
-        if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
+            //Directory Services
+            if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
             {
                 services
                     .AddTransient<IPublicationService, PublicationService>()
@@ -279,12 +279,13 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<INetworkService, NetworkService>()
                     .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
                     .AddTransient<IBiobankWriteService, BiobankWriteService>();
-                //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
                 // Reference Data
                 services
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
