@@ -1,23 +1,21 @@
-﻿using Biobanks.Services.Contracts;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Entities.Data;
-using Biobanks.Web.Models.Shared;
-using System.Collections;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
-using System;
+using Biobanks.Submissions.Api.Models.Submissions;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding service."
-        , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/CollectionType")]
-    public class CollectionTypeController : ApiBaseController
+
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class CollectionTypeController : ControllerBase
     {
         private readonly IReferenceDataService<CollectionType> _collectionTypeService;
 
@@ -26,15 +24,21 @@ namespace Biobanks.Web.ApiControllers
             _collectionTypeService = collectionTypeService;
         }
 
+
+        /// <summary>
+        /// Generate collection type list
+        /// </summary>
+        /// <returns>A list of collection type </returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(ReadCollectionTypeModel))]
         public async Task<IList> Get()
         {
             var model = (await _collectionTypeService.List())
                     .Select(x =>
 
-                Task.Run(async () => new Models.ADAC.ReadCollectionTypeModel
+                Task.Run(async () => new ReadCollectionTypeModel
                 {
                     Id = x.Id,
                     Description = x.Value,
@@ -47,9 +51,15 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete a collection type.
+        /// </summary>
+        /// <param name="id">The ID of the collection type to update.</param>
+        /// <returns>Deleted collection type.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(CollectionTypeModel))]
+        [SwaggerResponse(400, "Invalid request body.")]
+        public async Task<IActionResult> Delete(int id)
         {
             var model = await _collectionTypeService.Get(id);
 
@@ -58,26 +68,27 @@ namespace Biobanks.Web.ApiControllers
             {
                 ModelState.AddModelError("CollectionType", $"The Collection type \"{model.Value}\" is currently in use, and cannot be deleted.");
             }
-
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _collectionTypeService.Delete(id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value
-            });
-
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, CollectionTypeModel model)
+        /// <summary>
+        /// Update a collection type.
+        /// </summary>
+        /// <param name="id">The ID of the collection to update.</param>
+        /// <param name="model">The new model to be inserted.</param>
+        /// <returns>The updated collection type .</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(CollectionTypeModel))]
+        [SwaggerResponse(400, "Invalid request body.")]
+        public async Task<IActionResult> Put(int id, CollectionTypeModel model)
         {
             // Validate model
             if (await _collectionTypeService.Exists(model.Description))
@@ -93,7 +104,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _collectionTypeService.Update(new CollectionType
@@ -104,16 +115,18 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
+            return Ok(model);
         }
 
+        /// <summary>
+        /// Insert a collection type.
+        /// </summary>
+        /// <param name="model">The model to be inserted.</param>
+        /// <returns>The created collection type.</returns>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(CollectionTypeModel model)
+        [SwaggerResponse(200, Type = typeof(CollectionTypeModel))]
+        [SwaggerResponse(400, "Invalid request body.")]
+        public async Task<IActionResult> Post(CollectionTypeModel model)
         {
             //If this description is valid, it already exists
             if (await _collectionTypeService.Exists(model.Description))
@@ -123,7 +136,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _collectionTypeService.Add(new CollectionType
@@ -133,16 +146,18 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
+            return Ok(model);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, CollectionTypeModel model)
+        /// <summary>
+        /// Move a collection type.
+        /// </summary>
+        /// <param name="id">The ID of the a collection to move.</param>
+        /// <param name="model">The new model to update.</param>
+        /// <returns>The updated collection type.</returns>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(CollectionTypeModel))]
+        public async Task<IActionResult> Move(int id, CollectionTypeModel model)
         {
             await _collectionTypeService.Update(new CollectionType
             {
@@ -152,12 +167,7 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
-
+            return Ok(model);
         }
 
     }
