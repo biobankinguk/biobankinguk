@@ -1,22 +1,19 @@
-﻿using System;
+﻿using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/Sex")]
-    public class SexController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class SexController : ControllerBase
     {
         private readonly IReferenceDataService<Sex> _sexService;
 
@@ -25,9 +22,13 @@ namespace Biobanks.Web.ApiControllers
             _sexService = sexService;
         }
 
+        /// <summary>
+        /// Generate a list of Sexes
+        /// </summary>
+        /// <returns>List of Sexes</returns>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(ReadSexModel))]
         public async Task<IList> Get()
         {
             var model = (await _sexService.List())
@@ -44,9 +45,15 @@ namespace Biobanks.Web.ApiControllers
             return model;
         }
 
+        /// <summary>
+        /// Insert a new Sex.
+        /// </summary>
+        /// <param name="model">New model to insert.</param>
+        /// <returns>The inserted Sex.</returns>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(SexModel model)
+        [SwaggerResponse(200, Type = typeof(SexModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Post(SexModel model)
         {
             //If this description is valid, it already exists
             if (await _sexService.Exists(model.Description))
@@ -56,7 +63,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _sexService.Add(new Sex
@@ -67,16 +74,19 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, SexModel model)
+        /// <summary>
+        /// Update an existing Sex.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Sex with new values.</param>
+        /// <returns>The updated Sex.</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(SexModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Put(int id, SexModel model)
         {
             var existing = await _sexService.Get(model.Description);
 
@@ -93,7 +103,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _sexService.Update(new Sex
@@ -104,16 +114,18 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete an existing Sex.
+        /// </summary>
+        /// <param name="id">Id of the Sex to delete.</param>
+        /// <returns>The deleted Sex.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(Sex))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Delete(int id)
         {
             var model = await _sexService.Get(id);
 
@@ -124,22 +136,24 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _sexService.Delete(id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, SexModel model)
+        /// <summary>
+        /// Move an existing Sex.
+        /// </summary>
+        /// <param name="id">Id of the Sex to move.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns></returns>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(SexModel))]
+        public async Task<ActionResult> Move(int id, SexModel model)
         {
             await _sexService.Update(new Sex
             {
@@ -149,12 +163,8 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
-
+            return Ok(model);
         }
     }
 }
+
