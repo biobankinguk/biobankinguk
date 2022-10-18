@@ -1,21 +1,21 @@
-﻿using System;
+﻿using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Submissions.Api.Services.Directory;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/SopStatus")]
-    public class SopStatusController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class SopStatusController : ControllerBase
     {
         private readonly IReferenceDataService<SopStatus> _sopStatusService;
 
@@ -24,9 +24,12 @@ namespace Biobanks.Web.ApiControllers
             _sopStatusService = sopStatusService;
         }
 
+        /// <summary>
+        /// Generate a list of SOP Status.
+        /// </summary>
+        /// <returns>The list of SOP Status.</returns>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
         public async Task<IList> Get()
         {
             var models = (await _sopStatusService.List())
@@ -44,9 +47,15 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
+        /// <summary>
+        /// Insert a new SOP Status.
+        /// </summary>
+        /// <param name="model">The model to insert.</param>
+        /// <returns>The inserted model.</returns>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(SopStatusModel model)
+        [SwaggerResponse(200, Type = typeof(SopStatusModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Post(SopStatusModel model)
         {
             // Validate model
             if (await _sopStatusService.Exists(model.Description))
@@ -56,7 +65,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             var status = new SopStatus
@@ -70,16 +79,19 @@ namespace Biobanks.Web.ApiControllers
             await _sopStatusService.Update(status);
 
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, SopStatusModel model)
+        /// <summary>
+        /// Update a SOP Status.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated model.</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(SopStatusModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Put(int id, SopStatusModel model)
         {
             // Validate model
             if (await _sopStatusService.Exists(model.Description))
@@ -95,7 +107,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _sopStatusService.Update(new SopStatus
@@ -106,16 +118,18 @@ namespace Biobanks.Web.ApiControllers
             });
 
             // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete an existing SOP Status.
+        /// </summary>
+        /// <param name="id">Id of the SOP Status to delete.</param>
+        /// <returns>The deleted SOP Status.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(SopStatus))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Delete(int id)
         {
             var model = await _sopStatusService.Get(id);
 
@@ -127,22 +141,25 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _sopStatusService.Delete(id);
 
             // Success
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, SopStatusModel model)
+        /// <summary>
+        /// Move an existing SOP Status.
+        /// </summary>
+        /// <param name="id">Id of the SOP Status to move.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated model.</returns>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(SopStatusModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Move(int id, SopStatusModel model)
         {
             await _sopStatusService.Update(new SopStatus
             {
@@ -152,12 +169,8 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
-
+            return Ok(model);
         }
     }
 }
+

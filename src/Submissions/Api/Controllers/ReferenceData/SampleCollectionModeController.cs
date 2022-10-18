@@ -1,23 +1,20 @@
-﻿using Biobanks.Services.Contracts;
-using System;
+﻿using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Entities.Data;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-        , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/SampleCollectionMode")]
-    public class SampleCollectionModeController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class SampleCollectionModeController : ControllerBase
     {
         private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
 
@@ -26,9 +23,13 @@ namespace Biobanks.Web.ApiControllers
             _sampleCollectionModeService = sampleCollectionModeService;
         }
 
+        /// <summary>
+        /// Generate a list of Sample Collection Modes.
+        /// </summary>
+        /// <returns>The list of Sample collection Modes.</returns>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(SampleCollectionModeModel))]
         public async Task<IList> Get()
         {
             var models = (await _sampleCollectionModeService.List())
@@ -47,9 +48,15 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
+        /// <summary>
+        /// Insert a new Sample Collection Mode.
+        /// </summary>
+        /// <param name="model">The model to be inserted.</param>
+        /// <returns>The inserted model.</returns>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(SampleCollectionModeModel model)
+        [SwaggerResponse(200, Type = typeof(SampleCollectionMode))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Post(SampleCollectionModeModel model)
         {
             //// Validate model
             if (await _sampleCollectionModeService.Exists(model.Description))
@@ -59,7 +66,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             var mode = new SampleCollectionMode
@@ -73,16 +80,19 @@ namespace Biobanks.Web.ApiControllers
             await _sampleCollectionModeService.Update(mode);
 
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, SampleCollectionModeModel model)
+        /// <summary>
+        /// Update an existing Sample Collection Mode.
+        /// </summary>
+        /// <param name="id">Id of the Sample Collection Mode to be updated.</param>
+        /// <param name="model">The model with new values.</param>
+        /// <returns>The updated mode.</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(SampleCollectionMode))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Put(int id, SampleCollectionModeModel model)
         {
             // Validate model
             if (await _sampleCollectionModeService.Exists(model.Description))
@@ -97,10 +107,10 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
-            
-           var mode = new SampleCollectionMode
+
+            var mode = new SampleCollectionMode
             {
                 Id = id,
                 Value = model.Description,
@@ -110,16 +120,18 @@ namespace Biobanks.Web.ApiControllers
             await _sampleCollectionModeService.Update(mode);
 
             // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete an existing Sample Collection Mode.
+        /// </summary>
+        /// <param name="id">Id of the mode to be deleted.</param>
+        /// <returns>The deleted mode.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(SampleCollectionMode))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Delete(int id)
         {
             var model = await _sampleCollectionModeService.Get(id);
 
@@ -130,22 +142,25 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _sampleCollectionModeService.Delete(id);
 
             // Success
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, SampleCollectionModeModel model)
+        /// <summary>
+        /// Move an existing Sample Collection Mode.
+        /// </summary>
+        /// <param name="id">Id of the mode to update.</param>
+        /// <param name="model">Model with new values.</param>
+        /// <returns>The moved mode.</returns>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(SampleCollectionMode))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Move(int id, SampleCollectionModeModel model)
         {
             var mode = new SampleCollectionMode
             {
@@ -157,11 +172,8 @@ namespace Biobanks.Web.ApiControllers
             await _sampleCollectionModeService.Update(mode);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description,
-            });
+            return Ok(model);
         }
     }
 }
+
