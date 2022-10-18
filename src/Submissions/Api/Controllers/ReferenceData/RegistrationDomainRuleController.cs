@@ -17,14 +17,19 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     public class RegistrationDomainRuleController : ControllerBase
     {
         private readonly IRegistrationDomainService _registrationDomainService;
-
+        
         public RegistrationDomainRuleController(IRegistrationDomainService registrationDomainService)
         {
             _registrationDomainService = registrationDomainService;
         }
 
+        /// <summary>
+        /// Generate a list of Registration Domain Rules.
+        /// </summary>
+        /// <returns>The list of Registration Domain Rules.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
         public async Task<IList> Get() =>
             (await _registrationDomainService.ListRules())
                 .Select(x =>
@@ -39,8 +44,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 )
                 .ToList();
 
+        /// <summary>
+        /// Insert a new Registration Domain Rule.
+        /// </summary>
+        /// <param name="model">The rule to insert.</param>
+        /// <returns>The inserted rule.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Post(RegistrationDomainRuleModel model)
         {
             //Checking if the given value is valid
@@ -80,8 +92,16 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Update a Registration Domain Rule.
+        /// </summary>
+        /// <param name="id">Id of the rule to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated rule.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPut("{id:int}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Put(int id, RegistrationDomainRuleModel model)
         {           
             if (!ModelState.IsValid)
@@ -102,8 +122,15 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             return Ok(model);
         }
 
+        /// <summary>
+        /// Delete a Registration Domain Rule.
+        /// </summary>
+        /// <param name="id">Id of the rule to delete.</param>
+        /// <returns>The deleted rule.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpDelete("{id:int}")]
-        [AllowAnonymous]
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
+        [SwaggerResponse(400, "Invalid request.")]
         public async Task<ActionResult> Delete(int id)
         {
             var model = (await _registrationDomainService.ListRules()).FirstOrDefault(x => x.Id == id);
