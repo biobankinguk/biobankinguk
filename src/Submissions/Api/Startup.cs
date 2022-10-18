@@ -241,6 +241,10 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+                .AddTransient<ICapabilityIndexProvider, ElasticCapabilityIndexProvider>()
+
+                .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+
 
                 // Reference Data
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
@@ -269,7 +273,6 @@ namespace Biobanks.Submissions.Api
             {
                 services
                     .AddTransient<IPublicationService, PublicationService>()
-                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
                     .AddTransient<ICollectionService, CollectionService>()
@@ -285,7 +288,6 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<INetworkService, NetworkService>()
                     .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
                     .AddTransient<IBiobankWriteService, BiobankWriteService>();
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
                 // Reference Data
                 services
