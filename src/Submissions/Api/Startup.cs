@@ -56,6 +56,7 @@ using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
 using Biobanks.Search.Legacy;
 using Npgsql;
+using System.Configuration;
 
 namespace Biobanks.Submissions.Api
 {
@@ -241,8 +242,7 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<ICapabilityIndexProvider, ElasticCapabilityIndexProvider>()
-
+                .AddTransient<ICapabilityIndexProvider, ElasticCapabilityIndexProvider>(x => new ElasticCapabilityIndexProvider(ConfigurationManager.AppSettings["ElasticSearchUrl"], (ConfigurationManager.AppSettings["DefaultCollectionsSearchIndex"], ConfigurationManager.AppSettings["DefaultCapabilitiesSearchIndex"]), ConfigurationManager.AppSettings["ElasticSearchUsername"], ConfigurationManager.AppSettings["ElasticSearchPassword"]))
                 .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
 
 
