@@ -263,7 +263,8 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>();
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
 
             //Directory Services
             if (bool.Parse(Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -292,8 +293,7 @@ namespace Biobanks.Submissions.Api
                 services
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
+                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>();
             }
 
 
