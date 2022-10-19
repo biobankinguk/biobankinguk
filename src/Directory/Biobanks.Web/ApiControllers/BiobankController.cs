@@ -22,11 +22,13 @@ namespace Biobanks.Web.ApiControllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("IncludePublications/{id}")]
         public async Task<bool> IncludePublications(int id)
             =>  await _organisationService.UsesPublications(id);
 
         [HttpPut]
+        [AllowAnonymous]
         [Route("IncludePublications/{id}/{value}")]
         public async Task IncludePublications(int id, bool value)
         {
