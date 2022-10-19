@@ -1,33 +1,35 @@
-﻿using System;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Entities.Data;
-using Biobanks.Services.Contracts;
-using Biobanks.Web.Models.ADAC;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Filters;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Biobanks.Entities.Data;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/RegistrationDomainRule")]
-    public class RegistrationDomainRuleController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class RegistrationDomainRuleController : ControllerBase
     {
         private readonly IRegistrationDomainService _registrationDomainService;
-
+        
         public RegistrationDomainRuleController(IRegistrationDomainService registrationDomainService)
         {
             _registrationDomainService = registrationDomainService;
         }
 
+        /// <summary>
+        /// Generate a list of Registration Domain Rules.
+        /// </summary>
+        /// <returns>The list of Registration Domain Rules.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpGet]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
         public async Task<IList> Get() =>
             (await _registrationDomainService.ListRules())
                 .Select(x =>
@@ -42,9 +44,16 @@ namespace Biobanks.Web.ApiControllers
                 )
                 .ToList();
 
+        /// <summary>
+        /// Insert a new Registration Domain Rule.
+        /// </summary>
+        /// <param name="model">The rule to insert.</param>
+        /// <returns>The inserted rule.</returns>
+        /// <response code="200">Request Successful</response>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(RegistrationDomainRuleModel model)
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Post(RegistrationDomainRuleModel model)
         {
             //Checking if the given value is valid
             var validPattern = new Regex(@"^[^@\s]*@?[^@\s]*\.[^@\s]+[^@\.]$");
@@ -65,7 +74,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             var type = new RegistrationDomainRule
@@ -80,20 +89,24 @@ namespace Biobanks.Web.ApiControllers
             await _registrationDomainService.Add(type);
             
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Value
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, RegistrationDomainRuleModel model)
+        /// <summary>
+        /// Update a Registration Domain Rule.
+        /// </summary>
+        /// <param name="id">Id of the rule to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated rule.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPut("{id:int}")]
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Put(int id, RegistrationDomainRuleModel model)
         {           
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _registrationDomainService.Update(new RegistrationDomainRule()
@@ -106,30 +119,30 @@ namespace Biobanks.Web.ApiControllers
             });
 
             // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Value
-            });
+            return Ok(model);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete a Registration Domain Rule.
+        /// </summary>
+        /// <param name="id">Id of the rule to delete.</param>
+        /// <returns>The deleted rule.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpDelete("{id:int}")]
+        [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Delete(int id)
         {
             var model = (await _registrationDomainService.ListRules()).FirstOrDefault(x => x.Id == id);
 
             if (model == null)
             {
-                return Json(new
-                {
-                    success = true
-                });
+                return Ok();
             }
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _registrationDomainService.Delete(new RegistrationDomainRule()
@@ -142,11 +155,8 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value
-            });
+            return Ok(model);
         }
+        
     }
 }
