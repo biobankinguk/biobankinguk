@@ -1,25 +1,22 @@
-﻿using Biobanks.Services.Contracts;
-using System;
+﻿using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Entities.Data;
-using Biobanks.Web.Utilities;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
-using Biobanks.Directory.Data.Constants;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Entities.Data.ReferenceData;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/StorageTemperature")]
-    public class StorageTemperatureController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class StorageTemperatureController : ControllerBase
     {
         private readonly IReferenceDataService<PreservationType> _preservationTypeService;
         private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
@@ -35,9 +32,13 @@ namespace Biobanks.Web.ApiControllers
             _configService = configService;
         }
 
+        /// <summary>
+        /// Generate a list of Storage Temperatures.
+        /// </summary>
+        /// <returns>List of Storage Temperatures.</returns>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
         public async Task<IList> Get()
         {
             var models = (await _storageTemperatureService.List())
@@ -58,12 +59,18 @@ namespace Biobanks.Web.ApiControllers
             return models;
         }
 
+        /// <summary>
+        /// Insert a new Storage Temperature.
+        /// </summary>
+        /// <param name="model">Model to insert.</param>
+        /// <returns>The inserted Storage Temperature.</returns>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(StorageTemperatureModel model)
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Post(StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
             if (await _storageTemperatureService.Exists(model.Value))
@@ -73,7 +80,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             var type = new StorageTemperature
@@ -87,19 +94,22 @@ namespace Biobanks.Web.ApiControllers
             await _storageTemperatureService.Update(type); // Ensure sortOrder is correct
 
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, StorageTemperatureModel model)
+        /// <summary>
+        /// Update a Storage Temperature.
+        /// </summary>
+        /// <param name="id">Id of the Storage Temperature to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated Storage Temperature.</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Put(int id, StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
             if (await _storageTemperatureService.Exists(model.Value))
@@ -115,7 +125,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _storageTemperatureService.Update(new StorageTemperature
@@ -126,16 +136,18 @@ namespace Biobanks.Web.ApiControllers
             });
 
             // Success message
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete an existing Storage Temperature.
+        /// </summary>
+        /// <param name="id">Id of the Storage Temperature to delete.</param>
+        /// <returns>Deleted Storage Temperature.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(StorageTemperature))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<ActionResult> Delete(int id)
         {
             var model = await _storageTemperatureService.Get(id);
 
@@ -147,22 +159,24 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _storageTemperatureService.Delete(id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
         }
 
-        [HttpPost]
-        [Route("{id}/move")]
-        public async Task<IHttpActionResult> Move(int id, StorageTemperatureModel model)
+        /// <summary>
+        /// Move a Storage Temperature.
+        /// </summary>
+        /// <param name="id">Id of the Storage Temperature to move.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated Storage Temperature.</returns>
+        [HttpPost("{id}/move")]
+        [SwaggerResponse(200, Type = typeof(StorageTemperatureModel))]
+        public async Task<ActionResult> Move(int id, StorageTemperatureModel model)
         {
             await _storageTemperatureService.Update(new StorageTemperature
             {
@@ -172,17 +186,17 @@ namespace Biobanks.Web.ApiControllers
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
-
+            return Ok(model);
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Gets Preservation Types that use a Storage Temperature.
+        /// </summary>
+        /// <param name="storageTemperature">Name of the storage temperature.</param>
+        /// <returns>List of Ids of matching Preservation Types.</returns>
+        [HttpGet("{storageTemperature}/preservationtype")]
         [AllowAnonymous]
-        [Route("{storageTemperature}/preservationtype")]
+        [SwaggerResponse(200, Type = typeof(IEnumerable))]
         public async Task<IList> GetValidPreservationTypes(int storageTemperature)
             => (await _preservationTypeService.List())
                 .Where(x => x.StorageTemperatureId == storageTemperature)
@@ -190,3 +204,4 @@ namespace Biobanks.Web.ApiControllers
                 .ToList();
     }
 }
+
