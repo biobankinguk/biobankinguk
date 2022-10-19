@@ -248,10 +248,11 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
+                .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
@@ -259,7 +260,6 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<IMaterialTypeService, MaterialTypeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
-                .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()                
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
@@ -293,7 +293,6 @@ namespace Biobanks.Submissions.Api
                 // Reference Data
                 services
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
-                    .AddTransient<Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
                     .AddTransient<Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>();
             }
 
