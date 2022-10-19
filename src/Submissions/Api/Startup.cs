@@ -243,9 +243,6 @@ namespace Biobanks.Submissions.Api
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
 
-
-
-
                 // Reference Data
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
@@ -288,6 +285,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IIndexProvider, LegacyIndexProvider>()
                     .AddTransient<INetworkService, NetworkService>()
                     .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
+                    //.AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>(); //TODO: Use options pattern when porting
                     .AddTransient<IBiobankWriteService, BiobankWriteService>();
 
                 // Reference Data
