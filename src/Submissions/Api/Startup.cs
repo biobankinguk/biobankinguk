@@ -242,8 +242,8 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<ICapabilityIndexProvider, ElasticCapabilityIndexProvider>(x => new ElasticCapabilityIndexProvider(ConfigurationManager.AppSettings["ElasticSearchUrl"], (ConfigurationManager.AppSettings["DefaultCollectionsSearchIndex"], ConfigurationManager.AppSettings["DefaultCapabilitiesSearchIndex"]), ConfigurationManager.AppSettings["ElasticSearchUsername"], ConfigurationManager.AppSettings["ElasticSearchPassword"]))
-                .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+
+
 
 
                 // Reference Data
@@ -273,6 +273,7 @@ namespace Biobanks.Submissions.Api
             {
                 services
                     .AddTransient<IPublicationService, PublicationService>()
+                    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
                     .AddTransient<ICollectionService, CollectionService>()
