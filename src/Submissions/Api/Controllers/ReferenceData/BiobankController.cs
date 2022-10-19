@@ -25,31 +25,19 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// If this Organisation make use of the Publication feature. Then, the Directory will attempt to source
         /// relevant publications associated with this Organisation
         /// </summary>
-        /// <returns> The Organisation Reference </returns>
         [HttpGet("IncludePublications/{id}")]
-        [SwaggerResponse(200, Type = typeof(Organisation))]
-
         public async Task<bool> IncludePublications(int id)
-        {
-            var model = await _organisationService.UsesPublications(id);
-            return model;
-        }
-
+            => await _organisationService.UsesPublications(id);
 
         /// <summary>
         /// Update an exisiting Organisation
         /// </summary>
-        /// <returns>The updated Organisation reference</returns>
         [HttpPut("IncludePublications/{id}/{value}")]
-        [SwaggerResponse(200, Type = typeof(Organisation))]
-
-        public async Task<IActionResult> IncludePublications(int id, bool value)
+        public async Task IncludePublications(int id, bool value)
         {
             var organisation = await _organisationService.Get(id);
             organisation.ExcludePublications = !value;
-            var model = await _organisationService.Update(organisation);
-
-            return Ok(model);
+            await _organisationService.Update(organisation);
         }
     }
 }
