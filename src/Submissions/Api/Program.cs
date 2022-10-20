@@ -217,7 +217,24 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>();
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
+                .AddTransient<IMaterialTypeService, MaterialTypeService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Biobanks.Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
 
 //Directory Services
 if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -240,31 +257,12 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IIndexProvider, LegacyIndexProvider>()
         .AddTransient<INetworkService, NetworkService>()
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
-        .AddTransient<IBiobankWriteService, BiobankWriteService>();
+        .AddTransient<IBiobankWriteService, BiobankWriteService>()
     //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
     // Reference Data
-    builder.Services
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Biobanks.Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Biobanks.Entities.Shared.ReferenceData.MaterialType>, MaterialTypeService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>();
+        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>();
 
 }
 
