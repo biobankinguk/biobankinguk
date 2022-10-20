@@ -47,7 +47,8 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<IEnumerable<Organisation>> ListByExternalIds(IList<string> organisationExternalId);
 
         /// <summary>
-        /// Get all untracked Organisation which match are part of the given Netowrk
+        /// Get all untracked Organisation which match are part of the given Network
+        /// </summary>
         /// <param name="networkId">The Id of the Network to match against</param>
         /// <returns>An Enumerable of all applicable untracked Organisations</returns>
         Task<IEnumerable<Organisation>> ListByNetworkId(int networkId);
@@ -55,6 +56,7 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// <summary>
         /// Get all untracked Organisation which are under the control by the given User
         /// <param name="userId">The Id of the User to match against</param>
+        /// </summary>
         /// <returns>An Enumerable of all applicable untracked Organisations</returns>
         Task<IEnumerable<Organisation>> ListByUserId(string userId);
 
@@ -212,7 +214,7 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// </summary>
         /// <param name="funderId">The Id of the Funder being added</param>
         /// <param name="organisationId">The Id of the Organisation</param>
-        Task RemoveFunder(int funderId, int biobankId);
+        Task RemoveFunder(int funderId, int organisationId);
 
         /// <summary>
         /// Get the last active user for a given Organisation

@@ -71,7 +71,7 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// <param name="organisationId">The Id of the applicable Organisations</param>
         /// <param name="networkId">The Id of the applicable Network</param>
         /// <returns>The untracked OrganisationNetwork relationships</returns>
-        Task<OrganisationNetwork> GetOrganisationNetwork(int biobankId, int networkId);
+        Task<OrganisationNetwork> GetOrganisationNetwork(int organisationId, int networkId);
 
         /// <summary>
         /// Update an exisiting OrganisationNetwork relationship
@@ -147,6 +147,9 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// <summary>
         /// Add an Organisation to a Network
         /// </summary>
+        /// <param name="organisationId">The Id of the Organisation</param>
+        /// <param name="networkId">The Id of the Network</param>
+        /// <param name="organisationExternalId">The external Id of the Organisation</param>
         /// <param name="approve">Whether the request should be automatically be approved</param>
         /// <returns>true - Successfully added the Organisation to the Network</returns>
         Task<bool> AddOrganisationToNetwork(int organisationId, int networkId, string organisationExternalId, bool approve);
