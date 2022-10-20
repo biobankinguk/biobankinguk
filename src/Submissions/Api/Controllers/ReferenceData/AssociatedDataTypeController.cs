@@ -1,24 +1,24 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Models.ADAC;
-using Biobanks.Web.Filters;
-using Biobanks.Directory.Services.Contracts;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Models.Submissions;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/AssociatedDataType")]
-    public class AssociatedDataTypeController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "Reference Data")]
+    public class AssociatedDataTypeController : ControllerBase
     {
         private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
         private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
@@ -33,10 +33,14 @@ namespace Biobanks.Web.ApiControllers
             _ontologyTermService = ontologyTermService;
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Generate a list of Associated Data Type.
+        /// </summary>
+        /// <returns>List of Associated Data Type.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpGet("")]
         [AllowAnonymous]
-        [Route("")]
-        public async Task<IHttpActionResult> Get()
+        public async Task<IActionResult> Get()
         {
             var associatedDataTypes = await _associatedDataTypeService.List();
 
@@ -66,16 +70,18 @@ namespace Biobanks.Web.ApiControllers
                 })
                 .ToList();
 
-            return Json(new 
-            {
-                AssociatedDataTypes = model,
-                AssociatedDataTypeGroups = groups
-            });
+            return Ok(model);
+
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(int id)
+        /// <summary>
+        /// Delete an Associated Data Type.
+        /// </summary>
+        /// <param name="id">Id of the model to delete.</param>
+        /// <returns>The delete model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             var model = await _associatedDataTypeService.Get(id);
 
@@ -86,22 +92,25 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _associatedDataTypeService.Delete(id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value,
-            });
+            return Ok(model);
+
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(int id, AssociatedDataTypeModel model)
+        /// <summary>
+        /// Update an Associated Data Type.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Model with updates values.</param>
+        /// <returns>The updated model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, AssociatedDataTypeModel model)
         {
             // Validate model
             if (await _associatedDataTypeService.ExistsExcludingId(id, model.Name))
@@ -116,7 +125,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
             var ontologyTerms = ((List<OntologyTermModel>)JsonConvert.DeserializeObject(model.OntologyTermsJson, typeof(List<OntologyTermModel>)));
             List<OntologyTerm> terms = await _ontologyTermService.GetOntologyTermsFromList(ontologyTerms.Select(x => x.OntologyTermId).ToList());
@@ -130,16 +139,18 @@ namespace Biobanks.Web.ApiControllers
             });
 
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-            });
+            return Ok(model);
+
         }
 
-        [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(AssociatedDataTypeModel model)
+        /// <summary>
+        /// Insert a new Associated Data Type.
+        /// </summary>
+        /// <param name="model">Model of new  Associated Data Type.</param>
+        /// <returns>The inserted model.</returns>
+        /// <response code="200">Request Successful</response>
+        [HttpPost("")]
+        public async Task<IActionResult> Post(AssociatedDataTypeModel model)
         {
             // Validate model
             if (await _associatedDataTypeService.Exists(model.Name))
@@ -149,7 +160,7 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
             var ontologyTerms = ((List<OntologyTermModel>)JsonConvert.DeserializeObject(model.OntologyTermsJson, typeof(List<OntologyTermModel>)));
             List<OntologyTerm> terms = await _ontologyTermService.GetOntologyTermsFromList(ontologyTerms.Select(x => x.OntologyTermId).ToList());
@@ -159,17 +170,14 @@ namespace Biobanks.Web.ApiControllers
                 AssociatedDataTypeGroupId = model.AssociatedDataTypeGroupId,
                 Value = model.Name,
                 Message = model.Message,
-                OntologyTerms = terms  
+                OntologyTerms = terms
             };
 
             await _associatedDataTypeService.Add(associatedDataType);
 
             // Success response
-            return Json(new
-            {
-                success = true,
-                name = model.Name,
-            });
+            return Ok(model);
+
         }
     }
 }
