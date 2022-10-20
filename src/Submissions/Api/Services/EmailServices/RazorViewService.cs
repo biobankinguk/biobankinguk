@@ -59,20 +59,20 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
               _actionContext,
               view,
               new ViewDataDictionary<T>(
-                  metadataProvider: new EmptyModelMetadataProvider(),
-                  modelState: new ModelStateDictionary())
+                metadataProvider: new EmptyModelMetadataProvider(),
+                modelState: new ModelStateDictionary())
               {
-                Model = model
+                Model = model!
               },
               new TempDataDictionary(
-                  _actionContext.HttpContext,
-                  _tempDataProvider),
+                _actionContext.HttpContext,
+                _tempDataProvider),
               output,
               new HtmlHelperOptions());
     
-          await view.RenderAsync(viewContext);
+            await view.RenderAsync(viewContext);
     
-          return (output.ToString(), viewContext);
+            return (output.ToString(), viewContext);
         }
     
         /// <summary>

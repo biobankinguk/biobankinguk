@@ -43,10 +43,10 @@ namespace Biobanks.Submissions.Api.Services.EmailSender
         /// </summary>
         /// <param name="subject">The actual subject line</param>
         /// <returns>The labelled subject line</returns>
-        private string LabelledSubject(string subject)
+        private string LabelledSubject(string? subject)
           => string
-              .Join(" ", new List<string>
-                {
+              .Join(" ", new List<string?>
+                  {
                 _environmentLabel,
                 subject
                 }
