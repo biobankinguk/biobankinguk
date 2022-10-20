@@ -241,7 +241,9 @@ namespace Biobanks.Submissions.Api
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-
+                .AddTransient<IOntologyTermService, OntologyTermService>()
+                .AddTransient<IBiobankReadService, BiobankReadService>()
+                .AddTransient<IBiobankIndexService, BiobankIndexService>()
                 // Reference Data
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
                 .AddTransient<Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
@@ -275,11 +277,9 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<IContentPageService, ContentPageService>()
                     .AddTransient(typeof(Services.Directory.Contracts.IReferenceDataService<>))
                     .AddTransient<ICollectionService, CollectionService>()
-                    .AddTransient<IOntologyTermService, OntologyTermService>()
                     .AddTransient<ITokenLoggingService, TokenLoggingService>()
                     .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
-                    .AddTransient<IBiobankReadService, BiobankReadService>()
-                    .AddTransient<IBiobankIndexService, BiobankIndexService>()
+
                     .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
                     .AddTransient<IBiobankWriteService, BiobankWriteService>()
                     .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
