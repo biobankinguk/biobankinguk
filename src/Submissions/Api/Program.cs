@@ -18,7 +18,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Biobanks.Aggregator.Services;
 using Biobanks.Shared.Services;
@@ -47,6 +46,8 @@ using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System;
 using Biobanks.Submissions.Api.Auth.Basic;
+using Biobanks.Submissions.Api.Auth.Entities;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,7 +64,7 @@ builder.Services.AddDbContext<BiobanksDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //identity
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<BiobanksDbContext>();
 
 builder.Services.AddRazorPages();
@@ -134,9 +135,6 @@ builder.Services.AddSwaggerGen(opts =>
 
     // Doc generation sources
     opts.EnableAnnotations();
-    opts.IncludeXmlComments(Path.Combine(
-        PlatformServices.Default.Application.ApplicationBasePath,
-        builder.Configuration["Swagger:Filename"]));
 
     // Auth configuration
     opts.AddSecurityDefinition("basic", new OpenApiSecurityScheme
@@ -162,6 +160,10 @@ builder.Services.AddSwaggerGen(opts =>
         return new[] { tag };
     });
     opts.DocInclusionPredicate((name, api) => true);
+
+    // using System.Reflection;
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
