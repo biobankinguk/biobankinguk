@@ -55,6 +55,7 @@ using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using Biobanks.Omop.Context;
 using Biobanks.Search.Legacy;
+using Biobanks.Submissions.Api.Extensions;
 using Npgsql;
 
 namespace Biobanks.Submissions.Api
@@ -94,7 +95,7 @@ namespace Biobanks.Submissions.Api
             var hangfireConfig = Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 
             // MVC
-            services.AddControllers(opts => opts.SuppressOutputFormatterBuffering = true)
+            services.AddControllersWithViews(opts => opts.SuppressOutputFormatterBuffering = true)
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -132,6 +133,8 @@ namespace Biobanks.Submissions.Api
                 .Configure<StorageTemperatureLegacyModel>(Configuration.GetSection("StorageTemperatureLegacyModel"))
 
                 .AddApplicationInsightsTelemetry()
+                
+                .AddEmailSender(Configuration.GetSection("Email"))
 
                 .AddDbContext<Data.BiobanksDbContext>(opts =>
                     opts.UseSqlServer(Configuration.GetConnectionString("Default"),
