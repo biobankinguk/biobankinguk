@@ -4,9 +4,13 @@ using Biobanks.Web.Extensions;
 using Biobanks.Web.Utilities;
 using System.Collections.Generic;
 using Biobanks.Web.Models.Shared;
+using System;
 
 namespace Biobanks.Web.Controllers
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+    " Any changes made here will need to be made in the corresponding core version"
+    , false)]
     public abstract class ApplicationBaseController : Controller
     {
         public ApplicationUserPrincipal CurrentUser => User.ToApplicationUserPrincipal();

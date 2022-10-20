@@ -288,7 +288,7 @@ namespace Biobanks.Submissions.Api
                     .AddTransient<INetworkService, NetworkService>()
                     .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
                     .AddTransient<IBiobankWriteService, BiobankWriteService>();
-             //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+                //.AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>(); //TODO: Use options pattern when porting
 
                 // Reference Data
                 services
