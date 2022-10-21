@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting.Internal;
 using Biobanks.Submissions.Api.Models.Header;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
@@ -30,7 +32,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
 
         public ActionResult Header()
         {
-            string _headerPath = Path.Combine(_hostEnvironment.WebRootPath, "~/App_Config/header.json");
+            var _headerPath = Path.Combine(_hostEnvironment.WebRootPath, @"~/App_Config/header.json");
             // Base Model From header.json
             var json = System.IO.File.ReadAllText(_headerPath);
             var model = JsonConvert.DeserializeObject<HeaderModel>(json);
@@ -41,12 +43,18 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
 
             model.NavigationItems = wordpressItems.Concat(userActions);
 
-            return PartialView("_BBHeader", model);
+            return new PartialViewResult { 
+                ViewName = "_BBHeader", 
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(),new ModelStateDictionary())
+                {
+                    Model = model
+                }
+            };
         }
 
         private IEnumerable<NavItemModel> UserActions()
         {
-            string _navPath = Path.Combine(_hostEnvironment.WebRootPath, "~/App_Config/navigation.json");
+            var _navPath = Path.Combine(_hostEnvironment.WebRootPath, @"~/App_Config/navigation.json");
 
             var json = System.IO.File.ReadAllText(_navPath);
             var navMenuItems = JsonConvert.DeserializeObject<IEnumerable<NavItemModel>>(json);
@@ -56,9 +64,9 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
 
         private IEnumerable<NavItemModel> WordPress()
         {
-            string _wordPressUrl = ConfigurationManager.AppSettings["WordPressMenuUrl"];
+            var _wordPressUrl = ConfigurationManager.AppSettings["WordPressMenuUrl"];
 
-            // Default as empty list
+        // Default as empty list
             var wordPressMenuItems = Enumerable.Empty<NavItemModel>();
 
             // Attempt to use cached data
@@ -68,7 +76,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
             }
             catch
             {
-                if (!_wordPressUrl.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(_wordPressUrl))
                 {
                     var httpClient = new HttpClient();
 
@@ -77,7 +85,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
                         var response = httpClient.GetAsync(_wordPressUrl).Result;
                         var result = response.Content.ReadAsStringAsync().Result;
 
-                        if (response.IsSuccessStatusCode && !result.IsNullOrEmpty())
+                        if (response.IsSuccessStatusCode && !string.IsNullOrEmpty(result))
                         {
                             // Parse relevant json field
                             var jsonResult = JsonConvert.DeserializeAnonymousType(result, new
