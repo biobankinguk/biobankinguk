@@ -46,7 +46,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
 
         private IEnumerable<NavItemModel> UserActions()
         {
-            string _navPath = Path.Combine(_hostEnvironment.WebRootPath,"~/App_Config/navigation.json");
+            string _navPath = Path.Combine(_hostEnvironment.WebRootPath, "~/App_Config/navigation.json");
 
             var json = System.IO.File.ReadAllText(_navPath);
             var navMenuItems = JsonConvert.DeserializeObject<IEnumerable<NavItemModel>>(json);
