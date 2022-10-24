@@ -44,10 +44,10 @@
 			<div class="navbar-collapse-container">
                 <div id="myNavbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        @Html.Partial("_NavMenu", Model.NavigationItems)
+                        <partial>("_NavMenu", Model.NavigationItems)</partial>
                     </ul>
                     <ul class="nav navbar-nav">
-                        @Html.Partial("_NavMenu", Model.NavigationItems, new ViewDataDictionary(ViewData)  { { "Toolbar", true } })
+                        <partial>("_NavMenu", Model.NavigationItems, new ViewDataDictionary(ViewData)  { { "Toolbar", true } })</partial>
                     </ul>
                 </div>
 			</div>
