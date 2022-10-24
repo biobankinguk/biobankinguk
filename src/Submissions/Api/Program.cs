@@ -48,6 +48,7 @@ using System;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -169,6 +170,7 @@ builder.Services.AddSwaggerGen(opts =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddHttpClient()
     .AddMemoryCache()
+    .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
     .AddTransient<IBlobWriteService, AzureBlobWriteService>( // TODO: Merge Blob Read and Write services
     _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
     .AddTransient<IBlobReadService, AzureBlobReadService>(
