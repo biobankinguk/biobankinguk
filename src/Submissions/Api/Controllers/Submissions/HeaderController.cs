@@ -1,37 +1,38 @@
-﻿using Biobanks.Web.Models.Header;
-using Biobanks.Directory.Data.Caching;
+﻿using Biobanks.Directory.Data.Caching;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using Castle.Core.Internal;
-using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Hosting.Internal;
+using Biobanks.Submissions.Api.Models.Header;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Biobanks.Web.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
     [AllowAnonymous]
-    public class HeaderController : Controller
+    public class HeaderController : ControllerBase
     {
-        private readonly string _headerPath = HostingEnvironment.MapPath(@"~/App_Config/header.json");
-        private readonly string _navPath = HostingEnvironment.MapPath(@"~/App_Config/navigation.json");
-        private readonly string _wordPressUrl = ConfigurationManager.AppSettings["WordPressMenuUrl"];
 
         private readonly ICacheProvider _cacheProvider;
+        private IWebHostEnvironment _hostEnvironment;
 
-        public HeaderController(ICacheProvider cacheProvider)
+        public HeaderController(ICacheProvider cacheProvider, IWebHostEnvironment environment)
         {
             _cacheProvider = cacheProvider;
+            _hostEnvironment = environment;
+
         }
 
         public ActionResult Header()
         {
+            var _headerPath = Path.Combine(_hostEnvironment.WebRootPath, @"~/App_Config/header.json");
             // Base Model From header.json
             var json = System.IO.File.ReadAllText(_headerPath);
             var model = JsonConvert.DeserializeObject<HeaderModel>(json);
@@ -42,11 +43,19 @@ namespace Biobanks.Web.Controllers
 
             model.NavigationItems = wordpressItems.Concat(userActions);
 
-            return PartialView("_BBHeader", model);
+            return new PartialViewResult { 
+                ViewName = "_BBHeader", 
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(),new ModelStateDictionary())
+                {
+                    Model = model
+                }
+            };
         }
 
         private IEnumerable<NavItemModel> UserActions()
         {
+            var _navPath = Path.Combine(_hostEnvironment.WebRootPath, @"~/App_Config/navigation.json");
+
             var json = System.IO.File.ReadAllText(_navPath);
             var navMenuItems = JsonConvert.DeserializeObject<IEnumerable<NavItemModel>>(json);
 
@@ -55,7 +64,9 @@ namespace Biobanks.Web.Controllers
 
         private IEnumerable<NavItemModel> WordPress()
         {
-            // Default as empty list
+            var _wordPressUrl = ConfigurationManager.AppSettings["WordPressMenuUrl"];
+
+        // Default as empty list
             var wordPressMenuItems = Enumerable.Empty<NavItemModel>();
 
             // Attempt to use cached data
@@ -65,7 +76,7 @@ namespace Biobanks.Web.Controllers
             }
             catch
             {
-                if (!_wordPressUrl.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(_wordPressUrl))
                 {
                     var httpClient = new HttpClient();
 
@@ -74,7 +85,7 @@ namespace Biobanks.Web.Controllers
                         var response = httpClient.GetAsync(_wordPressUrl).Result;
                         var result = response.Content.ReadAsStringAsync().Result;
 
-                        if (response.IsSuccessStatusCode && !result.IsNullOrEmpty())
+                        if (response.IsSuccessStatusCode && !string.IsNullOrEmpty(result))
                         {
                             // Parse relevant json field
                             var jsonResult = JsonConvert.DeserializeAnonymousType(result, new

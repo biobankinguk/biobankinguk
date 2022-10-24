@@ -161,8 +161,7 @@ builder.Services.AddSwaggerGen(opts =>
     });
     opts.DocInclusionPredicate((name, api) => true);
 
-    // using System.Reflection;
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlFilename = $"swagger.xml"; //File name should match the documation being called in Api.csproj
     opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
