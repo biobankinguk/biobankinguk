@@ -14,9 +14,13 @@ using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data.ReferenceData;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using System;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+    " Any changes made here will need to be made in the corresponding core version"
+    , false)]
     [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/DiseaseStatus")]
     public class DiseaseStatusController : ApiBaseController

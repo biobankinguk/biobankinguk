@@ -19,16 +19,13 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
         private readonly IOntologyTermService _ontologyTermService;
 
         private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
-
+        //TODO add ADAC authorization
         public DiseaseStatusController(
             IOntologyTermService ontologyTermService,
-            IBiobankReadService biobankReadService,
-            IBiobankWriteService biobankWriteService)
+            IBiobankReadService biobankReadService)
         {
             _ontologyTermService = ontologyTermService;
             _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
         }
 
         [HttpGet("")]
