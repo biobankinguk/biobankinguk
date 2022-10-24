@@ -1,6 +1,19 @@
-﻿namespace Biobanks.Submissions.Api.Controllers.Submissions
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Constants;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
-    [Authorize(Roles = "ADAC")]
     public class DiseaseStatusController : ControllerBase
     {
         private readonly IOntologyTermService _ontologyTermService;
@@ -18,9 +31,8 @@
             _biobankWriteService = biobankWriteService;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         [AllowAnonymous]
-        [Route("")]
         public async Task<IList> Get()
         {
             var diseaseTerms = await _ontologyTermService.List(tags: new List<string>
@@ -61,7 +73,7 @@
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             var model = await _ontologyTermService.Get(id, tags: new List<string> { SnomedTags.Disease });
 
@@ -72,22 +84,19 @@
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _ontologyTermService.Delete(model.Id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value
-            });
+            return Ok(model);
+
         }
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
+        public async Task<IActionResult> Put(string id, OntologyTermModel model)
         {
             //If this description is valid, it already exists
             if (await _ontologyTermService.Exists(id, value: model.Description, filterById: false))
@@ -106,7 +115,7 @@
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
             var associatedData = (List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>));
             List<AssociatedDataType> types = await _ontologyTermService.GetAssociatedDataFromList(associatedData.Select(x => x.Id).ToList());
@@ -121,16 +130,12 @@
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
+            return Ok(model);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> Post(OntologyTermModel model)
+        public async Task<IActionResult> Post(OntologyTermModel model)
         {
             // Had to do this as it is not binding to ontology term model
             ModelState.Clear();
@@ -156,11 +161,11 @@
             }
 
 
-
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
+
             var associatedData = (List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>));
             List<AssociatedDataType> types = await _ontologyTermService.GetAssociatedDataFromList(associatedData.Select(x => x.Id).ToList());
             await _ontologyTermService.Create(new OntologyTerm
@@ -175,11 +180,7 @@
 
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
+            return Ok(model);
         }
     }
 }
