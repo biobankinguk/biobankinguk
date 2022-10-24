@@ -27,7 +27,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
 
             return new PartialViewResult
             {
-                ViewName = "_BBHeader",
+                ViewName = "_BBFooter",
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = model
