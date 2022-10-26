@@ -21,14 +21,14 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
     {
         private readonly IOntologyTermService _ontologyTermService;
 
-        private readonly IBiobankReadService _biobankReadService;
-        //TODO add ADAC authorization
+        private readonly IDiseaseStatusService _diseaseStatusService;
+        //TODO ADAC authorization
         public DiseaseStatusController(
             IOntologyTermService ontologyTermService,
-            IBiobankReadService biobankReadService)
+            IDiseaseStatusService diseaseStatusService)
         {
             _ontologyTermService = ontologyTermService;
-            _biobankReadService = biobankReadService;
+            _diseaseStatusService = diseaseStatusService;
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
                 Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
+                SnomedTagId = (await _diseaseStatusService.GetSnomedTagByDescription("Disease")).Id,
                 DisplayOnDirectory = model.DisplayOnDirectory,
                 AssociatedDataTypes = types
             });
@@ -200,7 +200,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
+                SnomedTagId = (await _diseaseStatusService.GetSnomedTagByDescription("Disease")).Id,
                 DisplayOnDirectory = model.DisplayOnDirectory,
                 AssociatedDataTypes = types
             });
