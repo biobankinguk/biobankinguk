@@ -15,7 +15,7 @@ namespace Biobanks.Submissions.Api.Controllers
     [Route("[controller]")]
     [ApiController]
     [AllowAnonymous]
-    public class HomeController : ControllerBase
+    public class HomeController : Controller
     {
         private readonly IMemoryCache _memoryCache;
 
@@ -28,12 +28,12 @@ namespace Biobanks.Submissions.Api.Controllers
         [HttpGet]
         [SwaggerResponse(200)]
 
-        public ActionResult Index()
+        public IActionResult Index()
         {
             var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] ==  "true"
                 ? "AltIndex" : "Index";
 
-            var model = new HomepageContentModel
+            return View(viewName, new HomepageContentModel
             {
 
                 Title = (string)_memoryCache.Get(ConfigKey.HomepageTitle),
@@ -48,15 +48,7 @@ namespace Biobanks.Submissions.Api.Controllers
                 FinalParagraph = (string)_memoryCache.Get(ConfigKey.HomepageFinalParagraph),
                 ResourceRegistrationButton = (string)_memoryCache.Get(ConfigKey.RegisterBiobankTitle),
                 NetworkRegistrationButton = (string)_memoryCache.Get(ConfigKey.RegisterNetworkTitle)
-            };
-            return new ViewResult
-            {
-                ViewName = viewName,
-                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                }
-            };
+            });
         }
     }
 }
