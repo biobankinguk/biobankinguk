@@ -1,13 +1,12 @@
-﻿using AutoMapper;
-using Biobanks.Directory.Data.Constants;
-using Biobanks.Shared.Services.Contracts;
+﻿using Biobanks.Directory.Data.Constants;
 using Biobanks.Submissions.Api.Models.Home;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Configuration;
 using System.Threading.Tasks;
 
@@ -26,12 +25,15 @@ namespace Biobanks.Submissions.Api.Controllers
         }
 
         // GET: Home
+        [HttpGet]
+        [SwaggerResponse(200)]
+
         public ActionResult Index()
         {
-            var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] == "true"
+            var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] ==  "true"
                 ? "AltIndex" : "Index";
 
-            var model = (viewName, new HomepageContentModel
+            var model = new HomepageContentModel
             {
 
                 Title = (string)_memoryCache.Get(ConfigKey.HomepageTitle),
@@ -46,8 +48,15 @@ namespace Biobanks.Submissions.Api.Controllers
                 FinalParagraph = (string)_memoryCache.Get(ConfigKey.HomepageFinalParagraph),
                 ResourceRegistrationButton = (string)_memoryCache.Get(ConfigKey.RegisterBiobankTitle),
                 NetworkRegistrationButton = (string)_memoryCache.Get(ConfigKey.RegisterNetworkTitle)
-            });
-            return Ok(model);
+            };
+            return new ViewResult
+            {
+                ViewName = viewName,
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = model
+                }
+            };
         }
     }
 }
