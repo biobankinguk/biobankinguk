@@ -90,7 +90,7 @@ builder.Services.AddOptions()
 
 builder.Services.AddApplicationInsightsTelemetry();
 
-builder.Services.AddEmailSender(builder.Configuration.GetSection("Email"));
+builder.Services.AddEmailSender(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
