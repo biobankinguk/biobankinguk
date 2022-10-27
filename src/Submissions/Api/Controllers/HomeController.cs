@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
     [AllowAnonymous]
     public class HomeController : Controller
     {
@@ -25,9 +23,6 @@ namespace Biobanks.Submissions.Api.Controllers
         }
 
         // GET: Home
-        [HttpGet]
-        [SwaggerResponse(200)]
-
         public IActionResult Index()
         {
             var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] ==  "true"
@@ -50,5 +45,8 @@ namespace Biobanks.Submissions.Api.Controllers
                 NetworkRegistrationButton = (string)_memoryCache.Get(ConfigKey.RegisterNetworkTitle)
             });
         }
+        public ActionResult Cookies() => View();
+
+        public ViewResult Contact() => View();
     }
 }
