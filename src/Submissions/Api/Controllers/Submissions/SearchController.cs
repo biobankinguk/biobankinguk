@@ -14,7 +14,6 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Microsoft.Ajax.Utilities;
 
 namespace Biobanks.Submissions.Api.Controllers.Submissions;
 
