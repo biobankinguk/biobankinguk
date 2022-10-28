@@ -3,12 +3,8 @@ using Biobanks.Submissions.Api.Models.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Caching.Memory;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Configuration;
-using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {

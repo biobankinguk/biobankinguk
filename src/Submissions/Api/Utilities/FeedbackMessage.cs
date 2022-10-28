@@ -1,3 +1,7 @@
+using Biobanks.Submissions.Api.Controllers.Submissions;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
 namespace Biobanks.Submissions.Api.Utilities
 {
     public class FeedbackMessage
@@ -13,5 +17,19 @@ namespace Biobanks.Submissions.Api.Utilities
         Info,
         Warning,
         Danger
+    }
+
+    public static class TemporaryFeedbackMessageExtensions
+    {
+        private static string FeedbackMessageKey = "TemporaryFeedbackMessage";
+
+        public static void SetTemporaryFeedbackMessage(this Controller controller, string message, FeedbackMessageType type, bool containsHtml = false)
+            => controller.TempData[FeedbackMessageKey] = new FeedbackMessage
+            {
+                Message = message,
+                Type = type,
+                ContainsHtml = containsHtml
+            };
+
     }
 }

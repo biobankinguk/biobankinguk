@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Biobanks.Directory.Data.Constants;
+using Biobanks.Submissions.Api.Controllers.Submissions;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -11,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Biobanks.Submissions.Api.Controllers.Submissions.ApplicationBaseController;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
@@ -21,16 +21,9 @@ namespace Biobanks.Submissions.Api.Controllers
         private readonly IOrganisationDirectoryService _organisationService;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
-        //private readonly IEmailService _emailService;
+        //private readonly IEmailService _emailService; //TODO: Email Service has not be ported yet
 
-        protected void SetTemporaryFeedbackMessage(string message, FeedbackMessageType type, bool containsHtml = false)
-        => TempData[ViewConstants.FeedbackMessageKey] = new FeedbackMessage
-        {
-            Message = message,
-            Type = type,
-            ContainsHtml = containsHtml
-        };
-
+ 
         public ContactController (
             INetworkService networkService,
             IOrganisationDirectoryService organisationService, 
@@ -124,7 +117,7 @@ namespace Biobanks.Submissions.Api.Controllers
             var biobanks = (await _organisationService.ListByAnonymousIdentifiers(model.BiobankAnonymousIdentifiers)).ToList();
 
 
-   /*         foreach (var biobank in biobanks)
+   /*         foreach (var biobank in biobanks) //TODO
             {
                 await _emailService.SendExternalNetworkNonMemberInformation(biobank.ContactEmail, biobank.Name,
                 biobank.AnonymousIdentifier.ToString(), network.Name, network.Email, network.Description);
@@ -136,7 +129,7 @@ namespace Biobanks.Submissions.Api.Controllers
 
         public ActionResult FeedbackMessageAjax(string message, string type, bool html = false)
         {
-            SetTemporaryFeedbackMessage(
+            this.SetTemporaryFeedbackMessage(
                 message,
 
                 ((Func<FeedbackMessageType>)(() =>
