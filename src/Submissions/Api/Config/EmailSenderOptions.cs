@@ -16,7 +16,7 @@ namespace Biobanks.Submissions.Api.Config
 
     public record LocalDiskEmailOptions : BaseEmailSenderOptions
     {
-        public string LocalPath { get; init; } = "/temp";
+        public string LocalPath { get; init; } = "~/temp";
     }
 
     public record SendGridOptions : BaseEmailSenderOptions
