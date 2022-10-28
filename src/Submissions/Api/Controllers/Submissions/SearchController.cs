@@ -336,7 +336,17 @@ public class SearchController : Controller
 
         private static string GetFacetSlug(string facetId)
         {
-            return facetId.SubstringUpToFirst('_');
+            // if the string is null, return null
+            if (facetId == null)
+            {
+                return null;
+            }
+            // get the index of the first delimiter character
+            var indexOf = facetId.IndexOf('_');
+
+            // if the delimiter doesn't exist in the string, return the whole string.
+            // otherwise return from the beginning up to BUT NOT INCLUDING the delimiter.
+            return indexOf < 0 ? facetId : facetId[..indexOf];
         }
         #endregion
 
