@@ -23,7 +23,7 @@
 			var facetGroupNameId = $"FacetGroup{firstFacet.GroupNameWithoutSpaces}";
 			var facetGroupIconId = $"FacetGroupIcon{firstFacet.GroupNameWithoutSpaces}";
 
-			var facetGroupCollapsedCookieValue = Request.Cookies[$"{facetGroupNameId}Collapsed"]?.Value;
+			var facetGroupCollapsedCookieValue = Context.Request.Cookies[$"{facetGroupNameId}Collapsed"];
 
 			var facetGroupCollapsed = facetGroupCollapsedCookieValue != null
 				? Convert.ToBoolean(facetGroupCollapsedCookieValue)
