@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions;
+namespace Biobanks.Submissions.Api.Controllers.Directory;
 
 [AllowAnonymous]
 public class SearchController : Controller
