@@ -1,6 +1,4 @@
-using Biobanks.Submissions.Api.Controllers.Submissions;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Utilities
 {

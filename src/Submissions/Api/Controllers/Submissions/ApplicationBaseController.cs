@@ -24,7 +24,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
             return config.ToDictionary(x => x.Key, x => x.Value);
         }
 
-        public void SetTemporaryFeedbackMessage(string message, FeedbackMessageType type, bool containsHtml = false)
+        protected void SetTemporaryFeedbackMessage(string message, FeedbackMessageType type, bool containsHtml = false)
             => TempData[ViewConstants.FeedbackMessageKey] = new FeedbackMessage
             {
                 Message = message,
