@@ -1,4 +1,4 @@
-@using Azure.Core
+@using Biobanks.Submissions.Api.Extensions
 @using Biobanks.Submissions.Api.Models.Search
 @model Biobanks.Submissions.Api.Models.Search.BaseSearchModel
 @{
@@ -15,7 +15,7 @@
 <div class="row">
     @await Html.PartialAsync("_Facets", new FacetsModel
     {
-        Action = Request.RequestContext.RouteData.Values["action"].ToString(),
+        Action = Context.Request.RouteValues["action"]?.ToString(),
         OntologyTerm = Model.OntologyTerm,
         Facets = Model.Facets,
         SelectedFacets = Model.SelectedFacets
@@ -30,7 +30,7 @@
                              {
                                  biobankExternalId = biobank.ExternalId,
                                  diagnosis = Model.OntologyTerm,
-                                 selectedFacets = Request.QueryString["selectedFacets"]
+                                 selectedFacets = Context.Request.Query["selectedFacets"]
                              })" class="detailed-search-link">
                     <div class="well well-hover">
                         <div class="row">
