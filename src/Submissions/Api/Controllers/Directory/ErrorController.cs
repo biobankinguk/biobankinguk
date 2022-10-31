@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory;
 
+[AllowAnonymous]
 public class ErrorController : Controller
 {
     // GET: Error
