@@ -48,6 +48,7 @@ using System;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
+using Biobanks.Submissions.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,6 +89,8 @@ builder.Services.AddOptions()
                 .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"));
 
 builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Services.AddEmailSender(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
