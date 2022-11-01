@@ -297,11 +297,12 @@ switch (workersConfig.QueueService)
 
 var app = builder.Build();
 
+// app.UseStatusCodePagesWithReExecute("/StatusCode/StatusCode", "?code={0}");
+
 app.GnuTerryPratchett()
     .UseHttpsRedirection()
     .UseStaticFiles()
     .UseRouting();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
