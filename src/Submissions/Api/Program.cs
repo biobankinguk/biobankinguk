@@ -323,7 +323,7 @@ app
     // Simple public middleware
     .UseStatusCodePages()
     .UseVersion()
-
+    
     // Swagger
     .UseSwagger(c =>
     {
@@ -336,10 +336,13 @@ app
         c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         c.SupportedSubmitMethods(SubmitMethod.Get);
-    })
+    });
+    
+    app.UseAuthentication();
+    app.UseAuthorization();
 
                 // Endpoint Routing
-                .UseEndpoints(endpoints =>
+                app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers().RequireAuthorization();
 
@@ -362,11 +365,6 @@ app
 
                 // Hangfire Server
                 .UseHangfireDashboard();
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapRazorPages();
 
