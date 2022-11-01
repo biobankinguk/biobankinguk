@@ -42,8 +42,6 @@ namespace Biobanks.Submissions.Api.Controllers
                 NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, true, "")
             });
         }
-        public ActionResult Cookies() => View();
-
-        public ViewResult Contact() => View();
+      //  public ActionResult Cookies() => View(); TODO copy views over
     }
 }
