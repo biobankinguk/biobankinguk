@@ -294,15 +294,7 @@ switch (workersConfig.QueueService)
         break;
 }
 
-
 var app = builder.Build();
-
-// app.UseStatusCodePagesWithReExecute("/StatusCode/StatusCode", "?code={0}");
-
-app.GnuTerryPratchett()
-    .UseHttpsRedirection()
-    .UseStaticFiles()
-    .UseRouting();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -316,8 +308,15 @@ else
     app.UseHsts();
 }
 
+// app.UseStatusCodePagesWithReExecute("/StatusCode/StatusCode", "?code={0}");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.GnuTerryPratchett()
+    // .UseHttpsRedirection()
+    // .UseStaticFiles()
+    .UseRouting();
 
 app
     // Simple public middleware
