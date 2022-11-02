@@ -65,6 +65,7 @@
   <ItemGroup>
     <Folder Include="Pages\" />
     <Folder Include="Repositories\" />
+    <Folder Include="Services\EmailServices\Contracts\" />
   </ItemGroup>
 
 </Project>
