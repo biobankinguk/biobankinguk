@@ -21,45 +21,22 @@ namespace Biobanks.Submissions.Api.Controllers
         private readonly IOrganisationDirectoryService _organisationService;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
-        //private readonly IEmailService _emailService; //TODO: Email Service has not be ported yet
-
  
         public ContactController (
             INetworkService networkService,
             IOrganisationDirectoryService organisationService, 
             IMapper mapper,
             IMemoryCache memoryCache
-            //IEmailService emailService
             )
         {
             _networkService = networkService;
             _organisationService = organisationService;
             _mapper = mapper;
             _memoryCache = memoryCache;
-            //_emailService = emailService;
         }
 
-        //public ViewResult Contact() => View(); Port Over Views
+        public ViewResult Contact() => View(); 
 
-        [HttpPost]
-        public async Task<ActionResult> EmailContactListAjax(string email, List<string> ids, bool contactMe)
-        {
-            try
-            {
-                // Convert IDs to list of Email Addresses
-                var biobanks = await _organisationService.ListByExternalIds(ids);
-                var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
-                var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
-
-                //await _emailService.SendContactList(email, contactlist, contactMe);
-            }
-            catch
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-
-            return new StatusCodeResult(StatusCodes.Status200OK);
-        }
         public async Task<IActionResult> BiobankContactDetailsAjax(string id)
         {
             var biobankExternalIds = (List<string>)JsonConvert.DeserializeObject(id, typeof(List<string>));
@@ -110,23 +87,6 @@ namespace Biobanks.Submissions.Api.Controllers
             };
 
             return Ok(model);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> NotifyNetworkNonMembersOfHandoverAjax(NetworkNonMemberContactModel model)
-        {
-            var network = await _networkService.Get(model.NetworkId);
-            var biobanks = (await _organisationService.ListByAnonymousIdentifiers(model.BiobankAnonymousIdentifiers)).ToList();
-
-
-   /*         foreach (var biobank in biobanks) //TODO
-            {
-                await _emailService.SendExternalNetworkNonMemberInformation(biobank.ContactEmail, biobank.Name,
-                biobank.AnonymousIdentifier.ToString(), network.Name, network.Email, network.Description);
-            }
-*/
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
-
         }
 
         public ActionResult FeedbackMessageAjax(string message, string type, bool html = false)
