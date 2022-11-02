@@ -294,7 +294,14 @@ switch (workersConfig.QueueService)
         break;
 }
 
+
 var app = builder.Build();
+
+app.GnuTerryPratchett()
+    .UseHttpsRedirection()
+    .UseStaticFiles()
+    .UseRouting();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -308,20 +315,14 @@ else
     app.UseHsts();
 }
 
-app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.GnuTerryPratchett()
-    // .UseHttpsRedirection()
-    // .UseStaticFiles()
-    .UseRouting();
-
 app
     // Simple public middleware
+    .UseStatusCodePages()
     .UseVersion()
-    
+
     // Swagger
     .UseSwagger(c =>
     {
@@ -334,13 +335,10 @@ app
         c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         c.SupportedSubmitMethods(SubmitMethod.Get);
-    });
-    
-    app.UseAuthentication();
-    app.UseAuthorization();
+    })
 
                 // Endpoint Routing
-                app.UseEndpoints(endpoints =>
+                .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers().RequireAuthorization();
 
@@ -363,6 +361,11 @@ app
 
                 // Hangfire Server
                 .UseHangfireDashboard();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 
