@@ -1,3 +1,4 @@
+#nullable enable
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
