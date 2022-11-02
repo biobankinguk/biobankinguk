@@ -308,7 +308,7 @@ else
     app.UseHsts();
 }
 
-// app.UseStatusCodePagesWithReExecute("/StatusCode/StatusCode", "?code={0}");
+app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -320,7 +320,6 @@ app.GnuTerryPratchett()
 
 app
     // Simple public middleware
-    .UseStatusCodePages()
     .UseVersion()
     
     // Swagger
