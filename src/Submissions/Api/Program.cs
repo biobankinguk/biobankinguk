@@ -302,6 +302,8 @@ switch (workersConfig.QueueService)
 
 var app = builder.Build();
 
+app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
+
 app.GnuTerryPratchett()
     .UseHttpsRedirection()
     .UseStaticFiles()
@@ -325,7 +327,6 @@ app.UseStaticFiles();
 
 app
     // Simple public middleware
-    .UseStatusCodePages()
     .UseVersion()
 
     // Swagger
