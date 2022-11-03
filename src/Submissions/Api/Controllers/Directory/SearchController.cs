@@ -7,8 +7,10 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Search.Constants;
 using Biobanks.Search.Dto.Facets;
 using Biobanks.Search.Legacy;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Search;
 using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -29,13 +31,16 @@ public class SearchController : Controller
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
         private readonly IBiobankReadService _biobankReadService;
+        
+        private readonly IConfigService _configService;
 
         public SearchController(IReferenceDataService<Country> countryController,
             IOntologyTermService ontologyTermService,
             IOrganisationDirectoryService organisationDirectoryService,
             ISearchProvider searchProvider,
             IMapper mapper,
-            IBiobankReadService biobankReadService)
+            IBiobankReadService biobankReadService,
+            IConfigService configService)
         {
             _countryController = countryController;
             _ontologyTermService = ontologyTermService;
@@ -43,6 +48,7 @@ public class SearchController : Controller
             _searchProvider = searchProvider;
             _mapper = mapper;
             _biobankReadService = biobankReadService;
+            _configService = configService;
         }
 
         [HttpGet]
@@ -135,6 +141,11 @@ public class SearchController : Controller
 
             model.OntologyTerm = ontologyTerm;
             model.SelectedFacets = selectedFacets;
+            
+            // Config 
+            model.StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, true, "");
+            model.MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, true, "");
+            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage, true, "");
 
             // Get the biobank logo name from the database.
             model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
