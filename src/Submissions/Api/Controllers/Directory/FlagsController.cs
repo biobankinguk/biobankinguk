@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Biobanks.Submissions.Api.Models.Shared;
 
@@ -58,7 +57,7 @@ public class FlagsController : Controller
 
     public ActionResult UpdateFlagsConfigSuccess()
     {
-        SetTemporaryFeedbackMessage("Flags configuration saved successfully.", FeedbackMessageType.Success);
+        TemporaryFeedbackMessageExtensions.SetTemporaryFeedbackMessage(this, "Flags configuration saved successfully.", FeedbackMessageType.Success, false);
         return RedirectToAction("FlagsConfig");
     }
     
