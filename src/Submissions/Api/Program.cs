@@ -49,6 +49,7 @@ using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
 using Biobanks.Submissions.Api.Extensions;
+using Biobanks.Submissions.Api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,7 +108,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 })
                 .AddBasic(opts => opts.Realm = "biobankinguk-api");
 
-builder.Services.AddControllersWithViews(opts => opts.SuppressOutputFormatterBuffering = true)
+builder.Services.AddControllersWithViews(opts =>
+    {
+        opts.SuppressOutputFormatterBuffering = true;
+        opts.Filters.Add<RedirectAntiforgeryValidationFailedResult>();
+    })
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
