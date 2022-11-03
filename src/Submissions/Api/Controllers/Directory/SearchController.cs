@@ -143,9 +143,9 @@ public class SearchController : Controller
             model.SelectedFacets = selectedFacets;
             
             // Config 
-            model.StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, true, "");
-            model.MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, true, "");
-            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage, true, "");
+            model.StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, true);
+            model.MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, true);
+            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage, true);
 
             // Get the biobank logo name from the database.
             model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
