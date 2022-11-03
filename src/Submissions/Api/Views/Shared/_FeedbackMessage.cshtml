@@ -1,8 +1,8 @@
-@using Biobanks.Submissions.Api.Controllers.Submissions
-@using Biobanks.Submissions.Api.Utilities
-
+@using Biobanks.Submissions.Api.Controllers
+@using Biobanks.Submissions.Api.Utilities;
+@using static Biobanks.Submissions.Api.Controllers.Submissions.ApplicationBaseController
 @{
-    var model = (FeedbackMessage)TempData[ApplicationBaseController.ViewConstants.FeedbackMessageKey];
+    var model = (FeedbackMessage)TempData[ViewConstants.FeedbackMessageKey];
 }
 
 
