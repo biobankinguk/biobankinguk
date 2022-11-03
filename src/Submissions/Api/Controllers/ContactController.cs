@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Submissions.Api.Controllers.Submissions;
+using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +23,7 @@ namespace Biobanks.Submissions.Api.Controllers
         private readonly IOrganisationDirectoryService _organisationService;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
-        private readonly IEmailService _emailService; //TODO: Email Service has not be ported yet
+        private readonly IEmailService _emailService; 
  
  
         public ContactController (
@@ -39,10 +41,10 @@ namespace Biobanks.Submissions.Api.Controllers
             _emailService = emailService;
         }
 
-        //public ViewResult Contact() => View(); Port Over Views
+        public ViewResult Contact() => View();
 
         [HttpPost]
-        public async Task<ActionResult> EmailContactListAjax(string email, List<string> ids, bool contactMe)
+        public async Task<ActionResult> EmailContactListAjax(EmailAddress to, List<string> ids, bool contactMe)
         {
             try
             {
@@ -51,7 +53,7 @@ namespace Biobanks.Submissions.Api.Controllers
                 var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
                 var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
-                await _emailService.SendContactList(email, contactlist, contactMe);
+                await _emailService.SendContactList(to, contactlist, contactMe);
             }
             catch
             {
@@ -117,11 +119,11 @@ namespace Biobanks.Submissions.Api.Controllers
         {
             var network = await _networkService.Get(model.NetworkId);
             var biobanks = (await _organisationService.ListByAnonymousIdentifiers(model.BiobankAnonymousIdentifiers)).ToList();
+            EmailAddress ContactEmail = null;
 
-
-            foreach (var biobank in biobanks) //TODO
+            foreach (var biobank in biobanks) 
             {
-                await _emailService.SendExternalNetworkNonMemberInformation(biobank.ContactEmail, biobank.Name,
+                await _emailService.SendExternalNetworkNonMemberInformation(ContactEmail, biobank.Name,
                 biobank.AnonymousIdentifier.ToString(), network.Name, network.Email, network.Description);
             }
 
