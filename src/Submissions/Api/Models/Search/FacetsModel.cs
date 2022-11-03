@@ -27,5 +27,5 @@ public class FacetsModel
     public string ShowCounties { get; set; }
     public string StorageTemperatureName { get; set; }
     public string MacroscopicAssessmentName { get; set; }
-    public string ShowPreservationPercentage { get; set; }
+    public string DonorCount { get; set; }
 }

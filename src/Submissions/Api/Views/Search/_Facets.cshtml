@@ -1,5 +1,4 @@
 @using Newtonsoft.Json
-@using Biobanks.Directory.Data.Constants
 @using Biobanks.Submissions.Api.Extensions
 @model Biobanks.Submissions.Api.Models.Search.FacetsModel
 
@@ -9,7 +8,7 @@
 		var facets = Model.Facets;
 
 		// Hide County Facet
-		if (App.Config[ConfigKey.ShowCounties] == "false")
+		if (Model.ShowCounties == "false")
 		{
 			facets = facets.Where(x => x.Name != "County");
 		}
@@ -61,93 +60,93 @@
                         @foreach (var facet in facetGroup)
                         {
                             var facetName = "";
-
-                            switch (facet.Name)
-                            {@* TODO: Await PR to access config values  *@
-                                case "Macroscopic Assessment":
-                                    facetName = App.Config[ConfigKey.MacroscopicAssessmentName]; break;
-                                case "Storage Temperature":
-                                    facetName = App.Config[ConfigKey.StorageTemperatureName]; break;
-                                case "Donor Count":
-                                    facetName = App.Config[ConfigKey.DonorCountName]; break;
-                                default:
+	                        
+	                        switch (facet.Name) 
+	                        {
+								case "Macroscopic Assessment":
+	                                facetName = Model.MacroscopicAssessmentName;
+	                                break;
+	                            case "Storage Temperature":
+		                            facetName = Model.StorageTemperatureName;
+		                            break;
+	                            case "Donor Count":
+		                            facetName = Model.DonorCount;
+		                            break;
+	                            default:
                                     facetName = facet.Name; break;
                             }
 
                             if (facetName == "County")
                             {
-                           
-
-                        <div class="facet-container">
-                            <p class="facet-header">
-                                <strong>@facetName</strong>
-                            </p>
-
-                            @foreach (var countryFacet in facetGroup)
-                            {
-                                if (countryFacet.Name == "Country")
-                                {
-                                    foreach (var country in countryFacet.FacetValues)
-                                    {
-                                        var matchedCounties = Model.GetCounties(country.FacetValue);
-                                        if (matchedCounties.Count > 0)
-                                        {
-                                            <p class="facet-header">
-                                                @country.FacetValue
-                                            </p>
-                                            <ul class="facet-list fa-ul">
-                                                @foreach (var facetValue in facet.FacetValues)
-                                                {
-
-                                                    var facetValueName = facetValue.FacetValue;
-                                                    if (matchedCounties.Contains(facetValueName))
-                                                    {
-                                                        if (!Model.FacetSelected(facetValue.FacetId))
-                                                        {
-                                                            <li>
-                                                                <a href="@Url.Action(Model.Action, "Search", new
-														                 {
-															                 ontologyTerm = Model.OntologyTerm,
-															                 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
-															                 {
-																                 facetValue.FacetId
-															                 }))
-														                 })">
-                                                                    <span class="fa fa-circle-o"></span>
-                                                                    @facetValueName
-                                                                </a>
-                                                                <span class="facet-count">(@facetValue.Count)</span>
-                                                            </li>
-                                                        }
-                                                        else
-                                                        {
-                                                            <li>
-                                                                <a href="@Url.Action(Model.Action, "Search", new
-														                 {
-															                 ontologyTerm = Model.OntologyTerm,
-															                 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
-																                 x => x != facetValue.FacetId))
-														                 })">
-                                                                    <span class="fa fa-check-circle"></span>
-                                                                    @facetValueName
-                                                                </a>
-                                                                (@facetValue.Count)
-                                                            </li>
-                                                        }
-                                                    }
-
-
-                                                }
-                                            </ul>
-
-                                        }
-                                    }
-
-                                }
-                            }
-
-
-                        </div>
+	                            <div class="facet-container">
+								<p class="facet-header">
+									<strong>@facetName</strong>
+								</p>
+	
+								@foreach (var countryFacet in facetGroup)
+								{
+									if (countryFacet.Name == "Country")
+									{
+										foreach (var country in countryFacet.FacetValues)
+										{
+											var matchedCounties = Model.GetCounties(country.FacetValue);
+											if (matchedCounties.Count > 0)
+											{
+												<p class="facet-header">
+													@country.FacetValue
+												</p>
+												<ul class="facet-list fa-ul">
+													@foreach (var facetValue in facet.FacetValues)
+													{
+	
+														var facetValueName = facetValue.FacetValue;
+														if (matchedCounties.Contains(facetValueName))
+														{
+															if (!Model.FacetSelected(facetValue.FacetId))
+															{
+																<li>
+																	<a href="@Url.Action(Model.Action, "Search", new
+																			 {
+																				 ontologyTerm = Model.OntologyTerm,
+																				 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
+																				 {
+																					 facetValue.FacetId
+																				 }))
+																			 })">
+																		<span class="fa fa-circle-o"></span>
+																		@facetValueName
+																	</a>
+																	<span class="facet-count">(@facetValue.Count)</span>
+																</li>
+															}
+															else
+															{
+																<li>
+																	<a href="@Url.Action(Model.Action, "Search", new
+																			 {
+																				 ontologyTerm = Model.OntologyTerm,
+																				 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
+																					 x => x != facetValue.FacetId))
+																			 })">
+																		<span class="fa fa-check-circle"></span>
+																		@facetValueName
+																	</a>
+																	(@facetValue.Count)
+																</li>
+															}
+														}
+	
+	
+													}
+												</ul>
+	
+											}
+										}
+	
+									}
+								}
+								
+								</div>
                             }
                             else
                             {

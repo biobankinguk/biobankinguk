@@ -18,7 +18,10 @@
         Action = Context.Request.RouteValues["action"]?.ToString(),
         OntologyTerm = Model.OntologyTerm,
         Facets = Model.Facets,
-        SelectedFacets = Model.SelectedFacets
+        SelectedFacets = Model.SelectedFacets,
+        StorageTemperatureName = Model.StorageTemperatureName,
+        MacroscopicAssessmentName = Model.MacroscopicAssessmentName,
+        DonorCount = Model.DonorCount,
     })
     <div class="col-sm-8">
         @if (!Model.Biobanks.IsNullOrEmpty())

@@ -16,7 +16,8 @@
     </div>
     @* TODO: Await PR to access home controller  *@
     @* override the default positioning, so we can have this below the custom breadcrumbs *@
-    <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+    @* <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")"> *@
+    <section id="feedback-message" >
         @await Html.PartialAsync("_FeedbackMessage")
     </section>
     <br/>
@@ -129,11 +130,10 @@
                             <tr>
                                 <th>Material Type</th>
                                 <th>Extraction Procedure</th>
-                                <th>@App.Config[ConfigKey.StorageTemperatureName]</th> @* TODO: Await PR to access config values  *@
+                                <th>@Model.StorageTemperatureName</th>
                                 <th>Preservation Type</th>
-                                <th> @App.Config[ConfigKey.MacroscopicAssessmentName] </th> @* TODO: Await PR to access config values  *@
-
-                                @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true") @* TODO: Await PR to access config values  *@
+                                <th>@Model.MacroscopicAssessmentName</th>
+                                @if (Model.ShowPreservationPercentage == "true")
                                 {
                                     <th>% of Sample Set</th>
                                 }
@@ -150,9 +150,7 @@
                                         <td>@mpd.StorageTemperature</td>
                                         <td>@mpd.PreservationType</td>
                                         <td>@mpd.MacroscopicAssessment</td>
-
-                                        @* TODO: Await PR to access config values  *@
-                                        @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
+                                        @if (Model.ShowPreservationPercentage == "true")
                                         {
                                             <td>@mpd.PercentageOfSampleSet</td>
                                         }

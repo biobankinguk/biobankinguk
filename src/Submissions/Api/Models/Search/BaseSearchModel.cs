@@ -18,4 +18,9 @@ public class BaseSearchModel
     public IList<string> SelectedFacets { get; set; }
 
     public IDictionary<string, List<string>> Countries { get; set; }
+    
+    public string ShowCounties { get; set; }
+    public string StorageTemperatureName { get; set; }
+    public string MacroscopicAssessmentName { get; set; }
+    public string DonorCount { get; set; }
 }

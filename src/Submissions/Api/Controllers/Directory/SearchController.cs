@@ -73,6 +73,9 @@ public class SearchController : Controller
             var model = new BaseSearchModel
             {
                 OntologyTerm = ontologyTerm,
+                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, true),
+                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, true),
+                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName, true),
                 // Extract the search facets.
                 SelectedFacets = ExtractSearchFacets(selectedFacets)
             };
@@ -185,6 +188,10 @@ public class SearchController : Controller
             var model = new BaseSearchModel
             {
                 OntologyTerm = ontologyTerm,
+                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, true),
+                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, true),
+                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName, true),
+                
                 // Extract the search facets.
                 SelectedFacets = ExtractSearchFacets(selectedFacets)
             };
