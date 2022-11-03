@@ -26,7 +26,6 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Search.Legacy;
 using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Biobanks.Submissions.Api.Services.Submissions;
 using Hangfire;
@@ -50,6 +49,7 @@ using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Filters;
+using Biobanks.Search.Legacy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -325,6 +325,9 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app
     // Simple public middleware
     .UseVersion()
@@ -367,11 +370,6 @@ app
 
                 // Hangfire Server
                 .UseHangfireDashboard();
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapRazorPages();
 
