@@ -6,5 +6,4 @@
         string NetworkName, 
         string NetworkContactEmail, 
         string NetworkDescription);
-   
 }

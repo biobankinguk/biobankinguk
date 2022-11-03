@@ -7,5 +7,9 @@
         public string ContactAddress { get; init; } = string.Empty;
 
         public string EmailSignature { get; init; } = string.Empty;
+
+        public string LegalEntity { get; init; } = string.Empty;
+
+
     }
 }

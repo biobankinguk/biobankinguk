@@ -7,17 +7,20 @@
 @{
 	var directoryName = @_config.Value.ServiceName;
 	
+	var emailSignature = @_config.Value.EmailSignature;
+
 	// Format Email Subject
 	ViewBag.Subject = HostEnvironment.IsDevelopment()
 		? $"{directoryName} Contact List"
 		: $"{directoryName} Contact List (Environment: {HostEnvironment.EnvironmentName})";
 }
 
-Kindly find below the contact information for the Organisations in your list
+<p>Kindly find below the contact information for the Organisations in your list</p>
 
 @Html.Raw(ViewBag.ContactList)
 
-If you didn't request this, please ignore this email.
+<p>If you didn't request this, please ignore this email.</p>
 
-Regards,
-@_config.Value.EmailSignature
+<p>Regards,</p>
+
+@emailSignature

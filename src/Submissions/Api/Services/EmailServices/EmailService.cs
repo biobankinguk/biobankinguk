@@ -24,7 +24,9 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
         public async Task SendExternalNetworkNonMemberInformation(EmailAddress to, string biobankName,
             string biobankAnonymousIdentifier, string networkName, string networkContactEmail, string networkDescription)
         {
-            await _emailSender.SendEmail(to, "Emails/ExternalNetworkNonMemberInformation", 
+            await _emailSender.SendEmail(
+                to, 
+                "Emails/ExternalNetworkNonMemberInformation", 
                 new NonMemberEmailModel(
                     to.Name!,
                     biobankName,
@@ -55,7 +57,5 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
                    ccAddress
                    );
         }
-
-
     }
 }

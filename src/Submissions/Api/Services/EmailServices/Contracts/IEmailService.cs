@@ -7,6 +7,6 @@ namespace Biobanks.Submissions.Api.Services.EmailServices.Contracts
     {
         Task SendExternalNetworkNonMemberInformation(EmailAddress to, string biobankName, string biobankAnonymousIdentifier, string networkName, string networkContactEmail, string networkDescription);
 
-        Task SendContactList(EmailAddress to, string contactlist, bool contactMe)
-    }
+        Task SendContactList(EmailAddress to, string contactlist, bool contactMe);
+    };
 }
