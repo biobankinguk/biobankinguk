@@ -23,4 +23,9 @@ public class FacetsModel
     {             
         return Countries[countryName];
     }
+    
+    public string ShowCounties { get; set; }
+    public string StorageTemperatureName { get; set; }
+    public string MacroscopicAssessmentName { get; set; }
+    public string ShowPreservationPercentage { get; set; }
 }

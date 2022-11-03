@@ -12,6 +12,9 @@ public class DetailedCollectionSearchModel
     public string BiobankName { get; set; }
 
     public string LogoName { get; set; }
+    public string StorageTemperatureName { get; set; }
+    public string MacroscopicAssessmentName { get; set; }
+    public string ShowPreservationPercentage { get; set; }
 
     public IList<DetailedCollectionSearchCollectionModel> Collections { get; set; }
 }
