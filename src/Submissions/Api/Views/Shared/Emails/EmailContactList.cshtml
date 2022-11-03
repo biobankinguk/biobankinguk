@@ -15,12 +15,14 @@
 		: $"{directoryName} Contact List (Environment: {HostEnvironment.EnvironmentName})";
 }
 
-<p>Kindly find below the contact information for the Organisations in your list</p>
+<p>
+Kindly find below the contact information for the Organisations in your list
 
 @Html.Raw(ViewBag.ContactList)
 
-<p>If you didn't request this, please ignore this email.</p>
+If you didn't request this, please ignore this email.
 
-<p>Regards,</p>
+Regards,
 
 @emailSignature
+</p>

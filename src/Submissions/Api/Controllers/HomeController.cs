@@ -28,18 +28,18 @@ namespace Biobanks.Submissions.Api.Controllers
 
             return View(viewName, new HomepageContentModel
             {
-                Title = await _configService.GetSiteConfigValue(ConfigKey.HomepageTitle, true, ""),
-                SearchTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchTitle, true, ""),
-                SearchSubTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchSubTitle, true, ""),
-                ResourceRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageResourceRegistration, true, ""),
-                ResourceRegistration2 = await _configService.GetSiteConfigValue(ConfigKey.HomepageResourceRegistration2, true, ""),
-                NetworkRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageNetworkRegistration, true, ""),
-                NetworkRegistration2 = await _configService.GetSiteConfigValue(ConfigKey.HomepageNetworkRegistration2, true, ""),
-                RequireSamplesCollected = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioSamplesCollected, true, ""),
-                AccessExistingSamples = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioAccessSamples, true, ""),
-                FinalParagraph = await _configService.GetSiteConfigValue(ConfigKey.HomepageFinalParagraph ,true,""),
-                ResourceRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankTitle, true, ""),
-                NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, true, "")
+                Title = await _configService.GetSiteConfigValue(ConfigKey.HomepageTitle, "", true),
+                SearchTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchTitle, "", true),
+                SearchSubTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchSubTitle, "", true),
+                ResourceRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageResourceRegistration, "", true),
+                ResourceRegistration2 = await _configService.GetSiteConfigValue(ConfigKey.HomepageResourceRegistration2, "", true),
+                NetworkRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageNetworkRegistration, "", true),
+                NetworkRegistration2 = await _configService.GetSiteConfigValue(ConfigKey.HomepageNetworkRegistration2, "", true),
+                RequireSamplesCollected = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioSamplesCollected, "", true),
+                AccessExistingSamples = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioAccessSamples, "", true),
+                FinalParagraph = await _configService.GetSiteConfigValue(ConfigKey.HomepageFinalParagraph , "", true),
+                ResourceRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankTitle, "", true),
+                NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, "", true)
             });
         }
        public ActionResult Cookies() => View();
