@@ -41,8 +41,6 @@ namespace Biobanks.Submissions.Api.Controllers
             _emailService = emailService;
         }
 
-        public ViewResult Contact() => View();
-
         [HttpPost]
         public async Task<ActionResult> EmailContactListAjax(EmailAddress to, List<string> ids, bool contactMe)
         {

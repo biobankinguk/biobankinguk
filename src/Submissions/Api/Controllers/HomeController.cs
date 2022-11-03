@@ -42,6 +42,5 @@ namespace Biobanks.Submissions.Api.Controllers
                 NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, "", true)
             });
         }
-       public ActionResult Cookies() => View();
     }
 }
