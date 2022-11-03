@@ -1,5 +1,7 @@
 ﻿using Biobanks.Data;
+using Biobanks.Submissions.Api.Config;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,12 @@ namespace Biobanks.Submissions.Api.Services.Directory
     public class ConfigService : IConfigService
     {
         private readonly BiobanksDbContext _db;
-        public ConfigService(BiobanksDbContext db)
+
+        private readonly IMemoryCache _memoryCache;
+        public ConfigService(BiobanksDbContext db, IMemoryCache memoryCache)
         {
             _db = db;
+            _memoryCache = memoryCache;
         }
 
         /// <inheritdoc />
@@ -26,11 +31,17 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         /// <inheritdoc />
         public async Task<Entities.Data.Config> GetSiteConfig(string key)
-             => (await ListSiteConfigsAsync(key)).FirstOrDefault();
+            => (await ListSiteConfigsAsync(key)).FirstOrDefault();
 
         /// <inheritdoc />
-        public async Task<string> GetSiteConfigValue(string key, string defaultValue = "")
-            => (await GetSiteConfig(key))?.Value ?? defaultValue;
+        public async Task<string> GetSiteConfigValue(string key, bool checkCacheFirst, string defaultValue = "")
+        {
+            if (checkCacheFirst)
+            {
+                return (string)_memoryCache.Get($"SiteConfig/{key}");
+            }
+            else return (await GetSiteConfig(key))?.Value ?? defaultValue;
+        }
 
         /// <inheritdoc />
         public async Task UpdateSiteConfigsAsync(IEnumerable<Entities.Data.Config> configs)
