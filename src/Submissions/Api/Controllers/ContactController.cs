@@ -21,22 +21,22 @@ namespace Biobanks.Submissions.Api.Controllers
         private readonly IOrganisationDirectoryService _organisationService;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
-        //private readonly IEmailService _emailService; //TODO: Email Service has not be ported yet
+        private readonly IEmailService _emailService; //TODO: Email Service has not be ported yet
  
  
         public ContactController (
             INetworkService networkService,
             IOrganisationDirectoryService organisationService, 
             IMapper mapper,
-            IMemoryCache memoryCache
-            //IEmailService emailService
+            IMemoryCache memoryCache,
+            IEmailService emailService
             )
         {
             _networkService = networkService;
             _organisationService = organisationService;
             _mapper = mapper;
             _memoryCache = memoryCache;
-            //_emailService = emailService;
+            _emailService = emailService;
         }
 
         //public ViewResult Contact() => View(); Port Over Views
@@ -51,7 +51,7 @@ namespace Biobanks.Submissions.Api.Controllers
                 var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
                 var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
-                //await _emailService.SendContactList(email, contactlist, contactMe);
+                await _emailService.SendContactList(email, contactlist, contactMe);
             }
             catch
             {
@@ -119,12 +119,12 @@ namespace Biobanks.Submissions.Api.Controllers
             var biobanks = (await _organisationService.ListByAnonymousIdentifiers(model.BiobankAnonymousIdentifiers)).ToList();
 
 
-   /*         foreach (var biobank in biobanks) //TODO
+            foreach (var biobank in biobanks) //TODO
             {
                 await _emailService.SendExternalNetworkNonMemberInformation(biobank.ContactEmail, biobank.Name,
                 biobank.AnonymousIdentifier.ToString(), network.Name, network.Email, network.Description);
             }
-*/
+
             return new StatusCodeResult(StatusCodes.Status204NoContent);
 
         }
