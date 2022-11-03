@@ -44,7 +44,7 @@ public class FlagsController : Controller
                 })
         );
 
-
+        // TODO: Clear the cache - 
         // Invalidate current config (Refreshed in SiteConfigAttribute filter)
         HttpContext.Application["Config"] = null;
 
@@ -57,7 +57,7 @@ public class FlagsController : Controller
 
     public ActionResult UpdateFlagsConfigSuccess()
     {
-        TemporaryFeedbackMessageExtensions.SetTemporaryFeedbackMessage(this, "Flags configuration saved successfully.", FeedbackMessageType.Success, false);
+        this.SetTemporaryFeedbackMessage("Flags configuration saved successfully.", FeedbackMessageType.Success);
         return RedirectToAction("FlagsConfig");
     }
     
