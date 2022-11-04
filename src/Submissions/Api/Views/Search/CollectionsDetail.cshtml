@@ -16,8 +16,7 @@
     </div>
     @* TODO: Await PR to access home controller  *@
     @* override the default positioning, so we can have this below the custom breadcrumbs *@
-    @* <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")"> *@
-    <section id="feedback-message" >
+    <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Contact")">
         @await Html.PartialAsync("_FeedbackMessage")
     </section>
     <br/>

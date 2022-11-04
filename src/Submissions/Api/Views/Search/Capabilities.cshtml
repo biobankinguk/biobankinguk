@@ -5,10 +5,9 @@
     ViewBag.Title = "Search Results";
 }
 
-@section FooterScripts
-{
-    @Scripts.Render("~/bundles/search")
-}
+<script src="~/Scripts/typeahead.bundle.js"></script>
+<script src="~/Scripts/Search/facet-groups.js"></script>
+<script src="~/Scripts/Shared/search-diagnosis-type-ahead.js"></script>
 
 <h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>
 
