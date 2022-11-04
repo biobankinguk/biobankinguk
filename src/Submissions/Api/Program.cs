@@ -47,6 +47,8 @@ using System;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Elastic;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Search.Legacy;
@@ -217,8 +219,46 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+                .AddTransient<IOntologyTermService, OntologyTermService>()
+                
+    
+                // Search Services
+                .AddTransient<ICollectionSearchProvider>(
+                    sp => new ElasticCollectionSearchProvider(
+                        builder.Configuration["ElasticSearchURL"],
+                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
+                        builder.Configuration["ElasticSearchUsername"],
+                        builder.Configuration["ElasticSearchPassword"]            
+                    )
+                )
+                .AddTransient<ICollectionIndexProvider>(
+                    sp => new ElasticCollectionIndexProvider(
+                        builder.Configuration["ElasticSearchURL"],
+                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
+                        builder.Configuration["ElasticSearchUsername"],
+                        builder.Configuration["ElasticSearchPassword"]            
+                    )
+                )
+                .AddTransient<ICapabilitySearchProvider>(
+                    sp => new ElasticCapabilitySearchProvider(
+                        builder.Configuration["ElasticSearchURL"],
+                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
+                        builder.Configuration["ElasticSearchUsername"],
+                        builder.Configuration["ElasticSearchPassword"]            
+                    )
+                )
+                .AddTransient<ICapabilityIndexProvider>(
+                    sp => new ElasticCapabilityIndexProvider(
+                        builder.Configuration["ElasticSearchURL"],
+                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
+                        builder.Configuration["ElasticSearchUsername"],
+                        builder.Configuration["ElasticSearchPassword"]            
+                    )
+                )
+                .AddTransient<ISearchProvider, LegacySearchProvider>()
+                .AddTransient<IIndexProvider, LegacyIndexProvider>()
 
-                // Reference Data
+    // Reference Data
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
@@ -314,6 +354,7 @@ app.GnuTerryPratchett()
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
