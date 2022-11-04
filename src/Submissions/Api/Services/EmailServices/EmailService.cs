@@ -9,12 +9,12 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
 {
     public class EmailService : IEmailService
     {
-        private readonly SiteConfigOptions _siteConfig;
+        private readonly SitePropertiesOptions _siteConfig;
         private readonly IEmailSender _emailSender;
 
 
         public EmailService(
-            IOptions<SiteConfigOptions> siteConfigOptions,
+            IOptions<SitePropertiesOptions> siteConfigOptions,
             IEmailSender emailSender)
         {
             _siteConfig = siteConfigOptions.Value;

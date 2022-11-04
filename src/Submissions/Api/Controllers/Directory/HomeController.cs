@@ -1,14 +1,16 @@
 ﻿using Biobanks.Directory.Data.Constants;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Configuration;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Directory
 {
     [AllowAnonymous]
     public class HomeController : Controller
@@ -21,9 +23,9 @@ namespace Biobanks.Submissions.Api.Controllers
         }
 
         // GET: Home
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
-            var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] ==  "true"
+            var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] == "true"
                 ? "AltIndex" : "Index";
 
             return View(viewName, new HomepageContentModel
@@ -37,10 +39,35 @@ namespace Biobanks.Submissions.Api.Controllers
                 NetworkRegistration2 = await _configService.GetSiteConfigValue(ConfigKey.HomepageNetworkRegistration2, "", true),
                 RequireSamplesCollected = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioSamplesCollected, "", true),
                 AccessExistingSamples = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioAccessSamples, "", true),
-                FinalParagraph = await _configService.GetSiteConfigValue(ConfigKey.HomepageFinalParagraph , "", true),
+                FinalParagraph = await _configService.GetSiteConfigValue(ConfigKey.HomepageFinalParagraph, "", true),
                 ResourceRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankTitle, "", true),
                 NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, "", true)
             });
+        }
+
+        public ActionResult FeedbackMessageAjax(string message, string type, bool html = false)
+        {
+            this.SetTemporaryFeedbackMessage(
+                message,
+
+                ((Func<FeedbackMessageType>)(() =>
+                {
+                    switch (type?.ToLower() ?? "")
+                    {
+                        case "success":
+                            return FeedbackMessageType.Success;
+                        case "danger":
+                            return FeedbackMessageType.Danger;
+                        case "warning":
+                            return FeedbackMessageType.Warning;
+                        default:
+                            return FeedbackMessageType.Info;
+                    }
+                }))(),
+
+                html);
+
+            return PartialView("_FeedbackMessage");
         }
     }
 }

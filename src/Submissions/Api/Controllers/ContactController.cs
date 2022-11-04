@@ -17,7 +17,9 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-    public class ContactController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ContactController : ControllerBase
     {
         private readonly INetworkService _networkService;
         private readonly IOrganisationDirectoryService _organisationService;
@@ -41,8 +43,10 @@ namespace Biobanks.Submissions.Api.Controllers
             _emailService = emailService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> EmailContactListAjax(EmailAddress to, List<string> ids, bool contactMe)
+
+        [HttpPost("EmailContactListAjax")]
+        
+        public async Task<ActionResult> EmailContactListAjax(string to, List<string> ids, bool contactMe)
         {
             try
             {
@@ -51,7 +55,7 @@ namespace Biobanks.Submissions.Api.Controllers
                 var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
                 var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
-                await _emailService.SendContactList(to, contactlist, contactMe);
+                await _emailService.SendContactList(new EmailAddress(to), contactlist, contactMe);
             }
             catch
             {
@@ -60,6 +64,8 @@ namespace Biobanks.Submissions.Api.Controllers
 
             return new StatusCodeResult(StatusCodes.Status200OK);
         }
+
+        [HttpGet]
         public async Task<IActionResult> BiobankContactDetailsAjax(string id)
         {
             var biobankExternalIds = (List<string>)JsonConvert.DeserializeObject(id, typeof(List<string>));
@@ -112,46 +118,20 @@ namespace Biobanks.Submissions.Api.Controllers
             return Ok(model);
         }
 
-        [HttpPost]
+        [HttpPost("NotifyNetworkNonMembersOfHandoverAjax")]
         public async Task<ActionResult> NotifyNetworkNonMembersOfHandoverAjax(NetworkNonMemberContactModel model)
         {
             var network = await _networkService.Get(model.NetworkId);
             var biobanks = (await _organisationService.ListByAnonymousIdentifiers(model.BiobankAnonymousIdentifiers)).ToList();
-            EmailAddress ContactEmail = null;
 
             foreach (var biobank in biobanks) 
             {
-                await _emailService.SendExternalNetworkNonMemberInformation(ContactEmail, biobank.Name,
+                await _emailService.SendExternalNetworkNonMemberInformation(new EmailAddress(biobank.ContactEmail), biobank.Name,
                 biobank.AnonymousIdentifier.ToString(), network.Name, network.Email, network.Description);
             }
 
             return new StatusCodeResult(StatusCodes.Status204NoContent);
 
-        }
-
-        public ActionResult FeedbackMessageAjax(string message, string type, bool html = false)
-        {
-            this.SetTemporaryFeedbackMessage(
-                message,
-
-                ((Func<FeedbackMessageType>)(() =>
-                {
-                    switch (type?.ToLower() ?? "")
-                    {
-                        case "success":
-                            return FeedbackMessageType.Success;
-                        case "danger":
-                            return FeedbackMessageType.Danger;
-                        case "warning":
-                            return FeedbackMessageType.Warning;
-                        default:
-                            return FeedbackMessageType.Info;
-                    }
-                }))(),
-
-                html);
-
-            return PartialView("_FeedbackMessage");
         }
     }
 }

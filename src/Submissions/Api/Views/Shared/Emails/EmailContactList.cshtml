@@ -1,4 +1,4 @@
-﻿@inject IOptions<SiteConfigOptions> _config
+﻿@inject IOptions<SitePropertiesOptions> _config
 @inject IHostEnvironment HostEnvironment
 @using Biobanks.Submissions.Api.Config
 @using Biobanks.Submissions.Api.Models.Emails
@@ -15,7 +15,6 @@
 		: $"{directoryName} Contact List (Environment: {HostEnvironment.EnvironmentName})";
 }
 
-<p>
 Kindly find below the contact information for the Organisations in your list
 
 @Html.Raw(ViewBag.ContactList)
@@ -25,4 +24,3 @@ If you didn't request this, please ignore this email.
 Regards,
 
 @emailSignature
-</p>

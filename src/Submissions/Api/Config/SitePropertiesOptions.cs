@@ -1,6 +1,6 @@
 ﻿namespace Biobanks.Submissions.Api.Config
 {
-    public record SiteConfigOptions
+    public record SitePropertiesOptions
     {
         public string ServiceName { get; init; } = "Biobanks";
 
@@ -9,7 +9,6 @@
         public string EmailSignature { get; init; } = string.Empty;
 
         public string LegalEntity { get; init; } = string.Empty;
-
 
     }
 }
