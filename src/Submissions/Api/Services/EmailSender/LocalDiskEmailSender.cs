@@ -1,14 +1,14 @@
 #nullable enable
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Services.EmailSender
 {
@@ -24,16 +24,16 @@ namespace Biobanks.Submissions.Api.Services.EmailSender
         {
             _config = options.Value;
             _emailViews = emailViews;
-            
-        // local path preprocessing
-        // special case replacements, like `~`
-        _localPath = _config.LocalPath.StartsWith("~/")
-                ? Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            _config.LocalPath.Replace("~/", "")) 
-            : _config.LocalPath;
+
+            // local path preprocessing
+            // special case replacements, like `~`
+            _localPath = _config.LocalPath.StartsWith("~/")
+                    ? Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                _config.LocalPath.Replace("~/", ""))
+                : _config.LocalPath;
         }
-    
+
         private void EnsureTargetPath()
         {
             if (!System.IO.Directory.Exists(_localPath))
@@ -41,11 +41,11 @@ namespace Biobanks.Submissions.Api.Services.EmailSender
         }
 
         /// <inheritdoc />
-        public async Task SendEmail<TModel>(List<EmailAddress> toAddresses, string viewName, TModel model)
+        public async Task SendEmail<TModel>(List<EmailAddress> toAddresses, string viewName, TModel model, List<EmailAddress>? ccAddresses = null)
             where TModel : class
         {
             EnsureTargetPath();
-            
+
             var (body, viewContext) = await _emailViews.RenderToString(viewName, model);
 
             var message = new MimeMessage();
@@ -64,14 +64,30 @@ namespace Biobanks.Submissions.Api.Services.EmailSender
                 Text = body
             };
 
+            if (ccAddresses != null)
+            {
+                foreach (var address in ccAddresses)
+                    message.Cc.Add(!string.IsNullOrEmpty(address.Name)
+                        ? new MailboxAddress(address.Name, address.Address)
+                        : MailboxAddress.Parse(address.Address));
+            }
+
+
             await message.WriteToAsync(
                 Path.Combine(_localPath,
                     MessageFileName(viewName, toAddresses[0].Address)));
         }
 
-        public async Task SendEmail<TModel>(EmailAddress toAddress, string viewName, TModel model)
+        public async Task SendEmail<TModel>(EmailAddress toAddress, string viewName, TModel model, EmailAddress? ccAddress = null)
             where TModel : class
-            => await SendEmail(new List<EmailAddress> { toAddress }, viewName, model);
+        {
+            List<EmailAddress> ccAddresses = new();
+            if (ccAddress != null)
+            {
+                ccAddresses.Add(ccAddress);
+            }
+            await SendEmail(new List<EmailAddress> { toAddress }, viewName, model, ccAddresses);
+        }
 
         private static string ShortViewName(string viewName)
             => viewName[(viewName.LastIndexOf('/') + 1)..];
@@ -81,6 +97,6 @@ namespace Biobanks.Submissions.Api.Services.EmailSender
 
         private static string MessageFileName(string viewName, string recipient)
             => $"{ShortViewName(viewName)}_{recipient}_{SafeIsoDate(DateTimeOffset.UtcNow)}.eml";
-        
+
     }
 }
