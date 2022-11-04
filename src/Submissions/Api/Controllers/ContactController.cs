@@ -48,21 +48,16 @@ namespace Biobanks.Submissions.Api.Controllers
         
         public async Task<ActionResult> EmailContactListAjax(string to, List<string> ids, bool contactMe)
         {
-            try
-            {
-                // Convert IDs to list of Email Addresses
-                var biobanks = await _organisationService.ListByExternalIds(ids);
-                var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
-                var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
+            
+            // Convert IDs to list of Email Addresses
+            var biobanks = await _organisationService.ListByExternalIds(ids);
+            var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
+            var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
-                await _emailService.SendContactList(new EmailAddress(to), contactlist, contactMe);
-            }
-            catch
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
+            await _emailService.SendContactList(new EmailAddress(to), contactlist, contactMe);
+            
 
-            return new StatusCodeResult(StatusCodes.Status200OK);
+            return Ok();
         }
 
         [HttpGet]
@@ -130,7 +125,7 @@ namespace Biobanks.Submissions.Api.Controllers
                 biobank.AnonymousIdentifier.ToString(), network.Name, network.Email, network.Description);
             }
 
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
+            return NoContent();
 
         }
     }
