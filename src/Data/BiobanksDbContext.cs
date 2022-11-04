@@ -114,6 +114,8 @@ namespace Biobanks.Data
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            base.OnModelCreating(model);
+
             // Join Tables
             model.Entity<MaterialTypeGroup>()
                 .HasMany(x => x.MaterialTypes)
