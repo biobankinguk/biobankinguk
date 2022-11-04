@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Submissions.Api.Controllers.Submissions;
+using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,28 +17,50 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-    public class ContactController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ContactController : ControllerBase
     {
         private readonly INetworkService _networkService;
         private readonly IOrganisationDirectoryService _organisationService;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
+        private readonly IEmailService _emailService; 
+ 
  
         public ContactController (
             INetworkService networkService,
             IOrganisationDirectoryService organisationService, 
             IMapper mapper,
-            IMemoryCache memoryCache
+            IMemoryCache memoryCache,
+            IEmailService emailService
             )
         {
             _networkService = networkService;
             _organisationService = organisationService;
             _mapper = mapper;
             _memoryCache = memoryCache;
+            _emailService = emailService;
         }
 
-        public ViewResult Contact() => View(); 
 
+        [HttpPost("EmailContactListAjax")]
+        
+        public async Task<ActionResult> EmailContactListAjax(string to, List<string> ids, bool contactMe)
+        {
+            
+            // Convert IDs to list of Email Addresses
+            var biobanks = await _organisationService.ListByExternalIds(ids);
+            var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
+            var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
+
+            await _emailService.SendContactList(new EmailAddress(to), contactlist, contactMe);
+            
+
+            return Ok();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> BiobankContactDetailsAjax(string id)
         {
             var biobankExternalIds = (List<string>)JsonConvert.DeserializeObject(id, typeof(List<string>));
@@ -89,29 +113,20 @@ namespace Biobanks.Submissions.Api.Controllers
             return Ok(model);
         }
 
-        public ActionResult FeedbackMessageAjax(string message, string type, bool html = false)
+        [HttpPost("NotifyNetworkNonMembersOfHandoverAjax")]
+        public async Task<ActionResult> NotifyNetworkNonMembersOfHandoverAjax(NetworkNonMemberContactModel model)
         {
-            this.SetTemporaryFeedbackMessage(
-                message,
+            var network = await _networkService.Get(model.NetworkId);
+            var biobanks = (await _organisationService.ListByAnonymousIdentifiers(model.BiobankAnonymousIdentifiers)).ToList();
 
-                ((Func<FeedbackMessageType>)(() =>
-                {
-                    switch (type?.ToLower() ?? "")
-                    {
-                        case "success":
-                            return FeedbackMessageType.Success;
-                        case "danger":
-                            return FeedbackMessageType.Danger;
-                        case "warning":
-                            return FeedbackMessageType.Warning;
-                        default:
-                            return FeedbackMessageType.Info;
-                    }
-                }))(),
+            foreach (var biobank in biobanks) 
+            {
+                await _emailService.SendExternalNetworkNonMemberInformation(new EmailAddress(biobank.ContactEmail), biobank.Name,
+                biobank.AnonymousIdentifier.ToString(), network.Name, network.Email, network.Description);
+            }
 
-                html);
+            return NoContent();
 
-            return PartialView("_FeedbackMessage");
         }
     }
 }
