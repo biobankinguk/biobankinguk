@@ -305,7 +305,7 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<INetworkService, NetworkService>()
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
-    //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+    // .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
     // Reference Data
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
@@ -354,7 +354,6 @@ app.GnuTerryPratchett()
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    app.UseDeveloperExceptionPage();
 }
 else
 {
