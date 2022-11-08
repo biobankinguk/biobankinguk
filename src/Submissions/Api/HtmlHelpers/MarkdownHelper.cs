@@ -18,7 +18,6 @@ namespace Biobanks.Submissions.Api.HtmlHelpers
             return new HtmlString(
                 markdownTransformed
              );
-
         }
     }
 }
