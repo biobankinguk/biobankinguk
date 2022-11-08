@@ -15,7 +15,7 @@
     </div>
     
     @* override the default positioning, so we can have this below the custom breadcrumbs *@
-    <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Contact")">
+    <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
         @await Html.PartialAsync("_FeedbackMessage")
     </section>
     <br/>
