@@ -43,10 +43,9 @@ public class FlagsController : Controller
                     Value = x.Value ?? "", // Store nulls as empty strings
                 })
         );
-
-        // TODO: Clear the cache - 
-        // Invalidate current config (Refreshed in SiteConfigAttribute filter)
-        HttpContext.Application["Config"] = null;
+        
+        // Update current config cache
+        await _configService.UpdateSiteConfigCache();
 
         return Json(new
         {
