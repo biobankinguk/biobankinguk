@@ -227,32 +227,32 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
                     sp => new ElasticCollectionSearchProvider(
                         elasticConfig.ElasticsearchUrl,
                         (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.ElasticsearchUsername,
-                        elasticConfig.ElasticsearchPassword            
+                        elasticConfig.Username,
+                        elasticConfig.Password
                     )
                 )
                 .AddTransient<ICollectionIndexProvider>(
                     sp => new ElasticCollectionIndexProvider(
                         elasticConfig.ElasticsearchUrl,
                         (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.ElasticsearchUsername,
-                        elasticConfig.ElasticsearchPassword             
+                        elasticConfig.Username,
+                        elasticConfig.Password
                     )
                 )
                 .AddTransient<ICapabilitySearchProvider>(
                     sp => new ElasticCapabilitySearchProvider(
                         elasticConfig.ElasticsearchUrl,
                         (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.ElasticsearchUsername,
-                        elasticConfig.ElasticsearchPassword             
+                        elasticConfig.Username,
+                        elasticConfig.Password
                     )
                 )
                 .AddTransient<ICapabilityIndexProvider>(
                     sp => new ElasticCapabilityIndexProvider(
                         elasticConfig.ElasticsearchUrl,
                         (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.ElasticsearchUsername,
-                        elasticConfig.ElasticsearchPassword             
+                        elasticConfig.Username,
+                        elasticConfig.Password
                     )
                 )
                 .AddTransient<ISearchProvider, LegacySearchProvider>()
