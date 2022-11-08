@@ -80,16 +80,18 @@ builder.Configuration.AddJsonFile("Settings/LegacyStorageTemperatures.json", opt
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtBearerConfig>();
 var workersConfig = builder.Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
 var hangfireConfig = builder.Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
+var elasticConfig = builder.Configuration.GetSection("ElasticSearch").Get<ElasticsearchConfig>() ?? new();
 
 builder.Services.AddOptions()
     .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
-                .Configure<JwtBearerConfig>(builder.Configuration.GetSection("JWT"))
-                .Configure<AggregatorOptions>(builder.Configuration.GetSection("Aggregator"))
-                .Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"))
-                .Configure<WorkersOptions>(builder.Configuration.GetSection("Workers"))
-                .Configure<HangfireOptions>(builder.Configuration.GetSection("Hangfire"))
-                .Configure<MaterialTypesLegacyModel>(builder.Configuration.GetSection("MaterialTypesLegacyModel"))
-                .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"));
+    .Configure<JwtBearerConfig>(builder.Configuration.GetSection("JWT"))
+    .Configure<AggregatorOptions>(builder.Configuration.GetSection("Aggregator"))
+    .Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"))
+    .Configure<WorkersOptions>(builder.Configuration.GetSection("Workers"))
+    .Configure<HangfireOptions>(builder.Configuration.GetSection("Hangfire"))
+    .Configure<MaterialTypesLegacyModel>(builder.Configuration.GetSection("MaterialTypesLegacyModel"))
+    .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"))
+    .Configure<ElasticsearchConfig>(builder.Configuration.GetSection("Elasticsearch"));
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -219,40 +221,38 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<IOntologyTermService, OntologyTermService>()
-                
     
                 // Search Services
                 .AddTransient<ICollectionSearchProvider>(
                     sp => new ElasticCollectionSearchProvider(
-                        builder.Configuration["ElasticSearchURL"],
-                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
-                        builder.Configuration["ElasticSearchUsername"],
-                        builder.Configuration["ElasticSearchPassword"]            
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.ElasticsearchUsername,
+                        elasticConfig.ElasticsearchPassword            
                     )
                 )
                 .AddTransient<ICollectionIndexProvider>(
                     sp => new ElasticCollectionIndexProvider(
-                        builder.Configuration["ElasticSearchURL"],
-                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
-                        builder.Configuration["ElasticSearchUsername"],
-                        builder.Configuration["ElasticSearchPassword"]            
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.ElasticsearchUsername,
+                        elasticConfig.ElasticsearchPassword             
                     )
                 )
                 .AddTransient<ICapabilitySearchProvider>(
                     sp => new ElasticCapabilitySearchProvider(
-                        builder.Configuration["ElasticSearchURL"],
-                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
-                        builder.Configuration["ElasticSearchUsername"],
-                        builder.Configuration["ElasticSearchPassword"]            
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.ElasticsearchUsername,
+                        elasticConfig.ElasticsearchPassword             
                     )
                 )
                 .AddTransient<ICapabilityIndexProvider>(
                     sp => new ElasticCapabilityIndexProvider(
-                        builder.Configuration["ElasticSearchURL"],
-                        (builder.Configuration["DefaultCollectionsSearchIndex"], builder.Configuration["DefaultCapabilitiesSearchIndex"]),
-                        builder.Configuration["ElasticSearchUsername"],
-                        builder.Configuration["ElasticSearchPassword"]            
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.ElasticsearchUsername,
+                        elasticConfig.ElasticsearchPassword             
                     )
                 )
                 .AddTransient<ISearchProvider, LegacySearchProvider>()
