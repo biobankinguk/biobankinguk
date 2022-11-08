@@ -26,16 +26,16 @@
     })
     <div class="col-sm-8">
         @if (!Model.Biobanks.IsNullOrEmpty())
+        {
+            foreach (var biobank in Model.Biobanks)
             {
-                foreach (var biobank in Model.Biobanks)
-                {
                 <a href="@Url.Action("CollectionsDetail", "Search",
-                            new
-                            {
-                                biobankExternalId = biobank.ExternalId,
-                                ontologyTerm = Model.OntologyTerm,
-                                selectedFacets = Context.Request.Query["selectedFacets"]
-                            })" class="detailed-search-link">
+                             new
+                             {
+                                 biobankExternalId = biobank.ExternalId,
+                                 ontologyTerm = Model.OntologyTerm,
+                                 selectedFacets = Context.Request.Query["selectedFacets"]
+                             })" class="detailed-search-link">
                     <div class="well well-hover">
 
                         <div class="row no-link-style">
