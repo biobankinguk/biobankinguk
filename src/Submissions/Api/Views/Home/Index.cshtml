@@ -22,7 +22,7 @@
 		<div class="row">
 			@* Homepage overrides the default positioning, so we can have this inside the splash area *@
 			<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
-				<partial>("_FeedbackMessage")</partial>
+				<partial name = "_FeedbackMessage">
 			</section>
 		</div>
 		<div class="row">
@@ -38,7 +38,7 @@
 			<section class="info-white-full">
 				<div id="focus" class="container text-center">
 					<div class="jumbotron">
-						<partial>("~/Views/Home/_UnifiedSearchBox.cshtml", Model)</partial>
+						<partial name = "~/Views/Home/_UnifiedSearchBox.cshtml" for = "Model" >
 					</div>
 				</div>
 			</section>
