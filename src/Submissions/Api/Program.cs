@@ -84,6 +84,7 @@ var elasticConfig = builder.Configuration.GetSection("ElasticSearch").Get<Elasti
 
 builder.Services.AddOptions()
     .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
+    .Configure<SitePropertiesOptions>(builder.Configuration.GetSection("SiteProperties"))
     .Configure<JwtBearerConfig>(builder.Configuration.GetSection("JWT"))
     .Configure<AggregatorOptions>(builder.Configuration.GetSection("Aggregator"))
     .Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"))

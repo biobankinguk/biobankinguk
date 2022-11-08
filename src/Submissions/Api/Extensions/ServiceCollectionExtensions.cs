@@ -25,6 +25,7 @@ namespace Biobanks.Submissions.Api.Extensions
             s
                 .AddTransient<RazorViewService>()
                 .AddTransient<AccountEmailService>()
+                .AddTransient<EmailService>()
                 .TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             if (useSendGrid) s.AddTransient<IEmailSender, SendGridEmailSender>();

@@ -8,7 +8,6 @@ namespace Biobanks.Submissions.Api.Config
                 ReplyToAddress = FromAddress;
         }
 
-        public string ServiceName { get; init; } = "Biobanks";
         public string FromName { get; init; } = "No Reply";
         public string FromAddress { get; init; } = "noreply@example.com";
         public string ReplyToAddress { get; init; } = string.Empty;

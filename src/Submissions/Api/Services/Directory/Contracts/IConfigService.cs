@@ -38,7 +38,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <param name="defaultValue">Default value string</param>
         /// <param name="checkCacheFirst">bool to check if cache is avaible</param>
         /// <returns>Config value string</returns>
-        Task<string> GetSiteConfigValue(string key, bool checkCacheFirst, string defaultValue = "");
+        Task<string> GetSiteConfigValue(string key, string defaultValue = "", bool checkCacheFirst = false);
 
         /// <summary>
         /// Updates specified Configs
