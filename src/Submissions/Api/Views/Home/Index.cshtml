@@ -1,6 +1,7 @@
 ﻿@using System.Configuration
 @using Biobanks.Directory.Data.Constants
 @using Biobanks.Submissions.Api.Models.Home
+@using Biobanks.Submissions.Api.HtmlHelpers
 @model HomepageContentModel
 @{
 	ViewBag.Title = "Index";
@@ -48,10 +49,10 @@
 				<div class="container">
 					<div id="register" class="row info">
 						<div class="col-sm-6">
-							@Model.ResourceRegistration
+							@Html.Markdown(Model.ResourceRegistration)
 						</div>
 						<div class="col-sm-6">
-							@Model.NetworkRegistration
+							@Html.Markdown(Model.NetworkRegistration)
 						</div>
 					</div>
 					<div class="col-sm-6 text-center">
