@@ -12,7 +12,6 @@ namespace Biobanks.Submissions.Api.HtmlHelpers
             {
                 ExtraMode = true,
                 MarkdownInHtml = true
-                //SafeMode = true
             }.Transform(markdown);
 
             return new HtmlString(
