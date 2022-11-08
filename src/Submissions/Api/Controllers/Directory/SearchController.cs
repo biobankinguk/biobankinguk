@@ -22,7 +22,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory;
 [AllowAnonymous]
 public class SearchController : Controller
 {
-    private readonly IReferenceDataService<Country> _countryController;
+        private readonly IReferenceDataService<Country> _countryController;
 
         private readonly IOntologyTermService _ontologyTermService;
     
@@ -73,9 +73,9 @@ public class SearchController : Controller
             var model = new BaseSearchModel
             {
                 OntologyTerm = ontologyTerm,
-                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, ""),
-                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, ""),
-                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName, ""),
+                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName),
+                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName),
+                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName),
                 // Extract the search facets.
                 SelectedFacets = ExtractSearchFacets(selectedFacets)
             };
@@ -146,9 +146,9 @@ public class SearchController : Controller
             model.SelectedFacets = selectedFacets;
             
             // Config 
-            model.StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, "");
-            model.MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, "");
-            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage, "");
+            model.StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName);
+            model.MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName);
+            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage);
 
             // Get the biobank logo name from the database.
             model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
@@ -188,9 +188,9 @@ public class SearchController : Controller
             var model = new BaseSearchModel
             {
                 OntologyTerm = ontologyTerm,
-                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName, ""),
-                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName, ""),
-                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName, ""),
+                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName),
+                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName),
+                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName),
                 
                 // Extract the search facets.
                 SelectedFacets = ExtractSearchFacets(selectedFacets)
