@@ -104,5 +104,20 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// <param name="collectionIds">List of collection Ids to get descriptions for.</param>
         /// <returns>A dictionary of collection ids and their descriptions.</returns>
         Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Collection> GetCollectionByIdForIndexingAsync(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collectionId"></param>
+        /// <returns></returns>
+        Task UpdateCollectionDetails(int collectionId);
+
     }
 }
