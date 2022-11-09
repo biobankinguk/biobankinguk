@@ -441,6 +441,22 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
+
+        #region RefData: Extraction Procedure
+
+        public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false)
+        => (await _materialTypeRepository.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures))
+        .FirstOrDefault()?.ExtractionProcedures
+        .Where(x => x.DisplayOnDirectory || !onlyDisplayable)
+        .ToList();
+
+        public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
+            => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
+
+        public async Task<bool> IsExtractionProcedureInUse(string id)
+            => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);
+
+        #endregion
         
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
