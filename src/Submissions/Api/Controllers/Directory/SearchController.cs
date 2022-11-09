@@ -30,7 +30,7 @@ public class SearchController : Controller
 
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
-        private readonly IBiobankReadService _biobankReadService;
+        private readonly ICollectionService _collectionService;
         
         private readonly IConfigService _configService;
 
@@ -39,7 +39,7 @@ public class SearchController : Controller
             IOrganisationDirectoryService organisationDirectoryService,
             ISearchProvider searchProvider,
             IMapper mapper,
-            IBiobankReadService biobankReadService,
+            ICollectionService collectionService,
             IConfigService configService)
         {
             _countryController = countryController;
@@ -47,7 +47,7 @@ public class SearchController : Controller
             _organisationDirectoryService = organisationDirectoryService;
             _searchProvider = searchProvider;
             _mapper = mapper;
-            _biobankReadService = biobankReadService;
+            _collectionService = collectionService;
             _configService = configService;
         }
 
@@ -155,7 +155,7 @@ public class SearchController : Controller
 
             //Get Collection Descriptions in bulk
             var descriptions =
-                await _biobankReadService.GetDescriptionsByCollectionIds(
+                await _collectionService.GetDescriptionsByCollectionIds(
                     model.Collections.Select(x => x.CollectionId));
 
             foreach (var collection in model.Collections)
