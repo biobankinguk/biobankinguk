@@ -78,7 +78,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<int> GetIndexableCapabilityCountAsync();
         Task<int> GetSuspendedSampleSetCountAsync();
         Task<int> GetSuspendedCapabilityCountAsync();
-        Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds);
 
         Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId);
 

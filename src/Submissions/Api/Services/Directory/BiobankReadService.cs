@@ -238,18 +238,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<int> GetSuspendedCapabilityCountAsync()
             => await _capabilityRepository.CountAsync(
                 x => x.Organisation.IsSuspended);
-
-        public async Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds)
-            => (await _collectionRepository.ListAsync(false,
-                    x => collectionIds.Contains(x.CollectionId)))
-                .Select(
-                    x => new
-                    {
-                        id = x.CollectionId,
-                        description = x.Description
-                    })
-                .ToDictionary(x => x.id, x => x.description);
-
+        
         public async Task<int> GetSampleSetCountAsync()
             => await _sampleSetRepository.CountAsync();
 
