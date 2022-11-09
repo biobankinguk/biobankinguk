@@ -109,8 +109,17 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<List<OntologyTerm>> GetByAssociatedDataType(int id);
         Task<List<AssociatedDataType>> GetAssociatedDataFromList(List<int> list);
 
+        /// <summary>
+        /// List all snomed tags
+        /// </summary>
+        /// <returns>List of all snomed tags.</returns>
         Task<IEnumerable<SnomedTag>> ListSnomedTags();
 
+        /// <summary>
+        /// Get a snomed tag by its description
+        /// </summary>
+        /// <param name="description">Description to match by</param>
+        /// <returns>One snomed tag</returns>
         Task<SnomedTag> GetSnomedTagByDescription(string description);
     }
 }
