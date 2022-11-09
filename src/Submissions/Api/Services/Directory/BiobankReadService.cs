@@ -441,32 +441,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
-
-        #region RefData: Extraction Procedure
-
-        public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false)
-        => (await _materialTypeRepository.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures))
-        .FirstOrDefault()?.ExtractionProcedures
-        .Where(x => x.DisplayOnDirectory || !onlyDisplayable)
-        .ToList();
-
-        public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
-            => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
-
-        public async Task<bool> IsExtractionProcedureInUse(string id)
-            => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);
-
-        #endregion
-
-        #region RefData: Snomed Tags
-        public async Task<IEnumerable<SnomedTag>> ListSnomedTags()
-        => await _snomedTagRepository.ListAsync();
-
-        public async Task<SnomedTag> GetSnomedTagByDescription(string description)
-            => (await _snomedTagRepository.ListAsync(filter: x => x.Value == description)).SingleOrDefault();
-
-        #endregion
-
+        
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.CollectionId);
