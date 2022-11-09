@@ -45,7 +45,7 @@ public class FlagsController : Controller
         );
         
         // Update current config cache
-        await _configService.UpdateSiteConfigCache();
+        await _configService.PopulateSiteConfigCache();
 
         return Json(new
         {

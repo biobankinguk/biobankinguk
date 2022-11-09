@@ -51,7 +51,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// Updates cached config values.
         /// </summary>
         /// <returns></returns>
-        Task UpdateSiteConfigCache();
+        Task PopulateSiteConfigCache();
 
         /// <summary>
         /// Gets Flag Config Value

@@ -58,7 +58,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         /// <inheritdoc />
-        public async Task UpdateSiteConfigCache()
+        public async Task PopulateSiteConfigCache()
         {
             var currentConfig = await ListSiteConfigsAsync();
             foreach (var config in currentConfig)
