@@ -108,6 +108,10 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<int> CountCollectionCapabilityUsage(string ontologyTermId);
         Task<List<OntologyTerm>> GetByAssociatedDataType(int id);
         Task<List<AssociatedDataType>> GetAssociatedDataFromList(List<int> list);
+
+        Task<IEnumerable<SnomedTag>> ListSnomedTags();
+
+        Task<SnomedTag> GetSnomedTagByDescription(string description);
     }
 }
 
