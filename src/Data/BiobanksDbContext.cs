@@ -5,12 +5,13 @@ using Biobanks.Entities.Data.Analytics;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared;
 using Biobanks.Entities.Shared.ReferenceData;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Biobanks.Data
 {
-    public class BiobanksDbContext : DbContext
+    public class BiobanksDbContext : IdentityDbContext
     {
         #region Reference Data: API
         public DbSet<Ontology> Ontologies { get; set; }
@@ -113,6 +114,8 @@ namespace Biobanks.Data
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            base.OnModelCreating(model);
+
             // Join Tables
             model.Entity<MaterialTypeGroup>()
                 .HasMany(x => x.MaterialTypes)
