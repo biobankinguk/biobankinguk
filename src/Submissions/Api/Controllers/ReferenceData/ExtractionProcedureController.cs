@@ -24,15 +24,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
         private readonly IOntologyTermService _ontologyTermService;
 
-        private readonly IBiobankReadService _biobankReadService;
-
         public ExtractionProcedureController(
             IMaterialTypeService materialTypeService,
             IOntologyTermService ontologyTermService)
         {
             _materialTypeService = materialTypeService;
             _ontologyTermService = ontologyTermService;
-            _biobankReadService = biobankReadService;
         }
 
         /// <summary>
@@ -103,8 +100,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                // TODO: Remove the readService - maybe move Snomed to its own Service?
-                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription(SnomedTags.ExtractionProcedure)).Id,
+                SnomedTagId = (await _ontologyTermService.GetSnomedTagByDescription(SnomedTags.ExtractionProcedure)).Id,
                 DisplayOnDirectory = model.DisplayOnDirectory,
                 MaterialTypes = materialTypes.Where(x => model.MaterialTypeIds.Contains(x.Id)).ToList()
             });
