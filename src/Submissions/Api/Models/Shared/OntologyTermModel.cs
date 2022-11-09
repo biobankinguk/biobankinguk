@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Biobanks.Submissions.Api.Models.Shared
@@ -18,9 +18,8 @@ namespace Biobanks.Submissions.Api.Models.Shared
 
         public List<string> MatchingOtherTerms { get; set; } = new List<string>();
         public List<string> NonMatchingOtherTerms { get; set; } = new List<string>();
-        
-        public List<AssociatedDataTypeModel> AssociatedDataTypes { get; set; }
 
+        public List<AssociatedDataTypeModel> AssociatedDataTypes { get; set; }
         public string AssociatedDataTypesJson { get; set; }
     }
 }
