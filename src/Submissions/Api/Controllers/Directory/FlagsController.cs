@@ -31,7 +31,7 @@ public class FlagsController : Controller
     }
 
     [HttpPost]
-    public async Task<JsonResult> UpdateFlagsConfig(IEnumerable<SiteConfigModel> values)
+    public async Task<ActionResult> UpdateFlagsConfig(IEnumerable<SiteConfigModel> values)
     {
         // Update Database Config
         await _configService.UpdateSiteConfigsAsync(
@@ -46,12 +46,8 @@ public class FlagsController : Controller
         
         // Update current config cache
         await _configService.PopulateSiteConfigCache();
-
-        return Json(new
-        {
-            success = true,
-            redirect = "UpdateFlagsConfigSuccess"
-        });
+        
+        return Ok();
     }
 
     public ActionResult UpdateFlagsConfigSuccess()
