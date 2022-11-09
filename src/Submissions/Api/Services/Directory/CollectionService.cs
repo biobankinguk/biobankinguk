@@ -271,5 +271,15 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <inheritdoc/>
         public async Task<bool> HasSampleSets(int id)
             => await _db.SampleSets.AnyAsync(x => x.CollectionId == id);
+
+        /// <inheritdoc/>
+        public async Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds)
+            => await _db.Collections.Where(x => collectionIds.Contains(x.CollectionId))
+                .Select(x => new
+                {
+                    id = x.CollectionId,
+                    description = x.Description
+                }).ToDictionaryAsync(x => x.id, x => x.description);
+        
     }
 }
