@@ -278,7 +278,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         /// <inheritdoc/>
         public async Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds)
-            => await _db.Collections.Where(x => collectionIds.Contains(x.CollectionId))
+            => await _db.Collections
+                .AsNoTracking()
+                .Where(x => collectionIds.Contains(x.CollectionId))
                 .Select(x => new
                 {
                     id = x.CollectionId,
@@ -287,7 +289,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         /// <inheritdoc/>
         public async Task<Collection> GetCollectionByIdForIndexingAsync(int id)
-            => (await _db.Collections.Where(x => x.CollectionId == id)
+            => (await _db.Collections
+                    .AsNoTracking()
+                    .Where(x => x.CollectionId == id)
                     .Include(x => x.OntologyTerm)
                     .Include(x => x.AccessCondition)
                     .Include(x => x.CollectionType)
