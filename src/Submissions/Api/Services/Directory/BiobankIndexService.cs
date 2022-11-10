@@ -408,7 +408,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
             for (var i = 0; i < chunkCount; i++)
             {
-                var chunkSampleSets = await _biobankReadService
+                var chunkSampleSets = await _capabilityService
                     .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
                         .Skip(i * BulkIndexChunkSize)
                         .Take(BulkIndexChunkSize));
@@ -418,7 +418,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                         .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
             }
 
-            var remainingSampleSets = await _biobankReadService
+            var remainingSampleSets = await _capabilityService
                 .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
                     .Skip(chunkCount * BulkIndexChunkSize)
                     .Take(remainingIdCount));
