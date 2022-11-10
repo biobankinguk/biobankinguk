@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions
+namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
     [Route("api/[controller]")]
     [ApiController]

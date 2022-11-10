@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions
+namespace Biobanks.Submissions.Api.Controllers.Directory
 {
     public class ApplicationBaseController : Controller
     {
