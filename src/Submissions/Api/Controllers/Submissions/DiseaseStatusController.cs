@@ -1,48 +1,42 @@
-﻿using Biobanks.Services.Contracts;
+﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Constants;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Models.ADAC;
-using System.Collections;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Web.Filters;
-using System.Net.Http.Headers;
-using System.Collections.Generic;
-using Biobanks.Directory.Services.Constants;
-using Biobanks.Directory.Services.Contracts;
-using Biobanks.Entities.Data.ReferenceData;
-using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
-using System;
 
-namespace Biobanks.Web.ApiControllers
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserApiAuthorize(Roles = "ADAC")]
-    [RoutePrefix("api/DiseaseStatus")]
-    public class DiseaseStatusController : ApiBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DiseaseStatusController : ControllerBase
     {
         private readonly IOntologyTermService _ontologyTermService;
 
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IBiobankWriteService _biobankWriteService;
-
+        private readonly IDiseaseStatusService _diseaseStatusService;
+        //TODO ADAC authorization
         public DiseaseStatusController(
             IOntologyTermService ontologyTermService,
-            IBiobankReadService biobankReadService, 
-            IBiobankWriteService biobankWriteService)
+            IDiseaseStatusService diseaseStatusService)
         {
             _ontologyTermService = ontologyTermService;
-            _biobankReadService = biobankReadService;
-            _biobankWriteService = biobankWriteService;
+            _diseaseStatusService = diseaseStatusService;
         }
 
+        /// <summary>
+        /// Generate a list of Ontology Term.
+        /// </summary>
+        /// <returns>The list of Ontology Term.</returns>
         [HttpGet]
         [AllowAnonymous]
-        [Route("")]
         public async Task<IList> Get()
         {
             var diseaseTerms = await _ontologyTermService.List(tags: new List<string>
@@ -60,30 +54,39 @@ namespace Biobanks.Web.ApiControllers
                     OtherTerms = x.OtherTerms,
                     DisplayOnDirectory = x.DisplayOnDirectory,
                     AssociatedDataTypes = x.AssociatedDataTypes.Select(y => new AssociatedDataTypeModel
-                        {
-                            Id = y.Id,
-                            Name = y.Value
-                        }).ToList()
+                    {
+                        Id = y.Id,
+                        Name = y.Value
+                    }).ToList()
                 })
                 .Result
             )
             .ToList();
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Generate a list of Associated Data Types.
+        /// </summary>
+        /// <returns>Associated Data Types.</returns>
+        [HttpGet("{id}/AssociatedDataTypes")]
         [AllowAnonymous]
-        [Route("{id}/AssociatedDataTypes")]
         public async Task<List<AssociatedDataType>> GetAssociatedDataTypes(string id)
         {
-           
+
             var associatedDataTypes = await _ontologyTermService.ListAssociatedDataTypesByOntologyTerm(id);
             return associatedDataTypes;
-            
+
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Delete(string id)
+        /// <summary>
+        /// Delete a given OntologyTerm with Id
+        /// </summary>
+        /// <param name="id">Id of the OntologyTerm to delete.</param>
+        /// <returns>The deleted OntologyTerm.</returns>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200, Type = typeof(OntologyTermModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<IActionResult> Delete(string id)
         {
             var model = await _ontologyTermService.Get(id, tags: new List<string> { SnomedTags.Disease });
 
@@ -94,22 +97,26 @@ namespace Biobanks.Web.ApiControllers
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
 
             await _ontologyTermService.Delete(model.Id);
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Value
-            });
+            return Ok(model);
+
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> Put(string id, OntologyTermModel model)
+        /// <summary>
+        /// Update an exisiting OntologyTerm with the provided updated entity.
+        /// </summary>
+        /// <param name="id">Id of the model to update.</param>
+        /// <param name="model">Model with updated values.</param>
+        /// <returns>The updated OntologyTerm.</returns>
+        [HttpPut("{id}")]
+        [SwaggerResponse(200, Type = typeof(OntologyTermModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<IActionResult> Put(string id, OntologyTermModel model)
         {
             //If this description is valid, it already exists
             if (await _ontologyTermService.Exists(id, value: model.Description, filterById: false))
@@ -121,38 +128,41 @@ namespace Biobanks.Web.ApiControllers
             {
                 //Allow editing of only Other terms field if diagnosis in use
                 var diagnosis = await _ontologyTermService.Get(id, tags: new List<string> { SnomedTags.Disease });
-                
+
                 if (diagnosis.Value != model.Description)
                     ModelState.AddModelError("Description", "This disease status is currently in use and cannot be edited.");
             }
 
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
-            var associatedData = ((List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>)));
+            var associatedData = (List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>));
             List<AssociatedDataType> types = await _ontologyTermService.GetAssociatedDataFromList(associatedData.Select(x => x.Id).ToList());
             await _ontologyTermService.Update(new OntologyTerm
             {
                 Id = id,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
+                SnomedTagId = (await _diseaseStatusService.GetSnomedTagByDescription("Disease")).Id,
                 DisplayOnDirectory = model.DisplayOnDirectory,
                 AssociatedDataTypes = types
             });
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
+            return Ok(model);
         }
 
+        /// <summary>
+        /// Create a new OntologyTerm. The Id of the OntologyTerm should be null, as it is
+        /// generated by the database
+        /// </summary>
+        /// <param name="model">The model to insert.</param>
+        /// <returns>The newly created OntologyTerm, with assigned Id</returns>
         [HttpPost]
-        [Route("")]
-        public async Task<IHttpActionResult> Post(OntologyTermModel model)
+        [SwaggerResponse(200, Type = typeof(OntologyTermModel))]
+        [SwaggerResponse(400, "Invalid request.")]
+        public async Task<IActionResult> Post(OntologyTermModel model)
         {
             // Had to do this as it is not binding to ontology term model
             ModelState.Clear();
@@ -166,42 +176,38 @@ namespace Biobanks.Web.ApiControllers
                 ModelState.AddModelError("Description", "That description is already in use. Descriptions must be unique across all ontology terms.");
             }
 
-            var context = new ValidationContext( model,serviceProvider: null, items: null);
+            var context = new ValidationContext(model, serviceProvider: null, items: null);
             var validationResults = new List<ValidationResult>();
-            bool isValid = Validator.TryValidateObject(model,context, validationResults, true);
+            bool isValid = Validator.TryValidateObject(model, context, validationResults, true);
             if (!isValid)
             {
-                foreach(var item in validationResults)
+                foreach (var item in validationResults)
                 {
-                    ModelState.AddModelError(item.ToString(),item.ErrorMessage);
+                    ModelState.AddModelError(item.ToString(), item.ErrorMessage);
                 }
             }
 
 
-
             if (!ModelState.IsValid)
             {
-                return JsonModelInvalidResponse(ModelState);
+                return BadRequest(ModelState);
             }
-            var associatedData = ((List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>)));
+
+            var associatedData = (List<AssociatedDataTypeModel>)JsonConvert.DeserializeObject(model.AssociatedDataTypesJson, typeof(List<AssociatedDataTypeModel>));
             List<AssociatedDataType> types = await _ontologyTermService.GetAssociatedDataFromList(associatedData.Select(x => x.Id).ToList());
             await _ontologyTermService.Create(new OntologyTerm
             {
                 Id = model.OntologyTermId,
                 Value = model.Description,
                 OtherTerms = model.OtherTerms,
-                SnomedTagId = (await _biobankReadService.GetSnomedTagByDescription("Disease")).Id,
+                SnomedTagId = (await _diseaseStatusService.GetSnomedTagByDescription("Disease")).Id,
                 DisplayOnDirectory = model.DisplayOnDirectory,
                 AssociatedDataTypes = types
             });
 
 
             //Everything went A-OK!
-            return Json(new
-            {
-                success = true,
-                name = model.Description
-            });
+            return Ok(model);
         }
     }
 }

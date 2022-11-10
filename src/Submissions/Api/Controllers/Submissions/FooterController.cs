@@ -10,7 +10,7 @@ using System.IO;
 namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
     [AllowAnonymous]
-    public class FooterController : ControllerBase
+    public class FooterController : Controller
     {
         private IWebHostEnvironment _hostEnvironment;
 
@@ -25,14 +25,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
             var json = System.IO.File.ReadAllText(_navPath);
             var model = JsonConvert.DeserializeObject<FooterModel>(json);
 
-            return new PartialViewResult
-            {
-                ViewName = "_BBFooter",
-                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                }
-            };
+            return PartialView("_BBFooter", model);
         }
     }
 }

@@ -222,7 +222,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-    
+                .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
+
                 // Search Services
                 .AddTransient<ICollectionSearchProvider>(
                     sp => new ElasticCollectionSearchProvider(
