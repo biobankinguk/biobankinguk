@@ -45,11 +45,12 @@ using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System;
 using Biobanks.Submissions.Api.Auth.Basic;
-using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Search.Legacy;
+using Biobanks.Submissions.Api.Auth.Entities;
+using Biobanks.Submissions.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -327,6 +328,9 @@ app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+//Authenticated users have their last login value updated to now
+app.UseLoginUpdater();
 
 app
     // Simple public middleware
