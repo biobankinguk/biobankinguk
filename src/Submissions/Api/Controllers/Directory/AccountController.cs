@@ -111,11 +111,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             //This is an action, so that it's a separate request and the user identity cookie has roles and claims available :)
             //do we need them to create a profile for an associated org or network etc?
 
-            // Start by updating user's last login time
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            
-            await _userManager.UpdateLastLogin(CurrentUser.Identity.GetUserId());
-
             //Biobank
 
             //get all accepted biobanks
