@@ -1,11 +1,14 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Search.Dto.PartialDocuments;
 using Biobanks.Search.Legacy;
-using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Extensions;
 using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Biobanks.Submissions.Api.Services.Directory;
@@ -27,12 +30,42 @@ public class CapabilityService
         _indexProvider = indexProvider;
         _donorCountService = donorCountService;
     }
+    // TODO: Check the private / public status of many of these. 
+    // TODO: Create interface.
+    // TODO: Inject.
+    
+    
+    // Formerly in read service.
+    public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
+        => (await _db.DiagnosisCapabilities
+                .AsNoTracking()
+                .Where(x => x.OntologyTerm.Value == ontologyTerm)
+                .Select(x => x.DiagnosisCapabilityId)
+                .ToListAsync()
+            );
+
+    // Formerly in read service.
+    public async Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id)
+        => (await _db.DiagnosisCapabilities
+                .AsNoTracking()
+                .Where(x => x.DiagnosisCapabilityId == id)
+                .Include(x => x.Organisation)
+                .Include(x => x.Organisation.OrganisationNetworks.Select(on => @on.Network))
+                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                .Include(x => x.OntologyTerm)
+                .Include(x => x.AssociatedData)
+                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
+                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                .Include(x => x.SampleCollectionMode)
+                .FirstOrDefaultAsync()
+            );
+
 
     // Formerly in index service.
     public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
     {
         // Get the capabilities with the ontologyTerm.
-        var capabilityIds = await _biobankReadService.GetCapabilityIdsByOntologyTermAsync(ontologyTerm);
+        var capabilityIds = await GetCapabilityIdsByOntologyTermAsync(ontologyTerm);
         // Update all search documents that are relevant to this collection.
         foreach (var capabilityId in capabilityIds)
         {
@@ -44,7 +77,7 @@ public class CapabilityService
     public async Task UpdateCapabilityDetails(int capabilityId)
         {
             // Get the entire capability object from the database.
-            var updatedCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
+            var updatedCapability = await GetCapabilityByIdForIndexingAsync(capabilityId);
 
             // Get the donor counts and get expectations from them
             var donorExpectation = DiagnosisCapabilityExtensions.GetAnnualDonorExpectationRange(
