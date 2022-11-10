@@ -13,6 +13,9 @@ using static Biobanks.Services.ConfigService;
 
 namespace Biobanks.Web.Controllers
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+              " Any changes made here will need to be made in the corresponding core version"
+        , false)]
     [UserAuthorize(Roles = "SuperUser")]
     public class FlagsController : ApplicationBaseController
     {

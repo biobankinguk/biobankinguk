@@ -58,6 +58,16 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         /// <inheritdoc />
+        public async Task PopulateSiteConfigCache()
+        {
+            var currentConfig = await ListSiteConfigsAsync();
+            foreach (var config in currentConfig)
+            {
+                _memoryCache.Set(config.Key, config.Value);
+            }
+        }
+
+        /// <inheritdoc />
         public async Task<bool?> GetFlagConfigValue(string key)
             => (ConvertStringToBool((await GetSiteConfig(key)).Value));
 
