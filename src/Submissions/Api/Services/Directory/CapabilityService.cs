@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Search.Dto.PartialDocuments;
 using Biobanks.Search.Legacy;
@@ -19,12 +20,12 @@ public class CapabilityService : ICapabilityService
 
     private readonly BiobanksDbContext _db;
     private readonly IIndexProvider _indexProvider;
-    private readonly DonorCountService _donorCountService;
+    private readonly IReferenceDataService<DonorCount> _donorCountService;
 
     public CapabilityService(
         BiobanksDbContext db,
         IIndexProvider indexProvider,
-        DonorCountService donorCountService
+        IReferenceDataService<DonorCount> donorCountService
         )
     {
         _db = db;

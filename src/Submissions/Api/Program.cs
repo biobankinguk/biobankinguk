@@ -222,8 +222,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
+                // .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
+                .AddTransient<IOntologyTermService, OntologyTermService>()
                 .AddTransient<ICapabilityService, CapabilityService>()
+                .AddTransient<ICollectionService, CollectionService>()
     
                 // Search Services
                 .AddTransient<ICollectionSearchProvider>(
@@ -295,8 +297,6 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
         .AddTransient<IContentPageService, ContentPageService>()
         .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>))
-        .AddTransient<ICollectionService, CollectionService>()
-        .AddTransient<IOntologyTermService, OntologyTermService>()
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
         .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
         .AddTransient<IBiobankReadService, BiobankReadService>()

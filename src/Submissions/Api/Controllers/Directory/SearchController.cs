@@ -26,7 +26,7 @@ public class SearchController : Controller
 
         private readonly IOntologyTermService _ontologyTermService;
     
-        private readonly IOrganisationDirectoryService _organisationDirectoryService;
+        // private readonly IOrganisationDirectoryService _organisationDirectoryService;
 
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ public class SearchController : Controller
 
         public SearchController(IReferenceDataService<Country> countryController,
             IOntologyTermService ontologyTermService,
-            IOrganisationDirectoryService organisationDirectoryService,
+            // IOrganisationDirectoryService organisationDirectoryService,
             ISearchProvider searchProvider,
             IMapper mapper,
             ICollectionService collectionService,
@@ -45,7 +45,7 @@ public class SearchController : Controller
         {
             _countryController = countryController;
             _ontologyTermService = ontologyTermService;
-            _organisationDirectoryService = organisationDirectoryService;
+            // _organisationDirectoryService = organisationDirectoryService;
             _searchProvider = searchProvider;
             _mapper = mapper;
             _collectionService = collectionService;
@@ -152,7 +152,7 @@ public class SearchController : Controller
             model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage);
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
+            // model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
 
             //Get Collection Descriptions in bulk
             var descriptions =
@@ -234,7 +234,7 @@ public class SearchController : Controller
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
+            // model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
 
             return View(model);
         }
