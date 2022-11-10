@@ -218,6 +218,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+                .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
 
                 // Reference Data
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
