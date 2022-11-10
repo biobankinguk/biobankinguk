@@ -24,6 +24,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private const int BulkIndexChunkSize = 100;
 
         private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly CapabilityService _capabilityService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
@@ -35,6 +36,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         public BiobankIndexService(
             IReferenceDataService<DonorCount> donorCountService,
+            CapabilityService capabilityService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider,
@@ -42,6 +44,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             TelemetryClient telemetryClient)
         {
             _donorCountService = donorCountService;
+            _capabilityService = capabilityService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
@@ -138,7 +141,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task IndexCapability(int capabilityId)
         {
             // Get the entire capability object from the database.
-            var createdCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
+            var createdCapability = await _capabilityService.GetCapabilityByIdForIndexingAsync(capabilityId);
 
             // Get the donor counts.
             var donorCounts = await _donorCountService.List();
