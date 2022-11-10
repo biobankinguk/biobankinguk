@@ -25,7 +25,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
         private readonly IGenericEFRepository<Organisation> _organisationRepository;
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
-        private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
@@ -41,7 +40,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
             IGenericEFRepository<Organisation> organisationRepository,
-            IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
@@ -56,11 +54,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
             _capabilityRepository = capabilityRepository;
             _sampleSetRepository = sampleSetRepository;
             _organisationRepository = organisationRepository;
-            _materialTypeRepository = materialTypeRepository;
             _materialDetailRepository = materialDetailRepository;
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _organisationUserRepository = organisationUserRepository;
-
             _userManager = userManager;
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
