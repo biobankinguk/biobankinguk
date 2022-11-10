@@ -1,4 +1,5 @@
-﻿using Biobanks.Services.Contracts;
+﻿using System;
+using Biobanks.Services.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -14,6 +15,9 @@ using DataAnnotationsExtensions;
 
 namespace Biobanks.Web.ApiControllers
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+    " Any changes made here will need to be made in the corresponding core version"
+    , false)]
     [UserApiAuthorize(Roles = "ADAC")]
     [RoutePrefix("api/ExtractionProcedure")]
     public class ExtractionProcedureController : ApiBaseController
