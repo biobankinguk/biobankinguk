@@ -6,6 +6,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Search.Dto.PartialDocuments;
 using Biobanks.Search.Legacy;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Extensions;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace Biobanks.Submissions.Api.Services.Directory;
 
-public class CapabilityService
+public class CapabilityService : ICapabilityService
 {
 
     private readonly BiobanksDbContext _db;
@@ -31,7 +32,6 @@ public class CapabilityService
         _donorCountService = donorCountService;
     }
     // TODO: Check the private / public status of many of these. 
-    // TODO: Create interface.
     // TODO: Inject.
     
     
