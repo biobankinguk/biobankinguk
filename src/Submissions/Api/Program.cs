@@ -26,7 +26,6 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Search.Legacy;
 using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Biobanks.Submissions.Api.Services.Submissions;
 using Hangfire;
@@ -48,6 +47,9 @@ using System;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
+using Biobanks.Submissions.Api.Extensions;
+using Biobanks.Submissions.Api.Filters;
+using Biobanks.Search.Legacy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,7 +80,8 @@ var workersConfig = builder.Configuration.GetSection("Workers").Get<WorkersOptio
 var hangfireConfig = builder.Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 
 builder.Services.AddOptions()
-    .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
+                .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
+                .Configure<SitePropertiesOptions>(builder.Configuration.GetSection("SiteProperties"))
                 .Configure<JwtBearerConfig>(builder.Configuration.GetSection("JWT"))
                 .Configure<AggregatorOptions>(builder.Configuration.GetSection("Aggregator"))
                 .Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"))
@@ -88,6 +91,8 @@ builder.Services.AddOptions()
                 .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"));
 
 builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Services.AddEmailSender(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
@@ -104,7 +109,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 })
                 .AddBasic(opts => opts.Realm = "biobankinguk-api");
 
-builder.Services.AddControllersWithViews(opts => opts.SuppressOutputFormatterBuffering = true)
+builder.Services.AddControllersWithViews(opts =>
+    {
+        opts.SuppressOutputFormatterBuffering = true;
+        opts.Filters.Add<RedirectAntiforgeryValidationFailedResult>();
+    })
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -295,6 +304,8 @@ switch (workersConfig.QueueService)
 
 var app = builder.Build();
 
+app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
+
 app.GnuTerryPratchett()
     .UseHttpsRedirection()
     .UseStaticFiles()
@@ -316,9 +327,11 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app
     // Simple public middleware
-    .UseStatusCodePages()
     .UseVersion()
 
     // Swagger
@@ -359,11 +372,6 @@ app
 
                 // Hangfire Server
                 .UseHangfireDashboard();
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapRazorPages();
 

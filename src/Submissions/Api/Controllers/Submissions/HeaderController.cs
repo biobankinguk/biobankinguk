@@ -7,17 +7,14 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Hosting.Internal;
 using Biobanks.Submissions.Api.Models.Header;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
     [AllowAnonymous]
-    public class HeaderController : ControllerBase
+    public class HeaderController : Controller
     {
 
         private readonly ICacheProvider _cacheProvider;
@@ -43,13 +40,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
 
             model.NavigationItems = wordpressItems.Concat(userActions);
 
-            return new PartialViewResult { 
-                ViewName = "_BBHeader", 
-                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(),new ModelStateDictionary())
-                {
-                    Model = model
-                }
-            };
+            return PartialView("_BBHeader", model);
         }
 
         private IEnumerable<NavItemModel> UserActions()
