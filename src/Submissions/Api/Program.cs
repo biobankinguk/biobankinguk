@@ -222,6 +222,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+                .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
                 .AddTransient<ICapabilityService, CapabilityService>()
     
                 // Search Services
@@ -283,7 +284,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Biobanks.Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
+                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Biobanks.Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>()
+                .AddTransient<IConfigService, ConfigService>();
 
 //Directory Services
 if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
@@ -293,7 +295,6 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
         .AddTransient<IContentPageService, ContentPageService>()
         .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>))
-        .AddTransient<IConfigService, ConfigService>()
         .AddTransient<ICollectionService, CollectionService>()
         .AddTransient<IOntologyTermService, OntologyTermService>()
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
@@ -344,13 +345,8 @@ switch (workersConfig.QueueService)
 
 var app = builder.Build();
 
-app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
-app.GnuTerryPratchett()
-    .UseHttpsRedirection()
-    .UseStaticFiles()
-    .UseRouting();
-
+app.GnuTerryPratchett();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -365,10 +361,9 @@ else
 }
 
 app.UseHttpsRedirection();
+app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 app.UseStaticFiles();
 
-app.UseAuthentication();
-app.UseAuthorization();
 
 app
     // Simple public middleware
@@ -383,36 +378,39 @@ app
     })
     .UseSwaggerUI(c =>
     {
-        c.RoutePrefix = string.Empty; // serve swagger ui from root ;)
+        c.RoutePrefix = "swagger";
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         c.SupportedSubmitMethods(SubmitMethod.Get);
-    })
+    });
 
-                // Endpoint Routing
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers().RequireAuthorization();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
-                    if (app.Environment.IsDevelopment())
-                    {
-                        endpoints.MapHangfireDashboard("/hangfire");
-                    }
-                    else
-                    {
-                        var dashboardOptions = new DashboardOptions()
-                        {
-                            Authorization = Array.Empty<IDashboardAuthorizationFilter>() // Removes Default Local-Auth Filter
-                        };
 
-                        endpoints
-                            .MapHangfireDashboard("/hangfire", dashboardOptions)
-                            .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
-                    }
-                })
+app.MapControllers().RequireAuthorization();
 
-                // Hangfire Server
-                .UseHangfireDashboard();
+if (app.Environment.IsDevelopment())
+{
+    app.MapHangfireDashboard("/hangfire");
+}
+else
+{
+    var dashboardOptions = new DashboardOptions()
+    {
+        Authorization = Array.Empty<IDashboardAuthorizationFilter>() // Removes Default Local-Auth Filter
+    };
+
+    app
+        .MapHangfireDashboard("/hangfire", dashboardOptions)
+        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+}
+
+// Hangfire Server
+app.UseHangfireDashboard();
 
 app.MapRazorPages();
-
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.Run();

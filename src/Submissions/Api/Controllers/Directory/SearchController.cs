@@ -30,6 +30,7 @@ public class SearchController : Controller
 
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
+
         private readonly ICollectionService _collectionService;
         
         private readonly IConfigService _configService;

@@ -428,16 +428,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);
 
         #endregion
-
-        #region RefData: Snomed Tags
-        public async Task<IEnumerable<SnomedTag>> ListSnomedTags()
-        => await _snomedTagRepository.ListAsync();
-
-        public async Task<SnomedTag> GetSnomedTagByDescription(string description)
-            => (await _snomedTagRepository.ListAsync(filter: x => x.Value == description)).SingleOrDefault();
-
-        #endregion
-
+        
         public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
             => (await _collectionRepository.ListAsync(false,
                 x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.CollectionId);

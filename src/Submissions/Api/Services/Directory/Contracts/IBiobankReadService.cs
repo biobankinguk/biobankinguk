@@ -42,10 +42,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         , false)]
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
         Task<bool> IsExtractionProcedureInUse(string id);
-
-        Task<IEnumerable<SnomedTag>> ListSnomedTags();
-        Task<SnomedTag> GetSnomedTagByDescription(string description);
-
         Task<int> GetMaterialTypeMaterialDetailCount(int id);
 
         Task<int> GetServiceOfferingOrganisationCount(int id);

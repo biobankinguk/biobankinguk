@@ -3,9 +3,7 @@ using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
@@ -44,6 +42,10 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, "", true)
             });
         }
+
+        public ActionResult Cookies() => View();
+
+        public ViewResult Contact() => View();
 
         public ActionResult FeedbackMessageAjax(string message, string type, bool html = false)
         {

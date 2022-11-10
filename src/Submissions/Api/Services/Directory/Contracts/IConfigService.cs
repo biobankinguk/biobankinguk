@@ -48,6 +48,12 @@ namespace Biobanks.Submissions.Api.Services.Directory
         Task UpdateSiteConfigsAsync(IEnumerable<Entities.Data.Config> configs);
 
         /// <summary>
+        /// Updates cached config values.
+        /// </summary>
+        /// <returns></returns>
+        Task PopulateSiteConfigCache();
+
+        /// <summary>
         /// Gets Flag Config Value
         /// </summary>
         /// <param name="key">Config key</param>

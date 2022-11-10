@@ -24,6 +24,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="Hangfire" Version="1.7.31" />
+    <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
     <PackageReference Include="MimeKit" Version="3.4.2" />
     <PackageReference Include="SendGrid" Version="9.28.1" />
     <PackageReference Include="Imageflow.AllPlatforms" Version="0.9.0" />
