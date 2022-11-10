@@ -307,7 +307,6 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
         .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
-
     // .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
     // Reference Data
