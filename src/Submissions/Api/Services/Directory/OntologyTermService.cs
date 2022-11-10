@@ -193,6 +193,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
             return list;
         }
 
+        /// <inheritdoc/>
+        public async Task<IEnumerable<SnomedTag>> ListSnomedTags()
+            => await _db.SnomedTags.ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<SnomedTag> GetSnomedTagByDescription(string description)
+            => await _db.SnomedTags.Where(x => x.Value == description).SingleOrDefaultAsync();
+        
     }
 }
 
