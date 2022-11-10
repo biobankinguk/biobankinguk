@@ -200,47 +200,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             BackgroundJob.Enqueue(() =>
                 _indexProvider.UpdateCollectionSearchDocument(sampleSet.Id, partialSampleSet));
         }
-
-        public async Task UpdateCapabilityDetails(int capabilityId)
-        {
-            // Get the entire capability object from the database.
-            var updatedCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
-
-            // Get the donor counts and get expectations from them
-            var donorExpectation = DiagnosisCapabilityExtensions.GetAnnualDonorExpectationRange(
-                        await _donorCountService.List(),
-                        updatedCapability.AnnualDonorExpectation);
-
-            //Prep metadata for the facet value
-            var donorExpectationMetadata = JsonConvert.SerializeObject(new
-            {
-                Name = donorExpectation.Key,
-                SortOrder = donorExpectation.Value
-            });
-
-            // Queue up a job to update the capability in the search index.
-            BackgroundJob.Enqueue(() => _indexProvider.UpdateCapabilitySearchDocument(
-                updatedCapability.DiagnosisCapabilityId,
-                new PartialCapability
-                {
-                    OntologyTerm = updatedCapability.OntologyTerm.Value,
-                    Protocols = updatedCapability.SampleCollectionMode.Value,
-                    AnnualDonorExpectation = donorExpectation.Key,
-                    AnnualDonorExpectationMetadata = donorExpectationMetadata,
-                    AssociatedData = updatedCapability.AssociatedData.Select(ad => new AssociatedDataDocument
-                    {
-                        Text = ad.AssociatedDataType.Value,
-                        Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
-                        TimeframeMetadata = JsonConvert.SerializeObject(new
-                        {
-                            Name = ad.AssociatedDataProcurementTimeframe.Value,
-                            ad.AssociatedDataProcurementTimeframe.SortOrder
-                        })
-                    }),
-                    OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(updatedCapability.OntologyTerm.OtherTerms)
-                }));
-        }
-
+        
         public void DeleteSampleSet(int sampleSetId)
         {
             // Queue up a job to remove the sample set from the search index.
@@ -542,17 +502,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
             => (int)Math.Floor((double)(intList.Count() / chunkSize));
-
-        public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
-        {
-            // Get the capabilitiess with the ontologyTerm.
-            var capabilityIds = await _biobankReadService.GetCapabilityIdsByOntologyTermAsync(ontologyTerm);
-            // Update all search documents that are relevant to this collection.
-            foreach (var capabilityId in capabilityIds)
-            {
-                await UpdateCapabilityDetails(capabilityId);
-            }
-        }
         
     }
 }
