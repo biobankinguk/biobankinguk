@@ -221,9 +221,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 x => x.SampleCollectionMode
             );
 
-        public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
-            => (await _capabilityRepository.ListAsync(false,
-                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.DiagnosisCapabilityId);
+        // public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
+        //     => (await _capabilityRepository.ListAsync(false,
+        //         x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.DiagnosisCapabilityId);
 
         public async Task<int> GetIndexableSampleSetCountAsync()
             => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
@@ -386,19 +386,19 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 x => x.SampleCollectionMode
             )).FirstOrDefault();
 
-        public async Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id)
-            => (await _capabilityRepository.ListAsync(false,
-                x => x.DiagnosisCapabilityId == id,
-                null,
-                x => x.Organisation,
-                x => x.Organisation.OrganisationNetworks.Select(on => @on.Network),
-                x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.OntologyTerm,
-                x => x.AssociatedData,
-                x => x.AssociatedData.Select(y => y.AssociatedDataType),
-                x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
-                x => x.SampleCollectionMode
-            )).FirstOrDefault();
+        // public async Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id)
+        //     => (await _capabilityRepository.ListAsync(false,
+        //         x => x.DiagnosisCapabilityId == id,
+        //         null,
+        //         x => x.Organisation,
+        //         x => x.Organisation.OrganisationNetworks.Select(on => @on.Network),
+        //         x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
+        //         x => x.OntologyTerm,
+        //         x => x.AssociatedData,
+        //         x => x.AssociatedData.Select(y => y.AssociatedDataType),
+        //         x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
+        //         x => x.SampleCollectionMode
+        //     )).FirstOrDefault();
 
         public async Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId)
         {

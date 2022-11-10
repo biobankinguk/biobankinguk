@@ -30,8 +30,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         bool CanThisBiobankAdministerThisSampleSet(int biobankId, int sampleSetId);
 
         Task<DiagnosisCapability> GetCapabilityByIdAsync(int id);
-        Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id);
-        Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId);
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 
