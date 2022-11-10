@@ -222,7 +222,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
 
                 // Search Services
                 .AddTransient<ICollectionSearchProvider>(
@@ -307,6 +306,8 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<INetworkService, NetworkService>()
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
+        .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
+
     // .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
     // Reference Data
@@ -344,14 +345,6 @@ switch (workersConfig.QueueService)
 
 var app = builder.Build();
 
-// Set cache isolated from running of the app
-using (var scope = app.Services.CreateScope())
-{
-    var configCache = scope.ServiceProvider
-        .GetRequiredService<ConfigService>();
-
-    await configCache.PopulateSiteConfigCache();
-}
 
 app.GnuTerryPratchett();
 
