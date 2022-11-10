@@ -32,10 +32,7 @@ public class CapabilityService : ICapabilityService
         _indexProvider = indexProvider;
         _donorCountService = donorCountService;
     }
-    // TODO: Check the private / public status of many of these. 
-    // TODO: Add documentation.
-    
-    
+
     /// <inheritdoc/>
     public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
         => (await _db.DiagnosisCapabilities.Select(x => x.DiagnosisCapabilityId)
