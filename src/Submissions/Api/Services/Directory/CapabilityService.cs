@@ -33,19 +33,60 @@ public class CapabilityService : ICapabilityService
         _donorCountService = donorCountService;
     }
     // TODO: Check the private / public status of many of these. 
-    // TODO: Inject.
+    // TODO: Add documentation.
     
     
-    // Formerly in read service.
-    public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
-        => (await _db.DiagnosisCapabilities
-                .AsNoTracking()
-                .Where(x => x.OntologyTerm.Value == ontologyTerm)
-                .Select(x => x.DiagnosisCapabilityId)
+    /// <inheritdoc/>
+    public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
+        => (await _db.DiagnosisCapabilities.Select(x => x.DiagnosisCapabilityId)
+                .ToListAsync()
+            );
+    
+    /// <inheritdoc/>
+    public async Task<int> GetCapabilityCountAsync()
+        => await _db.DiagnosisCapabilities.CountAsync();
+    
+    /// <inheritdoc/>
+    public async Task<int> GetIndexableCapabilityCountAsync()
+        => (await GetCapabilitiesByIdsForIndexingAsync(await GetAllCapabilityIdsAsync())).Count();
+    
+    /// <inheritdoc/>
+    public async Task<int> GetSuspendedCapabilityCountAsync()
+        => await _db.DiagnosisCapabilities
+            .AsNoTracking()
+            .Where(x => x.Organisation.IsSuspended)
+            .CountAsync();
+    
+    /// <inheritdoc/>
+    public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
+        IEnumerable<int> capabilityIds)
+        => (await _db.DiagnosisCapabilities.Where(x =>
+                capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
+                .Include(x => x.Organisation)
+                .Include(x => x.Organisation.OrganisationNetworks.Select(on => on.Network))
+                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                .Include(x => x.OntologyTerm)
+                .Include(x => x.AssociatedData)
+                .Include(x => x.SampleCollectionMode)
                 .ToListAsync()
             );
 
-    // Formerly in read service.
+    /// <inheritdoc/>
+    public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(
+        IEnumerable<int> capabilityIds)
+        => (await _db.DiagnosisCapabilities
+                .AsNoTracking()
+                .Where(x => capabilityIds.Contains(x.DiagnosisCapabilityId))
+                .Include(x => x.Organisation)
+                .Include(x => x.Organisation.OrganisationNetworks.Select(on => on.Network))
+                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                .Include(x => x.OntologyTerm)
+                .Include(x => x.AssociatedData)
+                .Include(x => x.SampleCollectionMode)
+                .ToListAsync()
+            );
+    
+    /// <inheritdoc/>
     public async Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id)
         => (await _db.DiagnosisCapabilities
                 .AsNoTracking()
@@ -61,8 +102,37 @@ public class CapabilityService : ICapabilityService
                 .FirstOrDefaultAsync()
             );
 
+    /// <inheritdoc/>
+    public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
+        => (await _db.DiagnosisCapabilities
+                .AsNoTracking()
+                .Where(x => x.OntologyTerm.Value == ontologyTerm)
+                .Select(x => x.DiagnosisCapabilityId)
+                .ToListAsync()
+            );
+    
+    /// <inheritdoc/>
+    public async Task<DiagnosisCapability> GetCapabilityByIdAsync(int id)
+        => (await _db.DiagnosisCapabilities
+                .AsNoTracking()
+                .Where(x => x.DiagnosisCapabilityId == id)
+                .Include(x => x.OntologyTerm)
+                .Include(x => x.AssociatedData)
+                .Include(x => x.SampleCollectionMode)
+                .FirstOrDefaultAsync()
+            );
 
-    // Formerly in index service.
+    /// <inheritdoc/>
+    public async Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId)
+        => (await _db.DiagnosisCapabilities
+                .AsNoTracking()
+                .Where(x => x.OrganisationId == organisationId)
+                .Include(x => x.OntologyTerm)
+                .Include(x => x.SampleCollectionMode)
+                .ToListAsync()
+            );
+    
+    /// <inheritdoc/>
     public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
     {
         // Get the capabilities with the ontologyTerm.
@@ -74,7 +144,7 @@ public class CapabilityService : ICapabilityService
         }
     }
 
-    // Formerly in index service.
+    /// <inheritdoc/>
     public async Task UpdateCapabilityDetails(int capabilityId)
         {
             // Get the entire capability object from the database.
