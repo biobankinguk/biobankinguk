@@ -345,6 +345,14 @@ switch (workersConfig.QueueService)
 
 var app = builder.Build();
 
+// Set cache isolated from running of the app
+using (var scope = app.Services.CreateScope())
+{
+    var configCache = scope.ServiceProvider
+        .GetRequiredService<IConfigService>();
+
+    await configCache.PopulateSiteConfigCache();
+}
 
 app.GnuTerryPratchett();
 
