@@ -222,6 +222,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+                .AddTransient<ICapabilityService, CapabilityService>()
     
                 // Search Services
                 .AddTransient<ICollectionSearchProvider>(
