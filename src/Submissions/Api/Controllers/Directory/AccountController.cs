@@ -1,7 +1,9 @@
 ﻿using Biobanks.Submissions.Api.Auth.Entities;
 using Biobanks.Submissions.Api.Controllers.Submissions;
 using Biobanks.Submissions.Api.Identity;
+using Biobanks.Submissions.Api.Models.Account;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -69,30 +71,22 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             if (ModelState.IsValid)
             {
-                var result = await _signinManager.PasswordSignInAsync(model.Username, model.Password, false, true);
-                var user = await _users.FindByNameAsync(model.Username);
+                var result = await _signinManager.PasswordSignInAsync(model.Email, model.Password, false, true);
+                var user = await _userManager.FindByNameAsync(model.Email) ?? 
+                    throw new InvalidOperationException(
+                      $"Successfully signed in user could not be retrieved! Username: {model.Email}");
 
                 if (result.Succeeded)
                 {
-                    if (user is null)
-                        throw new InvalidOperationException(
-                          $"Successfully signed in user could not be retrieved! Username: {model.Username}");
-
                     await _claimsManager.SetUserClaimsAsync(model.Email);
                     return RedirectToAction("LoginRedirect", new { returnUrl });
                 }
-                else if (result.LockedOut)
-
-
-                    switch (result)
-            {
-                case SignInStatus.Success:
-                    await _claimsManager.SetUserClaimsAsync(model.Email);
-                    return RedirectToAction("LoginRedirect", new { returnUrl });
-                case SignInStatus.LockedOut:
+                else if (result.IsLockedOut)
+                {
                     SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
-                    return View(model);
-                case SignInStatus.RequiresVerification:
+                }
+                else if(result.IsNotAllowed)
+                {
                     var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
                     SetTemporaryFeedbackMessage(
                         "This account has not been confirmed. " +
@@ -101,11 +95,15 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                         "if you're having trouble.",
                         FeedbackMessageType.Warning,
                         true);
-                    return View(model);
-                default:
+                }
+                else
+                {
                     SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
-                    return View(model);
+                }
             }
+            return View(model);
+                   
+              
         }
 
         public async Task<ActionResult> LoginRedirect(string returnUrl = null)
@@ -114,6 +112,8 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             //do we need them to create a profile for an associated org or network etc?
 
             // Start by updating user's last login time
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            
             await _userManager.UpdateLastLogin(CurrentUser.Identity.GetUserId());
 
             //Biobank
