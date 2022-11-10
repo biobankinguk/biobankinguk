@@ -222,7 +222,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                // .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
+                .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
                 .AddTransient<IOntologyTermService, OntologyTermService>()
                 .AddTransient<ICapabilityService, CapabilityService>()
                 .AddTransient<ICollectionService, CollectionService>()

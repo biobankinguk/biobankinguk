@@ -62,7 +62,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             _organisationUserRepository = organisationUserRepository;
 
             _userManager = userManager;
-
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
 

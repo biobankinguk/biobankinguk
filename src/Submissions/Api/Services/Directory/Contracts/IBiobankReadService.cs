@@ -23,7 +23,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id);
         bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId);
         bool CanThisBiobankAdministerThisSampleSet(int biobankId, int sampleSetId);
-        
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
