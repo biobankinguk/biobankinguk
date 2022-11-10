@@ -189,42 +189,33 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
                     _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
 
                 // Local Services
-                .AddTransient<ISubmissionService, SubmissionService>()
+                .AddTransient<IAggregationService, AggregationService>()
+                .AddTransient<IAnalyticsService, AnalyticsService>()
+                .AddTransient<IAnnotationService, AnnotationService>()
+                .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
+                .AddTransient<IEpmcService, EpmcWebService>()
+                .AddTransient<IErrorService, ErrorService>()
                 .AddTransient<IDiagnosisWriteService, DiagnosisWriteService>()
                 .AddTransient<IDiagnosisValidationService, DiagnosisValidationService>()
-                .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
-                .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
+                .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
+                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+                .AddTransient<IOrganisationService, OrganisationService>()
+                .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+                .AddTransient<IPublicationJobService, PublicationJobService>()
+                .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
+                .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>), typeof(Biobanks.Shared.Services.ReferenceDataService<>))
+                .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
+                .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
+                .AddTransient<ISampleService, SampleService>()
+                .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
                 .AddTransient<ISampleWriteService, SampleWriteService>()
                 .AddTransient<ISampleValidationService, SampleValidationService>()
-                .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
-                .AddTransient<IErrorService, ErrorService>()
-
-
-                .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
-                .AddTransient<ISampleService, SampleService>()
-                .AddTransient<IOrganisationService, OrganisationService>()
-                .AddTransient<IAggregationService, AggregationService>()
-                .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>), typeof(Biobanks.Shared.Services.ReferenceDataService<>))
-
-                .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
-                .AddTransient<ISampleService, SampleService>()
-                .AddTransient<IAggregationService, AggregationService>()
-
-                .AddTransient<IPublicationJobService, PublicationJobService>()
-                .AddTransient<IAnnotationService, AnnotationService>()
-                .AddTransient<IEpmcService, EpmcWebService>()
-
-                .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
-                .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
-                .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
-                .AddTransient<IAnalyticsService, AnalyticsService>()
-                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
-
+                .AddTransient<ISubmissionService, SubmissionService>()
                 .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
-                .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
+                .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
+                .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
 
-                // Search Services
+    // Search Services
                 .AddTransient<ICollectionSearchProvider>(
                     sp => new ElasticCollectionSearchProvider(
                         elasticConfig.ElasticsearchUrl,
@@ -290,26 +281,23 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
 {
     builder.Services
-        .AddTransient<IPublicationService, PublicationService>()
-        .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
-        .AddTransient<IContentPageService, ContentPageService>()
-        .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>))
-        .AddTransient<ICollectionService, CollectionService>()
-        .AddTransient<IOntologyTermService, OntologyTermService>()
-        .AddTransient<ITokenLoggingService, TokenLoggingService>()
-        .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
-        .AddTransient<IBiobankReadService, BiobankReadService>()
-        .AddTransient<IBiobankIndexService, BiobankIndexService>()
-        .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
-        .AddTransient<IBiobankWriteService, BiobankWriteService>()
-        .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
-        .AddTransient<IIndexProvider, LegacyIndexProvider>()
-        .AddTransient<INetworkService, NetworkService>()
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
+        .AddTransient<IBiobankIndexService, BiobankIndexService>()
+        .AddTransient<IBiobankReadService, BiobankReadService>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
-    // .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+        .AddTransient<IContentPageService, ContentPageService>()
+        .AddTransient<ICollectionService, CollectionService>()
+        .AddTransient<IIndexProvider, LegacyIndexProvider>()
+        .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
+        .AddTransient<IPublicationService, PublicationService>()
+        .AddTransient<INetworkService, NetworkService>()
+        .AddTransient<IOntologyTermService, OntologyTermService>()
+        .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+        .AddTransient<ITokenLoggingService, TokenLoggingService>()
+        .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
 
-    // Reference Data
+        // Reference Data
+        .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>();
 
