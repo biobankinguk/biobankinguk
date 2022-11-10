@@ -24,6 +24,7 @@ namespace Biobanks.Submissions.Api.Middleware
             {
                 using (var dbContext = context.RequestServices.GetRequiredService<BiobanksDbContext>())
                 {
+                    //TODO uncomment once fixed dbcontext issues - IdentityContext needs to invoke ApplicationUser
                     var user = dbContext.Users.Where(u => u.UserName == context.User.Identity.Name).FirstOrDefault();
               //      user.LastLogin = DateTime.Now;
                     dbContext.Update(user);
