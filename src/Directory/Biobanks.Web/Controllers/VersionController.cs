@@ -8,7 +8,7 @@ using System.Web.Mvc;
 namespace Biobanks.Web.Controllers
 {
     [Obsolete("To be deleted when the Directory core version goes live." +
-              " Any changes made here will need to be made in the corresponding core version"
+              " We are not porting this controller to core - as this is handled by Version Middleware"
         , false)]
     [AllowAnonymous]
     public class VersionController : Controller
