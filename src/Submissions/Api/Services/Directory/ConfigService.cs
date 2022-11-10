@@ -36,11 +36,16 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <inheritdoc />
         public async Task<string> GetSiteConfigValue(string key,  string defaultValue = "", bool checkCacheFirst = false)
         {
+            string configValue;
+            var configKey = $"SiteConfig/{key}";
             if (checkCacheFirst)
             {
-                return (string)_memoryCache.Get($"SiteConfig/{key}");
+                configValue = _memoryCache.Get<string>(configKey);
+                if (configValue != null) return configValue;
             }
-            else return (await GetSiteConfig(key))?.Value ?? defaultValue;
+            configValue = (await GetSiteConfig(key))?.Value ?? defaultValue;
+            _memoryCache.Set<string>(configKey, configValue);
+            return configValue;
         }
 
         /// <inheritdoc />
