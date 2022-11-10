@@ -2,55 +2,53 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 using AutoMapper;
-using Biobanks.Search.Legacy;
-using Biobanks.Search.Dto.Facets;
-using Biobanks.Search.Constants;
-using Biobanks.Services.Contracts;
-using Biobanks.Web.Models.Search;
-using Biobanks.Web.Models.Shared;
-using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
-using Biobanks.Web.Extensions;
-using Biobanks.Web.Results;
-using Biobanks.Directory.Services.Constants;
-using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Directory.Services.Contracts;
+using Biobanks.Search.Constants;
+using Biobanks.Search.Dto.Facets;
+using Biobanks.Search.Legacy;
+using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Models.Search;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Services.Directory.Constants;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
-namespace Biobanks.Web.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Directory;
+
+[AllowAnonymous]
+public class SearchController : Controller
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-        " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [AllowAnonymous]
-    public class SearchController : Controller
-    {
         private readonly IReferenceDataService<Country> _countryController;
 
         private readonly IOntologyTermService _ontologyTermService;
-
-        private readonly IOrganisationService _organisationService;
+    
+        private readonly IOrganisationDirectoryService _organisationDirectoryService;
 
         private readonly ISearchProvider _searchProvider;
         private readonly IMapper _mapper;
         private readonly IBiobankReadService _biobankReadService;
+        
+        private readonly IConfigService _configService;
 
-        public SearchController(
-            IReferenceDataService<Country> countryController,
+        public SearchController(IReferenceDataService<Country> countryController,
             IOntologyTermService ontologyTermService,
-            IOrganisationService organisationService,
+            IOrganisationDirectoryService organisationDirectoryService,
             ISearchProvider searchProvider,
             IMapper mapper,
-            IBiobankReadService biobankReadService)
+            IBiobankReadService biobankReadService,
+            IConfigService configService)
         {
             _countryController = countryController;
             _ontologyTermService = ontologyTermService;
-            _organisationService = organisationService;
+            _organisationDirectoryService = organisationDirectoryService;
             _searchProvider = searchProvider;
             _mapper = mapper;
             _biobankReadService = biobankReadService;
+            _configService = configService;
         }
 
         [HttpGet]
@@ -75,6 +73,9 @@ namespace Biobanks.Web.Controllers
             var model = new BaseSearchModel
             {
                 OntologyTerm = ontologyTerm,
+                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName),
+                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName),
+                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName),
                 // Extract the search facets.
                 SelectedFacets = ExtractSearchFacets(selectedFacets)
             };
@@ -143,9 +144,14 @@ namespace Biobanks.Web.Controllers
 
             model.OntologyTerm = ontologyTerm;
             model.SelectedFacets = selectedFacets;
+            
+            // Config 
+            model.StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName);
+            model.MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName);
+            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage);
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
 
             //Get Collection Descriptions in bulk
             var descriptions =
@@ -181,11 +187,14 @@ namespace Biobanks.Web.Controllers
             // Build the base model.
             var model = new BaseSearchModel
             {
-                OntologyTerm = ontologyTerm
+                OntologyTerm = ontologyTerm,
+                StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName),
+                MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName),
+                DonorCount = await _configService.GetSiteConfigValue(ConfigKey.DonorCountName),
+                
+                // Extract the search facets.
+                SelectedFacets = ExtractSearchFacets(selectedFacets)
             };
-
-            // Extract the search facets.
-            model.SelectedFacets = ExtractSearchFacets(selectedFacets);
 
             // Search based on the provided criteria.
             var searchResults = _searchProvider.CapabilitySearchByOntologyTerm(
@@ -224,23 +233,24 @@ namespace Biobanks.Web.Controllers
             model.SelectedFacets = selectedFacets;
 
             // Get the biobank logo name from the database.
-            model.LogoName = (await _organisationService.GetByExternalId(biobankExternalId)).Logo;
+            model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
 
             return View(model);
         }
 
 
         #region Diagnosis Type Ahead
+
         [AllowAnonymous]
-        public async Task<JsonpResult> ListOntologyTerms(string wildcard, string callback)
+        public async Task<ActionResult> ListOntologyTerms(string wildcard, string callback)
         {
             var ontologyTermModels = await GetOntologyTermsAsync(wildcard);
-
-            return this.Jsonp(ontologyTermModels, callback, JsonRequestBehavior.AllowGet);
+            
+            return Ok(ontologyTermModels);
         }
 
         [AllowAnonymous]
-        public async Task<JsonpResult> SearchOntologyTerms(string searchDocumentType, string wildcard, string callback)
+        public async Task<ActionResult> SearchOntologyTerms(string searchDocumentType, string wildcard, string callback)
         {
             SearchDocumentType type;
 
@@ -257,8 +267,8 @@ namespace Biobanks.Web.Controllers
             }
 
             var ontologyTermModel = await GetOntologyTermSearchResultsAsync(type, wildcard.ToLower());
-
-            return this.Jsonp(ontologyTermModel, callback, JsonRequestBehavior.AllowGet);
+            
+            return Ok(ontologyTermModel);
         }
 
         private async Task<List<OntologyTermModel>> GetOntologyTermSearchResultsAsync(SearchDocumentType type, string wildcard)
@@ -344,7 +354,17 @@ namespace Biobanks.Web.Controllers
 
         private static string GetFacetSlug(string facetId)
         {
-            return facetId.SubstringUpToFirst('_');
+            // if the string is null, return null
+            if (facetId == null)
+            {
+                return null;
+            }
+            // get the index of the first delimiter character
+            var indexOf = facetId.IndexOf('_');
+
+            // if the delimiter doesn't exist in the string, return the whole string.
+            // otherwise return from the beginning up to BUT NOT INCLUDING the delimiter.
+            return indexOf < 0 ? facetId : facetId[..indexOf];
         }
         #endregion
 
@@ -354,13 +374,11 @@ namespace Biobanks.Web.Controllers
             switch (searchRadio)
             {
                 case "Collections":
-                    return RedirectToAction("Collections", new {ontologyTerm = ontologyTerm});
+                    return RedirectToAction("Collections", new {ontologyTerm});
                 case "Capabilities":
-                    return RedirectToAction("Capabilities", new {ontologyTerm = ontologyTerm});
+                    return RedirectToAction("Capabilities", new {ontologyTerm});
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-    }
 }

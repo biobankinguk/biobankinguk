@@ -47,6 +47,8 @@ using System;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
+using Biobanks.Search.Contracts;
+using Biobanks.Search.Elastic;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Search.Legacy;
@@ -78,17 +80,19 @@ builder.Configuration.AddJsonFile("Settings/LegacyStorageTemperatures.json", opt
 var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtBearerConfig>();
 var workersConfig = builder.Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
 var hangfireConfig = builder.Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
+var elasticConfig = builder.Configuration.GetSection("ElasticSearch").Get<ElasticsearchConfig>() ?? new();
 
 builder.Services.AddOptions()
-                .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
-                .Configure<SitePropertiesOptions>(builder.Configuration.GetSection("SiteProperties"))
-                .Configure<JwtBearerConfig>(builder.Configuration.GetSection("JWT"))
-                .Configure<AggregatorOptions>(builder.Configuration.GetSection("Aggregator"))
-                .Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"))
-                .Configure<WorkersOptions>(builder.Configuration.GetSection("Workers"))
-                .Configure<HangfireOptions>(builder.Configuration.GetSection("Hangfire"))
-                .Configure<MaterialTypesLegacyModel>(builder.Configuration.GetSection("MaterialTypesLegacyModel"))
-                .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"));
+    .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
+    .Configure<SitePropertiesOptions>(builder.Configuration.GetSection("SiteProperties"))
+    .Configure<JwtBearerConfig>(builder.Configuration.GetSection("JWT"))
+    .Configure<AggregatorOptions>(builder.Configuration.GetSection("Aggregator"))
+    .Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"))
+    .Configure<WorkersOptions>(builder.Configuration.GetSection("Workers"))
+    .Configure<HangfireOptions>(builder.Configuration.GetSection("Hangfire"))
+    .Configure<MaterialTypesLegacyModel>(builder.Configuration.GetSection("MaterialTypesLegacyModel"))
+    .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"))
+    .Configure<ElasticsearchConfig>(builder.Configuration.GetSection("Elasticsearch"));
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -220,7 +224,43 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
                 .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
                 .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
 
-                // Reference Data
+                // Search Services
+                .AddTransient<ICollectionSearchProvider>(
+                    sp => new ElasticCollectionSearchProvider(
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.Username,
+                        elasticConfig.Password
+                    )
+                )
+                .AddTransient<ICollectionIndexProvider>(
+                    sp => new ElasticCollectionIndexProvider(
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.Username,
+                        elasticConfig.Password
+                    )
+                )
+                .AddTransient<ICapabilitySearchProvider>(
+                    sp => new ElasticCapabilitySearchProvider(
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.Username,
+                        elasticConfig.Password
+                    )
+                )
+                .AddTransient<ICapabilityIndexProvider>(
+                    sp => new ElasticCapabilityIndexProvider(
+                        elasticConfig.ElasticsearchUrl,
+                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+                        elasticConfig.Username,
+                        elasticConfig.Password
+                    )
+                )
+                .AddTransient<ISearchProvider, LegacySearchProvider>()
+                .AddTransient<IIndexProvider, LegacyIndexProvider>()
+
+    // Reference Data
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
                 .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
@@ -267,7 +307,7 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<INetworkService, NetworkService>()
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
-    //   .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
+    // .AddTransient<ElasticCapabilityIndexProvider, ICapabilityIndexProvider>();
 
     // Reference Data
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
