@@ -1,6 +1,4 @@
-﻿using Biobanks.Submissions.Api.Models.Shared;
-
-namespace Biobanks.Submissions.Api.Models.Submissions
+﻿namespace Biobanks.Submissions.Api.Models.Shared
 {
     public class ReadAssociatedDataTypeGroupModel : AssociatedDataTypeGroupModel
     {

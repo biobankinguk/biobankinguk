@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions
+namespace Biobanks.Submissions.Api.Controllers.Directory
 {
     [AllowAnonymous]
     public class FooterController : Controller
