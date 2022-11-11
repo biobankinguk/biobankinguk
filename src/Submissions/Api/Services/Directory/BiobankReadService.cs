@@ -291,9 +291,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Distinct();
         }
 
-        public async Task<Blob> GetLogoBlobAsync(string logoName)
-            => await _logoStorageProvider.GetLogoBlobAsync(logoName);
-
         #region RefData: Extraction Procedure
         
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
