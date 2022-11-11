@@ -11,7 +11,7 @@ using Biobanks.Submissions.Api.Models.Header;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions
+namespace Biobanks.Submissions.Api.Controllers.Directory
 {
     [AllowAnonymous]
     public class HeaderController : Controller
