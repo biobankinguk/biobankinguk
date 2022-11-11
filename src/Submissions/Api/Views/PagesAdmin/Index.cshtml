@@ -21,21 +21,21 @@
 			<th></th>
 		</tr>
 
-		@foreach (var page in Model)
+		@foreach (var pageModel in Model)
 		{
 			<tr>
-				<td><a href="@Url.Action("ContentPage", "PagesAdmin", new { slug = page.RouteSlug })">@page.Title</a></td>
-				<td>@page.RouteSlug</td>
-				<td>@page.LastUpdated.ToShortDateString()</td>
-				<td>@page.IsEnabled</td>
+				<td><a href="@Url.Action("ContentPage", "PagesAdmin", new { slug = pageModel.RouteSlug })">@pageModel.Title</a></td>
+				<td>@pageModel.RouteSlug</td>
+				<td>@pageModel.LastUpdated.ToShortDateString()</td>
+				<td>@pageModel.IsEnabled</td>
 				<td class="text-right">
-					<a href="@Url.Action("CreateEdit", "PagesAdmin", new { id = page.Id })">
+					<a href="@Url.Action("CreateEdit", "PagesAdmin", new { id = pageModel.Id })">
 						<span class="fa fa-edit labelled-icon"></span>Edit
 					</a>
 
 					<a title="Delete"
 					   class="action-icon delete-confirm"
-					   data-refdata-model=@page
+					   data-refdata-model=@pageModel
 					   data-resource-url="/PagesAdmin/Delete"
 					   data-success-redirect="/PagesAdmin/Index"
 					   data-refdata-type="Content Page"
