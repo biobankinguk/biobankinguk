@@ -97,5 +97,27 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// </summary>
         /// <param name="id">The Id of the Collection</param>
         Task<bool> HasSampleSets(int id);
+
+        /// <summary>
+        /// Gets descriptions for a list of collection ids
+        /// </summary>
+        /// <param name="collectionIds">List of collection Ids to get descriptions for.</param>
+        /// <returns>A dictionary of collection ids and their descriptions.</returns>
+        Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds);
+
+        /// <summary>
+        /// Get the Collection with associated Collection Id for use in search indexing
+        /// </summary>
+        /// <param name="id">Id of the Collection</param>
+        /// <returns>The collection with populated fields.</returns>
+        Task<Collection> GetCollectionByIdForIndexingAsync(int id);
+
+        /// <summary>
+        /// Updates details of one Collection 
+        /// </summary>
+        /// <param name="collectionId">Id of the collection to update.</param>
+        /// <returns></returns>
+        Task UpdateCollectionDetails(int collectionId);
+
     }
 }

@@ -217,7 +217,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<ISubmissionService, SubmissionService>()
     .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
     .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
-
+    
     // Search Services
     .AddTransient<ICollectionSearchProvider>(
         sp => new ElasticCollectionSearchProvider(

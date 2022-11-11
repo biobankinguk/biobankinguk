@@ -21,101 +21,43 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly ILogoStorageProvider _logoStorageProvider;
 
         private readonly IGenericEFRepository<Collection> _collectionRepository;
-        private readonly IGenericEFRepository<CollectionAssociatedData> _collectionAssociatedDataRepository;
-        private readonly IGenericEFRepository<CapabilityAssociatedData> _capabilityAssociatedDataRepository;
-
         private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<SnomedTag> _snomedTagRepository;
         private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
-
-        private readonly IGenericEFRepository<Network> _networkRepository;
-        private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
-        private readonly IGenericEFRepository<NetworkRegisterRequest> _networkRegisterRequestRepository;
-        private readonly IGenericEFRepository<OrganisationNetwork> _networkOrganisationRepository;
-
         private readonly IGenericEFRepository<Organisation> _organisationRepository;
-        private readonly IGenericEFRepository<OrganisationType> _organisationTypeRepository;
-
         private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
-        private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
-        private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
-        private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
         private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
-        private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
-        private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
-        private readonly IGenericEFRepository<PreservationType> _preservationTypeRepository;
-
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
-
+        
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
 
         private readonly BiobanksDbContext _context;
 
         public BiobankReadService(
             ILogoStorageProvider logoStorageProvider,
-
             IGenericEFRepository<Collection> collectionRepository,
             IGenericEFRepository<DiagnosisCapability> capabilityRepository,
-            IGenericEFRepository<CapabilityAssociatedData> capabilityAssociatedDataRepository,
-            IGenericEFRepository<CollectionAssociatedData> collectionAssociatedDataRepository,
-            IGenericEFRepository<SnomedTag> snomedTagRepository,
             IGenericEFRepository<SampleSet> sampleSetRepository,
-
-            IGenericEFRepository<Network> networkRepository,
-            IGenericEFRepository<NetworkUser> networkUserRepository,
-            IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
-            IGenericEFRepository<OrganisationNetwork> networkOrganisationRepository,
-
             IGenericEFRepository<Organisation> organisationRepository,
-            IGenericEFRepository<OrganisationType> organisationTypeRepository,
-            IGenericEFRepository<MaterialType> materialTypeRepository,
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
-            IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
-            IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
-            IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
-            IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
-
             IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
-            IGenericEFRepository<PreservationType> preservationTypeRepository,
-
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
-
             BiobanksDbContext context)
         {
             _logoStorageProvider = logoStorageProvider;
 
             _collectionRepository = collectionRepository;
             _capabilityRepository = capabilityRepository;
-            _collectionAssociatedDataRepository = collectionAssociatedDataRepository;
-            _capabilityAssociatedDataRepository = capabilityAssociatedDataRepository;
-            _snomedTagRepository = snomedTagRepository;
             _sampleSetRepository = sampleSetRepository;
-
-            _networkRepository = networkRepository;
-            _networkUserRepository = networkUserRepository;
-            _networkRegisterRequestRepository = networkRegisterRequestRepository;
-            _networkOrganisationRepository = networkOrganisationRepository;
-
             _organisationRepository = organisationRepository;
-            _organisationTypeRepository = organisationTypeRepository;
-            _materialTypeRepository = materialTypeRepository;
             _materialDetailRepository = materialDetailRepository;
-            _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
-            _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
-
-            _organisationRegistrationReasonRepository = organisationRegistrationReasonRepository;
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
-            _organisationNetworkRepository = organisationNetworkRepository;
             _organisationUserRepository = organisationUserRepository;
-            _preservationTypeRepository = preservationTypeRepository;
-
             _userManager = userManager;
-
             _tokenValidationRecordRepository = tokenValidationRecordRepository;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
 
@@ -135,9 +77,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
             => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
-
-        public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
-            => (await _capabilityRepository.ListAsync()).Select(x => x.DiagnosisCapabilityId);
 
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
@@ -170,19 +109,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             return sampleSets;
         }
 
-        public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
-                IEnumerable<int> capabilityIds)
-            => await _capabilityRepository.ListAsync(false,
-                x => capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended,
-                null,
-                x => x.Organisation,
-                x => x.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.OntologyTerm,
-                x => x.AssociatedData,
-                x => x.SampleCollectionMode
-            );
-
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(
                 IEnumerable<int> sampleSetIds)
             => await _sampleSetRepository.ListAsync(false, x => sampleSetIds.Contains(x.Id), null,
@@ -207,55 +133,17 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 x => x.Collection.Organisation.Country,
                 x => x.Collection.Organisation.County
             );
-
-        public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(
-                IEnumerable<int> capabilityIds)
-            => await _capabilityRepository.ListAsync(false,
-                x => capabilityIds.Contains(x.DiagnosisCapabilityId),
-                null,
-                x => x.Organisation,
-                x => x.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.OntologyTerm,
-                x => x.AssociatedData,
-                x => x.SampleCollectionMode
-            );
-
-        public async Task<IEnumerable<int>> GetCapabilityIdsByOntologyTermAsync(string ontologyTerm)
-            => (await _capabilityRepository.ListAsync(false,
-                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.DiagnosisCapabilityId);
-
+        
         public async Task<int> GetIndexableSampleSetCountAsync()
             => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
-
-        public async Task<int> GetIndexableCapabilityCountAsync()
-            => (await GetCapabilitiesByIdsForIndexingAsync(await GetAllCapabilityIdsAsync())).Count();
 
         public async Task<int> GetSuspendedSampleSetCountAsync()
             => await _sampleSetRepository.CountAsync(
                 x => x.Collection.Organisation.IsSuspended);
-
-        public async Task<int> GetSuspendedCapabilityCountAsync()
-            => await _capabilityRepository.CountAsync(
-                x => x.Organisation.IsSuspended);
-
-        public async Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds)
-            => (await _collectionRepository.ListAsync(false,
-                    x => collectionIds.Contains(x.CollectionId)))
-                .Select(
-                    x => new
-                    {
-                        id = x.CollectionId,
-                        description = x.Description
-                    })
-                .ToDictionary(x => x.id, x => x.description);
-
+        
         public async Task<int> GetSampleSetCountAsync()
             => await _sampleSetRepository.CountAsync();
-
-        public async Task<int> GetCapabilityCountAsync()
-            => await _capabilityRepository.CountAsync();
-
+        
         public async Task<Collection> GetCollectionByIdAsync(int id)
             => (await _collectionRepository.ListAsync(false,
                 x => x.CollectionId == id,
@@ -375,7 +263,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             }
         }
 
-
         public bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId)
             => _collectionRepository.List(
                 false,
@@ -387,42 +274,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 false,
                 x => x.Collection.OrganisationId == biobankId &&
                      x.Id == sampleSetId).Any();
-
-        public async Task<DiagnosisCapability> GetCapabilityByIdAsync(int id)
-            => (await _capabilityRepository.ListAsync(false,
-                x => x.DiagnosisCapabilityId == id,
-                null,
-                x => x.OntologyTerm,
-                x => x.AssociatedData,
-                x => x.SampleCollectionMode
-            )).FirstOrDefault();
-
-        public async Task<DiagnosisCapability> GetCapabilityByIdForIndexingAsync(int id)
-            => (await _capabilityRepository.ListAsync(false,
-                x => x.DiagnosisCapabilityId == id,
-                null,
-                x => x.Organisation,
-                x => x.Organisation.OrganisationNetworks.Select(on => @on.Network),
-                x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.OntologyTerm,
-                x => x.AssociatedData,
-                x => x.AssociatedData.Select(y => y.AssociatedDataType),
-                x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
-                x => x.SampleCollectionMode
-            )).FirstOrDefault();
-
-        public async Task<IEnumerable<DiagnosisCapability>> ListCapabilitiesAsync(int organisationId)
-        {
-            var capabilities = await _capabilityRepository.ListAsync(
-                false,
-                x => x.OrganisationId == organisationId,
-                null,
-                x => x.OntologyTerm,
-                x => x.SampleCollectionMode);
-
-            return capabilities;
-        }
-
+        
         public bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId)
             => _capabilityRepository.List(
                 false,
@@ -443,13 +295,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
 
         #region RefData: Extraction Procedure
-
-        public async Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false)
-        => (await _materialTypeRepository.ListAsync(false, x => x.Id == id, null, x => x.ExtractionProcedures))
-        .FirstOrDefault()?.ExtractionProcedures
-        .Where(x => x.DisplayOnDirectory || !onlyDisplayable)
-        .ToList();
-
+        
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
             => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
 

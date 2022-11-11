@@ -24,6 +24,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private const int BulkIndexChunkSize = 100;
 
         private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly CapabilityService _capabilityService;
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
@@ -35,6 +36,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         public BiobankIndexService(
             IReferenceDataService<DonorCount> donorCountService,
+            CapabilityService capabilityService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider,
@@ -42,6 +44,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             TelemetryClient telemetryClient)
         {
             _donorCountService = donorCountService;
+            _capabilityService = capabilityService;
             _biobankReadService = biobankReadService;
             _indexProvider = indexProvider;
             _searchProvider = searchProvider;
@@ -138,7 +141,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task IndexCapability(int capabilityId)
         {
             // Get the entire capability object from the database.
-            var createdCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
+            var createdCapability = await _capabilityService.GetCapabilityByIdForIndexingAsync(capabilityId);
 
             // Get the donor counts.
             var donorCounts = await _donorCountService.List();
@@ -200,47 +203,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             BackgroundJob.Enqueue(() =>
                 _indexProvider.UpdateCollectionSearchDocument(sampleSet.Id, partialSampleSet));
         }
-
-        public async Task UpdateCapabilityDetails(int capabilityId)
-        {
-            // Get the entire capability object from the database.
-            var updatedCapability = await _biobankReadService.GetCapabilityByIdForIndexingAsync(capabilityId);
-
-            // Get the donor counts and get expectations from them
-            var donorExpectation = DiagnosisCapabilityExtensions.GetAnnualDonorExpectationRange(
-                        await _donorCountService.List(),
-                        updatedCapability.AnnualDonorExpectation);
-
-            //Prep metadata for the facet value
-            var donorExpectationMetadata = JsonConvert.SerializeObject(new
-            {
-                Name = donorExpectation.Key,
-                SortOrder = donorExpectation.Value
-            });
-
-            // Queue up a job to update the capability in the search index.
-            BackgroundJob.Enqueue(() => _indexProvider.UpdateCapabilitySearchDocument(
-                updatedCapability.DiagnosisCapabilityId,
-                new PartialCapability
-                {
-                    OntologyTerm = updatedCapability.OntologyTerm.Value,
-                    Protocols = updatedCapability.SampleCollectionMode.Value,
-                    AnnualDonorExpectation = donorExpectation.Key,
-                    AnnualDonorExpectationMetadata = donorExpectationMetadata,
-                    AssociatedData = updatedCapability.AssociatedData.Select(ad => new AssociatedDataDocument
-                    {
-                        Text = ad.AssociatedDataType.Value,
-                        Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
-                        TimeframeMetadata = JsonConvert.SerializeObject(new
-                        {
-                            Name = ad.AssociatedDataProcurementTimeframe.Value,
-                            ad.AssociatedDataProcurementTimeframe.SortOrder
-                        })
-                    }),
-                    OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(updatedCapability.OntologyTerm.OtherTerms)
-                }));
-        }
-
+        
         public void DeleteSampleSet(int sampleSetId)
         {
             // Queue up a job to remove the sample set from the search index.
@@ -445,7 +408,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
             for (var i = 0; i < chunkCount; i++)
             {
-                var chunkSampleSets = await _biobankReadService
+                var chunkSampleSets = await _capabilityService
                     .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
                         .Skip(i * BulkIndexChunkSize)
                         .Take(BulkIndexChunkSize));
@@ -455,7 +418,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                         .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
             }
 
-            var remainingSampleSets = await _biobankReadService
+            var remainingSampleSets = await _capabilityService
                 .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
                     .Skip(chunkCount * BulkIndexChunkSize)
                     .Take(remainingIdCount));
@@ -542,63 +505,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
             => (int)Math.Floor((double)(intList.Count() / chunkSize));
-
-        public async Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm)
-        {
-            // Get the capabilitiess with the ontologyTerm.
-            var capabilityIds = await _biobankReadService.GetCapabilityIdsByOntologyTermAsync(ontologyTerm);
-            // Update all search documents that are relevant to this collection.
-            foreach (var capabilityId in capabilityIds)
-            {
-                await UpdateCapabilityDetails(capabilityId);
-            }
-        }
-
-        public async Task UpdateCollectionDetails(int collectionId)
-        {
-            // Get the collection out of the database.
-            var collection = await _biobankReadService.GetCollectionByIdForIndexingAsync(collectionId);
-
-            // Update all search documents that are relevant to this collection.
-            foreach (var sampleSet in collection.SampleSets)
-            {
-                // Queue up a job to update the search document.
-                BackgroundJob.Enqueue(() =>
-                    _indexProvider.UpdateCollectionSearchDocument(
-                        sampleSet.Id,
-                        new PartialCollection
-                        {
-                            OntologyTerm = collection.OntologyTerm.Value,
-                            CollectionTitle = collection.Title,
-                            StartYear = collection.StartDate.Year.ToString(),
-                            CollectionStatus = collection.CollectionStatus.Value,
-                            ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
-                            AccessCondition = collection.AccessCondition.Value,
-                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
-                            AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
-                            {
-                                Text = ad.AssociatedDataType.Value,
-                                Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
-                                TimeframeMetadata = JsonConvert.SerializeObject(new
-                                {
-                                    Name = ad.AssociatedDataProcurementTimeframe.Value,
-                                    ad.AssociatedDataProcurementTimeframe.SortOrder
-                                })
-                            }),
-                            OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
-                        }));
-            }
-        }
-
-        public async Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm)
-        {
-            // Get the collections with the ontologyTerm.
-            var collectionIds = await _biobankReadService.GetCollectionIdsByOntologyTermAsync(ontologyTerm);
-            // Update all search documents that are relevant to this collection.
-            foreach (var collectionId in collectionIds)
-            {
-                await UpdateCollectionDetails(collectionId);
-            }
-        }
+        
     }
 }
