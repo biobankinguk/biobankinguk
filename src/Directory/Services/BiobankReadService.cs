@@ -443,6 +443,9 @@ namespace Biobanks.Services
                 .Distinct();
         }
 
+        [Obsolete("To be deleted when the Directory core version goes live." +
+          " Any changes made here will need to be made in the corresponding core version"
+          , false)]
         public async Task<Blob> GetLogoBlobAsync(string logoName)
             => await _logoStorageProvider.GetLogoBlobAsync(logoName);
 
