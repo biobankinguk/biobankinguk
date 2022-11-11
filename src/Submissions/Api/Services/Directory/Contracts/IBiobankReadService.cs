@@ -10,7 +10,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
     public interface IBiobankReadService
     {
-        Task<Blob> GetLogoBlobAsync(string logoName);
         Task<Collection> GetCollectionByIdAsync(int id);
         Task<bool> IsCollectionFromApi(int id);
 
