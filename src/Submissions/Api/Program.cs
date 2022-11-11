@@ -182,100 +182,102 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddHttpClient()
     .AddMemoryCache()
     .AddTransient<IBlobWriteService, AzureBlobWriteService>( // TODO: Merge Blob Read and Write services
-    _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
+        _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
     .AddTransient<IBlobReadService, AzureBlobReadService>(
-    _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
-                .AddTransient<IQueueWriteService, AzureQueueWriteService>(
-                    _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
+        _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
+    .AddTransient<IQueueWriteService, AzureQueueWriteService>(
+        _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
 
-                // Local Services
-                .AddTransient<IAggregationService, AggregationService>()
-                .AddTransient<IAnalyticsService, AnalyticsService>()
-                .AddTransient<IAnnotationService, AnnotationService>()
-                .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
-                .AddTransient<IEpmcService, EpmcWebService>()
-                .AddTransient<IErrorService, ErrorService>()
-                .AddTransient<IDiagnosisWriteService, DiagnosisWriteService>()
-                .AddTransient<IDiagnosisValidationService, DiagnosisValidationService>()
-                .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
-                .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
-                .AddTransient<IOrganisationService, OrganisationService>()
-                .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
-                .AddTransient<IPublicationJobService, PublicationJobService>()
-                .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
-                .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>), typeof(Biobanks.Shared.Services.ReferenceDataService<>))
-                .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
-                .AddTransient<IReferenceDataReadService, ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
-                .AddTransient<ISampleService, SampleService>()
-                .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-                .AddTransient<ISampleWriteService, SampleWriteService>()
-                .AddTransient<ISampleValidationService, SampleValidationService>()
-                .AddTransient<ISubmissionService, SubmissionService>()
-                .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
-                .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
-                .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
+    // Local Services
+    .AddTransient<IAggregationService, AggregationService>()
+    .AddTransient<IAnalyticsService, AnalyticsService>()
+    .AddTransient<IAnnotationService, AnnotationService>()
+    .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
+    .AddTransient<IConfigService, ConfigService>()
+    .AddTransient<IEpmcService, EpmcWebService>()
+    .AddTransient<IErrorService, ErrorService>()
+    .AddTransient<IDiagnosisWriteService, DiagnosisWriteService>()
+    .AddTransient<IDiagnosisValidationService, DiagnosisValidationService>()
+    .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
+    .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+    .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+    .AddTransient<IOrganisationService, OrganisationService>()
+    .AddTransient<IPublicationJobService, PublicationJobService>()
+    .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
+    .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>),
+        typeof(Biobanks.Shared.Services.ReferenceDataService<>))
+    .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
+    .AddTransient<IReferenceDataReadService,
+        ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
+    .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+    .AddTransient<ISampleService, SampleService>()
+    .AddTransient<ISampleWriteService, SampleWriteService>()
+    .AddTransient<ISampleValidationService, SampleValidationService>()
+    .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
+    .AddTransient<ISubmissionService, SubmissionService>()
+    .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
+    .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
 
     // Search Services
-                .AddTransient<ICollectionSearchProvider>(
-                    sp => new ElasticCollectionSearchProvider(
-                        elasticConfig.ElasticsearchUrl,
-                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.Username,
-                        elasticConfig.Password
-                    )
-                )
-                .AddTransient<ICollectionIndexProvider>(
-                    sp => new ElasticCollectionIndexProvider(
-                        elasticConfig.ElasticsearchUrl,
-                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.Username,
-                        elasticConfig.Password
-                    )
-                )
-                .AddTransient<ICapabilitySearchProvider>(
-                    sp => new ElasticCapabilitySearchProvider(
-                        elasticConfig.ElasticsearchUrl,
-                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.Username,
-                        elasticConfig.Password
-                    )
-                )
-                .AddTransient<ICapabilityIndexProvider>(
-                    sp => new ElasticCapabilityIndexProvider(
-                        elasticConfig.ElasticsearchUrl,
-                        (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-                        elasticConfig.Username,
-                        elasticConfig.Password
-                    )
-                )
-                .AddTransient<ISearchProvider, LegacySearchProvider>()
-                .AddTransient<IIndexProvider, LegacyIndexProvider>()
+    .AddTransient<ICollectionSearchProvider>(
+        sp => new ElasticCollectionSearchProvider(
+            elasticConfig.ElasticsearchUrl,
+            (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+            elasticConfig.Username,
+            elasticConfig.Password
+        )
+    )
+    .AddTransient<ICollectionIndexProvider>(
+        sp => new ElasticCollectionIndexProvider(
+            elasticConfig.ElasticsearchUrl,
+            (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+            elasticConfig.Username,
+            elasticConfig.Password
+        )
+    )
+    .AddTransient<ICapabilitySearchProvider>(
+        sp => new ElasticCapabilitySearchProvider(
+            elasticConfig.ElasticsearchUrl,
+            (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+            elasticConfig.Username,
+            elasticConfig.Password
+        )
+    )
+    .AddTransient<ICapabilityIndexProvider>(
+        sp => new ElasticCapabilityIndexProvider(
+            elasticConfig.ElasticsearchUrl,
+            (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
+            elasticConfig.Username,
+            elasticConfig.Password
+        )
+    )
+    .AddTransient<ISearchProvider, LegacySearchProvider>()
+    .AddTransient<IIndexProvider, LegacyIndexProvider>()
 
     // Reference Data
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
-                .AddTransient<IMaterialTypeService, MaterialTypeService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
-                .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Biobanks.Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>()
-                .AddTransient<IConfigService, ConfigService>();
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatistic>, AnnualStatisticService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AnnualStatisticGroup>, AnnualStatisticGroupService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataProcurementTimeframe>, AssociatedDataProcurementTimeframeService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>, AssociatedDataTypeGroupService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>, CollectionPercentageService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionStatus>, CollectionStatusService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionType>, CollectionTypeService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ConsentRestriction>, ConsentRestrictionService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Country>, CountryService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<DonorCount>, DonorCountService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>, MacroscopicAssessmentService>()
+    .AddTransient<IMaterialTypeService, MaterialTypeService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>, MaterialTypeGroupService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<PreservationType>, PreservationTypeService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<RegistrationReason>, RegistrationReasonService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SampleCollectionMode>, SampleCollectionModeService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<ServiceOffering>, ServiceOfferingService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Sex>, SexService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<SopStatus>, SopStatusService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Biobanks.Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
 
 //Directory Services
 if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
