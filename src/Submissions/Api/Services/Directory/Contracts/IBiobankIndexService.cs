@@ -13,12 +13,8 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task IndexSampleSet(int sampleSetId);
         Task IndexCapability(int capabilityId);
         Task UpdateSampleSetDetails(int sampleSetId);
-        Task UpdateCapabilityDetails(int capabilityId);
-        Task UpdateCapabilitiesOntologyOtherTerms(string ontologyTerm);
         void DeleteSampleSet(int sampleSetId);
         void DeleteCapability(int capabilityId);
-        Task UpdateCollectionDetails(int collectionId);
-        Task UpdateCollectionsOntologyOtherTerms(string ontologyTerm);
 
         void UpdateOrganisationDetails(Organisation organisation);
         void JoinOrLeaveNetwork(Organisation organisation);
