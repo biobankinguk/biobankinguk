@@ -5,6 +5,7 @@ using Biobanks.Submissions.Api.Models.Search;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory;
