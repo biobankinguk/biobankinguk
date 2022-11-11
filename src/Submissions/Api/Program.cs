@@ -187,7 +187,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
         _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
     .AddTransient<IQueueWriteService, AzureQueueWriteService>(
         _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
-
+    
     // Local Services
     .AddTransient<IAggregationService, AggregationService>()
     .AddTransient<IAnalyticsService, AnalyticsService>()
@@ -217,7 +217,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<ISubmissionService, SubmissionService>()
     .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
     .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
-    
+
     // Search Services
     .AddTransient<ICollectionSearchProvider>(
         sp => new ElasticCollectionSearchProvider(
@@ -297,9 +297,9 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
         .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+        .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
 
         // Reference Data
-        .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>();
 
@@ -334,6 +334,14 @@ switch (workersConfig.QueueService)
 
 var app = builder.Build();
 
+// Set cache isolated from running of the app
+using (var scope = app.Services.CreateScope())
+{
+    var configCache = scope.ServiceProvider
+        .GetRequiredService<IConfigService>();
+
+    await configCache.PopulateSiteConfigCache();
+}
 
 app.GnuTerryPratchett();
 
