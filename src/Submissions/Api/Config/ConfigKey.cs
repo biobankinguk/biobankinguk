@@ -24,6 +24,9 @@ namespace Biobanks.Submissions.Api.Config
 
         public const string RegisterBiobankTitle = "site.register.biobank.title";
         public const string RegisterNetworkTitle = "site.register.network.title";
+        
+        //Editable Termspage
+        public const string TermpageInfo = "site.termpage.pageinfo";
 
         // Sample Resource Configuration Options
         public const string SampleResourceName = "site.sampleresource.name";
