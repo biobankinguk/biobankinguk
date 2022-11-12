@@ -1,8 +1,10 @@
-@using System.Configuration
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+
 @model dynamic
 
 @{
     ViewBag.Title = "An Error Occurred!";
+    var siteProperties = _sitePropertiesOptions.Value;
 }
 
 <h2>
@@ -30,7 +32,7 @@
         <ul>
             <li>You could try retyping the URL.</li>
             <li>You could go back and try what you were doing again.</li>
-            <li>You could head back to the <a href="/">@ConfigurationManager.AppSettings["DirectoryName"] homepage</a>.</li>
+            <li>You could head back to the <a href="/">@siteProperties.ServiceName homepage</a>.</li>
         </ul>
 
         <br />
@@ -40,7 +42,7 @@
         </h4>
 
         <p>
-            If you want to help us resolve this issue, feel free to <a href="mailto:@ConfigurationManager.AppSettings["AdacSupportEmail"]">contact us and let us know what went wrong.</a>
+            If you want to help us resolve this issue, feel free to <a href="mailto:@siteProperties.SupportAddress">contact us and let us know what went wrong.</a>
             Please provide as much information as possible, such as what you were trying to do, and your web browser and operating system.
         </p>
     </div>

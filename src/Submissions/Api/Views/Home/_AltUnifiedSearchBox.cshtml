@@ -1,6 +1,11 @@
-﻿@using System.Configuration
-@using Biobanks.Submissions.Api.Models.Home
-@model HomepageContentModel
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+
+@model Biobanks.Submissions.Api.Models.Home.HomepageContentModel
+
+@{
+    var siteProperties = _sitePropertiesOptions.Value;
+}
+
 @using (Html.BeginForm("Unified", "Search", null, FormMethod.Get))
 {
 
@@ -43,9 +48,17 @@
         </div>
         <div class="col-lg-6">
             (Optional) Enter a disease term  <br />
-            See our <a href="@Url.Action("Index", "Term")">list of terms</a> or <a href="@ConfigurationManager.AppSettings["ContactUsUrl"]">contact us</a> for help.
+            See our <a href="@Url.Action("Index", "Term")">list of terms</a> or <a href="@siteProperties.ContactUsUrl">contact us</a> for help.
             <div class="row-buffer">
-                @Html.TextBox("ontologyTerm", "", new { @class = "form-control diagnosis-search", autocomplete = "off", placeholder = "Enter a disease term", title = "Search" })
+                @Html.TextBox(
+                  "ontologyTerm",
+                  "",
+                  new {
+                    @class = "form-control diagnosis-search",
+                    autocomplete = "off",
+                    placeholder = "Enter a disease term",
+                    title = "Search"
+                  })
             </div>
         </div>
         <div class="col-lg-2"></div>
