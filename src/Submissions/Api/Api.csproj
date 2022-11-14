@@ -65,8 +65,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Content\images\" />
     <Folder Include="Pages\" />
     <Folder Include="Repositories\" />
+    <Folder Include="Scripts\Bundles\" />
   </ItemGroup>
 
 </Project>

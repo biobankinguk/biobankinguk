@@ -5,7 +5,7 @@
 	ViewBag.Title = "Content Page Admin";
 }
 
-<partial name = "~/Views/ADAC/_ADACTabs.cshtml" for = "Content Pages") >
+@*<partial name= "~/Views/Directory/_DirectoryTabs.cshtml" name= "Content Page") >*@
 <h3>
 	@ViewBag.Title
 	@Html.ActionLink("Create", "CreateEdit", "PagesAdmin", new { Id = "0" }, new { @class = "btn btn-success pull-right" })
@@ -47,3 +47,4 @@
 		}
 	</table>
 </div>
+@*<script src="~/Scripts/bundles/pagesadmin"></script>*@

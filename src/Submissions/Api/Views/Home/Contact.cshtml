@@ -1,8 +1,11 @@
-﻿@using System.Configuration
-@using Biobanks.Submissions.Api.Config
+
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+
 
 @{
     ViewBag.Title = "Contact Biobanks";
+    var siteProperties = _sitePropertiesOptions.Value;
 }
 
 <h2>@ViewBag.Title</h2>
@@ -87,7 +90,7 @@
                     <div class="panel-body">
                         @*panel body*@
                         <p>
-                            The following links represent third-parties that can assist you in making contact with the @ConfigKey.SampleResourceName.
+                            The following links represent third-parties that can assist you in making contact with the @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName).
                             These are not services we operate but we have facilitated a smooth handover into these systems.
                         </p>
                     </div>
@@ -112,16 +115,16 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <p>
-                            You are being directed to websites and transaction platforms whose content is outside of our control. The inclusion of links on these pages in no way constitutes an endorsement or recommendation by @ConfigurationManager.AppSettings["LegalEntity"] of the content or services provided through them.
+                            You are being directed to websites and transaction platforms whose content is outside of our control. The inclusion of links on these pages in no way constitutes an endorsement or recommendation by @siteProperties.LegalEntity of the content or services provided through them.
                         </p>
                         <p>
                             <b>We strongly recommend you undertake your own research and due diligence before using the services on any website or platform.</b>
                         </p>
                         <p>
-                            @ConfigurationManager.AppSettings["LegalEntity"] is (to the extent permitted by law) in no way responsible or liable for any loss or damage, direct or consequential, resulting from your use of services or information provided by the providers of these linked websites.
+                            @siteProperties.LegalEntity is (to the extent permitted by law) in no way responsible or liable for any loss or damage, direct or consequential, resulting from your use of services or information provided by the providers of these linked websites.
                         </p>
                         <p>
-                            You confirm that by proceeding, that you will hold the @ConfigurationManager.AppSettings["LegalEntity"] harmless from any claim arising from your use of the third party websites, platforms or other services.
+                            You confirm that by proceeding, that you will hold the @siteProperties.LegalEntity harmless from any claim arising from your use of the third party websites, platforms or other services.
                         </p>
                     </div>
                 </div>

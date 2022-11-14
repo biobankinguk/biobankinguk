@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
+    [AllowAnonymous]
     //TODO:[UserAuthorize(Roles = "ADAC")]
     public class PagesAdminController : Controller
     {
