@@ -1,9 +1,7 @@
-﻿@inject IOptions<SitePropertiesOptions> _config
+@inject IOptions<SitePropertiesOptions> _config
 @inject IHostEnvironment HostEnvironment
-@using Biobanks.Submissions.Api.Config
 @using Biobanks.Submissions.Api.Models.Emails
-@using Microsoft.Extensions.Hosting
-@using Microsoft.Extensions.Options
+
 @{
 	var directoryName = @_config.Value.ServiceName;
 	

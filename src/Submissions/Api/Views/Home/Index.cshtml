@@ -1,8 +1,7 @@
-﻿@using System.Configuration
-@using Biobanks.Directory.Data.Constants
-@using Biobanks.Submissions.Api.Models.Home
 @using Biobanks.Submissions.Api.HtmlHelpers
-@model HomepageContentModel
+@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+
+@model Biobanks.Submissions.Api.Models.Home.HomepageContentModel
 @{
 	ViewBag.Title = "Index";
 	ViewBag.WideLayout = true;
@@ -23,7 +22,7 @@
 		<div class="row">
 			@* Homepage overrides the default positioning, so we can have this inside the splash area *@
 			<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
-				<partial name = "_FeedbackMessage">
+				<partial name="_FeedbackMessage">
 			</section>
 		</div>
 		<div class="row">
@@ -39,7 +38,7 @@
 			<section class="info-white-full">
 				<div id="focus" class="container text-center">
 					<div class="jumbotron">
-						<partial name = "~/Views/Home/_UnifiedSearchBox.cshtml" for = "Model" >
+						<partial name="~/Views/Home/_UnifiedSearchBox.cshtml" model="Model">
 					</div>
 				</div>
 			</section>
@@ -56,7 +55,7 @@
 						</div>
 					</div>
 					<div class="col-sm-6 text-center">
-                        <a class="btn btn-search" href="@Url.Action("Biobank", "Register")" role="button">Register a new @ConfigKey.SampleResourceName</a>
+                        <a class="btn btn-search" href="@Url.Action("Biobank", "Register")" role="button">Register a new @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName)</a>
 					</div>
 					<div class="col-sm-6 text-center">
 						<a class="btn btn-search" href="@Url.Action("Network", "Register")" role="button">Register a new network of resources</a>

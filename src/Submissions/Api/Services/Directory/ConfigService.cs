@@ -1,5 +1,4 @@
-﻿using Biobanks.Data;
-using Biobanks.Submissions.Api.Config;
+using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
