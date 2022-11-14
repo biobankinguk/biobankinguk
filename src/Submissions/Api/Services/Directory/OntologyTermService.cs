@@ -12,14 +12,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class OntologyTermService : IOntologyTermService
     {
-        private readonly IBiobankIndexService _indexService;
-
+        
         private readonly BiobanksDbContext _db;
+        private readonly ICapabilityService _capabilityService;
 
-        public OntologyTermService(IBiobankIndexService indexService, BiobanksDbContext db)
+        public OntologyTermService(BiobanksDbContext db, ICapabilityService capabilityService)
         {
             _db = db;
-            _indexService = indexService;
+            _capabilityService = capabilityService;
         }
 
         protected IQueryable<OntologyTerm> ReadOnlyQuery(
@@ -140,7 +140,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
             await _db.SaveChangesAsync();
 
-            await _indexService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
+            await _capabilityService.UpdateCapabilitiesOntologyOtherTerms(ontologyTerm.Value);
 
             return currentTerm;
         }
@@ -193,6 +193,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
             return list;
         }
 
+        /// <inheritdoc/>
+        public async Task<IEnumerable<SnomedTag>> ListSnomedTags()
+            => await _db.SnomedTags.ToListAsync();
+
+        /// <inheritdoc/>
+        public async Task<SnomedTag> GetSnomedTagByDescription(string description)
+            => await _db.SnomedTags.Where(x => x.Value == description).SingleOrDefaultAsync();
+        
     }
 }
 

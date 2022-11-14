@@ -6,25 +6,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Search.Dto.Documents;
+using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Search.Legacy;
+using Biobanks.Submissions.Api.Services.Directory.Extensions;
+using Hangfire;
+using Newtonsoft.Json;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
     /// <inheritdoc/>
     public class CollectionService : ICollectionService
     {
-        private readonly IBiobankReadService _readService;
-        private readonly IBiobankIndexService _indexService;
+
+        private readonly IIndexProvider _indexProvider;
 
         private readonly BiobanksDbContext _db;
 
         public CollectionService(
             BiobanksDbContext db,
-            IBiobankReadService readService,
-            IBiobankIndexService indexService)
+            IIndexProvider indexProvider)
         {
             _db = db;
-            _readService = readService;
-            _indexService = indexService;
+            _indexProvider = indexProvider;
         }
 
         /// <inheritdoc/>
@@ -144,7 +148,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             // Index Updated Collection
             if (collectionToCopy.SampleSets != null && collectionToCopy.SampleSets.Any())
             {
-                await _indexService.UpdateCollectionDetails(newCollection.CollectionId);
+                await UpdateCollectionDetails(newCollection.CollectionId);
             }
 
             return newCollection;
@@ -188,7 +192,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 // Index Updated Collection
                 if (!currentCollection.Organisation.IsSuspended)
                 {
-                    await _indexService.UpdateCollectionDetails(currentCollection.CollectionId);
+                    await UpdateCollectionDetails(currentCollection.CollectionId);
                 }
             }
 
@@ -271,5 +275,70 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <inheritdoc/>
         public async Task<bool> HasSampleSets(int id)
             => await _db.SampleSets.AnyAsync(x => x.CollectionId == id);
+
+        /// <inheritdoc/>
+        public async Task<Dictionary<int, string>> GetDescriptionsByCollectionIds(IEnumerable<int> collectionIds)
+            => await _db.Collections
+                .AsNoTracking()
+                .Where(x => collectionIds.Contains(x.CollectionId))
+                .Select(x => new
+                {
+                    id = x.CollectionId,
+                    description = x.Description
+                }).ToDictionaryAsync(x => x.id, x => x.description);
+
+        /// <inheritdoc/>
+        public async Task<Collection> GetCollectionByIdForIndexingAsync(int id)
+            => (await _db.Collections
+                    .AsNoTracking()
+                    .Where(x => x.CollectionId == id)
+                    .Include(x => x.OntologyTerm)
+                    .Include(x => x.AccessCondition)
+                    .Include(x => x.CollectionType)
+                    .Include(x => x.CollectionStatus)
+                    .Include(x => x.ConsentRestrictions)
+                    .Include(x => x.AssociatedData)
+                    .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
+                    .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                    .Include(x => x.SampleSets)
+                    .FirstOrDefaultAsync()
+                );
+        
+        /// <inheritdoc/>
+        public async Task UpdateCollectionDetails(int collectionId)
+        {
+            // Get the collection out of the database.
+            var collection = await GetCollectionByIdForIndexingAsync(collectionId);
+
+            // Update all search documents that are relevant to this collection.
+            foreach (var sampleSet in collection.SampleSets)
+            {
+                // Queue up a job to update the search document.
+                BackgroundJob.Enqueue(() =>
+                    _indexProvider.UpdateCollectionSearchDocument(
+                        sampleSet.Id,
+                        new PartialCollection
+                        {
+                            OntologyTerm = collection.OntologyTerm.Value,
+                            CollectionTitle = collection.Title,
+                            StartYear = collection.StartDate.Year.ToString(),
+                            CollectionStatus = collection.CollectionStatus.Value,
+                            ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
+                            AccessCondition = collection.AccessCondition.Value,
+                            CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
+                            AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
+                            {
+                                Text = ad.AssociatedDataType.Value,
+                                Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
+                                TimeframeMetadata = JsonConvert.SerializeObject(new
+                                {
+                                    Name = ad.AssociatedDataProcurementTimeframe.Value,
+                                    ad.AssociatedDataProcurementTimeframe.SortOrder
+                                })
+                            }),
+                            OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
+                        }));
+            }
+        }
     }
 }

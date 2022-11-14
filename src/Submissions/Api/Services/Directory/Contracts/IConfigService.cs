@@ -38,7 +38,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <param name="defaultValue">Default value string</param>
         /// <param name="checkCacheFirst">bool to check if cache is avaible</param>
         /// <returns>Config value string</returns>
-        Task<string> GetSiteConfigValue(string key, bool checkCacheFirst, string defaultValue = "");
+        Task<string> GetSiteConfigValue(string key, string defaultValue = "", bool checkCacheFirst = false);
 
         /// <summary>
         /// Updates specified Configs
@@ -46,6 +46,12 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <param name="configs">List of Config objs to be updatd</param>
         /// <returns></returns>
         Task UpdateSiteConfigsAsync(IEnumerable<Entities.Data.Config> configs);
+
+        /// <summary>
+        /// Updates cached config values.
+        /// </summary>
+        /// <returns></returns>
+        Task PopulateSiteConfigCache();
 
         /// <summary>
         /// Gets Flag Config Value

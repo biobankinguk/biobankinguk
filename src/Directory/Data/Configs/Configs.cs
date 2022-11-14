@@ -151,23 +151,23 @@ namespace Biobanks.Directory.Data.Configs
                 Key = "site.homepage.resourceregistration",
                 Value = @"###Registering a sample resource
 
-                        A sample resource is any infrastructure that holds or can collect and distribute human samples and data (e.g. biobanks, bioresources, biorepositories, cohorts and clinical trials).
+A sample resource is any infrastructure that holds or can collect and distribute human samples and data (e.g. biobanks, bioresources, biorepositories, cohorts and clinical trials).
 
-                        ####For more information
+####For more information
 
-                        We have developed some resources to help you register:
+We have developed some resources to help you register:
 
-                        * [View our help pages](https://www.biobankinguk.org/directory/)
-                        * [View our videos](https://youtu.be/7mnjyUwVuTA)",
+* [View our help pages](https://www.biobankinguk.org/directory/)
+* [View our videos](https://youtu.be/7mnjyUwVuTA)",
             },
             new Config
             {
                 Key = "site.homepage.networkregistration",
                 Value = @"###Registering a network
-                        A network is a group of sample resources that have come together with some common objective or agreed standard. An example is the [Confederation of Cancer Biobanks](https://directory.biobankinguk.org/Profile/Network/2).
+A network is a group of sample resources that have come together with some common objective or agreed standard. An example is the [Confederation of Cancer Biobanks](https://directory.biobankinguk.org/Profile/Network/2).
 
-                        ####Sample resource or Network?
-                        If you are unsure about whether to register a resource or network then [please get in touch](https://www.biobankinguk.org/contact-us/).",
+####Sample resource or Network?
+If you are unsure about whether to register a resource or network then [please get in touch](https://www.biobankinguk.org/contact-us/).",
             },
             new Config
             {

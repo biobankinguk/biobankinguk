@@ -1,5 +1,4 @@
-﻿using Biobanks.Data;
-using Biobanks.Submissions.Api.Config;
+using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -34,13 +33,18 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => (await ListSiteConfigsAsync(key)).FirstOrDefault();
 
         /// <inheritdoc />
-        public async Task<string> GetSiteConfigValue(string key, bool checkCacheFirst, string defaultValue = "")
+        public async Task<string> GetSiteConfigValue(string key,  string defaultValue = "", bool checkCacheFirst = false)
         {
+            string configValue;
+            var configKey = $"SiteConfig/{key}";
             if (checkCacheFirst)
             {
-                return (string)_memoryCache.Get($"SiteConfig/{key}");
+                configValue = _memoryCache.Get<string>(configKey);
+                if (configValue != null) return configValue;
             }
-            else return (await GetSiteConfig(key))?.Value ?? defaultValue;
+            configValue = (await GetSiteConfig(key))?.Value ?? defaultValue;
+            _memoryCache.Set<string>(configKey, configValue);
+            return configValue;
         }
 
         /// <inheritdoc />
@@ -55,6 +59,16 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
             }
             await _db.SaveChangesAsync();
+        }
+
+        /// <inheritdoc />
+        public async Task PopulateSiteConfigCache()
+        {
+            var currentConfig = await ListSiteConfigsAsync();
+            foreach (var config in currentConfig)
+            {
+                _memoryCache.Set(config.Key, config.Value);
+            }
         }
 
         /// <inheritdoc />
