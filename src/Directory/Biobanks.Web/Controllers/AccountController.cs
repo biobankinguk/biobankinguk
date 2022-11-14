@@ -20,7 +20,7 @@ using Hangfire.States;
 
 namespace Biobanks.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : ApplicationBaseController
     {
         private readonly SignInManager<Applicationuser> _signinManager;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;

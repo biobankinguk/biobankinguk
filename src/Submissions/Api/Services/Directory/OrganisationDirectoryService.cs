@@ -2,7 +2,6 @@
 using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Shared;
-using Biobanks.Identity.Contracts;
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Dto.PartialDocuments;
@@ -18,7 +17,7 @@ using Biobanks.IdentityModel.Extensions;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Submissions.Api.Services.Directory.Extensions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Auth.Entities;
+using Biobanks.Data.Entities;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
@@ -27,7 +26,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly ICapabilityIndexProvider _capabilitiesIndex;
         private readonly ICollectionIndexProvider _collectionsIndex;
 
-        private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly BiobanksDbContext _db;
 
         private readonly IMapper _mapper;
@@ -35,7 +34,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public OrganisationDirectoryService(
             ICapabilityIndexProvider capabilitiesIndex,
             ICollectionIndexProvider collectionsIndex,
-            IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
+            UserManager<ApplicationUser> userManager,
             BiobanksDbContext db,
             IMapper mapper)
         {

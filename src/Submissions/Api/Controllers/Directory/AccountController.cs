@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
-    public class AccountController : Controller
+    public class AccountController : ApplicationBaseController
     {
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
