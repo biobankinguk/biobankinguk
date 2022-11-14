@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace Biobanks.Submissions.Api.Auth.Entities
+namespace Biobanks.Data.Entities
 {
     //temporarily in place to replace framework identity
     public class ApplicationUser : IdentityUser
@@ -12,6 +12,6 @@ namespace Biobanks.Submissions.Api.Auth.Entities
         }
 
         public string Name { get; set; }
-        public DateTime? LastLogin { get; set;}
+        public DateTime? LastLogin { get; set; }
     }
 }

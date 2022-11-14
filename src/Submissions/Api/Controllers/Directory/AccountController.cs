@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Api.Auth.Entities;
+﻿using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Controllers.Submissions;
 using Biobanks.Submissions.Api.Identity;
 using Biobanks.Submissions.Api.Models.Account;
@@ -15,15 +15,11 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
-    public class AccountController : ApplicationBaseController
+    public class AccountController : Controller
     {
-        public ApplicationUserPrincipal CurrentUser => User.ToApplicationUserPrincipal();
-
-        public IActionResult Index()
-        {
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly CustomClaimsManager _claimsManager;
+        private readonly UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> _claimsManager;
 
         private readonly INetworkService _networkService;
         private readonly IOrganisationDirectoryService _organisationService;
@@ -38,7 +34,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
         //    IEmailService emailService,
-            CustomClaimsManager claimsManager,
+            UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> claimsManager,
             ITokenLoggingService tokenLog,
             IBiobankReadService biobankReadService)
         {
@@ -71,7 +67,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             if (ModelState.IsValid)
             {
-                var result = await _signinManager.PasswordSignInAsync(model.Email, model.Password, false, true);
+                var result = await _signinManager.PasswordSignInAsync(model.Email, model.Password, false, false);
                 var user = await _userManager.FindByNameAsync(model.Email) ?? 
                     throw new InvalidOperationException(
                       $"Successfully signed in user could not be retrieved! Username: {model.Email}");
