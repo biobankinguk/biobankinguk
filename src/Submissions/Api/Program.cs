@@ -51,7 +51,7 @@ using Biobanks.Search.Elastic;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Search.Legacy;
-using Biobanks.Submissions.Api.Auth.Entities;
+using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -365,7 +365,7 @@ app.UseStaticFiles();
 
 
 //Authenticated users have their last login value updated to now
-app.UseLoginUpdater();
+app.UseDirectoryLogin();
 
 app
     // Simple public middleware
