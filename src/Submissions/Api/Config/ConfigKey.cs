@@ -12,6 +12,7 @@ namespace Biobanks.Submissions.Api.Config
         public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
         public const string DonorCountName = "site.display.donorcount.name";
         public const string StorageTemperatureName = "site.display.storagetemperature.name";
+        public const string ShowPreservationPercentageBool = "true";
 
 
         // Editable Homepage

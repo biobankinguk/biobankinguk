@@ -149,7 +149,7 @@ public class SearchController : Controller
             // Config 
             model.StorageTemperatureName = await _configService.GetSiteConfigValue(ConfigKey.StorageTemperatureName);
             model.MacroscopicAssessmentName = await _configService.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName);
-            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage);
+            model.ShowPreservationPercentage = await _configService.GetSiteConfigValue(ConfigKey.ShowPreservationPercentageBool);
 
             // Get the biobank logo name from the database.
             model.LogoName = (await _organisationDirectoryService.GetByExternalId(biobankExternalId)).Logo;
