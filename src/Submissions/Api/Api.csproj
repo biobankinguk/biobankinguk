@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,7 +8,7 @@
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Content Include="swagger.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -67,4 +67,25 @@
     </Content>
   </ItemGroup>
 
+
+  <Target Name="CopyStaticAssets" BeforeTargets="Build">
+    <!--
+    Copy static assets from source locations (e.g. node_modules) to wwwroot.
+  
+    We do this before every build to ensure presence of servable assets in dev or publish.
+  
+    However it's efficient at not recopying existing unmodified files <3
+  
+    You can add new asset path items and/or copy behaviours here as desirable
+    -->
+
+    <ItemGroup>
+      <Assets_Fonts Include="Frontend/node_modules/font-awesome/fonts/**/*.*" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(Assets_Fonts)"
+      DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
+  </Target>
+  
 </Project>
