@@ -16,6 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Settings\footer.json" />
+    <None Include="Settings\header.json" />
+    <None Include="Settings\navigation.json" />
     <None Include="Settings\LegacyMaterialTypes.json" />
     <None Include="Settings\LegacyStorageTemperatures.json" />
   </ItemGroup>
