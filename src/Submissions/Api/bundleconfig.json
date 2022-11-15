@@ -11,6 +11,9 @@
       "Frontend/vendor/css/*.css",
       "Frontend/css/*.css"
     ],
-    "minify": { "enabled": true }
+    "minify": {
+      "enabled": true,
+      "adjustRelativePaths": false
+    }
   }
 ]
