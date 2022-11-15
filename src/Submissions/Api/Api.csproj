@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="Hangfire" Version="1.7.31" />
     <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
@@ -61,12 +62,6 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Content\images\" />
-    <Folder Include="Pages\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
