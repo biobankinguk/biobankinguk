@@ -9,92 +9,89 @@ using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Models.Header;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.Extensions.Caching.Memory;
+using Biobanks.Submissions.Api.Config;
 
 namespace Biobanks.Submissions.Api.ViewComponents;
 
 public class HeaderViewComponent : ViewComponent
 {
+    private readonly IMemoryCache _cache;
+    private readonly IWebHostEnvironment _env;
 
-  private readonly ICacheProvider _cacheProvider;
-  private IWebHostEnvironment _hostEnvironment;
-
-  public HeaderViewComponent(ICacheProvider cacheProvider, IWebHostEnvironment environment)
-  {
-    _cacheProvider = cacheProvider;
-    _hostEnvironment = environment;
-
-  }
-
-  public IViewComponentResult Invoke()
-  {
-    var _headerPath = Path.Combine(_hostEnvironment.WebRootPath, @"~/App_Config/header.json");
-    // Base Model From header.json
-    var json = File.ReadAllText(_headerPath);
-    var model = JsonConvert.DeserializeObject<HeaderModel>(json);
-
-    // Build Navigation From Two Sources
-    var userActions = UserActions();
-    var wordpressItems = WordPress();
-
-    model.NavigationItems = wordpressItems.Concat(userActions);
-
-    return View(model);
-  }
-
-  private IEnumerable<NavItemModel> UserActions()
-  {
-    var _navPath = Path.Combine(_hostEnvironment.WebRootPath, @"~/App_Config/navigation.json");
-
-    var json = File.ReadAllText(_navPath);
-    var navMenuItems = JsonConvert.DeserializeObject<IEnumerable<NavItemModel>>(json);
-
-    return navMenuItems;
-  }
-
-  private IEnumerable<NavItemModel> WordPress()
-  {
-    var _wordPressUrl = ConfigurationManager.AppSettings["WordPressMenuUrl"];
-
-    // Default as empty list
-    var wordPressMenuItems = Enumerable.Empty<NavItemModel>();
-
-    // Attempt to use cached data
-    try
+    public HeaderViewComponent(IMemoryCache cache, IWebHostEnvironment env)
     {
-      wordPressMenuItems = _cacheProvider.Retrieve<IEnumerable<NavItemModel>>(CacheKeys.WordpressNavItems);
+        _cache = cache;
+        _env = env;
     }
-    catch
+
+    public IViewComponentResult Invoke()
     {
-      if (!string.IsNullOrEmpty(_wordPressUrl))
-      {
-        var httpClient = new HttpClient();
+        var _headerPath = Path.Combine(_env.ContentRootPath, "Settings/header.json");
+        // Base Model From header.json
+        var json = File.ReadAllText(_headerPath);
+        var model = JsonConvert.DeserializeObject<HeaderModel>(json);
 
-        try
+        // Build Navigation From Two Sources
+        var userActions = UserActions();
+        var wordpressItems = WordPress();
+
+        model.NavigationItems = wordpressItems.Concat(userActions);
+
+        return View(model);
+    }
+
+    private IEnumerable<NavItemModel> UserActions()
+    {
+        var _navPath = Path.Combine(_env.ContentRootPath, "Settings/navigation.json");
+
+        var json = File.ReadAllText(_navPath);
+        var navMenuItems = JsonConvert.DeserializeObject<IEnumerable<NavItemModel>>(json);
+
+        return navMenuItems;
+    }
+
+    private IEnumerable<NavItemModel> WordPress()
+    {
+        var _wordPressUrl = ConfigurationManager.AppSettings["WordPressMenuUrl"];
+
+        // Attempt to use cached data
+        var wordPressMenuItems = _cache.Get<IEnumerable<NavItemModel>>(CacheKey.WordpressNavItems);
+
+        // If nothing in the cache; try and get it from source and populate the cache
+        if (wordPressMenuItems is null)
         {
-          var response = httpClient.GetAsync(_wordPressUrl).Result;
-          var result = response.Content.ReadAsStringAsync().Result;
-
-          if (response.IsSuccessStatusCode && !string.IsNullOrEmpty(result))
-          {
-            // Parse relevant json field
-            var jsonResult = JsonConvert.DeserializeAnonymousType(result, new
+            if (!string.IsNullOrEmpty(_wordPressUrl))
             {
-              items = Enumerable.Empty<NavItemModel>()
-            });
+                var httpClient = new HttpClient();
 
-            wordPressMenuItems = jsonResult.items;
+                try
+                {
+                    var response = httpClient.GetAsync(_wordPressUrl).Result;
+                    var result = response.Content.ReadAsStringAsync().Result;
 
-            // Cache Data
-            _cacheProvider.Store<IEnumerable<NavItemModel>>(CacheKeys.WordpressNavItems, wordPressMenuItems, TimeSpan.FromDays(1));
-          }
+                    if (response.IsSuccessStatusCode && !string.IsNullOrEmpty(result))
+                    {
+                        // Parse relevant json field
+                        var jsonResult = JsonConvert.DeserializeAnonymousType(result, new
+                        {
+                            items = Enumerable.Empty<NavItemModel>()
+                        });
+
+                        wordPressMenuItems = jsonResult.items;
+
+                        // Cache Data
+                        _cache.Set(CacheKey.WordpressNavItems, wordPressMenuItems, TimeSpan.FromDays(1));
+                    }
+                }
+                finally
+                {
+                    httpClient?.Dispose();
+                }
+            }
         }
-        finally
-        {
-          httpClient?.Dispose();
-        }
-      }
+
+        // If we're STILL null for some reason, default to an empty list
+        return wordPressMenuItems ?? Enumerable.Empty<NavItemModel>();
     }
-
-    return wordPressMenuItems;
-  }
 }
