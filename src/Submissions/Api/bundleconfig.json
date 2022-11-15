@@ -1,6 +1,6 @@
 [
   {
-    "outputFileName": "wwwroot/css/site.min.css",
+    "outputFileName": "wwwroot/dist/css/site.min.css",
     "inputFiles": [
       "Frontend/node_modules/bootstrap/dist/css/bootstrap.min.css",
       "Frontend/node_modules/datatables.net-bs/css/dataTables.bootstrap.min.css",
