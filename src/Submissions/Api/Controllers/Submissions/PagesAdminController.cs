@@ -3,13 +3,11 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MvcSiteMapProvider.Web.Mvc.Filters;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
-    [AllowAnonymous]
     //TODO:[UserAuthorize(Roles = "ADAC")]
     public class PagesAdminController : Controller
     {
@@ -36,7 +34,7 @@ namespace Biobanks.Submissions.Api.Controllers.Submissions
         }
 
         [AllowAnonymous]
-        [SiteMapTitle("Title")]
+        //[SiteMapTitle("Title")] TODO: Replace MvcSiteMapProvider
         public async Task<ActionResult> ContentPage(string slug)
         {
             var page = await _contentPageService.GetBySlug(slug);
