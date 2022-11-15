@@ -1,0 +1,10 @@
+﻿@model Biobanks.Submissions.Api.Models.Header.NavItemModel
+@{
+	var title = Model.Title ?? "Register Network";
+}
+
+<li>
+	<a href="@Url.Action("Network", "Register")">
+		<span class="fa fa-clipboard labelled-icon green"></span>@title
+	</a>
+</li>

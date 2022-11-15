@@ -1,0 +1,27 @@
+﻿@model Biobanks.Submissions.Api.Models.Header.NavItemModel
+
+@if (User.Identity.IsAuthenticated)
+{
+    @* TODO: figure out how we're doing this in Core
+        
+    var networkRequestClaims = CurrentUser.NetworkRequests;
+    foreach (var network in networkRequestClaims)
+    {
+		<li>
+			<a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = true})">
+			<span class="fa fa-exchange labelled-icon"></span>@(network.Value)
+			</a>
+		</li>
+    }
+
+    var networkClaims = CurrentUser.Networks;
+    foreach (var network in networkClaims)
+    {
+    <li>
+
+        <a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = false})">
+            <span class="fa fa-exchange labelled-icon"></span>@(network.Value)
+		</a>
+	</li>
+	}*@
+}
