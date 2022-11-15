@@ -1,0 +1,16 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "Frontend/node_modules/bootstrap/dist/css/bootstrap.min.css",
+      "Frontend/node_modules/datatables.net-bs/css/dataTables.bootstrap.min.css",
+      "Frontend/node_modules/datatables.net-buttons-bs/css/buttons.bootstrap.min.css",
+      "Frontend/node_modules/datatables.net-rowreorder-bs/css/rowReorder.bootstrap.min.css",
+      "Frontend/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css",
+      "Frontend/node_modules/font-awesome/css/font-awesome.min.css",
+      "Frontend/vendor/css/*.css",
+      "Frontend/css/*.css"
+    ],
+    "minify": { "enabled": true }
+  }
+]
