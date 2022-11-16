@@ -17,11 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "..\Identit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFA81E3A-30F0-4DD2-A130-688E7B914248}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity", "..\Directory\Identity\Identity.csproj", "{D28C9594-A921-4930-8086-B182BE30A43C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Search", "..\Directory\Search\Search.csproj", "{36F148AD-93BC-4918-8B28-E543BF5F120E}"
