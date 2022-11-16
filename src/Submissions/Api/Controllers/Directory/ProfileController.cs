@@ -11,6 +11,10 @@ using System.Linq;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Models.Profile;
+using Biobanks.Identity.Constants;
+using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Submissions.Api.Config;
+using System;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
@@ -55,26 +59,27 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         {
             //get the biobank
             var bb = await _organisationService.GetByExternalId(id);
+            if (bb is null) return NotFound();
 
-            if (bb == null) return new HttpNotFoundResult();
-
-            if (bb.IsSuspended)
-            {
-                //Allow ADAC or this Biobank's admins to view the profile
-                if (CurrentUser.Biobanks.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
-                    User.IsInRole(Role.ADAC.ToString()))
-                {
-                    //But alert them that the bb is suspended
-                    SetTemporaryFeedbackMessage(
-                        "This biobank is currently suspended, so this public profile will not be accessible to non-admins.",
-                        FeedbackMessageType.Warning);
-                }
-                else
-                {
-                    //Anyone else gets a 404
-                    return new HttpNotFoundResult();
-                }
-            }
+            // TODO: Update when the user model is added.
+            /*            if (bb.IsSuspended)
+                        {
+                            //Allow ADAC or this Biobank's admins to view the profile
+                            if (CurrentUser.Biobanks.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
+                                User.IsInRole(Role.ADAC.ToString()))
+                            {
+                                //But alert them that the bb is suspended
+                                SetTemporaryFeedbackMessage(
+                                    "This biobank is currently suspended, so this public profile will not be accessible to non-admins.",
+                                    FeedbackMessageType.Warning);
+                            }
+                            else
+                            {
+                                //Anyone else gets a 404
+                                return new HttpNotFoundResult();
+                            }
+                        }
+            */
 
             var model = new BiobankModel
             {
@@ -170,15 +175,13 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         {
             //If turned off in site config
             if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
-                return HttpNotFound();
+                return NotFound();
 
             // Get the Organisation
             var bb = await _organisationService.GetByExternalId(id);
 
-            if (bb == null)
-            {
-                return new HttpNotFoundResult();
-            }
+            if (bb is null) return NotFound();
+
             else
             {
                 // Get accepted publications
