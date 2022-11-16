@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Http.Extensions;
 @inject IOptions<SitePropertiesOptions> _sitePropertiesOptions;
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 @*TODO: @using MvcSiteMapProvider.Web.Html*@
@@ -92,7 +93,7 @@
         {
             <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
                 <partial name="_SuspendedWarning">
-                <partial name="_FeedbackMessage">
+                    <partial name="_FeedbackMessage">
             </section>
         }
 
@@ -136,25 +137,29 @@
     <script>
         @* To get the querystring to include ?logoName= we need to specify
             a value for the Url Helper, then remove client-side.. *@
-                var logoBaseUrl = "@Url.Action("Index", "Logo", new {logoName = "LOGONAME"})".replace("LOGONAME", "");
+        var logoBaseUrl = "@Url.Action("Index", "Logo", new {logoName = "LOGONAME"})".replace("LOGONAME", "");
     </script>
 
-    
-    @* TODO:
-    @if (Request.IsAuthenticated)
+
+    @if (User.Identity.IsAuthenticated)
     {
+        var currentUrl = Context.Request.GetEncodedUrl();
+        var keepAliveUrl = @Html.Raw(@Url.Action("KeepSessionAliveAjax", "Account"));
+        var redirectUrl = @Html.Raw(@Url.Action("Logout", "Account", new { returnUrl = currentUrl, isTimeout = true }));
+        var logoutUrl = @Html.Raw(@Url.Action("Logout", "Account", new { returnUrl = currentUrl }));
+        var warningTimeout = @siteProperties.ClientSessionTimeout - 60000; //1 minute warning
+
         <script>
             $.sessionTimeout({
-                keepAliveUrl: '@Html.Raw(@Url.Action("KeepSessionAliveAjax", "Account"))',
+                keepAliveUrl: "@keepAliveUrl",
                 keepAliveInterval: 30000,
-                redirUrl: '@Html.Raw(@Url.Action("Logout", "Account", new {returnUrl = @Request.RawUrl, isTimeout = true}))',
-                logoutUrl: '@Html.Raw(@Url.Action("Logout", "Account", new {returnUrl = @Request.RawUrl}))',
-                warnAfter: parseInt('@Html.Action("GetClientTimeoutAjax", "Account")') - 60000, //1 minute warning
-                redirAfter: parseInt('@Html.Action("GetClientTimeoutAjax", "Account")')
+                redirUrl: "@redirectUrl",
+                logoutUrl: "@logoutUrl",
+                warnAfter: @warningTimeout,
+                redirAfter: @siteProperties.ClientSessionTimeout)
             });
         </script>
     }
-    *@
 
     @if (siteProperties.GoogleAnalyticsEnabled)
     {
@@ -202,10 +207,10 @@
     @* Load client side Profiler UI *@
     @*
     TODO:
-      @if (ProfilerConfig.ProfilerEnabled)
-      {
-          @MiniProfiler.Current.RenderIncludes()
-      }
+    @if (ProfilerConfig.ProfilerEnabled)
+    {
+    @MiniProfiler.Current.RenderIncludes()
+    }
     *@
 
 </body>

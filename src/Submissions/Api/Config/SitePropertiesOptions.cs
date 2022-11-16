@@ -24,5 +24,10 @@ namespace Biobanks.Submissions.Api.Config
     public string GoogleAnalyticsTrackingCode { get; set; } = string.Empty;
 
     public string GoogleTagId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// How long in milliseconds authenticated user sessions should last on the client side
+    /// </summary>
+    public int ClientSessionTimeout { get; set; } = 1200000; //20 mins in milliseconds
   }
 }
