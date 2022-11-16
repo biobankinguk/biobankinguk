@@ -15,5 +15,43 @@
       "enabled": true,
       "adjustRelativePaths": false
     }
+  },
+
+  {
+    // main vendor bundle - all third party js used in layout
+    "outputFileName": "wwwroot/dist/js/vendor.min.js",
+    "inputFiles": [
+      // JQuery + general plugins
+      "Frontend/node_modules/jquery/dist/jquery.min.js",
+      "Frontend/node_modules/jquery.cookie/jquery.cookie.js",
+      // JQuery Validation
+      "Frontend/node_modules/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js",
+      "Frontend/node_modules/jquery-validation/dist/jquery.validate.min.js",
+      "Frontend/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js",
+      // Bootstrap
+      "Frontend/node_modules/bootstrap/dist/js/bootstrap.min.js",
+      "Frontend/vendor/js/bootstrap-session-timeout.js",
+      // Bootbox
+      "Frontend/node_modules/bootbox/bootbox.min.js"
+    ],
+    "minify": {
+      "enabled": true
+    },
+    "sourceMap": true
+  },
+  {
+    // shared source bundle - project js used in layout
+    "outputFileName": "wwwroot/dist/js/layout.min.js",
+    "inputFiles": [
+      // General setup
+      "Frontend/js/layout/bootstrap.fix.jquery.validate.js",
+      "Frontend/js/layout/setup.bootbox.form.confirm.js",
+
+      // Actual layout usage
+      "Frontend/js/layout/contact-button.js",
+
+      // Shared across Views
+      "Frontend/js/layout/feedback-message.js"
+    ]
   }
 ]

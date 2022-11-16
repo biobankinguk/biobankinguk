@@ -31,11 +31,13 @@ namespace Biobanks.Web
             #endregion
 
             #region Scripts
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery-unobtrusive*",
                         "~/Scripts/jquery.validate*",
                         "~/Scripts/bootstrap.fix.jquery.validate*"));
 
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
                         "~/Scripts/jquery.cookie-1.4.1.min.js"));
@@ -47,9 +49,11 @@ namespace Biobanks.Web
             bundles.Add(new ScriptBundle("~/bundles/typeahead").Include(
                       "~/Scripts/typeahead.bundle.js"));
 
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                 "~/Scripts/bootstrap.js"));
 
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/session-timeout").Include(
                 "~/Scripts/bootstrap-session-timeout/bootstrap-session-timeout*"));
 
@@ -65,6 +69,7 @@ namespace Biobanks.Web
                 "~/Scripts/DataTables/buttons.colVis.min.js",
                 "~/Scripts/DataTables/dataTables.rowReorder.min.js"));
 
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/bootbox").Include(
                         "~/Scripts/bootbox*",
                         "~/Scripts/setup.bootbox.form.confirm.js"));
@@ -327,6 +332,7 @@ namespace Biobanks.Web
                 "~/Scripts/Search/facet-groups.js"));
 
             // Shared / Layout
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/shared").Include(
                 "~/Scripts/Contact/contact-button.js",
                 "~/Scripts/Shared/feedback-message.js"));

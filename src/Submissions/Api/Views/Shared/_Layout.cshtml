@@ -30,7 +30,7 @@
             "expiryDays": 30
         };
     </script>
-    <script type="text/javascript" src="~/vendor/cookieconsent/cookieconsent.min.js"></script>
+    <script src="~/vendor/cookieconsent/cookieconsent.min.js" asp-append-version="true"></script>
 
     @if (siteProperties.HotjarEnabled)
     {
@@ -130,13 +130,8 @@
         <vc:footer></vc:footer>
     </footer>
 
-    @*
-      TODO:
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/bootbox")
-    *@
+    <script src="~/dist/js/vendor.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/layout.min.js" asp-append-version="true"></script>
 
     <script>
         @* To get the querystring to include ?logoName= we need to specify
@@ -144,14 +139,10 @@
                 var logoBaseUrl = "@Url.Action("Index", "Logo", new {logoName = "LOGONAME"})".replace("LOGONAME", "");
     </script>
 
-    @*
-    TODO:
-    @Scripts.Render("~/bundles/shared")
     
-
+    @* TODO:
     @if (Request.IsAuthenticated)
     {
-        @Scripts.Render("~/bundles/session-timeout")
         <script>
             $.sessionTimeout({
                 keepAliveUrl: '@Html.Raw(@Url.Action("KeepSessionAliveAjax", "Account"))',
