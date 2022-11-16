@@ -5,6 +5,7 @@ namespace Biobanks.Submissions.Api.Config
         // General Site Display Properties
         public const string DisplayLiveChat = "site.display.livechat";
         public const string DisplayPublications = "site.display.publications";
+        public const string ShowCounties = "site.display.counties";
 
         // Ref Data Name Configuration Options
         public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";

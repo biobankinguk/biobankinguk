@@ -83,9 +83,7 @@
       <Assets_Fonts Include="Frontend/node_modules/font-awesome/fonts/**/*.*" />
     </ItemGroup>
 
-    <Copy
-      SourceFiles="@(Assets_Fonts)"
-      DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(Assets_Fonts)" DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
   </Target>
   
 </Project>

@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Data.ReferenceData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Biobanks.Shared.Services.Contracts;
@@ -11,10 +11,7 @@ using System.Linq;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Models.Profile;
-using Biobanks.Identity.Constants;
-using Biobanks.Submissions.Api.Utilities;
 using Biobanks.Submissions.Api.Config;
-using System;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
@@ -22,14 +19,13 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
     public class ProfileController : Controller
     {
         private readonly Shared.Services.Contracts.IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
-
         private readonly ICollectionService _collectionService;
+        private readonly IPublicationService _publicationService;
         private readonly INetworkService _networkService;
-        private readonly IOrganisationService _organisationService;
 
+        private readonly IOrganisationService _organisationService;
         private readonly IBiobankService _biobankService;
         private readonly IConfigService _configService;
-        private readonly IPublicationService _publicationService;
         private readonly ICapabilityService _capabilityService;
 
         public ProfileController(
@@ -45,10 +41,10 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             _annualStatisticGroupService = annualStatisticGroupService;
             _networkService = networkService;
             _organisationService = organisationService;
+            _publicationService = publicationService;
             _biobankService = biobankService;
             _collectionService = collectionService;
             _configService = configService;
-            _publicationService = publicationService;
             _capabilityService = capabilityService;
         }
 
