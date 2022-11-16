@@ -183,7 +183,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 // Get accepted publications
                 var publications = await _publicationService.ListByOrganisation(bb.OrganisationId, acceptedOnly: true);
 
-                // TODO: Migrate/Recreate Model?
                 var model = new BiobankPublicationsModel
                 {
                     ExternalId = bb.OrganisationExternalId,
