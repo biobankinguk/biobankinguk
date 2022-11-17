@@ -98,5 +98,15 @@
     "inputFiles": ["Frontend/js/pages/Home/unified-search-helptext.js"],
     "minify": { "enabled": true },
     "sourceMap": true
+  },
+  // Search (also used in Home for Unified Search)
+  {
+    "outputFileName": "wwwroot/dist/js/search.min.js",
+    "inputFiles": [
+      "Frontend/js/init/search-diagnosis-typeahead.js",
+      "Frontend/js/init/facet-groups.js"
+    ],
+    "minify": { "enabled": true },
+    "sourceMap": true
   }
 ]

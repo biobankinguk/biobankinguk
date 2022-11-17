@@ -9,6 +9,7 @@ globals:
   jQuery: readonly
   bootbox: readonly
   ko: readonly
+  Bloodhound: readonly
 
   # source globals
   logoBaseUrl: readonly
