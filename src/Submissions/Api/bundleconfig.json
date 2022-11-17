@@ -64,14 +64,14 @@
     "outputFileName": "wwwroot/dist/js/layout.min.js",
     "inputFiles": [
       // General setup
-      "Frontend/js/layout/bootstrap.fix.jquery.validate.js",
-      "Frontend/js/layout/setup.bootbox.form.confirm.js",
+      "Frontend/js/overrides/bootstrap.fix.jquery.validate.js",
+      "Frontend/js/init/bootbox-confirm.js",
 
       // Actual layout usage
       "Frontend/js/layout/contact-button.js",
 
       // Shared across Views
-      "Frontend/js/layout/feedback-message.js"
+      "Frontend/js/helpers/feedback-message.js"
     ],
     "minify": {
       "enabled": true
@@ -80,10 +80,10 @@
   },
   {
     // shared bundle - js used by multiple Directory Admin pages
-    "outputFileName": "wwwroot/dist/js/shared.directory-admin.js",
+    "outputFileName": "wwwroot/dist/js/markdown-editor.min.js",
     "inputFiles": [
       "Frontend/node_modules/markdowndeep/clientSide/MarkdownDeepLib.min.js", // TODO: copy images
-      "Frontend/js/shared.directory-admin/mdd-editor.js" // TODO: copy help file from the package
+      "Frontend/js/init/markdown-editor.js" // TODO: copy help file from the package
     ],
     "minify": {
       "enabled": true
