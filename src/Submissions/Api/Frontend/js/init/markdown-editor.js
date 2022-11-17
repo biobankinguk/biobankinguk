@@ -1,4 +1,9 @@
-﻿$(function () {
+﻿/**
+ * Initialises a Markdown Editor using MarkdownDeep
+ * on all suitable elements (TextArea with the `mdd_editor` class)
+ */
+
+$(function () {
   $("textarea.mdd_editor").click(function () {
     // MarkdownDeep editor instance
     var editor = $(this).data("mdd");

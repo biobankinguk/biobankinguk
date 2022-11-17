@@ -1,3 +1,7 @@
+/**
+ * All the functionality for the Contact Button that lives in the navbar
+ */
+
 var ContactButtonManager = (function () {
   function ContactButtonManager(localStorageContactIdsKey, contactButtonBase) {
     this.localStorageContactIdsKey = localStorageContactIdsKey;
