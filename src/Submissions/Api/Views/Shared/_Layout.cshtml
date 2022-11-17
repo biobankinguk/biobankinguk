@@ -134,13 +134,6 @@
     <script src="~/dist/js/vendor.min.js" asp-append-version="true"></script>
     <script src="~/dist/js/layout.min.js" asp-append-version="true"></script>
 
-    <script>
-        @* To get the querystring to include ?logoName= we need to specify
-            a value for the Url Helper, then remove client-side.. *@
-        var logoBaseUrl = "@Url.Action("Index", "Logo", new {logoName = "LOGONAME"})".replace("LOGONAME", "");
-    </script>
-
-
     @if (User.Identity.IsAuthenticated)
     {
         var currentUrl = Context.Request.GetEncodedUrl();

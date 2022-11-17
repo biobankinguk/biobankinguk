@@ -4,9 +4,14 @@ env:
 extends:
   - eslint:recommended
 globals:
+  # vendor globals
   $: readonly
   jQuery: readonly
   bootbox: readonly
+  ko: readonly
+
+  # source globals
+  logoBaseUrl: readonly
 parserOptions:
   ecmaVersion: 5
   sourceType: script

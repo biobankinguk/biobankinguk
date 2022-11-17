@@ -54,9 +54,7 @@
       "Frontend/node_modules/datatables.net-buttons/js/buttons.colVis.min.js",
       "Frontend/node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.min.js"
     ],
-    "minify": {
-      "enabled": true
-    },
+    "minify": { "enabled": true },
     "sourceMap": true
   },
   {
@@ -73,21 +71,32 @@
       // Shared across Views
       "Frontend/js/helpers/feedback-message.js"
     ],
-    "minify": {
-      "enabled": true
-    },
+    "minify": { "enabled": true },
     "sourceMap": true
   },
   {
-    // shared bundle - js used by multiple Directory Admin pages
     "outputFileName": "wwwroot/dist/js/markdown-editor.min.js",
     "inputFiles": [
       "Frontend/node_modules/markdowndeep/clientSide/MarkdownDeepLib.min.js", // TODO: copy images
       "Frontend/js/init/markdown-editor.js" // TODO: copy help file from the package
     ],
-    "minify": {
-      "enabled": true
-    },
+    "minify": { "enabled": true },
+    "sourceMap": true
+  },
+
+  // Page bundles
+
+  // Home
+  {
+    "outputFileName": "wwwroot/dist/js/Home/contact.min.js",
+    "inputFiles": ["Frontend/js/pages/Home/home-contactlist.js"],
+    "minify": { "enabled": true },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "wwwroot/dist/js/Home/home.min.js",
+    "inputFiles": ["Frontend/js/pages/Home/unified-search-helptext.js"],
+    "minify": { "enabled": true },
     "sourceMap": true
   }
 ]
