@@ -28,7 +28,7 @@ public class SearchController : Controller
     
         private readonly IOrganisationDirectoryService _organisationDirectoryService;
 
-        private readonly ISearchProvider _searchProvider;
+        private readonly ISampleCountService _searchProvider;
         private readonly IMapper _mapper;
 
         private readonly ICollectionService _collectionService;
@@ -38,7 +38,7 @@ public class SearchController : Controller
         public SearchController(IReferenceDataService<Country> countryController,
             IOntologyTermService ontologyTermService,
             IOrganisationDirectoryService organisationDirectoryService,
-            ISearchProvider searchProvider,
+            ISampleCountService searchProvider,
             IMapper mapper,
             ICollectionService collectionService,
             IConfigService configService)

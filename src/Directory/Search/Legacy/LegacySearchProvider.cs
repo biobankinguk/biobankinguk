@@ -7,7 +7,7 @@ using Biobanks.Search.Dto.Results;
 
 namespace Biobanks.Search.Legacy
 {
-    public class LegacySearchProvider : ISearchProvider
+    public class LegacySearchProvider : ISampleCountService
     {
         private readonly ICapabilitySearchProvider _capabilities;
         private readonly ICollectionSearchProvider _collections;

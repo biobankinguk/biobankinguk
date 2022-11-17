@@ -28,7 +28,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
-        private readonly ISearchProvider _searchProvider;
+        private readonly ISampleCountService _searchProvider;
 
         private readonly IHostEnvironment _hostEnvironment;
 
@@ -39,7 +39,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             CapabilityService capabilityService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
-            ISearchProvider searchProvider,
+            ISampleCountService searchProvider,
             IHostEnvironment hostEnvironment,
             TelemetryClient telemetryClient)
         {

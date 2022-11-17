@@ -254,7 +254,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
             elasticConfig.Password
         )
     )
-    .AddTransient<ISearchProvider, LegacySearchProvider>()
+    .AddTransient<ISampleCountService, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
 
     // Reference Data
