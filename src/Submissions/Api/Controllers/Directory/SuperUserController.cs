@@ -58,32 +58,7 @@ namespace Biobanks.Web.Controllers
       return View();
     }
 
-    public async Task<RedirectToRouteResult> FixOrgURL()
-    {
-      try
-      {
-        var organisations = await _organisationService.List();
-
-        foreach (var organisation in organisations)
-        {
-          // Update URL
-          organisation.Url = UrlTransformer.Transform(organisation.Url);
-
-          await _organisationService.Update(organisation);
-        }
-
-      }
-      catch (Exception e) when (e is HttpRequestException || e is DbUpdateException)
-      {
-        this.SetTemporaryFeedbackMessage($"The process failed to succesfully complete due to: {e.GetType().Name}.", FeedbackMessageType.Warning);
-        return RedirectToAction("Tools");
-      }
-
-      this.SetTemporaryFeedbackMessage("The process of fixing any broken organisation URLs has succesfully completed.", FeedbackMessageType.Success);
-      return RedirectToAction("Tools");
-    }
-
-    #endregion
+    //TODO Fixorg
 
     #region Search Index Management
 
