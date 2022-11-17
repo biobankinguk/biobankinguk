@@ -6,6 +6,7 @@ using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -150,14 +151,14 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                     var outError = error;
                     //Modify any errors if we want?
                     var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-                    if (error == "Invalid token.")
-                        outError =
+                    if (error.Description == "Invalid token.")
+                        outError.Description =
                             $"Your account confirmation token is invalid or has expired. " +
                             $"You can <a href=\"{Url.Action("ResendConfirmLink", new { userEmail = user.Email })}\">resend your confirmation link</a>, " +
                             $"or contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> " +
                             "if you're having trouble.";
 
-                    ModelState.AddModelError("", outError);
+                    ModelState.AddModelError("", outError.Description);
                     return View("GlobalErrors");
                 }
 
