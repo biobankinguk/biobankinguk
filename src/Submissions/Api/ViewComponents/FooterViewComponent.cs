@@ -8,16 +8,16 @@ namespace Biobanks.Submissions.Api.ViewComponents;
 
 public class FooterViewComponent : ViewComponent
 {
-  private IWebHostEnvironment _hostEnvironment;
+  private readonly IWebHostEnvironment _env;
 
-  public FooterViewComponent(IWebHostEnvironment hostEnvironment)
+  public FooterViewComponent(IWebHostEnvironment env)
   {
-    _hostEnvironment = hostEnvironment;
+    _env = env;
   }
 
   public IViewComponentResult Invoke()
   {
-    var _navPath = Path.Combine(_hostEnvironment.WebRootPath, @"~/App_Config/footer.json");
+    var _navPath = Path.Combine(_env.ContentRootPath, "Settings/footer.json");
     var json = File.ReadAllText(_navPath);
     var model = JsonConvert.DeserializeObject<FooterModel>(json);
 

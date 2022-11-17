@@ -8,7 +8,7 @@
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Content Include="swagger.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -16,12 +16,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Settings\footer.json" />
+    <None Include="Settings\header.json" />
+    <None Include="Settings\navigation.json" />
     <None Include="Settings\LegacyMaterialTypes.json" />
     <None Include="Settings\LegacyStorageTemperatures.json" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="Hangfire" Version="1.7.31" />
     <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
@@ -69,6 +73,26 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
+  <Target Name="CopyStaticAssets" BeforeTargets="Build">
+    <!--
+    Copy static assets from source locations (e.g. node_modules) to wwwroot.
+  
+    We do this before every build to ensure presence of servable assets in dev or publish.
+  
+    However it's efficient at not recopying existing unmodified files <3
+  
+    You can add new asset path items and/or copy behaviours here as desirable
+    -->
+
+    <ItemGroup>
+      <Assets_Fonts Include="Frontend/node_modules/font-awesome/fonts/**/*.*" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(Assets_Fonts)"
+      DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
+  </Target>
+  
   <ItemGroup>
     <Reference Include="Biobanks.Directory.Data">
       <HintPath>..\..\Directory\Data\bin\Debug\net48\Biobanks.Directory.Data.dll</HintPath>

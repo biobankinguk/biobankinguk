@@ -14,7 +14,7 @@
             '<a href = "http://windows.microsoft.com/en-us/internet-explorer/download-ie" target = "_blank" style = "color: #fff; text-decoration: underline;">' +
             'Please upgrade here.</a></div>');
     }
-            // ]]></script>
+                // ]]></script>
 <!-- END Display Upgrade Message for IE 10 or Less -->
 
 <nav class="navbar navbar-fixed-top">
@@ -44,10 +44,12 @@
             <div class="navbar-collapse-container">
                 <div id="myNavbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <partial name="_NavMenu" for="NavigationItems">
+                        <partial name="_NavMenu.cshtml" for="NavigationItems" />
                     </ul>
                     <ul class="nav navbar-nav">
-                        <partial name="_NavName" for="NavigationItems" view-data="@(new ViewDataDictionary(ViewData)  { { " Toolbar", true } })">
+                        <partial name="_NavMenu.cshtml"
+                                 for="NavigationItems"
+                                 view-data="@(new ViewDataDictionary(ViewData)  { { "Toolbar", true } })" />
                     </ul>
                 </div>
             </div>
