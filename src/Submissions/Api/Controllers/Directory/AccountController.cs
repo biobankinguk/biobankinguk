@@ -1,6 +1,5 @@
 ﻿using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Controllers.Submissions;
-using Biobanks.Submissions.Api.Identity;
+using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Account;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -11,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
@@ -68,13 +68,9 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             if (ModelState.IsValid)
             {
                 var result = await _signinManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-                var user = await _userManager.FindByNameAsync(model.Email) ?? 
-                    throw new InvalidOperationException(
-                      $"Successfully signed in user could not be retrieved! Username: {model.Email}");
 
                 if (result.Succeeded)
                 {
-                    await _claimsManager.SetUserClaimsAsync(model.Email);
                     return RedirectToAction("LoginRedirect", new { returnUrl });
                 }
                 else if (result.IsLockedOut)
@@ -106,12 +102,14 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         {
             //This is an action, so that it's a separate request and the user identity cookie has roles and claims available :)
             //do we need them to create a profile for an associated org or network etc?
+            var user = await _userManager.GetUserAsync(User);
+
 
             //Biobank
 
             //get all accepted biobanks
             var biobankRequests = await _organisationService.ListAcceptedRegistrationRequests();
-            var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == CurrentUser.Name && x.UserEmail == CurrentUser.Email);
+            var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == user.Name && x.UserEmail == user.Email);
 
             // if there is an unregistered biobank to finish registering, go there
             if (firstAcceptedBiobabankRequest != null)
@@ -125,7 +123,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             //get all accepted networks
             var networkRequests = await _networkService.ListAcceptedRegistrationRequests();
-            var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == CurrentUser.Identity.GetUserName() && x.UserEmail == CurrentUser.Email);
+            var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == user.UserName && x.UserEmail == user.Email);
 
             // if there is an unregistered network to finish registering, go there
             if (firstAcceptedNetworkRequest != null)
@@ -138,7 +136,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
 
             //ADAC
-            if (CurrentUser.IsInRole(Role.ADAC.ToString()))
+            if (HttpContext.User.IsInRole(Role.DirectoryAdmin))
                 return RedirectToAction("Index", "ADAC");
 
             // if they have more than one claim, there's no obvious place to send them
@@ -149,7 +147,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
 
             // Biobank admin only
-            if (CurrentUser.IsInRole(Role.BiobankAdmin.ToString()))
+            if (HttpContext.User.IsInRole(Role.BiobankAdmin))
             {
                 var biobank = CurrentUser.Biobanks.FirstOrDefault();
 
@@ -163,7 +161,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
 
             // Network admin only
-            if (CurrentUser.IsInRole(Role.NetworkAdmin.ToString()))
+            if (HttpContext.User.IsInRole(Role.NetworkAdmin))
             {
                 var network = CurrentUser.Networks.FirstOrDefault();
 
@@ -181,10 +179,10 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         }
 
         [AllowAnonymous] //This may seem counter-intuitive but it fixes issues with session timeouts
-        public ActionResult Logout(string returnUrl = null, bool isTimeout = false)
+        public async Task<ActionResult> Logout(string returnUrl = null, bool isTimeout = false)
         {
-            var authenticationManager = HttpContext.GetOwinContext().Authentication;
-            authenticationManager.SignOut();
+            // Sign out of Identity
+            await _signinManager.SignOutAsync();
 
             //send feedback if they were logged out due to session timeout
             if (isTimeout)
@@ -213,6 +211,10 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         [AllowAnonymous]
         public async Task<ActionResult> Confirm(string userId, string token)
         {
+            var user = await _userManager.FindByIdAsync(userId) ??
+                throw new InvalidOperationException(
+                $"Account could not be confirmed. User not found! User ID: {userId}");
+
             try
             {
                 //check we have all the required params
@@ -220,7 +222,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                     throw new ApplicationException();
 
                 //Confirm the user
-                var result = await _userManager.ConfirmEmailAsync(userId, token);
+                var result = await _userManager.ConfirmEmailAsync(user, token);
                 var tokenValidationId = await _tokenLog.EmailTokenValidated(token, userId);
 
                 foreach (var error in result.Errors)
@@ -228,7 +230,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                     var outError = error;
                     //Modify any errors if we want?
                     var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-                    var user = await _userManager.FindByIdAsync(userId);
                     if (error == "Invalid token.")
                         outError =
                             $"Your account confirmation token is invalid or has expired. " +
@@ -243,7 +244,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 await _tokenLog.ValidationSuccessful(tokenValidationId);
 
                 //pass them on to password reset, with a password token
-                var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(userId);
+                var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
                 await _tokenLog.PasswordTokenIssued(passwordToken, userId);
 
@@ -276,7 +277,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
 
             //Send new confirm email
-            var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+            var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
@@ -332,7 +333,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 return View("ForgotPasswordConfirmation");
             }
 
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             await _tokenLog.PasswordTokenIssued(resetToken, user.Id);
 
@@ -372,7 +373,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             //Try and perform the reset
             try
             {
-                var result = await _userManager.ResetPasswordAsync(user.Id, model.Token, model.Password); //This also does historical password checks
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password); //This also does historical password checks
 
                 var tokenValidationId = await _tokenLog.PasswordTokenValidated(model.Token, user.Id);
 
@@ -383,7 +384,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
                     Regex.Split(error, @"(?<=[.])").ToList().ForEach(e =>
                     {
-                        if (!e.IsNullOrWhiteSpace())
+                        if (!string.IsNullOrWhiteSpace(e))
                             htmlMessage += $"<li>{e}</li>";
                     });
 
@@ -402,52 +403,37 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
 
             //They've reset their password - we sign them in!
-            var signInStatus = await _signinManager.LocalSignInAsync(user.Email, model.Password, false);
+            var signInStatus = await _signinManager.PasswordSignInAsync(user, model.Password, false, false);
 
-            switch (signInStatus)
+            if (signInStatus.Succeeded)
             {
-                case SignInStatus.Success:
-                    await _claimsManager.SetUserClaimsAsync(user.Email);
-                    return RedirectToAction("LoginRedirect");
-                case SignInStatus.LockedOut:
-                    SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
-                    return View(model);
-                case SignInStatus.RequiresVerification:
-                    var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-                    SetTemporaryFeedbackMessage(
-                        "This account has not been confirmed. " +
-                        $"You can <a href=\"{Url.Action("ResendConfirmLink", new { userEmail = user.Email, returnUrl = Url.Action("Login") })}\">resend your confirmation link</a>, " +
-                        $"or contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> " +
-                        "if you're having trouble.",
-                        FeedbackMessageType.Warning,
-                        true);
-                    return View(model);
-                default:
-                    SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
-                    return View(model);
+                return RedirectToAction("LoginRedirect", new { returnUrl });
             }
-        }
-
-        #endregion
-
-
-        #region Session Management
-
-        public JsonResult KeepSessionAliveAjax()
-        {
-            return Json(new
+            else if (signInStatus.IsLockedOut)
             {
-                success = true
-            });
-        }
+                SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
+            }
+            else if (signInStatus.IsNotAllowed)
+            {
+                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                SetTemporaryFeedbackMessage(
+                    "This account has not been confirmed. " +
+                    $"You can <a href=\"{Url.Action("ResendConfirmLink", new { userEmail = user.Email, returnUrl = Url.Action("Login") })}\">resend your confirmation link</a>, " +
+                    $"or contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> " +
+                    "if you're having trouble.",
+                    FeedbackMessageType.Warning,
+                    true);
+            }
+            else
+            {
+                SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
+            }
+            return View(model);
 
-        public double GetClientTimeoutAjax()
-        {
-            return 1200000; //20 mins in milliseconds
+            
         }
 
         #endregion
-
 
         #region Access Control
 
@@ -503,7 +489,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
         private async Task<AccountDetailsModel> GetAccountDetailsModelAsync()
         {
-            var user = await _userManager.FindByIdAsync(CurrentUser.Identity.GetUserId());
+            var user = await _userManager.GetUserAsync(User);
 
             return new AccountDetailsModel
             {
@@ -511,99 +497,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 Name = user.Name,
                 Email = user.Email
             };
-        }
-
-        #endregion
-
-
-        #region Context switching
-
-        public async Task<ActionResult> SwitchToBiobank(int id, bool newBiobank)
-        {
-            List<KeyValuePair<int, string>> biobanks;
-
-            var userId = CurrentUser.Identity.GetUserId();
-            var user = _userManager.FindById(userId);
-
-            // Refresh user cookies - ensures user has correct Roles
-            await _signinManager.RefreshSignInAsync(user);
-            await _claimsManager.SetUserClaimsAsync(user.Email);
-
-            // Get Biobank
-            if (newBiobank)
-            {
-                var acceptedRequest = await _organisationService.ListAcceptedRegistrationRequests();
-
-                biobanks = acceptedRequest
-                    .Where(x => x.UserEmail == user.Email)
-                    .Select(x => new KeyValuePair<int, string>(x.OrganisationRegisterRequestId, x.OrganisationName))
-                    .ToList();
-            }
-            else
-            {
-                var organisations = await _organisationService.ListByUserId(userId);
-
-                biobanks = organisations
-                    .Select(x => new KeyValuePair<int, string>(x.OrganisationId, x.Name))
-                    .ToList();
-            }
-
-            // if they don't have access to any biobanks, 403
-            if (biobanks == null || biobanks.Count <= 0)
-                return RedirectToAction("Forbidden");
-
-            var biobank = biobanks.FirstOrDefault(o => o.Key == id);
-
-            // if they don't have access to this biobank, 403
-            if (biobank.Equals(default(KeyValuePair<int, string>)))
-                return RedirectToAction("Forbidden");
-
-            // else they do have access to this biobank - set session data and go to collections
-            Session[SessionKeys.ActiveOrganisationId] = biobank.Key;
-            Session[SessionKeys.ActiveOrganisationName] = biobank.Value;
-
-            if (newBiobank)
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewBiobank;
-            else
-                Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
-
-            return newBiobank ?
-                RedirectToAction("Edit", "Biobank", new { detailsIncomplete = true })
-                : RedirectToAction("Collections", "Biobank");
-        }
-
-        public async Task<ActionResult> SwitchToNetwork(int id, bool newNetwork)
-        {
-            var userId = CurrentUser.Identity.GetUserId();
-            var user = _userManager.FindById(userId);
-
-            // Refresh user cookies - ensures user has correct Roles
-            await _signinManager.RefreshSignInAsync(user);
-            await _claimsManager.SetUserClaimsAsync(user.Email);
-
-            var networks = newNetwork
-                ? (await _networkService.ListAcceptedRegistrationRequestsByUserId(userId))
-                    .Select(x => (Id: x.NetworkRegisterRequestId, Name: x.NetworkName))
-                : (await _networkService.ListByUserId(userId))
-                    .Select(x => (Id: x.NetworkId, Name: x.Name));
-
-            var network = networks.FirstOrDefault(x => x.Id == id);
-
-            // if they don't have access to any biobanks, 403
-            if (network == default)
-                return RedirectToAction("Forbidden");
-
-            // else they do have access to this biobank - set session data and go to collections
-            Session[SessionKeys.ActiveOrganisationId] = network.Id;
-            Session[SessionKeys.ActiveOrganisationName] = network.Name;
-
-            Session[SessionKeys.ActiveOrganisationType] = newNetwork
-                ? ActiveOrganisationType.NewNetwork
-                : ActiveOrganisationType.Network;
-
-            return newNetwork
-                ? RedirectToAction("Edit", "Network", new { detailsIncomplete = true })
-                : RedirectToAction("Biobanks", "Network");
         }
 
         #endregion
