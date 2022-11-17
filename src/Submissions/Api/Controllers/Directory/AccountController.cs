@@ -303,7 +303,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                     //Format the error string from ResetPasswordAsync nicely
                     var htmlMessage = "<ul>";
 
-                    Regex.Split(error, @"(?<=[.])").ToList().ForEach(e =>
+                    Regex.Split(error.Description, @"(?<=[.])").ToList().ForEach(e =>
                     {
                         if (!string.IsNullOrWhiteSpace(e))
                             htmlMessage += $"<li>{e}</li>";
