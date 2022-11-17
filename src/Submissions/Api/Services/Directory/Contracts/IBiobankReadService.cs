@@ -1,7 +1,6 @@
-﻿using Biobanks.Entities.Data;
+﻿using Biobanks.Data.Entities;
+using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Auth.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

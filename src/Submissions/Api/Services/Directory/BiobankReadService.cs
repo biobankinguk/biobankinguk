@@ -1,9 +1,7 @@
 ﻿using Biobanks.Data;
+using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Identity.Contracts;
-using Biobanks.Submissions.Api.Auth.Entities;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Identity;
