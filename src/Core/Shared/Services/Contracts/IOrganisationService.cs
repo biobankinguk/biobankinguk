@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Data;
+using Biobanks.Entities.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,5 +14,8 @@ namespace Biobanks.Shared.Services.Contracts
         Task<IEnumerable<string>> ListExternalIds();
 
         Task<Organisation> GetById(int organisationId);
-    }
+
+        Task<Organisation> Update(Organisation organisation);
+
+  }
 }
