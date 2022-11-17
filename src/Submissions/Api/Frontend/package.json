@@ -13,6 +13,7 @@
     "datatables.net-buttons-bs": "^1.6.5",
     "datatables.net-rowreorder": "^1.2.7",
     "datatables.net-rowreorder-bs": "^1.2.7",
+    "datetime-moment": "^1.0.0",
     "font-awesome": "^4.7.0",
     "jquery": "^2.2.4",
     "jquery-ajax-unobtrusive": "^3.2.6",
@@ -26,6 +27,5 @@
     "plotly.js": "^1.58.4",
     "pwstrength-bootstrap": "^1.2.10",
     "typeahead.js": "^0.11.1"
-  },
-  "devDependencies": {}
+  }
 }

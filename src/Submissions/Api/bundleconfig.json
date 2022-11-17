@@ -1,4 +1,5 @@
 [
+  // Styles
   {
     "outputFileName": "wwwroot/dist/css/site.min.css",
     "inputFiles": [
@@ -8,6 +9,7 @@
       "Frontend/node_modules/datatables.net-rowreorder-bs/css/rowReorder.bootstrap.min.css",
       "Frontend/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css",
       "Frontend/node_modules/font-awesome/css/font-awesome.min.css",
+      "Frontend/node_modules/markdowndeep/clientSide/mdd_styles.css",
       "Frontend/vendor/css/*.css",
       "Frontend/css/*.css"
     ],
@@ -17,6 +19,7 @@
     }
   },
 
+  // Scripts
   {
     // main vendor bundle - all third party js used in layout
     "outputFileName": "wwwroot/dist/js/vendor.min.js",
@@ -32,7 +35,24 @@
       "Frontend/node_modules/bootstrap/dist/js/bootstrap.min.js",
       "Frontend/vendor/js/bootstrap-session-timeout.js",
       // Bootbox
-      "Frontend/node_modules/bootbox/bootbox.min.js"
+      "Frontend/node_modules/bootbox/bootbox.min.js",
+      // Twitter Typeahead.js + Bloodhound
+      "Frontend/node_modules/typeahead.js/dist/typeahead.bundle.min.js",
+      // Knockout + general plugins
+      "Frontend/node_modules/knockout/build/output/knockout-latest.js",
+      "Frontend/node_modules/@avica/knockout-mapping/dist/knockout.mapping.min.js",
+      // Moment.js
+      "Frontend/node_modules/moment/min/moment.min.js",
+      // DataTables
+      "Frontend/node_modules/datatables.net/js/jquery.dataTables.min.js",
+      "Frontend/node_modules/datetime-moment/datetime-moment.js",
+      "Frontend/node_modules/datatables.net-bs/js/dataTables.bootstrap.min.js", // TODO: copy images
+      "Frontend/node_modules/datatables.net-buttons/js/dataTables.buttons.min.js",
+      "Frontend/node_modules/datatables.net-buttons-bs/js/buttons.bootstrap.min.js",
+      "Frontend/node_modules/datatables.net-buttons/js/buttons.html5.min.js",
+      "Frontend/node_modules/datatables.net-buttons/js/buttons.print.min.js",
+      "Frontend/node_modules/datatables.net-buttons/js/buttons.colVis.min.js",
+      "Frontend/node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.min.js"
     ],
     "minify": {
       "enabled": true
@@ -52,6 +72,22 @@
 
       // Shared across Views
       "Frontend/js/layout/feedback-message.js"
-    ]
+    ],
+    "minify": {
+      "enabled": true
+    },
+    "sourceMap": true
+  },
+  {
+    // shared bundle - js used by multiple Directory Admin pages
+    "outputFileName": "wwwroot/dist/js/shared.directory-admin.js",
+    "inputFiles": [
+      "Frontend/node_modules/markdowndeep/clientSide/MarkdownDeepLib.min.js", // TODO: copy images
+      "Frontend/js/shared.directory-admin/mdd-editor.js" // TODO: copy help file from the package
+    ],
+    "minify": {
+      "enabled": true
+    },
+    "sourceMap": true
   }
 ]
