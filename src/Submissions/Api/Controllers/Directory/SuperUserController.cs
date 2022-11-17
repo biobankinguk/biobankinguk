@@ -1,13 +1,11 @@
 using AutoMapper;
-using Biobanks.Directory.Data.Transforms.Url;
 using Biobanks.Search.Legacy;
 using Biobanks.Shared.Services.Contracts;
+using Biobanks.Submissions.Api.Models.SuperUser;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -51,45 +49,33 @@ namespace Biobanks.Web.Controllers
       return View();
     }
 
-    #region Super User Tools
-
     public ActionResult Tools()
     {
       return View();
     }
 
-    //TODO Fixorg
-
-    #region Search Index Management
+    //TODO FixorgURL
 
     [HttpGet]
     public async Task<ViewResult> SearchIndex()
     {
       // View Model (Default View Shows No Data)
-      var model = new SearchIndexModel();
-
-      // Prevent Error Propagation When Search Index Is Down
-      try
+      var model = new SearchIndexModel
       {
-        model.TotalSampleSetCount = await _sampleSetService.GetSampleSetCountAsync();
-        model.IndexableSampleSetCount = await _sampleSetService.GetIndexableSampleSetCountAsync();
-        model.SuspendedSampleSetCount = await _sampleSetService.GetSuspendedSampleSetCountAsync();
-        model.CollectionSearchDocumentCount = await _searchProvider.CountCollectionSearchDocuments();
-        model.TotalCapabilityCount = await _capabilityService.GetCapabilityCountAsync();
-        model.IndexableCapabilityCount = await _capabilityService.GetIndexableCapabilityCountAsync();
-        model.SuspendedCapabilityCount = await _capabilityService.GetSuspendedCapabilityCountAsync();
-        model.CapabilitySearchDocumentCount = await _searchProvider.CountCapabilitySearchDocuments();
+        // Prevent Error Propagation When Search Index Is Down
 
-        // Cluster Health Status
-        ViewBag.Status = await _indexService.GetClusterHealth();
-      }
-      catch (Exception e)
-      {
-        // Log Error via Application Insights
-        var ai = new TelemetryClient();
-        ai.TrackException(e);
-      }
+        TotalSampleSetCount = await _sampleSetService.GetSampleSetCountAsync(),
+        IndexableSampleSetCount = await _sampleSetService.GetIndexableSampleSetCountAsync(),
+        SuspendedSampleSetCount = await _sampleSetService.GetSuspendedSampleSetCountAsync(),
+        CollectionSearchDocumentCount = await _searchProvider.CountCollectionSearchDocuments(),
+        TotalCapabilityCount = await _capabilityService.GetCapabilityCountAsync(),
+        IndexableCapabilityCount = await _capabilityService.GetIndexableCapabilityCountAsync(),
+        SuspendedCapabilityCount = await _capabilityService.GetSuspendedCapabilityCountAsync(),
+        CapabilitySearchDocumentCount = await _searchProvider.CountCapabilitySearchDocuments()
+      };
 
+      // Cluster Health Status
+      ViewBag.Status = await _indexService.GetClusterHealth();
       return View(model);
     }
 
@@ -129,7 +115,5 @@ namespace Biobanks.Web.Controllers
       this.SetTemporaryFeedbackMessage("The building of the index has begun. Pending jobs can be viewed in the Hangfire dashboard.", FeedbackMessageType.Info);
       return RedirectToAction("SearchIndex");
     }
-
-    #endregion
   }
 }
