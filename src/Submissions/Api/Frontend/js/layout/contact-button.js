@@ -80,12 +80,11 @@ var ContactButtonManager = (function () {
     }
   };
   ContactButtonManager.prototype.ContactCounter_Click = function () {
-    var _this = this;
     if (this.contactIds.length > 0) {
-      // Get the list of Biobanks from the server.
-      var biobanks;
+      // If any contacts, redirect to the contact view
       window.location.href = "/Home/Contact/";
     } else {
+      // if no contacts, pop an alert explaining the functionality
       var dialog_1 = bootbox.dialog({
         message:
           "In order to contact resources, please use the search box to identify " +

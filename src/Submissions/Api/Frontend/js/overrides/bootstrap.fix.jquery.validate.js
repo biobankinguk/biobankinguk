@@ -1,4 +1,9 @@
-﻿(function ($) {
+﻿/**
+ * Bootstrap 3.x and JQuery Validate interfere with each other; this fixes that
+ * for any fields with relevant (otherwise broken) classes applied.
+ */
+
+(function ($) {
   var defaultOptions = {
     errorClass: "has-error",
     validClass: "has-success",

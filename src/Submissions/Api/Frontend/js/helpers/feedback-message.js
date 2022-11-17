@@ -1,4 +1,14 @@
-﻿function feedbackMessage(message, type, html) {
+﻿/* exported feedbackMessage */
+
+/**
+ * Provides a global function for triggering a "Feedback Message" Alert
+ * by JavaScript
+ * @param {string} message The message content
+ * @param {string} type The type of alert (Bootstrap 3.x alert types)
+ * @param {boolean} html Whether the message content should be rendered as html -
+ * defaults to false (plain text)
+ */
+function feedbackMessage(message, type, html) {
   var feedback = $("#feedback-message");
 
   $.get({

@@ -1,4 +1,9 @@
-﻿$(function () {
+﻿/**
+ * Initialises a default Confirmation dialog using Bootbox
+ * on any element with the class `bootbox-confirm`
+ */
+
+$(function () {
   $(".bootbox-confirm").click(function (e) {
     e.stopImmediatePropagation();
     e.preventDefault();
