@@ -7,8 +7,9 @@ public interface ISampleSetService
 {
 
   Task<int> GetSampleSetCountAsync();
-  Task<int> GetIndexableSampleSetCountAsync();
-  Task<int> GetSuspendedSampleSetCountAsync();
   Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
+  Task<int> GetIndexableSampleSetCountAsync();
+
+  Task<int> GetSuspendedSampleSetCountAsync();
 
 }
