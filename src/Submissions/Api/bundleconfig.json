@@ -84,7 +84,7 @@
     "sourceMap": true
   },
 
-  // Page bundles
+  // Page bundles (grouped by Controller)
 
   // Home
   {
@@ -105,6 +105,17 @@
     "inputFiles": [
       "Frontend/js/init/search-diagnosis-typeahead.js",
       "Frontend/js/init/facet-groups.js"
+    ],
+    "minify": { "enabled": true },
+    "sourceMap": true
+  },
+
+  // Account
+  {
+    "outputFileName": "wwwroot/dist/js/Account/reset-password.min.js",
+    "inputFiles": [
+      "Frontend/node_modules/pwstrength-bootstrap/dist/pwstrength-bootstrap-1.2.10.min.js",
+      "Frontend/js/pages/Account/reset-password.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
