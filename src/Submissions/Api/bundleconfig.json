@@ -119,5 +119,19 @@
     ],
     "minify": { "enabled": true },
     "sourceMap": true
+  },
+
+  // Profile
+  {
+    "outputFileName": "wwwroot/dist/js/Profile/biobank.min.js",
+    "inputFiles": ["Frontend/js/pages/Profile/biobank.js"],
+    "minify": { "enabled": true },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "wwwroot/dist/js/Profile/publications.min.js",
+    "inputFiles": ["Frontend/js/pages/Profile/publications.js"],
+    "minify": { "enabled": true },
+    "sourceMap": true
   }
 ]
