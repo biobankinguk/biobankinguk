@@ -16,13 +16,14 @@ using Biobanks.Web.Models.Account;
 using Biobanks.Web.Utilities;
 using Microsoft.Ajax.Utilities;
 using Biobanks.Directory.Services.Contracts;
-using Hangfire.States;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace Biobanks.Web.Controllers
 {
     public class AccountController : ApplicationBaseController
     {
-        private readonly SignInManager<Applicationuser> _signinManager;
+        private readonly ApplicationSignInManager _signinManager;
         private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
         private readonly CustomClaimsManager _claimsManager;
 
