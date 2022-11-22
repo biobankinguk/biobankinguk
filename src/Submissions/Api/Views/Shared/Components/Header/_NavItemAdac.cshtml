@@ -1,9 +1,9 @@
-﻿@using Biobanks.Identity.Constants @* TODO: Move these constants *@
+@using Biobanks.Submissions.Api.Constants
 @model Biobanks.Submissions.Api.Models.Header.NavItemModel
 
 @if (User.Identity.IsAuthenticated)
 {
-	if (User.IsInRole(Role.ADAC.ToString()))
+	if (User.IsInRole(Role.DirectoryAdmin))
 	{
 		<li>
 			<a href="@Url.Action("Index", "ADAC")">
