@@ -1,9 +1,12 @@
-﻿using Biobanks.Data.Entities;
+using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Account;
+using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -26,7 +29,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         private readonly IOrganisationDirectoryService _organisationService;
 
         private readonly IBiobankReadService _biobankReadService;
-       // private readonly IEmailService _emailService;
+        private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
 
         public AccountController(
@@ -34,7 +37,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             IOrganisationDirectoryService organisationService,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-        //    IEmailService emailService,
+            IEmailService emailService,
             UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> claimsManager,
             ITokenLoggingService tokenLog,
             IBiobankReadService biobankReadService)
@@ -45,7 +48,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             _signinManager = signInManager;
             _userManager = userManager;
             _claimsManager = claimsManager;
-       //     _emailService = emailService;
             _tokenLog = tokenLog;
             _biobankReadService = biobankReadService;
         }
@@ -202,16 +204,16 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
-            await _emailService.ResendAccountConfirmation(
-                user.Email,
-                user.Name,
-                Url.Action("Confirm", "Account",
-                    new
-                    {
-                        userId = user.Id,
-                        token = confirmToken
-                    },
-                    Request.Url.Scheme));
+      await _emailService.ResendAccountConfirmation(
+           new EmailAddress(user.Email),
+          user.Name,
+          Url.Action("Confirm", "Account",
+              new
+              {
+                userId = user.Id,
+                token = confirmToken
+              },
+        Request.GetEncodedUrl()));
 
             SetTemporaryFeedbackMessage(
                 onBehalf
@@ -258,13 +260,14 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             await _tokenLog.PasswordTokenIssued(resetToken, user.Id);
 
-            await _emailService.SendPasswordReset(
-                model.Email,
-                user.UserName,
-                Url.Action("ResetPassword", "Account",
-                    new { userId = user.Id, token = resetToken },
-                    Request.Url.Scheme));
 
+      await _emailService.SendPasswordReset(
+          new EmailAddress(model.Email),
+          user.UserName,
+          Url.Action("ResetPassword", "Account",
+              new { userId = user.Id, token = resetToken },
+              Request.GetEncodedUrl())
+          );
             return View("ForgotPasswordConfirmation");
 
         }
@@ -328,7 +331,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             if (signInStatus.Succeeded)
             {
-                return RedirectToAction("LoginRedirect", new { returnUrl });
+                return RedirectToAction("LoginRedirect");
             }
             else if (signInStatus.IsLockedOut)
             {
