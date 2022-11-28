@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Biobanks.Entities.Data;
 using System.Linq;
-using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Models.Profile;
 using Biobanks.Submissions.Api.Config;

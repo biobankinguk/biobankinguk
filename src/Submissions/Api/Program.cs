@@ -206,6 +206,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
     .AddTransient<IOrganisationService, OrganisationService>()
     .AddTransient<IPublicationJobService, PublicationJobService>()
+    .AddTransient<IPublicationService, PublicationService>()
     .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
     .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>),
         typeof(Biobanks.Shared.Services.ReferenceDataService<>))
@@ -258,7 +259,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
     .AddTransient<IContentPageService, ContentPageService>()
 
-    .AddTransient<IPublicationService, PublicationService>()
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()

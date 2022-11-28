@@ -1,4 +1,4 @@
-﻿using Biobanks.Data;
+using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -318,13 +318,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => (await _organisationServiceOfferingRepository.ListAsync(
             false,
              x => x.ServiceOfferingId == id)).Count();
-
-        public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
-            => await _organisationServiceOfferingRepository.ListAsync(
-                false,
-                x => x.OrganisationId == biobankId,
-                null,
-                x => x.ServiceOffering);
 
         public async Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId)
         {
