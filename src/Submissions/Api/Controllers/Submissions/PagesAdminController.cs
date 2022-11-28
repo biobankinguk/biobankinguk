@@ -1,22 +1,18 @@
-﻿using Biobanks.Services.Contracts;
-using Biobanks.Web.Filters;
-using Biobanks.Web.Models.ADAC;
-using Biobanks.Web.Utilities;
-using MvcSiteMapProvider.Web.Mvc.Filters;
-using System;
+﻿using Biobanks.Submissions.Api.Models.Submissions;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 
-namespace Biobanks.Web.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
-    [Obsolete("To be deleted when the Directory core version goes live." +
-    " Any changes made here will need to be made in the corresponding core version"
-    , false)]
-    [UserAuthorize(Roles = "ADAC")]
-    public class PagesAdminController : ApplicationBaseController
+    //TODO:[UserAuthorize(Roles = "ADAC")]
+    public class PagesAdminController : Controller
     {
-        private readonly IContentPageService _contentPageService;        
+
+        private readonly IContentPageService _contentPageService;
 
         public PagesAdminController(IContentPageService contentPageService)
         {
@@ -38,7 +34,7 @@ namespace Biobanks.Web.Controllers
         }
 
         [AllowAnonymous]
-        [SiteMapTitle("Title")]
+        //[SiteMapTitle("Title")] TODO: Replace MvcSiteMapProvider
         public async Task<ActionResult> ContentPage(string slug)
         {
             var page = await _contentPageService.GetBySlug(slug);
@@ -104,8 +100,9 @@ namespace Biobanks.Web.Controllers
                 LastUpdated = page.LastUpdated,
                 IsEnabled = page.IsEnabled
             });
-            
+
         }
+
 
         public ActionResult CreateEditPreview()
             => Redirect("Index");
@@ -122,12 +119,12 @@ namespace Biobanks.Web.Controllers
             {
                 if ((await _contentPageService.GetBySlug(page.RouteSlug)) != null)
                 {
-                    SetTemporaryFeedbackMessage($"A content page with the slug '{page.RouteSlug}' already exists.", FeedbackMessageType.Warning);
+                    this.SetTemporaryFeedbackMessage($"A content page with the slug '{page.RouteSlug}' already exists.", FeedbackMessageType.Warning);
                 }
                 else
                 {
                     await _contentPageService.Create(page.Title, page.Body, page.RouteSlug, page.IsEnabled);
-                    SetTemporaryFeedbackMessage($"The content page '{page.Title}' has been created successfully.", FeedbackMessageType.Success);
+                    this.SetTemporaryFeedbackMessage($"The content page '{page.Title}' has been created successfully.", FeedbackMessageType.Success);
                 }
 
                 return RedirectToAction("Index", "PagesAdmin");
@@ -140,12 +137,12 @@ namespace Biobanks.Web.Controllers
                 //Checking if the user is changing the slug value and if the new value already exists
                 if (existingPage.RouteSlug != page.RouteSlug && (await _contentPageService.GetBySlug(page.RouteSlug)) != null)
                 {
-                    SetTemporaryFeedbackMessage($"A content page with the slug '{page.RouteSlug}' already exists.", FeedbackMessageType.Warning);
+                    this.SetTemporaryFeedbackMessage($"A content page with the slug '{page.RouteSlug}' already exists.", FeedbackMessageType.Warning);
                 }
                 else
                 {
                     await _contentPageService.Update(page.Id, page.Title, page.Body, page.RouteSlug, page.IsEnabled);
-                    SetTemporaryFeedbackMessage($"The content page '{page.Title}' has been edited successfully.", FeedbackMessageType.Success);
+                    this.SetTemporaryFeedbackMessage($"The content page '{page.Title}' has been edited successfully.", FeedbackMessageType.Success);
                 }
 
                 return RedirectToAction("Index", "PagesAdmin");
@@ -157,13 +154,12 @@ namespace Biobanks.Web.Controllers
         {
             var pageName = (await _contentPageService.GetById(id)).Title;
             await _contentPageService.Delete(id);
-            SetTemporaryFeedbackMessage($"The content page '{pageName}' has been deleted successfully.", FeedbackMessageType.Success);
+            this.SetTemporaryFeedbackMessage($"The content page '{pageName}' has been deleted successfully.", FeedbackMessageType.Success);
             return Json(new
             {
                 success = true,
                 name = pageName
             });
         }
-
     }
 }
