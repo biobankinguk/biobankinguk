@@ -1,10 +1,10 @@
 {
-	"logo": {
-		"title": "",
-		"src": "~/Content/images/header_logo.png"
-	},
-	"link": {
-		"title": "",
-		"url": ""
-	}
+  "logo": {
+    "title": "",
+    "src": "/images/NoLogo.png"
+  },
+  "link": {
+    "title": "",
+    "url": ""
+  }
 }
