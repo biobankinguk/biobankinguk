@@ -80,7 +80,7 @@ namespace Biobanks.Web.Controllers
     }
 
     [HttpPost]
-    public async Task<RedirectToRouteResult> ReindexAllData()
+    public async Task<IActionResult> ReindexAllData()
     {
       //first empty the index
       await _indexService.ClearIndex();
@@ -99,7 +99,7 @@ namespace Biobanks.Web.Controllers
       return RedirectToAction("SearchIndex");
     }
 
-    public async Task<RedirectToRouteResult> BuildIndex()
+    public async Task<IActionResult> BuildIndex()
     {
       try
       {

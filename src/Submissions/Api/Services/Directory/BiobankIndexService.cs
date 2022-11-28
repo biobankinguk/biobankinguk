@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Search.Dto.PartialDocuments;
@@ -28,7 +28,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         private readonly IBiobankReadService _biobankReadService;
         private readonly IIndexProvider _indexProvider;
-        private readonly ISampleCountService _searchProvider;
+        private readonly ISearchProvider _searchProvider;
 
         private readonly IHostEnvironment _hostEnvironment;
 
@@ -39,7 +39,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             CapabilityService capabilityService,
             IBiobankReadService biobankReadService,
             IIndexProvider indexProvider,
-            ISampleCountService searchProvider,
+            ISearchProvider searchProvider,
             IHostEnvironment hostEnvironment,
             TelemetryClient telemetryClient)
         {

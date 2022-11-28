@@ -15,7 +15,6 @@ namespace Biobanks.Shared.Services.Contracts
 
         Task<Organisation> GetById(int organisationId);
 
-        Task<Organisation> Update(Organisation organisation);
 
   }
 }

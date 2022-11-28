@@ -1,4 +1,4 @@
-﻿using Biobanks.Aggregator;
+using Biobanks.Aggregator;
 using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Analytics;
 using Biobanks.Analytics.Services;
@@ -254,7 +254,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
             elasticConfig.Password
         )
     )
-    .AddTransient<ISampleCountService, LegacySearchProvider>()
+    .AddTransient<ISearchProvider, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
 
     // Reference Data
