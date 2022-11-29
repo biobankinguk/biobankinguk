@@ -14,5 +14,17 @@ namespace Biobanks.Shared.Services.Contracts
         Task<IEnumerable<string>> ListExternalIds();
 
         Task<Organisation> GetById(int organisationId);
+
+        /// <summary>
+        /// Get the untracked Organisation for a given External Id
+        /// </summary>
+        /// <returns>The Organisation of given External Id. Otherwise null</returns>
+        Task<Organisation> GetByExternalId(string externalId);
+
+        /// <summary>
+        /// Get all untracked Organisation which match are part of the given Netowrk
+        /// <param name="networkId">The Id of the Network to match against</param>
+        /// <returns>An Enumerable of all applicable untracked Organisations</returns>
+        Task<IEnumerable<Organisation>> ListByNetworkId(int networkId);
     }
 }

@@ -1,53 +1,50 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using Biobanks.Entities.Data;
-using Biobanks.Identity.Constants;
-using Biobanks.Services.Contracts;
-using Biobanks.Web.Models.Profile;
-using Biobanks.Web.Models.Shared;
-using Biobanks.Web.Utilities;
-using Biobanks.Directory.Data.Constants;
-using System;
-using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Data.ReferenceData;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Biobanks.Shared.Services.Contracts;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.Directory;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Biobanks.Entities.Data;
+using System.Linq;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Models.Profile;
+using Biobanks.Submissions.Api.Config;
 
-namespace Biobanks.Web.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Directory
 {
-  [Obsolete("To be deleted when the Directory core version goes live." +
-  " Any changes made here will need to be made in the corresponding core version"
-  , false)]
-
-  [AllowAnonymous]
-    public class ProfileController : ApplicationBaseController
+    [AllowAnonymous]
+    public class ProfileController : Controller
     {
-        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
-
+        private readonly Shared.Services.Contracts.IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
         private readonly ICollectionService _collectionService;
-        private readonly INetworkService _networkService;
-        private readonly IOrganisationService _organisationService;
-
-        private readonly IBiobankReadService _biobankReadService;
-        private readonly IConfigService _configService;
         private readonly IPublicationService _publicationService;
+        private readonly INetworkService _networkService;
+
+        private readonly IOrganisationService _organisationService;
+        private readonly IBiobankService _biobankService;
+        private readonly IConfigService _configService;
+        private readonly ICapabilityService _capabilityService;
 
         public ProfileController(
-            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+            Shared.Services.Contracts.IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
             ICollectionService collectionService,
             IPublicationService publicationService,
             INetworkService networkService,
             IOrganisationService organisationService,
-            IBiobankReadService biobankReadService, 
-            IConfigService configService)
+            IBiobankService biobankService,
+            IConfigService configService,
+            ICapabilityService capabilityService)
         {
             _annualStatisticGroupService = annualStatisticGroupService;
             _networkService = networkService;
             _organisationService = organisationService;
-            _biobankReadService = biobankReadService;
+            _publicationService = publicationService;
+            _biobankService = biobankService;
             _collectionService = collectionService;
             _configService = configService;
-            _publicationService = publicationService;
+            _capabilityService = capabilityService;
         }
 
         public async Task<ActionResult> Biobanks()
@@ -57,26 +54,27 @@ namespace Biobanks.Web.Controllers
         {
             //get the biobank
             var bb = await _organisationService.GetByExternalId(id);
+            if (bb is null) return NotFound();
 
-            if(bb == null) return new HttpNotFoundResult();
-
-            if (bb.IsSuspended)
-            {
-                //Allow ADAC or this Biobank's admins to view the profile
-                if (CurrentUser.Biobanks.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
-                    User.IsInRole(Role.ADAC.ToString()))
-                {
-                    //But alert them that the bb is suspended
-                    SetTemporaryFeedbackMessage(
-                        "This biobank is currently suspended, so this public profile will not be accessible to non-admins.",
-                        FeedbackMessageType.Warning);
-                }
-                else
-                {
-                    //Anyone else gets a 404
-                    return new HttpNotFoundResult();
-                }
-            }
+            // TODO: Update when the user model is added.
+            /*            if (bb.IsSuspended)
+                        {
+                            //Allow ADAC or this Biobank's admins to view the profile
+                            if (CurrentUser.Biobanks.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
+                                User.IsInRole(Role.ADAC.ToString()))
+                            {
+                                //But alert them that the bb is suspended
+                                SetTemporaryFeedbackMessage(
+                                    "This biobank is currently suspended, so this public profile will not be accessible to non-admins.",
+                                    FeedbackMessageType.Warning);
+                            }
+                            else
+                            {
+                                //Anyone else gets a 404
+                                return new HttpNotFoundResult();
+                            }
+                        }
+            */
 
             var model = new BiobankModel
             {
@@ -104,7 +102,7 @@ namespace Biobanks.Web.Controllers
                         Logo = x.Logo,
                         Description = x.Description
                     }).ToList(),
-                CapabilityOntologyTerms = (await _biobankReadService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
+                CapabilityOntologyTerms = (await _capabilityService.ListCapabilitiesAsync(bb.OrganisationId)).Select(
                     x => new CapabilityModel
                     {
                         Id = x.DiagnosisCapabilityId,
@@ -128,11 +126,11 @@ namespace Biobanks.Web.Controllers
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                Services = (await _biobankReadService.ListBiobankServiceOfferingsAsync(bb.OrganisationId))
+                Services = (await _biobankService.ListBiobankServiceOfferingsAsync(bb.OrganisationId))
                     .OrderBy(x => x.ServiceOffering.SortOrder)
                     .Select(x => x.ServiceOffering.Value)
                     .ToList(),
-               
+
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
                 AnnualStatisticGroups = await _annualStatisticGroupService.List()
             };
@@ -155,12 +153,12 @@ namespace Biobanks.Web.Controllers
                 ContactEmail = network.Email,
                 SopStatus = network.SopStatus.Value,
                 BiobankMembers = organisations.Select(x => new BiobankMemberModel
-                    {
-                        Id = x.OrganisationId,
-                        ExternalId = x.OrganisationExternalId,
-                        Name = x.Name,
-                        Logo = x.Logo
-                    }).
+                {
+                    Id = x.OrganisationId,
+                    ExternalId = x.OrganisationExternalId,
+                    Name = x.Name,
+                    Logo = x.Logo
+                }).
                     ToList()
             };
 
@@ -172,21 +170,18 @@ namespace Biobanks.Web.Controllers
         {
             //If turned off in site config
             if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
-                return HttpNotFound();
+                return NotFound();
 
             // Get the Organisation
             var bb = await _organisationService.GetByExternalId(id);
 
-            if (bb == null)
-            {
-                return new HttpNotFoundResult();
-            }
+            if (bb is null) return NotFound();
+
             else
             {
                 // Get accepted publications
                 var publications = await _publicationService.ListByOrganisation(bb.OrganisationId, acceptedOnly: true);
 
-                // TODO: Migrate/Recreate Model?
                 var model = new BiobankPublicationsModel
                 {
                     ExternalId = bb.OrganisationExternalId,
@@ -221,6 +216,6 @@ namespace Biobanks.Web.Controllers
                 ? "N/A"
                 : result;
         }
- 
+
     }
 }

@@ -1,4 +1,4 @@
-﻿using Biobanks.Aggregator;
+using Biobanks.Aggregator;
 using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Analytics;
 using Biobanks.Analytics.Services;
@@ -207,6 +207,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
     .AddTransient<IOrganisationService, OrganisationService>()
     .AddTransient<IPublicationJobService, PublicationJobService>()
+    .AddTransient<IPublicationService, PublicationService>()
     .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
     .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>),
         typeof(Biobanks.Shared.Services.ReferenceDataService<>))
@@ -257,6 +258,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     )
     .AddTransient<ISearchProvider, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
+    .AddTransient<IContentPageService, ContentPageService>()
 
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
@@ -291,15 +293,13 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IBiobankIndexService, BiobankIndexService>()
         .AddTransient<IBiobankReadService, BiobankReadService>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
-        .AddTransient<IContentPageService, ContentPageService>()
         .AddTransient<IIndexProvider, LegacyIndexProvider>()
         .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
-        .AddTransient<IPublicationService, PublicationService>()
-        .AddTransient<INetworkService, NetworkService>()
         .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
         .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
         .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
+        .AddTransient<INetworkService, NetworkService>()
 
         // Reference Data
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()

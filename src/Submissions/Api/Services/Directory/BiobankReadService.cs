@@ -317,12 +317,15 @@ namespace Biobanks.Submissions.Api.Services.Directory
             false,
              x => x.ServiceOfferingId == id)).Count();
 
-        public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
-            => await _organisationServiceOfferingRepository.ListAsync(
+        public async Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId)
+        {
+            var adminIds = (await _organisationUserRepository.ListAsync(
                 false,
-                x => x.OrganisationId == biobankId,
-                null,
-                x => x.ServiceOffering);
+                x => x.OrganisationId == biobankId))
+                .Select(x => x.OrganisationUserId);
+
+            return _userManager.Users.AsNoTracking().Where(x => adminIds.Contains(x.Id));
+        }
 
         public async Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int biobankId)
         {
