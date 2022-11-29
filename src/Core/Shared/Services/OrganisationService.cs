@@ -32,5 +32,19 @@ namespace Biobanks.Shared.Services
                 .Include(x => x.AccessCondition)
                 .Include(x => x.CollectionType)
                 .FirstOrDefaultAsync(x => x.OrganisationId == organisationId);
+
+        public async Task<Organisation> GetByExternalId(string externalId)
+            => await _db.Organisations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrganisationExternalId == externalId);
+
+        public async Task<IEnumerable<Organisation>> ListByNetworkId(int networkId)
+            => await _db.OrganisationNetworks
+                .AsNoTracking()
+                .Include(x => x.Organisation)
+                .Where(x => x.NetworkId == networkId && !x.Organisation.IsSuspended)
+                .Select(x => x.Organisation)
+                .ToListAsync();
+
     }
 }
