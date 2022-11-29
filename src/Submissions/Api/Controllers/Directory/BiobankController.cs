@@ -1,5 +1,6 @@
 
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -9,7 +10,15 @@ using System.Threading.Tasks;
 namespace Biobanks.Submissions.Api.Controllers.Directory;
 public class BiobankController : Controller
 {
- // [Authorize(ClaimType = CustomClaimType.Biobank)]
+  // [Authorize(ClaimType = CustomClaimType.Biobank)]
+
+  private readonly BiobankService _biobankService;
+
+  public BiobankController(BiobankService biobankService)
+  {
+    _biobankService = biobankService;
+  }
+
   public async Task<ActionResult> Admins()
   {
     var biobankId = SessionHelper.GetBiobankId(Session);
@@ -30,7 +39,7 @@ public class BiobankController : Controller
     //but we may want the full list in other circumstances
 
     var admins =
-        (await _biobankReadService.ListBiobankAdminsAsync(biobankId))
+        (await _biobankService.ListBiobankAdminsAsync(biobankId))
             .Select(bbAdmin => new RegisterEntityAdminModel
             {
               UserId = bbAdmin.Id,

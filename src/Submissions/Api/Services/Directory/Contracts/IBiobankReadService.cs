@@ -36,7 +36,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 
         Task<int> GetServiceOfferingOrganisationCount(int id);
 
-        Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
         Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
 
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
