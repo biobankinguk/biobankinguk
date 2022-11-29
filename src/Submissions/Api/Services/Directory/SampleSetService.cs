@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services;
+namespace Biobanks.Submissions.Api.Services.Directory;
 
 public class SampleSetService : ISampleSetService
 {
@@ -15,8 +15,8 @@ public class SampleSetService : ISampleSetService
     _sampleSetRepository = sampleSetRepository;
   }
 
- public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
-    IEnumerable<int> sampleSetIds)
+  public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
+     IEnumerable<int> sampleSetIds)
   {
     var sampleSets = await _sampleSetRepository.ListAsync(false,
         x => sampleSetIds.Contains(x.Id) && !x.Collection.Organisation.IsSuspended,
