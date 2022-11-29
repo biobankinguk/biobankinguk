@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-﻿using Biobanks.Data.Entities;
-=======
->>>>>>> main
+using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using System;
