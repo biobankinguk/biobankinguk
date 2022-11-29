@@ -20,7 +20,6 @@ namespace Biobanks.Web.Controllers
     private readonly IOrganisationService _organisationService;
     private readonly ISampleSetService _sampleSetService;
     private readonly ICapabilityService _capabilityService;
-    private readonly IBiobankWriteService _biobankWriteService;
     private readonly IBiobankIndexService _indexService;
     private readonly ISearchProvider _searchProvider;
     private readonly IMapper _mapper;
@@ -29,7 +28,6 @@ namespace Biobanks.Web.Controllers
         IOrganisationService organisationService,
         ISampleSetService sampleSetService,
         ICapabilityService capabilityService,
-        IBiobankWriteService biobankWriteService,
         IBiobankIndexService indexService,
         ISearchProvider searchProvider,
         IMapper mapper)
@@ -37,7 +35,6 @@ namespace Biobanks.Web.Controllers
       _organisationService = organisationService;
       _sampleSetService = sampleSetService;
       _capabilityService = capabilityService;
-      _biobankWriteService = biobankWriteService;
       _indexService = indexService;
       _searchProvider = searchProvider;
       _mapper = mapper;
