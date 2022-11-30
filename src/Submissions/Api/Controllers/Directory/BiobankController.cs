@@ -6,6 +6,7 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -15,7 +16,6 @@ using System.Threading.Tasks;
 namespace Biobanks.Submissions.Api.Controllers.Directory;
 public class BiobankController : Controller
 {
-  // [Authorize(ClaimType = CustomClaimType.Biobank)]
 
   private readonly BiobankService _biobankService;
   private readonly OrganisationDirectoryService _organisationDirectoryService;
@@ -32,6 +32,7 @@ public class BiobankController : Controller
     _tokenLog = tokenLog;
   }
 
+  [Authorize(CustomClaimType.Biobank)]
   public async Task<ActionResult> Admins()
   {
     var biobankId = SessionHelper.GetBiobankId(Session);
@@ -187,7 +188,7 @@ public class BiobankController : Controller
     });
   }
 
-  [Authorize(ClaimType = CustomClaimType.Biobank)]
+  [Authorize(CustomClaimType.Biobank)]
   public async Task<ActionResult> DeleteAdmin(string biobankUserId, string userFullName)
   {
     var biobankId = SessionHelper.GetBiobankId(Session);
