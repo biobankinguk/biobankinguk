@@ -13,10 +13,12 @@ public class BiobankController : Controller
   // [Authorize(ClaimType = CustomClaimType.Biobank)]
 
   private readonly BiobankService _biobankService;
+  private readonly OrganisationDirectoryService _organisationDirectoryService;
 
-  public BiobankController(BiobankService biobankService)
+  public BiobankController(BiobankService biobankService, OrganisationDirectoryService organisationDirectoryService)
   {
     _biobankService = biobankService;
+    _organisationDirectoryService = organisationDirectoryService;
   }
 
   public async Task<ActionResult> Admins()
@@ -75,7 +77,7 @@ public class BiobankController : Controller
 
   public async Task<ActionResult> InviteAdminAjax(int biobankId)
   {
-    var bb = await _organisationService.Get(biobankId);
+    var bb = await _organisationDirectoryService.Get(biobankId);
 
     return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
     {
@@ -101,7 +103,7 @@ public class BiobankController : Controller
       });
     }
 
-    var biobankId = (await _organisationService.GetByName(model.Entity)).OrganisationId;
+    var biobankId = (await _organisationDirectoryService.GetByName(model.Entity)).OrganisationId;
     var user = await _userManager.FindByEmailAsync(model.Email);
 
     if (user == null)
@@ -158,7 +160,7 @@ public class BiobankController : Controller
     }
 
     //Add the user/biobank relationship
-    await _organisationService.AddUserToOrganisation(user.Id, biobankId);
+    await _organisationDirectoryService.AddUserToOrganisation(user.Id, biobankId);
 
     //add user to BiobankAdmin role
     await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
@@ -183,7 +185,7 @@ public class BiobankController : Controller
       return RedirectToAction("Index", "Home");
 
     //remove them from the network
-    await _organisationService.RemoveUserFromOrganisation(biobankUserId, biobankId);
+    await _organisationDirectoryService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
     //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
     await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
