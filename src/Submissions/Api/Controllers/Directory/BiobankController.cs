@@ -3,6 +3,7 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -20,13 +21,15 @@ public class BiobankController : Controller
   private readonly OrganisationDirectoryService _organisationDirectoryService;
   private readonly IEmailService _emailService;
   private readonly UserManager<ApplicationUser> _userManager;
+  private readonly ITokenLoggingService _tokenLog;
 
-  public BiobankController(BiobankService biobankService, OrganisationDirectoryService organisationDirectoryService, IEmailService emailService, UserManager<ApplicationUser> userManager)
+  public BiobankController(BiobankService biobankService, OrganisationDirectoryService organisationDirectoryService, IEmailService emailService, UserManager<ApplicationUser> userManager, ITokenLoggingService tokenLog)
   {
     _biobankService = biobankService;
     _organisationDirectoryService = organisationDirectoryService;
     _emailService = emailService;
     _userManager = userManager;
+    _tokenLog = tokenLog;
   }
 
   public async Task<ActionResult> Admins()
