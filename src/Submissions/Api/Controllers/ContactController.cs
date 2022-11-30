@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Biobanks.Directory.Data.Constants;
 using Biobanks.Submissions.Api.Controllers.Submissions;
 using Biobanks.Submissions.Api.Models.Emails;
