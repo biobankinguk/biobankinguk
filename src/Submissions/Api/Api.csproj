@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -90,11 +90,5 @@
 
     <Copy SourceFiles="@(Assets_Fonts)" DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
   </Target>
-  
-  <ItemGroup>
-    <Reference Include="Biobanks.Directory.Data">
-      <HintPath>..\..\Directory\Data\bin\Debug\net48\Biobanks.Directory.Data.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
+ 
 </Project>
