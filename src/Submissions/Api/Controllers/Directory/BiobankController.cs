@@ -43,7 +43,8 @@ public class BiobankController : Controller
     return View(new BiobankAdminsModel
     {
       BiobankId = biobankId,
-      Admins = await GetAdminsAsync(biobankId, excludeCurrentUser: true)
+      Admins = await GetAdminsAsync(biobankId, excludeCurrentUser: true),
+      RequestUrl = HttpContext.Request.GetEncodedUrl()
     });
   }
 

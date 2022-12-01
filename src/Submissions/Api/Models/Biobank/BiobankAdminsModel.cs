@@ -5,8 +5,10 @@ namespace Biobanks.Submissions.Api.Models.Biobank;
 
 public class BiobankAdminsModel
 {
-    public int BiobankId { get; set; }
+  public int BiobankId { get; set; }
 
-    public ICollection<RegisterEntityAdminModel> Admins { get; set; }
+  public ICollection<RegisterEntityAdminModel> Admins { get; set; }
+
+  public string RequestUrl { get; set; } = string.Empty;
   
 }
