@@ -70,11 +70,14 @@ public class BiobankController : Controller
     return admins;
   }
 
-  public async Task<JsonResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
+  public async Task<ActionResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
   {
     //timeStamp can be used to avoid caching issues, notably on IE
+    
 
-    return Json(await GetAdminsAsync(biobankId, excludeCurrentUser), JsonRequestBehavior.AllowGet);
+    var Admin =  await GetAdminsAsync(biobankId, excludeCurrentUser);
+
+    return Ok(Admin);
   }
 
   public ActionResult InviteAdminSuccess(string name)
