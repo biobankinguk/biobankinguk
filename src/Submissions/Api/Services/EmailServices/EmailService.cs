@@ -76,5 +76,23 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
 
       throw new System.NotImplementedException();
     }
+
+    public async Task SendNewUserRegisterEntityAdminInvite(EmailAddress to, string name, string entity, string confirmLink)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/NewUserRegisterEntityAdminInvite",
+        new NewUserRegisterEntityAdminInviteModel(name, entity, confirmLink)
+        );
+    }
+
+    public async Task SendExistingUserRegisterEntityAdminInvite(EmailAddress to, string name, string entity, string link)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/ExistingUserRegisterEntityAdminInvite",
+        new NewUserRegisterEntityAdminInviteModel(name, entity, link)
+        );
+    }
   }
 }

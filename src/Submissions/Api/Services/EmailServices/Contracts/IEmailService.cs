@@ -12,5 +12,9 @@ namespace Biobanks.Submissions.Api.Services.EmailServices.Contracts
         Task SendPasswordReset(EmailAddress to, string username, string resetLink);
 
         Task ResendAccountConfirmation(EmailAddress email, string name, string action);
+
+        Task SendNewUserRegisterEntityAdminInvite(string to, string name, string entity, string confirmLink);
+
+        Task SendExistingUserRegisterEntityAdminInvite(string to, string name, string entity, string link);
   };
 }
