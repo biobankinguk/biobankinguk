@@ -19,10 +19,8 @@ namespace Biobanks.Submissions.Api.Utilities
 
     public static class TemporaryFeedbackMessageExtensions
     {
-        private static string FeedbackMessageKey = "TemporaryFeedbackMessage";
-
         public static void SetTemporaryFeedbackMessage(this Controller controller, string message, FeedbackMessageType type, bool containsHtml = false)
-            => controller.TempData[FeedbackMessageKey] = new FeedbackMessage
+            => controller.TempData[FeedbackMessageKey.FeedbackMessage] = new FeedbackMessage
             {
                 Message = message,
                 Type = type,
@@ -30,4 +28,9 @@ namespace Biobanks.Submissions.Api.Utilities
             };
 
     }
+
+  public static class FeedbackMessageKey
+  {
+    public static string FeedbackMessage = "TemporaryFeedbackMessage";
+  }
 }
