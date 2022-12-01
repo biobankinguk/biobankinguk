@@ -1,4 +1,4 @@
-﻿using Biobanks.Data;
+using Biobanks.Data;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Services.Directory;
 using Microsoft.AspNetCore.Builder;
@@ -77,7 +77,25 @@ namespace Biobanks.Submissions.Api.Middleware
                 // Additionally, add claims for accepted network requests
                 if (context.User.IsInRole(Role.NetworkAdmin))
                 {
+                    var networks = await dbContext.NetworkUsers.AsNoTracking()
+                    .Include(x => x.Network)
+                    .Where(x => x.NetworkUserId == user.Id)
+                    .Select(x => x.Network)
+                    .ToListAsync();
 
+                    var networkRequests =  await dbContext.NetworkRegisterRequests
+                        .AsNoTracking()
+                        .Where(x => x.UserEmail == user.Email)
+                        .Where(x => x.AcceptedDate != null && x.DeclinedDate == null && x.NetworkCreatedDate == null)
+                        .ToListAsync();
+
+                    claims.AddRange(networks
+                        .Select(x => new KeyValuePair<int, string>(x.NetworkId, x.Name))
+                        .Select(x => new Claim(CustomClaimType.Network, JsonSerializer.Serialize(x))));
+
+                    claims.AddRange(networkRequests
+                        .Select(x => new KeyValuePair<int, string>(x.NetworkRegisterRequestId, x.NetworkName))
+                        .Select(x => new Claim(CustomClaimType.NetworkRequest, JsonSerializer.Serialize(x))));
                 }
 
                 var appIdentity = new ClaimsIdentity(claims);
