@@ -13,8 +13,8 @@ namespace Biobanks.Submissions.Api.Services.EmailServices.Contracts
 
         Task ResendAccountConfirmation(EmailAddress email, string name, string action);
 
-        Task SendNewUserRegisterEntityAdminInvite(string to, string name, string entity, string confirmLink);
+        Task SendNewUserRegisterEntityAdminInvite(EmailAddress email, string name, string entity, string confirmLink);
 
-        Task SendExistingUserRegisterEntityAdminInvite(string to, string name, string entity, string link);
+        Task SendExistingUserRegisterEntityAdminInvite(EmailAddress to, string name, string entity, string link);
   };
 }

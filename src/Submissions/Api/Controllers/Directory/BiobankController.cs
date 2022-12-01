@@ -1,12 +1,14 @@
 using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
+using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -33,10 +35,8 @@ public class BiobankController : Controller
   }
 
   [Authorize(CustomClaimType.Biobank)]
-  public async Task<ActionResult> Admins()
+  public async Task<ActionResult> Admins(int biobankId)
   {
-    var biobankId = SessionHelper.GetBiobankId(Session);
-
     if (biobankId == 0)
       return RedirectToAction("Index", "Home");
 
@@ -64,7 +64,8 @@ public class BiobankController : Controller
 
     if (excludeCurrentUser)
     {
-      admins.Remove(admins.FirstOrDefault(x => x.UserId == CurrentUser.Identity.GetUserId()));
+      var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+      admins.Remove(admins.FirstOrDefault(x => x.UserId == currentUser.Id));
     }
 
     return admins;
@@ -75,9 +76,9 @@ public class BiobankController : Controller
     //timeStamp can be used to avoid caching issues, notably on IE
     
 
-    var Admin =  await GetAdminsAsync(biobankId, excludeCurrentUser);
+    var Admins =  await GetAdminsAsync(biobankId, excludeCurrentUser);
 
-    return Ok(Admin);
+    return Ok(Admins);
   }
 
   public ActionResult InviteAdminSuccess(string name)
@@ -137,12 +138,12 @@ public class BiobankController : Controller
       if (result.Succeeded)
       {
         //send email to confirm account
-        var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+        var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
         await _emailService.SendNewUserRegisterEntityAdminInvite(
-            model.Email,
+            new EmailAddress (model.Email),
             model.Name,
             model.Entity,
             Url.Action("Confirm", "Account",
@@ -151,7 +152,7 @@ public class BiobankController : Controller
                   userId = user.Id,
                   token = confirmToken
                 },
-                Request.Url.Scheme));
+                Request.GetEncodedUrl()));
       }
       else
       {
@@ -168,17 +169,17 @@ public class BiobankController : Controller
     {
       //send email to inform the existing user they've been added as an admin
       await _emailService.SendExistingUserRegisterEntityAdminInvite(
-          model.Email,
+          new EmailAddress(model.Email),
           model.Name,
           model.Entity,
-          Url.Action("Index", "Biobank", null, Request.Url.Scheme));
+          Url.Action("Index", "Biobank", null, Request.GetEncodedUrl()));
     }
 
     //Add the user/biobank relationship
     await _organisationDirectoryService.AddUserToOrganisation(user.Id, biobankId);
 
     //add user to BiobankAdmin role
-    await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString()); //what happens if they're already in the role?
+    await _userManager.AddToRolesAsync(user,new List<string> { Role.BiobankAdmin}); //what happens if they're already in the role?
 
     //return success, and enough user details for adding to the viewmodel's list
     return Json(new
@@ -192,22 +193,16 @@ public class BiobankController : Controller
   }
 
   [Authorize(CustomClaimType.Biobank)]
-  public async Task<ActionResult> DeleteAdmin(string biobankUserId, string userFullName)
+  public async Task<ActionResult> DeleteAdmin(string biobankUserId, string userFullName, int biobankId)
   {
-    var biobankId = SessionHelper.GetBiobankId(Session);
-
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
     //remove them from the network
     await _organisationDirectoryService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
     //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
-    await _userManager.RemoveFromRolesAsync(biobankUserId, Role.BiobankAdmin.ToString());
+    await _userManager.RemoveFromRolesAsync(await _userManager.FindByIdAsync(biobankUserId), new List<string> { Role.BiobankAdmin });
 
     this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
 
     return RedirectToAction("Admins");
   }
-
 }
