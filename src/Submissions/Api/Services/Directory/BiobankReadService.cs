@@ -73,9 +73,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Select(x => x.Funders)
                 .FirstOrDefault();
 
-        public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
-            => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
-
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
         {
@@ -130,17 +127,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 x => x.MaterialDetails.Select(y => y.StorageTemperature),
                 x => x.Collection.Organisation.Country,
                 x => x.Collection.Organisation.County
-            );
-        
-        public async Task<int> GetIndexableSampleSetCountAsync()
-            => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
-
-        public async Task<int> GetSuspendedSampleSetCountAsync()
-            => await _sampleSetRepository.CountAsync(
-                x => x.Collection.Organisation.IsSuspended);
-        
-        public async Task<int> GetSampleSetCountAsync()
-            => await _sampleSetRepository.CountAsync();
+            );       
         
         public async Task<Collection> GetCollectionByIdAsync(int id)
             => (await _collectionRepository.ListAsync(false,

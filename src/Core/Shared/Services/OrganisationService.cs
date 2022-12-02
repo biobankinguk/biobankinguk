@@ -1,4 +1,4 @@
-﻿using Biobanks.Shared.Services.Contracts;
+using Biobanks.Shared.Services.Contracts;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore;

@@ -1,0 +1,36 @@
+
+@model dynamic
+
+@{
+    ViewBag.Title = "SuperUser Tools";
+}
+
+<br />
+
+ <partial name = "_SuperUserTabs" model="Model" />
+
+<h2>
+    Superuser Tools
+</h2>
+
+
+
+
+<!-- Fix Broken Organisation Urls -->
+@using (Html.BeginForm("FixOrgURL", "SuperUser", FormMethod.Post, new { id = "FixOrgURL" }))
+{
+    <div class="alert alert-danger">
+        <h4>Fix Broken Organisation URLs</h4>
+        <p>
+            Pressing this button starts the process of going through all organisations and fixing any broken URLs.
+        </p>
+        <p>
+            <button type="submit" class="btn btn-danger bootbox-confirm" data-form-id="FixOrgURL" data-confirm-message="Do you wish to fix all broken organisation URLs?">Fix Broken Organisation URLs</button>
+        </p>
+    </div>
+}
+
+@*
+  TODO:
+@Scripts.Render("~/bundles/bootbox")
+*@
