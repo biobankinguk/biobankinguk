@@ -1,12 +1,13 @@
+@using Biobanks.Submissions.Api.Area.Admin.Models
 @using Microsoft.AspNetCore.Http
 
-@model Biobanks.Submissions.Api.Models.Biobank.BiobankAdminsModel
+@model BiobankAdminsModel
 
 @{
     ViewBag.Title = "Admins";
 }
 
-@Html.Partial("_BiobankTabs", "Admins")
+<partial name = "_BiobankTabs" model ="Admins" >
 
 <h3>Biobank admins <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteBiobankAdmin" data-bind="click: openInviteDialog">Add new admin</a></h3>
 
@@ -83,6 +84,7 @@
 
 <div id="modalInviteBiobankAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteBiobankAdmin_Label"></div>
 @*
+TODO: Bundling
 @section FooterScripts
 {
     @Scripts.Render("~/bundles/datatables")

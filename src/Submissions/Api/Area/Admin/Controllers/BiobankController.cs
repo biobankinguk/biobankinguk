@@ -1,4 +1,5 @@
 using Biobanks.Data.Entities;
+using Biobanks.Submissions.Api.Area.Admin.Models;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Emails;

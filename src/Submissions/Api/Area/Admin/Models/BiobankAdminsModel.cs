@@ -1,7 +1,7 @@
 using Biobanks.Submissions.Api.Models.Shared;
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Models.Biobank;
+namespace Biobanks.Submissions.Api.Area.Admin.Models;
 
 public class BiobankAdminsModel
 {
@@ -10,5 +10,5 @@ public class BiobankAdminsModel
   public ICollection<RegisterEntityAdminModel> Admins { get; set; }
 
   public string RequestUrl { get; set; } = string.Empty;
-  
+
 }
