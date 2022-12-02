@@ -7,13 +7,11 @@
     var emailSignature = @_config.Value.EmailSignature;
 
 	// Format Email Subject
-	var emailSubject = HostEnvironment.IsDevelopment()
+	 ViewBag.Subject = HostEnvironment.IsDevelopment()
 		? $"{directoryName} {ViewBag.Entity} Administration"
 		: $"{directoryName} {ViewBag.Entity} Administration (Environment: {HostEnvironment.EnvironmentName})";
 }
 
-
-Content-Type: text/plain; charset=utf-8
 
 Dear @Html.Raw(ViewBag.Name)
 

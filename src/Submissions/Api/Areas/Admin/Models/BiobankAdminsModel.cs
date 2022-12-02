@@ -1,7 +1,7 @@
 using Biobanks.Submissions.Api.Models.Shared;
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Area.Admin.Models;
+namespace Biobanks.Submissions.Api.Areas.Admin.Models;
 
 public class BiobankAdminsModel
 {
