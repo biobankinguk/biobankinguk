@@ -34,6 +34,8 @@ namespace Biobanks.Submissions.Api.Config
 
         // Sample Resource Configuration Options
         public const string SampleResourceName = "site.sampleresource.name";
-    }
+
+        public const string ContactThirdParty = "site.display.thirdparty";
+  }
 }
 

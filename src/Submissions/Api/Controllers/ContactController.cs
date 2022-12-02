@@ -1,11 +1,9 @@
 using AutoMapper;
-using Biobanks.Directory.Data.Constants;
-using Biobanks.Submissions.Api.Controllers.Submissions;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -17,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-    [Route("api/[controller]")]
+  [Route("api/[controller]")]
     [ApiController]
     public class ContactController : ControllerBase
     {

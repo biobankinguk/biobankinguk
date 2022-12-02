@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
-    public class AccountController : ApplicationBaseController
+    public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -78,12 +78,12 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 }
                 else if (result.IsLockedOut)
                 {
-                    SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
+                    this.SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
                 }
                 else if(result.IsNotAllowed)
                 {
                     var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-                    SetTemporaryFeedbackMessage(
+                    this.SetTemporaryFeedbackMessage(
                         "This account has not been confirmed. " +
                         $"You can <a href=\"{Url.Action("ResendConfirmLink", new { userEmail = model.Email, returnUrl = Url.Action("Login") })}\">resend your confirmation link</a>, " +
                         $"or contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> " +
@@ -93,7 +93,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 }
                 else
                 {
-                    SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
+                    this.SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
                 }
             }
             return View(model);
@@ -109,11 +109,11 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             //send feedback if they were logged out due to session timeout
             if (isTimeout)
-                SetTemporaryFeedbackMessage(
+                this.SetTemporaryFeedbackMessage(
                     "Your session on the server expired due to inactivity, so you have been logged out.",
                     FeedbackMessageType.Info);
             else
-                SetTemporaryFeedbackMessage(
+                this.SetTemporaryFeedbackMessage(
                     "You have been logged out.",
                     FeedbackMessageType.Info);
 
@@ -192,7 +192,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             if (user.EmailConfirmed)
             {
-                SetTemporaryFeedbackMessage("This account has already been confirmed.", FeedbackMessageType.Danger);
+                this.SetTemporaryFeedbackMessage("This account has already been confirmed.", FeedbackMessageType.Danger);
                 if (returnUrl != null && Url.IsLocalUrl(returnUrl))
                     return Redirect(returnUrl);
 
@@ -215,7 +215,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
               },
         Request.GetEncodedUrl()));
 
-            SetTemporaryFeedbackMessage(
+            this.SetTemporaryFeedbackMessage(
                 onBehalf
                     ? $"{user.Name} ({user.Email}) has been sent a new confirmation link."
                     : "You have been sent a new confirmation link. Please check your email.",
@@ -314,7 +314,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
                     htmlMessage += "</ul>";
 
-                    SetTemporaryFeedbackMessage(htmlMessage, FeedbackMessageType.Danger, true);
+                    this.SetTemporaryFeedbackMessage(htmlMessage, FeedbackMessageType.Danger, true);
                     return View(model);
                 }
 
@@ -322,7 +322,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
             catch (Exception e)
             {
-                SetTemporaryFeedbackMessage(e.Message, FeedbackMessageType.Danger);
+                this.SetTemporaryFeedbackMessage(e.Message, FeedbackMessageType.Danger);
                 return View(model);
             }
 
@@ -335,12 +335,12 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
             else if (signInStatus.IsLockedOut)
             {
-                SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
+                this.SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
             }
             else if (signInStatus.IsNotAllowed)
             {
                 var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-                SetTemporaryFeedbackMessage(
+                this.SetTemporaryFeedbackMessage(
                     "This account has not been confirmed. " +
                     $"You can <a href=\"{Url.Action("ResendConfirmLink", new { userEmail = user.Email, returnUrl = Url.Action("Login") })}\">resend your confirmation link</a>, " +
                     $"or contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> " +
@@ -350,9 +350,9 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
             else
             {
-                SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
+                this.SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
             }
-            return View(model);
+            return View(model);          
 
             
         }
@@ -366,7 +366,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         {
             var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
 
-            SetTemporaryFeedbackMessage(
+            this.SetTemporaryFeedbackMessage(
                 "Access to the requested page was denied. If you think this is an error " +
                 $"contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> ",
                 FeedbackMessageType.Danger,
