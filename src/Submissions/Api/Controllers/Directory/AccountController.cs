@@ -353,8 +353,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 this.SetTemporaryFeedbackMessage("Email / password incorrect. Please try again.", FeedbackMessageType.Danger);
             }
             return View(model);          
-
-            
         }
 
         #endregion
