@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -55,7 +55,6 @@
     <ProjectReference Include="..\..\Core.AzureStorage\Core.AzureStorage.csproj" />
     <ProjectReference Include="..\..\Core\Core.csproj" />
     <ProjectReference Include="..\..\Data\Data.csproj" />
-    <ProjectReference Include="..\..\Directory\Identity\Identity.csproj" />
     <ProjectReference Include="..\..\Directory\Search\Search.csproj" />
     <ProjectReference Include="..\..\IdentityModel\IdentityModel\IdentityModel.csproj" />
     <ProjectReference Include="..\..\Omop\Omop\Omop.csproj" />
@@ -67,6 +66,12 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Auth\Entities\" />
+    <Folder Include="Content\images\" />
+    <Folder Include="Pages\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
 
   <Target Name="CopyStaticAssets" BeforeTargets="Build">
     <!--
@@ -85,5 +90,5 @@
 
     <Copy SourceFiles="@(Assets_Fonts)" DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
   </Target>
-  
+ 
 </Project>

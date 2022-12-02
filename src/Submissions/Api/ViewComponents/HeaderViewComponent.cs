@@ -1,4 +1,3 @@
-using Biobanks.Directory.Data.Caching;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

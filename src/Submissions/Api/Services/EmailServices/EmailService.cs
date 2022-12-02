@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
@@ -21,7 +21,7 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
             _emailSender = emailSender;
         }
 
-        public async Task SendExternalNetworkNonMemberInformation(EmailAddress to, string biobankName,
+    public async Task SendExternalNetworkNonMemberInformation(EmailAddress to, string biobankName,
             string biobankAnonymousIdentifier, string networkName, string networkContactEmail, string networkDescription)
         {
             await _emailSender.SendEmail(
@@ -57,5 +57,24 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
                    ccAddress
                    );
         }
+
+    public async Task SendPasswordReset(EmailAddress to, string username, string resetLink)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/PasswordReset",
+        new PasswordResetModel(resetLink, username)
+        );
     }
+
+    public async Task ResendAccountConfirmation(EmailAddress to, string name, string action)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/ResendConfirm",
+        new ResendConfirmModel(name, action));
+
+      throw new System.NotImplementedException();
+    }
+  }
 }
