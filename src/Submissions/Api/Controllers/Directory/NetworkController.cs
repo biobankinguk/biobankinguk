@@ -1,4 +1,6 @@
+using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
