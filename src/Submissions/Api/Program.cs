@@ -45,13 +45,14 @@ using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System;
 using Biobanks.Submissions.Api.Auth.Basic;
-using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Search.Legacy;
+using Biobanks.Data.Entities;
+using Biobanks.Submissions.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -362,6 +363,9 @@ app.UseHttpsRedirection();
 app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 app.UseStaticFiles();
 
+
+//Authenticated users have their last login value updated to now
+app.UseDirectoryLogin();
 
 app
     // Simple public middleware

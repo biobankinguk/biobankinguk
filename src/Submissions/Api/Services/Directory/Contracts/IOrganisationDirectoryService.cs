@@ -1,5 +1,5 @@
-﻿using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Auth.Entities;
+﻿using Biobanks.Data.Entities;
+using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Models.Directory;
 using System;
 using System.Collections.Generic;

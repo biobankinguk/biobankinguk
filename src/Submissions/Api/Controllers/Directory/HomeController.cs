@@ -1,4 +1,4 @@
-﻿using Biobanks.Directory.Data.Constants;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;

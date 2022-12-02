@@ -1,9 +1,7 @@
 using Biobanks.Data;
+using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Identity.Contracts;
-using Biobanks.Submissions.Api.Auth.Entities;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +28,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
         
-        private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly BiobanksDbContext _context;
 
@@ -43,7 +41,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
-            IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
+            UserManager<ApplicationUser> userManager,
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
             BiobanksDbContext context)
@@ -360,9 +358,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
             List<string> token = tokenValidation.Select(t => t.Token).ToList();
             DateTime now = DateTime.Now;
 
-            if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
+            var user = await _userManager.FindByIdAsync(biobankUserId) ??
+                throw new InvalidOperationException(
+                $"Account could not be confirmed. User not found! User ID: {biobankUserId}");
+
+
+      if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
             {
-                return await _userManager.GeneratePasswordResetTokenAsync(biobankUserId);
+                return await _userManager.GeneratePasswordResetTokenAsync(user);
             }
             else
             {
