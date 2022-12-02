@@ -414,7 +414,7 @@ app.UseHangfireDashboard();
 app.MapRazorPages();
 
 app.MapControllerRoute(
-    name: "MyArea",
+    name: "AreasDefault",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(

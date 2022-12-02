@@ -1,7 +1,6 @@
 using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Area.Admin.Models;
 using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
@@ -17,7 +16,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Area.Admin.Controllers;
-public class BiobankController : Controller
+
+[Area("Admin")]
+public class BiobanksController : Controller
 {
 
   private readonly BiobankService _biobankService;
@@ -26,7 +27,7 @@ public class BiobankController : Controller
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly ITokenLoggingService _tokenLog;
 
-  public BiobankController(BiobankService biobankService, OrganisationDirectoryService organisationDirectoryService, IEmailService emailService, UserManager<ApplicationUser> userManager, ITokenLoggingService tokenLog)
+  public BiobanksController(BiobankService biobankService, OrganisationDirectoryService organisationDirectoryService, IEmailService emailService, UserManager<ApplicationUser> userManager, ITokenLoggingService tokenLog)
   {
     _biobankService = biobankService;
     _organisationDirectoryService = organisationDirectoryService;
