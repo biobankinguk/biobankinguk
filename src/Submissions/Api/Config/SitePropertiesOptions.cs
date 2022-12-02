@@ -16,6 +16,10 @@ namespace Biobanks.Submissions.Api.Config
 
     public string LegalEntity { get; init; } = "Legal Entity";
 
+    public string EmailFromName { get; init; } = "EmailFromName";
+
+    public string EmailFromAddress { get; init; } = "EmailFromAddress";
+
     public string AnnualStatsStartYear { get; init; } = string.Empty;
 
     public bool HotjarEnabled { get; set; }

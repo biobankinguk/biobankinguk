@@ -1,0 +1,36 @@
+@inject IOptions<SitePropertiesOptions> _config
+@inject IHostEnvironment HostEnvironment
+
+
+@{
+	var directoryName = @_config.Value.ServiceName;
+    var emailSignature = @_config.Value.EmailSignature;
+
+	// Format Email Header {"<Name>" <Address>}
+	var emailFrom = String.Format(@"""{0}"" {1}",
+		_config.Value.EmailFromName,
+		_config.Value.EmailFromAddress
+		);
+
+	// Format Email Subject
+	var emailSubject = HostEnvironment.IsDevelopment()
+		? $"{directoryName} {ViewBag.Entity} Administration"
+		: $"{directoryName} {ViewBag.Entity} Administration (Environment: {HostEnvironment.EnvironmentName})";
+}
+
+
+Content-Type: text/plain; charset=utf-8
+To: @ViewBag.To
+From: @emailFrom
+Subject: @emailSubject
+
+Dear @Html.Raw(ViewBag.Name)
+
+You've been invited to become an admin for @Html.Raw(ViewBag.Entity) at the @directoryName.
+
+Please use this link below to complete registration and set your password:
+
+@Html.Raw(ViewBag.ConfirmLink)
+
+Regards,
+@emailSignature

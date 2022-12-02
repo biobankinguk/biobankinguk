@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory;
+namespace Biobanks.Submissions.Api.Area.Admin.Controllers;
 public class BiobankController : Controller
 {
 
@@ -75,9 +75,9 @@ public class BiobankController : Controller
   public async Task<ActionResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
   {
     //timeStamp can be used to avoid caching issues, notably on IE
-    
 
-    var Admins =  await GetAdminsAsync(biobankId, excludeCurrentUser);
+
+    var Admins = await GetAdminsAsync(biobankId, excludeCurrentUser);
 
     return Ok(Admins);
   }
@@ -144,7 +144,7 @@ public class BiobankController : Controller
         await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
         await _emailService.SendNewUserRegisterEntityAdminInvite(
-            new EmailAddress (model.Email),
+            new EmailAddress(model.Email),
             model.Name,
             model.Entity,
             Url.Action("Confirm", "Account",
@@ -180,7 +180,7 @@ public class BiobankController : Controller
     await _organisationDirectoryService.AddUserToOrganisation(user.Id, biobankId);
 
     //add user to BiobankAdmin role
-    await _userManager.AddToRolesAsync(user,new List<string> { Role.BiobankAdmin}); //what happens if they're already in the role?
+    await _userManager.AddToRolesAsync(user, new List<string> { Role.BiobankAdmin }); //what happens if they're already in the role?
 
     //return success, and enough user details for adding to the viewmodel's list
     return Json(new
