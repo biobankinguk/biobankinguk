@@ -19,5 +19,7 @@ public class InviteRegisterEntityAdminModel
   /// <summary>
   /// The controller to which this will be redirected (either the biobank or ADAC depending on who is adding admins)
   /// </summary>
+
+  ///TODO: Fix once JS urls are done 
   public string ControllerName { get; set; }
 }

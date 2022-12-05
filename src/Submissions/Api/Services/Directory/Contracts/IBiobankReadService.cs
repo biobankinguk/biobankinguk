@@ -1,4 +1,4 @@
-﻿using Biobanks.Data.Entities;
+using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using System;
@@ -35,8 +35,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<int> GetMaterialTypeMaterialDetailCount(int id);
 
         Task<int> GetServiceOfferingOrganisationCount(int id);
-
-        Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
 
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
 

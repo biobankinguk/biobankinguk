@@ -412,6 +412,11 @@ else
 app.UseHangfireDashboard();
 
 app.MapRazorPages();
+
+app.MapControllerRoute(
+    name: "AreasDefault",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
