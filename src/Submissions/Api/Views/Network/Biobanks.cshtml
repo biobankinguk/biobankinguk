@@ -1,11 +1,12 @@
 @using System.Linq
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@model Biobanks.Submissions.Api.Models.Network.NetworkBiobanksModel
 
 @{
     ViewBag.Title = "Network biobanks";
 }
 
-<partial name= "_NetworkTabs" model = "Biobanks" >
+<partial name= "_NetworkTabs" model = "@("Biobanks")")>
 
 <h3>Biobanks in your Network @Html.ActionLink("Add a new Biobank", "AddBiobank", null, new { @class = "btn btn-success pull-right" })</h3>
 
@@ -77,7 +78,8 @@
     </div>
 </div>
 
-@*@section FooterScripts
+@*
+@section FooterScripts
 {
     @Scripts.Render("~/bundles/bootbox")
     @Scripts.Render("~/bundles/datatables")
