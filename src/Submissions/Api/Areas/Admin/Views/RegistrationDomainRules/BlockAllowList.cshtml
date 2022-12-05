@@ -44,14 +44,14 @@ ViewBag.Title = "BlockAllowList";
              class="action-icon"
              href="#"
              data-target="#domain-rule-modal"
-             data-domain-rule="@Json.Encode(type)"
+             data-domain-rule="@Json.Serialize(type)"
              data-bind="click: openModalForEdit">
             <span class="fa fa-edit labelled-icon"></span>Edit
           </a>
 
           <a title="Delete"
              class="action-icon delete-confirm"
-             data-domain-rule="@Json.Encode(type)"
+             data-domain-rule="@Json.Serialize(type)"
              data-resource-url="/api/RegistrationDomainRule"
              data-success-redirect="@Url.Action("BlockAllowList")"
           data-refdata-type="Registration Domain Rule"
@@ -100,14 +100,14 @@ ViewBag.Title = "BlockAllowList";
              class="action-icon"
              href="#"
              data-target="#domain-rule-modal"
-             data-domain-rule="@Json.Encode(type)"
+             data-domain-rule="@Json.Serialize(type)"
              data-bind="click: openModalForEdit">
             <span class="fa fa-edit labelled-icon"></span>Edit
           </a>
 
           <a title="Delete"
              class="action-icon delete-confirm"
-             data-domain-rule="@Json.Encode(type)"
+             data-domain-rule="@Json.Serialize(type)"
              data-resource-url="/api/RegistrationDomainRule"
              data-success-redirect="@Url.Action("BlockAllowList")"
           data-refdata-type="Registration Domain Rule"
@@ -204,9 +204,10 @@ ViewBag.Title = "BlockAllowList";
   </div>
 </div>
 
-@section FooterScripts
-{
-@Scripts.Render("~/bundles/knockout")
-@Scripts.Render("~/bundles/datatables")
-@Scripts.Render("~/bundles/adac/block-allow-list")
-}
+@* TODO: Bundling *@
+@* @section FooterScripts *@
+@* { *@
+@* @Scripts.Render("~/bundles/knockout") *@
+@* @Scripts.Render("~/bundles/datatables") *@
+@* @Scripts.Render("~/bundles/adac/block-allow-list") *@
+@* } *@
