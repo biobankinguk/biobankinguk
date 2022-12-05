@@ -1,6 +1,7 @@
+@using Biobanks.Submissions.Api.Models.Emails
 @inject IOptions<SitePropertiesOptions> _config
 @inject IHostEnvironment HostEnvironment
-
+@model NewUserRegisterEntityAdminInviteModel
 
 @{
 	var directoryName = @_config.Value.ServiceName;
@@ -13,13 +14,13 @@
 }
 
 
-Dear @Html.Raw(ViewBag.Name)
+Dear @Html.Raw(Model!.name)
 
-You've been invited to become an admin for @Html.Raw(ViewBag.Entity) at the @directoryName.
+You've been invited to become an admin for @Html.Raw(Model!.entity) at the @directoryName.
 
 Please use this link below to complete registration and set your password:
 
-@Html.Raw(ViewBag.ConfirmLink)
+@Html.Raw(Model!.confirmLink)
 
 Regards,
 @emailSignature
