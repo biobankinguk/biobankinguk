@@ -15,7 +15,6 @@ public class RegistrationDomainRulesController : Controller
   public RegistrationDomainRulesController(RegistrationDomainService registrationDomainService)
   {
     _registrationDomainService = registrationDomainService;
-
   }
   
   public async Task<ActionResult> BlockAllowList()
