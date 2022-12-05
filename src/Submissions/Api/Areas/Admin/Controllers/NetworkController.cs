@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory;
+namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 public class NetworkController : Controller
 {
   private readonly INetworkService _networkService;
@@ -78,8 +78,8 @@ public class NetworkController : Controller
   {
     //This action solely exists so we can set a feedback message
 
-   this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your network admins!",
-        FeedbackMessageType.Success);
+    this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your network admins!",
+         FeedbackMessageType.Success);
 
     return RedirectToAction("Admins");
   }

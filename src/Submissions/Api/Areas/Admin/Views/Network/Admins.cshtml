@@ -1,4 +1,4 @@
-@model Biobanks.Submission.Api.Models.Network.NetworkAdminsModel
+@using Biobanks.Submissions.Api.Areas.Admin.Models.Network
 @using Microsoft.AspNetCore.Http
 
 @{
@@ -56,7 +56,7 @@
                                         {
                                             userEmail = admin.UserEmail,
                                             onBehalf = true,
-                                            returnUrl = Request.RawUrl
+                                            returnUrl = Model.RequestUrl
                                         })"
                                    class="confirm-resend"
                                    data-admin-name="@admin.UserFullName">
