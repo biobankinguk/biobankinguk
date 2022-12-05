@@ -4,7 +4,7 @@
 ViewBag.Title = "BlockAllowList";
 }
 
-@Html.Partial("_ADACTabs", (string)ViewBag.Title)
+<partial name = "_ACADTabs" model ="BlockAllowList" >
 
 <h3>
   Block List
@@ -211,3 +211,4 @@ ViewBag.Title = "BlockAllowList";
 @* @Scripts.Render("~/bundles/datatables") *@
 @* @Scripts.Render("~/bundles/adac/block-allow-list") *@
 @* } *@
+</partial>
