@@ -1,8 +1,13 @@
 using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +16,26 @@ using System.Threading.Tasks;
 namespace Biobanks.Submissions.Api.Controllers.Directory;
 public class NetworkController : Controller
 {
-  [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> Admins()
+  private readonly INetworkService _networkService;
+  private readonly UserManager<ApplicationUser> _userManager;
+  private readonly ITokenLoggingService _tokenLog;
+  private readonly IEmailService _emailService;
+
+  public NetworkController(
+    INetworkService networkService,
+    UserManager<ApplicationUser> userManager,
+     ITokenLoggingService tokenLog,
+     IEmailService emailService)
   {
-    var networkId = SessionHelper.GetNetworkId(Session);
+    _networkService = networkService;
+    _userManager = userManager;
+    _tokenLog = tokenLog;
+    _emailService = emailService;
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> Admins(int networkId)
+  {
 
     return View(new NetworkAdminsModel
     {
@@ -39,17 +60,18 @@ public class NetworkController : Controller
 
     if (excludeCurrentUser)
     {
-      admins.Remove(admins.FirstOrDefault(x => x.UserId == CurrentUser.Identity.GetUserId()));
+      var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+      admins.Remove(admins.FirstOrDefault(x => x.UserId == currentUser.Id));
     }
 
     return admins;
   }
 
-  public async Task<JsonResult> GetAdminsAjax(int networkId, bool excludeCurrentUser = false, int timeStamp = 0)
+  public async Task<IActionResult> GetAdminsAjax(int networkId, bool excludeCurrentUser = false, int timeStamp = 0)
   {
     //timeStamp can be used to avoid caching issues, notably on IE
 
-    return Json(await GetAdminsAsync(networkId, excludeCurrentUser), JsonRequestBehavior.AllowGet);
+    return Ok(await GetAdminsAsync(networkId, excludeCurrentUser));
   }
 
   public ActionResult InviteAdminSuccess(string name)
@@ -110,12 +132,12 @@ public class NetworkController : Controller
       if (result.Succeeded)
       {
         //send email to confirm account
-        var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+        var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
         await _emailService.SendNewUserRegisterEntityAdminInvite(
-            model.Email,
+            new EmailAddress(model.Email),
             model.Name,
             model.Entity,
             Url.Action("Confirm", "Account",
@@ -124,7 +146,7 @@ public class NetworkController : Controller
                   userId = user.Id,
                   token = confirmToken
                 },
-                Request.Url.Scheme));
+                Request.GetEncodedUrl()));
       }
       else
       {
@@ -141,17 +163,17 @@ public class NetworkController : Controller
     {
       //send email to inform the existing user they've been added as an admin
       await _emailService.SendExistingUserRegisterEntityAdminInvite(
-          model.Email,
+          new EmailAddress(model.Email),
           model.Name,
           model.Entity,
-          Url.Action("Index", "Network", null, Request.Url.Scheme));
+          Url.Action("Index", "Biobank", null, Request.GetEncodedUrl()));
     }
 
     //Add the user/network relationship
     await _networkService.AddNetworkUser(user.Id, networkId);
 
     //add user to NetworkAdmin role
-    await _userManager.AddToRolesAsync(user.Id, Role.NetworkAdmin.ToString());
+    await _userManager.AddToRolesAsync(user, new List<string> { Role.BiobankAdmin });
 
     //return success, and enough user details for adding to the viewmodel's list
     return Json(new
@@ -165,13 +187,13 @@ public class NetworkController : Controller
   }
 
   [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName)
+  public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName, int networkId)
   {
     //remove them from the network
-    await _networkService.RemoveNetworkUser(networkUserId, SessionHelper.GetNetworkId(Session));
+    await _networkService.RemoveNetworkUser(networkUserId, networkId);
 
     //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
-    await _userManager.RemoveFromRolesAsync(networkUserId, Role.NetworkAdmin.ToString());
+    await _userManager.RemoveFromRolesAsync(await _userManager.FindByIdAsync(networkUserId), new List<string> { Role.NetworkAdmin });
 
     this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your network admins!", FeedbackMessageType.Success);
 
