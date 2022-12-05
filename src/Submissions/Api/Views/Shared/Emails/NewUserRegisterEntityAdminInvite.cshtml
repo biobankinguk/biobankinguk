@@ -13,14 +13,13 @@
 		: $"{directoryName} {ViewBag.Entity} Administration (Environment: {HostEnvironment.EnvironmentName})";
 }
 
-
 Dear @Html.Raw(Model!.name)
 
-You've been invited to become an admin for @Html.Raw(Model!.entity) at the @directoryName.
+You've been invited to become an admin for @Html.Raw(Model.entity) at the @directoryName.
 
 Please use this link below to complete registration and set your password:
 
-@Html.Raw(Model!.confirmLink)
+<a href="@Html.Raw(Model.confirmLink)">Click here to complete registeration</a>
 
 Regards,
 @emailSignature
