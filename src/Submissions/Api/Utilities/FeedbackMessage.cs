@@ -26,7 +26,6 @@ namespace Biobanks.Submissions.Api.Utilities
                 Type = type,
                 ContainsHtml = containsHtml
             };
-
     }
 
   public static class FeedbackMessageKey
