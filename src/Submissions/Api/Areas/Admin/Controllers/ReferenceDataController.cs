@@ -1,6 +1,7 @@
 using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -16,6 +17,7 @@ public class ReferenceDataController : Controller
     _networkService = networkService;
   }
 
+  [AllowAnonymous]
   public async Task<ActionResult> Networks()
   {
     var allNetworks =
