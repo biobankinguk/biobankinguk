@@ -3,15 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Home;
-// using Biobanks.Submissions.Api.Models.Search;
-// using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
-// using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Models.Search;
 using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
@@ -21,13 +18,18 @@ public class SiteConfigController : Controller
 {
     
     private readonly IConfigService _configService;
+    private readonly ICollectionService _collectionService;
+    private readonly IOntologyTermService _ontologyTermService;
   
     public SiteConfigController(
-        IConfigService configService
+        IConfigService configService,
+        ICollectionService collectionService,
+        IOntologyTermService ontologyTermService
     )
     {
         _configService = configService;
-
+        _collectionService = collectionService;
+        _ontologyTermService = ontologyTermService;
     }
     
     #region Homepage Config
@@ -70,9 +72,9 @@ public class SiteConfigController : Controller
       );
     
       // Repopulate current config cache
-      _configService.PopulateSiteConfigCache();
+      await _configService.PopulateSiteConfigCache();
     
-      SetTemporaryFeedbackMessage("Homepage configuration saved successfully.", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Homepage configuration saved successfully.", FeedbackMessageType.Success);
     
       return Redirect("HomepageConfig");
     }
@@ -83,6 +85,7 @@ public class SiteConfigController : Controller
     [HttpPost]
     public ActionResult HomepageConfigPreview(HomepageContentModel homepage)
       => View("HomepageConfigPreview", homepage);
+    
     #endregion
     
     #region Termpage Config
@@ -118,9 +121,9 @@ public class SiteConfigController : Controller
       );
     
       // Repopulate current config cache
-      _configService.PopulateSiteConfigCache();
+      await _configService.PopulateSiteConfigCache();
     
-      SetTemporaryFeedbackMessage("Term page configuration saved successfully.", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Term page configuration saved successfully.", FeedbackMessageType.Success);
     
       return Redirect("TermpageConfig");
     }
@@ -194,9 +197,9 @@ public class SiteConfigController : Controller
       );
     
       // Repopulate current config cache
-      _configService.PopulateSiteConfigCache();
+      await _configService.PopulateSiteConfigCache();
       
-      SetTemporaryFeedbackMessage("Register configuration saved successfully.", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Register configuration saved successfully.", FeedbackMessageType.Success);
       return Redirect("RegisterPagesConfig");
     }
     #endregion
@@ -217,7 +220,7 @@ public class SiteConfigController : Controller
     }
     
     [HttpPost]
-    public async Task<JsonResult> UpdateSiteConfig(IEnumerable<SiteConfigModel> values)
+    public async Task<IActionResult> UpdateSiteConfig(IEnumerable<SiteConfigModel> values)
     {
       // Update Database Config
       await _configService.UpdateSiteConfigsAsync(
@@ -231,9 +234,9 @@ public class SiteConfigController : Controller
           );
     
       // Repopulate current config cache
-      _configService.PopulateSiteConfigCache();
+      await _configService.PopulateSiteConfigCache();
     
-      return Json(new
+      return Ok(new
       {
           success = true,
           redirect = "UpdateSiteConfigSuccess"
@@ -242,7 +245,7 @@ public class SiteConfigController : Controller
     
     public ActionResult UpdateSiteConfigSuccess()
     {
-      SetTemporaryFeedbackMessage("Site configuration saved successfully.", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Site configuration saved successfully.", FeedbackMessageType.Success);
       return RedirectToAction("SiteConfig");
     }
     #endregion
@@ -263,14 +266,14 @@ public class SiteConfigController : Controller
     
     public ActionResult SampleResourceConfigSuccess()
     {
-      SetTemporaryFeedbackMessage("Configuration saved successfully.", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Configuration saved successfully.", FeedbackMessageType.Success);
       return RedirectToAction("SampleResourceConfig");
     }
     
     #endregion
     
     //Method for updating specific Reference Terms Names via Config
-    public async Task<JsonResult> UpdateReferenceTermName(string newReferenceTermKey, string newReferenceTermName)
+    public async Task<IActionResult> UpdateReferenceTermName(string newReferenceTermKey, string newReferenceTermName)
     {
     
       List<Entities.Data.Config> values = new List<Entities.Data.Config>();
@@ -286,15 +289,13 @@ public class SiteConfigController : Controller
       await _configService.UpdateSiteConfigsAsync(values);
     
       // Repopulate current config cache
-      _configService.PopulateSiteConfigCache();
+      await _configService.PopulateSiteConfigCache();
       
-      SetTemporaryFeedbackMessage("The Reference Term has been overriden successfully.", FeedbackMessageType.Success);
-      return Json(new
+      this.SetTemporaryFeedbackMessage("The Reference Term has been overriden successfully.", FeedbackMessageType.Success);
+      return Ok(new
       {
           success = true,
       });
     }
-    
-    #endregion
     
 }
