@@ -8,9 +8,14 @@ namespace Biobanks.Submissions.Api.Config
         public const string ShowPreservationPercentage = "site.display.preservation.percent";
         public const string ShowCounties = "site.display.counties";
         public const string DisplayPublications = "site.display.publications";
-        
+        public const string DisplaySubmissions = "site.display.submissions";
+        public const string FundersFreeText = "site.display.funders.freetext";
+
         //Email Config
         public const string RegistrationEmails = "site.email.registration";
+        
+        //Trusted Biobank Config
+        public const string TrustBiobanks = "site.display.trusted.biobanks";
 
         // Ref Data Name Configuration Options
         public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
@@ -42,6 +47,9 @@ namespace Biobanks.Submissions.Api.Config
 
         // Sample Resource Configuration Options
         public const string SampleResourceName = "site.sampleresource.name";
+        public const string EnableDataSharing = "site.sampleresource.datasharing";
+        public const string EthicsFieldName = "site.sampleresource.ethics.name";
+        public const string EthicsFieldIsCheckbox = "site.sampleresource.ethics.type";
 
         public const string ContactThirdParty = "site.display.thirdparty";
     }
