@@ -37,15 +37,15 @@ public class SiteConfigController : Controller
     {
       return View(new HomepageContentModel
       {
-          Title = await _configService.GetSiteConfigValue(ConfigKey.HomepageTitle, "", true),
-          SearchTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchTitle, "", true),
-          SearchSubTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchSubTitle, "", true),
-          ResourceRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageResourceRegistration, "", true),
-          NetworkRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageNetworkRegistration, "", true),
-          RequireSamplesCollected = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioSamplesCollected, "", true),
-          AccessExistingSamples = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioAccessSamples, "", true),
-          ResourceRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankTitle, "", true),
-          NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, "", true),
+          Title = await _configService.GetSiteConfigValue(ConfigKey.HomepageTitle),
+          SearchTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchTitle),
+          SearchSubTitle = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchSubTitle),
+          ResourceRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageResourceRegistration),
+          NetworkRegistration = await _configService.GetSiteConfigValue(ConfigKey.HomepageNetworkRegistration),
+          RequireSamplesCollected = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioSamplesCollected),
+          AccessExistingSamples = await _configService.GetSiteConfigValue(ConfigKey.HomepageSearchRadioAccessSamples),
+          ResourceRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankTitle),
+          NetworkRegistrationButton = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle),
       });
     }
     
@@ -95,7 +95,7 @@ public class SiteConfigController : Controller
       {
           TermpageContentModel = new TermpageContentModel
           {
-              PageInfo = await _configService.GetSiteConfigValue(ConfigKey.TermpageInfo, "", true),
+              PageInfo = await _configService.GetSiteConfigValue(ConfigKey.TermpageInfo),
           }
       });
     }
@@ -169,13 +169,13 @@ public class SiteConfigController : Controller
     public async Task<ActionResult> RegisterPagesConfig()
     {
         var model = new RegisterConfigModel();
-        model.BiobankTitle = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankTitle, "", true);
-        model.BiobankDescription = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankDescription, "", true);
-        model.NetworkTitle = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle, "", true);
-        model.NetworkDescription = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkDescription, "", true);
-        model.EnableRegistrationHelpUrl = await _configService.GetSiteConfigValue(ConfigKey.EnableRegisterRegistrationHelpUrl, "", true);
-        model.RegistrationHelpUrl = await _configService.GetSiteConfigValue(ConfigKey.RegisterRegistrationHelpUrl, "", true);
-        model.RegistrationEmails = await _configService.GetSiteConfigValue(ConfigKey.RegistrationEmails, "", true);
+        model.BiobankTitle = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankTitle);
+        model.BiobankDescription = await _configService.GetSiteConfigValue(ConfigKey.RegisterBiobankDescription);
+        model.NetworkTitle = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkTitle);
+        model.NetworkDescription = await _configService.GetSiteConfigValue(ConfigKey.RegisterNetworkDescription);
+        model.EnableRegistrationHelpUrl = await _configService.GetSiteConfigValue(ConfigKey.EnableRegisterRegistrationHelpUrl);
+        model.RegistrationHelpUrl = await _configService.GetSiteConfigValue(ConfigKey.RegisterRegistrationHelpUrl);
+        model.RegistrationEmails = await _configService.GetSiteConfigValue(ConfigKey.RegistrationEmails);
         return View(model);
     }
     
