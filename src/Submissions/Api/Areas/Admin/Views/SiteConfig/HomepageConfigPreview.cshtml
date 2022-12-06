@@ -26,9 +26,9 @@
     }
 </div>
 
-@RenderPage("~/Views/Home/Index.cshtml", Model)
+<partial name = "~/Views/Term/Index.cshtml" model ="@Model" />
 
 @* RenderPage adds a container we don't want *@
-<script>
-	document.querySelector("section > .container").classList.remove("container");
-</script>
+@* <script> *@
+@* 	document.querySelector("section > .container").classList.remove("container"); *@
+@* </script> *@
