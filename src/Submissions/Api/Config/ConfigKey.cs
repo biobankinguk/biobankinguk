@@ -8,9 +8,12 @@ namespace Biobanks.Submissions.Api.Config
         public const string ShowPreservationPercentage = "site.display.preservation.percent";
         public const string ShowCounties = "site.display.counties";
         public const string DisplayPublications = "site.display.publications";
+        
+        //Email Config
+        public const string RegistrationEmails = "site.email.registration";
 
-    // Ref Data Name Configuration Options
-    public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
+        // Ref Data Name Configuration Options
+        public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
         public const string DonorCountName = "site.display.donorcount.name";
         public const string StorageTemperatureName = "site.display.storagetemperature.name";
 
@@ -26,8 +29,13 @@ namespace Biobanks.Submissions.Api.Config
         public const string HomepageSearchRadioAccessSamples = "site.homepage.searchradioaccesssamples";
         public const string HomepageFinalParagraph = "site.homepage.finalparagraph";
 
+        // Editable Register
         public const string RegisterBiobankTitle = "site.register.biobank.title";
         public const string RegisterNetworkTitle = "site.register.network.title";
+        public const string RegisterBiobankDescription = "site.register.biobank.description";
+        public const string RegisterNetworkDescription = "site.register.network.description";
+        public const string EnableRegisterRegistrationHelpUrl = "site.register.help.show";
+        public const string RegisterRegistrationHelpUrl = "site.register.help.url";
 
         //Editable Termspage
         public const string TermpageInfo = "site.termpage.pageinfo";
@@ -36,6 +44,6 @@ namespace Biobanks.Submissions.Api.Config
         public const string SampleResourceName = "site.sampleresource.name";
 
         public const string ContactThirdParty = "site.display.thirdparty";
-  }
+    }
 }
 
