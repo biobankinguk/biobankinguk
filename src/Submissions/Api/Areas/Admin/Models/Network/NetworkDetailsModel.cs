@@ -1,4 +1,5 @@
 using Biobanks.Submissions.Api.Models;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,7 +30,7 @@ public class NetworkDetailsModel
   public string ContactEmail { get; set; }
 
   [DataType(DataType.Upload)]
-  public HttpPostedFileBase Logo { get; set; } //how do file uploads work? http://cpratt.co/file-uploads-in-asp-net-mvc-with-view-models/
+  public IFormFile Logo { get; set; } 
   public string LogoName { get; set; } //used to display an already stored logo
   public bool RemoveLogo { get; set; }
 

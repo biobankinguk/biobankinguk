@@ -1,5 +1,8 @@
+@using Biobanks.Data.Entities
 @using Biobanks.Submissions.Api.Areas.Admin.Models.Network
 @using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager
 
 @{
     ViewBag.Title = "Network admins";
@@ -27,7 +30,7 @@
             <tr class="datatables-fixed-row">
                 <td>
                     <span class="fa fa-user labelled-icon"></span>
-                    <strong>@CurrentUser.Name</strong>
+                    <strong>@userManager.GetUserName(User)</strong>
                 </td>
                 <td>
                     <strong>@User.Identity.Name</strong>

@@ -1,5 +1,5 @@
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Biobank;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -20,7 +20,6 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 [Area("Admin")]
 public class BiobanksController : Controller
 {
-
   private readonly BiobankService _biobankService;
   private readonly OrganisationDirectoryService _organisationDirectoryService;
   private readonly IEmailService _emailService;
