@@ -14,6 +14,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+
+[Area("Admin")]
 public class NetworkController : Controller
 {
   private readonly INetworkService _networkService;
