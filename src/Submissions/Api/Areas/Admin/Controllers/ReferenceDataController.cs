@@ -16,8 +16,6 @@ public class ReferenceDataController : Controller
   {
     _networkService = networkService;
   }
-
-  [AllowAnonymous]
   public async Task<ActionResult> Networks()
   {
     var allNetworks =
