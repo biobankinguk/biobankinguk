@@ -1,16 +1,44 @@
+using AutoMapper;
 using Biobanks.Data.Entities;
+using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.Directory.Dto;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 public class RequestsController : Controller
 {
+  private INetworkService _networkService;
+  private IOrganisationDirectoryService _organisationService;
+  private readonly UserManager<ApplicationUser> _userManager;
+  private readonly ITokenLoggingService _tokenLog;
+  private readonly IEmailService _emailService;
+  private readonly IMapper _mapper;
+  public RequestsController(
+    INetworkService networkService,
+    IOrganisationDirectoryService organisationService,
+    UserManager<ApplicationUser> userManager,
+    ITokenLoggingService tokenLog,
+    IEmailService emailService
+    )
+  {
+    _networkService = networkService;
+    _organisationService = organisationService;
+    _userManager = userManager;
+    _tokenLog = tokenLog;
+    _emailService = emailService;
+  }
+
   public async Task<ActionResult> Requests()
   {
     var bbRequests =
@@ -127,7 +155,7 @@ public class RequestsController : Controller
 
 
     //add user to BiobankAdmin role
-    await _userManager.AddToRolesAsync(user.Id, Role.BiobankAdmin.ToString());
+    await _userManager.AddToRolesAsync(user,  new List<string> { Role.BiobankAdmin });
 
     //finally, update the request
     request.AcceptedDate = DateTime.Now;
@@ -149,7 +177,7 @@ public class RequestsController : Controller
     {
       var lastActiveUser = await _organisationService.GetLastActiveUser(organisation.OrganisationId);
 
-      activity.Add(new BiobankActivityModel
+      activity.Add(new BiobankActivityDTO
       {
         OrganisationId = organisation.OrganisationId,
         Name = organisation.Name,
@@ -267,7 +295,7 @@ public class RequestsController : Controller
                 userId = user.Id,
                 token = confirmToken
               },
-              Request.GetEncodedUrl());
+              Request.GetEncodedUrl()));
     }
     else
     {
@@ -287,7 +315,7 @@ public class RequestsController : Controller
     }
 
     //add user to NetworkAdmin role
-    await _userManager.AddToRolesAsync(user.Id, Role.NetworkAdmin.ToString());
+    await _userManager.AddToRolesAsync(user, new List<string> { Role.NetworkAdmin });
 
     //finally, update the request
     request.AcceptedDate = DateTime.Now;
@@ -347,7 +375,7 @@ public class RequestsController : Controller
     if (user != null && !user.EmailConfirmed)
     {
       // Generate Token Link
-      var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+      var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
       var tokenLink = Url.Action("Confirm", "Account",
           new
           {
