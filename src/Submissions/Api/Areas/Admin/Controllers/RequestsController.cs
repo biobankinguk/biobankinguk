@@ -3,6 +3,7 @@ using Biobanks.Data.Entities;
 using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
@@ -119,12 +120,12 @@ public class RequestsController : Controller
       }
 
       // Send email confirmation of registration
-      var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+      var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
       await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
       await _emailService.SendNewUserRegisterEntityAccepted(
-          request.UserEmail,
+          new EmailAddress(request.UserEmail),
           request.UserName,
           request.OrganisationName,
           Url.Action("Confirm", "Account",
@@ -140,7 +141,7 @@ public class RequestsController : Controller
     {
       // Exisiting user - Send email confirmation of registration
       await _emailService.SendExistingUserRegisterEntityAccepted(
-          request.UserEmail,
+          new EmailAddress(request.UserEmail),
           request.UserName,
           request.OrganisationName,
           Url.Action("SwitchToBiobank", "Account",
@@ -223,7 +224,7 @@ public class RequestsController : Controller
 
     //send the requester an email
     await _emailService.SendRegisterEntityDeclined(
-        request.UserEmail,
+        new EmailAddress(request.UserEmail),
         request.UserName,
         request.OrganisationName);
 
@@ -286,7 +287,7 @@ public class RequestsController : Controller
       await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
       await _emailService.SendNewUserRegisterEntityAccepted(
-          request.UserEmail,
+          new EmailAddress(request.UserEmail),
           request.UserName,
           request.NetworkName,
           Url.Action("Confirm", "Account",
@@ -301,7 +302,7 @@ public class RequestsController : Controller
     {
       //Send email confirmation of registration
       await _emailService.SendExistingUserRegisterEntityAccepted(
-          request.UserEmail,
+          new EmailAddress(request.UserEmail),
           request.UserName,
           request.NetworkName,
           Url.Action("SwitchToNetwork", "Account",
@@ -356,7 +357,7 @@ public class RequestsController : Controller
 
     //send the requester an email
     await _emailService.SendRegisterEntityDeclined(
-        request.UserEmail,
+        new EmailAddress(request.UserEmail),
         request.UserName,
         request.NetworkName);
 
