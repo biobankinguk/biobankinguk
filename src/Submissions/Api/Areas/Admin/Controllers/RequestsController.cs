@@ -1,6 +1,10 @@
+using Biobanks.Data.Entities;
+using Biobanks.Submissions.Api.Areas.Admin.Models;
+using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -145,7 +149,7 @@ public class RequestsController : Controller
     {
       var lastActiveUser = await _organisationService.GetLastActiveUser(organisation.OrganisationId);
 
-      activity.Add(new BiobankActivityDTO
+      activity.Add(new BiobankActivityModel
       {
         OrganisationId = organisation.OrganisationId,
         Name = organisation.Name,
