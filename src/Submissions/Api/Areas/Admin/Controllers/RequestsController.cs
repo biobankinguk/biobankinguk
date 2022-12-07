@@ -30,7 +30,8 @@ public class RequestsController : Controller
     IOrganisationDirectoryService organisationService,
     UserManager<ApplicationUser> userManager,
     ITokenLoggingService tokenLog,
-    IEmailService emailService
+    IEmailService emailService,
+    IMapper mapper
     )
   {
     _networkService = networkService;
@@ -38,6 +39,7 @@ public class RequestsController : Controller
     _userManager = userManager;
     _tokenLog = tokenLog;
     _emailService = emailService;
+    _mapper = mapper;
   }
 
   public async Task<ActionResult> Requests()
@@ -113,7 +115,7 @@ public class RequestsController : Controller
       {
         foreach (var error in result.Errors)
         {
-          ModelState.AddModelError("", error);
+          ModelState.AddModelError("", $"{error.Code}: {error.Description}");
         }
 
         return View("GlobalErrors");
@@ -276,13 +278,13 @@ public class RequestsController : Controller
       {
         foreach (var error in result.Errors)
         {
-          ModelState.AddModelError("", error);
+          ModelState.AddModelError("", $"{error.Code}: {error.Description}");
         }
         return View("GlobalErrors");
       }
 
       //Send email confirmation of registration
-      var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+      var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
       await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
