@@ -1,5 +1,7 @@
 using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
@@ -99,7 +101,7 @@ public class RequestsController : Controller
                 userId = user.Id,
                 token = confirmToken
               },
-              Request.Url.Scheme)
+              Request.GetEncodedUrl())
           );
     }
     else
@@ -115,7 +117,7 @@ public class RequestsController : Controller
                 id = request.OrganisationRegisterRequestId,
                 newBiobank = true
               },
-              Request.Url.Scheme)
+              Request.GetEncodedUrl())
       );
     }
 
@@ -261,7 +263,7 @@ public class RequestsController : Controller
                 userId = user.Id,
                 token = confirmToken
               },
-              Request.Url.Scheme));
+              Request.GetEncodedUrl());
     }
     else
     {
@@ -276,7 +278,7 @@ public class RequestsController : Controller
                     id = request.NetworkRegisterRequestId,
                     newNetwork = true
                   },
-                  Request.Url.Scheme)
+                  Request.GetEncodedUrl())
           );
     }
 
@@ -348,15 +350,15 @@ public class RequestsController : Controller
             userId = user.Id,
             token = confirmToken
           },
-          Request.Url.Scheme);
+          Request.GetEncodedUrl());
 
       // Log Token Issuing
       await _tokenLog.TokenIssued(confirmToken, user.Id, "Manual Account Confirmation");
 
       // Return Link To User
-      return Json(new { link = tokenLink }, JsonRequestBehavior.AllowGet);
+      return Ok(new { link = tokenLink });
     }
 
-    return new HttpNotFoundResult();
+    return NotFound();
   }
 }
