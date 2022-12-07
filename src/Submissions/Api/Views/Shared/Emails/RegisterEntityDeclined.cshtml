@@ -1,5 +1,5 @@
 @using Biobanks.Submissions.Api.Models.Emails
-@model NewUserRegisterEntityAcceptedModel
+@model RegisterEntityDeclinedModel
 @inject IHostEnvironment HostEnvironment
 @inject IOptions<SitePropertiesOptions> _config
 
@@ -17,9 +17,7 @@ Dear @Html.Raw(Model!.name)
 
 Thanks for your interest in the @directoryName.
 
-We have received your registration for @Html.Raw(Model.entity).
-
-<a hreft="@Html.Raw(Model.confirmLink)">Please click this link to complete registration and set your password. </a> 
+We have received your registration for @Html.Raw(Model.entity) but are unfortunately unable to accept it at this time.
 
 Regards,
 @emailSignature
