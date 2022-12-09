@@ -50,4 +50,9 @@ public class ReferenceDataController : Controller
 
     return View(model);
   }
+  public ActionResult LockedRef()
+  {
+    return View();
+  }
+
 }
