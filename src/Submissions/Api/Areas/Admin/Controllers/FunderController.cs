@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+
+[Area("Admin")]
 public class FunderController : Controller
 {
   private readonly IReferenceDataService<Funder> _funderService;
