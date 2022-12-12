@@ -68,7 +68,7 @@
                 @(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? "Unknown error")
             </div>
         }
-        else if (Model.IsNullOrEmpty())
+        else if (Model == null)
         {
             <div class="alert alert-info">
                 There are no analytics data for the given period. Analytics data are updated quarterly. Please check again later.
