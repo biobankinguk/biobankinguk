@@ -65,7 +65,7 @@ public class AnalyticsController : Controller
             var ai = new TelemetryClient();
             ai.TrackException(outer);
 
-            ModelState.AddModelError(string.Empty, outer);
+            ModelState.AddModelError(string.Empty, message);
             return View(new DirectoryAnalyticReportDTO());
         }
     }
