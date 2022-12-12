@@ -1,5 +1,8 @@
-@using Biobanks.Submissions.Api.Areas.Admin.Models
+@using Biobanks.Data.Entities
+@using Biobanks.Submissions.Api.Areas.Admin.Models.Biobank
 @using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> userManager
 
 @model BiobankAdminsModel
 
@@ -29,7 +32,7 @@
                 <tr class="datatables-fixed-row">
                     <td>
                         <span class="fa fa-user labelled-icon"></span>
-                        <strong>@User.Identity.Name</strong>
+                        <strong>@userManager.GetUserName(User)</strong>
                     </td>
                     <td>
                         <strong>@User.Identity.Name</strong>
