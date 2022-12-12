@@ -7,6 +7,7 @@
 
 @{
     ViewBag.Title = "Analytics";
+    var sampleResourceName = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName);
 }
 
 <partial name = "_ADACTabs" model ="Analytics" />
@@ -239,9 +240,9 @@
                     @* Number of Sample Resource Contact Detail Requests (All Sessions) *@
                     <div class="col-sm-6">
                         <br />
-                        <h3><strong>Number of @App.Config[ConfigKey.SampleResourceName] Contact Detail Requests (All Sessions)</strong></h3>
+                        <h3><strong>Number of @sampleResourceName Contact Detail Requests (All Sessions)</strong></h3>
                         <p>
-                            This graph shows the number of times users have requested contact details of at least one registered @App.Config[ConfigKey.SampleResourceName] in the Directory using the built-in contact list functionality.
+                            This graph shows the number of times users have requested contact details of at least one registered @sampleResourceName in the Directory using the built-in contact list functionality.
                         </p>
                         <br />
                         <div id="plotly-ContactCount" class="col-sm-10 boxplot"></div>
@@ -250,9 +251,9 @@
                     @* Number of Sample Resource Contact Detail Requests (Filtered by date and location) *@
                     <div class="col-sm-6">
                         <br />
-                        <h3><strong>Number of @App.Config[ConfigKey.SampleResourceName] Contact Detail Requests (Filtered by date and location)</strong></h3>
+                        <h3><strong>Number of @sampleResourceName Contact Detail Requests (Filtered by date and location)</strong></h3>
                         <p>
-                            This graph shows the number of times users have requested contact details of at least one registered @App.Config[ConfigKey.SampleResourceName] in the Directory using the built-in contact list functionality. Abnormally large event groups that originated from the same location on a particular day have been excluded from this graph (current threshold: @Model.EventsPerCityThreshold).
+                            This graph shows the number of times users have requested contact details of at least one registered @sampleResourceName in the Directory using the built-in contact list functionality. Abnormally large event groups that originated from the same location on a particular day have been excluded from this graph (current threshold: @Model.EventsPerCityThreshold).
                         </p>
                         <br />
                         <div id="plotly-FilteredContactCount" class="col-sm-10 boxplot"></div>
@@ -265,7 +266,7 @@
                         <br />
                         <h3><strong>Number of Mailto User Actions (Filtered by date and location)</strong></h3>
                         <p>
-                            This graph shows the number of times users have used the built-in mailing functionality of the Directory to contact @App.Config[ConfigKey.SampleResourceName]s by clicking on the mailto link. Abnormally large event groups that originated from the same location on a particular day have been excluded from this graph (current threshold: @Model.EventsPerCityThreshold).
+                            This graph shows the number of times users have used the built-in mailing functionality of the Directory to contact @sampleResourceName by clicking on the mailto link. Abnormally large event groups that originated from the same location on a particular day have been excluded from this graph (current threshold: @Model.EventsPerCityThreshold).
                         </p>
                         <br />
                         <div id="plotly-FilteredMailToCount" class="col-sm-10 boxplot"></div>
@@ -277,13 +278,13 @@
             @* Profile Page Statistics *@
             @* Maybe better to seperate sections into partial views? *@
             <h2>Profile Page Statistics</h2>
-            <p><i>This section summarises information around the @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) profile pages on the Directory.</i></p>
+            <p><i>This section summarises information around the @sampleResourceName profile pages on the Directory.</i></p>
             <div>
                 <div class="row">
                     @* Sample Resource Profile Pages *@
                     <div class="col-sm-6">
                         <br />
-                        <h3><strong>@await _config.GetSiteConfigValue(ConfigKey.SampleResourceName)  Profile Pages</strong></h3>
+                        <h3><strong>@sampleResourceName Profile Pages</strong></h3>
                         <p>This table shows the most common sources that led to users viewing resource profile pages on the Directory.</p>
                         <br />
                         <table id="profile-sources" class="table table-striped">
@@ -311,9 +312,9 @@
                     @* Sample Resource Profile Pages *@
                     <div class="col-sm-6">
                         <br />
-                        <h3><strong>@await _config.GetSiteConfigValue(ConfigKey.SampleResourceName)  Profile Pages</strong></h3>
+                        <h3><strong>@sampleResourceName Profile Pages</strong></h3>
                         <p>
-                            This graph gives a breakdown of how users reach @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName)  profile pages from within the Directory Webpages.
+                            This graph gives a breakdown of how users reach @sampleResourceName profile pages from within the Directory Webpages.
                         </p>
                         <br />
                         <div id="plotly-ProfileRoute" class="col-sm-10 barplot"></div>
