@@ -5,7 +5,7 @@ using AutoMapper;
 using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Dto;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Analytics;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -45,7 +45,7 @@ public class AnalyticsController : Controller
 
         try
         {
-            var model = _mapper.Map<DirectoryAnalyticReportDTO>(await _directoryReportGenerator.GetReport(year, endQuarter, reportPeriod));
+            var model = _mapper.Map<DirectoryAnalyticReport>(await _directoryReportGenerator.GetReport(year, endQuarter, reportPeriod));
             return View(model);
         }
         catch (Exception e)
@@ -64,7 +64,7 @@ public class AnalyticsController : Controller
             ai.TrackException(outer);
 
             ModelState.AddModelError(string.Empty, message);
-            return View(new DirectoryAnalyticReportDTO());
+            return View(new DirectoryAnalyticReport());
         }
     }
 }

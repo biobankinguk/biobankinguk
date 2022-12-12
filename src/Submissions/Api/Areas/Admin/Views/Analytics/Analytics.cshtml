@@ -3,7 +3,7 @@
 
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 
-@model Biobanks.Submissions.Api.Services.Directory.Dto.DirectoryAnalyticReportDTO
+@model Biobanks.Submissions.Api.Areas.Admin.Models.Analytics.DirectoryAnalyticReport
 
 @{
     ViewBag.Title = "Analytics";
@@ -68,7 +68,7 @@
                 @(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? "Unknown error")
             </div>
         }
-        else if (Model == null)
+        else if (Model.IsNullOrEmpty())
         {
             <div class="alert alert-info">
                 There are no analytics data for the given period. Analytics data are updated quarterly. Please check again later.
