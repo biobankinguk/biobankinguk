@@ -1,4 +1,4 @@
-﻿using Biobanks.Data;
+using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Shared.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Shared.Services
 {
-    public class ReferenceDataService<T> : IReferenceDataService<T> where T : BaseReferenceData
+    public abstract class ReferenceDataService<T> : IReferenceDataService<T> where T : BaseReferenceData
     {
         protected readonly BiobanksDbContext _db;
 
@@ -27,5 +27,7 @@ namespace Biobanks.Shared.Services
                 .ToListAsync(); 
         public async Task<ICollection<T>> List()
             => await List(string.Empty);
-    }
+        public abstract Task<int> GetUsageCount(int id);
+
+  }
 }
