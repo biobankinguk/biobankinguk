@@ -259,6 +259,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<ISearchProvider, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
     .AddTransient<IContentPageService, ContentPageService>()
+    .AddTransient<INetworkService, NetworkService>()
 
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
@@ -299,7 +300,6 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
         .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
         .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
-        .AddTransient<INetworkService, NetworkService>()
 
         // Reference Data
         .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
