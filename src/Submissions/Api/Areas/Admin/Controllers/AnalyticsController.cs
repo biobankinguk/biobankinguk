@@ -5,7 +5,6 @@ using AutoMapper;
 using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
@@ -45,9 +44,8 @@ public class AnalyticsController : Controller
             reportPeriod = 5;
 
         try
-        { // Replace all this with _directoryReportGenerator
+        {
             var model = _mapper.Map<DirectoryAnalyticReportDTO>(await _directoryReportGenerator.GetReport(year, endQuarter, reportPeriod));
-            // var model = _mapper.Map<DirectoryAnalyticReport>(await _analyticsReportGenerator.GetDirectoryReport(year, endQuarter, reportPeriod));
             return View(model);
         }
         catch (Exception e)
