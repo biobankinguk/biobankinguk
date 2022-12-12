@@ -1,0 +1,88 @@
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Biobanks.Submissions.Api.Services.Directory;
+
+public class AbstractCrudService : IAbstractCrudService
+{
+  private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
+  private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+  private readonly IOntologyTermService _ontologyTermService;
+  private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+
+  public AbstractCrudService(
+    IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+    IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
+    IOntologyTermService ontologyTermService,
+    IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService
+
+    )
+  {
+    _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
+    _associatedDataTypeService = assocaitedDataTypeService;
+    _ontologyTermService = ontologyTermService;
+    _associatedDataTypeGroupService = associatedDataTypeGroupService;
+  }
+  public async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
+   AbstractCRUDCapabilityModel model, bool excludeLinkedData = false)
+  {
+    var timeFrames = (await _associatedDataProcurementTimeframeService.List())
+                .Select(x => new AssociatedDataTimeFrameModel
+                {
+                  ProvisionTimeId = x.Id,
+                  ProvisionTimeDescription = x.Value,
+                  ProvisionTimeValue = x.DisplayValue
+                });
+    var typeList = await _associatedDataTypeService.List();
+    if (excludeLinkedData)
+    {
+      typeList = typeList.Where(x => x.OntologyTerms == null || x.OntologyTerms.Count == 0).ToList();
+    }
+
+    else
+    {
+      var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
+      if (ontologyTerm != null)
+      {
+        typeList = typeList.Where(x => x.OntologyTerms == null || x.OntologyTerms.Count == 0 || (x.OntologyTerms.Find(y => y.Id == ontologyTerm.Id) != null)).ToList();
+      }
+    }
+
+    var types = typeList
+             .Select(x => new AssociatedDataModel
+             {
+               DataTypeId = x.Id,
+               DataTypeDescription = x.Value,
+               DataGroupId = x.AssociatedDataTypeGroupId,
+               Message = x.Message,
+               TimeFrames = timeFrames,
+               isLinked = (x.OntologyTerms != null && x.OntologyTerms.Count > 0)
+             });
+
+    model.Groups = new List<AssociatedDataGroupModel>();
+    var groups = await _associatedDataTypeGroupService.List();
+    foreach (var g in groups)
+    {
+      var groupModel = new AssociatedDataGroupModel();
+      groupModel.GroupId = g.Id;
+      groupModel.Name = g.Value;
+      groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
+      model.Groups.Add(groupModel);
+    }
+
+    //Check if types are valid
+    foreach (var type in types)
+    {
+      type.Active = model.AssociatedDataModelsValid();
+    }
+
+    return model;
+  }
+
+    
+}
