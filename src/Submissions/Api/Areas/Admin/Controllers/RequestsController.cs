@@ -42,7 +42,7 @@ public class RequestsController : Controller
     _mapper = mapper;
   }
 
-  public async Task<ActionResult> Requests()
+  public async Task<ActionResult> Index()
   {
     var bbRequests =
         (await _organisationService.ListOpenRegistrationRequests())
