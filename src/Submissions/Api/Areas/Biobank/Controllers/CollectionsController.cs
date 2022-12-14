@@ -1,8 +1,14 @@
+using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
-using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Models.Biobank;
+using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +16,9 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 public class CollectionsController : Controller
 {
   [HttpGet]
-  [Authorize(ClaimType = CustomClaimType.Biobank)]
-  public async Task<ActionResult> Collections()
+  [Authorize( CustomClaimType.Biobank)]
+  public async Task<ActionResult> Collections(int biobankId)
   {
-    var biobankId = SessionHelper.GetBiobankId(Session);
-
     if (biobankId == 0)
       return RedirectToAction("Index", "Home");
 
@@ -29,7 +33,7 @@ public class CollectionsController : Controller
         OntologyTerm = x.OntologyTerm.Value,
         Title = x.Title,
         StartYear = x.StartDate.Year,
-        MaterialTypes = Join(", ", _biobankReadService.ExtractDistinctMaterialTypes(x).Select(y => y)),
+        MaterialTypes = string.Join(", ", _biobankReadService.ExtractDistinctMaterialTypes(x).Select(y => y)),
         NumberOfSampleSets = x.SampleSets.Count
       })
     };
@@ -89,7 +93,7 @@ public class CollectionsController : Controller
 
   }
 
-  private async Task<Boolean> IsLinkedAssociatedDataValid(
+  private async Task<bool> IsLinkedAssociatedDataValid(
       List<AssociatedDataModel> linkedData, string ontologyTermId)
   {
     var associatedDataList = await _associatedDataTypeService.List();
@@ -114,9 +118,8 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  public async Task<ActionResult> AddCollection(AddCollectionModel model)
+  public async Task<ActionResult> AddCollection(AddCollectionModel model, int biobankId)
   {
-    var biobankId = SessionHelper.GetBiobankId(Session);
 
     if (biobankId == 0)
       return RedirectToAction("Index", "Home");
@@ -167,7 +170,7 @@ public class CollectionsController : Controller
         Notes = model.Notes
       });
 
-      SetTemporaryFeedbackMessage("Collection added!", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Collection added!", FeedbackMessageType.Success);
 
       return RedirectToAction("Collection", new
       {
@@ -185,11 +188,9 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [AuthoriseToAdministerCollection]
-  public async Task<ActionResult> CopyCollection(int id)
+  // TODO: [AuthoriseToAdministerCollection]
+  public async Task<ActionResult> CopyCollection(int id, int biobankId)
   {
-
-    var biobankId = SessionHelper.GetBiobankId(Session);
 
     if (biobankId == 0)
       return RedirectToAction("Index", "Home");
@@ -228,7 +229,7 @@ public class CollectionsController : Controller
     }
 
 
-    SetTemporaryFeedbackMessage("This is your copied collection. It has been saved and you are now free to edit it.", FeedbackMessageType.Success);
+    this.SetTemporaryFeedbackMessage("This is your copied collection. It has been saved and you are now free to edit it.", FeedbackMessageType.Success);
 
     return RedirectToAction("Collection", new
     {
@@ -237,7 +238,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [AuthoriseToAdministerCollection]
+  //TODO: [AuthoriseToAdministerCollection]
   public async Task<ViewResult> EditCollection(int id)
   {
     var collection = await _collectionService.Get(id);
@@ -278,7 +279,7 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  [AuthoriseToAdministerCollection]
+  //TODO:[AuthoriseToAdministerCollection]
   public async Task<ActionResult> EditCollection(EditCollectionModel model)
   {
     var biobankId = SessionHelper.GetBiobankId(Session);
@@ -296,7 +297,7 @@ public class CollectionsController : Controller
 
       await _collectionService.Update(collection);
 
-      SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
       return RedirectToAction("Collection", new { id = model.Id });
     }
@@ -343,7 +344,7 @@ public class CollectionsController : Controller
 
       });
 
-      SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
       return RedirectToAction("Collection", new { id = model.Id });
     }
@@ -359,7 +360,7 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  [AuthoriseToAdministerCollection]
+  //TODO:[AuthoriseToAdministerCollection]
   public async Task<RedirectToRouteResult> DeleteCollection(int id)
   {
     if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
@@ -377,7 +378,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [AuthoriseToAdministerCollection]
+  //TODO: [AuthoriseToAdministerCollection]
   public async Task<ViewResult> Collection(int id)
   {
     var collection = await _collectionService.GetWithSampleSets(id);
@@ -404,10 +405,10 @@ public class CollectionsController : Controller
         Id = sampleSet.Id,
         Sex = sampleSet.Sex.Value,
         Age = sampleSet.AgeRange.Value,
-        MaterialTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
-        PreservationTypes = Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
-        StorageTemperatures = Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct()),
-        ExtractionProcedures = Join(" / ", sampleSet.MaterialDetails.Where(x => x.ExtractionProcedure?.DisplayOnDirectory == true)
+        MaterialTypes = string.Join(" / ", sampleSet.MaterialDetails.Select(x => x.MaterialType.Value).Distinct()),
+        PreservationTypes = string.Join(" / ", sampleSet.MaterialDetails.Select(x => x.PreservationType?.Value).Distinct()),
+        StorageTemperatures = string.Join(" / ", sampleSet.MaterialDetails.Select(x => x.StorageTemperature.Value).Distinct()),
+        ExtractionProcedures = string.Join(" / ", sampleSet.MaterialDetails.Where(x => x.ExtractionProcedure?.DisplayOnDirectory == true)
                                  .Select(x => x.ExtractionProcedure?.Value).Distinct())
       })
     };
@@ -416,7 +417,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [AuthoriseToAdministerCollection]
+  //TODO: [AuthoriseToAdministerCollection]
   public async Task<ViewResult> AddSampleSet(int id)
   {
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(id);
@@ -429,7 +430,7 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  [AuthoriseToAdministerCollection]
+  //TODO: [AuthoriseToAdministerCollection]
   public async Task<ActionResult> AddSampleSet(int id, AddSampleSetModel model)
   {
     var apiCheck = await _collectionService.IsFromApi(id);
@@ -461,7 +462,7 @@ public class CollectionsController : Controller
       // Add New SampleSet
       await _biobankWriteService.AddSampleSetAsync(sampleSet);
 
-      SetTemporaryFeedbackMessage("Sample Set added!", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Sample Set added!", FeedbackMessageType.Success);
 
       return RedirectToAction("Collection", new { id });
     }
@@ -470,7 +471,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [AuthoriseToAdministerSampleSet]
+  //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<ActionResult> CopySampleSet(int id)
   {
     var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
@@ -501,7 +502,7 @@ public class CollectionsController : Controller
   }
 
   [HttpPost]
-  [AuthoriseToAdministerSampleSet]
+  //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<ActionResult> CopySampleSet(int id, CopySampleSetModel model)
   {
     if (await _collectionService.IsFromApi(model.CollectionId))
@@ -513,7 +514,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [AuthoriseToAdministerSampleSet]
+  //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<ViewResult> EditSampleSet(int id)
   {
     var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
@@ -603,7 +604,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [AuthoriseToAdministerSampleSet]
+  //TPDP: [AuthoriseToAdministerSampleSet]
   public async Task<ViewResult> SampleSet(int id)
   {
     var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
@@ -636,229 +637,4 @@ public class CollectionsController : Controller
     return View(model);
   }
 
-  #region View Model Populators
-  private async Task<AbstractCRUDCollectionModel> PopulateAbstractCRUDCollectionModel(
-      AbstractCRUDCollectionModel model,
-      IEnumerable<ConsentRestriction> consentRestrictions = null, Boolean excludeLinkedData = false)
-  {
-
-    model.AccessConditions = (await _accessConditionService.List())
-        .Select(x => new ReferenceDataModel
-        {
-          Id = x.Id,
-          Description = x.Value,
-          SortOrder = x.SortOrder
-        })
-        .OrderBy(x => x.SortOrder);
-
-    model.CollectionTypes = (await _collectionTypeService.List())
-        .Select(x => new ReferenceDataModel
-        {
-          Id = x.Id,
-          Description = x.Value,
-          SortOrder = x.SortOrder
-        })
-        .OrderBy(x => x.SortOrder);
-
-    model.CollectionStatuses = (await _collectionStatusService.List())
-        .Select(x => new ReferenceDataModel
-        {
-          Id = x.Id,
-          Description = x.Value,
-          SortOrder = x.SortOrder
-        })
-        .OrderBy(x => x.SortOrder);
-
-    model.ConsentRestrictions = (await _consentRestrictionService.List())
-        .OrderBy(x => x.SortOrder)
-        .Select(x => new Models.Biobank.ConsentRestrictionModel
-        {
-          ConsentRestrictionId = x.Id,
-          Description = x.Value,
-          Active = consentRestrictions != null && consentRestrictions.Any(y => y.Id == x.Id)
-        });
-
-    //if not null keeps previous groups values
-    if (model.Groups == null)
-    {
-      var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel(), excludeLinkedData);
-      model.Groups = groups.Groups;
-    }
-
-
-    return model;
-  }
-
-
-  private async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
-
-     AbstractCRUDCapabilityModel model, Boolean excludeLinkedData = false)
-  {
-    var timeFrames = (await _associatedDataProcurementTimeframeService.List())
-        .Select(x => new AssociatedDataTimeFrameModel
-        {
-          ProvisionTimeId = x.Id,
-          ProvisionTimeDescription = x.Value,
-          ProvisionTimeValue = x.DisplayValue
-        });
-    var typeList = await _associatedDataTypeService.List();
-    if (excludeLinkedData)
-    {
-      typeList = typeList.Where(x => x.OntologyTerms == null || x.OntologyTerms.Count == 0).ToList();
-    }
-
-    else
-    {
-      var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
-      if (ontologyTerm != null)
-      {
-        typeList = typeList.Where(x => x.OntologyTerms == null || x.OntologyTerms.Count == 0 || (x.OntologyTerms.Find(y => y.Id == ontologyTerm.Id) != null)).ToList();
-      }
-    }
-
-    var types = typeList
-             .Select(x => new AssociatedDataModel
-             {
-               DataTypeId = x.Id,
-               DataTypeDescription = x.Value,
-               DataGroupId = x.AssociatedDataTypeGroupId,
-               Message = x.Message,
-               TimeFrames = timeFrames,
-               isLinked = (x.OntologyTerms != null && x.OntologyTerms.Count > 0)
-             });
-
-    model.Groups = new List<AssociatedDataGroupModel>();
-    var groups = await _associatedDataTypeGroupService.List();
-    foreach (var g in groups)
-    {
-      var groupModel = new AssociatedDataGroupModel();
-      groupModel.GroupId = g.Id;
-      groupModel.Name = g.Value;
-      groupModel.Types = types.Where(y => y.DataGroupId == g.Id).ToList();
-      model.Groups.Add(groupModel);
-    }
-
-    //Check if types are valid
-    foreach (var type in types)
-    {
-      type.Active = model.AssociatedDataModelsValid();
-    }
-
-    return model;
-  }
-
-  private async Task<AbstractCRUDSampleSetModel> PopulateAbstractCRUDSampleSetModel(AbstractCRUDSampleSetModel model)
-  {
-    model.Sexes = (await _sexService.List())
-        .Select(
-            x => new ReferenceDataModel
-            {
-              Id = x.Id,
-              Description = x.Value,
-              SortOrder = x.SortOrder
-            })
-        .OrderBy(x => x.SortOrder);
-
-    model.AgeRanges = (await _ageRangeService.List())
-        .Select(
-            x =>
-                new ReferenceDataModel
-                {
-                  Id = x.Id,
-                  Description = x.Value,
-                  SortOrder = x.SortOrder
-                })
-        .OrderBy(x => x.SortOrder);
-
-    model.DonorCounts = (await _donorCountService.List())
-        .Select(
-            x =>
-                new ReferenceDataModel
-                {
-                  Id = x.Id,
-                  Description = x.Value,
-                  SortOrder = x.SortOrder
-                })
-        .OrderBy(x => x.SortOrder);
-
-    model.MaterialTypes = (await _materialTypeService.List())
-        .Select(
-            x =>
-                new ReferenceDataModel
-                {
-                  Id = x.Id,
-                  Description = x.Value,
-                  SortOrder = x.SortOrder
-                })
-        .OrderBy(x => x.SortOrder);
-
-    model.ExtractionProcedures = (await _ontologyTermService.List(tags: new List<string>
-                {
-                    SnomedTags.ExtractionProcedure
-                }, onlyDisplayable: true))
-        .Select(
-            x =>
-                new OntologyTermModel
-                {
-                  OntologyTermId = x.Id,
-                  Description = x.Value,
-                })
-        .OrderBy(x => x.Description);
-
-    model.PreservationTypes = (await _preservationTypeService.List())
-        .Select(
-            x =>
-                new ReferenceDataModel
-                {
-                  Id = x.Id,
-                  Description = x.Value,
-                  SortOrder = x.SortOrder
-                })
-        .OrderBy(x => x.SortOrder);
-
-    model.StorageTemperatures = (await _storageTemperatureService.List())
-        .Select(
-            x =>
-                new ReferenceDataModel
-                {
-                  Id = x.Id,
-                  Description = x.Value,
-                  SortOrder = x.SortOrder
-                })
-        .OrderBy(x => x.SortOrder);
-
-    model.Percentages = (await _collectionPercentageService.List())
-        .Select(
-            x =>
-                new ReferenceDataModel
-                {
-                  Id = x.Id,
-                  Description = x.Value,
-                  SortOrder = x.SortOrder
-                })
-        .OrderBy(x => x.SortOrder);
-
-    var assessments = await _macroscopicAssessmentService.List();
-
-    model.MacroscopicAssessments = assessments
-        .Select(
-            x =>
-                new ReferenceDataModel
-                {
-                  Id = x.Id,
-                  Description = x.Value,
-                  SortOrder = x.SortOrder
-                })
-        .OrderBy(x => x.SortOrder);
-
-    model.ShowMacroscopicAssessment = (assessments.Count() > 1);
-
-    if (model.DonorCountId > 0)
-    {
-      var donorCountList = model.DonorCounts.ToList();
-      model.DonorCountSliderPosition = donorCountList.IndexOf(donorCountList.First(x => x.Id == model.DonorCountId));
-    }
-
-    return model;
-  }
 }

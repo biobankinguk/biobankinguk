@@ -7,5 +7,5 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts;
 
 public interface IAbstractCrudService
 {
-  Task<ActionResult> PopulateAbstractCRUDAssociatedData(AbstractCRUDCapabilityModel model, bool excludeLinkedData = false);
+  Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(AbstractCRUDCapabilityModel model, bool excludeLinkedData = false);
 }

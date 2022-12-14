@@ -84,5 +84,55 @@ public class AbstractCrudService : IAbstractCrudService
     return model;
   }
 
-    
+  private async Task<AbstractCRUDCollectionModel> PopulateAbstractCRUDCollectionModel(
+         AbstractCRUDCollectionModel model,
+         IEnumerable<ConsentRestriction> consentRestrictions = null, bool excludeLinkedData = false)
+  {
+
+    model.AccessConditions = (await _accessConditionService.List())
+        .Select(x => new ReferenceDataModel
+        {
+          Id = x.Id,
+          Description = x.Value,
+          SortOrder = x.SortOrder
+        })
+        .OrderBy(x => x.SortOrder);
+
+    model.CollectionTypes = (await _collectionTypeService.List())
+        .Select(x => new ReferenceDataModel
+        {
+          Id = x.Id,
+          Description = x.Value,
+          SortOrder = x.SortOrder
+        })
+        .OrderBy(x => x.SortOrder);
+
+    model.CollectionStatuses = (await _collectionStatusService.List())
+        .Select(x => new ReferenceDataModel
+        {
+          Id = x.Id,
+          Description = x.Value,
+          SortOrder = x.SortOrder
+        })
+        .OrderBy(x => x.SortOrder);
+
+    model.ConsentRestrictions = (await _consentRestrictionService.List())
+        .OrderBy(x => x.SortOrder)
+        .Select(x => new Models.Biobank.ConsentRestrictionModel
+        {
+          ConsentRestrictionId = x.Id,
+          Description = x.Value,
+          Active = consentRestrictions != null && consentRestrictions.Any(y => y.Id == x.Id)
+        });
+
+    //if not null keeps previous groups values
+    if (model.Groups == null)
+    {
+      var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel(), excludeLinkedData);
+      model.Groups = groups.Groups;
+    }
+
+
+    return model;
+  }
 }

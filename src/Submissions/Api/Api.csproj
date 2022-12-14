@@ -67,6 +67,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Biobank\Models\" />
     <Folder Include="Areas\Biobank\Views\" />
     <Folder Include="Auth\Entities\" />
     <Folder Include="Content\images\" />
