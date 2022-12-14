@@ -94,5 +94,31 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
         new NewUserRegisterEntityAdminInviteModel(name, entity, link)
         );
     }
+    public async Task SendNewUserRegisterEntityAccepted(EmailAddress to, string name, string entity, string confirmLink)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/NewUserRegisterEntityAccepted",
+        new NewUserRegisterEntityAcceptedModel(name, entity, confirmLink)
+        );
+    }
+
+    public async Task SendExistingUserRegisterEntityAccepted(EmailAddress to, string name, string entity, string link)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/ExistingUserRegisterEntityAccepted",
+        new ExistingUserRegisterEntityAcceptedModel(name, entity, link)
+        );
+    }
+
+    public async Task SendRegisterEntityDeclined(EmailAddress to, string name, string entity)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/RegisterEntityDeclined",
+        new RegisterEntityDeclinedModel(name, entity)
+        );
+    }
   }
 }

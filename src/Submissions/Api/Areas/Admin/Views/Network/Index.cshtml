@@ -1,10 +1,11 @@
-@model Biobanks.Web.Models.Network.NetworkDetailsModel
+@using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
+@model NetworkDetailsModel
 
 @{
     ViewBag.Title = "Network details";
 }
 
-@Html.Partial("_NetworkTabs", "Details")
+<partial name = "_NetworkTabs" model =  "Details">
 
 <h3>Network details @Html.ActionLink("Edit network details", "Edit", null, new { @class = "btn btn-primary pull-right" })</h3>
 

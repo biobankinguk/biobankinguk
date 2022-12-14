@@ -7,5 +7,6 @@ public class RegisterEntityAdminModel
   public string UserFullName { get; set; }
 
   public string UserEmail { get; set; }
+
   public bool EmailConfirmed { get; set; }
 }
