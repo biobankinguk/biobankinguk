@@ -52,7 +52,9 @@
       "Frontend/node_modules/datatables.net-buttons/js/buttons.html5.min.js",
       "Frontend/node_modules/datatables.net-buttons/js/buttons.print.min.js",
       "Frontend/node_modules/datatables.net-buttons/js/buttons.colVis.min.js",
-      "Frontend/node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.min.js"
+      "Frontend/node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.min.js",
+      // ADAC Ref Data
+      "Frontend/js/pages/adac/adac-refdata-utility.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
@@ -103,7 +105,7 @@
   {
     "outputFileName": "wwwroot/dist/js/search.min.js",
     "inputFiles": [
-      "Frontend/js/init/search-diagnosis-typeahead.js",
+      "Frontend/js/init/search-diagnosis-type-ahead.js",
       "Frontend/js/init/facet-groups.js"
     ],
     "minify": { "enabled": true },
