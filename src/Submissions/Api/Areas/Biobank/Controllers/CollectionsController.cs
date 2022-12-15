@@ -30,9 +30,37 @@ public class CollectionsController : Controller
   private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
   private readonly IAbstractCrudService _abstractCrudService;
 
+  public CollectionsController(
+  ICollectionService collectionService,
+  IBiobankReadService biobankReadService,
+  IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+  IOntologyTermService ontologyTermService,
+  IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+  IReferenceDataService<AssociatedDataType> associatedDataTypeService,
+  IBiobankWriteService biobankWriteService,
+  IReferenceDataService<ConsentRestriction> consentRestrictionService,
+  IMapper mapper,
+  IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+  IAbstractCrudService abstractCrudService
+  )
+  {
+    _collectionService = collectionService;
+    _biobankReadService = biobankReadService;
+    _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
+    _ontologyTermService = ontologyTermService;
+    _associatedDataTypeGroupService = associatedDataTypeGroupService;
+    _associatedDataTypeService = associatedDataTypeService;
+    _biobankWriteService = biobankWriteService;
+    _consentRestrictionService = consentRestrictionService;
+    _mapper = mapper;
+    _macroscopicAssessmentService = macroscopicAssessmentService;
+    _abstractCrudService = abstractCrudService;
+
+
+  }
 
   [HttpGet]
-  [Authorize( CustomClaimType.Biobank)]
+  [Authorize(CustomClaimType.Biobank)]
   public async Task<ActionResult> Collections(int biobankId)
   {
     if (biobankId == 0)
@@ -296,9 +324,8 @@ public class CollectionsController : Controller
   [HttpPost]
   [ValidateAntiForgeryToken]
   //TODO:[AuthoriseToAdministerCollection]
-  public async Task<ActionResult> EditCollection(EditCollectionModel model)
+  public async Task<ActionResult> EditCollection(EditCollectionModel model, int biobankId)
   {
-    var biobankId = SessionHelper.GetBiobankId(Session);
 
     if (biobankId == 0)
       return RedirectToAction("Index", "Home");
@@ -492,7 +519,7 @@ public class CollectionsController : Controller
   {
     var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
-    SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
+    //TODO: SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
     //Build the model using all details of the existing sampleset, except id, which is stored in a separate property
     var model = new CopySampleSetModel
@@ -535,7 +562,7 @@ public class CollectionsController : Controller
   {
     var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
 
-    SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
+    //TODO: SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
@@ -601,7 +628,7 @@ public class CollectionsController : Controller
       return RedirectToAction("SampleSet", new { id = model.Id });
     }
 
-    SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = model.CollectionId;
+    //TODO: SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = model.CollectionId;
 
     return View((EditSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
@@ -620,13 +647,13 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  //TPDP: [AuthoriseToAdministerSampleSet]
+  //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<ViewResult> SampleSet(int id)
   {
     var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
     var assessments = await _macroscopicAssessmentService.List();
 
-    SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
+    //TODO: SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 

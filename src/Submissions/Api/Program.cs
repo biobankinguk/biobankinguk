@@ -259,7 +259,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<ISearchProvider, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
     .AddTransient<IContentPageService, ContentPageService>()
-
+    .AddTransient<IAbstractCrudService, AbstractCrudService>()
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AgeRange>, AgeRangeService>()
