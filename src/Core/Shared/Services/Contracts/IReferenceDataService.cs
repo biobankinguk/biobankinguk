@@ -22,6 +22,5 @@ namespace Biobanks.Shared.Services.Contracts
         /// The number of times the entity is used or referenced
         /// </summary>
         /// <param name="id">The Id of the entity <typeparamref name="T"/></param>
-        Task<int> GetUsageCount(int id);
   }
 }

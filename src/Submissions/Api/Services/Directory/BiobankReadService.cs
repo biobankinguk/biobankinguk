@@ -200,19 +200,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             return collections;
         }
 
-        public async Task<SampleSet> GetSampleSetByIdAsync(int id)
-            => (await _sampleSetRepository.ListAsync(false, x => x.Id == id, null,
-                x => x.Sex,
-                x => x.AgeRange,
-                x => x.DonorCount,
-                x => x.MaterialDetails,
-                x => x.MaterialDetails.Select(y => y.CollectionPercentage),
-                x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
-                x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.StorageTemperature),
-                x => x.MaterialDetails.Select(y => y.ExtractionProcedure)
-            )).FirstOrDefault();
-
         public async Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id)
         {
             try
@@ -266,15 +253,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 x => x.OrganisationId == biobankId &&
                      x.DiagnosisCapabilityId == capabilityId).Any();
 
-        public IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection)
-        {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
-
-            return collection.SampleSets
-                .SelectMany(x => x.MaterialDetails)
-                .Select(x => x.MaterialType.Value)
-                .Distinct();
-        }
 
         #region RefData: Extraction Procedure
         

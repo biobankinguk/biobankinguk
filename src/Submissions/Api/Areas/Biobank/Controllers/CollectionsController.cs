@@ -19,42 +19,43 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
-  private readonly IBiobankReadService _biobankReadService;
+  private readonly ISampleSetService _sampleSetService;
   private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
   private readonly IOntologyTermService _ontologyTermService;
   private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
   private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
-  private readonly IBiobankWriteService _biobankWriteService;
   private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
   private readonly IMapper _mapper;
   private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
   private readonly IAbstractCrudService _abstractCrudService;
+  private readonly IMaterialTypeService _materialTypeService;
 
   public CollectionsController(
   ICollectionService collectionService,
-  IBiobankReadService biobankReadService,
+  ISampleSetService sampleSetService,
   IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
   IOntologyTermService ontologyTermService,
   IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
   IReferenceDataService<AssociatedDataType> associatedDataTypeService,
-  IBiobankWriteService biobankWriteService,
   IReferenceDataService<ConsentRestriction> consentRestrictionService,
   IMapper mapper,
   IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
-  IAbstractCrudService abstractCrudService
+  IAbstractCrudService abstractCrudService,
+  IMaterialTypeService materialTypeService
+
   )
   {
     _collectionService = collectionService;
-    _biobankReadService = biobankReadService;
+    _sampleSetService = sampleSetService;
     _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
     _ontologyTermService = ontologyTermService;
     _associatedDataTypeGroupService = associatedDataTypeGroupService;
     _associatedDataTypeService = associatedDataTypeService;
-    _biobankWriteService = biobankWriteService;
     _consentRestrictionService = consentRestrictionService;
     _mapper = mapper;
     _macroscopicAssessmentService = macroscopicAssessmentService;
     _abstractCrudService = abstractCrudService;
+    _materialTypeService = materialTypeService;
 
 
   }
@@ -77,7 +78,7 @@ public class CollectionsController : Controller
         OntologyTerm = x.OntologyTerm.Value,
         Title = x.Title,
         StartYear = x.StartDate.Year,
-        MaterialTypes = string.Join(", ", _biobankReadService.ExtractDistinctMaterialTypes(x).Select(y => y)),
+        MaterialTypes = string.Join(", ", _materialTypeService.ExtractDistinctMaterialTypes(x).Select(y => y)),
         NumberOfSampleSets = x.SampleSets.Count
       })
     };
@@ -269,7 +270,7 @@ public class CollectionsController : Controller
       };
 
       // Add New SampleSet
-      await _biobankWriteService.AddSampleSetAsync(newSampleSet);
+      await _sampleSetService.AddSampleSetAsync(newSampleSet);
     }
 
 
@@ -503,7 +504,7 @@ public class CollectionsController : Controller
       };
 
       // Add New SampleSet
-      await _biobankWriteService.AddSampleSetAsync(sampleSet);
+      await _sampleSetService.AddSampleSetAsync(sampleSet);
 
       this.SetTemporaryFeedbackMessage("Sample Set added!", FeedbackMessageType.Success);
 
@@ -517,7 +518,7 @@ public class CollectionsController : Controller
   //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<ActionResult> CopySampleSet(int id)
   {
-    var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
+    var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
     //TODO: SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
@@ -560,7 +561,7 @@ public class CollectionsController : Controller
   //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<ViewResult> EditSampleSet(int id)
   {
-    var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
+    var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
 
     //TODO: SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
 
@@ -621,7 +622,7 @@ public class CollectionsController : Controller
       };
 
       // Update SampleSet
-      await _biobankWriteService.UpdateSampleSetAsync(sampleSet);
+      await _sampleSetService.UpdateSampleSetAsync(sampleSet);
 
       this.SetTemporaryFeedbackMessage("Sample Set updated!", FeedbackMessageType.Success);
 
@@ -640,7 +641,7 @@ public class CollectionsController : Controller
   {
     if (!await _collectionService.IsFromApi(collectionId))
     {
-      await _biobankWriteService.DeleteSampleSetAsync(id);
+      await _sampleSetService.DeleteSampleSetAsync(id);
       this.SetTemporaryFeedbackMessage("Sample Set deleted!", FeedbackMessageType.Success);
     }
     return RedirectToAction("Collection", new { id = collectionId });
@@ -650,7 +651,7 @@ public class CollectionsController : Controller
   //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<ViewResult> SampleSet(int id)
   {
-    var sampleSet = await _biobankReadService.GetSampleSetByIdAsync(id);
+    var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     var assessments = await _macroscopicAssessmentService.List();
 
     //TODO: SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
