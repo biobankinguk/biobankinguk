@@ -551,7 +551,7 @@
   {
     "outputFileName": "wwwroot/dist/js/term/diseasetable.min.js",
     "inputFiles": [
-      "Frontend/js/pages/term/diseasetable.js"
+      "Frontend/js/pages/Term/diseasetable.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
@@ -561,7 +561,7 @@
   {
     "outputFileName": "wwwroot/dist/js/analytics/biobankreport.min.js",
     "inputFiles": [
-      "Frontend/js/pages/biobank/analytics-biobankreport.js",
+      "Frontend/js/pages/Biobank/analytics-biobankreport.js",
       "Frontend/node_modules/plotly/dist/plotly.min.js"
     ],
     "minify": { "enabled": true },
@@ -581,7 +581,7 @@
   {
     "outputFileName": "wwwroot/dist/js/pagesadmin.min.js",
     "inputFiles": [
-      "Frontend/js/pages/adac/adac-pages-admin.js"
+      "Frontend/js/pages/ADAC/adac-pages-admin.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
