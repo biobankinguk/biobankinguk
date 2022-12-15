@@ -361,16 +361,16 @@ public class CollectionsController : Controller
   [HttpPost]
   [ValidateAntiForgeryToken]
   //TODO:[AuthoriseToAdministerCollection]
-  public async Task<RedirectToRouteResult> DeleteCollection(int id)
+  public async Task<RedirectToActionResult> DeleteCollection(int id)
   {
     if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
     {
-      SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
       return RedirectToAction("Collections");
     }
     else
     {
-      SetTemporaryFeedbackMessage(
+      this.SetTemporaryFeedbackMessage(
           "The system was unable to delete this collection. Please make sure it doesn't contain any Sample Sets before trying again.",
           FeedbackMessageType.Danger);
       return RedirectToAction("Collection", new { id });
@@ -548,7 +548,7 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  [AuthoriseToAdministerSampleSet]
+  //TODO:[AuthoriseToAdministerSampleSet]
   public async Task<ActionResult> EditSampleSet(int id, EditSampleSetModel model)
   {
     var apiCheck = await _collectionService.IsFromApi(model.CollectionId);
@@ -580,7 +580,7 @@ public class CollectionsController : Controller
       // Update SampleSet
       await _biobankWriteService.UpdateSampleSetAsync(sampleSet);
 
-      SetTemporaryFeedbackMessage("Sample Set updated!", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Sample Set updated!", FeedbackMessageType.Success);
 
       return RedirectToAction("SampleSet", new { id = model.Id });
     }
@@ -592,13 +592,13 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  [AuthoriseToAdministerSampleSet]
+  //TODO: [AuthoriseToAdministerSampleSet]
   public async Task<RedirectToRouteResult> DeleteSampleSet(int id, int collectionId)
   {
     if (!await _collectionService.IsFromApi(collectionId))
     {
       await _biobankWriteService.DeleteSampleSetAsync(id);
-      SetTemporaryFeedbackMessage("Sample Set deleted!", FeedbackMessageType.Success);
+      this.SetTemporaryFeedbackMessage("Sample Set deleted!", FeedbackMessageType.Success);
     }
     return RedirectToAction("Collection", new { id = collectionId });
   }

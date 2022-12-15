@@ -1,3 +1,7 @@
+using Biobanks.Submissions.Api.Services.Directory.Constants;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -18,8 +22,7 @@ public class AbstractCRUDCapabilityModel : AbstractCRUDWithAssociatedDataModel
   public bool BespokeSOP { get; set; }
 
   [Required(ErrorMessage = "Please enter the number of expected donors per year.")]
-  [Min(1, ErrorMessage = "Please enter a number greater than 0.")]
-  [Integer(ErrorMessage = "Please enter an integer.")]
+  [Range(0, int.MaxValue, ErrorMessage = "Please enter a number greater than 0.")]
   [Display(Name = "Annual donor expectation")]
   public int? AnnualDonorExpectation { get; set; }
   #endregion
