@@ -15,19 +15,30 @@ public class AbstractCrudService : IAbstractCrudService
   private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
   private readonly IOntologyTermService _ontologyTermService;
   private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+  private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+  private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+  private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
+  private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
 
   public AbstractCrudService(
     IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
     IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
     IOntologyTermService ontologyTermService,
-    IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService
-
+    IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+    IReferenceDataService<AccessCondition> accessConditionService,
+    IReferenceDataService<CollectionType> collectionTypeService,
+    IReferenceDataService<CollectionStatus> collectionStatusService,
+    IReferenceDataService<ConsentRestriction> consentRestrictionService
     )
   {
     _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
     _associatedDataTypeService = assocaitedDataTypeService;
     _ontologyTermService = ontologyTermService;
     _associatedDataTypeGroupService = associatedDataTypeGroupService;
+    _accessConditionService = accessConditionService;
+    _collectionTypeService = collectionTypeService;
+    _collectionStatusService = collectionStatusService;
+    _consentRestrictionService = consentRestrictionService;
   }
   public async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
    AbstractCRUDCapabilityModel model, bool excludeLinkedData = false)
@@ -119,7 +130,7 @@ public class AbstractCrudService : IAbstractCrudService
 
     model.ConsentRestrictions = (await _consentRestrictionService.List())
         .OrderBy(x => x.SortOrder)
-        .Select(x => new Models.Biobank.ConsentRestrictionModel
+        .Select(x => new Areas.Biobank.Models.ConsentRestrictionModel
         {
           ConsentRestrictionId = x.Id,
           Description = x.Value,
