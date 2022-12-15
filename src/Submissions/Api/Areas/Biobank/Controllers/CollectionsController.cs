@@ -62,7 +62,7 @@ public class CollectionsController : Controller
 
   [HttpGet]
   [Authorize(CustomClaimType.Biobank)]
-  public async Task<ActionResult> Collections(int biobankId)
+  public async Task<ActionResult> Index(int biobankId)
   {
     if (biobankId == 0)
       return RedirectToAction("Index", "Home");
