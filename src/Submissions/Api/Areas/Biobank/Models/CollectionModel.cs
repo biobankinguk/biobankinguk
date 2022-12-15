@@ -2,7 +2,7 @@ using Biobanks.Submissions.Api.Models.Biobank;
 using System;
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+namespace Biobanks.Submissions.Api.Areas.Biobank.Models;
 
 public class CollectionModel
 {
@@ -14,7 +14,7 @@ public class CollectionModel
   public string AccessCondition { get; set; }
   public string CollectionType { get; set; }
   public bool FromApi { get; set; }
-  public string? Notes { get; set; }
+  public string Notes { get; set; }
 
   public IEnumerable<AssociatedDataSummaryModel> AssociatedData { get; set; }
 
