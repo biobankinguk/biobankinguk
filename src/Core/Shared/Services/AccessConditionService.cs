@@ -1,4 +1,4 @@
-﻿using Biobanks.Data;
+using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Shared.Services;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,12 @@ namespace Biobanks.Directory.Services
     {
         public AccessConditionService(BiobanksDbContext db) : base(db) { }
 
-        protected override IQueryable<AccessCondition> Query()
+
+    public override async Task<int> GetUsageCount(int id)
+        => await _db.Collections.CountAsync(x => x.AccessConditionId == id);
+
+
+    protected override IQueryable<AccessCondition> Query()
             => Query().Include(x => x.Organisations);
     }
 }

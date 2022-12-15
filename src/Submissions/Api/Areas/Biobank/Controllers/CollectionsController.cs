@@ -1,12 +1,15 @@
+using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +18,19 @@ using System.Threading.Tasks;
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 public class CollectionsController : Controller
 {
+  private readonly ICollectionService _collectionService;
+  private readonly IBiobankReadService _biobankReadService;
+  private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
+  private readonly IOntologyTermService _ontologyTermService;
+  private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+  private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+  private readonly IBiobankWriteService _biobankWriteService;
+  private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+  private readonly IMapper _mapper;
+  private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+  private readonly IAbstractCrudService _abstractCrudService;
+
+
   [HttpGet]
   [Authorize( CustomClaimType.Biobank)]
   public async Task<ActionResult> Collections(int biobankId)
@@ -44,7 +60,7 @@ public class CollectionsController : Controller
   [HttpGet]
   public async Task<ViewResult> AddCollection()
   {
-    return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
+    return View((AddCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
   }
 
   [HttpGet]
@@ -181,10 +197,10 @@ public class CollectionsController : Controller
     {
       //Populate Groups
       model.Groups = null;
-      await PopulateAbstractCRUDCollectionModel(model);
+      await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model);
     }
 
-    return View((AddCollectionModel)(await PopulateAbstractCRUDCollectionModel(model)));
+    return View((AddCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model)));
   }
 
   [HttpGet]
@@ -244,7 +260,7 @@ public class CollectionsController : Controller
     var collection = await _collectionService.Get(id);
     var consentRestrictions = await _consentRestrictionService.List();
 
-    var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
+    var groups = await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
     var model = new EditCollectionModel
     {
@@ -274,7 +290,7 @@ public class CollectionsController : Controller
       }
     }
 
-    return View((EditCollectionModel)(await PopulateAbstractCRUDCollectionModel(model, collection.ConsentRestrictions)));
+    return View((EditCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model, collection.ConsentRestrictions)));
   }
 
   [HttpPost]
@@ -352,16 +368,16 @@ public class CollectionsController : Controller
     {
       //Populate Groups
       model.Groups = null;
-      await PopulateAbstractCRUDCollectionModel(model);
+      await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model);
     }
 
-    return View((EditCollectionModel)(await PopulateAbstractCRUDCollectionModel(model)));
+    return View((EditCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model)));
   }
 
   [HttpPost]
   [ValidateAntiForgeryToken]
   //TODO:[AuthoriseToAdministerCollection]
-  public async Task<RedirectToActionResult> DeleteCollection(int id)
+  public async Task<ActionResult> DeleteCollection(int id)
   {
     if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
     {
@@ -425,7 +441,7 @@ public class CollectionsController : Controller
     {
       CollectionId = id
     };
-    return View((AddSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+    return View((AddSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
 
   [HttpPost]
@@ -467,7 +483,7 @@ public class CollectionsController : Controller
       return RedirectToAction("Collection", new { id });
     }
 
-    return View((AddSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+    return View((AddSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
 
   [HttpGet]
@@ -498,7 +514,7 @@ public class CollectionsController : Controller
       }))
     };
 
-    return View((CopySampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+    return View((CopySampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
 
   [HttpPost]
@@ -543,7 +559,7 @@ public class CollectionsController : Controller
       }))
     };
 
-    return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+    return View((EditSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
 
   [HttpPost]
@@ -587,13 +603,13 @@ public class CollectionsController : Controller
 
     SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = model.CollectionId;
 
-    return View((EditSampleSetModel)(await PopulateAbstractCRUDSampleSetModel(model)));
+    return View((EditSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
 
   [HttpPost]
   [ValidateAntiForgeryToken]
   //TODO: [AuthoriseToAdministerSampleSet]
-  public async Task<RedirectToRouteResult> DeleteSampleSet(int id, int collectionId)
+  public async Task<ActionResult> DeleteSampleSet(int id, int collectionId)
   {
     if (!await _collectionService.IsFromApi(collectionId))
     {

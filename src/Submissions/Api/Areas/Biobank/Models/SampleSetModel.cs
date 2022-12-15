@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Biobanks.Submissions.Api.Areas.Biobank.Models;
 
 public class SampleSetModel

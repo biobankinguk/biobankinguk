@@ -88,7 +88,7 @@ namespace Biobanks.Web.Controllers
         private const string TempBiobankLogoSessionId = "TempBiobankLogo";
         private const string TempBiobankLogoContentTypeSessionId = "TempBiobankLogoContentType";
 
-        public BiobankController(
+    public BiobankController(
             ICollectionService collectionService,
             IPublicationService publicationService,
             IReferenceDataService<ServiceOffering> serviceOfferingService,

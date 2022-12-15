@@ -1,6 +1,8 @@
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,14 @@ public class AbstractCrudService : IAbstractCrudService
   private readonly IReferenceDataService<CollectionType> _collectionTypeService;
   private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
   private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+  private readonly IReferenceDataService<Sex> _sexService;
+  private readonly IReferenceDataService<AgeRange> _ageRangeService;
+  private readonly IReferenceDataService<DonorCount> _donorCountService;
+  private readonly IReferenceDataService<MaterialType> _materialTypeService;
+  private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+  private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+  private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
+  private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
 
   public AbstractCrudService(
     IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
@@ -27,7 +37,16 @@ public class AbstractCrudService : IAbstractCrudService
     IReferenceDataService<AccessCondition> accessConditionService,
     IReferenceDataService<CollectionType> collectionTypeService,
     IReferenceDataService<CollectionStatus> collectionStatusService,
-    IReferenceDataService<ConsentRestriction> consentRestrictionService
+    IReferenceDataService<ConsentRestriction> consentRestrictionService,
+    IReferenceDataService<Sex> sexService,
+    IReferenceDataService<AgeRange> ageRangeService,
+    IReferenceDataService<DonorCount> donorCountService,
+    IReferenceDataService<MaterialType> materialTypeService,
+    IReferenceDataService<PreservationType> preservationTypeService,
+    IReferenceDataService<StorageTemperature> storageTemperatureService,
+    IReferenceDataService<CollectionPercentage> collectionPercentageService,
+    IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService
+
     )
   {
     _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
@@ -38,17 +57,25 @@ public class AbstractCrudService : IAbstractCrudService
     _collectionTypeService = collectionTypeService;
     _collectionStatusService = collectionStatusService;
     _consentRestrictionService = consentRestrictionService;
+    _sexService = sexService;
+    _ageRangeService = ageRangeService;
+    _donorCountService = donorCountService;
+    _materialTypeService = materialTypeService;
+    _preservationTypeService = preservationTypeService;
+    _storageTemperatureService = storageTemperatureService;
+    _collectionPercentageService = collectionPercentageService;
+    _macroscopicAssessmentService = macroscopicAssessmentService;
   }
-  public async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(
-   AbstractCRUDCapabilityModel model, bool excludeLinkedData = false)
+
+  public async Task<AbstractCRUDCapabilityModel> PopulateAbstractCRUDAssociatedData(AbstractCRUDCapabilityModel model, bool excludeLinkedData = false)
   {
     var timeFrames = (await _associatedDataProcurementTimeframeService.List())
-                .Select(x => new AssociatedDataTimeFrameModel
-                {
-                  ProvisionTimeId = x.Id,
-                  ProvisionTimeDescription = x.Value,
-                  ProvisionTimeValue = x.DisplayValue
-                });
+                    .Select(x => new AssociatedDataTimeFrameModel
+                    {
+                      ProvisionTimeId = x.Id,
+                      ProvisionTimeDescription = x.Value,
+                      ProvisionTimeValue = x.DisplayValue
+                    });
     var typeList = await _associatedDataTypeService.List();
     if (excludeLinkedData)
     {
@@ -95,10 +122,9 @@ public class AbstractCrudService : IAbstractCrudService
     return model;
   }
 
-  private async Task<AbstractCRUDCollectionModel> PopulateAbstractCRUDCollectionModel(
-         AbstractCRUDCollectionModel model,
-         IEnumerable<ConsentRestriction> consentRestrictions = null, bool excludeLinkedData = false)
+  public async Task<AbstractCRUDCollectionModel> PopulateAbstractCRUDCollectionModel(AbstractCRUDCollectionModel model, IEnumerable<ConsentRestriction> consentRestrictions, bool excludeLinkedData)
   {
+
 
     model.AccessConditions = (await _accessConditionService.List())
         .Select(x => new ReferenceDataModel
@@ -143,6 +169,124 @@ public class AbstractCrudService : IAbstractCrudService
       model.Groups = groups.Groups;
     }
 
+
+    return model;
+
+  }
+
+
+  public async Task<AbstractCRUDSampleSetModel> PopulateAbstractCRUDSampleSetModel(AbstractCRUDSampleSetModel model)
+  {
+
+    model.Sexes = (await _sexService.List())
+        .Select(
+            x => new ReferenceDataModel
+            {
+              Id = x.Id,
+              Description = x.Value,
+              SortOrder = x.SortOrder
+            })
+        .OrderBy(x => x.SortOrder);
+
+    model.AgeRanges = (await _ageRangeService.List())
+        .Select(
+            x =>
+                new ReferenceDataModel
+                {
+                  Id = x.Id,
+                  Description = x.Value,
+                  SortOrder = x.SortOrder
+                })
+        .OrderBy(x => x.SortOrder);
+
+    model.DonorCounts = (await _donorCountService.List())
+        .Select(
+            x =>
+                new ReferenceDataModel
+                {
+                  Id = x.Id,
+                  Description = x.Value,
+                  SortOrder = x.SortOrder
+                })
+        .OrderBy(x => x.SortOrder);
+
+    model.MaterialTypes = (await _materialTypeService.List())
+        .Select(
+            x =>
+                new ReferenceDataModel
+                {
+                  Id = x.Id,
+                  Description = x.Value,
+                  SortOrder = x.SortOrder
+                })
+        .OrderBy(x => x.SortOrder);
+
+    model.ExtractionProcedures = (await _ontologyTermService.List(tags: new List<string>
+                {
+                    SnomedTags.ExtractionProcedure
+                }, onlyDisplayable: true))
+        .Select(
+            x =>
+                new OntologyTermModel
+                {
+                  OntologyTermId = x.Id,
+                  Description = x.Value,
+                })
+        .OrderBy(x => x.Description);
+
+    model.PreservationTypes = (await _preservationTypeService.List())
+        .Select(
+            x =>
+                new ReferenceDataModel
+                {
+                  Id = x.Id,
+                  Description = x.Value,
+                  SortOrder = x.SortOrder
+                })
+        .OrderBy(x => x.SortOrder);
+
+    model.StorageTemperatures = (await _storageTemperatureService.List())
+        .Select(
+            x =>
+                new ReferenceDataModel
+                {
+                  Id = x.Id,
+                  Description = x.Value,
+                  SortOrder = x.SortOrder
+                })
+        .OrderBy(x => x.SortOrder);
+
+    model.Percentages = (await _collectionPercentageService.List())
+        .Select(
+            x =>
+                new ReferenceDataModel
+                {
+                  Id = x.Id,
+                  Description = x.Value,
+                  SortOrder = x.SortOrder
+                })
+        .OrderBy(x => x.SortOrder);
+
+    var assessments = await _macroscopicAssessmentService.List();
+
+    model.MacroscopicAssessments = assessments
+        .Select(
+            x =>
+                new ReferenceDataModel
+                {
+                  Id = x.Id,
+                  Description = x.Value,
+                  SortOrder = x.SortOrder
+                })
+        .OrderBy(x => x.SortOrder);
+
+    model.ShowMacroscopicAssessment = (assessments.Count() > 1);
+
+    if (model.DonorCountId > 0)
+    {
+      var donorCountList = model.DonorCounts.ToList();
+      model.DonorCountSliderPosition = donorCountList.IndexOf(donorCountList.First(x => x.Id == model.DonorCountId));
+    }
 
     return model;
   }
