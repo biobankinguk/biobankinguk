@@ -56,13 +56,7 @@ public class AnalyticsController : Controller
                 HttpRequestException _ => "The API Request failed.",
                 _ => "An unknown error occurred and has been logged."
             };
-
-            var outer = new Exception(message, e);
-
-            // Log Error via Application Insights
-            var ai = new TelemetryClient();
-            ai.TrackException(outer);
-
+          
             ModelState.AddModelError(string.Empty, message);
             return View(new DirectoryAnalyticReport());
         }
