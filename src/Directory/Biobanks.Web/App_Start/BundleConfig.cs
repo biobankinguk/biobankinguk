@@ -78,7 +78,8 @@ namespace Biobanks.Web
                 "~/Scripts/MarkdownDeep/MarkDownDeepLib.min.js",
                 "~/Scripts/Shared/mdd-editor.js"));
 
-            //Home
+            //Home 
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/home").Include(
                 "~/Scripts/Home/unified-search-helptext.js"));
             bundles.Add(new ScriptBundle("~/bundles/home/contact-list").Include(
@@ -86,6 +87,7 @@ namespace Biobanks.Web
                 "~/Scripts/Home/home-contactlist.js"));
 
             //Biobank Admin
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/biobank/admins").Include(
                 "~/Scripts/Shared/registerentity-admin-viewmodel.js",
                 "~/Scripts/Biobank/admins-viewmodel.js"));
@@ -136,11 +138,13 @@ namespace Biobanks.Web
                 "~/Scripts/Biobank/submissions.js"));
 
             //Account
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/reset-password").Include(
                     "~/Scripts/jquery.pwstrength.bootstrap/pwstrength-bootstrap*",
                     "~/Scripts/Account/reset-password.js"));
 
             //Profile
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/profile/biobank").Include(
                 "~/Scripts/Profile/biobank.js"));
 
@@ -148,6 +152,7 @@ namespace Biobanks.Web
                 "~/Scripts/Profile/publications.js"));
 
             //Network Admin
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/network/admins").Include(
                 "~/Scripts/Shared/registerentity-admin-viewmodel.js",
                 "~/Scripts/Network/admins-viewmodel.js"));
@@ -160,6 +165,7 @@ namespace Biobanks.Web
                 "~/Scripts/Network/network-biobanks.js"));
 
             //ADAC Admin
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/adac/disease-statuses").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/typeahead.bundle*",
@@ -299,33 +305,38 @@ namespace Biobanks.Web
                 "~/Scripts/ADAC/adac-refdata-utility.js"));
 
             // Registration Domain Rules
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/adac/email-config").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-refdata-utility.js",
                 "~/Scripts/ADAC/adac-email-config.js"));
-
-
+            
             // Site Config
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/adac/site-config").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-site-config.js"));
 
             // Flags Config 
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/flags/flags-config").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/Flags/flags-config.js"));
 
             // Sample Resource Config
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/adac/sample-resource-config").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-sample-resource-config.js"));
 
             // Register Pages Config
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/adac/register-pages-config").Include(
                 "~/Scripts/bootbox*",
                 "~/Scripts/ADAC/adac-register-pages-config.js"));
 
             // Search
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/search").Include(
                 "~/Scripts/typeahead.bundle*",
                 "~/Scripts/Shared/search-diagnosis-type-ahead.js",
@@ -337,11 +348,13 @@ namespace Biobanks.Web
                 "~/Scripts/Contact/contact-button.js",
                 "~/Scripts/Shared/feedback-message.js"));
 
-            //Term 
+            //Term
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/term/diseasetable").Include(
                "~/Scripts/Term/diseasetable.js"));
 
             //Analytics
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/analytics/biobankreport").Include(
                 "~/Scripts/Biobank/analytics-biobankreport.js",
                 "~/Scripts/plotly-latest.min.js"));
@@ -349,6 +362,7 @@ namespace Biobanks.Web
                 "~/Scripts/ADAC/adac-analytics-directoryreport.js",
                 "~/Scripts/plotly-latest.min.js"));
 
+            // XXX migrated to core
             bundles.Add(new ScriptBundle("~/bundles/pagesadmin").Include(
                 "~/Scripts/ADAC/adac-pages-admin.js",
                 "~/Scripts/bootbox*",
