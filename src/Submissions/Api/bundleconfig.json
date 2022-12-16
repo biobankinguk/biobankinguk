@@ -537,7 +537,7 @@
     "minify": { "enabled": true },
     "sourceMap": true
   },
-  
+
   //Search
   {
     "outputFileName": "wwwroot/dist/js/search.min.js",
