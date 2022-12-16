@@ -196,7 +196,7 @@
       "Frontend/js/init/bootstrap-slider-knockout-binding.js",
       "Frontend/js/areas/Biobank/collection-sample-sets.js"
     ],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
