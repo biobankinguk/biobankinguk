@@ -9,8 +9,12 @@
 {
     @Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
     @Scripts.Render("~/bundles/collection-sample-sets")
+    
+     @* TODO: Core bundles
+    <script src="~/dist/js/Biobank/collection-sample-sets.min.js" asp-append-version="true"></script>
+    *@
 
-<script>
+    <script>
         $(function () {
             // Donor Count
             lookup.donorCounts(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.DonorCounts)), function (x) {
