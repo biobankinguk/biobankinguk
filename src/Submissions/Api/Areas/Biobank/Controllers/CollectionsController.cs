@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+[Area("Biobank")]
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
