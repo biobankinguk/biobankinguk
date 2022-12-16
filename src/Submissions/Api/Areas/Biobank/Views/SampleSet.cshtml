@@ -1,5 +1,6 @@
-
-@using Biobanks.Submissions.Constants;
+@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@using Biobanks.Submissions.Api.Config
+@using Biobanks.Submissions.Api.Constants
 @model Biobanks.Submissions.Api.Areas.Biobank.Models.SampleSetModel
 @{
     ViewBag.Title = "Sample set";
@@ -37,7 +38,6 @@
     }
     }
 </h2>
-
 <div class="row">
     <div class="col-sm-4">
         <table class="table table-condensed">
@@ -47,7 +47,7 @@
             <tbody>
                 <tr><td><strong>Sex</strong></td><td>@Model.Sex</td></tr>
                 <tr><td><strong>Age range</strong></td><td>@Model.AgeRange</td></tr>
-                <tr><td><strong>@App.Config[ConfigKey.DonorCountName]</strong></td><td>@Model.DonorCount</td></tr>
+                <tr><td><strong>(@await _config.GetSiteConfigValue(ConfigKey.DonorCountName)</strong></td><td>@Model.DonorCount</td></tr>
             </tbody>
         </table>
     </div>
@@ -62,14 +62,14 @@
                 <tr>
                     <th>Material type</th>
                     <th>Extraction Procedure</th>
-                    <th>@App.Config[ConfigKey.StorageTemperatureName]</th>
+                    <th>(@await _config.GetSiteConfigValue(ConfigKey.StorageTemperatureName)</th>
                     <th>Preservation type</th>
 
                     @if (Model.ShowMacroscopicAssessment)
                     {
-                        <th>@App.Config[ConfigKey.MacroscopicAssessmentName]</th>
+                        <th>(@await _config.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName)</th>
                     }
-                    @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
+                    @if (await _config.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage) == "true")
                     {
                         <th>Collection percentage</th>
                     }
@@ -88,7 +88,7 @@
                     {
                         <td>@data.MacroscopicAssessment</td>
                     }
-                    @if (App.Config[ConfigKey.ShowPreservationPercentage] == "true")
+                    @if (await _config.GetSiteConfigValue(ConfigKey.ShowPreservationPercentage)== "true")
                     {
                         <td>@(data.CollectionPercentage ?? "Not Applicable") </td>
                     }

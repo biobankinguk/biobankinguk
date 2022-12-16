@@ -9,6 +9,7 @@ namespace Biobanks.Submissions.Api.Config
     public const string ShowCounties = "site.display.counties";
     public const string DisplayPublications = "site.display.publications";
     public const string DisplaySubmissions = "site.display.submissions";
+    public const string CollectionsNotes = "site.display.collectionsnotes";
 
     // Ref Data Name Configuration Options
     public const string MacroscopicAssessmentName = "site.display.macroscopicassessment.name";
