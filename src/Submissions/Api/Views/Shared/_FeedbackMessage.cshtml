@@ -1,11 +1,9 @@
-﻿@using Biobanks.Submissions.Api.Controllers
+@using Biobanks.Submissions.Api.Controllers
 @using Biobanks.Submissions.Api.Utilities;
-@using static Biobanks.Submissions.Api.Controllers.Directory.ApplicationBaseController
+@using static Biobanks.Submissions.Api.Utilities.TemporaryFeedbackMessageExtensions
 @{
-    var model = (FeedbackMessage)TempData[ViewConstants.FeedbackMessageKey];
+    var model = (FeedbackMessage)TempData[FeedbackMessageKey.FeedbackMessage];
 }
-
-
 
 @if (!string.IsNullOrEmpty(model?.Message))
 {

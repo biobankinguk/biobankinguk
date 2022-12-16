@@ -19,7 +19,11 @@ using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers
 {
-    [UserAuthorize(Roles = "SuperUser")]
+  [Obsolete("To be deleted when the Directory core version goes live." +
+  " Any changes made here will need to be made in the corresponding core version"
+  , false)]
+
+  [UserAuthorize(Roles = "SuperUser")]
     public class SuperUserController : ApplicationBaseController
     {
         private readonly IOrganisationService _organisationService;

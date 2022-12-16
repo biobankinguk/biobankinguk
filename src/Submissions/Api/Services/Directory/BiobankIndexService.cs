@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Search.Dto.PartialDocuments;

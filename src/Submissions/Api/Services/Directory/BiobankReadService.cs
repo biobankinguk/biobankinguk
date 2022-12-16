@@ -1,9 +1,7 @@
-﻿using Biobanks.Data;
+using Biobanks.Data;
+using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Identity.Contracts;
-using Biobanks.Submissions.Api.Auth.Entities;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +28,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
         private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
         
-        private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly BiobanksDbContext _context;
 
@@ -43,7 +41,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             IGenericEFRepository<MaterialDetail> materialDetailRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
-            IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
+            UserManager<ApplicationUser> userManager,
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
             BiobanksDbContext context)
@@ -74,9 +72,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     x => x.Funders))
                 .Select(x => x.Funders)
                 .FirstOrDefault();
-
-        public async Task<IEnumerable<int>> GetAllSampleSetIdsAsync()
-            => (await _sampleSetRepository.ListAsync()).Select(x => x.Id);
 
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
@@ -132,17 +127,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 x => x.MaterialDetails.Select(y => y.StorageTemperature),
                 x => x.Collection.Organisation.Country,
                 x => x.Collection.Organisation.County
-            );
-        
-        public async Task<int> GetIndexableSampleSetCountAsync()
-            => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
-
-        public async Task<int> GetSuspendedSampleSetCountAsync()
-            => await _sampleSetRepository.CountAsync(
-                x => x.Collection.Organisation.IsSuspended);
-        
-        public async Task<int> GetSampleSetCountAsync()
-            => await _sampleSetRepository.CountAsync();
+            );       
         
         public async Task<Collection> GetCollectionByIdAsync(int id)
             => (await _collectionRepository.ListAsync(false,
@@ -319,23 +304,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             false,
              x => x.ServiceOfferingId == id)).Count();
 
-        public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
-            => await _organisationServiceOfferingRepository.ListAsync(
-                false,
-                x => x.OrganisationId == biobankId,
-                null,
-                x => x.ServiceOffering);
-
-        public async Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId)
-        {
-            var adminIds = (await _organisationUserRepository.ListAsync(
-                false,
-                x => x.OrganisationId == biobankId))
-                .Select(x => x.OrganisationUserId);
-
-            return _userManager.Users.AsNoTracking().Where(x => adminIds.Contains(x.Id));
-        }
-
         public async Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int biobankId)
         {
             // Returns users who have admin role only for this biobank
@@ -367,9 +335,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
             List<string> token = tokenValidation.Select(t => t.Token).ToList();
             DateTime now = DateTime.Now;
 
-            if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
+            var user = await _userManager.FindByIdAsync(biobankUserId) ??
+                throw new InvalidOperationException(
+                $"Account could not be confirmed. User not found! User ID: {biobankUserId}");
+
+
+      if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
             {
-                return await _userManager.GeneratePasswordResetTokenAsync(biobankUserId);
+                return await _userManager.GeneratePasswordResetTokenAsync(user);
             }
             else
             {

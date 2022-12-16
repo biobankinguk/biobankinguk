@@ -15,7 +15,11 @@ using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Web.Controllers
 {
-    [AllowAnonymous]
+  [Obsolete("To be deleted when the Directory core version goes live." +
+  " Any changes made here will need to be made in the corresponding core version"
+  , false)]
+
+  [AllowAnonymous]
     public class ProfileController : ApplicationBaseController
     {
         private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;

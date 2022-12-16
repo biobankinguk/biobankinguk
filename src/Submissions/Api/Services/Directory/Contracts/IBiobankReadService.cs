@@ -1,7 +1,6 @@
-﻿using Biobanks.Entities.Data;
+using Biobanks.Data.Entities;
+using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Auth.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -37,22 +36,9 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 
         Task<int> GetServiceOfferingOrganisationCount(int id);
 
-        Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
-
-        Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
-        Task<IEnumerable<int>> GetAllSampleSetIdsAsync();
-
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(IEnumerable<int> sampleSetIds);
 
-        /// <summary>
-        /// Gets a count of all Sample Sets in the database.
-        /// </summary>
-        /// <returns>A count of all Sample Sets in the database.</returns>
-        Task<int> GetSampleSetCountAsync();
-
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(IEnumerable<int> sampleSetIds);
-        Task<int> GetIndexableSampleSetCountAsync();
-        Task<int> GetSuspendedSampleSetCountAsync();
 
         Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId);
 

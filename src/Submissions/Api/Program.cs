@@ -1,4 +1,4 @@
-﻿using Biobanks.Aggregator;
+using Biobanks.Aggregator;
 using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Analytics;
 using Biobanks.Analytics.Services;
@@ -45,13 +45,14 @@ using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System;
 using Biobanks.Submissions.Api.Auth.Basic;
-using Biobanks.Submissions.Api.Auth.Entities;
 using System.Reflection;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Elastic;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Filters;
 using Biobanks.Search.Legacy;
+using Biobanks.Data.Entities;
+using Biobanks.Submissions.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -206,6 +207,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
     .AddTransient<IOrganisationService, OrganisationService>()
     .AddTransient<IPublicationJobService, PublicationJobService>()
+    .AddTransient<IPublicationService, PublicationService>()
     .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
     .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>),
         typeof(Biobanks.Shared.Services.ReferenceDataService<>))
@@ -256,6 +258,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     )
     .AddTransient<ISearchProvider, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
+    .AddTransient<IContentPageService, ContentPageService>()
+    .AddTransient<INetworkService, NetworkService>()
 
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
@@ -290,11 +294,8 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IBiobankIndexService, BiobankIndexService>()
         .AddTransient<IBiobankReadService, BiobankReadService>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
-        .AddTransient<IContentPageService, ContentPageService>()
         .AddTransient<IIndexProvider, LegacyIndexProvider>()
         .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
-        .AddTransient<IPublicationService, PublicationService>()
-        .AddTransient<INetworkService, NetworkService>()
         .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
         .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
@@ -363,6 +364,9 @@ app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 app.UseStaticFiles();
 
 
+//Authenticated users have their last login value updated to now
+app.UseDirectoryLogin();
+
 app
     // Simple public middleware
     .UseVersion()
@@ -408,6 +412,11 @@ else
 app.UseHangfireDashboard();
 
 app.MapRazorPages();
+
+app.MapControllerRoute(
+    name: "AreasDefault",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

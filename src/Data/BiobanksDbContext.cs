@@ -1,4 +1,5 @@
-﻿using Biobanks.Entities.Api;
+﻿using Biobanks.Data.Entities;
+using Biobanks.Entities.Api;
 using Biobanks.Entities.Api.ReferenceData;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.Analytics;
@@ -11,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Biobanks.Data
 {
-    public class BiobanksDbContext : IdentityDbContext
+    public class BiobanksDbContext : IdentityDbContext<ApplicationUser>
     {
         #region Reference Data: API
         public DbSet<Ontology> Ontologies { get; set; }

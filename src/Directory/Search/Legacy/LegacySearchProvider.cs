@@ -8,7 +8,7 @@ using Biobanks.Search.Dto.Results;
 namespace Biobanks.Search.Legacy
 {
     public class LegacySearchProvider : ISearchProvider
-    {
+  {
         private readonly ICapabilitySearchProvider _capabilities;
         private readonly ICollectionSearchProvider _collections;
 

@@ -1,12 +1,11 @@
-﻿
+
 using AutoMapper;
 using Biobanks.Data;
+using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
-using Biobanks.Identity.Contracts;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Search.Dto.PartialDocuments;
 using Biobanks.Search.Legacy;
-using Biobanks.Submissions.Api.Auth.Entities;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Hangfire;
@@ -23,14 +22,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
     {
         private readonly IIndexProvider _indexProvider;
 
-        private readonly IApplicationUserManager<ApplicationUser, string, IdentityResult> _userManager;
+        private readonly UserManager<ApplicationUser>  _userManager;
         private readonly BiobanksDbContext _db;
 
         private readonly IMapper _mapper;
 
         public NetworkService(
             IIndexProvider indexProvider,
-            IApplicationUserManager<ApplicationUser, string, IdentityResult> userManager,
+            UserManager<ApplicationUser> userManager,
             BiobanksDbContext db,
             IMapper mapper)
         {
