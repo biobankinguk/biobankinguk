@@ -69,10 +69,10 @@
       "Frontend/js/layout/contact-button.js",
 
       // Shared across Views
-      "Frontend/js/helpers/feedback-message.js"
+      "Frontend/js/helpers/feedback-message.js",
 
       // Shared across ADAC Ref Data
-      "Frontend/js/pages/adac/adac-refdata-utility.js"
+      "Frontend/js/areas/Admin/adac-refdata-utility.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
@@ -185,15 +185,15 @@
   },
   {
     "outputFileName": "wwwroot/dist/js/Biobank/help-buttons.min.js",
-    "inputFiles": ["Frontend/js/Areas/Biobank/help-popups.js"],
+    "inputFiles": ["Frontend/js/areas/Biobank/help-popups.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection-sample-sets.min.js",
     "inputFiles": [
-      "Frontend/node_modules/bootstrap_slider/dist/bootstrap-slider.min.js",
-      "Frontend/js/init/bootstrap-slider-knockout-binding.js",  
+      "Frontend/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js",
+      "Frontend/js/init/bootstrap-slider-knockout-binding.js",
       "Frontend/js/areas/Biobank/collection-sample-sets.js"
     ],
     "minify": { "enabled": true },
@@ -247,7 +247,7 @@
   {
     "outputFileName": "wwwroot/dist/js/Biobank/submissions.min.js",
     "inputFiles": ["Frontend/js/areas/Biobank/submissions.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   
@@ -283,17 +283,17 @@
     "sourceMap": true
   },
   
-  //ADAC Admin Area
+  // //ADAC Admin Area
   {
     "outputFileName": "wwwroot/dist/js/Admin/disease-statuses.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-disease-statuses.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/material-types.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-material-types.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
@@ -305,13 +305,13 @@
   {
     "outputFileName": "wwwroot/dist/js/Admin/sexes.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-sexes.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/country.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-country.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
@@ -323,61 +323,61 @@
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-types.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-associated-data-types.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-type-groups.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-associated-data-type-group.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/registration-reasons.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-registration-reasons.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-percentages.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-collection-percentages.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/sample-collection-modes.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-sample-collection-modes.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-type.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-collection-type.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/consent-restriction.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-consent-restriction.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-status.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-collection-status.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-procurement-time-frame.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-associated-data-procurement-time-frame.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/service-offering.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-service-offering.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
@@ -389,37 +389,37 @@
   {
     "outputFileName": "wwwroot/dist/js/Admin/donor-counts.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-donor-counts.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/storage-temperatures.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-storage-temperatures.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/preservation-types.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-preservation-types.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/sop-status.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-sop-status.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/age-ranges.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-age-ranges.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/access-conditions.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-access-conditions.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
@@ -473,7 +473,7 @@
   {
     "outputFileName": "wwwroot/dist/js/Admin/annual-statistic-group.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-annual-statistic-group.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
   {
@@ -494,7 +494,7 @@
       "Frontend/js/shared/serialize-checkbox-as-bool.js",
       "Frontend/js/areas/Admin/adac-extraction-procedure.js"
     ],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
 
@@ -502,7 +502,7 @@
   {
     "outputFileName": "wwwroot/dist/js/Admin/email-config.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-email-config.js"],
-    "minify": { "enabled": true },
+    "minify": { "enabled": false },
     "sourceMap": true
   },
 
@@ -580,7 +580,7 @@
     "sourceMap": true
   },
 
-  // Admin pages
+  // // Admin pages
   {
     "outputFileName": "wwwroot/dist/js/pagesadmin.min.js",
     "inputFiles": [
