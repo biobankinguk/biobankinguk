@@ -1,0 +1,30 @@
+@model Biobanks.Submissions.Api.Areas.Biobank.Model.EditCollectionModel
+@{
+    ViewBag.Title = "Edit collection";
+}
+
+@*@section FooterScripts
+{
+    @Scripts.Render("~/bundles/collection-and-capability-crud")
+    @Scripts.Render("~/bundles/help-buttons")
+}*@
+
+<h2>@ViewBag.Title</h2>
+
+
+<partial name = "_DataProtectionAlert">
+
+@using (Html.BeginForm("EditCollection", "Biobank", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(x => x.Id)
+          
+    <partial name = "_CollectionSharedFields" model = "Model" />
+    <div class="form-group">
+        <div class="col-sm-12 text-center">
+            @Html.ActionLink("Cancel", "Collection", new { id = Model.Id }, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">Update collection</button>
+        </div>
+    </div>
+}
