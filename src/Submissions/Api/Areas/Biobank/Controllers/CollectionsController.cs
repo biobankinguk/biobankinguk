@@ -178,8 +178,6 @@ public class CollectionsController : Controller
     if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
     {
 
-
-
       var associatedData = associatedDataModels
           .Where(x => x.Active)
           .Select(y => new CollectionAssociatedData
