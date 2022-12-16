@@ -34,11 +34,11 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <summary>
         /// Gets site Config value given its key
         /// </summary>
-        /// <param name="key">Config key</param>
+        /// <param name="configKey">Config key</param>
         /// <param name="defaultValue">Default value string</param>
         /// <param name="checkCacheFirst">bool to check if cache is avaible</param>
         /// <returns>Config value string</returns>
-        Task<string> GetSiteConfigValue(string key, string defaultValue = "", bool checkCacheFirst = false);
+        Task<string> GetSiteConfigValue(string configKey, string defaultValue = "", bool checkCacheFirst = false);
 
         /// <summary>
         /// Updates specified Configs

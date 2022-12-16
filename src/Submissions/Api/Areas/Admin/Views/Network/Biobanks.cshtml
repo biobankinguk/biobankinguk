@@ -1,13 +1,14 @@
 @using System.Linq
-@using System.Web.Optimization
-@using Biobanks.Directory.Data.Constants
-@model Biobanks.Web.Models.Network.NetworkBiobanksModel
+@using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
+@using Biobanks.Submissions.Api.Config
+@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@model NetworkBiobanksModel
 
 @{
     ViewBag.Title = "Network biobanks";
 }
 
-@Html.Partial("_NetworkTabs", "Biobanks")
+<partial name= "_NetworkTabs" model = "@("Biobanks")")>
 
 <h3>Biobanks in your Network @Html.ActionLink("Add a new Biobank", "AddBiobank", null, new { @class = "btn btn-success pull-right" })</h3>
 
@@ -21,7 +22,8 @@
                 <tr>
                     <th>Biobank</th>
                     <th>Admins</th>
-                    @if (App.Config[ConfigKey.TrustBiobanks] !="false")
+                    @if (await _config.GetSiteConfigValue(ConfigKey.TrustBiobanks) !="false")
+
                     {
                         <th>Approval Status</th>
                     }
@@ -49,7 +51,7 @@
                                 }
                             </ul>
                         </td>
-                        @if (App.Config[ConfigKey.TrustBiobanks] != "false")
+                    @if (await _config.GetSiteConfigValue(ConfigKey.TrustBiobanks) !="false")
                         {
                             <td>
                                 @if (biobank.ApprovedDate != null)
@@ -78,9 +80,11 @@
     </div>
 </div>
 
+@*
 @section FooterScripts
 {
     @Scripts.Render("~/bundles/bootbox")
     @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/network/biobanks")
 }
+*@

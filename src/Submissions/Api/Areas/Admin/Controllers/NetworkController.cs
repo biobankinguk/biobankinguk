@@ -1,9 +1,7 @@
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Biobank;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -18,50 +16,48 @@ using System.Threading.Tasks;
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class BiobanksController : Controller
+public class NetworkController : Controller
 {
-  private readonly BiobankService _biobankService;
-  private readonly OrganisationDirectoryService _organisationDirectoryService;
-  private readonly IEmailService _emailService;
+  private readonly INetworkService _networkService;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly ITokenLoggingService _tokenLog;
+  private readonly IEmailService _emailService;
 
-  public BiobanksController(BiobankService biobankService, OrganisationDirectoryService organisationDirectoryService, IEmailService emailService, UserManager<ApplicationUser> userManager, ITokenLoggingService tokenLog)
+  public NetworkController(
+    INetworkService networkService,
+    UserManager<ApplicationUser> userManager,
+     ITokenLoggingService tokenLog,
+     IEmailService emailService)
   {
-    _biobankService = biobankService;
-    _organisationDirectoryService = organisationDirectoryService;
-    _emailService = emailService;
+    _networkService = networkService;
     _userManager = userManager;
     _tokenLog = tokenLog;
+    _emailService = emailService;
   }
 
-  [Authorize(CustomClaimType.Biobank)]
-  public async Task<ActionResult> Admins(int biobankId)
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> Admins(int networkId)
   {
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
 
-    return View(new BiobankAdminsModel
+    return View(new NetworkAdminsModel
     {
-      BiobankId = biobankId,
-      Admins = await GetAdminsAsync(biobankId, excludeCurrentUser: true),
-      RequestUrl = HttpContext.Request.GetEncodedUrl()
+      NetworkId = networkId,
+      Admins = await GetAdminsAsync(networkId, excludeCurrentUser: true)
     });
   }
 
-  private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int biobankId, bool excludeCurrentUser)
+  private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int networkId, bool excludeCurrentUser)
   {
     //we exclude the current user when we are making the list for them
     //but we may want the full list in other circumstances
-
     var admins =
-        (await _biobankService.ListBiobankAdminsAsync(biobankId))
-            .Select(bbAdmin => new RegisterEntityAdminModel
+        (await _networkService.ListAdmins(networkId))
+            .Select(nwAdmin => new RegisterEntityAdminModel
             {
-              UserId = bbAdmin.Id,
-              UserFullName = bbAdmin.Name,
-              UserEmail = bbAdmin.Email,
-              EmailConfirmed = bbAdmin.EmailConfirmed
+              UserId = nwAdmin.Id,
+              UserFullName = nwAdmin.Name,
+              UserEmail = nwAdmin.Email,
+              EmailConfirmed = nwAdmin.EmailConfirmed
             }).ToList();
 
     if (excludeCurrentUser)
@@ -73,45 +69,43 @@ public class BiobanksController : Controller
     return admins;
   }
 
-  public async Task<ActionResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
+  public async Task<IActionResult> GetAdminsAjax(int networkId, bool excludeCurrentUser = false, int timeStamp = 0)
   {
     //timeStamp can be used to avoid caching issues, notably on IE
 
-
-    var Admins = await GetAdminsAsync(biobankId, excludeCurrentUser);
-
-    return Ok(Admins);
+    return Ok(await GetAdminsAsync(networkId, excludeCurrentUser));
   }
 
   public ActionResult InviteAdminSuccess(string name)
   {
     //This action solely exists so we can set a feedback message
 
-    this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your admins!",
-        FeedbackMessageType.Success);
+    this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your network admins!",
+         FeedbackMessageType.Success);
 
     return RedirectToAction("Admins");
   }
 
-  public async Task<ActionResult> InviteAdminAjax(int biobankId)
+  public async Task<ActionResult> InviteAdminAjax(int networkId)
   {
-    var bb = await _organisationDirectoryService.Get(biobankId);
+    var nw = await _networkService.Get(networkId);
 
     return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
     {
-      Entity = bb.Name,
-      EntityName = "biobank",
-      ControllerName = "Biobank"
+      Entity = nw.Name,
+      EntityName = "network",
+      ControllerName = "Network"
     });
   }
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  public async Task<IActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
+  [Authorize(CustomClaimType.Network)]
+  public async Task<JsonResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
   {
     if (!ModelState.IsValid)
     {
-      return Ok(new
+      return Json(new
       {
         success = false,
         errors = ModelState.Values
@@ -121,7 +115,7 @@ public class BiobanksController : Controller
       });
     }
 
-    var biobankId = (await _organisationDirectoryService.GetByName(model.Entity)).OrganisationId;
+    var networkId = (await _networkService.GetByName(model.Entity)).NetworkId;
     var user = await _userManager.FindByEmailAsync(model.Email);
 
     if (user == null)
@@ -158,7 +152,7 @@ public class BiobanksController : Controller
       }
       else
       {
-        return Ok(new
+        return Json(new
         {
           success = false,
           errors = result.Errors.ToArray()
@@ -177,14 +171,14 @@ public class BiobanksController : Controller
           Url.Action("Index", "Biobank", null, Request.GetEncodedUrl()));
     }
 
-    //Add the user/biobank relationship
-    await _organisationDirectoryService.AddUserToOrganisation(user.Id, biobankId);
+    //Add the user/network relationship
+    await _networkService.AddNetworkUser(user.Id, networkId);
 
-    //add user to BiobankAdmin role
-    await _userManager.AddToRolesAsync(user, new List<string> { Role.BiobankAdmin }); //what happens if they're already in the role?
+    //add user to NetworkAdmin role
+    await _userManager.AddToRolesAsync(user, new List<string> { Role.BiobankAdmin });
 
     //return success, and enough user details for adding to the viewmodel's list
-    return Ok(new
+    return Json(new
     {
       success = true,
       userId = user.Id,
@@ -194,16 +188,16 @@ public class BiobanksController : Controller
     });
   }
 
-  [Authorize(CustomClaimType.Biobank)]
-  public async Task<ActionResult> DeleteAdmin(string biobankUserId, string userFullName, int biobankId)
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName, int networkId)
   {
     //remove them from the network
-    await _organisationDirectoryService.RemoveUserFromOrganisation(biobankUserId, biobankId);
+    await _networkService.RemoveNetworkUser(networkUserId, networkId);
 
     //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
-    await _userManager.RemoveFromRolesAsync(await _userManager.FindByIdAsync(biobankUserId), new List<string> { Role.BiobankAdmin });
+    await _userManager.RemoveFromRolesAsync(await _userManager.FindByIdAsync(networkUserId), new List<string> { Role.NetworkAdmin });
 
-    this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
+    this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your network admins!", FeedbackMessageType.Success);
 
     return RedirectToAction("Admins");
   }
