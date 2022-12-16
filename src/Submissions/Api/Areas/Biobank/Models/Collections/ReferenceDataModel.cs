@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models;
+namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 
 public class ReferenceDataModel
 {

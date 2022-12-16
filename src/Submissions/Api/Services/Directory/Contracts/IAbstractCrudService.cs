@@ -1,5 +1,5 @@
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Models.Shared;
 using System.Collections.Generic;
 using System.Threading.Tasks;

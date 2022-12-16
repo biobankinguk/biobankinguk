@@ -4,7 +4,7 @@ using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models
+namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Collections
 {
   public abstract class AbstractCRUDSampleSetModel
   {
