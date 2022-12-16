@@ -580,7 +580,7 @@
     "sourceMap": true
   },
 
-  // // Admin pages
+  //Admin pages
   {
     "outputFileName": "wwwroot/dist/js/pagesadmin.min.js",
     "inputFiles": [
