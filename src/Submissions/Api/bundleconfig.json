@@ -247,7 +247,7 @@
     "outputFileName": "wwwroot/dist/js/Biobank/submissions.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/submissions.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   
   //Network Admin Area

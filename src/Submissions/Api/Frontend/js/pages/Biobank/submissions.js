@@ -20,11 +20,12 @@ $(".copy-text").click(function (e) {
 
 //generate client id
 $("#generatekey").click(function (e) {
-    var $btn = $(this);
-    $.post($btn.data("generate-url"),
-        { biobankId: $btn.data("biobank-id") }, data => {
-            $("#clientId").val(data.ClientId);
-            $("#clientSecret").val(data.ClientSecret);
-            $("#clientSecretWrapper").removeAttr("hidden");
-    })
-})
+  var $btn = $(this);
+  $.post($btn.data("generate-url"), {
+    biobankId: $btn.data("biobank-id")
+  }, function (data) {
+    $("#clientId").val(data.ClientId);
+    $("#clientSecret").val(data.ClientSecret);
+    $("#clientSecretWrapper").removeAttr("hidden");
+  });
+});
