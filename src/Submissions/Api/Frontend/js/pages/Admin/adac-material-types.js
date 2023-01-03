@@ -112,7 +112,9 @@ $(function () {
     table.on('row-reorder', function (e, diff, edit) {
 
         // Find the row that was moved
-        var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
+        var triggerRow = diff.filter(function (row) {
+          return row.node == edit.triggerRow.node();
+        })[0];
 
         //AJAX Update
         $.ajax({
@@ -161,11 +163,16 @@ $(function () {
                     );
                 })
                 .map(function (i, elem) {
-                    const val = $(this).val();
+                    var val = $(this).val();
                     return val == null
                         ? null
                         : $.isArray(val)
-                            ? $.map(val, (innerVal) => ({ name: elem.name, value: innerVal }))
+                            ? $.map(val, function (innerVal) {
+                              return {
+                                name: elem.name,
+                                value: innerVal
+                              };
+                            })
                             : {
                                 name: elem.name,
                                 value:

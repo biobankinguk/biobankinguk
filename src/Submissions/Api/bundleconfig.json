@@ -283,13 +283,13 @@
     "outputFileName": "wwwroot/dist/js/Admin/disease-statuses.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-disease-statuses.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/material-types.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-material-types.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/material-type-groups.min.js",
@@ -301,13 +301,13 @@
     "outputFileName": "wwwroot/dist/js/Admin/sexes.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-sexes.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/country.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-country.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/county.min.js",
@@ -319,61 +319,61 @@
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-types.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-associated-data-types.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-type-groups.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-associated-data-type-group.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/registration-reasons.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-registration-reasons.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-percentages.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-collection-percentages.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/sample-collection-modes.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-sample-collection-modes.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-type.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-collection-type.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/consent-restriction.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-consent-restriction.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-status.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-collection-status.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-procurement-time-frame.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-associated-data-procurement-time-frame.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/service-offering.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-service-offering.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/macro-assessments.min.js",

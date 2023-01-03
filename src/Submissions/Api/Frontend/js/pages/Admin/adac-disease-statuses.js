@@ -1,6 +1,6 @@
-const refdataType = "Disease status";
-const redirectUrl = "/ADAC/DiseaseStatuses";
-const apiUrl = "/api/DiseaseStatus";
+var refdataType = "Disease status";
+var redirectUrl = "/ADAC/DiseaseStatuses";
+var apiUrl = "/api/DiseaseStatus";
 
 var adacDiseaseStatusVM;
 var dataTable;
@@ -72,11 +72,13 @@ function AdacDiseaseStatusViewModel() {
     var rowIndex = $(event.currentTarget).data("row");
     var diseaseStatus = dataTable.row(rowIndex).data();
 
-    let otherTerms = diseaseStatus.OtherTerms
-      ? diseaseStatus.OtherTerms.split(",").map((item) => item.trim())
+    var otherTerms = diseaseStatus.OtherTerms
+      ? diseaseStatus.OtherTerms.split(",").map(function (item) {
+        return item.trim();
+      })
       : diseaseStatus.OtherTerms;
 
-    let associatedData = diseaseStatus.AssociatedDataTypes
+    var associatedData = diseaseStatus.AssociatedDataTypes
       ? diseaseStatus.AssociatedDataTypes
       : [];
 
@@ -104,7 +106,9 @@ function AdacDiseaseStatusViewModel() {
       _this.modal
         .diseaseStatus()
         .otherTerms()
-        .filter((x) => x && x.trim())
+        .filter(function (x) {
+          return x && x.trim();
+        })
         .join(",")
     );
 
@@ -135,9 +139,9 @@ function AdacDiseaseStatusViewModel() {
       _this.modal
         .diseaseStatus()
         .associatedData()
-        .find(
-          (item) => item.Id === JSON.parse($("#ass-data-select").val()).Id
-        ) == null
+        .find(function (item) {
+          return item.Id === JSON.parse($("#ass-data-select").val()).Id;
+        }) == null
     ) {
       _this.modal
         .diseaseStatus()
@@ -150,15 +154,15 @@ function AdacDiseaseStatusViewModel() {
 
   $.ajax({
     type: "GET",
-    url: `/api/AssociatedDataType`,
+    url: "/api/AssociatedDataType",
     beforeSend: function () {
       //setLoading(true); // Show loader icon
     },
     success: function (response) {
       response.AssociatedDataTypes.forEach(function (type) {
-        const val = JSON.stringify(type);
+        var val = JSON.stringify(type);
         $("#ass-data-select").append(
-          `<option value='${val}'>${type.Name}</option>`
+          "<option value='" + (val, "'>") + (type.Name, "</option>")
         );
       });
     },
@@ -201,19 +205,23 @@ $(function () {
         data: "AssociatedDataTypes",
           render: function (data, type, row, meta) {
 
-              let returnString = "N/A";
+              var returnString = "N/A";
           if (data) {
               if (data.length === 1) {
-                  returnString = `<li>${data[0].Name}</li>`;
+                  returnString = "<li>" + data[0].Name + "</li>";
               } else if (data.length < 4 && data.length > 1) {
                   // return their values as a list
-                  let displayData = data
-                      .map((item) => `<li>${item.Name}</li>`)
+                  var displayData = data
+                      .map(function (item) {
+                        return "<li>" + item.Name + "</li>";
+                      })
                       .join("");
-                  returnString = `${displayData}  `;
+                  returnString = "" + displayData + "";
               } else if (data.length > 3) {
-                  let displayData = data.slice(2)
-                      .map((item) => `<li>${item.Name}</li>`)
+                  var displayData = data.slice(2)
+                      .map(function (item) {
+                        return "<li>" + item.Name + "</li>";
+                      })
                       .join("");
 
                   var ViewMore = $("<a/>", {
@@ -225,7 +233,7 @@ $(function () {
                               text: "...View All",
                           })
                   });
-                  returnString = `${displayData}`  ;
+                  returnString = "" + displayData + "";
               }
           }
               return $("<div/>").append(returnString).append(ViewMore).html();
@@ -316,10 +324,9 @@ $(function () {
 
         var rowIndex = $(this).data("row");
         var data = dataTable.row(rowIndex).data();
-        let displayData = data
-            .AssociatedDataTypes
-            .map((item) => `<li>${item.Name}</li>`)
-            .join("")
+        var displayData = data.AssociatedDataTypes.map(function (item) {
+          return "<li>" + item.Name + "</li>";
+        }).join("");
 
         bootbox.alert(
              displayData
@@ -361,11 +368,16 @@ $(function () {
           );
         })
         .map(function (i, elem) {
-          const val = $(this).val();
+          var val = $(this).val();
           return val == null
             ? null
             : $.isArray(val)
-            ? $.map(val, (innerVal) => ({ name: elem.name, value: innerVal }))
+            ? $.map(val, function (innerVal) {
+              return {
+                name: elem.name,
+                value: innerVal
+              };
+            })
             : {
                 name: elem.name,
                 value:

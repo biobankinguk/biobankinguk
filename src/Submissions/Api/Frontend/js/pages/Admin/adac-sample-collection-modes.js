@@ -117,7 +117,7 @@ $(function () {
     table.on('row-reorder', function (e, diff, edit) {
 
         // Find the row that was moved
-        var triggerRow = diff.filter(row => row.node == edit.triggerRow.node())[0];
+        var triggerRow = diff.filter(function(row) { return row.node == edit.triggerRow.node();})[0];
 
         //AJAX Update
         $.ajax({
