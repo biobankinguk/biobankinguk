@@ -175,7 +175,7 @@
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection-and-capability-crud.min.js",
     "inputFiles": [
-      "Frontend/js/shared/diagnosis-type-ahead.js",
+      "Frontend/js/areas/Biobank/diagnosis-type-ahead.js",
       "Frontend/js/areas/Biobank/collection-crud.js"
     ],
     "minify": { "enabled": true },
@@ -536,7 +536,7 @@
   {
     "outputFileName": "wwwroot/dist/js/search.min.js",
     "inputFiles": [
-      "Frontend/js/shared/search-diagnosis-type-ahead.js",
+      "Frontend/js/init/search-diagnosis-type-ahead.js",
       "Frontend/js/init/facet-groups.js"
     ],
     "minify": { "enabled": true },
