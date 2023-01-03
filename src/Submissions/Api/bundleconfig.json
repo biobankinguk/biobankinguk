@@ -217,10 +217,7 @@
   },
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection.min.js",
-    "inputFiles": [
-      "Frontend/js/areas/Biobank/collection.js",
-      "Frontend/js/shared/associated-data-admin.js"
-    ],
+    "inputFiles": ["Frontend/js/areas/Biobank/collection.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
