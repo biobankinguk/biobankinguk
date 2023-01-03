@@ -220,7 +220,7 @@ public class ProfileController : Controller
     var logoName =
         await
             _logoStorageProvider.StoreLogoAsync(
-                logoStream,
+                (System.IO.MemoryStream)logoStream,
                 logo.FileName,
                 logo.ContentType,
                 networkLogoPrefix + networkId);

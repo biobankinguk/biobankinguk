@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Data;
+using Biobanks.Entities.Data;
 using System.IO;
 using System.Threading.Tasks;
 
