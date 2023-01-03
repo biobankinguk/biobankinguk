@@ -1,3 +1,4 @@
+using Biobanks.Data.Transforms.Url;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
@@ -26,11 +27,14 @@ public class ProfileController : Controller
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
           FeedbackMessageType.Info);
 
-    var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
+    //ToDo: Session
+    /*   var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
 
-    return activeOrganisationType == (int)ActiveOrganisationType.NewNetwork
-        ? View(await NewNetworkDetailsModelAsync()) //no network id means we're dealing with a request
-        : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network
+        return activeOrganisationType == (int)ActiveOrganisationType.NewNetwork
+            ? View(await NewNetworkDetailsModelAsync()) //no network id means we're dealing with a request
+            : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network*/
+
+    return View(await NewNetworkDetailsModelAsync());
   }
 
   [HttpPost]
