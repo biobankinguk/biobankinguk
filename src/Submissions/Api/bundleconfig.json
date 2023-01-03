@@ -159,7 +159,6 @@
       "Frontend/js/shared/registerentity-funder-viewmodel.js",
       "Frontend/js/areas/Biobank/funder-viewmodel.js",
       "Frontend/js/areas/Biobank/funders-viewmodel.js",
-      "Frontend/node_modules/typeahead.js/dist/typeahead.bundle.min.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
@@ -176,7 +175,6 @@
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection-and-capability-crud.min.js",
     "inputFiles": [
-      "Frontend/node_modules/typeahead.js/dist/typeahead.bundle.min.js",
       "Frontend/js/shared/diagnosis-type-ahead.js",
       "Frontend/js/areas/Biobank/collection-crud.js"
     ],
@@ -270,7 +268,6 @@
   {
     "outputFileName": "wwwroot/dist/js/Network/add-biobank.min.js",
     "inputFiles": [
-      "Frontend/node_modules/typeahead.js/dist/typeahead.bundle.min.js",
       "Frontend/js/areas/Network/biobanks-type-ahead.js"
     ],
     "minify": { "enabled": true },
@@ -542,7 +539,6 @@
   {
     "outputFileName": "wwwroot/dist/js/search.min.js",
     "inputFiles": [
-      "Frontend/node_modules/typeahead.js/dist/typeahead.bundle.min.js",
       "Frontend/js/shared/search-diagnosis-type-ahead.js",
       "Frontend/js/init/facet-groups.js"
     ],
