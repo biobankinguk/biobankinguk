@@ -1,21 +1,44 @@
+using Biobanks.Data.Entities;
 using Biobanks.Data.Transforms.Url;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 public class ProfileController : Controller
 {
+  private INetworkService _networkService;
+  private ILogoStorageProvider _logoStorageProvider;
+  private readonly IReferenceDataService<SopStatus> _sopStatusService;
+  private readonly UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> _claimsManager;
+  private readonly UserManager<ApplicationUser> _userManager;
+
+  public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
+    IReferenceDataService<SopStatus> sopStatusService, UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> claimsManager,
+    UserManager<ApplicationUser> userManager)
+  {
+    _networkService = networkService;
+    _logoStorageProvider = logoStorageProvider;
+    _sopStatusService = sopStatusService;
+    _claimsManager = claimsManager;
+    _userManager = userManager;
+  }
+
   [AllowAnonymous]
   //[Authorize(CustomClaimType.Network)]
   public async Task<ActionResult> Index()
@@ -107,7 +130,7 @@ public class ProfileController : Controller
     if (!create && model.RemoveLogo)
     {
       logoName = "";
-      await _biobankWriteService.RemoveLogoAsync(model.NetworkId.Value);
+      await _logoStorageProvider.RemoveLogoAsync(model.NetworkId.Value);
     }
     else if (!create && model.Logo != null)
     {
@@ -134,7 +157,8 @@ public class ProfileController : Controller
     if (create)
     {
       var network = await _networkService.Create(networkDto);
-      await _networkService.AddNetworkUser(User.Identity.GetUserId(), networkDto.NetworkId);
+      var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+      await _networkService.AddNetworkUser(currentUser.Id, networkDto.NetworkId);
 
       //update the request to show network created
       var request = await _networkService.GetRegistrationRequestByEmail(User.Identity.Name);
@@ -195,7 +219,7 @@ public class ProfileController : Controller
 
     var logoName =
         await
-            _biobankWriteService.StoreLogoAsync(
+            _logoStorageProvider.StoreLogoAsync(
                 logoStream,
                 logo.FileName,
                 logo.ContentType,
