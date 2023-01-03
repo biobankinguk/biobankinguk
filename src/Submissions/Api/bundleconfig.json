@@ -160,9 +160,9 @@
   {
     "outputFileName": "wwwroot/dist/js/Biobank/funders.min.js",
     "inputFiles": [
-      "Frontend/js/shared/registerentity-funder-viewmodel.js",
+      "Frontend/js/areas/Biobank/funders-type-ahead.js",
       "Frontend/js/areas/Biobank/funder-viewmodel.js",
-      "Frontend/js/areas/Biobank/funders-viewmodel.js",
+      "Frontend/js/areas/Biobank/funders-viewmodel.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
