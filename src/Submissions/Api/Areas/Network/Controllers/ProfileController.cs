@@ -1,9 +1,11 @@
 using Biobanks.Data.Transforms.Url;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -52,18 +54,16 @@ public class ProfileController : Controller
     //Extra form validation that the model state can't do for us
 
     //Logo, if any
-    if (model.Logo.Length > 1000000)
+    try
     {
-      throw new BadImageFormatException("Images must be less than 1Mb in size.");
-    };
-
-    if (!new[]
-    {
-    "image/gif", "image/jpeg", "image/pjpeg", "image/png"
-     }.Contains(model.Logo.ContentType))
-    {
-      throw new BadImageFormatException("Logo must be a valid GIF, JPEG or PNG file.");
+      model.Logo.ValidateAsLogo();
     }
+    catch (BadImageFormatException ex)
+    {
+      ModelState.AddModelError("", ex.Message);
+      return View(model);
+    }
+
     //URL, if any
     try
     {
@@ -187,7 +187,7 @@ public class ProfileController : Controller
     return RedirectToAction("Index");
   }
 
-  private async Task<string> UploadNetworkLogoAsync(HttpPostedFileBase logo, int? networkId)
+  private async Task<string> UploadNetworkLogoAsync(IFormFile logo, int? networkId)
   {
     const string networkLogoPrefix = "NETWORK-";
 
