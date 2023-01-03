@@ -198,7 +198,7 @@
       "Frontend/js/init/bootstrap-slider-knockout-binding.js",
       "Frontend/js/areas/Biobank/collection-sample-sets.js"
     ],
-    "minify": { "enabled": false },
+    "minify": { "enabled": true },
     "sourceMap": true
   },
   {
@@ -306,7 +306,7 @@
   {
     "outputFileName": "wwwroot/dist/js/Admin/country.min.js",
     "inputFiles": ["Frontend/js/areas/Admin/adac-country.js"],
-    "minify": { "enabled": false },
+    "minify": { "enabled": true },
     "sourceMap": true
   },
   {

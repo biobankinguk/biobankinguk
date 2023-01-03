@@ -513,7 +513,7 @@ var sampleSetVM;
 
 $(function () {
   ko.validation.rules["mustEqual"] = {
-	validator(val, otherVal) {
+	validator: function(val, otherVal) {
 	  return val === otherVal;
 	},
 	message: "The field must equal {0}",
