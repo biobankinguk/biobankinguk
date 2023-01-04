@@ -29,11 +29,11 @@
                 );
             })
             .map(function (i, elem) {
-                const val = $(this).val();
+                var val = $(this).val();
                 return val == null
                     ? null
                     : $.isArray(val)
-                        ? $.map(val, (innerVal) => ({ name: elem.name, value: innerVal }))
+                        ? $.map(val, function(innerVal) {return ({ name: elem.name, value: innerVal })})
                         : {
                             name: elem.name,
                             value:

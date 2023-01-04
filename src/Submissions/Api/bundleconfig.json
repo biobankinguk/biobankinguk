@@ -385,37 +385,37 @@
     "outputFileName": "wwwroot/dist/js/Admin/donor-counts.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-donor-counts.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/storage-temperatures.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-storage-temperatures.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/preservation-types.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-preservation-types.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/sop-status.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-sop-status.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/age-ranges.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-age-ranges.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/access-conditions.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-access-conditions.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/biobankactivity.min.js",
@@ -469,7 +469,7 @@
     "outputFileName": "wwwroot/dist/js/Admin/annual-statistic-group.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-annual-statistic-group.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
   {
     "outputFileName": "wwwroot/dist/js/Admin/tabs.min.js",
@@ -490,7 +490,7 @@
       "Frontend/js/pages/Admin/adac-extraction-procedure.js"
     ],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
 
   // Registration Domain Rules
@@ -498,7 +498,7 @@
     "outputFileName": "wwwroot/dist/js/Admin/email-config.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-email-config.js"],
     "minify": { "enabled": true },
-    "sourceMap": false
+    "sourceMap": true
   },
 
   // Site Config
