@@ -197,7 +197,6 @@
   },
   
   // Help Buttons
-  // TODO: Move this to /helpers and on pages as well.
   {
     "outputFileName": "wwwroot/dist/js/Biobank/help-buttons.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/help-popups.js"],
@@ -596,7 +595,7 @@
   {
     "outputFileName": "wwwroot/dist/js/Admin/extraction-procedure.min.js",
     "inputFiles": [
-      "Frontend/js/shared/serialize-checkbox-as-bool.js",
+      "Frontend/js/pages/Admin/serialize-checkbox-as-bool.js",
       "Frontend/js/pages/Admin/adac-extraction-procedure.js"
     ],
     "minify": { "enabled": true },
