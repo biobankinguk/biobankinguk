@@ -65,9 +65,9 @@ function AdacFunderViewModel() {
             form.data(successRedirect) + "?Name=" + data.name;
         } else {
           if (Array.isArray(data.errors)) {
-            for (var error of data.errors) {
+            data.errors.forEach(function (error, index) { 
               _this.dialogErrors.push(error);
-            }
+            })
           }
         }
       },

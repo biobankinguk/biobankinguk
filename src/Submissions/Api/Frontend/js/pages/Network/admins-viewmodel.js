@@ -66,9 +66,9 @@ function NetworkAdminsViewModel() {
             form.data("success-redirect") + "?Name=" + data.name;
         } else {
           if (Array.isArray(data.errors)) {
-            for (var error of data.errors) {
-              _this.dialogErrors.push(error);
-            }
+            data.errors.forEach(function (error, i) {
+              _this.dialogErrors.push(error)
+            })
           }
         }
       },

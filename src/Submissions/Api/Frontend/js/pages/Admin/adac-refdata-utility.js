@@ -46,9 +46,9 @@ function addRefData(adacRefdataVM, url, data, redirectTo, refdata) {
             }
             else {
                 if (Array.isArray(data.errors)) {
-                    for (var error of data.errors) {
-                        adacRefdataVM.dialogErrors.push(error);
-                    }
+                    data.errors.forEach(function (error, index) {
+                      adacRefdataVM.dialogErrors.push(error);
+                    })
                 }
             }
         }
@@ -71,9 +71,9 @@ function editRefData(adacRefdataVM, url, data, redirectTo, refdata) {
             }
             else {
                 if (Array.isArray(data.errors)) {
-                    for (var error of data.errors) {
-                        adacRefdataVM.dialogErrors.push(error);
-                    }
+                    data.errors.forEach(function (error, index) { 
+                      adacRefdataVM.dialogErrors.push(error);
+                    })
                 }
             }
         }

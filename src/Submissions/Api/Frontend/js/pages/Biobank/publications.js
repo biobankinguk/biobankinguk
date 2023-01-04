@@ -15,7 +15,11 @@ function link(name, classes, onclick, href) {
 
 // Ajax Calls
 function claimPublication(publicationId, accept) {
-    $.post("ClaimPublicationAjax", { publicationId, accept },
+    $.post("ClaimPublicationAjax",
+        {
+          publicationId: publicationId,
+          accept: accept
+        },
         function (response) {
             table.row("#" + publicationId).data(response).draw(false); // Update Row With New Data
         }
@@ -57,7 +61,7 @@ function formatStatus(data, type, row) {
 
 function formatAuthor(data, type, row) {
     if (data) {
-        let authorLink = $("<a>", {
+        var authorLink = $("<a>", {
             text: "see all",
             attr: {
                 href: "#",
@@ -67,7 +71,7 @@ function formatAuthor(data, type, row) {
             }
         }).get(0).outerHTML;
 
-        let authors = data.split(",")
+        var authors = data.split(",")
         return authors[0] + ((authors.length > 1) ? " et al. " + authorLink : "");
     }
     return "";
@@ -285,7 +289,7 @@ function PublicationsViewModel() {
             });
         } else if (action == _this.modal.modalModeApprove) {
             var publicationId = _this.modal.publicationId();
-            $.post("AddPublicationAjax", { publicationId }, function (data) {
+            $.post("AddPublicationAjax", { publicationId: publicationId }, function (data) {
                 //if successfull
                 if (data && !jQuery.isEmptyObject(data)) {
                     window.location.href = $(e.target).data("success-redirect")

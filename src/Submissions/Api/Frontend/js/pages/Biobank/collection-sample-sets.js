@@ -22,10 +22,11 @@ function preservationValidation() {
 		url: '/api/' + 'StorageTemperature' + "/" + selectedOption + "/preservationtype",
 		type: 'GET',
 		success: function (data) {
-			for (let i of data) {				
-				var temp = $("input[name='radPreservationType'][value='" + i + "']");
-				temp.attr('disabled', false);
-            }
+      data.forEach(
+				function(value, i) {
+        	var temp = $("input[name='radPreservationType'][value='" + value + "']");
+        	temp.attr('disabled', false);
+      })
 		}
 	});
 }

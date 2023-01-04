@@ -50,7 +50,7 @@ $(function () {
     });
   function onchangeAssociatedData() {
     // first get the id of the inputted ontologyTerm
-    const id = $(".diagnosis-search").attr("data-id")
+    var id = $(".diagnosis-search").attr("data-id")
       ? $(".diagnosis-search").attr("data-id")
       : null;
     $(".linked-data").remove();
@@ -59,17 +59,17 @@ $(function () {
     // next make an ajax call using the ontology term id
     $.ajax({
       type: "GET",
-      url: `/Biobank/GetAssociatedDataTypeViewsAjax?id=${id}`,
+      url: "/Biobank/GetAssociatedDataTypeViewsAjax?id=" + id,
       beforeSend: function () {
         setLoading(true); // Show loader icon
       },
       success: function (response) {
         var table = document.createElement("div");
         table.innerHTML = response.trim();
-        const itemList = table.getElementsByTagName("tr");
+        var itemList = table.getElementsByTagName("tr");
         // insert each row from result into the table under the right header
         Array.from(itemList).forEach(function (tableRow) {
-          $(tableRow).insertAfter(`.${tableRow.dataset.groupid}`);
+          $(tableRow).insertAfter("." + tableRow.dataset.groupid);
         });
       },
       complete: function () {

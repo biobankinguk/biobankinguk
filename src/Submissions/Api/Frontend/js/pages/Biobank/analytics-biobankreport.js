@@ -99,7 +99,8 @@ function perQuarterPlot(container, data) {
 	Plotly.newPlot(container, data, layout, config);
 }
 
-function barPlot(container, data, cutoff = -1) {
+function barPlot(container, data, cutoff) {
+  cutoff = cutoff || -1;
 	if (cutoff > 0) {
 		data[0].x = data[0].x.slice(0, cutoff);
 		data[0].y = data[0].y.slice(0, cutoff);
