@@ -22,8 +22,8 @@ using System.Threading.Tasks;
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 public class ProfileController : Controller
 {
-  private INetworkService _networkService;
-  private ILogoStorageProvider _logoStorageProvider;
+  private readonly INetworkService _networkService;
+  private readonly ILogoStorageProvider _logoStorageProvider;
   private readonly IReferenceDataService<SopStatus> _sopStatusService;
   private readonly UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> _claimsManager;
   private readonly UserManager<ApplicationUser> _userManager;
@@ -52,14 +52,11 @@ public class ProfileController : Controller
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
           FeedbackMessageType.Info);
 
-    //ToDo: Session
-    /*   var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
+    var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
 
         return activeOrganisationType == (int)ActiveOrganisationType.NewNetwork
             ? View(await NewNetworkDetailsModelAsync()) //no network id means we're dealing with a request
-            : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network*/
-
-    return View(await NewNetworkDetailsModelAsync());
+            : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network
   }
 
   [HttpPost]
