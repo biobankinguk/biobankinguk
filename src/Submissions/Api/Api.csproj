@@ -67,8 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Network\Models\" />
-    <Folder Include="Areas\Network\Views\" />
     <Folder Include="Auth\Entities\" />
     <Folder Include="Content\images\" />
     <Folder Include="Pages\" />

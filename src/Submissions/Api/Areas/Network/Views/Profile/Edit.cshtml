@@ -101,7 +101,7 @@
     </div>
 
     @* Make these visible if superuser, otherwise include as hidden fields *@
-    if  (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User),Role.SuperUser.ToString()))
+    if  (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User),Role.SuperUser))
     {
         <div class="form-group">
             @Html.LabelFor(x => x.ContactHandoverEnabled, new { @class = "col-sm-2 control-label" })
