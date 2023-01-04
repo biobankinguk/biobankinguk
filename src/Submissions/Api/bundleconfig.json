@@ -145,18 +145,24 @@
   },
   
   // Biobank Area
+  
+  // Admins
   {
     "outputFileName": "wwwroot/dist/js/Biobank/admins.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/admins-viewmodel.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Annual Stats
   {
     "outputFileName": "wwwroot/dist/js/Biobank/annualstats.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/annualstats.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Funders
   {
     "outputFileName": "wwwroot/dist/js/Biobank/funders.min.js",
     "inputFiles": [
@@ -167,6 +173,8 @@
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Edit 
   {
     "outputFileName": "wwwroot/dist/js/Biobank/edit-details.min.js",
     "inputFiles": [
@@ -176,6 +184,8 @@
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Collections and Capability CRUD
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection-and-capability-crud.min.js",
     "inputFiles": [
@@ -185,12 +195,17 @@
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Help Buttons
+  // TODO: Move this to /helpers and on pages as well.
   {
     "outputFileName": "wwwroot/dist/js/Biobank/help-buttons.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/help-popups.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Sample Sets CRUD
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection-sample-sets.min.js",
     "inputFiles": [
@@ -201,48 +216,65 @@
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Collections
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collections.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/collections.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Capabilities
   {
     "outputFileName": "wwwroot/dist/js/Biobank/capabilities.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/capabilities.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Publications
   {
     "outputFileName": "wwwroot/dist/js/Biobank/publications.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/publications.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Collection
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/collection.js"],
     "minify": { "enabled": true },
-    "sourceMap": true
+    "source
+    Map": true
   },
+  
+  // Capability
   {
     "outputFileName": "wwwroot/dist/js/Biobank/capability.min.js",
     "inputFiles": ["Frontend/js/shared/associated-data-admin.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Sample Set
   {
     "outputFileName": "wwwroot/dist/js/Biobank/sampleset.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/sampleset.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Network Acceptance
   {
     "outputFileName": "wwwroot/dist/js/Biobank/networkaccept.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/network-acceptance.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Submissions
   {
     "outputFileName": "wwwroot/dist/js/Biobank/submissions.min.js",
     "inputFiles": ["Frontend/js/pages/Biobank/submissions.js"],
@@ -251,18 +283,24 @@
   },
   
   //Network Admin Area
+  
+  // Admins
   {
     "outputFileName": "wwwroot/dist/js/Network/admins.min.js",
     "inputFiles": ["Frontend/js/pages/Network/admins-viewmodel.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Edit
   {
     "outputFileName": "wwwroot/dist/js/Network/edit-details.min.js",
     "inputFiles": ["Frontend/js/pages/Network/details-logo.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Add Biobank
   {
     "outputFileName": "wwwroot/dist/js/Network/add-biobank.min.js",
     "inputFiles": [
@@ -271,6 +309,8 @@
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Network Biobanks
   {
     "outputFileName": "wwwroot/dist/js/Network/biobanks.min.js",
     "inputFiles": ["Frontend/js/pages/Network/network-biobanks.js"],
@@ -278,211 +318,281 @@
     "sourceMap": true
   },
   
-  // //ADAC Admin Area
+  // Admin Area
+  
+  // Disease Statuses
   {
     "outputFileName": "wwwroot/dist/js/Admin/disease-statuses.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-disease-statuses.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Material Types
   {
     "outputFileName": "wwwroot/dist/js/Admin/material-types.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-material-types.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Material Type Groups
   {
     "outputFileName": "wwwroot/dist/js/Admin/material-type-groups.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-material-type-groups.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Sexes
   {
     "outputFileName": "wwwroot/dist/js/Admin/sexes.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-sexes.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Country
   {
     "outputFileName": "wwwroot/dist/js/Admin/country.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-country.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // County
   {
     "outputFileName": "wwwroot/dist/js/Admin/county.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-county.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Associated Data Types
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-types.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-associated-data-types.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Associated Data Type Groups
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-type-groups.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-associated-data-type-group.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Registration Reasons
   {
     "outputFileName": "wwwroot/dist/js/Admin/registration-reasons.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-registration-reasons.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Collection Percentages
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-percentages.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-collection-percentages.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Sample Collection Modes
   {
     "outputFileName": "wwwroot/dist/js/Admin/sample-collection-modes.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-sample-collection-modes.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Collection Type
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-type.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-collection-type.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Consent Restriction
   {
     "outputFileName": "wwwroot/dist/js/Admin/consent-restriction.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-consent-restriction.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Collection Status
   {
     "outputFileName": "wwwroot/dist/js/Admin/collection-status.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-collection-status.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Associated Data Procurement Timeframe
   {
     "outputFileName": "wwwroot/dist/js/Admin/associated-data-procurement-time-frame.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-associated-data-procurement-time-frame.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Service Offering
   {
     "outputFileName": "wwwroot/dist/js/Admin/service-offering.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-service-offering.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Macroscopic Assessments
   {
     "outputFileName": "wwwroot/dist/js/Admin/macro-assessments.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-marco-assessments.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Donor Counts
   {
     "outputFileName": "wwwroot/dist/js/Admin/donor-counts.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-donor-counts.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Storage Temperatures
   {
     "outputFileName": "wwwroot/dist/js/Admin/storage-temperatures.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-storage-temperatures.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Preservation Types
   {
     "outputFileName": "wwwroot/dist/js/Admin/preservation-types.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-preservation-types.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Sop Status
   {
     "outputFileName": "wwwroot/dist/js/Admin/sop-status.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-sop-status.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Age Ranges
   {
     "outputFileName": "wwwroot/dist/js/Admin/age-ranges.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-age-ranges.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Access Conditions
   {
     "outputFileName": "wwwroot/dist/js/Admin/access-conditions.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-access-conditions.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Biobank Activity
   {
     "outputFileName": "wwwroot/dist/js/Admin/biobankactivity.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-biobankactivity.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Biobanks Admin
   {
     "outputFileName": "wwwroot/dist/js/Admin/biobanks.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-biobanks.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Delete Biobank
   {
     "outputFileName": "wwwroot/dist/js/Admin/deletebiobank.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-deletebiobank.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Delete Funder
   {
     "outputFileName": "wwwroot/dist/js/Admin/deletefunder.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-funders.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Admin Networks
   {
     "outputFileName": "wwwroot/dist/js/Admin/networks.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-networks.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Requests
   {
     "outputFileName": "wwwroot/dist/js/Admin/requests.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-requests.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Historical Requests
   {
     "outputFileName": "wwwroot/dist/js/Admin/historical.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-historical.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Annual Statistics
   {
     "outputFileName": "wwwroot/dist/js/Admin/annual-statistics.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-annual-statistics.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Annual Statistics Group
   {
     "outputFileName": "wwwroot/dist/js/Admin/annual-statistic-group.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-annual-statistic-group.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Admin Tabs
   {
     "outputFileName": "wwwroot/dist/js/Admin/tabs.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-tabs.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Block Allow List Rules
   {
     "outputFileName": "wwwroot/dist/js/Admin/block-allow-list.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-blockallow-list.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
+  
+  // Extraction Procedure
   {
     "outputFileName": "wwwroot/dist/js/Admin/extraction-procedure.min.js",
     "inputFiles": [
