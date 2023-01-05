@@ -222,6 +222,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<ISubmissionService, SubmissionService>()
     .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
     .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
+    .AddTransient<ISampleSetService, SampleSetService>()
 
     // Search Services
     .AddTransient<ICollectionSearchProvider>(
