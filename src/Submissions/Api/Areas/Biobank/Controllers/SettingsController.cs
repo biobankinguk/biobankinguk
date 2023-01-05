@@ -49,7 +49,6 @@ public class SettingsController : Controller
   [Authorize(CustomClaimType.Biobank)]
         public async Task<ActionResult> Admins(int biobankId)
         {
-
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
 
@@ -65,7 +64,7 @@ public class SettingsController : Controller
         {
             //we exclude the current user when we are making the list for them
             //but we may want the full list in other circumstances
-
+            
             var admins =
                 (await _biobankService.ListBiobankAdminsAsync(biobankId))
                     .Select(bbAdmin => new RegisterEntityAdminModel
@@ -88,7 +87,7 @@ public class SettingsController : Controller
         public async Task<JsonResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
         {
             //timeStamp can be used to avoid caching issues, notably on IE
-
+            
             return Json(await GetAdminsAsync(biobankId, excludeCurrentUser));
         }
 
