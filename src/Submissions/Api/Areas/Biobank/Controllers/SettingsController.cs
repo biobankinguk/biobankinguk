@@ -8,7 +8,7 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
+using Biobanks.Submissions.Api.Services.EmailServices;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -22,7 +22,7 @@ public class SettingsController : Controller
 {
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IBiobankService _biobankService;
-  private readonly IEmailService _emailService;
+  private readonly EmailService _emailService;
   private readonly IOrganisationDirectoryService _organisationDirectoryService;
   private readonly IReferenceDataService<AccessCondition> _accessConditionService;
   private readonly IReferenceDataService<CollectionType> _collectionTypeService;
@@ -31,7 +31,7 @@ public class SettingsController : Controller
   public SettingsController(
       UserManager<ApplicationUser> userManager,
       IBiobankService biobankService,
-      IEmailService emailService,
+      EmailService emailService,
       IOrganisationDirectoryService organisationDirectoryService,
       IReferenceDataService<AccessCondition> accessConditionService,
       IReferenceDataService<CollectionType> collectionTypeService,
@@ -46,7 +46,7 @@ public class SettingsController : Controller
       _tokenLoggingService = tokenLoggingService;
   }
 
-  [Authorize(CustomClaimType.Biobank)]
+        [Authorize(CustomClaimType.Biobank)]
         public async Task<ActionResult> Admins(int biobankId)
         {
             if (biobankId == 0)
