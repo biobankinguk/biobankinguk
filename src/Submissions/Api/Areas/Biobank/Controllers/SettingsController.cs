@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
+using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Biobank;
+using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -26,25 +28,30 @@ public class SettingsController : Controller
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IEmailService _emailService;
   private readonly ITokenLoggingService _tokenLoggingService;
-  
+  private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+  private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+
   public SettingsController(
       BiobankService biobankService,
       OrganisationDirectoryService organisationDirectoryService,
       UserManager<ApplicationUser> userManager,
       IEmailService emailService,
-      ITokenLoggingService tokenLoggingService)
+      ITokenLoggingService tokenLoggingService,
+      IReferenceDataService<AccessCondition> accessConditionService,
+      IReferenceDataService<CollectionType> collectionTypeService)
   {
       _biobankService = biobankService;
       _organisationDirectoryService = organisationDirectoryService;
       _userManager = userManager;
       _emailService = emailService;
       _tokenLoggingService = tokenLoggingService;
+      _accessConditionService = accessConditionService;
+      _collectionTypeService = collectionTypeService;
   }
 
   [Authorize(CustomClaimType.Biobank)]
-        public async Task<ActionResult> Admins()
+        public async Task<ActionResult> Admins(int biobankId)
         {
-            var biobankId = SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session);
 
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
@@ -199,9 +206,8 @@ public class SettingsController : Controller
         }
 
         [Authorize(CustomClaimType.Biobank)]
-        public async Task<ActionResult> DeleteAdmin(string biobankUserId, string userFullName)
+        public async Task<ActionResult> DeleteAdmin(int biobankId, string biobankUserId, string userFullName)
         {
-            var biobankId = SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session);
 
             if (biobankId == 0)
                 return RedirectToAction("Index", "Home");
@@ -217,6 +223,74 @@ public class SettingsController : Controller
             this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
 
             return RedirectToAction("Admins");
+        }
+        
+        [HttpGet]
+        [Authorize(CustomClaimType.Biobank)]
+        public async Task<ActionResult> Submissions(int biobankId)
+        {
+            var model = new SubmissionsModel();
+
+            //populate drop downs
+            model.AccessConditions = (await _accessConditionService.List())
+                .Select(x => new ReferenceDataModel
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                }).OrderBy(x => x.SortOrder);
+
+            model.CollectionTypes = (await _collectionTypeService.List())
+                .Select(x => new ReferenceDataModel
+                {
+                    Id = x.Id,
+                    Description = x.Value,
+                    SortOrder = x.SortOrder
+                }).OrderBy(x => x.SortOrder);
+
+            //get currently selected values from org (if applicable)
+            var biobank = await _organisationDirectoryService.GetForBulkSubmissions(biobankId);
+
+            model.BiobankId = biobankId;
+            model.AccessCondition = biobank.AccessConditionId;
+            model.CollectionType = biobank.CollectionTypeId;
+            model.ClientId = biobank.ApiClients.FirstOrDefault()?.ClientId;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(CustomClaimType.Biobank)]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Submissions(SubmissionsModel model, int biobankId)
+        {
+            //update Organisations table
+            var biobank = await _organisationDirectoryService.Get(biobankId);
+            biobank.AccessConditionId = model.AccessCondition;
+            biobank.CollectionTypeId = model.CollectionType;
+
+            await _organisationDirectoryService.Update(biobank);
+
+            //Set feedback and redirect
+            this.SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
+
+            return RedirectToAction("Submissions");
+        }
+
+        [HttpPost]
+        [Authorize(CustomClaimType.Biobank)]
+        public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
+        {
+            var credentials =
+                await _organisationDirectoryService.IsApiClient(biobankId)
+                    ? await _organisationDirectoryService.GenerateNewSecretForBiobank(biobankId)
+                    : await _organisationDirectoryService.GenerateNewApiClient(biobankId);
+
+            return Json(new
+            {
+                ClientId = credentials.Key,
+                ClientSecret = credentials.Value
+            });
         }
   
 }
