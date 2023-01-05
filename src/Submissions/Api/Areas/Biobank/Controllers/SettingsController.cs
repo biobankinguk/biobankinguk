@@ -3,16 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Biobank;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -23,30 +20,30 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 [Area("Biobank")]
 public class SettingsController : Controller
 {
-  private readonly BiobankService _biobankService;
-  private readonly OrganisationDirectoryService _organisationDirectoryService;
   private readonly UserManager<ApplicationUser> _userManager;
+  private readonly IBiobankService _biobankService;
   private readonly IEmailService _emailService;
-  private readonly ITokenLoggingService _tokenLoggingService;
+  private readonly IOrganisationDirectoryService _organisationDirectoryService;
   private readonly IReferenceDataService<AccessCondition> _accessConditionService;
   private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+  private readonly ITokenLoggingService _tokenLoggingService;
 
   public SettingsController(
-      BiobankService biobankService,
-      OrganisationDirectoryService organisationDirectoryService,
       UserManager<ApplicationUser> userManager,
+      IBiobankService biobankService,
       IEmailService emailService,
-      ITokenLoggingService tokenLoggingService,
+      IOrganisationDirectoryService organisationDirectoryService,
       IReferenceDataService<AccessCondition> accessConditionService,
-      IReferenceDataService<CollectionType> collectionTypeService)
+      IReferenceDataService<CollectionType> collectionTypeService,
+      ITokenLoggingService tokenLoggingService)
   {
-      _biobankService = biobankService;
-      _organisationDirectoryService = organisationDirectoryService;
       _userManager = userManager;
+      _biobankService = biobankService;
       _emailService = emailService;
-      _tokenLoggingService = tokenLoggingService;
+      _organisationDirectoryService = organisationDirectoryService;
       _accessConditionService = accessConditionService;
       _collectionTypeService = collectionTypeService;
+      _tokenLoggingService = tokenLoggingService;
   }
 
   [Authorize(CustomClaimType.Biobank)]
@@ -59,7 +56,8 @@ public class SettingsController : Controller
             return View(new BiobankAdminsModel
             {
                 BiobankId = biobankId,
-                Admins = await GetAdminsAsync(biobankId, excludeCurrentUser: true)
+                Admins = await GetAdminsAsync(biobankId, excludeCurrentUser: true),
+                RequestUrl = HttpContext.Request.GetEncodedUrl()
             });
         }
 
@@ -185,7 +183,7 @@ public class SettingsController : Controller
                     new EmailAddress(model.Email),
                     model.Name,
                     model.Entity,
-                    Url.Action("Index", "Biobank", null, Request.GetEncodedUrl()));
+                    Url.Action("Index", "Profile", null, Request.GetEncodedUrl()));
             }
 
             //Add the user/biobank relationship
