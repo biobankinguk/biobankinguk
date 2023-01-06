@@ -216,12 +216,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
         ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
     .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
     .AddTransient<ISampleService, SampleService>()
+    .AddTransient<ISampleSetService, SampleSetService>()
     .AddTransient<ISampleWriteService, SampleWriteService>()
     .AddTransient<ISampleValidationService, SampleValidationService>()
     .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
     .AddTransient<ISubmissionService, SubmissionService>()
     .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
     .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
+    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+    .AddTransient<IBiobankIndexService, BiobankIndexService>()
+    .AddTransient<IContentPageService, ContentPageService>()
+    .AddTransient<INetworkService, NetworkService>()
 
     // Search Services
     .AddTransient<ICollectionSearchProvider>(
@@ -258,8 +263,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     )
     .AddTransient<ISearchProvider, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
-    .AddTransient<IContentPageService, ContentPageService>()
-    .AddTransient<INetworkService, NetworkService>()
 
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
@@ -291,12 +294,10 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
 {
     builder.Services
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
-        .AddTransient<IBiobankIndexService, BiobankIndexService>()
         .AddTransient<IBiobankReadService, BiobankReadService>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
         .AddTransient<IIndexProvider, LegacyIndexProvider>()
         .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
-        .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
         .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
         .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
