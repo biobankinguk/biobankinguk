@@ -19,16 +19,19 @@ public class ReportController : Controller
     private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
     private readonly IConfigService _configService;
     private readonly IMapper _mapper;
+    private readonly TelemetryClient _telemetryClient;
     
     public ReportController(
         IAnalyticsReportGenerator analyticsReportGenerator,
         IConfigService configService,
-        IMapper mapper
+        IMapper mapper,
+        TelemetryClient telemetryClient
         )
     {
         _analyticsReportGenerator = analyticsReportGenerator;
         _configService = configService;
         _mapper = mapper;
+        _telemetryClient = telemetryClient;
     }
 
     public async Task<ActionResult> Analytics(int biobankId = 0, int year = 0, int endQuarter = 0, int reportPeriod = 0)
@@ -65,8 +68,7 @@ public class ReportController : Controller
             var outer = new Exception(message, e);
 
             // Log Error via Application Insights
-            var ai = new TelemetryClient();
-            ai.TrackException(outer);
+            _telemetryClient.TrackException(outer);
 
             ModelState.AddModelError(String.Empty, message);
             return View(new BiobankAnalyticReport());
