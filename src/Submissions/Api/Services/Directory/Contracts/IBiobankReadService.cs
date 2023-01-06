@@ -17,13 +17,11 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm);
         Task<IEnumerable<Collection>> ListCollectionsAsync();
         Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId);
-        Task<SampleSet> GetSampleSetByIdAsync(int id);
         Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id);
         bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId);
         bool CanThisBiobankAdministerThisSampleSet(int biobankId, int sampleSetId);
         bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId);
 
-        IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
 
         Task<bool> IsMaterialTypeAssigned(int id);
 

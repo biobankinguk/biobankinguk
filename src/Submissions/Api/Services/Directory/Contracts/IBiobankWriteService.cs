@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Models.Directory;
 using System.Collections.Generic;
 using System.IO;
@@ -8,9 +8,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
     public interface IBiobankWriteService
     {
-        Task AddSampleSetAsync(SampleSet sampleSet);
-        Task UpdateSampleSetAsync(SampleSet sampleSet);
-        Task DeleteSampleSetAsync(int id);
 
         Task AddCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
         Task UpdateCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
