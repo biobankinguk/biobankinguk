@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Settings;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
