@@ -2,6 +2,7 @@ using Biobanks.Data.Entities;
 using Biobanks.Data.Transforms.Url;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -258,5 +259,238 @@ public class ProfileController : Controller
       HandoverNonMembers = network.HandoverNonMembers,
       HandoverNonMembersUrlParamName = network.HandoverNonMembersUrlParamName
     };
+  }
+
+
+  [HttpPost]
+  public JsonResult AddTempLogo()
+  {
+    if (!System.Web.HttpContext.Current.Request.Files.AllKeys.Any())
+      return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+
+    var fileBase = System.Web.HttpContext.Current.Request.Files["TempLogo"];
+
+    if (fileBase == null)
+      return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+
+    if (fileBase.ContentLength > 1000000)
+      return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
+
+    var fileBaseWrapper = new HttpPostedFileWrapper(fileBase);
+
+    try
+    {
+      if (fileBaseWrapper.ValidateAsLogo())
+      {
+        var logoStream = fileBaseWrapper.ToProcessableStream();
+        Session[TempNetworkLogoSessionId] =
+            ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
+            .ToArray();
+        Session[TempNetworkLogoContentTypeSessionId] = fileBaseWrapper.ContentType;
+
+        return
+            Json(new KeyValuePair<bool, string>(true,
+                Url.Action("TempLogo", "Network")));
+      }
+    }
+    catch (BadImageFormatException e)
+    {
+      return Json(new KeyValuePair<bool, string>(false, e.Message));
+    }
+
+    return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+  }
+
+  [HttpGet]
+  public ActionResult TempLogo(string id)
+  {
+    return File((byte[])Session[TempNetworkLogoSessionId], Session[TempNetworkLogoContentTypeSessionId].ToString());
+  }
+
+  [HttpPost]
+  public void RemoveTempLogo()
+  {
+    Session[TempNetworkLogoSessionId] = null;
+    Session[TempNetworkLogoContentTypeSessionId] = null;
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> Biobanks()
+  {
+    var networkId = SessionHelper.GetNetworkId(Session);
+    var networkBiobanks =
+        (await _organisationService.ListByNetworkId(SessionHelper.GetNetworkId(Session))).ToList();
+
+    var biobanks = networkBiobanks.Select(x => new NetworkBiobankModel
+    {
+      BiobankId = x.OrganisationId,
+      Name = x.Name
+    }).ToList();
+
+    foreach (var biobank in biobanks)
+    {
+      //get the admins
+      biobank.Admins =
+          (await _biobankReadService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => x.Email).ToList();
+
+      var organisationNetwork = await _networkService.GetOrganisationNetwork(biobank.BiobankId, networkId);
+      biobank.ApprovedDate = organisationNetwork.ApprovedDate;
+    }
+
+    //Get OrganisationNetwork with biobankId and networkId
+
+    var model = new NetworkBiobanksModel
+    {
+      Biobanks = biobanks
+    };
+
+    return View(model);
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> DeleteBiobank(int biobankId, string biobankName)
+  {
+    try
+    {
+      await _networkService.RemoveOrganisationFromNetwork(biobankId, SessionHelper.GetNetworkId(Session));
+
+      //send back to the Biobanks list, with feedback (the list may be very long!
+      this.SetTemporaryFeedbackMessage(biobankName + " has been removed from your network!", FeedbackMessageType.Success);
+    }
+    catch
+    {
+      this.SetTemporaryFeedbackMessage($"{biobankName} could not be deleted.", FeedbackMessageType.Danger);
+    }
+
+    return RedirectToAction("Biobanks");
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public ActionResult AddBiobank()
+  {
+    return View(new AddBiobankToNetworkModel());
+  }
+
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model)
+  {
+    //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
+    var biobank = await _organisationService.GetByName(model.BiobankName);
+
+    var networkId = SessionHelper.GetNetworkId(Session);
+    var network = await _networkService.Get(networkId);
+
+    //Get all emails from admins and store in list
+    var networkAdmins = await GetAdminsAsync(networkId, false);
+    var networkEmails = new List<string>();
+    foreach (var admin in networkAdmins)
+    {
+      if (admin.EmailConfirmed == true)
+      {
+        networkEmails.Add(admin.UserEmail);
+      }
+
+    }
+    //Add network contact email
+    networkEmails.Add(network.Email);
+    var biobankAdmins =
+        (await _biobankReadService.ListBiobankAdminsAsync(biobank.OrganisationId))
+            .Select(bbAdmin => new RegisterEntityAdminModel
+            {
+              UserId = bbAdmin.Id,
+              UserFullName = bbAdmin.Name,
+              UserEmail = bbAdmin.Email,
+              EmailConfirmed = bbAdmin.EmailConfirmed
+            }).ToList();
+    var biobankEmails = new List<string>();
+    foreach (var admin in biobankAdmins)
+    {
+      if (admin.EmailConfirmed == true)
+      {
+        biobankEmails.Add(admin.UserEmail);
+      }
+    }
+    biobankEmails.Add(biobank.ContactEmail);
+
+
+    var trustedBiobanks = await _configService.GetSiteConfig(ConfigKey.TrustBiobanks);
+
+    if (biobank == null)
+    {
+      this.SetTemporaryFeedbackMessage("We couldn't find a Biobank with the name you entered.", FeedbackMessageType.Danger);
+      return View(model);
+    }
+
+    if (biobank.IsSuspended)
+    {
+      this.SetTemporaryFeedbackMessage($"{biobank.Name} cannot be added to a network at this time.", FeedbackMessageType.Danger);
+      return View(model);
+    }
+
+    try
+    {
+      var result = false;
+      var approved = false;
+      if (trustedBiobanks.Value == "true" && networkEmails.Any(biobankEmails.Contains))
+      {
+        result =
+        await
+            _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
+                SessionHelper.GetNetworkId(Session), model.BiobankExternalID, true);
+        approved = true;
+      }
+      else
+      {
+        result =
+        await
+            _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
+        SessionHelper.GetNetworkId(Session), model.BiobankExternalID, false);
+      }
+
+      if (result)
+      {
+        if (trustedBiobanks.Value == "true" && !approved)
+        {
+          //Send notification email to biobank
+          await _emailService.SendNewBiobankRegistrationNotification(
+              biobank.ContactEmail,
+              model.BiobankName,
+              network.Name,
+              Url.Action("NetworkAcceptance", "Biobank", null, Request.Url.Scheme)
+                  );
+        }
+
+        //send back to the Biobanks list, with feedback
+        this.SetTemporaryFeedbackMessage(model.BiobankName + " has been successfully added to your network!",
+            FeedbackMessageType.Success);
+        return RedirectToAction("Biobanks");
+      }
+
+      this.SetTemporaryFeedbackMessage(model.BiobankName + " is already in your network.",
+          FeedbackMessageType.Danger);
+    }
+    catch
+    {
+      this.SetTemporaryFeedbackMessage($"{biobank.Name} cannot be added to a network at this time.", FeedbackMessageType.Danger);
+    }
+
+    return View(model);
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public async Task<JsonResult> SearchBiobanks(string wildcard)
+  {
+    var biobanks = await _organisationService.List(wildcard, false);
+
+    var biobankResults = biobanks
+        .Select(x => new
+        {
+          Id = x.OrganisationId,
+          Name = x.Name
+        }).ToList();
+
+    return Json(biobankResults, JsonRequestBehavior.AllowGet);
   }
 }
