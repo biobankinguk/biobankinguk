@@ -261,6 +261,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
     .AddTransient<IContentPageService, ContentPageService>()
     .AddTransient<INetworkService, NetworkService>()
+    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+    .AddTransient<IBiobankIndexService, BiobankIndexService>()
 
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
@@ -292,12 +294,10 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
 {
     builder.Services
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
-        .AddTransient<IBiobankIndexService, BiobankIndexService>()
         .AddTransient<IBiobankReadService, BiobankReadService>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
         .AddTransient<IIndexProvider, LegacyIndexProvider>()
         .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
-        .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
         .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
         .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
