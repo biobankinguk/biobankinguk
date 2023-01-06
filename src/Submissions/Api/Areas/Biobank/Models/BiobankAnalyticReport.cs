@@ -18,9 +18,9 @@ public class BiobankAnalyticReport
     public ContactRequests ContactRequests { get; set; }
 
     public bool IsNullOrEmpty() =>
-        (ProfilePageViews?.IsEmpty() != false) &&
-        (SearchActivity?.IsEmpty() != false) &&
-        (ContactRequests?.IsEmpty() != false);
+        ProfilePageViews.IsEmpty() &&
+        SearchActivity.IsEmpty() &&
+        ContactRequests.IsEmpty();
 }
 
 public class ProfileStatus
@@ -41,10 +41,10 @@ public class ProfilePageViews
     public IList<int> RouteCount { get; set; }
 
     public bool IsEmpty() => (
-        ViewsPerQuarter?.Count() +
-        RouteCount?.Count() +
-        ViewsAverages?.Count() +
-        ProfileQuarters?.Where(x => x.QuarterCount.Count > 0).Count())
+        ViewsPerQuarter.Count +
+        RouteCount.Count +
+        ViewsAverages.Count +
+        ProfileQuarters.Count(x => x.QuarterCount.Count > 0))
         == 0;
 }
 
@@ -62,12 +62,12 @@ public class SearchActivity
     public IList<int> SearchFilterCount { get; set; }
 
     public bool IsEmpty() => (
-        SearchPerQuarter?.Count() +
-        SearchAverages?.Count() +
-        SearchTypeCount?.Count() +
-        SearchTermCount?.Count() +
-        SearchFilterCount?.Count() +
-        SearchQuarters?.Where(x => x.QuarterCount.Count > 0).Count())
+        SearchPerQuarter.Count +
+        SearchAverages.Count +
+        SearchTypeCount.Count +
+        SearchTermCount.Count +
+        SearchFilterCount.Count +
+        SearchQuarters.Count(x => x.QuarterCount.Count > 0))
         == 0;
 }
 
@@ -79,9 +79,9 @@ public class ContactRequests
     public IList<double> ContactAverages { get; set; }
 
     public bool IsEmpty() => (
-        ContactsPerQuarter?.Count() +
-        ContactAverages?.Count() +
-        ContactQuarters?.Where(x => x.QuarterCount.Count > 0).Count())
+        ContactsPerQuarter.Count +
+        ContactAverages.Count +
+        ContactQuarters.Count(x => x.QuarterCount.Count > 0))
         == 0;
 }
 
@@ -91,5 +91,5 @@ public class QuarterlyCounts
     public int Total { get; set; }
     public IList<int> QuarterCount { get; set; }
 
-    public bool IsEmpty() => QuarterCount?.Count() == 0;
+    public bool IsEmpty() => QuarterCount.Count == 0;
 }
