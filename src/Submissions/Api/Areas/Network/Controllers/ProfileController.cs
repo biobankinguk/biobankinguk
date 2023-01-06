@@ -1,7 +1,7 @@
 using Biobanks.Data.Entities;
 using Biobanks.Data.Transforms.Url;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
+using Biobanks.Submissions.Api.Areas.Network.Models;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
@@ -12,12 +12,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
@@ -41,6 +39,28 @@ public class ProfileController : Controller
     _sopStatusService = sopStatusService;
     _claimsManager = claimsManager;
     _userManager = userManager;
+  }
+
+  private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int networkId, bool excludeCurrentUser)
+  {
+    //we exclude the current user when we are making the list for them
+    //but we may want the full list in other circumstances
+    var admins =
+        (await _networkService.ListAdmins(networkId))
+            .Select(nwAdmin => new RegisterEntityAdminModel
+            {
+              UserId = nwAdmin.Id,
+              UserFullName = nwAdmin.Name,
+              UserEmail = nwAdmin.Email,
+              EmailConfirmed = nwAdmin.EmailConfirmed
+            }).ToList();
+
+    if (excludeCurrentUser)
+    {
+      admins.Remove(admins.FirstOrDefault(x => x.UserId == _userManager.GetUserId(User)));
+    }
+
+    return admins;
   }
 
   [AllowAnonymous]
@@ -261,6 +281,7 @@ public class ProfileController : Controller
     };
   }
 
+  #region Temp Logo Management
 
   [HttpPost]
   public JsonResult AddTempLogo()
@@ -314,6 +335,10 @@ public class ProfileController : Controller
     Session[TempNetworkLogoContentTypeSessionId] = null;
   }
 
+  #endregion
+
+  #region Biobank membership
+
   [Authorize(CustomClaimType.Network)]
   public async Task<ActionResult> Biobanks()
   {
@@ -339,7 +364,7 @@ public class ProfileController : Controller
 
     //Get OrganisationNetwork with biobankId and networkId
 
-    var model = new NetworkBiobanksModel
+    var model = new Admin.Models.Network.NetworkBiobanksModel
     {
       Biobanks = biobanks
     };
@@ -405,6 +430,7 @@ public class ProfileController : Controller
               EmailConfirmed = bbAdmin.EmailConfirmed
             }).ToList();
     var biobankEmails = new List<string>();
+
     foreach (var admin in biobankAdmins)
     {
       if (admin.EmailConfirmed == true)
@@ -493,4 +519,7 @@ public class ProfileController : Controller
 
     return Json(biobankResults, JsonRequestBehavior.AllowGet);
   }
+
+  #endregion
+
 }
