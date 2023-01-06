@@ -84,11 +84,11 @@ public class SettingsController : Controller
             return admins;
         }
 
-        public async Task<JsonResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
+        public async Task<ActionResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
         {
             //timeStamp can be used to avoid caching issues, notably on IE
             
-            return Json(await GetAdminsAsync(biobankId, excludeCurrentUser));
+            return Ok(await GetAdminsAsync(biobankId, excludeCurrentUser));
         }
 
         public ActionResult InviteAdminSuccess(string name)
@@ -115,11 +115,11 @@ public class SettingsController : Controller
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
+        public async Task<ActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
         {
             if (!ModelState.IsValid)
             {
-                return Json(new
+                return Ok(new
                 {
                     success = false,
                     errors = ModelState.Values
@@ -166,7 +166,7 @@ public class SettingsController : Controller
                 }
                 else
                 {
-                    return Json(new
+                    return Ok(new
                     {
                         success = false,
                         errors = result.Errors.ToArray()
@@ -192,7 +192,7 @@ public class SettingsController : Controller
             await _userManager.AddToRolesAsync(user, new List<string> { Role.BiobankAdmin }); //what happens if they're already in the role?
 
             //return success, and enough user details for adding to the viewmodel's list
-            return Json(new
+            return Ok(new
             {
                 success = true,
                 userId = user.Id,
@@ -283,7 +283,7 @@ public class SettingsController : Controller
                     ? await _organisationDirectoryService.GenerateNewSecretForBiobank(biobankId)
                     : await _organisationDirectoryService.GenerateNewApiClient(biobankId);
 
-            return Json(new
+            return Ok(new
             {
                 ClientId = credentials.Key,
                 ClientSecret = credentials.Value
