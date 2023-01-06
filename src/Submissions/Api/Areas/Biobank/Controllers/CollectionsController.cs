@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 [Area("Biobank")]
-[AllowAnonymous]
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
@@ -64,7 +63,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  //[Authorize(CustomClaimType.Biobank)]
+  [Authorize(CustomClaimType.Biobank)]
   public async Task<ActionResult> Index(int biobankId)
   {
     if (biobankId == 0)

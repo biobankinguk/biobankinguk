@@ -216,13 +216,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
         ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
     .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
     .AddTransient<ISampleService, SampleService>()
+    .AddTransient<ISampleSetService, SampleSetService>()
     .AddTransient<ISampleWriteService, SampleWriteService>()
     .AddTransient<ISampleValidationService, SampleValidationService>()
     .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
     .AddTransient<ISubmissionService, SubmissionService>()
     .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
     .AddTransient<ITreatmentValidationService, TreatmentValidationService>()
-    .AddTransient<ISampleSetService, SampleSetService>()
+    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+    .AddTransient<IBiobankIndexService, BiobankIndexService>()
+    .AddTransient<IContentPageService, ContentPageService>()
+    .AddTransient<INetworkService, NetworkService>()
 
     // Search Services
     .AddTransient<ICollectionSearchProvider>(
@@ -259,10 +263,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     )
     .AddTransient<ISearchProvider, LegacySearchProvider>()
     .AddTransient<IIndexProvider, LegacyIndexProvider>()
-    .AddTransient<IContentPageService, ContentPageService>()
-    .AddTransient<INetworkService, NetworkService>()
-    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
-    .AddTransient<IBiobankIndexService, BiobankIndexService>()
 
     // Reference Data
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AccessCondition>, AccessConditionService>()
