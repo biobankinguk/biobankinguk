@@ -1,17 +1,44 @@
 using System;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data;
+using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Filters;
+using Biobanks.Submissions.Api.Models.Register;
+using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory;
 
 public class RegisterController : Controller
 {
-  public RegisterController()
+  private readonly INetworkService _networkService;
+  private readonly IOrganisationDirectoryService _organisationService;
+  private readonly IEmailService _emailService;
+  private readonly IRegistrationDomainService _registrationDomainService;
+  private readonly IConfigService _configService;
+  private readonly SitePropertiesOptions _siteConfig;
+
+  public RegisterController(
+    INetworkService networkService,
+    IOrganisationDirectoryService organisationService,
+    IEmailService emailService, 
+    IRegistrationDomainService registrationDomainService,
+    IConfigService configService,
+    IOptions<SitePropertiesOptions> siteConfigOptions
+    )
   {
+    _networkService = networkService;
+    _organisationService = organisationService;
+    _emailService = emailService;
+    _registrationDomainService = registrationDomainService;
+    _configService = configService;
+    _siteConfig = siteConfigOptions.Value;
   }
   
   // GET: Register
@@ -32,7 +59,7 @@ public class RegisterController : Controller
 
 
   //Register a biobank - ADAC Invite
-  [UserAuthorize(Roles = "ADAC")]
+  [Authorize(Roles = "ADAC")]
   public ActionResult AdacBiobank()
   {
       return View("Biobank", new RegisterEntityModel
@@ -98,22 +125,22 @@ public class RegisterController : Controller
 
       if (existingOrg != null)
       {
-          SetTemporaryFeedbackMessage($"{model.Entity} already exists. Please contact {existingOrg.ContactEmail} and ask them to add you as an admin.", FeedbackMessageType.Danger);
+          this.SetTemporaryFeedbackMessage($"{model.Entity} already exists. Please contact {existingOrg.ContactEmail} and ask them to add you as an admin.", FeedbackMessageType.Danger);
 
           return View(model);
       }
 
       if (Uri.IsWellFormedUriString(model.Name, UriKind.Absolute) || Uri.IsWellFormedUriString(model.Entity, UriKind.Absolute))
       {
-          SetTemporaryFeedbackMessage("The admin name or organisation name fields cannot be URIs. Please enter a non URI value.", FeedbackMessageType.Danger);
+          this.SetTemporaryFeedbackMessage("The admin name or organisation name fields cannot be URIs. Please enter a non URI value.", FeedbackMessageType.Danger);
           return View(model);
       }
 
       //check for duplicate name against non-declined requests too
       if (await _organisationService.RegistrationRequestExists(model.Entity))
       {
-          var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-          SetTemporaryFeedbackMessage(
+          var supportEmail = _siteConfig.SupportAddress;
+          this.SetTemporaryFeedbackMessage(
               $"Registration is already in progress for {model.Entity}. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
               FeedbackMessageType.Danger, true);
 
@@ -123,11 +150,11 @@ public class RegisterController : Controller
       //Check if email is on the allow/block list
       if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
       {
-          var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-          SetTemporaryFeedbackMessage(
-              $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
-              FeedbackMessageType.Danger, true);
-
+          var supportEmail = _siteConfig.SupportAddress;
+          this.SetTemporaryFeedbackMessage(
+            $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+            FeedbackMessageType.Danger, true);
+          
           return View(model);
       }
 
@@ -173,7 +200,7 @@ public class RegisterController : Controller
   }
 
   //Register a biobank - ADAC Invite
-  [UserAuthorize(Roles = "ADAC")]
+  [Authorize(Roles = "ADAC")]
   public ActionResult AdacNetwork()
   {
       return View("Network", new RegisterEntityModel
@@ -205,24 +232,24 @@ public class RegisterController : Controller
 
       if (existingNetwork != null)
       {
-          SetTemporaryFeedbackMessage($"{model.Entity} already exists. Please contact {existingNetwork.Email} and ask them to add you as an admin.", FeedbackMessageType.Danger);
+          this.SetTemporaryFeedbackMessage($"{model.Entity} already exists. Please contact {existingNetwork.Email} and ask them to add you as an admin.", FeedbackMessageType.Danger);
           return View(model);
       }
 
       //check for duplicate name against non-declined requests too
       if (await _networkService.HasActiveRegistrationRequest(model.Entity))
       {
-          var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-          SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
-
+          var supportEmail = _siteConfig.SupportAddress;
+          this.SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
+          
           return View(model);
       }
 
       //Check if email is on the allow/block list
       if (!await _registrationDomainService.ValidateEmail(model.Email) && !model.AdacInvited)
       {
-          var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
-          SetTemporaryFeedbackMessage(
+          var supportEmail = _siteConfig.SupportAddress;
+          this.SetTemporaryFeedbackMessage(
               $"Sorry, registrations from this email domain are not allowed. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
               FeedbackMessageType.Danger, true);
 
