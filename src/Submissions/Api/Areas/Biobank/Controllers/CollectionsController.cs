@@ -1,7 +1,6 @@
 using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
@@ -91,7 +90,7 @@ public class CollectionsController : Controller
   [HttpGet]
   public async Task<ViewResult> AddCollection()
   {
-    return View((AddCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
+    return View((await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
   }
 
   [HttpGet]

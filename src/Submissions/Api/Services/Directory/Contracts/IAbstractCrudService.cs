@@ -13,5 +13,4 @@ public interface IAbstractCrudService
   Task<AbstractCRUDCollectionModel> PopulateAbstractCRUDCollectionModel(AbstractCRUDCollectionModel model, IEnumerable<ConsentRestriction> consentRestrictions = null, bool excludeLinkedData = false);
 
   Task<AbstractCRUDSampleSetModel> PopulateAbstractCRUDSampleSetModel(AbstractCRUDSampleSetModel model);
-
 }

@@ -1,6 +1,9 @@
 using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+using Biobanks.Submissions.Api.Models.Directory;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -11,6 +14,14 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 [Area("Biobank")]
 public class CapabilitiesController : Controller
 {
+  private readonly IAbstractCrudService _abstractCrudService;
+  private readonly IOntologyTermService _ontologyTermService;
+
+  public CapabilitiesController(IAbstractCrudService abstractCrudService, IOntologyTermService ontologyTermService)
+  {
+    _abstractCrudService = abstractCrudService;
+    _ontologyTermService = ontologyTermService;
+  }
   [HttpGet]
   public async Task<ActionResult> Capabilities(int biobankId)
   {
@@ -38,7 +49,7 @@ public class CapabilitiesController : Controller
   [HttpGet]
   public async Task<ViewResult> AddCapability()
   {
-    return View((AddCapabilityModel)(await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel())));
+    return View((AddCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel())));
   }
 
   [HttpPost]
@@ -74,7 +85,7 @@ public class CapabilitiesController : Controller
       return RedirectToAction("Capabilities");
     }
 
-    return View((AddCapabilityModel)(await PopulateAbstractCRUDAssociatedData(model)));
+    return View((AddCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(model)));
   }
 
   [HttpGet]
@@ -82,7 +93,7 @@ public class CapabilitiesController : Controller
   public async Task<ViewResult> EditCapability(int id)
   {
     var capability = await _biobankReadService.GetCapabilityByIdAsync(id);
-    var groups = await PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
+    var groups = await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
     var model = new EditCapabilityModel
     {
@@ -157,7 +168,7 @@ public class CapabilitiesController : Controller
       return RedirectToAction("Capability", new { id = model.Id });
     }
 
-    return View((EditCapabilityModel)(await PopulateAbstractCRUDAssociatedData(model)));
+    return View((EditCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(model)));
   }
 
   [HttpPost]
