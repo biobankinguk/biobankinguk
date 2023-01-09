@@ -14,12 +14,12 @@ namespace Biobanks.Submissions.Api.Services.Directory
     {
         
         private readonly BiobanksDbContext _db;
-    private readonly CapabilityService _capabilityService;
+        private readonly ICapabilityService _capabilityService;
 
-    public OntologyTermService(BiobanksDbContext db, CapabilityService capabilityService)
-        {
+    public OntologyTermService(BiobanksDbContext db, ICapabilityService capabilityService)
+    {
             _db = db;
-      _capabilityService = capabilityService;
+            _capabilityService = capabilityService;
     }
 
         protected IQueryable<OntologyTerm> ReadOnlyQuery(
