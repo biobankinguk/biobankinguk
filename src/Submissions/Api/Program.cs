@@ -193,6 +193,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     // Local Services
     .AddTransient<IAggregationService, AggregationService>()
     .AddTransient<IAnalyticsService, AnalyticsService>()
+    .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
     .AddTransient<IAnnotationService, AnnotationService>()
     .AddTransient<IBiobankService, BiobankService>()
     .AddTransient<IBiobankIndexService, BiobankIndexService>()
@@ -212,8 +213,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IOntologyTermService, OntologyTermService>()
     .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
     .AddTransient<IOrganisationService, OrganisationService>()
-    .AddTransient<IOrganisationDirectoryService,
-        OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+    .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
     .AddTransient<IPublicationJobService, PublicationJobService>()
     .AddTransient<IPublicationService, PublicationService>()
     .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
@@ -320,6 +320,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
 {
     builder.Services
+        .AddTransient<IBiobankIndexService, BiobankIndexService>()
         .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
         .AddTransient<IBiobankReadService, BiobankReadService>()
         .AddTransient<IBiobankWriteService, BiobankWriteService>()
