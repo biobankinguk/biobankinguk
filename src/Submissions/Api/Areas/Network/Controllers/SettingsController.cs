@@ -70,11 +70,11 @@ public class SettingsController : Controller
         return admins;
     }
 
-    public async Task<JsonResult> GetAdminsAjax(int networkId, bool excludeCurrentUser = false, int timeStamp = 0)
+    public async Task<ActionResult> GetAdminsAjax(int networkId, bool excludeCurrentUser = false, int timeStamp = 0)
     {
         //timeStamp can be used to avoid caching issues, notably on IE
 
-        return Json(await GetAdminsAsync(networkId, excludeCurrentUser));
+        return Ok(await GetAdminsAsync(networkId, excludeCurrentUser));
     }
 
     public ActionResult InviteAdminSuccess(string name)
@@ -89,11 +89,11 @@ public class SettingsController : Controller
 
     public async Task<ActionResult> InviteAdminAjax(int networkId)
     {
-        var nw = await _networkService.Get(networkId);
+        var network = await _networkService.Get(networkId);
 
         return PartialView("_ModalInviteAdmin", new InviteRegisterEntityAdminModel
         {
-            Entity = nw.Name,
+            Entity = network.Name,
             EntityName = "network",
             ControllerName = "Network"
         });
@@ -106,7 +106,7 @@ public class SettingsController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return Json(new
+            return Ok(new
             {
                 success = false,
                 errors = ModelState.Values
@@ -153,7 +153,7 @@ public class SettingsController : Controller
             }
             else
             {
-                return Json(new
+                return Ok(new
                 {
                     success = false,
                     errors = result.Errors.ToArray()
