@@ -1,0 +1,18 @@
+root: true
+env:
+  browser: true
+extends:
+  - eslint:recommended
+globals:
+  # vendor globals
+  $: readonly
+  jQuery: readonly
+  bootbox: readonly
+  ko: readonly
+  Bloodhound: readonly
+
+  # source globals
+  logoBaseUrl: readonly
+parserOptions:
+  ecmaVersion: 5
+  sourceType: script

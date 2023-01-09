@@ -10,6 +10,10 @@
 @section FooterScripts
 {
     @Scripts.Render("~/bundles/search")
+
+    @* TODO: Core bundles
+    <script src="~/dist/js/search.min.js" asp-append-version="true"></script>
+    *@
 }
 
 <h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>

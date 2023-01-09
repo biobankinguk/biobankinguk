@@ -74,6 +74,10 @@
 
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
     @Scripts.Render("~/bundles/adac/biobankactivity")
+    
+     @* TODO: Core bundles
+      <script src="~/dist/js/Admin/biobankactivity.min.js" asp-append-version="true"></script>
+      *@
 }

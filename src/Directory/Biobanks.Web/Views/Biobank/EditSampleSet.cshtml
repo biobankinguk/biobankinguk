@@ -7,12 +7,17 @@
 
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/bootbox") @* TODO: Remove - included by layout *@
+    @Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
     @Scripts.Render("~/bundles/collection-sample-sets")
     @Scripts.Render("~/bundles/help-buttons")
+    
+     @* TODO: Core bundles
+    <script src="~/dist/js/Biobank/collection-and-capability-crud.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
+    *@
 
-<script>
+    <script>
         $(function () {
             // Donor Count
             lookup.donorCounts(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.DonorCounts)), function (x) {

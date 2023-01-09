@@ -116,7 +116,11 @@
 
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/bootbox") @* TODO: Remove - included by layout *@
+    @Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
     @Scripts.Render("~/bundles/adac/requests")
+    
+    @* TODO: Core bundles
+    <script src="~/dist/js/Admin/requests.min.js" asp-append-version="true"></script>
+    *@
 }

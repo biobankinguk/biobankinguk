@@ -69,6 +69,7 @@
   <ItemGroup>
     <Folder Include="Auth\Entities\" />
     <Folder Include="Content\images\" />
+    <Folder Include="Frontend\js\areas" />
     <Folder Include="Pages\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
