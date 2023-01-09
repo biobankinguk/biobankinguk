@@ -1,36 +1,41 @@
 using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Models.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
-
+[AllowAnonymous]
 [Area("Biobank")]
 public class CapabilitiesController : Controller
 {
   private readonly IAbstractCrudService _abstractCrudService;
   private readonly IOntologyTermService _ontologyTermService;
+  private readonly ICapabilityService _capabilityService;
 
-  public CapabilitiesController(IAbstractCrudService abstractCrudService, IOntologyTermService ontologyTermService)
+  public CapabilitiesController(IAbstractCrudService abstractCrudService, 
+    IOntologyTermService ontologyTermService, 
+    ICapabilityService capabilityService)
   {
     _abstractCrudService = abstractCrudService;
     _ontologyTermService = ontologyTermService;
+    _capabilityService = capabilityService;
   }
+  [AllowAnonymous]
   [HttpGet]
-  public async Task<ActionResult> Capabilities(int biobankId)
+  public async Task<ActionResult> Index(int biobankId)
   {
 
     if (biobankId == 0)
       return RedirectToAction("Index", "Home");
 
     // Call service to get capabilities for logged in BioBank.
-    var capabilities = (await _biobankReadService.ListCapabilitiesAsync(biobankId)).ToList();
+    var capabilities = (await _capabilityService.ListCapabilitiesAsync(biobankId)).ToList();
 
     // Build ViewModel.
     var model = new BiobankCapabilitiesModel
@@ -70,7 +75,7 @@ public class CapabilitiesController : Controller
             AssociatedDataProcurementTimeframeId = y.ProvisionTimeId
           });
 
-      await _biobankWriteService.AddCapabilityAsync(new CapabilityDTO
+      await _capabilityService.AddCapabilityAsync(new CapabilityDTO
       {
         OrganisationId = biobankId,
         OntologyTerm = model.Diagnosis,
@@ -92,7 +97,7 @@ public class CapabilitiesController : Controller
   //TODO:[AuthoriseToAdministerCapability]
   public async Task<ViewResult> EditCapability(int id)
   {
-    var capability = await _biobankReadService.GetCapabilityByIdAsync(id);
+    var capability = await _capabilityService.GetCapabilityByIdAsync(id);
     var groups = await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
     var model = new EditCapabilityModel
@@ -153,7 +158,7 @@ public class CapabilitiesController : Controller
             AssociatedDataProcurementTimeframeId = y.ProvisionTimeId
           }).ToList();
 
-      await _biobankWriteService.UpdateCapabilityAsync(new CapabilityDTO
+      await _capabilityService.UpdateCapabilityAsync(new CapabilityDTO
       {
         Id = model.Id,
         OntologyTerm = model.Diagnosis,
@@ -176,7 +181,7 @@ public class CapabilitiesController : Controller
   //TODO: [AuthoriseToAdministerCapability]
   public async Task<IActionResult> DeleteCapability(int id)
   {
-    await _biobankWriteService.DeleteCapabilityAsync(id);
+    await _capabilityService.DeleteCapabilityAsync(id);
 
     this.SetTemporaryFeedbackMessage("Capability deleted!", FeedbackMessageType.Success);
 
@@ -187,7 +192,7 @@ public class CapabilitiesController : Controller
   //TODO: [AuthoriseToAdministerCapability]
   public async Task<ViewResult> Capability(int id)
   {
-    var capability = await _biobankReadService.GetCapabilityByIdAsync(id);
+    var capability = await _capabilityService.GetCapabilityByIdAsync(id);
 
     var model = new CapabilityModel
     {

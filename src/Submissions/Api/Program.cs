@@ -191,6 +191,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
         _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
 
     // Local Services
+    .AddTransient<IAbstractCrudService, AbstractCrudService>()
     .AddTransient<IAggregationService, AggregationService>()
     .AddTransient<IAnalyticsService, AnalyticsService>()
     .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
@@ -283,6 +284,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
         AssociatedDataProcurementTimeframeService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>,
         AssociatedDataTypeGroupService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>,
+        AssociatedDataTypeService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>,
         CollectionPercentageService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionStatus>,
@@ -299,6 +302,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>,
         MacroscopicAssessmentService>()
     .AddTransient<IMaterialTypeService, MaterialTypeService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>,
+        MaterialTypeGroupService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>,
         MaterialTypeGroupService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<PreservationType>,

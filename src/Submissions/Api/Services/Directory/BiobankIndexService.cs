@@ -26,7 +26,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
     private const int BulkIndexChunkSize = 100;
 
     private readonly IReferenceDataService<DonorCount> _donorCountService;
-    private readonly ICapabilityService _capabilityService;
 
     private readonly IIndexProvider _indexProvider;
     private readonly ISearchProvider _searchProvider;
@@ -38,15 +37,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
     public BiobankIndexService(
             IReferenceDataService<DonorCount> donorCountService,
-            ICapabilityService capabilityService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider,
             IHostEnvironment hostEnvironment,
             TelemetryClient telemetryClient,
-            BiobanksDbContext context)
+            BiobanksDbContext context
+            )
     {
       _donorCountService = donorCountService;
-      _capabilityService = capabilityService;
       _indexProvider = indexProvider;
       _searchProvider = searchProvider;
       _hostEnvironment = hostEnvironment;
@@ -109,6 +107,19 @@ namespace Biobanks.Submissions.Api.Services.Directory
       .Include(x => x.Collection.Organisation.County)
       .FirstOrDefaultAsync()
       );
+
+    private async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
+    IEnumerable<int> capabilityIds) => (
+    await _context.DiagnosisCapabilities.Where(x =>
+              capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
+              .Include(x => x.Organisation)
+              .Include(x => x.Organisation.OrganisationNetworks.Select(on => on.Network))
+              .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+              .Include(x => x.OntologyTerm)
+              .Include(x => x.AssociatedData)
+              .Include(x => x.SampleCollectionMode)
+              .ToListAsync()
+    );
     public async Task BuildIndex()
     {
       //Building the Search Index
@@ -199,7 +210,19 @@ namespace Biobanks.Submissions.Api.Services.Directory
     public async Task IndexCapability(int capabilityId)
     {
       // Get the entire capability object from the database.
-      var createdCapability = await _capabilityService.GetCapabilityByIdForIndexingAsync(capabilityId);
+      var createdCapability = await _context.DiagnosisCapabilities
+                .AsNoTracking()
+                .Where(x => x.DiagnosisCapabilityId == capabilityId)
+                .Include(x => x.Organisation)
+                .Include(x => x.Organisation.OrganisationNetworks.Select(on => @on.Network))
+                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                .Include(x => x.OntologyTerm)
+                .Include(x => x.AssociatedData)
+                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
+                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                .Include(x => x.SampleCollectionMode)
+                .FirstOrDefaultAsync();
+            
 
       // Get the donor counts.
       var donorCounts = await _donorCountService.List();
@@ -465,8 +488,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
       for (var i = 0; i < chunkCount; i++)
       {
-        var chunkSampleSets = await _capabilityService
-            .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
+        var chunkSampleSets = await GetCapabilitiesByIdsForIndexingAsync
+            (capabilityIds
                 .Skip(i * BulkIndexChunkSize)
                 .Take(BulkIndexChunkSize));
 
@@ -475,8 +498,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
       }
 
-      var remainingSampleSets = await _capabilityService
-          .GetCapabilitiesByIdsForIndexingAsync(capabilityIds
+      var remainingSampleSets = await GetCapabilitiesByIdsForIndexingAsync
+        (capabilityIds
               .Skip(chunkCount * BulkIndexChunkSize)
               .Take(remainingIdCount));
 

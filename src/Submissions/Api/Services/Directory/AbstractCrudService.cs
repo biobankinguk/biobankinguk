@@ -23,7 +23,7 @@ public class AbstractCrudService : IAbstractCrudService
   private readonly IReferenceDataService<Sex> _sexService;
   private readonly IReferenceDataService<AgeRange> _ageRangeService;
   private readonly IReferenceDataService<DonorCount> _donorCountService;
-  private readonly IReferenceDataService<MaterialType> _materialTypeService;
+  private readonly IMaterialTypeService _materialTypeService;
   private readonly IReferenceDataService<PreservationType> _preservationTypeService;
   private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
   private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
@@ -41,7 +41,7 @@ public class AbstractCrudService : IAbstractCrudService
     IReferenceDataService<Sex> sexService,
     IReferenceDataService<AgeRange> ageRangeService,
     IReferenceDataService<DonorCount> donorCountService,
-    IReferenceDataService<MaterialType> materialTypeService,
+    IMaterialTypeService materialTypeService,
     IReferenceDataService<PreservationType> preservationTypeService,
     IReferenceDataService<StorageTemperature> storageTemperatureService,
     IReferenceDataService<CollectionPercentage> collectionPercentageService,

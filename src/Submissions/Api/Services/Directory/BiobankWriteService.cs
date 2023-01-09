@@ -165,40 +165,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 await _indexService.IndexCapability(capability.DiagnosisCapabilityId);
         }
 
-        public async Task UpdateCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
-        {
-            var existingCapability = (await _capabilityRepository.ListAsync(true,
-                x => x.DiagnosisCapabilityId == capabilityDTO.Id,
-                null,
-                x => x.AssociatedData)).First();
-
-            existingCapability.AssociatedData.Clear();
-
-            var ontologyTerm = await _ontologyTermService.Get(value: capabilityDTO.OntologyTerm, onlyDisplayable: true);
-
-            existingCapability.OntologyTermId = ontologyTerm.Id;
-            existingCapability.AnnualDonorExpectation = capabilityDTO.AnnualDonorExpectation.Value;
-            existingCapability.SampleCollectionModeId = capabilityDTO.SampleCollectionModeId;
-            existingCapability.LastUpdated = DateTime.Now;
-
-            existingCapability.AssociatedData = associatedData.ToList();
-
-            await _capabilityRepository.SaveChangesAsync();
-
-            if (!await _organisationService.IsSuspended(existingCapability.OrganisationId))
-                await _capabilityService.UpdateCapabilityDetails(existingCapability.DiagnosisCapabilityId);
-        }
-
-        public async Task DeleteCapabilityAsync(int id)
-        {
-            var capability = await _capabilityRepository.GetByIdAsync(id);
-            await _capabilityRepository.DeleteWhereAsync(x => x.DiagnosisCapabilityId == id);
-
-            await _capabilityRepository.SaveChangesAsync();
-
-            if (!await _organisationService.IsSuspended(capability.OrganisationId))
-                _indexService.DeleteCapability(id);
-        }
 
         public async Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference)
         {
