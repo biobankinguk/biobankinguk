@@ -2,6 +2,7 @@ using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -177,6 +178,8 @@ public class CollectionsController : Controller
 
     if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
     {
+
+
 
       var associatedData = associatedDataModels
           .Where(x => x.Active)

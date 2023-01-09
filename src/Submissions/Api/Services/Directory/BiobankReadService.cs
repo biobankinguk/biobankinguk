@@ -72,7 +72,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     x => x.Funders))
                 .Select(x => x.Funders)
                 .FirstOrDefault();
-
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
         {

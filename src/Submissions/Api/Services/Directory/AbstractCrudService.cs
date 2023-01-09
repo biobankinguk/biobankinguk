@@ -1,6 +1,6 @@
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -155,7 +155,7 @@ public class AbstractCrudService : IAbstractCrudService
 
     model.ConsentRestrictions = (await _consentRestrictionService.List())
         .OrderBy(x => x.SortOrder)
-        .Select(x => new Areas.Biobank.Models.ConsentRestrictionModel
+        .Select(x => new Areas.Biobank.Models.Collections.ConsentRestrictionModel
         {
           ConsentRestrictionId = x.Id,
           Description = x.Value,
