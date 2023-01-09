@@ -102,7 +102,7 @@ public class SettingsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(CustomClaimType.Network)]
-    public async Task<JsonResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
+    public async Task<ActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -179,7 +179,7 @@ public class SettingsController : Controller
         await _userManager.AddToRolesAsync(user, new List<string> {Role.NetworkAdmin});
 
         //return success, and enough user details for adding to the viewmodel's list
-        return Json(new
+        return Ok(new
         {
             success = true,
             userId = user.Id,
