@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -139,106 +139,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         #endregion
+       
         
-        public async Task AddSampleSetAsync(SampleSet sampleSet)
-        {
-            // Add new SampleSet
-            _sampleSetRepository.Insert(sampleSet);
-            await _sampleSetRepository.SaveChangesAsync();
 
-            // Update collection's timestamp
-            var collection = await _collectionRepository.GetByIdAsync(sampleSet.CollectionId);
-            collection.LastUpdated = DateTime.Now;
-            await _collectionRepository.SaveChangesAsync();
-
-            // Index New SampleSet
-            if (!await _organisationService.IsSuspended(collection.OrganisationId))
-                await _indexService.IndexSampleSet(sampleSet.Id);
-        }
-
-        public async Task UpdateSampleSetAsync(SampleSet sampleSet)
-        {
-            // Update SampleSet
-            var existingSampleSet = (await _sampleSetRepository.ListAsync(
-                    tracking: true,
-                    filter: x => x.Id == sampleSet.Id,
-                    orderBy: null,
-                    x => x.Collection,
-                    x => x.MaterialDetails)
-                )
-                .First();
-
-            existingSampleSet.SexId = sampleSet.SexId;
-            existingSampleSet.AgeRangeId = sampleSet.AgeRangeId;
-            existingSampleSet.DonorCountId = sampleSet.DonorCountId;
-            existingSampleSet.Collection.LastUpdated = DateTime.Now;
-
-            // Existing MaterialDetails
-            foreach (var existingMaterialDetail in existingSampleSet.MaterialDetails.ToList())
-            {
-                var materialDetail = sampleSet.MaterialDetails.FirstOrDefault(x => x.Id == existingMaterialDetail.Id);
-
-                // Update MaterialDetail 
-                if (materialDetail != null)
-                {
-                    existingMaterialDetail.MaterialTypeId = materialDetail.MaterialTypeId;
-                    existingMaterialDetail.StorageTemperatureId = materialDetail.StorageTemperatureId;
-                    existingMaterialDetail.MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId;
-                    existingMaterialDetail.ExtractionProcedureId = materialDetail.ExtractionProcedureId;
-                    existingMaterialDetail.PreservationTypeId = materialDetail.PreservationTypeId;
-                    existingMaterialDetail.CollectionPercentageId = materialDetail.CollectionPercentageId;
-                }
-                // Delete MaterialDetail
-                else
-                {
-                    _materialDetailRepository.Delete(existingMaterialDetail);
-                }
-            }
-
-            // New MaterialDetails
-            foreach (var materialDetail in sampleSet.MaterialDetails.Where(x => x.Id == default))
-            {
-                _materialDetailRepository.Insert(
-                    new MaterialDetail
-                    {
-                        SampleSetId = existingSampleSet.Id,
-                        MaterialTypeId = materialDetail.MaterialTypeId,
-                        StorageTemperatureId = materialDetail.StorageTemperatureId,
-                        MacroscopicAssessmentId = materialDetail.MacroscopicAssessmentId,
-                        ExtractionProcedureId = materialDetail.ExtractionProcedureId,
-                        PreservationTypeId = materialDetail.PreservationTypeId,
-                        CollectionPercentageId = materialDetail.CollectionPercentageId
-                    }
-                );
-            }
-
-            await _sampleSetRepository.SaveChangesAsync();
-            await _materialDetailRepository.SaveChangesAsync();
-
-            // Update Search Index
-            if (!await _organisationService.IsSuspended(existingSampleSet.Collection.OrganisationId))
-            {
-                await _indexService.UpdateSampleSetDetails(sampleSet.Id);
-            }
-        }
-
-        public async Task DeleteSampleSetAsync(int id)
-        {
-            //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
-            var sampleSet = await _sampleSetRepository.GetByIdAsync(id);
-            var collection = await _collectionRepository.GetByIdAsync(sampleSet.CollectionId);
-            var suspended = await _organisationService.IsSuspended(collection.OrganisationId);
-
-            //delete materialdetails to avoid orphaned data or integrity errors
-            await _materialDetailRepository.DeleteWhereAsync(x => x.SampleSetId == id);
-            await _materialDetailRepository.SaveChangesAsync();
-
-            await _sampleSetRepository.DeleteWhereAsync(x => x.Id == id);
-            await _sampleSetRepository.SaveChangesAsync();
-
-            if (!suspended)
-                _indexService.DeleteSampleSet(id);
-        }
 
         public async Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
