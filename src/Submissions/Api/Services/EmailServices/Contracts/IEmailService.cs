@@ -22,5 +22,7 @@ namespace Biobanks.Submissions.Api.Services.EmailServices.Contracts
         Task SendExistingUserRegisterEntityAccepted(EmailAddress to, string name, string entity, string link);
         
         Task SendRegisterEntityDeclined(EmailAddress to, string name, string entity);
+        Task SendNewBiobankRegistrationNotification(EmailAddress to, string biobankName, string networkName, string link);
+
   };
 }

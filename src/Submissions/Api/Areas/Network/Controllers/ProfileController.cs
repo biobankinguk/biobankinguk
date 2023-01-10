@@ -5,8 +5,11 @@ using Biobanks.Submissions.Api.Areas.Network.Models;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
+using Biobanks.Submissions.Api.Models.Emails;
+using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -29,16 +32,26 @@ public class ProfileController : Controller
   private readonly IReferenceDataService<SopStatus> _sopStatusService;
   private readonly UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> _claimsManager;
   private readonly UserManager<ApplicationUser> _userManager;
+  private readonly IEmailService _emailService;
+  private readonly IConfigService _configService;
+  private readonly IOrganisationDirectoryService _organisationService;
 
   public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
     IReferenceDataService<SopStatus> sopStatusService, UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> claimsManager,
-    UserManager<ApplicationUser> userManager)
+    UserManager<ApplicationUser> userManager,
+    IEmailService emailService,
+    IConfigService configService,
+    IOrganisationDirectoryService organisationService
+    )
   {
     _networkService = networkService;
     _logoStorageProvider = logoStorageProvider;
     _sopStatusService = sopStatusService;
     _claimsManager = claimsManager;
     _userManager = userManager;
+    _emailService = emailService;
+    _configService = configService;
+    _organisationService = organisationService;
   }
 
   private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int networkId, bool excludeCurrentUser)
@@ -347,7 +360,7 @@ public class ProfileController : Controller
   public async Task<ActionResult> Biobanks(int networkId)
   {
     var networkBiobanks =
-        await _organisationService.ListByNetworkId(networkId).ToList();
+        await _organisationService.ListByNetworkId(networkId);
 
     var biobanks = networkBiobanks.Select(x => new NetworkBiobankModel
     {
@@ -483,10 +496,10 @@ public class ProfileController : Controller
         {
           //Send notification email to biobank
           await _emailService.SendNewBiobankRegistrationNotification(
-              biobank.ContactEmail,
+              new EmailAddress(biobank.ContactEmail),
               model.BiobankName,
               network.Name,
-              Url.Action("NetworkAcceptance", "Biobank", null, Request.Url.Scheme)
+              Url.Action("NetworkAcceptance", "Biobank", null, Request.Path.ToString())
                   );
         }
 

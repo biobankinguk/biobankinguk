@@ -120,5 +120,14 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
         new RegisterEntityDeclinedModel(name, entity)
         );
     }
+
+    public async Task SendNewBiobankRegistrationNotification(EmailAddress to, string biobankName, string networkName, string link)
+    {
+      await _emailSender.SendEmail(
+        to,
+        "Emails/NewBiobankNetworkRegistrationNotification",
+        new NewBiobankNetworkRegistrationNotificationModel(biobankName, networkName, link)
+        );
+    }
   }
 }
