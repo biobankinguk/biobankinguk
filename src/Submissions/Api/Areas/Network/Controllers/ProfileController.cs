@@ -288,24 +288,23 @@ public class ProfileController : Controller
   [HttpPost]
   public JsonResult AddTempLogo()
   {
-    if (!System.Web.HttpContext.Current.Request.Files.AllKeys.Any())
+    if (!HttpContext.Items.Keys.Any())
       return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
-    var fileBase = System.Web.HttpContext.Current.Request.Files["TempLogo"];
+    IFormFile fileBase = (IFormFile)HttpContext.Items["TempLogo"];
 
     if (fileBase == null)
       return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
-    if (fileBase.ContentLength > 1000000)
+    if (fileBase.Length > 1000000)
       return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
 
-    var fileBaseWrapper = new HttpPostedFileWrapper(fileBase);
 
     try
     {
-      if (fileBaseWrapper.ValidateAsLogo())
+      if (fileBase.ValidateAsLogo())
       {
-        var logoStream = fileBaseWrapper.ToProcessableStream();
+        var logoStream = fileBase.ToProcessableStream();
       /*   TODO: Replace Session
                 Session[TempNetworkLogoSessionId] =
                     ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
@@ -509,7 +508,7 @@ public class ProfileController : Controller
   }
 
   [Authorize(CustomClaimType.Network)]
-  public async Task<JsonResult> SearchBiobanks(string wildcard)
+  public async Task<ActionResult> SearchBiobanks(string wildcard)
   {
     var biobanks = await _organisationService.List(wildcard, false);
 
@@ -520,7 +519,7 @@ public class ProfileController : Controller
           Name = x.Name
         }).ToList();
 
-    return Json(biobankResults, JsonRequestBehavior.AllowGet);
+    return Ok(biobankResults);
   }
 
   #endregion
