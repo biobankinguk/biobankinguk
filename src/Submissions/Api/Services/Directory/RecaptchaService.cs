@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Models.Register;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ public class RecaptchaService : IRecaptchaService
       _siteConfig = siteConfig;
     }
   
-    public Task<bool> ValidateRegisterEntity()
+    public async Task<RecaptchaResponse> VerifyToken(string recaptchaToken)
     { 
         var recaptchaKey = _siteConfig.GoogleRecaptchaPublicKey;
         var recaptchaSecret = _siteConfig.GoogleRecaptchaSecret;
@@ -30,26 +31,14 @@ public class RecaptchaService : IRecaptchaService
         
         if (enabled)
         {
-          // To access TempData and ViewData
-          Controller controller = context.Controller as Controller;
-        
-          var recaptchaResponse = context.HttpContext.Request.Form["g-recaptcha-response"];
-          
-          // No Recaptcha Response -> Throw Error
-          if (recaptchaResponse == StringValues.Empty)
+            // No Recaptcha Response -> Throw Error
+          if (recaptchaToken == StringValues.Empty)
           {
-            context.ModelState.AddModelError(
-                  "ReCAPTCHA",
-                  "The server is expecting a reCAPTCHA value for this form, but did not receive one.");
-        
-              context.Result = new ViewResult
+              return new RecaptchaResponse
               {
-                  ViewName = context.RouteData.Values["action"].ToString(),
-                  TempData = controller.TempData,
-                  ViewData = controller.ViewData
+                  Success = false,
+                  Errors = new List<string> {"The server is expecting a reCAPTCHA value for this form, but did not receive one."}
               };
-        
-              return;
           }
         
           // Verify Response
@@ -57,7 +46,7 @@ public class RecaptchaService : IRecaptchaService
                   new FormUrlEncodedContent(new[]
                   {
                       new KeyValuePair<string, string>("secret", recaptchaSecret),
-                      new KeyValuePair<string, string>("response", recaptchaResponse)
+                      new KeyValuePair<string, string>("response", recaptchaToken)
                   })))
               .Result;
         
@@ -72,25 +61,28 @@ public class RecaptchaService : IRecaptchaService
           {
               if (json.success != "true")
               {
+                  var recaptchaResponse = new RecaptchaResponse
+                  {
+                      Success = false
+                  };
+                  
                   ((List<string>)json.errorCodes)
                       .ForEach(error =>
-                          controller.ViewData.ModelState.AddModelError(
-                              "ReCAPTCHA",
-                              error));
-        
-                  context.Result = new ViewResult
-                  {
-                      ViewName = context.RouteData.Values["action"].ToString(),
-                      TempData = controller.TempData,
-                      ViewData = controller.ViewData
-                  };
+                          recaptchaResponse.Errors.Append(error));
+
+                  return recaptchaResponse;
               }
           }
           catch (RuntimeBinderException e)
           {
               throw new Exception("reCAPTCHA verification response was not in the expected format", e);
           }
-          // Reaching End Means Valid Recaptcha
         }
+        
+        // Reaching End Means Valid Recaptcha
+        return new RecaptchaResponse
+        {
+            Success = true
+        };
     }
 }

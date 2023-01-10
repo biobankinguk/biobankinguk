@@ -1,12 +1,14 @@
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Models.Register;
 
 namespace Biobanks.Submissions.Api.Services.Directory.Contracts;
 
 public interface IRecaptchaService
 {
   /// <summary>
-  /// Recaptcha specifically for the register service.
+  /// Verify a recaptcha token against the Google API and return the response
   /// </summary>
-  /// <returns></returns>
-  Task<bool> ValidateRegisterEntity();
+  /// <param name="recaptchaToken">A users Recaptcha response</param>
+  /// <returns>A Recaptcha Response object.</returns>
+  Task<RecaptchaResponse> VerifyToken(string recaptchaToken);
 }
