@@ -16,7 +16,6 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
         private readonly SitePropertiesOptions _siteConfig;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
 
         public EmailService(
             IOptions<SitePropertiesOptions> siteConfigOptions,

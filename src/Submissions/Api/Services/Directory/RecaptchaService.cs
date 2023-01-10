@@ -23,7 +23,7 @@ public class RecaptchaService : IRecaptchaService
       _siteConfig = siteConfigOptions.Value;
     }
   
-    public async Task<RecaptchaResponse> VerifyToken(string recaptchaToken)
+    public Task<RecaptchaResponse> VerifyToken(string recaptchaToken)
     { 
         var recaptchaKey = _siteConfig.GoogleRecaptchaPublicKey;
         var recaptchaSecret = _siteConfig.GoogleRecaptchaSecret;
@@ -35,11 +35,11 @@ public class RecaptchaService : IRecaptchaService
             // No Recaptcha Response -> Throw Error
           if (recaptchaToken == StringValues.Empty)
           {
-              return new RecaptchaResponse
+              return Task.FromResult(new RecaptchaResponse
               {
                   Success = false,
                   Errors = new List<string> {"The server is expecting a reCAPTCHA value for this form, but did not receive one."}
-              };
+              });
           }
         
           // Verify Response
@@ -71,7 +71,7 @@ public class RecaptchaService : IRecaptchaService
                       .ForEach(error =>
                           recaptchaResponse.Errors.Append(error));
 
-                  return recaptchaResponse;
+                  return Task.FromResult(recaptchaResponse);
               }
           }
           catch (RuntimeBinderException e)
@@ -81,9 +81,9 @@ public class RecaptchaService : IRecaptchaService
         }
         
         // Reaching End Means Valid Recaptcha
-        return new RecaptchaResponse
+        return Task.FromResult(new RecaptchaResponse
         {
             Success = true
-        };
+        });
     }
 }
