@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
-[AllowAnonymous]
 [Area("Biobank")]
 public class CapabilitiesController : Controller
 {
@@ -26,7 +25,6 @@ public class CapabilitiesController : Controller
     _ontologyTermService = ontologyTermService;
     _capabilityService = capabilityService;
   }
-  [AllowAnonymous]
   [HttpGet]
   public async Task<ActionResult> Index(int biobankId)
   {
