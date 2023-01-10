@@ -9,6 +9,7 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api.Services.Directory;
 
@@ -17,9 +18,9 @@ public class RecaptchaService : IRecaptchaService
     private HttpClient RecaptchaClient { get; set; }
     private readonly SitePropertiesOptions _siteConfig;
     
-    public RecaptchaService(SitePropertiesOptions siteConfig)
+    public RecaptchaService(IOptions<SitePropertiesOptions> siteConfigOptions)
     {
-      _siteConfig = siteConfig;
+      _siteConfig = siteConfigOptions.Value;
     }
   
     public async Task<RecaptchaResponse> VerifyToken(string recaptchaToken)
