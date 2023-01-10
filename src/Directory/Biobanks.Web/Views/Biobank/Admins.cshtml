@@ -84,8 +84,13 @@
 
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
+    @Scripts.Render("~/bundles/bootbox") @* TODO: Remove - included by layout *@
+    @Scripts.Render("~/bundles/knockout") @* TODO: Remove - included by layout *@
     @Scripts.Render("~/bundles/biobank/admins")
+    
+    @* TODO: Core bundles
+    <script src="~/dist/js/Biobank/admins.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/registerentity-admin.min.js" asp-append-version="true"></script>
+    *@
 }

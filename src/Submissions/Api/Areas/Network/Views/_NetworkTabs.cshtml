@@ -1,0 +1,22 @@
+@model string
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li role="presentation"
+                class="@(Model == "Biobanks" ? "active" : "true")">
+                @Html.ActionLink("Biobanks", "Biobanks", "Profile")
+            </li>
+      
+            <li role="presentation"
+                class="@(Model == "Admins" ? "active" : "true")">
+              @Html.ActionLink("Admins", "Admins", "Settings")
+            </li>
+      
+            <li role="presentation"
+                class="@(Model == "Details" ? "active" : "true")">
+              @Html.ActionLink("Network details", "Index", "Profile")
+            </li>
+        </ul>
+    </div>
+</div>
