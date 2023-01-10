@@ -1,5 +1,5 @@
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@inject Biobanks.Submissions.Api.Config.SitePropertiesOptions _siteConfig
+@inject IOptions<SitePropertiesOptions> _options;
 @model Biobanks.Submissions.Api.Models.Register.RegisterEntityModel
 
 @{
@@ -35,7 +35,7 @@
                 <div class="col-sm-offset-3 col-sm-4">
                     <button type="submit"
                             class="btn btn-primary form-control g-recaptcha"
-                            data-sitekey="@_siteConfig.GoogleRecaptchaPublicKey"
+                            data-sitekey="@_options.Value.GoogleRecaptchaPublicKey"
                             data-callback="onRecaptchaSubmit">
                         Register
                     </button>
