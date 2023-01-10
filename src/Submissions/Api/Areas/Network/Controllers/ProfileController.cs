@@ -306,10 +306,11 @@ public class ProfileController : Controller
       if (fileBaseWrapper.ValidateAsLogo())
       {
         var logoStream = fileBaseWrapper.ToProcessableStream();
-        Session[TempNetworkLogoSessionId] =
-            ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
-            .ToArray();
-        Session[TempNetworkLogoContentTypeSessionId] = fileBaseWrapper.ContentType;
+      /*   TODO: Replace Session
+                Session[TempNetworkLogoSessionId] =
+                    ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
+                    .ToArray();
+                Session[TempNetworkLogoContentTypeSessionId] = fileBaseWrapper.ContentType;*/
 
         return
             Json(new KeyValuePair<bool, string>(true,
@@ -324,7 +325,9 @@ public class ProfileController : Controller
     return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
   }
 
-  [HttpGet]
+
+  //TODO: Replace Session
+/*  [HttpGet]
   public ActionResult TempLogo(string id)
   {
     return File((byte[])Session[TempNetworkLogoSessionId], Session[TempNetworkLogoContentTypeSessionId].ToString());
@@ -335,18 +338,17 @@ public class ProfileController : Controller
   {
     Session[TempNetworkLogoSessionId] = null;
     Session[TempNetworkLogoContentTypeSessionId] = null;
-  }
+  }*/
 
   #endregion
 
   #region Biobank membership
 
   [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> Biobanks()
+  public async Task<ActionResult> Biobanks(int networkId)
   {
-    var networkId = SessionHelper.GetNetworkId(Session);
     var networkBiobanks =
-        (await _organisationService.ListByNetworkId(SessionHelper.GetNetworkId(Session))).ToList();
+        await _organisationService.ListByNetworkId(networkId).ToList();
 
     var biobanks = networkBiobanks.Select(x => new NetworkBiobankModel
     {
@@ -375,11 +377,11 @@ public class ProfileController : Controller
   }
 
   [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> DeleteBiobank(int biobankId, string biobankName)
+  public async Task<ActionResult> DeleteBiobank(int biobankId, string biobankName, int networkId)
   {
     try
     {
-      await _networkService.RemoveOrganisationFromNetwork(biobankId, SessionHelper.GetNetworkId(Session));
+      await _networkService.RemoveOrganisationFromNetwork(biobankId, networkId);
 
       //send back to the Biobanks list, with feedback (the list may be very long!
       this.SetTemporaryFeedbackMessage(biobankName + " has been removed from your network!", FeedbackMessageType.Success);
@@ -401,12 +403,11 @@ public class ProfileController : Controller
   [HttpPost]
   [ValidateAntiForgeryToken]
   [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model)
+  public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model, int networkId)
   {
     //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
     var biobank = await _organisationService.GetByName(model.BiobankName);
 
-    var networkId = SessionHelper.GetNetworkId(Session);
     var network = await _networkService.Get(networkId);
 
     //Get all emails from admins and store in list
@@ -466,7 +467,7 @@ public class ProfileController : Controller
         result =
         await
             _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
-                SessionHelper.GetNetworkId(Session), model.BiobankExternalID, true);
+                networkId, model.BiobankExternalID, true);
         approved = true;
       }
       else
@@ -474,7 +475,7 @@ public class ProfileController : Controller
         result =
         await
             _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
-        SessionHelper.GetNetworkId(Session), model.BiobankExternalID, false);
+        networkId, model.BiobankExternalID, false);
       }
 
       if (result)
