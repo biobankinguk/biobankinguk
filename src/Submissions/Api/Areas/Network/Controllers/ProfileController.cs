@@ -1,7 +1,8 @@
 using Biobanks.Data.Entities;
 using Biobanks.Data.Transforms.Url;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
+using Biobanks.Submissions.Api.Areas.Network.Models;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -11,19 +12,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
+
+[Area("Network")]
+[AllowAnonymous]
 public class ProfileController : Controller
 {
-  private INetworkService _networkService;
-  private ILogoStorageProvider _logoStorageProvider;
+  private readonly INetworkService _networkService;
+  private readonly ILogoStorageProvider _logoStorageProvider;
   private readonly IReferenceDataService<SopStatus> _sopStatusService;
   private readonly UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> _claimsManager;
   private readonly UserManager<ApplicationUser> _userManager;
@@ -39,27 +41,42 @@ public class ProfileController : Controller
     _userManager = userManager;
   }
 
-  [AllowAnonymous]
-  //[Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> Index(int NetworkId)
+  private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int networkId, bool excludeCurrentUser)
   {
-    return View(await GetNetworkDetailsModelAsync(NetworkId));
+    //we exclude the current user when we are making the list for them
+    //but we may want the full list in other circumstances
+    var admins =
+        (await _networkService.ListAdmins(networkId))
+            .Select(nwAdmin => new RegisterEntityAdminModel
+            {
+              UserId = nwAdmin.Id,
+              UserFullName = nwAdmin.Name,
+              UserEmail = nwAdmin.Email,
+              EmailConfirmed = nwAdmin.EmailConfirmed
+            }).ToList();
+
+    if (excludeCurrentUser)
+    {
+      admins.Remove(admins.FirstOrDefault(x => x.UserId == _userManager.GetUserId(User)));
+    }
+
+    return admins;
   }
 
-  public async Task<ActionResult> Edit(int NetworkId, bool detailsIncomplete = false)
+  [AllowAnonymous]
+  //[Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> Details(int networkId)
+  {
+    return View(await GetNetworkDetailsModelAsync(networkId));
+  }
+
+  public async Task<ActionResult> Edit(int networkId, bool detailsIncomplete = false)
   {
     if (detailsIncomplete)
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
           FeedbackMessageType.Info);
 
-    //ToDo: Session
-    /*   var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
-
-        return activeOrganisationType == (int)ActiveOrganisationType.NewNetwork
-            ? View(await NewNetworkDetailsModelAsync()) //no network id means we're dealing with a request
-            : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network*/
-
-    return View(await NewNetworkDetailsModelAsync(NetworkId));
+    return View(await GetNetworkDetailsModelAsync(networkId)); //network id means we're dealing with an existing network
   }
 
   [HttpPost]
@@ -168,11 +185,12 @@ public class ProfileController : Controller
       var user = await _userManager.GetUserAsync(User);
 
       //add a claim now that they're associated with the network
-      await _claimsManager.UserManager.AddClaimsAsync(user, new List<Claim>
+/*      TODO: Fix once User registration is done
+ *      _claimsManager.AddClaims(new List<Claim>
                 {
                     new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(networkDto.NetworkId, networkDto.Name)))
                 });
-
+*/
       //Logo upload (now we have the id, we can form the filename)
 
       if (model.Logo != null)
@@ -234,31 +252,13 @@ public class ProfileController : Controller
         .ToList();
   }
 
-  private async Task<NetworkDetailsModel> NewNetworkDetailsModelAsync(int RequestId)
-  {
-    //prep the SOP Statuses as KeyValuePair for the model
-    var sopStatuses = await GetSopStatusKeyValuePairsAsync();
-
-    //Network doesn't exist yet, but the request does, so get the name
-    var request = await _networkService.GetRegistrationRequest(RequestId);
-
-    //validate that the request is accepted
-    if (request.AcceptedDate == null) return null;
-
-    return new NetworkDetailsModel
-    {
-      NetworkName = request.NetworkName,
-      SopStatuses = sopStatuses
-    };
-  }
-
-  private async Task<NetworkDetailsModel> GetNetworkDetailsModelAsync(int NetworkId)
+  private async Task<NetworkDetailsModel> GetNetworkDetailsModelAsync(int networkId)
   {
     //prep the SOP Statuses as KeyValuePair for the model
     var sopStatuses = await GetSopStatusKeyValuePairsAsync();
 
     //having a networkid claim means we can definitely get a network and return a model for it
-    var network = await _networkService.Get(NetworkId);
+    var network = await _networkService.Get(networkId);
 
     //get SOP status desc for current SOP status
     var statusDesc = sopStatuses.FirstOrDefault(x => x.Key == network.SopStatusId).Value;
@@ -282,4 +282,246 @@ public class ProfileController : Controller
       HandoverNonMembersUrlParamName = network.HandoverNonMembersUrlParamName
     };
   }
+
+  #region Temp Logo Management
+
+  [HttpPost]
+  public JsonResult AddTempLogo()
+  {
+    if (!System.Web.HttpContext.Current.Request.Files.AllKeys.Any())
+      return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+
+    var fileBase = System.Web.HttpContext.Current.Request.Files["TempLogo"];
+
+    if (fileBase == null)
+      return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+
+    if (fileBase.ContentLength > 1000000)
+      return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
+
+    var fileBaseWrapper = new HttpPostedFileWrapper(fileBase);
+
+    try
+    {
+      if (fileBaseWrapper.ValidateAsLogo())
+      {
+        var logoStream = fileBaseWrapper.ToProcessableStream();
+        Session[TempNetworkLogoSessionId] =
+            ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
+            .ToArray();
+        Session[TempNetworkLogoContentTypeSessionId] = fileBaseWrapper.ContentType;
+
+        return
+            Json(new KeyValuePair<bool, string>(true,
+                Url.Action("TempLogo", "Network")));
+      }
+    }
+    catch (BadImageFormatException e)
+    {
+      return Json(new KeyValuePair<bool, string>(false, e.Message));
+    }
+
+    return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+  }
+
+  [HttpGet]
+  public ActionResult TempLogo(string id)
+  {
+    return File((byte[])Session[TempNetworkLogoSessionId], Session[TempNetworkLogoContentTypeSessionId].ToString());
+  }
+
+  [HttpPost]
+  public void RemoveTempLogo()
+  {
+    Session[TempNetworkLogoSessionId] = null;
+    Session[TempNetworkLogoContentTypeSessionId] = null;
+  }
+
+  #endregion
+
+  #region Biobank membership
+
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> Biobanks()
+  {
+    var networkId = SessionHelper.GetNetworkId(Session);
+    var networkBiobanks =
+        (await _organisationService.ListByNetworkId(SessionHelper.GetNetworkId(Session))).ToList();
+
+    var biobanks = networkBiobanks.Select(x => new NetworkBiobankModel
+    {
+      BiobankId = x.OrganisationId,
+      Name = x.Name
+    }).ToList();
+
+    foreach (var biobank in biobanks)
+    {
+      //get the admins
+      biobank.Admins =
+          (await _biobankReadService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => x.Email).ToList();
+
+      var organisationNetwork = await _networkService.GetOrganisationNetwork(biobank.BiobankId, networkId);
+      biobank.ApprovedDate = organisationNetwork.ApprovedDate;
+    }
+
+    //Get OrganisationNetwork with biobankId and networkId
+
+    var model = new Admin.Models.Network.NetworkBiobanksModel
+    {
+      Biobanks = biobanks
+    };
+
+    return View(model);
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> DeleteBiobank(int biobankId, string biobankName)
+  {
+    try
+    {
+      await _networkService.RemoveOrganisationFromNetwork(biobankId, SessionHelper.GetNetworkId(Session));
+
+      //send back to the Biobanks list, with feedback (the list may be very long!
+      this.SetTemporaryFeedbackMessage(biobankName + " has been removed from your network!", FeedbackMessageType.Success);
+    }
+    catch
+    {
+      this.SetTemporaryFeedbackMessage($"{biobankName} could not be deleted.", FeedbackMessageType.Danger);
+    }
+
+    return RedirectToAction("Biobanks");
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public ActionResult AddBiobank()
+  {
+    return View(new AddBiobankToNetworkModel());
+  }
+
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  [Authorize(CustomClaimType.Network)]
+  public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model)
+  {
+    //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
+    var biobank = await _organisationService.GetByName(model.BiobankName);
+
+    var networkId = SessionHelper.GetNetworkId(Session);
+    var network = await _networkService.Get(networkId);
+
+    //Get all emails from admins and store in list
+    var networkAdmins = await GetAdminsAsync(networkId, false);
+    var networkEmails = new List<string>();
+    foreach (var admin in networkAdmins)
+    {
+      if (admin.EmailConfirmed == true)
+      {
+        networkEmails.Add(admin.UserEmail);
+      }
+
+    }
+    //Add network contact email
+    networkEmails.Add(network.Email);
+    var biobankAdmins =
+        (await _biobankReadService.ListBiobankAdminsAsync(biobank.OrganisationId))
+            .Select(bbAdmin => new RegisterEntityAdminModel
+            {
+              UserId = bbAdmin.Id,
+              UserFullName = bbAdmin.Name,
+              UserEmail = bbAdmin.Email,
+              EmailConfirmed = bbAdmin.EmailConfirmed
+            }).ToList();
+    var biobankEmails = new List<string>();
+
+    foreach (var admin in biobankAdmins)
+    {
+      if (admin.EmailConfirmed == true)
+      {
+        biobankEmails.Add(admin.UserEmail);
+      }
+    }
+    biobankEmails.Add(biobank.ContactEmail);
+
+
+    var trustedBiobanks = await _configService.GetSiteConfig(ConfigKey.TrustBiobanks);
+
+    if (biobank == null)
+    {
+      this.SetTemporaryFeedbackMessage("We couldn't find a Biobank with the name you entered.", FeedbackMessageType.Danger);
+      return View(model);
+    }
+
+    if (biobank.IsSuspended)
+    {
+      this.SetTemporaryFeedbackMessage($"{biobank.Name} cannot be added to a network at this time.", FeedbackMessageType.Danger);
+      return View(model);
+    }
+
+    try
+    {
+      var result = false;
+      var approved = false;
+      if (trustedBiobanks.Value == "true" && networkEmails.Any(biobankEmails.Contains))
+      {
+        result =
+        await
+            _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
+                SessionHelper.GetNetworkId(Session), model.BiobankExternalID, true);
+        approved = true;
+      }
+      else
+      {
+        result =
+        await
+            _networkService.AddOrganisationToNetwork(biobank.OrganisationId,
+        SessionHelper.GetNetworkId(Session), model.BiobankExternalID, false);
+      }
+
+      if (result)
+      {
+        if (trustedBiobanks.Value == "true" && !approved)
+        {
+          //Send notification email to biobank
+          await _emailService.SendNewBiobankRegistrationNotification(
+              biobank.ContactEmail,
+              model.BiobankName,
+              network.Name,
+              Url.Action("NetworkAcceptance", "Biobank", null, Request.Url.Scheme)
+                  );
+        }
+
+        //send back to the Biobanks list, with feedback
+        this.SetTemporaryFeedbackMessage(model.BiobankName + " has been successfully added to your network!",
+            FeedbackMessageType.Success);
+        return RedirectToAction("Biobanks");
+      }
+
+      this.SetTemporaryFeedbackMessage(model.BiobankName + " is already in your network.",
+          FeedbackMessageType.Danger);
+    }
+    catch
+    {
+      this.SetTemporaryFeedbackMessage($"{biobank.Name} cannot be added to a network at this time.", FeedbackMessageType.Danger);
+    }
+
+    return View(model);
+  }
+
+  [Authorize(CustomClaimType.Network)]
+  public async Task<JsonResult> SearchBiobanks(string wildcard)
+  {
+    var biobanks = await _organisationService.List(wildcard, false);
+
+    var biobankResults = biobanks
+        .Select(x => new
+        {
+          Id = x.OrganisationId,
+          Name = x.Name
+        }).ToList();
+
+    return Json(biobankResults, JsonRequestBehavior.AllowGet);
+  }
+
+  #endregion
+
 }
