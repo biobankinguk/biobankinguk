@@ -41,12 +41,12 @@ public class ProfileController : Controller
 
   [AllowAnonymous]
   //[Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> Index()
+  public async Task<ActionResult> Index(int NetworkId)
   {
-    return View(await GetNetworkDetailsModelAsync());
+    return View(await GetNetworkDetailsModelAsync(NetworkId));
   }
 
-  public async Task<ActionResult> Edit(bool detailsIncomplete = false)
+  public async Task<ActionResult> Edit(int NetworkId, bool detailsIncomplete = false)
   {
     if (detailsIncomplete)
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
@@ -59,7 +59,7 @@ public class ProfileController : Controller
             ? View(await NewNetworkDetailsModelAsync()) //no network id means we're dealing with a request
             : View(await GetNetworkDetailsModelAsync()); //network id means we're dealing with an existing network*/
 
-    return View(await NewNetworkDetailsModelAsync());
+    return View(await NewNetworkDetailsModelAsync(NetworkId));
   }
 
   [HttpPost]
@@ -165,17 +165,15 @@ public class ProfileController : Controller
       request.NetworkCreatedDate = DateTime.Now;
       await _networkService.UpdateRegistrationRequest(request);
 
+      var user = await _userManager.GetUserAsync(User);
+
       //add a claim now that they're associated with the network
-      _claimsManager.AddClaims(new List<Claim>
+      await _claimsManager.UserManager.AddClaimsAsync(user, new List<Claim>
                 {
                     new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(networkDto.NetworkId, networkDto.Name)))
                 });
 
       //Logo upload (now we have the id, we can form the filename)
-
-      Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
-      Session[SessionKeys.ActiveOrganisationId] = networkDto.NetworkId;
-      Session[SessionKeys.ActiveOrganisationName] = networkDto.Name;
 
       if (model.Logo != null)
       {
@@ -236,13 +234,13 @@ public class ProfileController : Controller
         .ToList();
   }
 
-  private async Task<NetworkDetailsModel> NewNetworkDetailsModelAsync()
+  private async Task<NetworkDetailsModel> NewNetworkDetailsModelAsync(int RequestId)
   {
     //prep the SOP Statuses as KeyValuePair for the model
     var sopStatuses = await GetSopStatusKeyValuePairsAsync();
 
     //Network doesn't exist yet, but the request does, so get the name
-    var request = await _networkService.GetRegistrationRequest(SessionHelper.GetNetworkId(Session));
+    var request = await _networkService.GetRegistrationRequest(RequestId);
 
     //validate that the request is accepted
     if (request.AcceptedDate == null) return null;
@@ -254,13 +252,13 @@ public class ProfileController : Controller
     };
   }
 
-  private async Task<NetworkDetailsModel> GetNetworkDetailsModelAsync()
+  private async Task<NetworkDetailsModel> GetNetworkDetailsModelAsync(int NetworkId)
   {
     //prep the SOP Statuses as KeyValuePair for the model
     var sopStatuses = await GetSopStatusKeyValuePairsAsync();
 
     //having a networkid claim means we can definitely get a network and return a model for it
-    var network = await _networkService.Get(SessionHelper.GetNetworkId(Session));
+    var network = await _networkService.Get(NetworkId);
 
     //get SOP status desc for current SOP status
     var statusDesc = sopStatuses.FirstOrDefault(x => x.Key == network.SopStatusId).Value;
