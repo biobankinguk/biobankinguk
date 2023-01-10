@@ -1,9 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data;
-using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Models.Register;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -23,6 +21,7 @@ public class RegisterController : Controller
   private readonly IRegistrationDomainService _registrationDomainService;
   private readonly IConfigService _configService;
   private readonly SitePropertiesOptions _siteConfig;
+  private readonly IRecaptchaService _recaptchaService;
 
   public RegisterController(
     INetworkService networkService,
@@ -30,7 +29,8 @@ public class RegisterController : Controller
     IEmailService emailService, 
     IRegistrationDomainService registrationDomainService,
     IConfigService configService,
-    IOptions<SitePropertiesOptions> siteConfigOptions
+    IOptions<SitePropertiesOptions> siteConfigOptions,
+    IRecaptchaService recaptchaService
     )
   {
     _networkService = networkService;
@@ -39,6 +39,7 @@ public class RegisterController : Controller
     _registrationDomainService = registrationDomainService;
     _configService = configService;
     _siteConfig = siteConfigOptions.Value;
+    _recaptchaService = recaptchaService;
   }
   
   // GET: Register
@@ -106,10 +107,23 @@ public class RegisterController : Controller
   [HttpPost]
   [ValidateAntiForgeryToken]
   [AllowAnonymous]
-  [VerifyRecaptcha]
   public async Task<ActionResult> Biobank(RegisterEntityModel model)
   {
       model.EntityName = "Biobank";
+
+      //Verify for Google Recaptcha
+      var recaptchaToken = HttpContext.Request.Form["g-recaptcha-response"];
+      var isRecaptchaValid = await _recaptchaService.VerifyToken(recaptchaToken);
+
+      if (!isRecaptchaValid.Success)
+      {
+          foreach (var error in isRecaptchaValid.Errors)
+          {
+              ModelState.AddModelError("ReCAPTCHA", error);
+          }
+          
+          return View(model);
+      }
 
       if (!ModelState.IsValid)
       {
@@ -171,7 +185,7 @@ public class RegisterController : Controller
       if (model.AdacInvited)
       {
           //ADAC Invited requests should be automatically accepted, and return to the ADAC Admin Requests view
-          return RedirectToAction("AcceptBiobankRequest", "ADAC", new { requestId = request.OrganisationRegisterRequestId });
+          return RedirectToAction("AcceptBiobankRequest", "Requests", new { requestId = request.OrganisationRegisterRequestId });
       }
       else
       {
@@ -181,8 +195,8 @@ public class RegisterController : Controller
               await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
                   model.Name,
                   model.Email,
-                  model.Entity,
-                  model.EntityName);
+                  model.EntityName,
+                  model.Entity);
           }
       }
 
@@ -213,10 +227,23 @@ public class RegisterController : Controller
   [HttpPost]
   [ValidateAntiForgeryToken]
   [AllowAnonymous]
-  [VerifyRecaptcha]
   public async Task<ActionResult> Network(RegisterEntityModel model)
   {
       ViewBag.RegisterEntityName = "network";
+      
+      //Verify for Google Recaptcha
+      var recaptchaToken = HttpContext.Request.Form["g-recaptcha-response"];
+      var isRecaptchaValid = await _recaptchaService.VerifyToken(recaptchaToken);
+
+      if (!isRecaptchaValid.Success)
+      {
+          foreach (var error in isRecaptchaValid.Errors)
+          {
+              ModelState.AddModelError("ReCAPTCHA", error);
+          }
+          
+          return View(model);
+      }
 
       if (!ModelState.IsValid)
       {
@@ -268,19 +295,19 @@ public class RegisterController : Controller
 
       if (model.AdacInvited)
       {
-          return RedirectToAction("AcceptNetworkRequest", "ADAC",
+          return RedirectToAction("AcceptNetworkRequest", "Requests",
               new { requestId = request.NetworkRegisterRequestId });
       }
       else
       {
           if (await _configService.GetFlagConfigValue(ConfigKey.RegistrationEmails) == true)
           {
-              // Non ADAC Invited requests should notify ADAC users
+              // Non Admin Invited requests should notify Admin users
               await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
               model.Name,
               model.Email,
-              model.Entity,
-              model.EntityName);
+              model.EntityName,
+              model.Entity);
           }
       }
 
