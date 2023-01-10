@@ -216,6 +216,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IOrganisationDirectoryService, OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
     .AddTransient<IPublicationJobService, PublicationJobService>()
     .AddTransient<IPublicationService, PublicationService>()
+    .AddTransient<IRecaptchaService, RecaptchaService>()
     .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
     .AddTransient(typeof(Biobanks.Shared.Services.Contracts.IReferenceDataService<>),
         typeof(Biobanks.Shared.Services.ReferenceDataService<>))
