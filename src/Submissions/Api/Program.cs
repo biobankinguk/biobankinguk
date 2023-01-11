@@ -191,6 +191,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
         _ => new(builder.Configuration.GetConnectionString("AzureStorage")))
 
     // Local Services
+    .AddTransient<IAbstractCrudService, AbstractCrudService>()
     .AddTransient<IAggregationService, AggregationService>()
     .AddTransient<IAnalyticsService, AnalyticsService>()
     .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
@@ -284,6 +285,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
         AssociatedDataProcurementTimeframeService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataTypeGroup>,
         AssociatedDataTypeGroupService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>,
+        AssociatedDataTypeService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionPercentage>,
         CollectionPercentageService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<CollectionStatus>,

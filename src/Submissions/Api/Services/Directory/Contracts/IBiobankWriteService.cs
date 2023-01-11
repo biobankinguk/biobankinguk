@@ -9,10 +9,6 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
     public interface IBiobankWriteService
     {
 
-        Task AddCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
-        Task UpdateCapabilityAsync(CapabilityDTO capability, IEnumerable<CapabilityAssociatedData> associatedData);
-        Task DeleteCapabilityAsync(int id);
-
         Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference);
         Task RemoveLogoAsync(int organisationId);
 
