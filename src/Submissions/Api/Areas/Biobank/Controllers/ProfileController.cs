@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Entities.Data;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Directory;
@@ -24,16 +25,29 @@ public class ProfileController : Controller
 {
     private readonly AnnualStatisticGroupService _annualStatisticGroupService;
     private readonly ConfigService _configService;
-    private readonly CountryService _countryService;
     private readonly CountyService _countyService;
+    private readonly CountryService _countryService;
     private readonly Mapper _mapper;
     private readonly NetworkService _networkService;
     private readonly OrganisationDirectoryService _organisationService;
     
-    
-    
-    public ProfileController()
+    public ProfileController(
+        AnnualStatisticGroupService annualStatisticGroupService,
+        ConfigService configService,
+        CountyService countyService,
+        CountryService countryService,
+        Mapper mapper,
+        NetworkService networkService,
+        OrganisationDirectoryService organisationService
+        )
     {
+        _annualStatisticGroupService = annualStatisticGroupService;
+        _configService = configService;
+        _countyService = countyService;
+        _countryService = countryService;
+        _mapper = mapper;
+        _networkService = networkService;
+        _organisationService = organisationService;
     }
 
     [Authorize(CustomClaimType.Biobank)]
