@@ -15,10 +15,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
@@ -29,7 +31,6 @@ public class ProfileController : Controller
   private readonly INetworkService _networkService;
   private readonly ILogoStorageProvider _logoStorageProvider;
   private readonly IReferenceDataService<SopStatus> _sopStatusService;
-  private readonly UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> _claimsManager;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IEmailService _emailService;
   private readonly IConfigService _configService;
@@ -37,7 +38,7 @@ public class ProfileController : Controller
   private readonly IBiobankService _biobankService;
 
   public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
-    IReferenceDataService<SopStatus> sopStatusService, UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> claimsManager,
+    IReferenceDataService<SopStatus> sopStatusService, 
     UserManager<ApplicationUser> userManager,
     IEmailService emailService,
     IConfigService configService,
@@ -48,7 +49,6 @@ public class ProfileController : Controller
     _networkService = networkService;
     _logoStorageProvider = logoStorageProvider;
     _sopStatusService = sopStatusService;
-    _claimsManager = claimsManager;
     _userManager = userManager;
     _emailService = emailService;
     _configService = configService;
@@ -78,7 +78,7 @@ public class ProfileController : Controller
     return admins;
   }
 
-  [Authorize(CustomClaimType.Network)]
+  //[Authorize(CustomClaimType.Network)]
   public async Task<ActionResult> Details(int networkId)
   {
     return View(await GetNetworkDetailsModelAsync(networkId));
@@ -199,12 +199,11 @@ public class ProfileController : Controller
       var user = await _userManager.GetUserAsync(User);
 
       //add a claim now that they're associated with the network
-/*      TODO: Fix once User registration is done
- *      _claimsManager.AddClaims(new List<Claim>
+      await _userManager.AddClaimsAsync(user, new List<Claim>
                 {
                     new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(networkDto.NetworkId, networkDto.Name)))
                 });
-*/
+
       //Logo upload (now we have the id, we can form the filename)
 
       if (model.Logo != null)
