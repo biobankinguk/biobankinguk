@@ -5,16 +5,19 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Models.Directory;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -24,30 +27,44 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 public class ProfileController : Controller
 {
     private readonly AnnualStatisticGroupService _annualStatisticGroupService;
+    private readonly BiobankService _biobankService;
+    private readonly BiobankWriteService _biobankWriteService;
     private readonly ConfigService _configService;
     private readonly CountyService _countyService;
     private readonly CountryService _countryService;
     private readonly Mapper _mapper;
     private readonly NetworkService _networkService;
     private readonly OrganisationDirectoryService _organisationService;
-    
+    private readonly RegistrationReasonService _registrationReasonService;
+    private readonly ServiceOfferingService _serviceOfferingService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
     public ProfileController(
         AnnualStatisticGroupService annualStatisticGroupService,
+        BiobankService biobankService,
+        BiobankWriteService biobankWriteService,
         ConfigService configService,
         CountyService countyService,
         CountryService countryService,
         Mapper mapper,
         NetworkService networkService,
-        OrganisationDirectoryService organisationService
-        )
+        OrganisationDirectoryService organisationService,
+        RegistrationReasonService registrationReasonService,
+        ServiceOfferingService serviceOfferingService,
+        UserManager<ApplicationUser> userManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
+        _biobankService = biobankService;
+        _biobankWriteService = biobankWriteService;
         _configService = configService;
         _countyService = countyService;
         _countryService = countryService;
         _mapper = mapper;
         _networkService = networkService;
         _organisationService = organisationService;
+        _registrationReasonService = registrationReasonService;
+        _serviceOfferingService = serviceOfferingService;
+        _userManager = userManager;
     }
 
     [Authorize(CustomClaimType.Biobank)]
@@ -142,7 +159,7 @@ public class ProfileController : Controller
         await _organisationService.UpdateRegistrationRequest(request);
 
         //add a claim now that they're associated with the biobank
-        _claimsManager.AddClaims(new List<Claim>
+        _userManager.AddClaimsAsync(User,new List<Claim>
                 {
                     new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
                 });
@@ -371,7 +388,7 @@ public class ProfileController : Controller
 
         //Try and get any service offerings for this biobank
         var bbServices =
-                await _biobankReadService.ListBiobankServiceOfferingsAsync(bb.OrganisationId);
+                await _biobankService.ListBiobankServiceOfferingsAsync(bb.OrganisationId);
 
         //mark services as active in the full list
         var services = (await GetAllServicesAsync()).Select(service =>
