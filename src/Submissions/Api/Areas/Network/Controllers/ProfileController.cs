@@ -35,13 +35,15 @@ public class ProfileController : Controller
   private readonly IEmailService _emailService;
   private readonly IConfigService _configService;
   private readonly IOrganisationDirectoryService _organisationService;
+  private readonly IBiobankService _biobankService;
 
   public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
     IReferenceDataService<SopStatus> sopStatusService, UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> claimsManager,
     UserManager<ApplicationUser> userManager,
     IEmailService emailService,
     IConfigService configService,
-    IOrganisationDirectoryService organisationService
+    IOrganisationDirectoryService organisationService,
+    IBiobankService biobankService
     )
   {
     _networkService = networkService;
@@ -52,6 +54,7 @@ public class ProfileController : Controller
     _emailService = emailService;
     _configService = configService;
     _organisationService = organisationService;
+    _biobankService = biobankService;
   }
 
   private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int networkId, bool excludeCurrentUser)
@@ -372,7 +375,7 @@ public class ProfileController : Controller
     {
       //get the admins
       biobank.Admins =
-          (await _biobankReadService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => x.Email).ToList();
+          (await _biobankService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => x.Email).ToList();
 
       var organisationNetwork = await _networkService.GetOrganisationNetwork(biobank.BiobankId, networkId);
       biobank.ApprovedDate = organisationNetwork.ApprovedDate;
@@ -382,7 +385,7 @@ public class ProfileController : Controller
 
     var model = new Admin.Models.Network.NetworkBiobanksModel
     {
-      Biobanks = biobanks
+      Biobanks = (ICollection<Admin.Models.Network.NetworkBiobankModel>)biobanks
     };
 
     return View(model);
@@ -436,7 +439,7 @@ public class ProfileController : Controller
     //Add network contact email
     networkEmails.Add(network.Email);
     var biobankAdmins =
-        (await _biobankReadService.ListBiobankAdminsAsync(biobank.OrganisationId))
+        (await _biobankService.ListBiobankAdminsAsync(biobank.OrganisationId))
             .Select(bbAdmin => new RegisterEntityAdminModel
             {
               UserId = bbAdmin.Id,
