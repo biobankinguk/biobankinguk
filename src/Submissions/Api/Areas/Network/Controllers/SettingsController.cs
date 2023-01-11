@@ -43,7 +43,7 @@ public class SettingsController : Controller
         return View(new NetworkAdminsModel
         {
             NetworkId = networkId,
-            Admins = await GetAdminsAsync(networkId, excludeCurrentUser: true)
+            Admins = (ICollection<Models.RegisterEntityAdminModel>)await GetAdminsAsync(networkId, excludeCurrentUser: true)
         });
     }
 

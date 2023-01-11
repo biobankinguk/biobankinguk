@@ -78,9 +78,7 @@
     </div>
 </div>
 
-@*@section FooterScripts
+@section FooterScripts
 {
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/network/biobanks")
-}*@
+    <script src="~/dist/js/Network/biobanks.min.js" asp-append-version="true"></script>
+}
