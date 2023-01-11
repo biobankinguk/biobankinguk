@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Data.Entities;
 using Biobanks.Entities.Data;
+using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Services;
+using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
@@ -17,6 +20,7 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -32,6 +36,7 @@ public class ProfileController : Controller
     private readonly ConfigService _configService;
     private readonly CountyService _countyService;
     private readonly CountryService _countryService;
+    private readonly FunderService _funderService;
     private readonly Mapper _mapper;
     private readonly NetworkService _networkService;
     private readonly OrganisationDirectoryService _organisationService;
@@ -46,6 +51,7 @@ public class ProfileController : Controller
         ConfigService configService,
         CountyService countyService,
         CountryService countryService,
+        FunderService funderService,
         Mapper mapper,
         NetworkService networkService,
         OrganisationDirectoryService organisationService,
@@ -59,6 +65,7 @@ public class ProfileController : Controller
         _configService = configService;
         _countyService = countyService;
         _countryService = countryService;
+        _funderService = funderService;
         _mapper = mapper;
         _networkService = networkService;
         _organisationService = organisationService;
@@ -66,6 +73,8 @@ public class ProfileController : Controller
         _serviceOfferingService = serviceOfferingService;
         _userManager = userManager;
     }
+    
+    #region Details
 
     [Authorize(CustomClaimType.Biobank)]
     public async Task<ActionResult> Index()
@@ -447,5 +456,204 @@ public class ProfileController : Controller
 
         return model;
     }
+    
+    #endregion
+    
+    #region Temp Logo Management
+    
+    [HttpPost]
+    public JsonResult AddTempLogo()
+    {
+        if (!HttpContext.Request.Form.Files.Any())
+            return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+
+        var fileBase = HttpContext.Request.Form.Files["TempLogo"];
+
+        if (fileBase == null)
+            return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+
+        if (fileBase.Length > 1000000)
+            return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
+        
+         try
+        {
+            if (fileBase.ValidateAsLogo())
+            {
+                var logoStream = fileBase.ToProcessableStream();
+                Session[TempBiobankLogoSessionId] =
+                    ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
+                    .ToArray();
+                Session[TempBiobankLogoContentTypeSessionId] = fileBaseWrapper.ContentType;
+
+                return
+                    Json(new KeyValuePair<bool, string>(true,
+                        Url.Action("TempLogo", "Profile")));
+            }
+        }
+        catch (BadImageFormatException e)
+        {
+            return Json(new KeyValuePair<bool, string>(false, e.Message));
+        }
+
+        return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+    }
+
+    [HttpGet]
+    public ActionResult TempLogo(string id)
+    {
+        return File((byte[])Session[TempBiobankLogoSessionId], Session[TempBiobankLogoContentTypeSessionId].ToString());
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "BiobankAdmin")]
+    public void RemoveTempLogo()
+    {
+        Session[TempBiobankLogoSessionId] = null;
+        Session[TempBiobankLogoContentTypeSessionId] = null;
+    }
+    
+    #endregion
+
+    #region Funders
+
+    [Authorize(CustomClaimType.Biobank)]
+    public async Task<ActionResult> Funders()
+    {
+        var biobankId = SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session);
+    
+        if (biobankId == 0)
+            return RedirectToAction("Index", "Home");
+    
+        return View(new BiobankFundersModel()
+        {
+            BiobankId = biobankId,
+            Funders = await GetFundersAsync(biobankId)
+        });
+    }
+    
+    private async Task<List<FunderModel>> GetFundersAsync(int biobankId)
+        => (await _biobankReadService.ListBiobankFundersAsync(biobankId))
+            .Select(bbFunder => new FunderModel
+            {
+                FunderId = bbFunder.Id,
+                Name = bbFunder.Value
+            }).ToList();
+    
+    public async Task<JsonResult> GetFundersAjax(int biobankId, int timeStamp = 0)
+        //timeStamp can be used to avoid caching issues, notably on IE
+        => Json(await GetFundersAsync(biobankId));
+    
+    public ActionResult AddFunderSuccess(string name)
+    {
+        //This action solely exists so we can set a feedback message
+    
+        this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your list of funders!",
+            FeedbackMessageType.Success);
+    
+        return RedirectToAction("Funders");
+    }
+    
+    public async Task<ActionResult> AddFunderAjax(int biobankId)
+    {
+        var bb = await _organisationService.Get(biobankId);
+    
+        return PartialView("_ModalAddFunder", new AddFunderModel
+        {
+            BiobankName = bb.Name
+        });
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> AddFunderAjax(AddFunderModel model)
+    {
+        if (!ModelState.IsValid)
+            return Json(new
+            {
+                success = false,
+                errors = ModelState.Values
+                    .Where(x => x.Errors.Count > 0)
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage).ToList()
+            });
+    
+        var funder = await _funderService.Get(model.FunderName);
+    
+        // Funder Doesn't Exist
+        if (funder == null)
+        {
+            var useFreeText = await _configService.GetSiteConfigValue(ConfigKey.FundersFreeText) == "true";
+
+            if (useFreeText)
+            {
+                // Add Funder to Database
+                funder = await _funderService.Add(new Funder
+                {
+                    Value = model.FunderName
+                });
+            }
+            else
+            {
+                ModelState.AddModelError("", "We couldn't find any funders with the name you entered.");
+    
+                return Json(new
+                {
+                    success = false,
+                    errors = ModelState.Values
+                        .Where(x => x.Errors.Count > 0)
+                        .SelectMany(x => x.Errors)
+                        .Select(x => x.ErrorMessage).ToList()
+                });
+            }
+        }
+    
+        //Add the funder/biobank relationship
+        await _organisationService.AddFunder(
+            funder.Id, SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session));
+    
+        //return success, and enough details for adding to the viewmodel's list
+        return Ok(new
+        {
+            success = true,
+            funderId = funder.Id,
+            name = model.FunderName
+        });
+    }
+    
+    [Authorize( CustomClaimType.Biobank)]
+    public async Task<ActionResult> DeleteFunder(int funderId, string funderName)
+    {
+        var biobankId = SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session);
+    
+        if (biobankId == 0)
+            return RedirectToAction("Index", "Home");
+    
+        //remove them from the network
+        await _organisationService.RemoveFunder(funderId, biobankId);
+    
+        this.SetTemporaryFeedbackMessage($"{funderName} has been removed from your list of funders!", FeedbackMessageType.Success);
+    
+        return RedirectToAction("Funders");
+    }
+    
+    [Authorize(CustomClaimType.Biobank)]
+    public async Task<ActionResult> SearchFunders(string wildcard)
+    {
+        var funders = await _funderService.List(wildcard);
+    
+        var funderResults = funders
+            .Select(x => new
+            {
+                Id = x.Id,
+                Name = x.Value
+            }).ToList();
+    
+        return Ok(funderResults);
+    }
+    
+
+    #endregion
+    
+    
     
 }
