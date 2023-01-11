@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
 [Area("Network")]
-[AllowAnonymous]
 public class ProfileController : Controller
 {
   private readonly INetworkService _networkService;
@@ -79,8 +78,7 @@ public class ProfileController : Controller
     return admins;
   }
 
-  [AllowAnonymous]
-  //[Authorize(CustomClaimType.Network)]
+  [Authorize(CustomClaimType.Network)]
   public async Task<ActionResult> Details(int networkId)
   {
     return View(await GetNetworkDetailsModelAsync(networkId));
