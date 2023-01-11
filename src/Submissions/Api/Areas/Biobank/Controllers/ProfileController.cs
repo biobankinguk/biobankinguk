@@ -150,8 +150,8 @@ public class ProfileController : Controller
     private async Task<Organisation> CreateBiobank(BiobankDetailsModel model)
     {
         var biobank = await _organisationService.Create(_mapper.Map<OrganisationDTO>(model));
-        await _organisationService.AddUserToOrganisation(User.Identity.GetUserId(), biobank.OrganisationId);
-
+        await _organisationService.AddUserToOrganisation(_userManager.GetUserId(User), biobank.OrganisationId);
+        
         //update the request to show org created
         var request = await _organisationService.GetRegistrationRequestByEmail(User.Identity.Name);
         request.OrganisationCreatedDate = DateTime.Now;
@@ -159,7 +159,7 @@ public class ProfileController : Controller
         await _organisationService.UpdateRegistrationRequest(request);
 
         //add a claim now that they're associated with the biobank
-        _userManager.AddClaimsAsync(User,new List<Claim>
+        _userManager.AddClaimsAsync(await _userManager.GetUserAsync(User),new List<Claim>
                 {
                     new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
                 });
@@ -270,14 +270,14 @@ public class ProfileController : Controller
                 var response = await new HttpClient().GetAsync(model.Url);
                 if (!response.IsSuccessStatusCode)
                 {
-                    ModelState.AddModelError(Empty, $"{model.Url} does not appear to be a valid URL.");
+                    ModelState.AddModelError(string.Empty, $"{model.Url} does not appear to be a valid URL.");
                     model = await AddCountiesToModel(model);
                     return View(model);
                 }
             }
             catch
             {
-                ModelState.AddModelError(Empty, $"Could not access URL {model.Url}.");
+                ModelState.AddModelError(string.Empty, $"Could not access URL {model.Url}.");
                 model = await AddCountiesToModel(model);
                 return View(model);
             }

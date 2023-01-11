@@ -8,7 +8,7 @@
     ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details";
 }
 
-@Html.Partial("_BiobankTabs", await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details")
+<partial name = "_BiobankTabs" model = @ViewBag.Title />
 
 <h3>@await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) details @Html.ActionLink("Edit " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details", "Edit", null, new { @class = "btn btn-primary pull-right" })</h3>
 
