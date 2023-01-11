@@ -304,8 +304,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IMaterialTypeService, MaterialTypeService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>,
         MaterialTypeGroupService>()
-    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MaterialTypeGroup>,
-        MaterialTypeGroupService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<PreservationType>,
         PreservationTypeService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<RegistrationReason>,
