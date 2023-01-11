@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Biobanks.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
@@ -16,11 +16,11 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly BiobanksDbContext _db;
         private readonly ICapabilityService _capabilityService;
 
-        public OntologyTermService(BiobanksDbContext db, ICapabilityService capabilityService)
-        {
+    public OntologyTermService(BiobanksDbContext db, ICapabilityService capabilityService)
+    {
             _db = db;
             _capabilityService = capabilityService;
-        }
+    }
 
         protected IQueryable<OntologyTerm> ReadOnlyQuery(
             string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool filterById = true)
