@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data;
+using Biobanks.Submissions.Api.Models.Directory;
 
 namespace Biobanks.Submissions.Api.Services.Directory.Contracts;
 
@@ -87,4 +88,24 @@ public interface ICapabilityService
     /// </summary>
     /// <param name="capabilityId">The Id of the Capability to update.</param>
     Task UpdateCapabilityDetails(int capabilityId);
+
+    /// <summary>
+    /// Adds a Capability 
+    /// </summary>
+    /// <param name="capabilityDTO">The DTO of the Capability to Add.</param>
+    /// <param name="associatedData">The associated Data add.</param>
+    Task AddCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData);
+
+    /// <summary>
+    /// Update a Capability 
+    /// </summary>
+    /// <param name="capabilityDTO">The Id of the Capability to update.</param>
+    /// <param name="associatedData">The associated Data add.</param>
+    Task UpdateCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData);
+
+    /// <summary>
+    /// Delete a Capability 
+    /// </summary>
+    /// <param name="id">The Id of the Capability to delete.</param>
+    Task DeleteCapabilityAsync(int id);
 }

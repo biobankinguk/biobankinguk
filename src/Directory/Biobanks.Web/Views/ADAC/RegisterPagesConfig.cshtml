@@ -99,6 +99,10 @@
 
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/markdowndeep")
+    @Scripts.Render("~/bundles/markdowndeep") @* TODO: "markdown-editor"*@
     @Scripts.Render("~/bundles/adac/register-pages-config")
+    
+    @* TODO: Core bundles
+    <script src="~/dist/js/Admin/register-pages-config.min.js" asp-append-version="true"></script>
+    *@
 }

@@ -27,18 +27,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly ICollectionService _collectionService;
 
         private readonly HttpClient _client;
-        private readonly IBiobankReadService _biobankReadService;
 
 
         public AnalyticsReportGenerator(
             ICollectionService collectionService,
-            IOrganisationDirectoryService organisationService,
-            IBiobankReadService biobankReadService)
+            IOrganisationDirectoryService organisationService)
         {
             _collectionService = collectionService;
             _organisationService = organisationService;
-
-            _biobankReadService = biobankReadService;
 
             _client = new HttpClient();
 

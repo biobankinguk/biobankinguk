@@ -145,8 +145,13 @@
 
 @section FooterScripts
 {
-	@Scripts.Render("~/bundles/knockout")
-	@Scripts.Render("~/bundles/datatables")
+	@Scripts.Render("~/bundles/knockout") @* TODO: Remove - included by layout *@
+	@Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
 	@Scripts.Render("~/bundles/adac/storage-temperatures")
 	@Scripts.Render("~/bundles/help-buttons")
+  
+  @* TODO: Core bundles
+  <script src="~/dist/js/Admin/storage-temperatures.min.js" asp-append-version="true"></script>
+  <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
+  *@
 } 

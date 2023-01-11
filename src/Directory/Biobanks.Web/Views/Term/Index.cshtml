@@ -51,6 +51,10 @@
 
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
     @Scripts.Render("~/bundles/term/diseasetable")
+    
+     @* TODO: Core bundles
+    <script src="~/dist/js/Term/diseasetable.min.js" asp-append-version="true"></script>
+    *@
 }

@@ -132,7 +132,11 @@
 </div>
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/knockout")
-    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/knockout") @* TODO: Remove - included by layout *@
+    @Scripts.Render("~/bundles/datatables") @* TODO: Remove - included by layout *@
     @Scripts.Render("~/bundles/adac/collection-status")
+    
+     @* TODO: Core bundles
+      <script src="~/dist/js/Admin/collection-status.min.js" asp-append-version="true"></script>
+      *@
 }

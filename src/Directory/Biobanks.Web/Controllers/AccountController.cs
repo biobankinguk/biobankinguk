@@ -491,6 +491,9 @@ namespace Biobanks.Web.Controllers
             });
         }
 
+        [Obsolete("To be deleted when the Directory core version goes live." +
+          " This endpoint is not needed by core and need not be ported."
+    , false)]
         public double GetClientTimeoutAjax()
         {
             return 1200000; //20 mins in milliseconds
