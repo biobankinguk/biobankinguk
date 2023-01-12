@@ -302,6 +302,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Country>,
         CountryService>()
+    .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<DonorCount>,
         DonorCountService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
@@ -329,8 +330,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
 {
     builder.Services
-        .AddTransient<IBiobankReadService, BiobankReadService>()
-        .AddTransient<IDiseaseStatusService, DiseaseStatusService>();
+        .AddTransient<IBiobankReadService, BiobankReadService>();
 }
 
 // Conditional services
