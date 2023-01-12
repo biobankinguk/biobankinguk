@@ -77,8 +77,7 @@ public class ProfileController : Controller
 
     return admins;
   }
-
-  //[Authorize(CustomClaimType.Network)]
+  [Authorize(CustomClaimType.Network)]
   public async Task<ActionResult> Details(int networkId)
   {
     return View(await GetNetworkDetailsModelAsync(networkId));

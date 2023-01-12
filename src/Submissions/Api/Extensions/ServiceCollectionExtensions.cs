@@ -1,8 +1,10 @@
 using System;
 using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailSender;
 using Biobanks.Submissions.Api.Services.EmailServices;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +27,7 @@ namespace Biobanks.Submissions.Api.Extensions
             s
                 .AddTransient<RazorViewService>()
                 .AddTransient<AccountEmailService>()
-                .AddTransient<EmailService>()
+                .AddTransient<IEmailService, EmailService>()
                 .TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             if (useSendGrid) s.AddTransient<IEmailSender, SendGridEmailSender>();
