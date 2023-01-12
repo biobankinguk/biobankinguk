@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Biobanks.Submissions.Api.Extensions;
 
-public static class HttpPostedFilebaseExtensions
+public static class IFormFileExtensions
 {
   public static Stream ToProcessableStream(this IFormFile file)
   {
