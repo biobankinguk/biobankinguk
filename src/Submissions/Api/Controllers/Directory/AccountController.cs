@@ -47,6 +47,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             _signinManager = signInManager;
             _userManager = userManager;
+            _emailService = emailService;
             _claimsManager = claimsManager;
             _tokenLog = tokenLog;
             _biobankReadService = biobankReadService;
