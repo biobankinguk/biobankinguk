@@ -797,6 +797,53 @@ public class ProfileController : Controller
     
     #endregion
     
-    
+    #region Annual Stats
+
+    [HttpGet]
+    public async Task<ActionResult> AnnualStats(int biobankId)
+        => View(new BiobankAnnualStatsModel
+        {
+            AnnualStatisticGroups = await _annualStatisticGroupService.List(),
+            BiobankAnnualStatistics = (await _organisationService.Get(biobankId)).OrganisationAnnualStatistics
+        });
+
+    [HttpPost]
+    public async Task<JsonResult> UpdateAnnualStatAjax(AnnualStatModel model)
+    {
+        if (model.Year > DateTime.Now.Year)
+            ModelState.AddModelError("", $"Year value for annual stat cannot be in the future.");
+
+        var annualStatsStartYear = int.Parse(ConfigurationManager.AppSettings["AnnualStatsStartYear"]);
+        if (model.Year < annualStatsStartYear)
+            ModelState.AddModelError("", $"Year value for annual stat cannot be earlier than {annualStatsStartYear}");
+
+        if (!(model.Value is null) && model.Value < 0)
+            ModelState.AddModelError("", $"Annual stat value cannot be less than 0.");
+
+        // if there are any errors, return false
+        if (!ModelState.IsValid)
+            return Json(new
+            {
+                success = false,
+                errors = ModelState.Values
+                    .Where(x => x.Errors.Count > 0)
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage).ToList()
+            });
+
+        // no validation errors at this point, so proceed
+        await _biobankWriteService.UpdateOrganisationAnnualStatisticAsync(
+            SessionHelper.GetBiobankId(Session),
+            model.AnnualStatisticId,
+            model.Value,
+            model.Year);
+
+        return Json(new
+        {
+            success = true
+        });
+    }
+
+    #endregion
     
 }
