@@ -54,6 +54,8 @@ using Biobanks.Search.Legacy;
 using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Middleware;
 using Biobanks.Submissions.Api.Services;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
+using Biobanks.Submissions.Api.Services.EmailServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -210,6 +212,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
     .AddTransient(typeof(IGenericEFRepository<>), typeof(GenericEFRepository<>))
     .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
+    .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
     .AddTransient<INetworkService, NetworkService>()
     .AddTransient<IOntologyTermService, OntologyTermService>()
     .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
@@ -331,7 +334,6 @@ if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
         .AddTransient<IIndexProvider, LegacyIndexProvider>()
         .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
         .AddTransient<ITokenLoggingService, TokenLoggingService>()
-        .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
         .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
 
         // Reference Data
