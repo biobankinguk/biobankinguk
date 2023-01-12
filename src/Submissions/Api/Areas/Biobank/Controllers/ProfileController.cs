@@ -15,6 +15,7 @@ using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Models.Directory;
+using Biobanks.Submissions.Api.Models.Profile;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
@@ -24,6 +25,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
@@ -40,6 +42,7 @@ public class ProfileController : Controller
     private readonly Mapper _mapper;
     private readonly NetworkService _networkService;
     private readonly OrganisationDirectoryService _organisationService;
+    private readonly PublicationService _publicationService;
     private readonly RegistrationReasonService _registrationReasonService;
     private readonly ServiceOfferingService _serviceOfferingService;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -55,6 +58,7 @@ public class ProfileController : Controller
         Mapper mapper,
         NetworkService networkService,
         OrganisationDirectoryService organisationService,
+        PublicationService publicationService,
         RegistrationReasonService registrationReasonService,
         ServiceOfferingService serviceOfferingService,
         UserManager<ApplicationUser> userManager)
@@ -69,6 +73,7 @@ public class ProfileController : Controller
         _mapper = mapper;
         _networkService = networkService;
         _organisationService = organisationService;
+        _publicationService = publicationService;
         _registrationReasonService = registrationReasonService;
         _serviceOfferingService = serviceOfferingService;
         _userManager = userManager;
@@ -651,7 +656,157 @@ public class ProfileController : Controller
         return Ok(funderResults);
     }
     
+    #endregion
+    
+    #region Publications
+    
+    [HttpGet]
+    [Authorize(CustomClaimType.Biobank)]
+    public async Task<ActionResult> Publications(int biobankId)
+    {
+        //If turned off in site config
+        if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
+            return NotFound();
 
+        return View(biobankId);
+    }
+
+
+    [HttpGet]
+    [Authorize(CustomClaimType.Biobank)]
+    public async Task<ActionResult> GetPublicationsAjax(int biobankId)
+    {
+        //If turned off in site config
+        if (await _configService.GetFlagConfigValue(ConfigKey.DisplayPublications) == false)
+            return Json(new EmptyResult());
+        
+        var biobankPublications = Enumerable.Empty<BiobankPublicationModel>();
+
+        if (biobankId != 0)
+        {
+            var publications = await _publicationService.ListByOrganisation(biobankId);
+
+            biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
+        }
+
+        return new Ok(biobankPublications);
+
+    }
+
+    public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
+    {
+        // Find Given Publication
+        var publications = await _publicationService.ListByOrganisation(biobankId);
+        var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+        //retrieve from EPMC if not found
+        if (publication == null)
+        {
+            try
+            {
+                using var client = new HttpClient();
+                var buildUrl = new UriBuilder(await _configService.GetSiteConfigValue(ConfigKey.EpmcApiUrl))
+               
+                {
+                    Query = $"query=ext_id:{publicationId} AND SRC:MED" +
+                            $"&cursorMark=*" +
+                            $"&resultType=lite" +
+                            $"&format=json"
+                };
+                buildUrl.Path += "webservices/rest/search";
+                var response = await client.GetStringAsync(buildUrl.Uri);
+
+                var jPublications = JObject.Parse(response).SelectToken("resultList.result");
+                return _mapper.Map<Publication>(jPublications?.ToObject<List<PublicationSearchModel>>().FirstOrDefault());
+            }
+            catch (Exception e) when (
+                e is HttpRequestException ||
+                e is JsonReaderException ||
+                e is UriFormatException)
+            {
+                // Log Error via Application Insights
+                var ai = new TelemetryClient();
+                ai.TrackException(e);
+
+                return null;
+            }
+
+        }
+
+        return publication;
+    }
+
+    [HttpGet]
+    [Authorize(CustomClaimType.Biobank)]
+    public async Task<ActionResult> RetrievePublicationsAjax(string publicationId, int biobankId)
+    {
+        
+        if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
+            return Ok(new EmptyResult());
+        else
+        {
+            // Find Publication locally
+            var publications = await _publicationService.ListByOrganisation(biobankId);
+            var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+
+            // search online
+            if (publication == null)
+                publication = await PublicationSearch(publicationId, biobankId);
+
+            return publication != null
+                ? Ok(_mapper.Map<BiobankPublicationModel>(publication))
+                : Ok(new EmptyResult());
+        }
+    }
+
+    [HttpPost]
+    [Authorize(CustomClaimType.Biobank)]
+    public async Task<ActionResult> AddPublicationAjax(string publicationId, int biobankId)
+    {
+        if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
+            return Ok(new EmptyResult());
+
+        // Try Accept Local Publication
+        var publication = await _publicationService.Claim(publicationId, biobankId);
+
+        // No Local Publication - Fetch
+        if (publication == null)
+        {
+            publication = await PublicationSearch(publicationId, biobankId);
+
+            // No Publication Found
+            if (publication == null)
+                return Ok(new EmptyResult());
+
+            // Add Publication to DB
+            publication.Accepted = true;
+            publication.OrganisationId = biobankId;
+
+            publication = await _publicationService.Create(publication);
+        }
+
+        return Ok(_mapper.Map<BiobankPublicationModel>(publication));
+    }
+
+    [HttpPost]
+    [Authorize(CustomClaimType.Biobank)]
+    public async Task<ActionResult> ClaimPublicationAjax(string publicationId, bool accept, int biobankId)
+    {
+        if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
+            return Ok(new EmptyResult());
+
+        // Update Publication
+        var publication = await _publicationService.Claim(publicationId, biobankId, accept);
+
+        return Ok(_mapper.Map<BiobankPublicationModel>(publication));
+    }
+
+    public ActionResult AddPublicationSuccessFeedback(string publicationId)
+    {
+        this.SetTemporaryFeedbackMessage($"The publication with PubMed ID \"{publicationId}\" has been added successfully.", FeedbackMessageType.Success);
+        return Redirect("Publications");
+    }
+    
     #endregion
     
     
