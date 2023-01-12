@@ -715,10 +715,7 @@ public class ProfileController : Controller
                 e is JsonReaderException ||
                 e is UriFormatException)
             {
-                // Log Error via Application Insights
-                var ai = new TelemetryClient();
-                ai.TrackException(e);
-
+                
                 return null;
             }
 
