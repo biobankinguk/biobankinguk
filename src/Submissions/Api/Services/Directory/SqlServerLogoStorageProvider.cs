@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Data;
+using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System;
 using System.IO;
