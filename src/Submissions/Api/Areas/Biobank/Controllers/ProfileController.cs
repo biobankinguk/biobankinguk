@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Data.Entities;
+using Biobanks.Data.Transforms.Url;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Services;
@@ -82,11 +83,9 @@ public class ProfileController : Controller
     #region Details
 
     [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> Index()
+    public async Task<ActionResult> Index(int biobankId)
     {
-        var model = await GetBiobankDetailsModelAsync();
-
-        var biobankId = SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session);
+        var model = await GetBiobankDetailsModelAsync(biobankId);
 
         if (biobankId == 0)
             return RedirectToAction("Index", "Home");
@@ -178,10 +177,6 @@ public class ProfileController : Controller
                     new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
                 });
 
-        Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
-        Session[SessionKeys.ActiveOrganisationId] = biobank.OrganisationId;
-        Session[SessionKeys.ActiveOrganisationName] = biobank.Name;
-
         //Logo upload (now we have the id, we can form the filename)
         if (model.Logo != null)
         {
@@ -204,11 +199,10 @@ public class ProfileController : Controller
 
         }
 
-
         return biobank;
     }
 
-    public async Task<ActionResult> Edit(bool detailsIncomplete = false)
+    public async Task<ActionResult> Edit(int biobankId, bool detailsIncomplete = false)
     {
         var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
 
@@ -216,11 +210,7 @@ public class ProfileController : Controller
             this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
                 FeedbackMessageType.Info);
 
-        var activeOrganisationType = Convert.ToInt32(Session[SessionKeys.ActiveOrganisationType]);
-
-        return activeOrganisationType == (int)ActiveOrganisationType.NewBiobank
-            ? View(await NewBiobankDetailsModelAsync()) //no biobank id means we're dealing with a request
-            : View(await GetBiobankDetailsModelAsync()); //biobank id means we're dealing with an existing biobank
+        return View(await GetBiobankDetailsModelAsync(biobankId)); 
     }
 
     private async Task<BiobankDetailsModel> AddCountiesToModel(BiobankDetailsModel model)
@@ -373,10 +363,10 @@ public class ProfileController : Controller
         .ToList();
     }
 
-    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync()
+    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync(int biobankId)
     {
         //the biobank doesn't exist yet, but a request should, so we can get the name
-        var request = await _organisationService.GetRegistrationRequest(SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session));
+        var request = await _organisationService.GetRegistrationRequest(biobankId);
 
         //validate that the request is accepted
         if (request.AcceptedDate == null) return null;
@@ -395,10 +385,10 @@ public class ProfileController : Controller
         return model;
     }
 
-    private async Task<BiobankDetailsModel> GetBiobankDetailsModelAsync()
+    private async Task<BiobankDetailsModel> GetBiobankDetailsModelAsync(int biobankId)
     {
         //having a biobankId claim means we can definitely get a biobank for that claim and return a model for that
-        var bb = await _organisationService.Get(SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session));
+        var bb = await _organisationService.Get(biobankId);
 
         //Try and get any service offerings for this biobank
         var bbServices =
@@ -522,10 +512,8 @@ public class ProfileController : Controller
     #region Funders
 
     [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> Funders()
+    public async Task<ActionResult> Funders(int biobankId)
     {
-        var biobankId = SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session);
-    
         if (biobankId == 0)
             return RedirectToAction("Index", "Home");
     
@@ -537,7 +525,7 @@ public class ProfileController : Controller
     }
     
     private async Task<List<FunderModel>> GetFundersAsync(int biobankId)
-        => (await _biobankReadService.ListBiobankFundersAsync(biobankId))
+        => (await _biobankService.ListBiobankFundersAsync(biobankId))
             .Select(bbFunder => new FunderModel
             {
                 FunderId = bbFunder.Id,
@@ -570,7 +558,7 @@ public class ProfileController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> AddFunderAjax(AddFunderModel model)
+    public async Task<ActionResult> AddFunderAjax(AddFunderModel model, int biobankId)
     {
         if (!ModelState.IsValid)
             return Json(new
@@ -613,8 +601,7 @@ public class ProfileController : Controller
         }
     
         //Add the funder/biobank relationship
-        await _organisationService.AddFunder(
-            funder.Id, SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session));
+        await _organisationService.AddFunder(funder.Id, biobankId);
     
         //return success, and enough details for adding to the viewmodel's list
         return Ok(new
@@ -626,10 +613,8 @@ public class ProfileController : Controller
     }
     
     [Authorize( CustomClaimType.Biobank)]
-    public async Task<ActionResult> DeleteFunder(int funderId, string funderName)
+    public async Task<ActionResult> DeleteFunder(int funderId, string funderName, int biobankId)
     {
-        var biobankId = SessionHelper.GetBiobankId(MetricDimensionNames.TelemetryContext.Session);
-    
         if (biobankId == 0)
             return RedirectToAction("Index", "Home");
     
