@@ -462,19 +462,19 @@ public class ProfileController : Controller
         if (!HttpContext.Request.Form.Files.Any())
             return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
-        var fileBase = HttpContext.Request.Form.Files["TempLogo"];
+        var formFile = HttpContext.Request.Form.Files["TempLogo"];
 
-        if (fileBase == null)
+        if (formFile == null)
             return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
-        if (fileBase.Length > 1000000)
+        if (formFile.Length > 1000000)
             return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
         
          try
         {
-            if (fileBase.ValidateAsLogo())
+            if (formFile.ValidateAsLogo())
             {
-                var logoStream = fileBase.ToProcessableStream();
+                var logoStream = formFile.ToProcessableStream();
                 Session[TempBiobankLogoSessionId] =
                     ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
                     .ToArray();
@@ -499,13 +499,14 @@ public class ProfileController : Controller
         return File((byte[])Session[TempBiobankLogoSessionId], Session[TempBiobankLogoContentTypeSessionId].ToString());
     }
 
-    [HttpPost]
-    [Authorize(Roles = "BiobankAdmin")]
-    public void RemoveTempLogo()
-    {
-        Session[TempBiobankLogoSessionId] = null;
-        Session[TempBiobankLogoContentTypeSessionId] = null;
-    }
+    // TODO: Replace session (this method is not used, so could alternatively be removed)
+    // [HttpPost]
+    // [Authorize(Roles = "BiobankAdmin")]
+    // public void RemoveTempLogo()
+    // {
+    //     Session[TempBiobankLogoSessionId] = null;
+    //     Session[TempBiobankLogoContentTypeSessionId] = null;
+    // }
     
     #endregion
 
