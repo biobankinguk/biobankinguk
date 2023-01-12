@@ -689,7 +689,7 @@ public class ProfileController : Controller
             biobankPublications = _mapper.Map<List<BiobankPublicationModel>>(publications);
         }
 
-        return new Ok(biobankPublications);
+        return Ok(biobankPublications);
 
     }
 
