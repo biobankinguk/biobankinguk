@@ -15,6 +15,9 @@ using Biobanks.Directory.Services.Contracts;
 
 namespace Biobanks.Web.Controllers
 {
+    [Obsolete("To be deleted when the Directory core version goes live." +
+    " Any changes made here will need to be made in the corresponding core version"
+    , false)]
     public class RegisterController : ApplicationBaseController
     {
         private readonly INetworkService _networkService;
