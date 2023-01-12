@@ -55,8 +55,6 @@ namespace Biobanks.Submissions.Api.Config
     // Sample Resource Configuration Options
     public const string ContactThirdParty = "site.display.thirdparty";
     
-    // EPMC Api Config
-    public const string EpmcApiUrl = "";
   }
 }
 

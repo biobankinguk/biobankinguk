@@ -696,7 +696,7 @@ public class ProfileController : Controller
             try
             {
                 using var client = new HttpClient();
-                var buildUrl = new UriBuilder(await _configService.GetSiteConfigValue(ConfigKey.EpmcApiUrl))
+                var buildUrl = new UriBuilder(await _configService.GetSiteConfigValue(_siteConfig.EpmcApiUrl))
                
                 {
                     Query = $"query=ext_id:{publicationId} AND SRC:MED" +
