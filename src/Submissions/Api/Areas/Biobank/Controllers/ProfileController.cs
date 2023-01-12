@@ -457,7 +457,7 @@ public class ProfileController : Controller
     #region Temp Logo Management
     
     [HttpPost]
-    public JsonResult AddTempLogo()
+    public ActionResult AddTempLogo()
     {
         if (!HttpContext.Request.Form.Files.Any())
             return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
@@ -475,29 +475,31 @@ public class ProfileController : Controller
             if (formFile.ValidateAsLogo())
             {
                 var logoStream = formFile.ToProcessableStream();
-                Session[TempBiobankLogoSessionId] =
-                    ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
-                    .ToArray();
-                Session[TempBiobankLogoContentTypeSessionId] = fileBaseWrapper.ContentType;
+                // TODO: Replace Session
+                // Session[TempBiobankLogoSessionId] =
+                //     ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
+                //     .ToArray();
+                // Session[TempBiobankLogoContentTypeSessionId] = fileBaseWrapper.ContentType;
 
                 return
-                    Json(new KeyValuePair<bool, string>(true,
+                    Ok(new KeyValuePair<bool, string>(true,
                         Url.Action("TempLogo", "Profile")));
             }
         }
         catch (BadImageFormatException e)
         {
-            return Json(new KeyValuePair<bool, string>(false, e.Message));
+            return Ok(new KeyValuePair<bool, string>(false, e.Message));
         }
 
-        return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+        return Ok(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
     }
 
-    [HttpGet]
-    public ActionResult TempLogo(string id)
-    {
-        return File((byte[])Session[TempBiobankLogoSessionId], Session[TempBiobankLogoContentTypeSessionId].ToString());
-    }
+    // TODO: Replace Session
+    // [HttpGet]
+    // public ActionResult TempLogo(string id)
+    // {
+    //     return File((byte[])Session[TempBiobankLogoSessionId], Session[TempBiobankLogoContentTypeSessionId].ToString());
+    // }
 
     // TODO: Replace session (this method is not used, so could alternatively be removed)
     // [HttpPost]
