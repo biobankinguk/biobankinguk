@@ -46,6 +46,7 @@ public class ProfileController : Controller
     private readonly PublicationService _publicationService;
     private readonly RegistrationReasonService _registrationReasonService;
     private readonly ServiceOfferingService _serviceOfferingService;
+    private readonly SitePropertiesOptions _siteConfig;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public ProfileController(
@@ -62,6 +63,7 @@ public class ProfileController : Controller
         PublicationService publicationService,
         RegistrationReasonService registrationReasonService,
         ServiceOfferingService serviceOfferingService,
+        SitePropertiesOptions siteConfig,
         UserManager<ApplicationUser> userManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
@@ -77,6 +79,7 @@ public class ProfileController : Controller
         _publicationService = publicationService;
         _registrationReasonService = registrationReasonService;
         _serviceOfferingService = serviceOfferingService;
+        _siteConfig = siteConfig;
         _userManager = userManager;
     }
     
@@ -808,12 +811,12 @@ public class ProfileController : Controller
         });
 
     [HttpPost]
-    public async Task<JsonResult> UpdateAnnualStatAjax(AnnualStatModel model)
+    public async Task<JsonResult> UpdateAnnualStatAjax(AnnualStatModel model, int biobankId)
     {
         if (model.Year > DateTime.Now.Year)
             ModelState.AddModelError("", $"Year value for annual stat cannot be in the future.");
 
-        var annualStatsStartYear = int.Parse(ConfigurationManager.AppSettings["AnnualStatsStartYear"]);
+        var annualStatsStartYear = int.Parse(_siteConfig.AnnualStatsStartYear);
         if (model.Year < annualStatsStartYear)
             ModelState.AddModelError("", $"Year value for annual stat cannot be earlier than {annualStatsStartYear}");
 
@@ -833,7 +836,7 @@ public class ProfileController : Controller
 
         // no validation errors at this point, so proceed
         await _biobankWriteService.UpdateOrganisationAnnualStatisticAsync(
-            SessionHelper.GetBiobankId(Session),
+            biobankId,
             model.AnnualStatisticId,
             model.Value,
             model.Year);
