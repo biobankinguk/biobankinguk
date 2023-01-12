@@ -175,10 +175,10 @@ public class ProfileController : Controller
         await _organisationService.UpdateRegistrationRequest(request);
 
         //add a claim now that they're associated with the biobank
-        _userManager.AddClaimsAsync(await _userManager.GetUserAsync(User),new List<Claim>
-                {
-                    new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
-                });
+        await _userManager.AddClaimsAsync(await _userManager.GetUserAsync(User),new List<Claim>
+        {
+            new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
+        });
 
         //Logo upload (now we have the id, we can form the filename)
         if (model.Logo != null)
