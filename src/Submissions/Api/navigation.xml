@@ -85,15 +85,18 @@
       </Children>
     </NavNode>
 
-    <NavNode title="Requests" controller="ADAC" action="Requests"/>
-    <NavNode title="Block/Allow" controller="ADAC" action="BlockAllowList"/>
-    <NavNode title="Request history" controller="ADAC" action="Historical"/>
-    <NavNode title="Biobanks" controller="ADAC" action="Biobanks"/>
-    <NavNode title="Biobank Activity" controller="ADAC" action="BiobankActivity"/>
-    <NavNode title="Networks" controller="ADAC" action="Networks"/>
-    <NavNode title="Funders" controller="ADAC" action="Funders"/>
+    <NavNode title="Requests" controller="Requests" area="Admin" action="Index"/>
+    <NavNode title="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="BlockAllowList"/>
+    <!-- TODO: Find the below? Is missing - should be on the Requests controller -->
+    <NavNode title="Request history" controller="ADAC" area="Admin" action="Historical"/>
+    <!-- TODO: Find this one also? Is missing - should be on the Biobanks controller -->
+    <NavNode title="Biobanks" controller="ADAC" area="Admin" action="Biobanks"/>
+    <NavNode title="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
+    <NavNode title="Networks" controller="ReferenceData" area="Admin" action="Networks"/>
+    <NavNode title="Funders" controller="Funder" area="Admin" action="Funders"/>
 
-    <!-- ADAC Reference Data -->
+    <!-- TODO: Find these? -->
+    <!-- ADAC Reference Data - all missing, reference data controller looks wrong? -->
     <NavNode title="Access Conditions" controller="ADAC" action="AccessConditions"/>
     <NavNode title="Age Ranges" controller="ADAC" action="AgeRanges"/>
     <NavNode title="Annual Statistics" controller="ADAC" action="AnnualStatistics"/>
@@ -123,15 +126,15 @@
     <NavNode title="Message of the day" controller="ADAC" action="EditMotd"/>
 
     <!-- Site Configuration -->
-    <NavNode title="Homepage Configuration" controller="ADAC" action="HomepageConfig"/>
-    <NavNode title="Term Page Configuration" controller="ADAC" action="TermpageConfig"/>
-    <NavNode title="Register Biobank Configuration" controller="ADAC" action="RegisterBiobankConfig"/>
-    <NavNode title="Register Network Configuration" controller="ADAC" action="RegisterNetworkConfig"/>
-    <NavNode title="Site Configuration" controller="ADAC" action="SiteConfig"/>
-    <NavNode title="Sample Resource Configuration" controller="ADAC" action="SampleResourceConfig"/>
+    <NavNode title="Homepage Configuration" controller="SiteConfig" area="Admin" action="HomepageConfig"/>
+    <NavNode title="Term Page Configuration" controller="SiteConfig" area="Admin" action="TermpageConfig"/>
+    <NavNode title="Register Biobank Configuration" controller="SiteConfig" area="Admin" action="RegisterBiobankConfig"/>
+    <NavNode title="Register Network Configuration" controller="SiteConfig" area="Admin" action="RegisterNetworkConfig"/>
+    <NavNode title="Site Configuration" controller="ADAC" area="SiteConfig" action="SiteConfig"/>
+    <NavNode title="Sample Resource Configuration" controller="SiteConfig" area="Admin" action="SampleResourceConfig"/>
 
     <!-- Content Pages -->
-    <NavNode title="ADAC" controller="ADAC" action="Index">
+    <NavNode title="Admin" controller="Requests" area="Admin" action="Index">
       <Children>
         <NavNode title="Content Pages Admin" controller="PagesAdmin" action="Index">
           <Children>
