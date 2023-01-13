@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NavNode key="Home" controller="Home" action="Index" area="" preservedRouteParameters="culture" text="Home" iconCssClass="glyphicon glyphicon-home">
+  <Children>
+    
+    <NavNode title="ActiveOrganisationName" url="#">
+      <Children>
+        
+        <NavNode title="Collections" controller="Collections" area="Biobank" action="Index">
+          <Children>
+            <NavNode title="Add collection" controller="Collections" area="Biobank" action="AddCollection"/>
+            <NavNode title="Edit collection" controller="Collections" area="Biobank" action="EditCollection" preservedRouteParameters="id"/>
+            <NavNode title="Collection" controller="Collections" area="Biobank" action="Collection" preservedRouteParameters="id">
+              <Children>
+                <NavNode title="Add sample set" controller="Collections" area="Biobank" action="AddSampleSet" preservedRouteParameters="id"/>
+                <NavNode title="Copy sample set" controller="Collections" area="Biobank" action="CopySampleSet" preservedRouteParameters="id"/>
+                <NavNode title="Sample set" controller="Collections" area="Biobank" action="SampleSet" preservedRouteParameters="id">
+                  <Children>
+                    <NavNode title="Edit sample set" controller="Collections" area="Biobank" action="EditSampleSet" preservedRouteParameters="id"/>
+                  </Children>
+                </NavNode>
+              </Children>
+            </NavNode>
+          </Children>
+        </NavNode>
+
+        <NavNode title="Capabilities" controller="Capabilities" area="Biobank" action="Index">
+          <Children>
+            <NavNode title="Add capability" controller="Capabilities" area="Biobank" action="AddCapability"/>
+            <NavNode title="Capability" controller="Capabilities" area="Biobank" action="Capability" preservedRouteParameters="id">
+              <Children>
+                <NavNode title="Edit capability" controller="Capabilities" area="Biobank" action="EditCapability" preservedRouteParameters="id"/>
+              </Children>
+            </NavNode>
+          </Children>
+        </NavNode>
+  
+        <NavNode title="Publications" controller="Profile" area="Biobank" action="Publications"/>
+  
+        <NavNode title="Sample resource details" controller="Profile" area="Biobank" action="Index">
+          <Children>
+            <NavNode title="Edit sample resource details" controller="Profile" area="Biobank" action="Edit"/>
+          </Children>
+        </NavNode>
+        <NavNode title="Submissions" controller="Settings" area="Biobank" action="Submissions"/>
+        <NavNode title="Admins" controller="Settings" area="Biobank" action="Admins"/>
+  
+        <NavNode title="Funders" controller="Profile" area="Biobank" action="Funders"/>
+  
+        <!-- TODO: Find this controller and action?  -->
+        <NavNode title="Network Acceptance" controller="Biobank" action="NetworkAcceptance"/>
+  
+        <NavNode title="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
+        <NavNode title="Analytics" controller="Report" area="Biobank" action="Analytics"/>
+          
+        <NavNode title="Network details" controller="Profile" area="Network" action="Details">
+          <Children>
+            <NavNode title="Edit network details" controller="Profile" area="Network" action="Edit"/>
+          </Children>
+        </NavNode>
+        <NavNode title="Network admins" controller="Settings" area="Network" action="Admins"/>
+        <NavNode title="Biobanks in your network" controller="Profile" area="Network" action="Biobanks">
+          <Children>
+            <NavNode title="Add a biobank to your network" controller="Profile" area="Network" action="AddBiobank"/>
+          </Children>
+        </NavNode>
+      </Children>
+    </NavNode>
+    
+    <NavNode title="Contact Biobanks" controller="Home" action="Contact"/>
+    <NavNode title="Cookie policy" controller="Home" action="Cookies"/>
+
+    <NavNode title="Collection search" controller="Search" action="Collections"/>
+    <NavNode title="Capability search" controller="Search" action="Capabilities"/>
+
+    <NavNode title="Login" controller="Account" action="Login"/>
+    <NavNode title="Forgot password" controller="Account" action="ForgotPassword"/>
+    <NavNode title="Set a new password" controller="Account" action="ResetPassword"/>
+
+    <NavNode title="Register sample resource" controller="Register" action="Biobank"/>
+    <NavNode title="Register network" controller="Register" action="Network"/>
+
+    <NavNode title="Account details" controller="Account" action="Index">
+      <Children>
+        <NavNode title="Edit account details" controller="Account" action="Edit"/>
+      </Children>
+    </NavNode>
+
+    <NavNode title="Requests" controller="ADAC" action="Requests"/>
+    <NavNode title="Block/Allow" controller="ADAC" action="BlockAllowList"/>
+    <NavNode title="Request history" controller="ADAC" action="Historical"/>
+    <NavNode title="Biobanks" controller="ADAC" action="Biobanks"/>
+    <NavNode title="Biobank Activity" controller="ADAC" action="BiobankActivity"/>
+    <NavNode title="Networks" controller="ADAC" action="Networks"/>
+    <NavNode title="Funders" controller="ADAC" action="Funders"/>
+
+    <!-- ADAC Reference Data -->
+    <NavNode title="Access Conditions" controller="ADAC" action="AccessConditions"/>
+    <NavNode title="Age Ranges" controller="ADAC" action="AgeRanges"/>
+    <NavNode title="Annual Statistics" controller="ADAC" action="AnnualStatistics"/>
+    <NavNode title="Annual Statistic Groups" controller="ADAC" action="AnnualStatisticGroups"/>
+    <NavNode title="Associated Data Types" controller="ADAC" action="AssociatedDataTypes"/>
+    <NavNode title="Registration Reasons" controller="ADAC" action="RegistrationReason"/>
+    <NavNode title="Counties" controller="ADAC" action="County"/>
+    <NavNode title="Countries" controller="ADAC" action="Country"/>
+    <NavNode title="Collection Percentages" controller="ADAC" action="CollectionPercentages"/>
+    <NavNode title="Donor Counts" controller="ADAC" action="DonorCounts"/>
+    <NavNode title="Disease statuses" controller="ADAC" action="DiseaseStatuses"/>
+    <NavNode title="Extraction Procedures" controller="ADAC" action="ExtractionProcedure"/>
+    <NavNode title="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
+    <NavNode title="Material Types" controller="ADAC" action="MaterialTypes"/>
+    <NavNode title="Material Type Groups" controller="ADAC" action="MaterialTypeGroups"/>
+    <NavNode title="Preservation Types" controller="ADAC" action="PreservationTypes"/>
+    <NavNode title="Storage Temperatures" controller="ADAC" action="StorageTemperatures"/>
+    <NavNode title="Sample Collection Modes" controller="ADAC" action="SampleCollectionModes"/>
+    <NavNode title="Sexes" controller="ADAC" action="Sexes"/>
+    <NavNode title="Service Offerings" controller="ADAC" action="ServiceOffering"/>
+    <NavNode title="Sop Status" controller="ADAC" action="SopStatus"/>
+    <NavNode title="Consent Restrictions" controller="ADAC" action="ConsentRestriction"/>
+    <NavNode title="Collection Statuses" controller="ADAC" action="CollectionStatus"/>
+    <NavNode title="Collection Types" controller="ADAC" action="CollectionType"/>
+    <NavNode title="Associated Data Procurement Time Frame" controller="ADAC" action="AssociatedDataProcurementTimeFrame"/>
+    <NavNode title="Edit homepage" controller="ADAC" action="EditContent" preservedRouteParameters="id"/>
+    <NavNode title="Message of the day" controller="ADAC" action="EditMotd"/>
+
+    <!-- Site Configuration -->
+    <NavNode title="Homepage Configuration" controller="ADAC" action="HomepageConfig"/>
+    <NavNode title="Term Page Configuration" controller="ADAC" action="TermpageConfig"/>
+    <NavNode title="Register Biobank Configuration" controller="ADAC" action="RegisterBiobankConfig"/>
+    <NavNode title="Register Network Configuration" controller="ADAC" action="RegisterNetworkConfig"/>
+    <NavNode title="Site Configuration" controller="ADAC" action="SiteConfig"/>
+    <NavNode title="Sample Resource Configuration" controller="ADAC" action="SampleResourceConfig"/>
+
+    <!-- Content Pages -->
+    <NavNode title="ADAC" controller="ADAC" action="Index">
+      <Children>
+        <NavNode title="Content Pages Admin" controller="PagesAdmin" action="Index">
+          <Children>
+            <NavNode title="CreateEdit" controller="PagesAdmin" action="CreateEdit" preservedRouteParameters="id"/>
+          </Children>
+        </NavNode>
+      </Children>
+    </NavNode>
+    <NavNode title="Pages" controller="PagesAdmin" action="ContentPage" preservedRouteParameters="slug"/>
+    
+  </Children>
+</NavNode>
+-----------------    
+    
+    <NavNode key="About" controller="Home" action="About" area="" preservedRouteParameters="culture" text="About" iconCssClass="glyphicon glyphicon-heart">
+    </NavNode>
+    
+    
+    
+    
+
+    <NavNode key="Contact" controller="Home" action="Contact" area="" preservedRouteParameters="culture" text="Contact" >
+      <Children />
+      <DataAttributes>
+        <DataAttribute attribute="data-foo" value="bar" />
+        <DataAttribute attribute="data-foo2" value="baz" />
+      </DataAttributes>
+    </NavNode>
+    <!--<NavNode key="OverviewWhatever" text="Whatever Overview" namedRoute="OverviewWhatever" />
+    <NavNode key="OverviewIndex" text="Overview" namedRoute="OverviewIndex" />-->
+
+    <NavNode key="area51" area="Area51" controller="Roswell" action="Index" preservedRouteParameters="culture" text="Area 51" >
+      <Children>
+        <NavNode key="areahome" area="Area51" controller="Home" action="Index" preservedRouteParameters="culture" text="Home">
+          <Children />
+        </NavNode>
+        <NavNode key="areaseparator" text="Separator"></NavNode>
+        <NavNode key="aliens" area="Area51" controller="Roswell" action="Aliens" preservedRouteParameters="culture" text="Aliens">
+          <Children />
+        </NavNode>
+        <NavNode key="mib" area="Area51" controller="Roswell" action="MenInBlack" preservedRouteParameters="culture" text="Men In Black">
+          <Children />
+        </NavNode>
+      </Children>
+    </NavNode>
+    <NavNode key="Members" controller="Home" action="Members" area="" preservedRouteParameters="culture" text="Members" authorizationPolicy="MembersPolicy">
+      <Children />
+    </NavNode>
+    <NavNode key="Administration" controller="Home" action="Administration" area="" preservedRouteParameters="culture" text="Administration" authorizationPolicy="AdminsPolicy">
+      <Children />
+    </NavNode>
+
+    <NavNode key="HideFromAuthenticated"
+             controller="Home"
+             action="HideAuth"
+             text="Hide From Authenticated"
+             hideFromAuthenticated="true"
+             preservedRouteParameters="culture"
+    >
+      <Children />
+    </NavNode>
+    <NavNode key="HideFromAnonymous"
+             controller="Home"
+             action="HideAnon"
+             text="Hide From Anonymous"
+             hideFromAnonymous="true"
+             preservedRouteParameters="culture"
+    >
+      <Children />
+    </NavNode>
+
+  </Children>
+</NavNode>
