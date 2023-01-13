@@ -41,12 +41,12 @@ namespace Biobanks.Submissions.Api.Auth
                 .Build();
 
         /// <summary>
-        /// Requires that a request is authorised to access SuperAdmin functionality
+        /// Requires that a request is authorised to access Hangfire functionality
         /// </summary>
-        public static AuthorizationPolicy IsSuperAdmin
+        public static AuthorizationPolicy CanAccessHangfireDashboard
             => new AuthorizationPolicyBuilder()
                 .Combine(IsBasicAuthenticated)
-                .RequireClaim(ClaimTypes.Role, CustomRoles.SuperAdmin)
+                .RequireClaim(ClaimTypes.Role, CustomRoles.SuperUser)
                 .Build();
     }
 }
