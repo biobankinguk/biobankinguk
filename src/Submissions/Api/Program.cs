@@ -56,6 +56,8 @@ using Biobanks.Submissions.Api.Middleware;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices;
+using cloudscribe.Web.SiteMap;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +87,8 @@ var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtBearerConfig>();
 var workersConfig = builder.Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
 var hangfireConfig = builder.Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 var elasticConfig = builder.Configuration.GetSection("ElasticSearch").Get<ElasticsearchConfig>() ?? new();
+var sitemapConfig = builder.Configuration.GetSection("NavigationOptions");
+
 
 builder.Services.AddOptions()
     .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
@@ -97,6 +101,21 @@ builder.Services.AddOptions()
     .Configure<MaterialTypesLegacyModel>(builder.Configuration.GetSection("MaterialTypesLegacyModel"))
     .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"))
     .Configure<ElasticsearchConfig>(builder.Configuration.GetSection("Elasticsearch"));
+
+//sitemap + breadcrumbs
+builder.Services.AddScoped<ISiteMapNodeService, NavigationTreeSiteMapNodeService>();
+builder.Services.AddCloudscribeNavigation(sitemapConfig);
+builder.Services.AddScoped<cloudscribe.Web.Navigation.INavigationTreeBuilder, cloudscribe.Web.Navigation.JsonNavigationTreeBuilder>();
+
+builder.Services.Configure<MvcOptions>(options =>
+{
+    options.CacheProfiles.Add("SiteMapCacheProfile",
+        new CacheProfile
+        {
+            Duration = 100
+        });
+                
+});
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -122,12 +141,14 @@ builder.Services.AddControllersWithViews(opts =>
         opts.SuppressOutputFormatterBuffering = true;
         opts.Filters.Add<RedirectAntiforgeryValidationFailedResult>();
     })
-                .AddJsonOptions(o =>
-                {
-                    o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                    o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
-                });
+      .AddViewLocalization()
+      .AddJsonOptions(o =>
+      {
+        o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
+      });
+
 
 builder.Services.AddAuthorization(o =>
 {

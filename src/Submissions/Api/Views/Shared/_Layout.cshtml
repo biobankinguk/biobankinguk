@@ -2,6 +2,7 @@
 @inject IOptions<SitePropertiesOptions> _sitePropertiesOptions;
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 @*TODO: @using MvcSiteMapProvider.Web.Html*@
+@using cloudscribe.Web.Navigation
 @*TODO: @using StackExchange.Profiling;*@
 <!DOCTYPE html>
 
@@ -87,6 +88,7 @@
 
         @* Breadcrumb trail *@
         @* TODO: @Html.MvcSiteMap().SiteMapPath("BootstrapSiteMapPathHelperModel")*@
+        @await Component.InvokeAsync("Navigation", new { viewName = "Bootstrap5Breadcrumbs", filterName = NamedNavigationFilters.Breadcrumbs, startingNodeKey = "" })
 
         @* Feedback Message *@
         @if (!(ViewBag.SuppressDefaultFeedbackMessage ?? false))
