@@ -17,6 +17,16 @@
         "Action": "Cookies"
       },
       "Children": []
+    },
+    {
+  "Value": {
+    "Key": "Register Biobank",
+    "ParentKey": "RootNode",
+    "Text": "Register Biobank",
+    "Controller": "Register",
+    "Action": "Biobank"
+    },
+      "Children": []
     }
   ]
 }

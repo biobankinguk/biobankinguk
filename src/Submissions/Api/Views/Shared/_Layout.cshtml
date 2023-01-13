@@ -1,8 +1,8 @@
 @using Microsoft.AspNetCore.Http.Extensions;
+@using cloudscribe.Web.Navigation
 @inject IOptions<SitePropertiesOptions> _sitePropertiesOptions;
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@*TODO: @using MvcSiteMapProvider.Web.Html*@
-@using cloudscribe.Web.Navigation
+
 @*TODO: @using StackExchange.Profiling;*@
 <!DOCTYPE html>
 
@@ -87,8 +87,7 @@
     <main role="main" class="top-padding">
 
         @* Breadcrumb trail *@
-        @* TODO: @Html.MvcSiteMap().SiteMapPath("BootstrapSiteMapPathHelperModel")*@
-        @await Component.InvokeAsync("Navigation", new { viewName = "Bootstrap5Breadcrumbs", filterName = NamedNavigationFilters.Breadcrumbs, startingNodeKey = "" })
+        <partial name="_Breadcrumbs"/>
 
         @* Feedback Message *@
         @if (!(ViewBag.SuppressDefaultFeedbackMessage ?? false))
