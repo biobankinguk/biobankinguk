@@ -147,8 +147,8 @@ builder.Services.AddAuthorization(o =>
         AuthPolicies.IsTokenAuthenticated);
     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
         AuthPolicies.IsBasicAuthenticated);
-    o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),
-        AuthPolicies.IsSuperAdmin);
+    o.AddPolicy(nameof(AuthPolicies.CanAccessHangfireDashboard),
+        AuthPolicies.CanAccessHangfireDashboard);
 });
 
 builder.Services.AddSwaggerGen(opts =>
@@ -211,6 +211,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<IAnnotationService, AnnotationService>()
     .AddTransient<IBiobankService, BiobankService>()
     .AddTransient<IBiobankIndexService, BiobankIndexService>()
+    .AddTransient<IBiobankWriteService, BiobankWriteService>()
     .AddTransient<ICapabilityService, CapabilityService>()
     .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
     .AddTransient<ICollectionService, CollectionService>()
@@ -312,8 +313,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<County>, CountyService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Country>,
         CountryService>()
+    .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<DonorCount>,
         DonorCountService>()
+    .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>()
     .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<MacroscopicAssessment>,
         MacroscopicAssessmentService>()
     .AddTransient<IMaterialTypeService, MaterialTypeService>()
@@ -338,19 +341,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
 {
     builder.Services
-        .AddTransient<IBiobankIndexService, BiobankIndexService>()
-        .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
-        .AddTransient<IBiobankReadService, BiobankReadService>()
-        .AddTransient<IBiobankWriteService, BiobankWriteService>()
-        .AddTransient<IIndexProvider, LegacyIndexProvider>()
-        .AddTransient(typeof(IGenericEFRepository<>), typeof(IGenericEFRepository<>))
-        .AddTransient<ITokenLoggingService, TokenLoggingService>()
-        .AddTransient<IDiseaseStatusService, DiseaseStatusService>()
-
-        // Reference Data
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<AssociatedDataType>, AssociatedDataTypeService>()
-        .AddTransient<Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<Funder>, FunderService>();
-
+        .AddTransient<IBiobankReadService, BiobankReadService>();
 }
 
 // Conditional services
@@ -451,7 +442,7 @@ else
 
     app
         .MapHangfireDashboard("/hangfire", dashboardOptions)
-        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+        .RequireAuthorization(nameof(AuthPolicies.CanAccessHangfireDashboard));
 }
 
 // Hangfire Server

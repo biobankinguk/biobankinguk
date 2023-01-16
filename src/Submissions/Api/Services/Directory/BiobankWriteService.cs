@@ -1,9 +1,6 @@
-using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Services;
-using Biobanks.Submissions.Api.Models.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,125 +14,37 @@ namespace Biobanks.Submissions.Api.Services.Directory
     public class BiobankWriteService : IBiobankWriteService
     {
         #region Properties and ctor
-        private readonly IOntologyTermService _ontologyTermService;
-        private readonly ICapabilityService _capabilityService;
-        private readonly IOrganisationDirectoryService _organisationService;
-
+        
+        private readonly IBiobankIndexService _indexService;
         private readonly ILogoStorageProvider _logoStorageProvider;
-
-        private readonly IGenericEFRepository<OntologyTerm> _ontologyTermRepository;
-        private readonly IGenericEFRepository<MaterialType> _materialTypeRepository;
-
-        private readonly IGenericEFRepository<Collection> _collectionRepository;
-        private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
-        private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
-
-        private readonly IGenericEFRepository<Network> _networkRepository;
-        private readonly IGenericEFRepository<NetworkUser> _networkUserRepository;
-        private readonly IGenericEFRepository<NetworkRegisterRequest> _networkRegisterRequestRepository;
-        private readonly IGenericEFRepository<OrganisationNetwork> _networkOrganisationRepository;
-
+        private readonly IGenericEFRepository<Funder> _funderRepository;
         private readonly IGenericEFRepository<Organisation> _organisationRepository;
         private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
-        private readonly IGenericEFRepository<OrganisationRegisterRequest> _organisationRegisterRequestRepository;
         private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
-        private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
-        private readonly IGenericEFRepository<OrganisationType> _organisationTypeRepository;
         private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
-        private readonly IGenericEFRepository<OrganisationNetwork> _organisationNetworkRepository;
         private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
         private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
-
-        private readonly IGenericEFRepository<ConsentRestriction> _consentRestrictionRepository;
-
-        private readonly IGenericEFRepository<Funder> _funderRepository;
-
-        private readonly IGenericEFRepository<Entities.Data.Config> _siteConfigRepository;
-
-        private readonly IBiobankIndexService _indexService;
-
-        private readonly IMapper _mapper;
-
+        
         public BiobankWriteService(
-            ICollectionService collectionService,
-            IOntologyTermService ontologyTermService,
-            ICapabilityService capabilityService,
-            INetworkService networkService,
-            IOrganisationDirectoryService organisationService,
-            IBiobankReadService biobankReadService,
-            IConfigService configService,
+            IBiobankIndexService indexService,
             ILogoStorageProvider logoStorageProvider,
-            IGenericEFRepository<OntologyTerm> ontologyTermRepository,
-            IGenericEFRepository<MaterialType> materialTypeRepository,
-            IGenericEFRepository<Collection> collectionRepository,
-            IGenericEFRepository<DiagnosisCapability> capabilityRepository,
-            IGenericEFRepository<SampleSet> sampleSetRepository,
-            IGenericEFRepository<MaterialDetail> materialDetailRepository,
-            IGenericEFRepository<Network> networkRepository,
-            IGenericEFRepository<NetworkUser> networkUserRepository,
-            IGenericEFRepository<NetworkRegisterRequest> networkRegisterRequestRepository,
-            IGenericEFRepository<OrganisationNetwork> networkOrganisationRepository,
-
+            IGenericEFRepository<Funder> funderRepository,
             IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
-            IGenericEFRepository<OrganisationRegisterRequest> organisationRegisterRequestRepository,
             IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
-            IGenericEFRepository<OrganisationUser> organisationUserRepository,
-            IGenericEFRepository<OrganisationNetwork> organisationNetworkRepository,
-            IGenericEFRepository<OrganisationType> organisationTypeRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
             IGenericEFRepository<RegistrationReason> registrationReasonRepository,
-            IGenericEFRepository<ServiceOffering> serviceOfferingRepository,
-
-            IGenericEFRepository<ConsentRestriction> consentRestrictionRepository,
-
-            IGenericEFRepository<Entities.Data.Config> siteConfigRepository,
-
-            IBiobankIndexService indexService,
-            IMapper mapper,
-
-            IGenericEFRepository<Funder> funderRepository)
+            IGenericEFRepository<ServiceOffering> serviceOfferingRepository)
         {
-            _ontologyTermService = ontologyTermService;
-            _capabilityService = capabilityService;
-
-            _organisationService = organisationService;
-
+            _indexService = indexService;
             _logoStorageProvider = logoStorageProvider;
-
-            _ontologyTermRepository = ontologyTermRepository;
-            _materialTypeRepository = materialTypeRepository;
-
-            _collectionRepository = collectionRepository;
-            _capabilityRepository = capabilityRepository;
-            _sampleSetRepository = sampleSetRepository;
-            _materialDetailRepository = materialDetailRepository;
-
-            _networkRepository = networkRepository;
-            _networkUserRepository = networkUserRepository;
-            _networkRegisterRequestRepository = networkRegisterRequestRepository;
-            _networkOrganisationRepository = networkOrganisationRepository;
-
+            _funderRepository = funderRepository;
             _organisationRepository = organisationRepository;
             _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
-            _organisationRegisterRequestRepository = organisationRegisterRequestRepository;
             _organisationRegistrationReasonRepository = organisationRegistrationReasonRepository;
-            _organisationUserRepository = organisationUserRepository;
-            _organisationNetworkRepository = organisationNetworkRepository;
-            _organisationTypeRepository = organisationTypeRepository;
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _registrationReasonRepository = registrationReasonRepository;
             _serviceOfferingRepository = serviceOfferingRepository;
-
-            _consentRestrictionRepository = consentRestrictionRepository;
-
-            _siteConfigRepository = siteConfigRepository;
-
-            _indexService = indexService;
-
-            _mapper = mapper;
-            _funderRepository = funderRepository;
         }
 
         #endregion

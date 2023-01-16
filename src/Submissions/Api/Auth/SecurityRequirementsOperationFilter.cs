@@ -19,7 +19,7 @@ namespace Biobanks.Submissions.Api.Auth
         {
             [nameof(AuthPolicies.IsTokenAuthenticated)] = "jwtbearer",
             [nameof(AuthPolicies.IsBasicAuthenticated)] = "basic",
-            [nameof(AuthPolicies.IsSuperAdmin)] = "basic",
+            [nameof(AuthPolicies.CanAccessHangfireDashboard)] = "basic",
         };
 
         private IEnumerable<string> GetDistinctAuthorizationPolicyNames(object[] attributes)
