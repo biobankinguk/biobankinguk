@@ -252,7 +252,7 @@
   // Capability
   {
     "outputFileName": "wwwroot/dist/js/Biobank/capability.min.js",
-    "inputFiles": ["Frontend/js/Biobank/associated-data-admin.js"],
+    "inputFiles": ["Frontend/js/pages/Biobank/associated-data-admin.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
