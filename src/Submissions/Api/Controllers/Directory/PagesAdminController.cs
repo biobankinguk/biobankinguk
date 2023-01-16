@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions
+namespace Biobanks.Submissions.Api.Controllers.Directory
 {
     //TODO:[UserAuthorize(Roles = "ADAC")]
     public class PagesAdminController : Controller
