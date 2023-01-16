@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using cloudscribe.Web.Navigation;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
@@ -34,7 +35,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         }
 
         [AllowAnonymous]
-        //[SiteMapTitle("Title")] TODO: Replace MvcSiteMapProvider
         public async Task<ActionResult> ContentPage(string slug)
         {
             var page = await _contentPageService.GetBySlug(slug);
@@ -43,6 +43,10 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             {
                 if (page.IsEnabled || User.IsInRole("ADAC"))
                 {
+                    // Set the last breadcrumb
+                    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
+                    breadCrumbHelper.AddTailCrumb(page.Title, page.Title, "");
+                    
                     return View(new ContentPageModel
                     {
                         Id = page.Id,
