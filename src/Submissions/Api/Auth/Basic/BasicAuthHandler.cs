@@ -100,8 +100,8 @@ namespace Biobanks.Submissions.Api.Auth.Basic
             else
             {
                 // TODO: Fix SuperAdmin to use formal persisted scopes
-                // instead of assuming no org == superadmin ;)
-                claims.Add(new Claim(ClaimTypes.Role, CustomRoles.SuperAdmin));
+                // instead of assuming no org == superuser ;)
+                claims.Add(new Claim(ClaimTypes.Role, CustomRoles.SuperUser));
             }
             claims.Add(new Claim(CustomClaimTypes.ClientId, clientId));
 

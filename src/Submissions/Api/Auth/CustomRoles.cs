@@ -8,6 +8,6 @@ namespace Biobanks.Submissions.Api.Auth
         /// <summary>
         /// Represents the highest level of User
         /// </summary>
-        public const string SuperAdmin = "SuperAdmin";
+        public const string SuperUser = "SuperUser";
     }
 }

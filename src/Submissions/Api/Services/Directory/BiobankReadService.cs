@@ -63,15 +63,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         #endregion
-
-        public async Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId)
-            => (await _organisationRepository.ListAsync(
-                    false,
-                    x => x.OrganisationId == biobankId,
-                    null,
-                    x => x.Funders))
-                .Select(x => x.Funders)
-                .FirstOrDefault();
+        
         public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
             IEnumerable<int> sampleSetIds)
         {
