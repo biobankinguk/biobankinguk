@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<NavNode key="Home" controller="Home" action="Index" preservedRouteParameters="culture" text="Home" iconCssClass="glyphicon glyphicon-home">
+<NavNode key="Home" controller="Home" action="Index" text="Home" iconCssClass="glyphicon glyphicon-home">
   <Children>
     
     <NavNode key="ActiveOrganisationName" title="ActiveOrganisationName" url="#">
@@ -17,9 +17,9 @@
                   <Children>
                     <NavNode key="EditSampleSet" title="Edit sample set" controller="Collections" area="Biobank" action="EditSampleSet" preservedRouteParameters="id"/>
                   </Children>
-                </NavNode
+                </NavNode>
               </Children>
-            </NavNode
+            </NavNode>
           </Children>
         </NavNode>
 
@@ -76,8 +76,8 @@
     <NavNode key="ForgotPassword" title="Forgot password" controller="Account" action="ForgotPassword"/>
     <NavNode key="ResetPassword" title="Set a new password" controller="Account" action="ResetPassword"/>
 
+    <NavNode key="RegisterNetwork" title="Register network" controller="Register" action="Network"/>
     <NavNode key="RegisterSampleResource" title="Register sample resource" controller="Register" action="Biobank"/>
-    <NavNode key="RegisterNEtwork" title="Register network" controller="Register" action="Network"/>
 
     <NavNode key="AccountDetails" title="Account details" controller="Account" action="Index">
       <Children>
