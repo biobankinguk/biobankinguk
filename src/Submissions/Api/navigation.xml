@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<NavNode key="Home" controller="Home" action="Index" area="" preservedRouteParameters="culture" text="Home" iconCssClass="glyphicon glyphicon-home">
+<NavNode key="Home" controller="Home" action="Index" preservedRouteParameters="culture" text="Home" iconCssClass="glyphicon glyphicon-home">
   <Children>
     
     <NavNode title="ActiveOrganisationName" url="#">
@@ -88,16 +88,16 @@
     <NavNode title="Requests" controller="Requests" area="Admin" action="Index"/>
     <NavNode title="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="BlockAllowList"/>
     <!-- TODO: Find the below? Is missing - should be on the Requests controller -->
-    <NavNode title="Request history" controller="ADAC" area="Admin" action="Historical"/>
+    <!-- <NavNode title="Request history" controller="ADAC" area="Admin" action="Historical"/> -->
     <!-- TODO: Find this one also? Is missing - should be on the Biobanks controller -->
-    <NavNode title="Biobanks" controller="ADAC" area="Admin" action="Biobanks"/>
+    <!-- <NavNode title="Biobanks" controller="ADAC" area="Admin" action="Biobanks"/> -->
     <NavNode title="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
     <NavNode title="Networks" controller="ReferenceData" area="Admin" action="Networks"/>
     <NavNode title="Funders" controller="Funder" area="Admin" action="Funders"/>
 
     <!-- TODO: Find these? -->
     <!-- ADAC Reference Data - all missing, reference data controller looks wrong? -->
-    <NavNode title="Access Conditions" controller="ADAC" action="AccessConditions"/>
+    <!-- <NavNode title="Access Conditions" controller="ADAC" action="AccessConditions"/>
     <NavNode title="Age Ranges" controller="ADAC" action="AgeRanges"/>
     <NavNode title="Annual Statistics" controller="ADAC" action="AnnualStatistics"/>
     <NavNode title="Annual Statistic Groups" controller="ADAC" action="AnnualStatisticGroups"/>
@@ -123,7 +123,7 @@
     <NavNode title="Collection Types" controller="ADAC" action="CollectionType"/>
     <NavNode title="Associated Data Procurement Time Frame" controller="ADAC" action="AssociatedDataProcurementTimeFrame"/>
     <NavNode title="Edit homepage" controller="ADAC" action="EditContent" preservedRouteParameters="id"/>
-    <NavNode title="Message of the day" controller="ADAC" action="EditMotd"/>
+    <NavNode title="Message of the day" controller="ADAC" action="EditMotd"/> -->
 
     <!-- Site Configuration -->
     <NavNode title="Homepage Configuration" controller="SiteConfig" area="Admin" action="HomepageConfig"/>
@@ -145,66 +145,5 @@
     </NavNode>
     <NavNode title="Pages" controller="PagesAdmin" action="ContentPage" preservedRouteParameters="slug"/>
     
-  </Children>
-</NavNode>
------------------    
-    
-    <NavNode key="About" controller="Home" action="About" area="" preservedRouteParameters="culture" text="About" iconCssClass="glyphicon glyphicon-heart">
-    </NavNode>
-    
-    
-    
-    
-
-    <NavNode key="Contact" controller="Home" action="Contact" area="" preservedRouteParameters="culture" text="Contact" >
-      <Children />
-      <DataAttributes>
-        <DataAttribute attribute="data-foo" value="bar" />
-        <DataAttribute attribute="data-foo2" value="baz" />
-      </DataAttributes>
-    </NavNode>
-    <!--<NavNode key="OverviewWhatever" text="Whatever Overview" namedRoute="OverviewWhatever" />
-    <NavNode key="OverviewIndex" text="Overview" namedRoute="OverviewIndex" />-->
-
-    <NavNode key="area51" area="Area51" controller="Roswell" action="Index" preservedRouteParameters="culture" text="Area 51" >
-      <Children>
-        <NavNode key="areahome" area="Area51" controller="Home" action="Index" preservedRouteParameters="culture" text="Home">
-          <Children />
-        </NavNode>
-        <NavNode key="areaseparator" text="Separator"></NavNode>
-        <NavNode key="aliens" area="Area51" controller="Roswell" action="Aliens" preservedRouteParameters="culture" text="Aliens">
-          <Children />
-        </NavNode>
-        <NavNode key="mib" area="Area51" controller="Roswell" action="MenInBlack" preservedRouteParameters="culture" text="Men In Black">
-          <Children />
-        </NavNode>
-      </Children>
-    </NavNode>
-    <NavNode key="Members" controller="Home" action="Members" area="" preservedRouteParameters="culture" text="Members" authorizationPolicy="MembersPolicy">
-      <Children />
-    </NavNode>
-    <NavNode key="Administration" controller="Home" action="Administration" area="" preservedRouteParameters="culture" text="Administration" authorizationPolicy="AdminsPolicy">
-      <Children />
-    </NavNode>
-
-    <NavNode key="HideFromAuthenticated"
-             controller="Home"
-             action="HideAuth"
-             text="Hide From Authenticated"
-             hideFromAuthenticated="true"
-             preservedRouteParameters="culture"
-    >
-      <Children />
-    </NavNode>
-    <NavNode key="HideFromAnonymous"
-             controller="Home"
-             action="HideAnon"
-             text="Hide From Anonymous"
-             hideFromAnonymous="true"
-             preservedRouteParameters="culture"
-    >
-      <Children />
-    </NavNode>
-
   </Children>
 </NavNode>
