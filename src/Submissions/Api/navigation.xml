@@ -76,8 +76,8 @@
     <NavNode key="ForgotPassword" title="Forgot password" controller="Account" action="ForgotPassword"/>
     <NavNode key="ResetPassword" title="Set a new password" controller="Account" action="ResetPassword"/>
 
-    <NavNode key="RegisterNetwork" title="Register network" controller="Register" action="Network"/>
-    <NavNode key="RegisterSampleResource" title="Register sample resource" controller="Register" action="Biobank"/>
+    <NavNode key="RegisterNetwork" text="Register network" controller="Register" action="Network" componentVisibility="breadcrumbs"/>
+    <NavNode key="RegisterSampleResource" text="Register sample resource" controller="Register" action="Biobank" componentVisibility="breadcrumbs"/>
 
     <NavNode key="AccountDetails" title="Account details" controller="Account" action="Index">
       <Children>
