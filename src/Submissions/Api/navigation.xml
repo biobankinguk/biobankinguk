@@ -45,8 +45,7 @@
         <NavNode key="BiobankAdmins" text="Biobank Admins" controller="Settings" area="Biobank" action="Admins"/>
   
         <NavNode key="BiobankFunders" text="Funders" controller="Profile" area="Biobank" action="Funders"/>
-  
-        <!-- TODO: Find this controller and action?  -->
+        
         <NavNode key="NetworkAcceptance" text="Network Acceptance" controller="Biobank" action="NetworkAcceptance"/>
   
         <NavNode key="AnnualStats" text="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
@@ -93,41 +92,41 @@
     <NavNode key="NetworkAdmin" text="Networks" controller="ReferenceData" area="Admin" action="Networks"/>
     <NavNode key="NetworkFunders" text="Funders" controller="Funder" area="Admin" action="Funders"/>
     
-    <!-- TODO: ADAC Reference Data - all missing, reference data controller looks wrong? -->
-    <!-- <NavNode key="" text="Access Conditions" controller="ADAC" action="AccessConditions"/>
-    <NavNode key="" text="Age Ranges" controller="ADAC" action="AgeRanges"/>
-    <NavNode key="" text="Annual Statistics" controller="ADAC" action="AnnualStatistics"/>
-    <NavNode key="" text="Annual Statistic Groups" controller="ADAC" action="AnnualStatisticGroups"/>
-    <NavNode key="" text="Associated Data Types" controller="ADAC" action="AssociatedDataTypes"/>
-    <NavNode key="" text="Registration Reasons" controller="ADAC" action="RegistrationReason"/>
-    <NavNode key="" text="Counties" controller="ADAC" action="County"/>
-    <NavNode key="" text="Countries" controller="ADAC" action="Country"/>
-    <NavNode key="" text="Collection Percentages" controller="ADAC" action="CollectionPercentages"/>
-    <NavNode key="" text="Donor Counts" controller="ADAC" action="DonorCounts"/>
-    <NavNode key="" text="Disease statuses" controller="ADAC" action="DiseaseStatuses"/>
-    <NavNode key="" text="Extraction Procedures" controller="ADAC" action="ExtractionProcedure"/>
-    <NavNode key="" text="Macroscopic Assessments" controller="ADAC" action="MacroscopicAssessments"/>
-    <NavNode key="" text="Material Types" controller="ADAC" action="MaterialTypes"/>
-    <NavNode key="" text="Material Type Groups" controller="ADAC" action="MaterialTypeGroups"/>
-    <NavNode key="" text="Preservation Types" controller="ADAC" action="PreservationTypes"/>
-    <NavNode key="" text="Storage Temperatures" controller="ADAC" action="StorageTemperatures"/>
-    <NavNode key="" text="Sample Collection Modes" controller="ADAC" action="SampleCollectionModes"/>
-    <NavNode key="" text="Sexes" controller="ADAC" action="Sexes"/>
-    <NavNode key="" text="Service Offerings" controller="ADAC" action="ServiceOffering"/>
-    <NavNode key="" text="Sop Status" controller="ADAC" action="SopStatus"/>
-    <NavNode key="" text="Consent Restrictions" controller="ADAC" action="ConsentRestriction"/>
-    <NavNode key="" text="Collection Statuses" controller="ADAC" action="CollectionStatus"/>
-    <NavNode key="" text="Collection Types" controller="ADAC" action="CollectionType"/>
-    <NavNode key="" text="Associated Data Procurement Time Frame" controller="ADAC" action="AssociatedDataProcurementTimeFrame"/>
-    <NavNode key="" text="Edit homepage" controller="ADAC" action="EditContent" preservedRouteParameters="id"/>
-    <NavNode key="" text="Message of the day" controller="ADAC" action="EditMotd"/> -->
+    <!--    Reference Data-->
+    <NavNode key="" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
+    <NavNode key="" text="Age Ranges" area="Admin" controller="ReferenceData" action="AgeRanges"/>
+    <NavNode key="" text="Annual Statistics" area="Admin" controller="ReferenceData" action="AnnualStatistics"/>
+    <NavNode key="" text="Annual Statistic Groups" area="Admin" controller="ReferenceData" action="AnnualStatisticGroups"/>
+    <NavNode key="" text="Associated Data Types" area="Admin" controller="ReferenceData" action="AssociatedDataTypes"/>
+    <NavNode key="" text="Registration Reasons" area="Admin" controller="ReferenceData" action="RegistrationReason"/>
+    <NavNode key="" text="Counties" area="Admin" controller="ReferenceData" action="County"/>
+    <NavNode key="" text="Countries" area="Admin" controller="ReferenceData" action="Country"/>
+    <NavNode key="" text="Collection Percentages" area="Admin" controller="ReferenceData" action="CollectionPercentages"/>
+    <NavNode key="" text="Donor Counts" area="Admin" controller="ReferenceData" action="DonorCounts"/>
+    <NavNode key="" text="Disease statuses" area="Admin" controller="ReferenceData" action="DiseaseStatuses"/>
+    <NavNode key="" text="Extraction Procedures" area="Admin" controller="ReferenceData" action="ExtractionProcedure"/>
+    <NavNode key="" text="Macroscopic Assessments" area="Admin" controller="ReferenceData" action="MacroscopicAssessments"/>
+    <NavNode key="" text="Material Types" area="Admin" controller="ReferenceData" action="MaterialTypes"/>
+    <NavNode key="" text="Material Type Groups" area="Admin" controller="ReferenceData" action="MaterialTypeGroups"/>
+    <NavNode key="" text="Preservation Types" area="Admin" controller="ReferenceData" action="PreservationTypes"/>
+    <NavNode key="" text="Storage Temperatures" area="Admin" controller="ReferenceData" action="StorageTemperatures"/>
+    <NavNode key="" text="Sample Collection Modes" area="Admin" controller="ReferenceData" action="SampleCollectionModes"/>
+    <NavNode key="" text="Sexes" area="Admin" controller="ReferenceData" action="Sexes"/>
+    <NavNode key="" text="Service Offerings" area="Admin" controller="ReferenceData" action="ServiceOffering"/>
+    <NavNode key="" text="Sop Status" area="Admin" controller="ReferenceData" action="SopStatus"/>
+    <NavNode key="" text="Consent Restrictions" area="Admin" controller="ReferenceData" action="ConsentRestriction"/>
+    <NavNode key="" text="Collection Statuses" area="Admin" controller="ReferenceData" action="CollectionStatus"/>
+    <NavNode key="" text="Collection Types" area="Admin" controller="ReferenceData" action="CollectionType"/>
+    <NavNode key="" text="Associated Data Procurement Time Frame" area="Admin" controller="ReferenceData" action="AssociatedDataProcurementTimeFrame"/>
+    <NavNode key="" text="Edit homepage" area="Admin" controller="ReferenceData" action="EditContent" preservedRouteParameters="id"/>
+    <NavNode key="" text="Message of the day" area="Admin" controller="ReferenceData" action="EditMotd"/>
 
     <!-- Site Configuration -->
     <NavNode key="HomepageConfig" text="Homepage Configuration" controller="SiteConfig" area="Admin" action="HomepageConfig"/>
     <NavNode key="TermpageConfig" text="Term Page Configuration" controller="SiteConfig" area="Admin" action="TermpageConfig"/>
     <NavNode key="RegisterBiobankConfig" text="Register Biobank Configuration" controller="SiteConfig" area="Admin" action="RegisterBiobankConfig"/>
     <NavNode key="RegisterNetworkConfig" text="Register Network Configuration" controller="SiteConfig" area="Admin" action="RegisterNetworkConfig"/>
-    <NavNode key="SiteConfig" text="Site Configuration" controller="ADAC" area="SiteConfig" action="SiteConfig"/>
+    <NavNode key="SiteConfig" text="Site Configuration" Admin="Admin" controller="SiteConfig" action="SiteConfig"/>
     <NavNode key="SampleResourceConfig" text="Sample Resource Configuration" controller="SiteConfig" area="Admin" action="SampleResourceConfig"/>
 
     <!-- Content Pages -->
