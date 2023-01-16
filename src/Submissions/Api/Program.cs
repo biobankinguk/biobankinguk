@@ -86,6 +86,7 @@ var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtBearerConfig>();
 var workersConfig = builder.Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
 var hangfireConfig = builder.Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 var elasticConfig = builder.Configuration.GetSection("ElasticSearch").Get<ElasticsearchConfig>() ?? new();
+var siteConfig = builder.Configuration.GetSection("SiteProperties").Get<SitePropertiesOptions>() ?? new();
 
 builder.Services.AddOptions()
     .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
@@ -105,21 +106,14 @@ builder.Services.AddEmailSender(builder.Configuration);
 
 builder.Services.ConfigureApplicationCookie(opts =>
     {
-      opts.Cookie.Name = "SubmissionsAuthCookie";
-      opts.Cookie.HttpOnly = true;
-      opts.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-      opts.LoginPath = "/Identity/Account/Login";
-      opts.AccessDeniedPath = "/Identity/Account/AccessDenied";
-      opts.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+      opts.ExpireTimeSpan = TimeSpan.FromMilliseconds(siteConfig.ClientSessionTimeout);
+      opts.LoginPath = "/Account/Login";
+      opts.AccessDeniedPath = "/Account/AccessDenied";
+      opts.ReturnUrlParameter = "returnUrl";
       opts.SlidingExpiration = true;
     });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(opts =>
-                {
-                  opts.LoginPath = "/Account/Unauthorized/";
-                  opts.AccessDeniedPath = "/Account/Forbidden/";
-                })
                 .AddJwtBearer(opts =>
                 {
                   opts.Audience = JwtBearerConstants.TokenAudience;
