@@ -136,8 +136,8 @@ builder.Services.AddAuthorization(o =>
         AuthPolicies.IsTokenAuthenticated);
     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
         AuthPolicies.IsBasicAuthenticated);
-    o.AddPolicy(nameof(AuthPolicies.IsSuperAdmin),
-        AuthPolicies.IsSuperAdmin);
+    o.AddPolicy(nameof(AuthPolicies.CanAccessHangfireDashboard),
+        AuthPolicies.CanAccessHangfireDashboard);
 });
 
 builder.Services.AddSwaggerGen(opts =>
@@ -431,7 +431,7 @@ else
 
     app
         .MapHangfireDashboard("/hangfire", dashboardOptions)
-        .RequireAuthorization(nameof(AuthPolicies.IsSuperAdmin));
+        .RequireAuthorization(nameof(AuthPolicies.CanAccessHangfireDashboard));
 }
 
 // Hangfire Server
