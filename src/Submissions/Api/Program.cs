@@ -56,6 +56,7 @@ using Biobanks.Submissions.Api.Middleware;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,18 +103,34 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddEmailSender(builder.Configuration);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.ConfigureApplicationCookie(opts =>
+    {
+      opts.Cookie.Name = "SubmissionsAuthCookie";
+      opts.Cookie.HttpOnly = true;
+      opts.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+      opts.LoginPath = "/Identity/Account/Login";
+      opts.AccessDeniedPath = "/Identity/Account/AccessDenied";
+      opts.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+      opts.SlidingExpiration = true;
+    });
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opts =>
+                {
+                  opts.LoginPath = "/Account/Unauthorized/";
+                  opts.AccessDeniedPath = "/Account/Forbidden/";
+                })
                 .AddJwtBearer(opts =>
                 {
-                    opts.Audience = JwtBearerConstants.TokenAudience;
-                    opts.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = JwtBearerConstants.TokenIssuer,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = Crypto.GenerateSigningKey(jwtConfig.Secret),
-                        RequireExpirationTime = true
-                    };
+                  opts.Audience = JwtBearerConstants.TokenAudience;
+                  opts.TokenValidationParameters = new TokenValidationParameters
+                  {
+                    ValidateIssuer = true,
+                    ValidIssuer = JwtBearerConstants.TokenIssuer,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = Crypto.GenerateSigningKey(jwtConfig.Secret),
+                    RequireExpirationTime = true
+                  };
                 })
                 .AddBasic(opts => opts.Realm = "biobankinguk-api");
 
