@@ -87,16 +87,13 @@
 
     <NavNode key="AdminRequests" text="Requests" controller="Requests" area="Admin" action="Index"/>
     <NavNode key="RegistrationDomainRules" text="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="BlockAllowList"/>
-    <!-- TODO: Find the below? Is missing - should be on the Requests controller -->
-    <!-- <NavNode key="" text="Request history" controller="ADAC" area="Admin" action="Historical"/> -->
-    <!-- TODO: Find this one also? Is missing - should be on the Biobanks controller -->
-    <!-- <NavNode key="" text="Biobanks" controller="ADAC" area="Admin" action="Biobanks"/> -->
+    <NavNode key="RequestHistory" text="Request history" controller="Requests" area="Admin" action="Historical"/>
+     <NavNode key="" text="Biobanks" controller="Biobanks" area="Admin" action="Biobanks"/> 
     <NavNode key="BiobankActivity" text="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
     <NavNode key="NetworkAdmin" text="Networks" controller="ReferenceData" area="Admin" action="Networks"/>
     <NavNode key="NetworkFunders" text="Funders" controller="Funder" area="Admin" action="Funders"/>
-
-    <!-- TODO: Find these? -->
-    <!-- ADAC Reference Data - all missing, reference data controller looks wrong? -->
+    
+    <!-- TODO: ADAC Reference Data - all missing, reference data controller looks wrong? -->
     <!-- <NavNode key="" text="Access Conditions" controller="ADAC" action="AccessConditions"/>
     <NavNode key="" text="Age Ranges" controller="ADAC" action="AgeRanges"/>
     <NavNode key="" text="Annual Statistics" controller="ADAC" action="AnnualStatistics"/>
