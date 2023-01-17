@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory;
 
+[AllowAnonymous]
 public class TermController : Controller
 {
     private readonly IConfigService _configService;

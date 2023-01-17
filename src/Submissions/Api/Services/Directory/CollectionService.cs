@@ -250,7 +250,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => await _db.Collections
                 .AsNoTracking()
                 .Include(x => x.OntologyTerm)
-                .Include(x => x.SampleSets.Select(y => y.MaterialDetails))
+                .Include(x => x.SampleSets)
+                .ThenInclude(x => x.MaterialDetails)
                 .Where(x => x.OrganisationId == organisationId || organisationId == default)
                 .ToListAsync();
 
