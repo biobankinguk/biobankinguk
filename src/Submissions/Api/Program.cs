@@ -74,7 +74,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<BiobanksDbContext>();
+      .AddRoles<IdentityRole>()
+      .AddEntityFrameworkStores<BiobanksDbContext>();
 
 builder.Services.AddRazorPages();
 
@@ -104,16 +105,15 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddEmailSender(builder.Configuration);
 
-builder.Services.ConfigureApplicationCookie(opts =>
-    {
-      opts.ExpireTimeSpan = TimeSpan.FromMilliseconds(siteConfig.ClientSessionTimeout);
-      opts.LoginPath = "/Account/Login";
-      opts.AccessDeniedPath = "/Account/AccessDenied";
-      opts.ReturnUrlParameter = "returnUrl";
-      opts.SlidingExpiration = true;
-    });
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opts =>
+                {
+                  opts.ExpireTimeSpan = TimeSpan.FromMilliseconds(siteConfig.ClientSessionTimeout);
+                  opts.LoginPath = "/Account/Login";
+                  opts.AccessDeniedPath = "/Account/AccessDenied";
+                  opts.ReturnUrlParameter = "returnUrl";
+                  opts.SlidingExpiration = true;
+                })
                 .AddJwtBearer(opts =>
                 {
                   opts.Audience = JwtBearerConstants.TokenAudience;
