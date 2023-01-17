@@ -74,10 +74,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-      .AddRoles<IdentityRole>()
       .AddEntityFrameworkStores<BiobanksDbContext>();
-
-builder.Services.AddRazorPages();
 
 builder.Configuration.AddJsonFile("Settings/LegacyMaterialTypes.json", optional: true);
 builder.Configuration.AddJsonFile("Settings/LegacyStorageTemperatures.json", optional: true);

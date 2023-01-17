@@ -23,12 +23,9 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
     {
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> _claimsManager;
-
         private readonly INetworkService _networkService;
         private readonly IOrganisationDirectoryService _organisationService;
 
-        private readonly IBiobankReadService _biobankReadService;
         private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
 
@@ -38,9 +35,8 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
-            UserClaimsPrincipalFactory<ApplicationUser, IdentityRole> claimsManager,
-            ITokenLoggingService tokenLog,
-            IBiobankReadService biobankReadService)
+            ITokenLoggingService tokenLog
+            )
         {
             _networkService = networkService;
             _organisationService = organisationService;
@@ -48,9 +44,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             _signinManager = signInManager;
             _userManager = userManager;
             _emailService = emailService;
-            _claimsManager = claimsManager;
             _tokenLog = tokenLog;
-            _biobankReadService = biobankReadService;
         }
 
         #region Login/Logout
