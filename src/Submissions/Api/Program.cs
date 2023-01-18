@@ -69,8 +69,7 @@ builder.Services.AddDbContext<OmopDbContext>(options =>
 options.UseNpgsql("Omop"));
 
 builder.Services.AddDbContext<BiobanksDbContext>(options =>
-    options.UseSqlServer(connectionString,
-    sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
+    options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //identity

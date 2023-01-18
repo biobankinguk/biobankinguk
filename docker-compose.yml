@@ -1,0 +1,18 @@
+name: biobanks-local-dev
+
+services:
+  db:
+    image: postgres:13
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      ADMINER_DESIGN: pepa-linha
