@@ -9,7 +9,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class CollectionStatusService : ReferenceDataService<CollectionStatus>
     {
-        public CollectionStatusService(BiobanksDbContext db) : base(db) { }
+        public CollectionStatusService(ApplicationDbContext db) : base(db) { }
 
         public override async Task<int> GetUsageCount(int id)
             => await _db.Collections.CountAsync(x => x.CollectionStatusId == id);

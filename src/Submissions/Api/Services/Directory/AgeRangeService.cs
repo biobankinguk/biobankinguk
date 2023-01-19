@@ -9,7 +9,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class AgeRangeService : ReferenceDataService<AgeRange>
     {
-        public AgeRangeService(BiobanksDbContext db) : base(db) { }
+        public AgeRangeService(ApplicationDbContext db) : base(db) { }
 
         public override async Task<int> GetUsageCount(int id)
             => await _db.SampleSets.CountAsync(x => x.AgeRangeId == id);

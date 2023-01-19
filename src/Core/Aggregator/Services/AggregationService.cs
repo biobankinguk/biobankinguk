@@ -16,12 +16,12 @@ namespace Biobanks.Aggregator.Services
         private readonly IReferenceDataAggregatorService _refDataService;
 
         private readonly AggregatorOptions _options;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
         
         public AggregationService(
             IReferenceDataAggregatorService refDataService,
             IOptions<AggregatorOptions> options,
-            BiobanksDbContext db)
+            ApplicationDbContext db)
         {
             _refDataService = refDataService;
             _options = options.Value;

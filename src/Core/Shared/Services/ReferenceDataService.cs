@@ -10,9 +10,9 @@ namespace Biobanks.Shared.Services
 {
     public  class ReferenceDataService<T> : IReferenceDataService<T> where T : BaseReferenceData
     {
-        protected readonly BiobanksDbContext _db;
+        protected readonly ApplicationDbContext _db;
 
-        public ReferenceDataService(BiobanksDbContext db)
+        public ReferenceDataService(ApplicationDbContext db)
         {
             _db = db;
         }

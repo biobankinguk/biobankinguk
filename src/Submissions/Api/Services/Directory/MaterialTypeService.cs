@@ -12,7 +12,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
   public class MaterialTypeService : ReferenceDataService<MaterialType>, IMaterialTypeService
   {
-    public MaterialTypeService(BiobanksDbContext db) : base(db) { }
+    public MaterialTypeService(ApplicationDbContext db) : base(db) { }
 
     protected override IQueryable<MaterialType> Query()
         => base.Query()

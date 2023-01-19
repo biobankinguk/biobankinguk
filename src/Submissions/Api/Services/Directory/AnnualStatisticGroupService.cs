@@ -9,7 +9,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class AnnualStatisticGroupService : ReferenceDataService<AnnualStatisticGroup>
     {
-        public AnnualStatisticGroupService(BiobanksDbContext db) : base(db) { }
+        public AnnualStatisticGroupService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<AnnualStatisticGroup> Query()
             => base.Query()

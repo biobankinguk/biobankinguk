@@ -32,10 +32,10 @@ namespace Core.Submissions.Services
         private readonly ITreatmentWriteService _treatmentWriteService;
         private readonly IErrorService _errorService;
 
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         /// <inheritdoc />
-        public SubmissionService(BiobanksDbContext db, IBlobReadService blobReadService,
+        public SubmissionService(ApplicationDbContext db, IBlobReadService blobReadService,
             IBlobWriteService blobWriteService, IMapper mapper, IDiagnosisWriteService diagnosisWriteService,
             ISampleWriteService sampleWriteService, ITreatmentWriteService treatmentWriteService,
             IErrorService errorService)

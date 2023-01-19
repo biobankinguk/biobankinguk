@@ -14,9 +14,9 @@ namespace Biobanks.Analytics.Services
     /// <inheritdoc />
     public class AnalyticsService : IAnalyticsService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public AnalyticsService(BiobanksDbContext db)
+        public AnalyticsService(ApplicationDbContext db)
         {
             _db = db;
         }
