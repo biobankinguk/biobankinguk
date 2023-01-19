@@ -16,8 +16,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+
+[AllowAnonymous]
 public class RequestsController : Controller
 {
   private INetworkService _networkService;
@@ -85,7 +88,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -94,7 +97,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //try and get the user for the request
@@ -171,7 +174,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} accepted!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> BiobankActivity()
@@ -210,7 +213,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -219,7 +222,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //update the request
@@ -237,7 +240,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} declined!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> AcceptNetworkRequest(int requestId)
@@ -249,7 +252,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -258,7 +261,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //try and get the user for the request
@@ -331,7 +334,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} accepted!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> DeclineNetworkRequest(int requestId)
@@ -343,7 +346,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -352,7 +355,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //update the request
@@ -370,7 +373,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} declined!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> ManualActivation(string userEmail)
