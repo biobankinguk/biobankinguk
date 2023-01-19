@@ -23,14 +23,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly IIndexProvider _indexProvider;
 
         private readonly UserManager<ApplicationUser>  _userManager;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         private readonly IMapper _mapper;
 
         public NetworkService(
             IIndexProvider indexProvider,
             UserManager<ApplicationUser> userManager,
-            BiobanksDbContext db,
+            ApplicationDbContext db,
             IMapper mapper)
         {
             _indexProvider = indexProvider;

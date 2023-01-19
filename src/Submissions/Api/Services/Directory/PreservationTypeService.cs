@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class PreservationTypeService : ReferenceDataService<PreservationType>
     {
-        public PreservationTypeService(BiobanksDbContext db) : base(db) { }
+        public PreservationTypeService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<PreservationType> Query()
             => base.Query().Include(x => x.StorageTemperature);

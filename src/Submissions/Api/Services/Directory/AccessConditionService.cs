@@ -9,7 +9,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class AccessConditionService : ReferenceDataService<AccessCondition>
     {
-        public AccessConditionService(BiobanksDbContext db) : base(db) { }
+        public AccessConditionService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<AccessCondition> Query()
             => base.Query().Include(x => x.Organisations);

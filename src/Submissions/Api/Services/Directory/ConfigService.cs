@@ -11,10 +11,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
     /// <inheritdoc cref="IConfigService" />
     public class ConfigService : IConfigService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         private readonly IMemoryCache _memoryCache;
-        public ConfigService(BiobanksDbContext db, IMemoryCache memoryCache)
+        public ConfigService(ApplicationDbContext db, IMemoryCache memoryCache)
         {
             _db = db;
             _memoryCache = memoryCache;

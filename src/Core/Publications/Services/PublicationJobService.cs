@@ -12,9 +12,9 @@ namespace Biobanks.Publications.Services
 {
     public class PublicationJobService : IPublicationJobService
     {
-        private BiobanksDbContext _db;
+        private ApplicationDbContext _db;
 
-        public PublicationJobService(BiobanksDbContext db)
+        public PublicationJobService(ApplicationDbContext db)
         {
             _db = db;
         }

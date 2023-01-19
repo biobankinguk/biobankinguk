@@ -1,4 +1,4 @@
-﻿using Biobanks.Data;
+using Biobanks.Data;
 using Biobanks.IdentityTool.Commands.Runners;
 using Biobanks.IdentityTool.Extensions;
 
@@ -24,8 +24,8 @@ namespace Biobanks.IdentityTool
             // since not all Commands require it
             var connectionString = context.Configuration.GetConnectionString("Default");
             if (connectionString is not null)
-                services.AddDbContext<BiobanksDbContext>(
-                    o => o.UseSqlServer(connectionString));
+                services.AddDbContext<ApplicationDbContext>(
+                    o => o.UseNpgsql(connectionString));
 
             // Command Runners
             services

@@ -21,10 +21,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         private readonly IIndexProvider _indexProvider;
 
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         public CollectionService(
-            BiobanksDbContext db,
+            ApplicationDbContext db,
             IIndexProvider indexProvider)
         {
             _db = db;

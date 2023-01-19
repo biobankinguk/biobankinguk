@@ -7,7 +7,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class SopStatusService : ReferenceDataService<SopStatus>
     {
-        public SopStatusService(BiobanksDbContext db) : base(db) { }
+        public SopStatusService(ApplicationDbContext db) : base(db) { }
 
         public override async Task<int> GetUsageCount(int id)
             => await _db.Networks.CountAsync(x => x.SopStatusId == id);

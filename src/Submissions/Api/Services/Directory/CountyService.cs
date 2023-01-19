@@ -9,7 +9,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class CountyService : ReferenceDataService<County>
     {
-        public CountyService(BiobanksDbContext db) : base(db) { }
+        public CountyService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<County> Query()
             => base.Query()
