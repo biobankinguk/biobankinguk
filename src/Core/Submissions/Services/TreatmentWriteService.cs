@@ -18,9 +18,9 @@ namespace Core.Submissions.Services
     public class TreatmentWriteService : ITreatmentWriteService
     {
         private readonly ITreatmentValidationService _treatmentValidationService;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public TreatmentWriteService(ITreatmentValidationService treatmentValidationService, BiobanksDbContext db)
+        public TreatmentWriteService(ITreatmentValidationService treatmentValidationService, ApplicationDbContext db)
         {
             _treatmentValidationService = treatmentValidationService;
             _db = db;

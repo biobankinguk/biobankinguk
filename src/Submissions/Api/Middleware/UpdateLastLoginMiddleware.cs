@@ -29,7 +29,7 @@ namespace Biobanks.Submissions.Api.Middleware
             if (context.User != null && context.User.Identity.IsAuthenticated)
             {
 
-                using var dbContext = context.RequestServices.GetRequiredService<BiobanksDbContext>();
+                using var dbContext = context.RequestServices.GetRequiredService<ApplicationDbContext>();
                 var user = dbContext.Users.Where(u => u.UserName == context.User.Identity.Name).FirstOrDefault();
                 user.LastLogin = DateTime.Now;
                 dbContext.Update(user);

@@ -15,12 +15,12 @@ namespace Core.Submissions.Services
     public class ReferenceDataReadService : IReferenceDataReadService
     {
         private readonly IMemoryCache _cache;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         private static readonly TimeSpan CacheExpiry = TimeSpan.FromHours(1);
 
         public ReferenceDataReadService(
-            IMemoryCache cache, BiobanksDbContext db)
+            IMemoryCache cache, ApplicationDbContext db)
         {
             _cache = cache;
             _db = db;

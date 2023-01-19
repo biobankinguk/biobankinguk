@@ -9,7 +9,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class ConsentRestrictionService : ReferenceDataService<ConsentRestriction>
     {
-        public ConsentRestrictionService(BiobanksDbContext db) : base(db) { }
+        public ConsentRestrictionService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<ConsentRestriction> Query()
             => base.Query().Include(x => x.Collections);

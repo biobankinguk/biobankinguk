@@ -27,7 +27,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly ICollectionIndexProvider _collectionsIndex;
 
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         private readonly IMapper _mapper;
 
@@ -35,7 +35,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             ICapabilityIndexProvider capabilitiesIndex,
             ICollectionIndexProvider collectionsIndex,
             UserManager<ApplicationUser> userManager,
-            BiobanksDbContext db,
+            ApplicationDbContext db,
             IMapper mapper)
         {
             _userManager = userManager;

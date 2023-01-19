@@ -12,9 +12,9 @@ namespace Biobanks.Aggregator.Services
 {
     public class ReferenceDataAggregatorService : IReferenceDataAggregatorService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public ReferenceDataAggregatorService(BiobanksDbContext db)
+        public ReferenceDataAggregatorService(ApplicationDbContext db)
         {
             _db = db;
         }

@@ -13,10 +13,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
     public class OntologyTermService : IOntologyTermService
     {
         
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
         private readonly ICapabilityService _capabilityService;
 
-    public OntologyTermService(BiobanksDbContext db, ICapabilityService capabilityService)
+    public OntologyTermService(ApplicationDbContext db, ICapabilityService capabilityService)
     {
             _db = db;
             _capabilityService = capabilityService;

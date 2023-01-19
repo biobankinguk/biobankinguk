@@ -11,10 +11,10 @@ namespace Core.Submissions.Services
     /// <inheritdoc />
     public class RejectService : IRejectService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         /// <inheritdoc />
-        public RejectService(BiobanksDbContext db)
+        public RejectService(ApplicationDbContext db)
         {
             _db = db;
         }

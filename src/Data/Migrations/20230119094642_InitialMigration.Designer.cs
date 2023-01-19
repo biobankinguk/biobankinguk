@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Biobanks.Data.Migrations
 {
-    [DbContext(typeof(BiobanksDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230119094642_InitialMigration")]
     partial class InitialMigration
     {

@@ -10,9 +10,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class PublicationService : IPublicationService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public PublicationService(BiobanksDbContext db)
+        public PublicationService(ApplicationDbContext db)
         {
             _db = db;
         }

@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class ServiceOfferingService : ReferenceDataService<ServiceOffering>
     {
-        public ServiceOfferingService(BiobanksDbContext db) : base(db) { }
+        public ServiceOfferingService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<ServiceOffering> Query()
             => base.Query().Include(x => x.OrganisationServiceOfferings);

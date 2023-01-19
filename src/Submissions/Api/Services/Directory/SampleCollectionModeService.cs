@@ -7,7 +7,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class SampleCollectionModeService : ReferenceDataService<SampleCollectionMode>
     {
-        public SampleCollectionModeService(BiobanksDbContext db) : base(db) { }
+        public SampleCollectionModeService(ApplicationDbContext db) : base(db) { }
 
         public override async Task<int> GetUsageCount(int id)
             => await _db.DiagnosisCapabilities.CountAsync(x => x.SampleCollectionModeId == id);

@@ -69,7 +69,7 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<OmopDbContext>(options =>
 options.UseNpgsql("Omop"));
 
-builder.Services.AddDbContext<BiobanksDbContext>(o =>
+builder.Services.AddDbContext<ApplicationDbContext>(o =>
 {
   // migration bundles don't like null connection strings (yet)
   // https://github.com/dotnet/efcore/issues/26869
@@ -87,7 +87,7 @@ builder.Services.AddDbContext<BiobanksDbContext>(o =>
 
 //identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<BiobanksDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddRazorPages();
 

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Biobanks.Data.Migrations
 {
-    [DbContext(typeof(BiobanksDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class BiobanksDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -33,7 +33,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
     private readonly IHostEnvironment _hostEnvironment;
 
     private readonly TelemetryClient _telemetryClient;
-    private readonly BiobanksDbContext _context;
+    private readonly ApplicationDbContext _context;
 
     public BiobankIndexService(
             IReferenceDataService<DonorCount> donorCountService,
@@ -41,7 +41,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             ISearchProvider searchProvider,
             IHostEnvironment hostEnvironment,
             TelemetryClient telemetryClient,
-            BiobanksDbContext context
+            ApplicationDbContext context
             )
     {
       _donorCountService = donorCountService;

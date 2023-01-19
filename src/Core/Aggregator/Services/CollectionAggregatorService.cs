@@ -11,9 +11,9 @@ namespace Biobanks.Aggregator.Services
 {
     public class CollectionAggregatorService : ICollectionAggregatorService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public CollectionAggregatorService(BiobanksDbContext db)
+        public CollectionAggregatorService(ApplicationDbContext db)
         {
             _db = db;
         }

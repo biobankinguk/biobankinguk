@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Biobanks.Data
 {
-  public class BiobanksDbContext : IdentityDbContext<ApplicationUser>
+  public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
   {
     #region Reference Data: API
     public DbSet<Ontology> Ontologies { get; set; }
@@ -256,6 +256,6 @@ namespace Biobanks.Data
 
     }
 
-    public BiobanksDbContext(DbContextOptions options) : base(options) { }
+    public ApplicationDbContext(DbContextOptions options) : base(options) { }
   }
 }

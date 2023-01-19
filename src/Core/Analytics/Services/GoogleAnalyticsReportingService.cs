@@ -24,13 +24,13 @@ namespace Biobanks.Analytics.Services
         private const string _gaDateRangeFormat = "yyyy-MM-dd";
 
         private readonly AnalyticsOptions _config;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
         private readonly IOrganisationService _organisations;
         private readonly ILogger<GoogleAnalyticsReportingService> _logger;
         private readonly AnalyticsReportingService _analytics;
 
         public GoogleAnalyticsReportingService(
-            BiobanksDbContext db,
+            ApplicationDbContext db,
             IOrganisationService organisations,
             IOptions<AnalyticsOptions> options,
             ILogger<GoogleAnalyticsReportingService> logger)

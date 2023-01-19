@@ -21,14 +21,14 @@ namespace Biobanks.Submissions.Api.Services.Directory;
 public class CapabilityService : ICapabilityService
 {
 
-    private readonly BiobanksDbContext _db;
+    private readonly ApplicationDbContext _db;
     private readonly IIndexProvider _indexProvider;
     private readonly IReferenceDataService<DonorCount> _donorCountService;
     private readonly IOrganisationDirectoryService _organisationService;
     private readonly IBiobankIndexService _indexService;
 
   public CapabilityService(
-        BiobanksDbContext db,
+        ApplicationDbContext db,
         IIndexProvider indexProvider,
         IReferenceDataService<DonorCount> donorCountService,
         IOrganisationDirectoryService organisationService,

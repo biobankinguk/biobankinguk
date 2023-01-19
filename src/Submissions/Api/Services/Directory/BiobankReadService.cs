@@ -30,7 +30,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         
         private readonly UserManager<ApplicationUser> _userManager;
 
-        private readonly BiobanksDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public BiobankReadService(
             ILogoStorageProvider logoStorageProvider,
@@ -44,7 +44,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             UserManager<ApplicationUser> userManager,
             IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
             IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
-            BiobanksDbContext context)
+            ApplicationDbContext context)
         {
             _logoStorageProvider = logoStorageProvider;
 

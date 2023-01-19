@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class FunderService : ReferenceDataService<Funder>
     {
-        public FunderService(BiobanksDbContext db) : base(db) { }
+        public FunderService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<Funder> Query()
             => base.Query()

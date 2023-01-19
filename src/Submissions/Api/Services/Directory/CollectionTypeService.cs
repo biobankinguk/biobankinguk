@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class CollectionTypeService : ReferenceDataService<CollectionType>
     {
-        public CollectionTypeService(BiobanksDbContext db) : base(db) { }
+        public CollectionTypeService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<CollectionType> Query()
             => base.Query().Include(x => x.Organisations);

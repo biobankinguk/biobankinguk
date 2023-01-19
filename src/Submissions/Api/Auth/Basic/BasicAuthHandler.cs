@@ -19,14 +19,14 @@ namespace Biobanks.Submissions.Api.Auth.Basic
 {
     internal class BasicAuthHandler : AuthenticationHandler<BasicAuthSchemeOptions>
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         public BasicAuthHandler(
             IOptionsMonitor<BasicAuthSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            BiobanksDbContext db)
+            ApplicationDbContext db)
             : base(options, logger, encoder, clock)
         {
             _db = db;

@@ -12,9 +12,9 @@ namespace Biobanks.Publications.Services
 {
     public class AnnotationService : IAnnotationService
     {
-        private BiobanksDbContext _db;
+        private ApplicationDbContext _db;
 
-        public AnnotationService(BiobanksDbContext db)
+        public AnnotationService(ApplicationDbContext db)
         {
             _db = db;
         }
