@@ -31,6 +31,7 @@
     <PackageReference Include="cloudscribe.Web.SiteMap" Version="6.0.0" />
     <PackageReference Include="cloudscribe.Web.SiteMap.FromNavigation" Version="6.0.1" />
     <PackageReference Include="Hangfire" Version="1.7.31" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.9.9" />
     <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
     <PackageReference Include="MimeKit" Version="3.4.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />

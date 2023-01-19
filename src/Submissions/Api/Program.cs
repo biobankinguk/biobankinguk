@@ -58,6 +58,7 @@ using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices;
 using cloudscribe.Web.SiteMap;
 using Microsoft.AspNetCore.Mvc;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -370,7 +371,8 @@ if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == W
 {
     var hangfireConnectionString = builder.Configuration.GetConnectionString("Hangfire");
 
-    builder.Services.AddHangfire(x => x.UseSqlServerStorage(
+    
+    builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(
         !string.IsNullOrWhiteSpace(hangfireConnectionString)
             ? connectionString
             : builder.Configuration.GetConnectionString("Default"),

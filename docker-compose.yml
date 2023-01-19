@@ -1,13 +1,11 @@
-name: biobanks-local-dev
-
 services:
   db:
-    image: postgres:13
+    image: postgres:14
     restart: always
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: example
 
   adminer:
     image: adminer
