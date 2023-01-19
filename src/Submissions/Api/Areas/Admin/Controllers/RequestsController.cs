@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Requests;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 public class RequestsController : Controller
@@ -41,7 +42,8 @@ public class RequestsController : Controller
     _emailService = emailService;
     _mapper = mapper;
   }
-
+  
+  #region Requests
   public async Task<ActionResult> Index()
   {
     var bbRequests =
@@ -396,4 +398,78 @@ public class RequestsController : Controller
 
     return NotFound();
   }
+  
+  #endregion
+  
+  #region Historical
+  
+  public async Task<ActionResult> Historical()
+        {
+            //get both network and biobank historical requests
+            //and convert them to the viewmodel format
+            var bbRequests = (await _organisationService.ListHistoricalRegistrationRequests())
+                .Select(x =>
+
+                    Task.Run(async () =>
+                    {
+                        string action;
+                        DateTime date;
+                        GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
+                        var user = await _userManager.FindByEmailAsync(x.UserEmail);
+
+                        return new HistoricalRequestModel
+                        {
+                            UserName = x.UserName,
+                            UserEmail = x.UserEmail,
+                            EntityName = x.OrganisationName,
+                            Action = action,
+                            Date = date,
+                            UserEmailConfirmed = user?.EmailConfirmed ?? false,
+                            ResultingOrgExternalId = x.OrganisationExternalId
+                        };
+                    }).Result
+
+                ).ToList();
+
+            var nwRequests = (await _networkService.ListHistoricalRegistrationRequests())
+                .Select(x =>
+
+                    Task.Run(async () =>
+                    {
+                        string action;
+                        DateTime date;
+                        GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
+                        var user = await _userManager.FindByEmailAsync(x.UserEmail);
+
+                        return new HistoricalRequestModel
+                        {
+                            UserName = x.UserName,
+                            UserEmail = x.UserEmail,
+                            EntityName = x.NetworkName,
+                            Action = action,
+                            Date = date,
+                            UserEmailConfirmed = user?.EmailConfirmed ?? false
+                        };
+                    }).Result
+
+                ).ToList();
+
+            var model = new HistoricalModel
+            {
+                HistoricalRequests = bbRequests.Concat(nwRequests).ToList()
+            };
+
+            return View(model);
+        }
+
+        private static void GetHistoricalRequestActionDate(DateTime? declineDate, DateTime? acceptedDate, out string action, out DateTime date)
+        {
+            //check it is actually historical
+            if (declineDate == null && acceptedDate == null) throw new ApplicationException();
+
+            date = (declineDate ?? acceptedDate).Value;
+            action = (declineDate != null) ? "Declined" : "Accepted";
+        }
+
+        #endregion
 }
