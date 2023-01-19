@@ -46,7 +46,7 @@ namespace Biobanks.DataSeed
             Console.ReadKey();
 
             services.AddDbContext<BiobanksDbContext>(opts =>
-                opts.UseSqlServer(connString)
+                opts.UseNpgsql(connString)
             );
 
             services.AddHttpClient();
